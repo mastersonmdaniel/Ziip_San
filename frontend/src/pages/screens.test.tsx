@@ -13,7 +13,7 @@ vi.mock('@services/api', async (importOriginal) => {
     ...actual,
     api: { request: requestMock },
     // authApi usa o axios real por dentro; aqui ele passa pela mesma API falsa dos testes.
-    authApi: { ...actual.authApi, getMe: () => requestMock({ method: 'get', url: '/auth/me' }).then((r: { data: never }) => r.data) },
+    authApi: { ...actual.authApi, getMe: () => requestMock({ method: 'get', url: '/me' }).then((r: { data: never }) => r.data) },
   }
 })
 
@@ -21,6 +21,7 @@ import { App } from '../App'
 import { AuthProvider } from '@hooks/useAuth'
 import { ThemeProvider } from '@hooks/useTheme'
 import { ApiError } from '@services/registry/errors'
+import { signInForTests } from '../test/auth'
 import { fakeApi, renderWithProviders } from '../test/render'
 import {
   page,
@@ -184,10 +185,10 @@ describe('acessibilidade (axe) das telas principais', () => {
   })
 
   it('aplicação inteira com menu e marcos (landmarks)', async () => {
-    localStorage.setItem('access_token', 'token-de-teste')
+    signInForTests()
     useApi({
       ...emptyCatalogs,
-      'GET /auth/me': TEST_USER,
+      'GET /me': TEST_USER,
       'POST /registry/consumer-units/search': page([TEST_UNIT_SUMMARY]),
     })
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
@@ -213,8 +214,8 @@ describe('navegação honesta: o menu só aponta para telas que existem', () => 
   const hrefs = ['/cadastro/imoveis', '/cadastro/clientes', '/cadastro/territorio', '/cadastro/catalogos']
 
   it('cada item do menu abre uma tela real (nenhum cai em "Página não encontrada")', async () => {
-    localStorage.setItem('access_token', 'token-de-teste')
-    useApi({ ...emptyCatalogs, 'GET /auth/me': TEST_USER })
+    signInForTests()
+    useApi({ ...emptyCatalogs, 'GET /me': TEST_USER })
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     const user = userEvent.setup()
     render(
@@ -239,8 +240,8 @@ describe('navegação honesta: o menu só aponta para telas que existem', () => 
   })
 
   it('rotas removidas (dashboard, faturamento...) caem em "Página não encontrada"', async () => {
-    localStorage.setItem('access_token', 'token-de-teste')
-    useApi({ 'GET /auth/me': TEST_USER })
+    signInForTests()
+    useApi({ 'GET /me': TEST_USER })
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     render(
       <QueryClientProvider client={client}>
