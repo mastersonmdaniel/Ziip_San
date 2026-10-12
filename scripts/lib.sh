@@ -13,6 +13,9 @@ SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUILD_DIR="${SIGSAN_BUILD_DIR:-$(cygpath -u "$LOCALAPPDATA")/sigsan-build}"
 MIRROR="$BUILD_DIR/sigsan"
 IT_PORT="${SIGSAN_IT_PORT:-55433}"
+# Nome do container do banco de integracao. Pipelines paralelos (outra copia de trabalho) usam
+# SIGSAN_IT_PORT, SIGSAN_IT_CONTAINER e SIGSAN_BUILD_DIR proprios e nao se enxergam.
+IT_CONTAINER="${SIGSAN_IT_CONTAINER:-sigsan-it-pg}"
 LOCK_DIR="$BUILD_DIR/.lock"
 
 die() { echo "ERRO: $*" >&2; exit 1; }

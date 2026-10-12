@@ -24,8 +24,8 @@ INIT_DIR="$INIT_ROOT/$(date +%s)"
 mkdir -p "$INIT_DIR"
 cp -f "$SRC/infra/postgres/init/"*.sql "$INIT_DIR/"
 
-docker rm -f sigsan-it-pg >/dev/null 2>&1 || true
-MSYS_NO_PATHCONV=1 docker run -d --name sigsan-it-pg -p "${IT_PORT}:5432" \
+docker rm -f "$IT_CONTAINER" >/dev/null 2>&1 || true
+MSYS_NO_PATHCONV=1 docker run -d --name "$IT_CONTAINER" -p "${IT_PORT}:5432" \
   -e POSTGRES_DB=sigsan -e POSTGRES_USER=sigsan_app -e POSTGRES_PASSWORD=sigsan_dev_password \
   -e POSTGRES_INITDB_ARGS="--auth-host=scram-sha-256" \
   -v "$(cygpath -m "$INIT_DIR"):/docker-entrypoint-initdb.d:ro" \
@@ -34,14 +34,14 @@ MSYS_NO_PATHCONV=1 docker run -d --name sigsan-it-pg -p "${IT_PORT}:5432" \
 # O entrypoint reinicia o servidor depois do init: espera a role de migracao existir e o servidor
 # aceitar conexoes, nessa ordem.
 for _ in $(seq 1 60); do
-  if docker exec sigsan-it-pg psql -U sigsan_app -d sigsan -tAc "select 1 from pg_roles where rolname='sigsan_migrator'" 2>/dev/null | grep -q 1; then
+  if docker exec "$IT_CONTAINER" psql -U sigsan_app -d sigsan -tAc "select 1 from pg_roles where rolname='sigsan_migrator'" 2>/dev/null | grep -q 1; then
     sleep 2
-    if docker exec sigsan-it-pg pg_isready -U sigsan_app -d sigsan >/dev/null 2>&1; then
+    if docker exec "$IT_CONTAINER" pg_isready -U sigsan_app -d sigsan >/dev/null 2>&1; then
       echo "banco virgem pronto na porta ${IT_PORT}"
       exit 0
     fi
   fi
   sleep 2
 done
-docker logs sigsan-it-pg 2>&1 | tail -20
+docker logs "$IT_CONTAINER" 2>&1 | tail -20
 die "falha ao subir o banco de integracao"
