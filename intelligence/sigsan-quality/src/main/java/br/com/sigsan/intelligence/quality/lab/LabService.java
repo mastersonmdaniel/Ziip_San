@@ -13,7 +13,10 @@ import br.com.sigsan.intelligence.quality.repository.QualitySampleRepository;
 import br.com.sigsan.core.tenant.TenantContextHolder;
 import br.com.sigsan.core.audit.AuditLog;
 import br.com.sigsan.core.audit.AuditLogRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import br.com.sigsan.intelligence.quality.lab.audit.AnalysisResultSnapshot;
+import br.com.sigsan.intelligence.quality.lab.audit.LabInstrumentSnapshot;
+import br.com.sigsan.intelligence.quality.lab.audit.LabMethodSnapshot;
+import br.com.sigsan.intelligence.quality.lab.audit.LabQcSnapshot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,7 +47,7 @@ public class LabService {
     public LabInstrument registerInstrument(LabInstrument instrument) {
         instrument.setTenantId(TenantContextHolder.getTenantId());
         LabInstrument saved = instrumentRepository.save(instrument);
-        auditLog("LabInstrument", saved.getId(), "CREATE", null, toJson(saved));
+        auditLog("LabInstrument", saved.getId(), "CREATE", null, Json.write(LabInstrumentSnapshot.of(saved)));
         return saved;
     }
 
@@ -53,10 +56,10 @@ public class LabService {
         LabInstrument instrument = instrumentRepository.findByIdAndTenantId(instrumentId, TenantContextHolder.getTenantId())
                 .orElseThrow(() -> new IllegalArgumentException("Instrument not found"));
 
-        String oldValues = toJson(instrument);
+        String oldValues = Json.write(LabInstrumentSnapshot.of(instrument));
         instrument.setCalibrationDue(calibrationDate.plusDays(instrument.getCalibrationFrequencyDays()));
         LabInstrument saved = instrumentRepository.save(instrument);
-        auditLog("LabInstrument", instrumentId, "CALIBRATE", oldValues, toJson(saved));
+        auditLog("LabInstrument", instrumentId, "CALIBRATE", oldValues, Json.write(LabInstrumentSnapshot.of(saved)));
         return saved;
     }
 
@@ -74,7 +77,7 @@ public class LabService {
     public LabAnalysisMethod createMethod(LabAnalysisMethod method) {
         method.setTenantId(TenantContextHolder.getTenantId());
         LabAnalysisMethod saved = methodRepository.save(method);
-        auditLog("LabAnalysisMethod", saved.getId(), "CREATE", null, toJson(saved));
+        auditLog("LabAnalysisMethod", saved.getId(), "CREATE", null, Json.write(LabMethodSnapshot.of(saved)));
         return saved;
     }
 
@@ -109,7 +112,7 @@ public class LabService {
         }
 
         LabQcSample saved = qcSampleRepository.save(qcSample);
-        auditLog("LabQcSample", saved.getId(), "RECORD", null, toJson(saved));
+        auditLog("LabQcSample", saved.getId(), "RECORD", null, Json.write(LabQcSnapshot.of(saved)));
 
         // Check for trends/rules (Westgard rules)
         checkQcTrends(qcSample);
@@ -182,7 +185,9 @@ public class LabService {
                     return newResult;
                 });
 
-        String oldValues = toJson(result);
+        // Resultado novo (ainda sem id) nao tem valor antigo: um retrato so com nulos sugeriria que
+        // havia um registro vazio antes.
+        String oldValues = result.getId() == null ? null : Json.write(AnalysisResultSnapshot.of(result));
 
         result.setResultValue(request.resultValue());
         result.setResultText(request.resultText());
@@ -204,7 +209,7 @@ public class LabService {
         result.setProperties(Json.orDefault(request.properties(), "{}"));
 
         QualityAnalysisResult saved = analysisResultRepository.save(result);
-        auditLog("QualityAnalysisResult", saved.getId(), "RECORD", oldValues, toJson(saved));
+        auditLog("QualityAnalysisResult", saved.getId(), "RECORD", oldValues, Json.write(AnalysisResultSnapshot.of(saved)));
 
         // Check conformity
         if (request.conformity() == QualityAnalysisResult.ConformityStatus.NON_CONFORMING) {
@@ -256,7 +261,7 @@ public class LabService {
         audit.setAction(toAuditAction(action));
         audit.setOldValues(oldValues);
         audit.setNewValues(newValues);
-        audit.setMetadata("{\"action\":\"" + action + "\"}");
+        audit.setMetadata(Json.write(Map.of("action", action)));
         audit.setSuccess(true);
         auditLogRepository.save(audit);
     }
@@ -284,14 +289,6 @@ public class LabService {
                     yield AuditLog.AuditAction.UPDATE;
                 }
             };
-        }
-    }
-
-    private String toJson(Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            return "{}";
         }
     }
 

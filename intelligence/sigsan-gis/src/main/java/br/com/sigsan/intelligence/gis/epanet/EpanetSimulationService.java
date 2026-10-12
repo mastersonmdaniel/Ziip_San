@@ -6,6 +6,7 @@ import br.com.sigsan.intelligence.gis.repository.GisNetworkElementRepository;
 import br.com.sigsan.intelligence.losses.domain.DmaDistrict;
 import br.com.sigsan.intelligence.losses.domain.PressureAnalysis;
 import br.com.sigsan.intelligence.losses.domain.WaterBalance;
+import br.com.sigsan.core.json.Json;
 import br.com.sigsan.core.tenant.TenantContextHolder;
 import br.com.sigsan.core.audit.AuditLogRepository;
 import lombok.RequiredArgsConstructor;
@@ -104,8 +105,8 @@ public class EpanetSimulationService {
     private void parseNumbers(String propertiesJson, Map<String, BigDecimal> out) {
         if (propertiesJson == null || propertiesJson.isBlank()) return;
         try {
-            var node = new com.fasterxml.jackson.databind.ObjectMapper().readTree(propertiesJson);
-            node.fields().forEachRemaining(en -> {
+            var node = Json.readTree(propertiesJson);
+            node.properties().forEach(en -> {
                 if (en.getValue().isNumber()) {
                     out.put(en.getKey(), en.getValue().decimalValue());
                 }
@@ -122,9 +123,9 @@ public class EpanetSimulationService {
     private EpanetValve.ValveType parseValveType(String propertiesJson) {
         if (propertiesJson == null || propertiesJson.isBlank()) return null;
         try {
-            var node = new com.fasterxml.jackson.databind.ObjectMapper().readTree(propertiesJson);
-            if (node.has("valve_type") && node.get("valve_type").isTextual()) {
-                return EpanetValve.ValveType.valueOf(node.get("valve_type").asText().trim().toUpperCase(Locale.ROOT));
+            var node = Json.readTree(propertiesJson);
+            if (node.has("valve_type") && node.get("valve_type").isString()) {
+                return EpanetValve.ValveType.valueOf(node.get("valve_type").asString().trim().toUpperCase(Locale.ROOT));
             }
         } catch (Exception ex) {
             log.warn("valve_type inválido: {}", ex.getMessage());

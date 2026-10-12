@@ -1,10 +1,12 @@
 package br.com.sigsan.compliance.lgpd.engine;
 
 import br.com.sigsan.compliance.lgpd.domain.DataSubjectRequest;
+import br.com.sigsan.core.json.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.Map;
 
 /**
  * Data subject rights (titular) workflow - LGPD Art. 18 and Art. 19.
@@ -109,13 +111,16 @@ public class DataSubjectRightsEngine {
     }
 
     /**
-     * Appends a note to the request metadata. The field is a string blob; this keeps the
-     * existing shape instead of pulling a JSON mapper into the engine for one key.
+     * Acrescenta uma chave aos metadados (jsonb) preservando as que já existem.
+     *
+     * <p>A versão anterior concatenava texto: um valor com aspas ou barra invertida gerava JSON
+     * inválido, e metadados que não terminassem em "}" eram cortados no último caractere. Metadado
+     * ilegível lança exceção ({@link Json#readMap}); reescrevê-lo com só a chave nova apagaria o
+     * que o titular ou o operador registraram.</p>
      */
     private String mergeMetadata(DataSubjectRequest request, String key, String value) {
-        String current = request.getMetadata();
-        boolean empty = current == null || current.isBlank() || "{}".equals(current);
-        return empty ? "{\"" + key + "\":\"" + value + "\"}"
-                : current.substring(0, current.length() - 1) + ",\"" + key + "\":\"" + value + "\"}";
+        Map<String, Object> metadata = Json.readMap(request.getMetadata());
+        metadata.put(key, value);
+        return Json.write(metadata);
     }
 }

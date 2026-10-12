@@ -6,12 +6,14 @@ import br.com.sigsan.compliance.lgpd.repository.ConsentRecordRepository;
 import br.com.sigsan.compliance.lgpd.repository.DataSubjectRequestRepository;
 import br.com.sigsan.compliance.lgpd.repository.DpiaRecordRepository;
 import br.com.sigsan.compliance.lgpd.engine.*;
+import br.com.sigsan.compliance.lgpd.service.audit.ConsentSnapshot;
+import br.com.sigsan.compliance.lgpd.service.audit.DpiaSnapshot;
+import br.com.sigsan.compliance.lgpd.service.audit.DsrSnapshot;
 import br.com.sigsan.core.tenant.TenantContextHolder;
 import br.com.sigsan.core.audit.AuditLogRepository;
 import br.com.sigsan.core.audit.AuditLog;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
@@ -90,7 +92,7 @@ public class LgpdEngineService {
         ConsentRecord saved = consentRepository.save(consent);
 
         // Audit
-        auditLog(ConsentRecord.class.getSimpleName(), saved.getId(), "GRANT", null, toJson(saved));
+        auditLog(ConsentRecord.class.getSimpleName(), saved.getId(), "GRANT", null, Json.write(ConsentSnapshot.of(saved)));
 
         return saved;
     }
@@ -105,7 +107,7 @@ public class LgpdEngineService {
             throw new IllegalStateException("Consent already revoked");
         }
 
-        String oldValues = toJson(consent);
+        String oldValues = Json.write(ConsentSnapshot.of(consent));
 
         consent.setStatus(ConsentRecord.ConsentStatus.REVOKED);
         consent.setRevokedAt(OffsetDateTime.now());
@@ -119,7 +121,7 @@ public class LgpdEngineService {
             anonymizationEngine.scheduleAnonymization(consent.getSubjectId(), consent.getPurpose());
         }
 
-        auditLog(ConsentRecord.class.getSimpleName(), consentId, "REVOKE", oldValues, toJson(saved));
+        auditLog(ConsentRecord.class.getSimpleName(), consentId, "REVOKE", oldValues, Json.write(ConsentSnapshot.of(saved)));
 
         return saved;
     }
@@ -161,7 +163,7 @@ public class LgpdEngineService {
         dpiaEngine.assessRisk(dpia);
 
         DpiaRecord saved = dpiaRepository.save(dpia);
-        auditLog(DpiaRecord.class.getSimpleName(), saved.getId(), "CREATE", null, toJson(saved));
+        auditLog(DpiaRecord.class.getSimpleName(), saved.getId(), "CREATE", null, Json.write(DpiaSnapshot.of(saved)));
 
         return saved;
     }
@@ -170,6 +172,10 @@ public class LgpdEngineService {
     public DpiaRecord assessAndApproveDpia(UUID dpiaId, ApproveDpiaRequest request) {
         DpiaRecord dpia = dpiaRepository.findByIdAndTenantId(dpiaId, TenantContextHolder.getTenantId())
                 .orElseThrow(() -> new IllegalArgumentException("DPIA not found"));
+
+        // Retrato ANTES da reavaliacao: a versao anterior serializava o mesmo objeto ja alterado
+        // como valor antigo e novo, e a auditoria nao mostrava mudanca nenhuma.
+        String oldValues = Json.write(DpiaSnapshot.of(dpia));
 
         // Re-assess with latest data
         dpiaEngine.assessRisk(dpia);
@@ -185,7 +191,8 @@ public class LgpdEngineService {
         }
 
         DpiaRecord saved = dpiaRepository.save(dpia);
-        auditLog(DpiaRecord.class.getSimpleName(), dpiaId, request.approved() ? "APPROVE" : "REJECT", toJson(dpia), toJson(saved));
+        auditLog(DpiaRecord.class.getSimpleName(), dpiaId, request.approved() ? "APPROVE" : "REJECT", oldValues,
+                Json.write(DpiaSnapshot.of(saved)));
 
         return saved;
     }
@@ -223,7 +230,7 @@ public class LgpdEngineService {
         // Trigger async processing
         dsrEngine.processRequest(saved);
 
-        auditLog(DataSubjectRequest.class.getSimpleName(), saved.getId(), "CREATE", null, toJson(saved));
+        auditLog(DataSubjectRequest.class.getSimpleName(), saved.getId(), "CREATE", null, Json.write(DsrSnapshot.of(saved)));
 
         return saved;
     }
@@ -237,13 +244,13 @@ public class LgpdEngineService {
             throw new IllegalStateException("DSR cannot be verified in current status: " + dsr.getStatus());
         }
 
-        String oldValues = toJson(dsr);
+        String oldValues = Json.write(DsrSnapshot.of(dsr));
         dsr.setStatus(DataSubjectRequest.RequestStatus.VERIFIED);
         dsr.setVerifiedAt(OffsetDateTime.now());
         dsr.setVerifiedBy(request.verifiedBy());
 
         DataSubjectRequest saved = dsrRepository.save(dsr);
-        auditLog(DataSubjectRequest.class.getSimpleName(), dsrId, "VERIFY", oldValues, toJson(saved));
+        auditLog(DataSubjectRequest.class.getSimpleName(), dsrId, "VERIFY", oldValues, Json.write(DsrSnapshot.of(saved)));
 
         // Continue processing
         dsrEngine.continueProcessing(saved);
@@ -256,7 +263,7 @@ public class LgpdEngineService {
         DataSubjectRequest dsr = dsrRepository.findByIdAndTenantId(dsrId, TenantContextHolder.getTenantId())
                 .orElseThrow(() -> new IllegalArgumentException("DSR not found"));
 
-        String oldValues = toJson(dsr);
+        String oldValues = Json.write(DsrSnapshot.of(dsr));
         dsr.setStatus(DataSubjectRequest.RequestStatus.COMPLETED);
         dsr.setCompletedAt(OffsetDateTime.now());
         dsr.setCompletedBy(request.completedBy());
@@ -264,7 +271,7 @@ public class LgpdEngineService {
         dsr.setResponseData(Json.orDefault(request.responseData(), "{}"));
 
         DataSubjectRequest saved = dsrRepository.save(dsr);
-        auditLog(DataSubjectRequest.class.getSimpleName(), dsrId, "COMPLETE", oldValues, toJson(saved));
+        auditLog(DataSubjectRequest.class.getSimpleName(), dsrId, "COMPLETE", oldValues, Json.write(DsrSnapshot.of(saved)));
 
         return saved;
     }
@@ -334,7 +341,7 @@ public class LgpdEngineService {
         audit.setAction(toAuditAction(action));
         audit.setOldValues(oldValues);
         audit.setNewValues(newValues);
-        audit.setMetadata("{\"action\":\"" + action + "\"}");
+        audit.setMetadata(Json.write(Map.of("action", action)));
         audit.setSuccess(true);
         auditLogRepository.save(audit);
     }
@@ -359,14 +366,6 @@ public class LgpdEngineService {
                     yield AuditLog.AuditAction.UPDATE;
                 }
             };
-        }
-    }
-
-    private String toJson(Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            return "{}";
         }
     }
 

@@ -1,5 +1,6 @@
 package br.com.sigsan.intelligence.losses.service;
 
+import br.com.sigsan.core.json.Json;
 import br.com.sigsan.core.tenant.TenantContextHolder;
 import br.com.sigsan.intelligence.losses.calc.PressureStatistics;
 import br.com.sigsan.intelligence.losses.calc.WaterBalanceCalculator;
@@ -50,21 +51,19 @@ public class LossesService {
                     .orElseThrow(() -> new IllegalArgumentException("DMA not found"));
         }
 
-        // Entradas do balanco. ENQUANTO as entradas forem placeholders, o resultado carrega essa
-        // marca (dataQualityGrade e properties) e nao pode ser aprovado.
+        // Periodo validado antes de buscar as entradas: periodo invalido e erro do chamador, nao
+        // falta de dado.
+        BigDecimal days = periodDays(periodStart, periodEnd);
+
+        // Sem fonte medida, loadInputs lanca MissingInputDataException e nada e gravado.
         WaterBalanceInputs inputs = loadInputs(dma, periodStart, periodEnd);
 
         WaterBalanceCalculator.Result calc = WaterBalanceCalculator.calculate(
                 new WaterBalanceCalculator.Input(
                         inputs.systemInputVolume(), inputs.billedAuthorized(), inputs.unbilledAuthorized(),
                         inputs.unauthorizedConsumption(), inputs.meteringInaccuracies(),
-                        periodDays(periodStart, periodEnd), networkOf(dma)));
+                        days, networkOf(dma)));
 
-        if (request.approve() && inputs.placeholder()) {
-            throw new IllegalStateException("Balanco hidrico nao pode ser aprovado: as entradas "
-                    + "(volume de entrada, consumo faturado, perdas aparentes) ainda sao valores fixos de "
-                    + "desenvolvimento, nao dados medidos.");
-        }
         if (request.approve() && !calc.consistent()) {
             throw new IllegalStateException("Balanco hidrico nao pode ser aprovado: as medicoes nao "
                     + "fecham o balanco. " + String.join(" ", calc.warnings()));
@@ -75,7 +74,6 @@ public class LossesService {
             props.putAll(request.properties());
         }
         props.put("warnings", calc.warnings());
-        props.put("inputsArePlaceholders", inputs.placeholder());
 
         // Create water balance record
         WaterBalance wb = new WaterBalance();
@@ -99,40 +97,40 @@ public class LossesService {
         wb.setUnavoidableAnnualRealLosses(calc.uarlLitersPerDay() == null ? null
                 : calc.uarlLitersPerDay().multiply(BigDecimal.valueOf(365))
                         .divide(BigDecimal.valueOf(1000), 3, RoundingMode.HALF_UP));
-        wb.setDataQualityGrade(inputs.placeholder() ? "PLACEHOLDER_INPUTS" : null);
+        // Grau de qualidade do dado (AWWA M36) depende da fonte que alimentar loadInputs; sem ela, nulo.
+        wb.setDataQualityGrade(null);
         wb.setStatus(request.approve() ? "APPROVED" : "DRAFT");
         wb.setCalculatedAt(OffsetDateTime.now());
         // Ainda nao ha usuario corrente no contexto. Gravar o id do tenant aqui atribuiria o
         // calculo a uma entidade que nao e usuario; null e a resposta honesta.
         wb.setCalculatedBy(null);
-        wb.setProperties(toJson(props));
+        wb.setProperties(Json.write(props));
 
         WaterBalance saved = waterBalanceRepository.save(wb);
 
         return saved;
     }
 
-    /**
-     * Entradas do balanco hidrico. {@code placeholder = true} indica valores fixos de
-     * desenvolvimento, nao dados medidos.
-     */
+    /** Entradas medidas do balanco hidrico (m3 no periodo). */
     private record WaterBalanceInputs(
             BigDecimal systemInputVolume, BigDecimal billedAuthorized, BigDecimal unbilledAuthorized,
-            BigDecimal unauthorizedConsumption, BigDecimal meteringInaccuracies, boolean placeholder) {
+            BigDecimal unauthorizedConsumption, BigDecimal meteringInaccuracies) {
     }
 
     /**
-     * PLACEHOLDER. Devolve constantes ate existir telemetria (volume de entrada), faturamento
-     * (consumo faturado) e estimativas de perdas aparentes. Quando a fonte real existir, esta e a
-     * unica funcao a trocar, retornando {@code placeholder = false}.
+     * Entradas do balanco: volume de entrada (macromedicao do DMC), consumo faturado (modulo
+     * comercial) e estimativas de consumo nao faturado e de perdas aparentes.
+     *
+     * <p>Nenhuma dessas fontes esta integrada, entao o metodo sempre lanca
+     * {@link MissingInputDataException}. A versao anterior devolvia constantes (10000, 7000, 200,
+     * 100 m3 e 2% do faturado) e o balanco era gravado como rascunho, com IPF e ILI calculados sobre
+     * numeros inventados. Quando a fonte real existir, esta e a unica funcao a trocar.
      */
     private WaterBalanceInputs loadInputs(DmaDistrict dma, OffsetDateTime start, OffsetDateTime end) {
-        BigDecimal siv = BigDecimal.valueOf(10000);        // Placeholder: macromedicao na entrada do DMC
-        BigDecimal billed = BigDecimal.valueOf(7000);      // Placeholder: consumo faturado do modulo comercial
-        BigDecimal unbilled = BigDecimal.valueOf(200);     // Placeholder: combate a incendio, lavagem, etc.
-        BigDecimal unauthorized = BigDecimal.valueOf(100); // Placeholder: ligacoes clandestinas, fraude
-        BigDecimal metering = billed.multiply(BigDecimal.valueOf(0.02)); // Placeholder: 2% do faturado
-        return new WaterBalanceInputs(siv, billed, unbilled, unauthorized, metering, true);
+        String area = dma == null ? "o sistema inteiro (sem DMC)" : "o DMC " + dma.getCode();
+        throw new MissingInputDataException("Balanco hidrico nao calculado: sem macromedicao/faturamento "
+                + "integrado para " + area + " no periodo " + start + " a " + end
+                + ". Nenhum balanco foi gravado.");
     }
 
     /** Dados de rede do DMC para o UARL. Campo ausente permanece nulo: o calculador nao inventa. */
@@ -171,7 +169,7 @@ public class LossesService {
         leak.setTenantId(TenantContextHolder.getTenantId());
         leak.setDetectionCode(generateDetectionCode());
         leak.setLocation(request.location());
-        leak.setAddress(request.address() != null ? toJson(request.address()) : "{}");
+        leak.setAddress(Json.orDefault(request.address(), "{}"));
         leak.setDmaDistrict(dma);
         leak.setDetectionMethod(request.detectionMethod());
         leak.setConfidenceScore(request.confidenceScore());
@@ -188,9 +186,9 @@ public class LossesService {
         // Sem usuario corrente no contexto ainda: gravar o id do tenant atribuiria a deteccao a uma
         // entidade que nao e usuario.
         leak.setDetectedBy(null);
-        leak.setPhotos(request.photos() != null ? toJson(request.photos()) : "[]");
+        leak.setPhotos(Json.orDefault(request.photos(), "[]"));
         leak.setNotes(request.notes());
-        leak.setProperties(request.properties() != null ? toJson(request.properties()) : "{}");
+        leak.setProperties(Json.orDefault(request.properties(), "{}"));
 
         LeakDetection saved = leakRepository.save(leak);
 
@@ -229,7 +227,7 @@ public class LossesService {
         leak.setRepairMethod(request.repairMethod());
         leak.setRepairDurationHours(request.repairDurationHours());
         leak.setWaterSavedM3Day(request.waterSavedM3Day());
-        leak.setPhotos(request.photos() != null ? toJson(request.photos()) : "[]");
+        leak.setPhotos(Json.orDefault(request.photos(), "[]"));
         leak.setNotes(request.notes());
 
         LeakDetection saved = leakRepository.save(leak);
@@ -298,7 +296,7 @@ public class LossesService {
         analysis.setIsAnomaly(isAnomaly);
         analysis.setAnomalyScore(calculateAnomalyScore(avg, min, max, variance));
         analysis.setAnomalyType(isAnomaly ? "PRESSURE_ANOMALY" : "NORMAL");
-        analysis.setProperties(toJson(Map.of("sample_count", stats.count())));
+        analysis.setProperties(Json.write(Map.of("sample_count", stats.count())));
 
         PressureAnalysis saved = pressureRepository.save(analysis);
 
@@ -381,14 +379,6 @@ public class LossesService {
     // Auditoria: nao ha chamada de aplicacao. As tabelas de tenant tem trigger de auditoria
     // (register_tenant_table, V1_2) que grava em public.audit_log com o tenant e o usuario do
     // contexto. Uma segunda trilha aqui seria duplicada, e a anterior era um metodo vazio.
-
-    private String toJson(Object obj) {
-        try {
-            return new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            return "{}";
-        }
-    }
 
     // Request DTOs
     public record CalculateWaterBalanceRequest(

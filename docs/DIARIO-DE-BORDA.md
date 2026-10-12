@@ -727,3 +727,42 @@ ser a ordem de prioridade canônica (a seção 12 deste diário será substituí
   `LgpdEngineService` ainda criam `ObjectMapper` do Jackson 2 por conta própria; sem o módulo jsr310 no classpath, datas
   nesses caminhos falham em tempo de execução. Já estavam na E3' (troca por `Json`).
 - Aceite: 793 testes verdes, `FreshInstallTest` validando as 66 entidades com Hibernate 7.4.5, sem aviso de depreciação do Hibernate.
+
+### E3' — JSON e falhas silenciosas (12/10/2026) ✔
+
+Feita no branch `e3-json` (worktree separada), em paralelo à E3.
+
+- **`Json`** ganhou `readTree` (Jackson 3 `JsonNode`; nulo/branco → `MissingNode`) e `readMap` (mapa mutável; nulo,
+  branco ou `null` → vazio). Inválido → `IllegalStateException`, sem repetir o conteúdo na mensagem.
+  `FAIL_ON_TRAILING_TOKENS` explícito: `"A.1,B.2"` e `"1, 2"` não passam por JSON.
+- **LGPD:** `DpiaEngine` grava as medidas com `Json.write` (antes `List.toString()`, recusado pelo jsonb) e conta
+  entradas com `readTree` (a contagem por vírgula partia "clientes, inclusive menores" em dois).
+  `DataSubjectRightsEngine` funde metadados com `readMap` + `put` (antes concatenava sem escape). `LgpdEngineService`
+  sem `toJson` próprio: auditoria grava `ConsentSnapshot`/`DpiaSnapshot`/`DsrSnapshot` (`service/audit/`), sem IP,
+  user agent, geolocalização, texto do consentimento, id do titular, descrição, `responseData` e motivos. O valor
+  antigo do DPIA passou a ser tirado antes da reavaliação (era o mesmo objeto já alterado).
+- **Qualidade:** `LabService` com snapshots (`lab/audit/`; o do instrumento omite `connectionConfig`).
+  `ScadaIntegrationService` desligado por padrão (`sigsan.scada.mqtt.enabled=true` liga; broker obrigatório),
+  `ScadaTopic` (`sigsan/{tenantUuid}/scada/{data|alert}/{tag}`, assinatura `sigsan/+/scada/+/+`), tenant do tópico
+  no contexto com `finally`, cache de tags por (tenant, tag) sob demanda, mensagem sem `timestamp`/`quality`
+  rejeitada, comando via `Json.write` em `sigsan/{tenant}/command/{tag}`. O `connect()` antigo ignorava as opções
+  (usuário, senha, reconexão). **Antes de ligar em produção:** ACL no broker por tenant; validação contra o
+  catálogo e resolução do schema ficam para a E5 (hoje o contexto recebe só o `tenantId`).
+- **Perdas:** `loadInputs` lança `MissingInputDataException` (sem os volumes fixos 10000/7000/200/100/2%); nada é
+  gravado; marca `PLACEHOLDER_INPUTS` e guarda de aprovação removidas.
+- **MTR:** classes aceitas do destinador em falha fechada (só array JSON não vazio de textos; nulo, vazio, `[]`,
+  CSV ou ilegível → `IllegalStateException`). Destinadores cadastrados em CSV precisam ser corrigidos.
+- **GIS:** `EpanetSimulationService` lê propriedades com `Json.readTree`.
+- **Provisionamento:** o hash do admin é gravado como recebido, validado como bcrypt completo antes de criar o
+  schema (antes `"$2a$12$" + hash`). Testes usam um bcrypt real (custo 12) de senha de teste.
+- **Defeito de repositório achado no caminho:** a amostra `febraban150-retorno-SINTETICO.ret` estava no git em LF
+  (normalizada por `text=auto`); checkout novo quebrava 9 testes do `Febraban150ReturnTest`. `*.ret -text` e blob em
+  CRLF (commit `fed8b1f`).
+- **Testes novos (77):** core `JsonTest` +6; platform +2 (hash inválido recusado sem schema; hash gravado sem
+  alteração); `sigsan-quality` 0 → 38 (`LabServiceTest`, `ScadaTopicTest`, `ScadaIntegrationServiceTest`);
+  `sigsan-lgpd` 0 → 15 (`DpiaEngineTest`, `DataSubjectRightsEngineTest`, `LgpdEngineServiceTest`);
+  `LossesServiceTest` 3; `MtrServiceTest` +13. Build completo: **870 testes verdes**.
+- **Ainda aberto:** `commercial/sigsan-collection` (`AgreementBarcodeLayout`, `FreeFieldLayout`) usa Jackson 2 com
+  `ObjectMapper` estático (objetos de valor, falham alto; migrar quando o Jackson 2 sair do core);
+  `sigsan-gis/pom.xml` mantém `jackson-datatype-jsr310`/`jdk8` sem uso no código; `KeycloakAdminService` envia o
+  hash como senha em texto (E5); `grantConsent` incrementa `version` à mão em consentimento existente.

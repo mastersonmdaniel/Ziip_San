@@ -77,7 +77,9 @@ final class ProvisionedTenant {
                 .adminUsername("admin")
                 .adminEmail("admin@teste.com.br")
                 .adminName("Administrador")
-                .adminPasswordHash("hash-bcrypt-aqui")
+                // Hash bcrypt real (custo 12) da senha de teste "senha-de-teste-sigsan", gerado com
+                // spring-security-crypto. O provisionamento recusa o que não for bcrypt completo.
+                .adminPasswordHash("$2a$12$XQ.OOBGIj7Rx81rNhJ11Wu6ZC5MGgdgkVG5VHomMqrv2kzOSgP5pC")
                 .build());
 
         assertThat(result.success())
