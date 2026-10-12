@@ -27,6 +27,19 @@
   emitente de teste do modelo 75 fica a confirmar no manual e no credenciamento (plano §2.4). As tarefas derivadas
   "Escolha do momento do lançamento" e "Certificado digital da homologação fiscal no ambiente local" ficam cumpridas;
   decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.9), antes de qualquer implementação:** guarda e descarte dos XML assinados na homologação
+  fiscal local. Os XML assinados na produção restrita da NFS-e Nacional e na homologação da SEFAZ (`tpAmb=2`) contêm o
+  certificado público da Ziip/TGP, com o CPF do responsável, e entram na mesma exceção ao item 5 aberta no ajuste v2.8 e
+  no mesmo consentimento escrito. Ficam em área separada da base local, fora das tabelas do produto, do armazenamento
+  com retenção imutável (plano P2.18) e dos backups locais (plano P0.28), e são **apagados ao fim de cada ciclo de
+  testes**, com a exclusão registrada (ciclo, data, quantidade e hash do lote). Ciclo de testes é cada rodada de
+  homologação fiscal encerrada com resultado registrado no diário (rodada de emissão, cancelamento e substituição da
+  NFS-e, ciclo de faturamento com NFAg-e, ensaio de contingência). Do ciclo só se guardam os vetores de referência sem
+  assinatura, sem o elemento `Signature` e sem o certificado, no repositório de vetores fiscais
+  (`FISCAL-PORTE-JAVA.md` §5). O teste de varredura da base local passa a recusar XML com o certificado da Ziip/TGP fora
+  da área separada ou depois do fim do ciclo. Restauração e retenção imutável do XML autorizado são testadas no ambiente
+  local só com XML sintéticos assinados com certificado de teste. Fora disso, a exceção do ajuste v2.8 não muda;
+  decisão do dono do produto.
 
 ## Contexto
 

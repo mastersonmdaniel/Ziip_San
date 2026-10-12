@@ -4,7 +4,8 @@
 - **Decisão de origem:** ADR-0003 (motor fiscal do Ziip Cloud portado para Java; NFAg-e e NFS-e sobre ele); emissão
   da conta em campo: ADR-0031; hospedagem: ADR-0011, aceito (AWS `sa-east-1`, KMS e S3 com Object Lock), implantada
   só no lançamento comercial, com desenvolvimento e homologação locais até lá (ADR-0033, plano v2.7); certificado da
-  homologação local e data do lançamento: ADR-0033, ajuste v2.8 (plano v2.8)
+  homologação local e data do lançamento: ADR-0033, ajuste v2.8 (plano v2.8); guarda e descarte dos XML assinados na
+  homologação local: ADR-0033, ajuste v2.9 (plano v2.9)
 - **Fonte lida (somente leitura):** `Ziip Clould\Ziip-cloud-source` (C#/.NET 8): README, SECURITY, `Nfse.Domain`,
   `Nfse.Application`, `Nfse.Infrastructure` (Sefin, Xml, Security, Adn, Nfe, Persistence) e `tests\Nfse.Tests`.
 - **Destino lido:** `commercial/sigsan-billing`, `shared/sigsan-security`, `docs/levantamento/11`, `14` e `17`,
@@ -163,9 +164,16 @@ lote.
   regra de nenhum dado pessoal real na base local (ADR-0033, item 5, ajuste v2.8): o CPF contido no certificado é do
   responsável pela empresa, que consente por escrito, e não é dado de cliente; o certificado fica no cofre local, fora
   do banco, com acesso registrado (§3.2); o XML assinado leva o certificado público, e os XML de homologação gravados
-  no ambiente local entram na mesma exceção. Se a homologação da NFAg-e aceita o CNPJ da Ziip/TGP como emitente de
-  teste do modelo 75: **a confirmar (MOC NFAg e credenciamento na UF)**; se não aceitar, a forma da P2.6 volta ao dono
-  do produto.
+  no ambiente local entram na mesma exceção e no mesmo consentimento. Se a homologação da NFAg-e aceita o CNPJ da
+  Ziip/TGP como emitente de teste do modelo 75: **a confirmar (MOC NFAg e credenciamento na UF)**; se não aceitar, a
+  forma da P2.6 volta ao dono do produto.
+- Guarda dos XML assinados na homologação local (ADR-0033, ajuste v2.9; plano P1.8 e P3.7): o documento emitido em
+  `HOMOLOGATION` com o certificado da Ziip/TGP grava o XML só numa área separada da base local, fora das tabelas do
+  produto (inclusive `fiscal_documents_xml`, §3.8), da cópia com retenção imutável e dos backups locais. Ao fim de cada
+  ciclo de testes (rodada de homologação encerrada com resultado registrado no diário), os XML da área são apagados, com
+  a exclusão registrada (ciclo, data, quantidade e hash do lote); só ficam os vetores de referência sem assinatura, sem
+  o elemento `Signature` e sem o certificado (§5). O teste de varredura da base local recusa XML com o certificado da
+  Ziip/TGP fora da área separada ou depois do fim do ciclo.
 
 ### 3.7 Contingência
 
@@ -190,6 +198,10 @@ Se o leiaute exigir XML assinado no momento da emissão, a forma volta ao dono d
   regerar nem reformatar, e segue a mesma retenção imutável; o recusado vai para o relatório do lote. No ambiente local
   o importador é testado só com XML sintéticos assinados com certificado de teste; os XML reais do piloto, que trazem
   dado pessoal do destinatário, são importados só na produção, no lançamento (plano LC.10; ADR-0033).
+- No ambiente local, `fiscal_documents_xml` e a cópia WORM recebem só XML do simulador ou sintéticos assinados com
+  certificado de teste; os XML autorizados na homologação com o e-CNPJ da Ziip/TGP ficam fora delas, na área separada
+  do §3.6, porque são apagados ao fim de cada ciclo de testes (ADR-0033, ajuste v2.9). A restauração do XML autorizado
+  é testada com os sintéticos.
 - Cópia com bloqueio de retenção (WORM): até o lançamento, no emulador de S3 local (exceção do ADR-0010, ajuste v2.7;
   plano P2.18); a partir dele, em S3 com Object Lock na hospedagem decidida (ADR-0011, aceito; plano LC.5).
 - Prazo de retenção é parâmetro do tenant (G6), com piso de 120 meses para o histórico de faturamento (ADR-0015); o
@@ -241,7 +253,9 @@ do R4: **a confirmar (tributarista do tenant e MOC)**.
 
 1. **Repositório de vetores compartilhado** (`fiscal-contract-fixtures`), versionado por NT e versão de schema
    (ex.: `nfse/NT-007-2026/schema-1.01-20260727/`). Cada caso traz entrada (JSON), resultado tributário esperado,
-   XML não assinado esperado e, quando houver, XML de referência oficial.
+   XML não assinado esperado e, quando houver, XML de referência oficial. Vetor tirado da homologação local com o
+   e-CNPJ da Ziip/TGP entra sem assinatura, sem o elemento `Signature` e sem o certificado; o XML assinado é apagado ao
+   fim do ciclo de testes (§3.6; ADR-0033, ajuste v2.9).
 2. **Vetores iniciais** tirados dos testes C#: nota de Florianópolis (R$ 5.440,00: ISS 108,80, IRRF 81,60, CSRF 252,96,
    líquido 5.105,44), IBS/CBS sobre R$ 10.000,00 (CBS 90,00, IBS UF 10,00), Zona Franca, Simples, half-even
    (0,125 → 0,12; 0,135 → 0,14), Id da DPS com CPF e CNPJ alfanumérico, Id do evento `PRE` + 56.
@@ -262,9 +276,9 @@ do R4: **a confirmar (tributarista do tenant e MOC)**.
 | Fase | Entregas | Critério de aceite |
 |---|---|---|
 | **P0** (out–nov/2026) | Esqueleto `sigsan-fiscal`; `TaxEngine` e `DpsId` com vetores; assinador JSR 105 com testes de XXE e assinatura cruzada; `CertificateVault` sobre `FieldCipher` (bloqueado até o `TenantKeyProvider` sobre o cofre local, P0.28; o KMS só no lançamento, LC.4); simulador; trava de produção; obtenção de MOC/XSD da NFAg-e e do XSD da DPS; confirmação do ato no DOU | Vetores do C# passam no Java; nenhum PFX fora da coluna cifrada; *build* sem `production-allowed` não gera `tpAmb=1` |
-| **P1** (nov/2026–jan/2027) | NFS-e Nacional completa (emissão, cancelamento, substituição, reconciliação) com builder do XSD; outbox, numeração com trava e idempotência; mTLS com *truststore* ICP-Brasil; builder e validador NFAg-e contra o XSD no simulador | Emissão, cancelamento e substituição aceitos na **produção restrita**, a partir do ambiente local, com o e-CNPJ da própria Ziip/TGP lido do cofre local (§3.6); teste de concorrência sem número repetido nem perdido; queda simulada da Sefin sem nota duplicada |
-| **P2 Ciclo** (jan–mar/2027) | Integração com o ciclo do R4 (conta fechada → NFAg-e); cliente do autorizador por UF; DANFAG; cancelamento e inutilização; contingência conforme MOC; teste de carga | NFAg-e autorizada em **homologação** da SEFAZ do piloto, a partir do ambiente local, com o e-CNPJ da Ziip/TGP como emitente de teste (§3.6), em amostra de contas anonimizadas na origem, sem dado pessoal real na base local (ADR-0033); ciclo reexecutado sem segunda NFAg-e; carga do tenant sintético dentro da meta ou desvio documentado |
-| **P3** (mar–mai/2027) | Painel de rejeições e reprocesso; exportação WORM; *runbook*; pentest com foco no cofre e no isolamento; alerta de vencimento do certificado | Pentest sem achado alto aberto; restauração do XML autorizado testada; *runbook* exercitado |
+| **P1** (nov/2026–jan/2027) | NFS-e Nacional completa (emissão, cancelamento, substituição, reconciliação) com builder do XSD; outbox, numeração com trava e idempotência; mTLS com *truststore* ICP-Brasil; builder e validador NFAg-e contra o XSD no simulador | Emissão, cancelamento e substituição aceitos na **produção restrita**, a partir do ambiente local, com o e-CNPJ da própria Ziip/TGP lido do cofre local (§3.6); XML assinados só na área separada e apagados ao fim de cada ciclo de testes, com os vetores sem assinatura guardados (§3.6, §5); teste de concorrência sem número repetido nem perdido; queda simulada da Sefin sem nota duplicada |
+| **P2 Ciclo** (jan–mar/2027) | Integração com o ciclo do R4 (conta fechada → NFAg-e); cliente do autorizador por UF; DANFAG; cancelamento e inutilização; contingência conforme MOC; teste de carga | NFAg-e autorizada em **homologação** da SEFAZ do piloto, a partir do ambiente local, com o e-CNPJ da Ziip/TGP como emitente de teste (§3.6), em amostra de contas anonimizadas na origem, sem dado pessoal real na base local (ADR-0033), com os XML assinados apagados ao fim de cada ciclo de testes (§3.6); ciclo reexecutado sem segunda NFAg-e; carga do tenant sintético dentro da meta ou desvio documentado |
+| **P3** (mar–mai/2027) | Painel de rejeições e reprocesso; exportação WORM; *runbook*; pentest com foco no cofre e no isolamento; alerta de vencimento do certificado | Pentest sem achado alto aberto; restauração do XML autorizado testada com XML sintéticos (§3.8); exclusão dos XML da homologação ao fim de cada ciclo conferida pelo teste de varredura (§3.6); *runbook* exercitado |
 | **Homologação local do piloto** (jun–jul/2027; antes "go-live piloto") | Faturamento paralelo local com dados sintéticos ou anonimizados, comparado com o sistema do piloto (ADR-0033) | O Ziip SAN **não emite em produção** (o legado é o emissor); só simulador ou homologação da SEFAZ (`tpAmb=2`), a partir do ambiente local |
 | **Lançamento comercial** (a partir de outubro de 2028, opção A do plano §2.4; corte por volta de fevereiro de 2029) | Carga real, paralelo com dado real e corte na AWS (LC.10 a LC.13) | Durante o paralelo real o legado continua emissor; produção (`tpAmb=1`) liga no corte (LC.13), com aprovação dupla registrada e `production-allowed=true` só na implantação de produção |
 | **P4, trilha de editais** (ED-19) | Emissão simultânea em campo conforme o ADR-0031: faixa de numeração por aparelho, autorização posterior em contingência, inutilização das sobras, fila de divergências ligada à retificação | Vetores comuns iguais no JVM e no emulador Android; reenvio da mesma tarefa não gera segunda NFAg-e; contingência testada na homologação da SEFAZ conforme o leiaute vigente |
@@ -274,7 +288,8 @@ de fevereiro de 2029 (o piloto precisa de outro emissor no intervalo, plano §1 
 KMS só no lançamento (cofre local com dados sintéticos ou anonimizados até lá; R1 sobre o cofre local na P0.28, que
 precisa fechar antes do P1); certificado da homologação local com CPF do responsável (e-CNPJ da própria Ziip/TGP no cofre local, fora do banco, com
 consentimento e acesso registrado, exceção do ADR-0033, ajuste v2.8; aceitação como emitente de teste da NFAg-e a
-confirmar);
+confirmar); XML assinados da homologação local com o mesmo CPF (área separada, apagados ao fim de cada ciclo de testes,
+só vetores sem assinatura guardados, ADR-0033, ajuste v2.9);
 contingência da NFAg-e indefinida para a emissão em campo (ADR-0031: conferir o manual antes da ED-19); arredondamento e base de IBS/CBS sem norma lida (regra
 isolada e parametrizada, vetor oficial antes da homologação); emissão acidental em produção (seção 3.6); vazão do
 autorizador no ciclo (carga no P2).

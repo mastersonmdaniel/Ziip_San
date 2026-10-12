@@ -47,6 +47,28 @@
   depois do corte, por volta de fevereiro de 2029; a escala de plantão da S1 (item 5), montada até 31/01/2028, só é
   acionada na primeira produção; a alternativa "Equipe menor (duas pessoas)" deixa de perder as licitações de 2028,
   que a opção A já não disputa, mas leva a primeira licitação a 2030; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.9), antes de qualquer implementação:** resolvida a pendência do ajuste v2.8 (plano
+  §2.4). **Equipe.** O item 1 passa a **4 contratações**, com entrada a partir de 02/08/2027 e todas até 31/08/2027,
+  nos perfis 1 a 4 do item 3; a confirmação do número no M8 deixa de existir, e a velocidade medida do P0 ao P3 serve só
+  para recalibrar as estimativas. Com o lançamento em outubro de 2028 (opção A), a capacidade até 30/09/2028 é de cerca
+  de 247 semanas-pessoa contra cerca de 215 da trilha completa: folga de cerca de 15%, dentro da incerteza de ±30%, que
+  ela não cobre por inteiro; trilha completa por volta do fim de agosto de 2028. A meta do item 2 lê-se com a prontidão
+  de POC (M12) por volta do fim de julho de 2028 (faixa de junho a agosto, pela incerteza), no lugar de 30/06/2028; o
+  M12 pode escorregar até cerca do início de setembro de 2028 sem mover o lançamento. **Quinta contratação por
+  gatilho.** Velocidade medida é a soma das estimativas (consolidado 18 §5) das tarefas da trilha aceitas no período,
+  com tarefa G em andamento contada pela fração dos critérios de aceite cumpridos, dividida pela capacidade planejada
+  do mesmo período com as premissas do Contexto (dono a 0,7, onboarding de 8 semanas a 50%). Ela é medida em
+  01/11/2027, sobre o período de 02/08 a 31/10/2027 (capacidade planejada de cerca de 40 semanas-pessoa): (a) a partir
+  de 90%, a equipe segue com 4; (b) abaixo de 90%, a quinta vaga é aberta em 01/11/2027, no perfil 5 do item 3 (QA e
+  POC), salvo se a medição apontar outra frente como gargalo, com entrada até o fim de janeiro de 2028 e cerca de 28
+  semanas-pessoa até 30/09/2028, o que mantém a trilha completa nessa data com velocidade de até 80%; (c) abaixo de
+  80%, a quinta vaga é aberta e M12, M13 e M14 a M16 são registrados de novo no plano, porque nem a quinta pessoa
+  garante 30/09/2028. A mesma regra é reaplicada ao fim de cada onda, com o efeito da quinta pessoa recalculado na data.
+  O custo estimado da quinta vaga entra no plano de contratação do M8, como contingência (item 6). Com quatro, vale a
+  segunda frase do item 3 (ensaios e matriz viva com o dono do produto) até a eventual quinta contratação. Ficam
+  rejeitadas as opções de 5 contratações desde a entrada, de adiar a entrada e de contratar menos de 4. **Outros
+  efeitos:** "Sem a contratação" (quatro contratações) e "Margem pequena" leem-se com estes valores; a escala de
+  plantão da S1 (item 5) é montada entre os quatro; decisão do dono do produto.
 
 ## Contexto
 

@@ -1027,3 +1027,17 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   regime da equipe até o M8; parceiro de implantação presencial; manual/XSD de contingência da NFAg-e.
 - **Próximo passo de execução:** P0 (Dockerfile, CI no GitHub Actions, PostgreSQL 17, migração do dev para disco local,
   renomeação `ziipsan`, correções de segurança S1–S6, AWS/R1), quando o dono autorizar o início da execução.
+
+### 12/10/2026 — Plano v2.7 a v2.9: desenvolvimento local e lançamento em out/2028
+
+- **ADR-0033:** todo o desenvolvimento é local (Docker Compose com PostgreSQL 17, Keycloak, emulador de S3 e cofre
+  local) até concluir todas as fases. A AWS sa-east-1 (provedor já decidido, ADR-0011) só sobe no **lançamento
+  comercial, em out/2028** (opção A). O código fica pronto para a AWS por interfaces com teste de contrato (P0.45).
+- O antigo "go-live do piloto" (jun–jul/2027) virou **homologação local do piloto**, com dados sintéticos ou
+  anonimizados; nenhum dado pessoal real entra na base local. Produção real e primeiro atestado só após o lançamento:
+  atestado em mai–jul/2029, licitações com POC a partir do 3º tri/2029.
+- Exceção registrada: **e-CNPJ da própria Ziip/TGP** no cofre local para homologação na produção restrita da SEFAZ;
+  os XML assinados ficam em área separada e são apagados a cada ciclo de testes.
+- **Equipe:** 4 pessoas a partir de ago/2027 (ADR-0029); 5ª vaga abre se a velocidade de 02/08 a 31/10/2027 ficar
+  abaixo de 90% do planejado.
+- Escopo continua **só documentação**; a execução do P0 local aguarda ordem do dono.
