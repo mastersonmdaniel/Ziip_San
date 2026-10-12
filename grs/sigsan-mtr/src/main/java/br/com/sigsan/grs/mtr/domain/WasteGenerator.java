@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "waste_generator", indexes = {
-        @Index(name = "idx_waste_generator_cnpj", columnList = "cnpj_cpf"),
+        @Index(name = "idx_waste_generator_document", columnList = "tenant_id, document_hash", unique = true),
         @Index(name = "idx_waste_generator_status", columnList = "status"),
         @Index(name = "idx_waste_generator_cadri", columnList = "cadri_number")
 })
@@ -18,8 +18,16 @@ import java.util.UUID;
 @Setter
 public class WasteGenerator extends TenantAwareEntity {
 
-    @Column(name = "cnpj_cpf", length = 18, nullable = false)
-    private String cnpjCpf;
+    // CPF (gerador pessoa física) ou CNPJ: nunca em claro (V2_8). A unicidade por tenant é pelo
+    // índice cego (document_hash); gravado só por MtrDocumentProtection.
+    @Column(name = "document_ciphertext", columnDefinition = "text", nullable = false)
+    private String documentCiphertext;
+
+    @Column(name = "document_hash", length = 64, nullable = false)
+    private String documentHash;
+
+    @Column(name = "document_masked", length = 30)
+    private String documentMasked;
 
     @Column(name = "corporate_name", nullable = false, length = 200)
     private String corporateName;

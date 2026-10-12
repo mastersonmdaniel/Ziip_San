@@ -18,9 +18,13 @@ import java.time.OffsetDateTime;
  * inventar uma URL ou devolver sucesso simulado produziria um MTR marcado como
  * sincronizado no banco sem nunca ter chegado ao órgão regulador.
  *
- * O método {@link #syncMtr(WasteMtr)} sempre devolve
+ * O método {@link #syncMtr(WasteMtr, PartyDocuments)} sempre devolve
  * {@link SinirSyncStatus#PENDING} enquanto a integração não for implementada.
  * A persistência do status é feita pelo chamador transacional.
+ *
+ * Documentos: desde a V2_8 o MTR guarda o CPF do motorista e o documento do gerador só cifrados.
+ * O SINIR exige os documentos completos, então o chamador decifra e entrega os valores em
+ * {@link PartyDocuments}; este serviço não tem acesso à chave e não lê a cifra.
  */
 @Slf4j
 @Service
@@ -41,8 +45,8 @@ public class SinirIntegrationService {
      * O valor de retorno é ignorado pelo chamador; serve para registrar o
      * resultado da tentativa de sincronização.
      */
-    public SinirSyncResult syncMtr(WasteMtr mtr) {
-        SinirMtrRequest request = buildRequest(mtr);
+    public SinirSyncResult syncMtr(WasteMtr mtr, PartyDocuments documents) {
+        SinirMtrRequest request = buildRequest(mtr, documents);
 
         if (!enabled || baseUrl == null || baseUrl.isBlank()) {
             log.warn("SINIR não configurado (enabled={}, baseUrl='{}'). MTR {} permanece PENDENTE de sincronização.",
@@ -61,9 +65,12 @@ public class SinirIntegrationService {
      * Lança IllegalArgumentException quando o manifesto é inválido — falha cedo,
      * antes de qualquer tentativa de rede.
      */
-    public SinirMtrRequest buildRequest(WasteMtr mtr) {
+    public SinirMtrRequest buildRequest(WasteMtr mtr, PartyDocuments documents) {
         if (mtr == null) {
             throw new IllegalArgumentException("MTR não informado para sincronização SINIR");
+        }
+        if (documents == null) {
+            throw new IllegalArgumentException("Documentos das partes não informados para sincronização SINIR");
         }
         requireText(mtr.getMtrNumber(), "mtrNumber");
         requireText(mtr.getStatus() != null ? mtr.getStatus().name() : null, "status");
@@ -72,7 +79,7 @@ public class SinirIntegrationService {
         if (mtr.getGenerator() == null) {
             throw new IllegalArgumentException("MTR " + mtr.getMtrNumber() + " sem gerador");
         }
-        requireText(mtr.getGenerator().getCnpjCpf(), "generator.cnpjCpf");
+        requireText(documents.generatorDocument(), "generator.document");
 
         if (mtr.getTransporter() == null) {
             throw new IllegalArgumentException("MTR " + mtr.getMtrNumber() + " sem transportador");
@@ -97,7 +104,7 @@ public class SinirIntegrationService {
         return new SinirMtrRequest(
                 mtr.getMtrNumber(),
                 mtr.getStatus().name(),
-                mtr.getGenerator().getCnpjCpf(),
+                documents.generatorDocument(),
                 mtr.getTransporter().getCnpj(),
                 mtr.getDestination().getCnpj(),
                 mtr.getWasteClass().getCode(),
@@ -106,7 +113,7 @@ public class SinirIntegrationService {
                 mtr.getPackagingType(),
                 mtr.getPackagingCount(),
                 mtr.getVehiclePlate(),
-                mtr.getDriverCpf(),
+                documents.driverCpf(),
                 mtr.getIssuedAt(),
                 mtr.getCollectedAt(),
                 mtr.getReceivedAt(),
@@ -129,6 +136,18 @@ public class SinirIntegrationService {
         RETRYING
     }
 
+    /**
+     * Documentos em claro das partes do MTR, decifrados pelo chamador só para o envio.
+     * {@code driverCpf} é nulo quando o MTR ainda não tem motorista.
+     */
+    public record PartyDocuments(String generatorDocument, String driverCpf) {
+        @Override
+        public String toString() {
+            // O record entraria inteiro num log com o toString padrão.
+            return "PartyDocuments[documentos omitidos]";
+        }
+    }
+
     /** Payload de envio do MTR ao SINIR. Espelha WasteMtr, sem dependência de JPA. */
     public record SinirMtrRequest(
             String mtrNumber,
@@ -147,7 +166,14 @@ public class SinirIntegrationService {
             OffsetDateTime collectedAt,
             OffsetDateTime receivedAt,
             String hashChain
-    ) {}
+    ) {
+        @Override
+        public String toString() {
+            // Leva o CPF do motorista e o documento do gerador em claro (o SINIR exige): o toString
+            // padrão os poria em qualquer log que imprimisse o payload.
+            return "SinirMtrRequest[mtrNumber=" + mtrNumber + ", status=" + status + ", documentos omitidos]";
+        }
+    }
 
     /** Resposta da tentativa de sincronização. */
     public record SinirSyncResult(

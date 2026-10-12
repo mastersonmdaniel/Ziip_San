@@ -57,8 +57,16 @@ public class WasteMtr extends TenantAwareEntity {
     @Column(name = "vehicle_plate", length = 10)
     private String vehiclePlate;
 
-    @Column(name = "driver_cpf", length = 14)
-    private String driverCpf;
+    // CPF do motorista: nunca em claro (V2_8). Cifra, índice cego e máscara são gravados por
+    // MtrDocumentProtection; o valor em claro só existe em memória (hash da cadeia, envio ao SINIR).
+    @Column(name = "driver_cpf_ciphertext", columnDefinition = "text")
+    private String driverCpfCiphertext;
+
+    @Column(name = "driver_cpf_hash", length = 64)
+    private String driverCpfHash;
+
+    @Column(name = "driver_cpf_masked", length = 14)
+    private String driverCpfMasked;
 
     @Column(name = "route_geometry", columnDefinition = "geometry(LineString, 4674)")
     private org.locationtech.jts.geom.LineString routeGeometry;

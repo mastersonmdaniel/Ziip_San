@@ -5,6 +5,7 @@ import br.com.sigsan.core.tenant.TenantContextHolder;
 import br.com.sigsan.grs.mtr.domain.*;
 import br.com.sigsan.grs.mtr.integration.GovBrSignatureService;
 import br.com.sigsan.grs.mtr.integration.SinirIntegrationService;
+import br.com.sigsan.grs.mtr.integration.SinirIntegrationService.PartyDocuments;
 import br.com.sigsan.grs.mtr.integration.SinirIntegrationService.SinirSyncResult;
 import br.com.sigsan.grs.mtr.repository.WasteCdfRepository;
 import br.com.sigsan.grs.mtr.repository.WasteClassRepository;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.JsonNode;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.*;
 
@@ -35,6 +37,10 @@ import java.util.*;
  *
  * <p>A trilha de auditoria é feita pelo trigger do banco ({@code register_tenant_table}); não há
  * chamada de auditoria na aplicação.
+ *
+ * <p>Documentos pessoais (CPF do motorista, CPF/CNPJ do gerador, motoristas do transportador) entram
+ * em claro nas requisições e são cifrados aqui, por {@link MtrDocumentProtection}, antes de tocar a
+ * entidade; nenhuma entidade do módulo tem campo para o valor em claro.
  */
 @Slf4j
 @Service
@@ -50,10 +56,56 @@ public class MtrService {
     private final SinirIntegrationService sinirIntegration;
     private final GovBrSignatureService govBrSignature;
     private final MtrPdfGenerator pdfGenerator;
+    private final MtrDocumentProtection documents;
+
+    /** Documento já usado por outro gerador do mesmo tenant (detectado pelo índice cego). */
+    public static class DuplicateGeneratorException extends IllegalStateException {
+        public DuplicateGeneratorException() {
+            super("já existe gerador com este documento");
+        }
+    }
+
+    /**
+     * Cadastra o gerador com o documento cifrado. A duplicidade é procurada pelo índice cego, sem
+     * decifrar nada; o índice único (tenant_id, document_hash) do banco cobre a corrida entre duas
+     * gravações simultâneas.
+     *
+     * @throws IllegalArgumentException documento inválido
+     * @throws DuplicateGeneratorException outro gerador do tenant já tem o documento
+     */
+    @Transactional
+    public WasteGenerator registerGenerator(RegisterGeneratorRequest request) {
+        UUID tenantId = requireTenant();
+        String hash = documents.generatorDocumentHash(request.document());
+        if (generatorRepository.findByTenantIdAndDocumentHash(tenantId, hash).isPresent()) {
+            throw new DuplicateGeneratorException();
+        }
+
+        WasteGenerator generator = new WasteGenerator();
+        generator.setTenantId(tenantId);
+        documents.assignGeneratorDocument(generator, request.document());
+        generator.setCorporateName(request.corporateName());
+        generator.setTradeName(request.tradeName());
+        generator.setAddress(request.address() == null ? null : Json.write(request.address()));
+        generator.setCnaeCode(request.cnaeCode());
+        generator.setCadriNumber(request.cadriNumber());
+        generator.setCadriValidity(request.cadriValidity());
+        generator.setProperties(Json.orDefault(request.properties(), "{}"));
+        return generatorRepository.save(generator);
+    }
+
+    /** Substitui a lista de motoristas do transportador (cifrada inteira). Lista vazia limpa. */
+    @Transactional
+    public WasteTransporter replaceTransporterDrivers(UUID transporterId, List<MtrDocumentProtection.Driver> drivers) {
+        WasteTransporter transporter = transporterRepository.findByIdAndTenantId(transporterId, requireTenant())
+                .orElseThrow(() -> new IllegalArgumentException("Transporter not found"));
+        documents.assignDrivers(transporter, drivers);
+        return transporterRepository.save(transporter);
+    }
 
     @Transactional
     public WasteMtr createMtr(CreateMtrRequest request) {
-        UUID tenantId = TenantContextHolder.getTenantId();
+        UUID tenantId = requireTenant();
 
         WasteGenerator generator = generatorRepository.findByIdAndTenantId(request.generatorId(), tenantId)
                 .orElseThrow(() -> new IllegalArgumentException("Generator not found"));
@@ -77,12 +129,12 @@ public class MtrService {
         mtr.setPackagingType(request.packagingType());
         mtr.setPackagingCount(request.packagingCount());
         mtr.setVehiclePlate(request.vehiclePlate());
-        mtr.setDriverCpf(request.driverCpf());
+        documents.assignDriverCpf(mtr, request.driverCpf());
         mtr.setStatus(WasteMtr.MtrStatus.EMITTED);
         mtr.setIssuedAt(OffsetDateTime.now());
         // Map.toString() gera "{a=b}", que não é JSON e o PostgreSQL recusa numa coluna jsonb.
         mtr.setProperties(Json.orDefault(request.properties(), "{}"));
-        mtr.setHashChain(HashChain.next(null, MtrCanonical.of(mtr)));
+        advanceChain(mtr);
 
         return mtrRepository.save(mtr);
     }
@@ -95,12 +147,12 @@ public class MtrService {
         mtr.setStatus(WasteMtr.MtrStatus.COLLECTED);
         mtr.setCollectedAt(OffsetDateTime.now());
         mtr.setVehiclePlate(request.vehiclePlate());
-        mtr.setDriverCpf(request.driverCpf());
+        documents.assignDriverCpf(mtr, request.driverCpf());
         mtr.setRouteGeometry(request.routeGeometry());
         mtr.setTransporterSignature(request.transporterSignature());
-        mtr.setHashChain(HashChain.next(mtr.getHashChain(), MtrCanonical.of(mtr)));
+        advanceChain(mtr);
 
-        recordSinir(mtr, sinirIntegration.syncMtr(mtr));
+        recordSinir(mtr, sinirIntegration.syncMtr(mtr, partyDocuments(mtr)));
         return mtrRepository.save(mtr);
     }
 
@@ -112,7 +164,7 @@ public class MtrService {
         mtr.setStatus(WasteMtr.MtrStatus.RECEIVED);
         mtr.setReceivedAt(OffsetDateTime.now());
         mtr.setDestinationSignature(request.destinationSignature());
-        mtr.setHashChain(HashChain.next(mtr.getHashChain(), MtrCanonical.of(mtr)));
+        advanceChain(mtr);
 
         return mtrRepository.save(mtr);
     }
@@ -140,7 +192,8 @@ public class MtrService {
         cdf.setTechnicianCrea(request.technicianCrea());
         cdf.setIssuedAt(OffsetDateTime.now());
 
-        byte[] pdfBytes = pdfGenerator.generateCdfPdf(cdf, mtr);
+        byte[] pdfBytes = pdfGenerator.generateCdfPdf(cdf, mtr,
+                documents.revealGeneratorDocument(mtr.getGenerator()));
         cdf.setPdfDocument(pdfBytes);
         cdf.setPdfChecksum(HashChain.sha256Hex(pdfBytes));
         cdf.setHashChain(HashChain.next(null, MtrCanonical.of(cdf)));
@@ -149,9 +202,9 @@ public class MtrService {
         mtr.setStatus(WasteMtr.MtrStatus.DESTINED);
         mtr.setDestinedAt(OffsetDateTime.now());
         mtr.setDestinationSignature(request.destinationSignature());
-        mtr.setHashChain(HashChain.next(mtr.getHashChain(), MtrCanonical.of(mtr)));
+        advanceChain(mtr);
 
-        recordSinir(mtr, sinirIntegration.syncMtr(mtr));
+        recordSinir(mtr, sinirIntegration.syncMtr(mtr, partyDocuments(mtr)));
         mtrRepository.save(mtr);
         return cdf;
     }
@@ -179,6 +232,27 @@ public class MtrService {
     }
 
     // ------------------------------------------------------------------------------------
+
+    /**
+     * Próximo elo da cadeia. O conteúdo canônico leva o CPF do motorista decifrado, não a cifra: o
+     * hash significa o mesmo que antes da V2_8 e é conferível por quem tem o documento.
+     */
+    private void advanceChain(WasteMtr mtr) {
+        mtr.setHashChain(HashChain.next(mtr.getHashChain(), MtrCanonical.of(mtr, documents.revealDriverCpf(mtr))));
+    }
+
+    /** Documentos em claro para o envio ao SINIR, que os exige completos. */
+    private PartyDocuments partyDocuments(WasteMtr mtr) {
+        return new PartyDocuments(documents.revealGeneratorDocument(mtr.getGenerator()), documents.revealDriverCpf(mtr));
+    }
+
+    private static UUID requireTenant() {
+        UUID tenantId = TenantContextHolder.getTenantId();
+        if (tenantId == null) {
+            throw new IllegalStateException("sem tenant no contexto");
+        }
+        return tenantId;
+    }
 
     private WasteMtr load(UUID mtrId) {
         return mtrRepository.findByIdAndTenantId(mtrId, TenantContextHolder.getTenantId())
@@ -257,17 +331,39 @@ public class MtrService {
         return String.format("%d.%08d.%s.%02d", year, sequence, tenantTag, sequence % 97);
     }
 
-    // Request DTOs
+    // Request DTOs. Os documentos chegam em claro (com ou sem pontuação) e são cifrados neste serviço.
+    // O toString padrão de um record levaria o documento para qualquer log da requisição.
+    public record RegisterGeneratorRequest(
+            String document, String corporateName, String tradeName, Map<String, Object> address,
+            String cnaeCode, String cadriNumber, LocalDate cadriValidity, Map<String, Object> properties
+    ) {
+        @Override
+        public String toString() {
+            return "RegisterGeneratorRequest[document=omitido, cnaeCode=" + cnaeCode + "]";
+        }
+    }
+
     public record CreateMtrRequest(
             UUID generatorId, UUID transporterId, UUID destinationId, UUID wasteClassId,
             BigDecimal quantityKg, String packagingType, Integer packagingCount,
             String vehiclePlate, String driverCpf, Map<String, Object> properties
-    ) {}
+    ) {
+        @Override
+        public String toString() {
+            return "CreateMtrRequest[generatorId=" + generatorId + ", transporterId=" + transporterId
+                    + ", destinationId=" + destinationId + ", wasteClassId=" + wasteClassId + ", driverCpf=omitido]";
+        }
+    }
 
     public record CollectMtrRequest(
             String vehiclePlate, String driverCpf,
             org.locationtech.jts.geom.LineString routeGeometry, String transporterSignature
-    ) {}
+    ) {
+        @Override
+        public String toString() {
+            return "CollectMtrRequest[vehiclePlate=" + vehiclePlate + ", driverCpf=omitido]";
+        }
+    }
 
     public record ReceiveMtrRequest(String destinationSignature) {}
 
