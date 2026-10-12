@@ -63,6 +63,7 @@ export function Dialog({ open, onClose, title, description, children, footer }: 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60" aria-hidden="true" onClick={onClose} />
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- padrão WAI-ARIA de diálogo modal: o teclado no painel prende o foco (Tab) e fecha com Esc */}
       <div
         ref={panelRef}
         role="dialog"
