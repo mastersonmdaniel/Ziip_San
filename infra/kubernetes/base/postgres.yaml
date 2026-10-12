@@ -1,0 +1,226 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: sigsan
+data:
+  postgresql.conf: |
+    max_connections = 200
+    shared_buffers = 256MB
+    effective_cache_size = 1GB
+    maintenance_work_mem = 128MB
+    checkpoint_completion_target = 0.9
+    wal_buffers = 16MB
+    default_statistics_target = 100
+    random_page_cost = 1.1
+    effective_io_concurrency = 200
+    work_mem = 4MB
+    min_wal_size = 1GB
+    max_wal_size = 4GB
+    shared_preload_libraries = 'timescaledb, pg_stat_statements, pg_cron, pg_tde'
+    timescaledb.max_background_workers = 8
+    max_worker_processes = 16
+    max_parallel_workers_per_gather = 4
+    max_parallel_workers = 8
+    log_destination = 'stderr'
+    logging_collector = on
+    log_directory = '/var/log/postgresql'
+    log_filename = 'postgresql-%Y-%m-%d.log'
+    log_rotation_age = 1d
+    log_rotation_size = 100MB
+    log_min_duration_statement = 1000
+    log_checkpoints = on
+    log_connections = on
+    log_disconnections = on
+    log_lock_waits = on
+    log_temp_files = 0
+    log_autovacuum_min_duration = 0
+    track_activities = on
+    track_counts = on
+    track_io_timing = on
+    track_functions = all
+    pg_stat_statements.track = all
+    pg_stat_statements.max = 10000
+    pg_cron.database_name = 'sigsan'
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secrets
+  namespace: sigsan
+type: Opaque
+stringData:
+  POSTGRES_DB: "sigsan"
+  POSTGRES_USER: "sigsan_app"
+  POSTGRES_PASSWORD: "changeme"
+  POSTGRES_REPLICATION_USER: "replicator"
+  POSTGRES_REPLICATION_PASSWORD: "repl_password"
+  PATRONI_SCOPE: "sigsan"
+  PATRONI_NAMESPACE: "/service/sigsan"
+  PATRONI_KUBERNETES_USE_ENDPOINTS: "true"
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: sigsan
+spec:
+  serviceName: postgres
+  replicas: 3
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+        patroni-cluster: sigsan
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5432"
+    spec:
+      containers:
+      - name: patroni
+        image: ghcr.io/zalando/patroni:3.2.0
+        env:
+        - name: PATRONI_SCOPE
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: PATRONI_SCOPE
+        - name: PATRONI_NAMESPACE
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: PATRONI_NAMESPACE
+        - name: PATRONI_KUBERNETES_USE_ENDPOINTS
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: PATRONI_KUBERNETES_USE_ENDPOINTS
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_REPLICATION_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_REPLICATION_USER
+        - name: POSTGRES_REPLICATION_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_REPLICATION_PASSWORD
+        ports:
+        - containerPort: 5432
+          name: postgresql
+        - containerPort: 8008
+          name: patroni
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+        - name: postgres-config
+          mountPath: /etc/postgresql
+          readOnly: true
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "2Gi"
+          limits:
+            cpu: "2000m"
+            memory: "8Gi"
+        livenessProbe:
+          exec:
+            command: ["patronictl", "health-check"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command: ["patronictl", "health-check"]
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      volumes:
+      - name: postgres-config
+        configMap:
+          name: postgres-config
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: fast-ssd
+      resources:
+        requests:
+          storage: 100Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-primary
+  namespace: sigsan
+  labels:
+    app: postgres
+    role: primary
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+    name: postgresql
+  selector:
+    app: postgres
+    patroni-role: master
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-replica
+  namespace: sigsan
+  labels:
+    app: postgres
+    role: replica
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+    name: postgresql
+  selector:
+    app: postgres
+    patroni-role: replica
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: sigsan
+  labels:
+    app: postgres
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+    name: postgresql
+  selector:
+    app: postgres
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-patroni
+  namespace: sigsan
+type: Opaque
+stringData:
+  PATRONI_SCOPE: "sigsan"
+  PATRONI_NAMESPACE: "/service/sigsan"
+  PATRONI_KUBERNETES_USE_ENDPOINTS: "true"

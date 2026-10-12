@@ -1,0 +1,461 @@
+services:
+  # ========================================================================
+  # DATABASES
+  # ========================================================================
+
+  postgres-primary:
+    image: postgis/postgis:15-3.4
+    container_name: sigsan-postgres-primary
+    environment:
+      POSTGRES_DB: sigsan
+      POSTGRES_USER: sigsan_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sigsan_dev_password}
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    volumes:
+      - postgres-primary-data:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    command: >
+      postgres
+      -c max_connections=200
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=128MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c work_mem=4MB
+      -c min_wal_size=1GB
+      -c max_wal_size=4GB
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sigsan_app -d sigsan"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+
+  postgres-replica:
+    image: postgis/postgis:15-3.4
+    container_name: sigsan-postgres-replica
+    environment:
+      POSTGRES_DB: sigsan
+      POSTGRES_USER: sigsan_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sigsan_dev_password}
+      PG_PRIMARY_HOST: postgres-primary
+      PG_PRIMARY_PORT: 5432
+      PG_REPLICATION_USER: replicator
+      PG_REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:-repl_password}
+    volumes:
+      - postgres-replica-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: sigsan-timescaledb
+    environment:
+      POSTGRES_DB: sigsan_ts
+      POSTGRES_USER: sigsan_ts
+      POSTGRES_PASSWORD: ${TIMESCALE_PASSWORD:-timescale_dev_password}
+    volumes:
+      - timescaledb-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    command: >
+      postgres
+      -c shared_preload_libraries=timescaledb
+      -c max_connections=100
+      -c shared_buffers=256MB
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sigsan_ts -d sigsan_ts"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================================================
+  # CACHE & QUEUE
+  # ========================================================================
+
+  redis:
+    image: redis:7-alpine
+    container_name: sigsan-redis
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: sigsan-kafka
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    depends_on:
+      - zookeeper
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: sigsan-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+    healthcheck:
+      # A imagem nao tem zkServer.sh no PATH, e o 4lw ruok esta desabilitado por padrao.
+      # Verificar que a porta 2181 aceita conexao TCP e o suficiente: e o que o Kafka usa.
+      test: ["CMD-SHELL", "timeout 3 bash -c '</dev/tcp/127.0.0.1/2181'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ========================================================================
+  # OBJECT STORAGE (S3 compatible)
+  # ========================================================================
+
+  minio:
+    image: chrislusf/seaweedfs:3.60
+    container_name: sigsan-minio
+    command: server -dir=/data -filer=true -s3=true -s3.port=9000 -master.port=9333 -volume.port=8081 -filer.port=8888 -ip=0.0.0.0
+    environment:
+      MINIO_ROOT_USER: sigsan
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-minio_dev_password}
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9000:9000"
+      - "8888:8888"
+      - "9333:9333"
+      - "8081:8081"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:9333/dir/status || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================================================
+  # AUTH & SECRETS
+  # ========================================================================
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: sigsan-keycloak
+    command: start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-primary:5432/sigsan
+      KC_DB_USERNAME: sigsan_app
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-sigsan_dev_password}
+      KC_HOSTNAME: localhost
+      KC_HTTP_ENABLED: "true"
+      KC_HTTP_PORT: 8080
+      KC_PROXY: edge
+    volumes:
+      - ./infra/keycloak/realms:/opt/keycloak/data/import:ro
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-primary
+    healthcheck:
+      # A imagem do Keycloak não tem curl nem wget. O endpoint de health do Keycloak
+      # responde Management, e não o /health da Quarkus, então o caminho correto é
+      # /realms/master. Sem isso o healthcheck falhava com "curl: command not found".
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 && echo -e 'GET /realms/master HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && head -1 <&3 | grep -q '200'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  vault:
+    image: hashicorp/vault:1.15
+    container_name: sigsan-vault
+    command: server -dev -dev-root-token-id="dev-root-token" -dev-listen-address="0.0.0.0:8200"
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: dev-root-token
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    healthcheck:
+      # VAULT_ADDR precisa ser http:// porque o modo dev deste compose nao tem TLS.
+      # Sem isso o cliente tenta HTTPS e falha com "server gave HTTP response to HTTPS client".
+      test: ["CMD-SHELL", "VAULT_ADDR=http://127.0.0.1:8200 vault status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ========================================================================
+  # GIS (Commented out - images not available)
+  # ========================================================================
+
+  # geoserver:
+  #   image: kartoza/geoserver:2.24.0
+  #   container_name: sigsan-geoserver
+  #   environment:
+  #     GEOSERVER_ADMIN_USER: admin
+  #     GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_PASSWORD:-geoserver_dev_password}
+  #     GEOSERVER_DATA_DIR: /opt/geoserver/data_dir
+  #   volumes:
+  #     - geoserver-data:/opt/geoserver/data_dir
+  #   ports:
+  #     - "8081:8080"
+  #   depends_on:
+  #     - postgres-primary
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:8081/geoserver/web/"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+  # qgis-server:
+  #   image: qgis/qgis-server:3.32
+  #   container_name: sigsan-qgis-server
+  #   environment:
+  #     QGIS_SERVER_LOG_LEVEL: 2
+  #     QGIS_SERVER_LOG_STDERR: 1
+  #   volumes:
+  #     - ./infra/qgis:/qgis-projects:ro
+  #   ports:
+  #     - "8082:80"
+  #   depends_on:
+  #     - postgres-primary
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:80/qgis_server?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+  # ========================================================================
+  # OBSERVABILITY (Commented out - images not available)
+  # ========================================================================
+
+  # grafana:
+  #   image: grafana/grafana:10.2.0
+  #   container_name: sigsan-grafana
+  #   environment:
+  #     GF_SECURITY_ADMIN_USER: admin
+  #     GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+  #     GF_INSTALL_PLUGINS: grafana-piechart-panel,grafana-worldmap-panel
+  #     GF_SERVER_ROOT_URL: http://localhost:3000
+  #     GF_SERVER_SERVE_FROM_SUB_PATH: true
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
+  #     - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - prometheus
+  #     - loki
+  #     - tempo
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # prometheus:
+  #   image: prom/prometheus:v2.48.0
+  #   container_name: sigsan-prometheus
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #     - '--storage.tsdb.retention.time=30d'
+  #     - '--web.enable-lifecycle'
+  #   volumes:
+  #     - prometheus-data:/prometheus
+  #     - ./infra/prometheus:/etc/prometheus:ro
+  #   ports:
+  #     - "9090:9090"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:9090/-/healthy"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # loki:
+  #   image: grafana/loki:2.9.0
+  #   container_name: sigsan-loki
+  #   command: -config.file=/etc/loki/local-config.yaml
+  #   volumes:
+  #     - loki-data:/loki
+  #     - ./infra/loki:/etc/loki:ro
+  #   ports:
+  #     - "3100:3100"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:3100/ready"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # tempo:
+  #   image: grafana/tempo:2.4.0
+  #   container_name: sigsan-tempo
+  #   command: -config.file=/etc/tempo.yaml
+  #   volumes:
+  #     - tempo-data:/var/tempo
+  #     - ./infra/tempo:/etc/tempo:ro
+  #   ports:
+  #     - "3200:3200"
+  #     - "4317:4317"
+  #     - "4318:4318"
+  #     - "9411:9411"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:3200/ready"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # pyroscope:
+  #   image: grafana/pyroscope:1.5.0
+  #   container_name: sigsan-pyroscope
+  #   volumes:
+  #     - pyroscope-data:/var/lib/pyroscope
+  #   ports:
+  #     - "4040:4040"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:4040/ready"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # ========================================================================
+  # CI/CD & DEV TOOLS (Commented out - images not available)
+  # ========================================================================
+
+  # gitea:
+  #   image: gitea/gitea:1.21
+  #   container_name: sigsan-gitea
+  #   environment:
+  #     USER_UID: 1000
+  #     USER_GID: 1000
+  #     GITEA__database__DB_TYPE: postgres
+  #     GITEA__database__HOST: postgres-primary:5432
+  #     GITEA__database__NAME: gitea
+  #     GITEA__database__USER: sigsan_app
+  #     GITEA__database__PASSWD: ${POSTGRES_PASSWORD:-sigsan_dev_password}
+  #   volumes:
+  #     - gitea-data:/data
+  #   ports:
+  #     - "3001:3000"
+  #     - "2222:22"
+  #   depends_on:
+  #     - postgres-primary
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:3001/healthz"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+  # penpot:
+  #   image: penpot/penpot:latest
+  #   container_name: sigsan-penpot
+  #   environment:
+  #     PENPOT_PUBLIC_URI: http://localhost:9002
+  #     PENPOT_DATABASE_URI: postgresql://sigsan_app:${POSTGRES_PASSWORD:-sigsan_dev_password}@postgres-primary:5432/penpot
+  #     PENPOT_REDIS_URI: redis://redis:6379
+  #     PENPOT_FILESYSTEM_BACKEND: local
+  #     PENPOT_FILESYSTEM_LOCAL_PATH: /opt/penpot/data
+  #   volumes:
+  #     - penpot-data:/opt/penpot/data
+  #   ports:
+  #     - "9002:9002"
+  #   depends_on:
+  #     - postgres-primary
+  #     - redis
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:9002/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+  # ========================================================================
+  # ERROR TRACKING (Commented out - images not available)
+  # ========================================================================
+
+  # glitchtip:
+  #   image: glitchtip/glitchtip:latest
+  #   container_name: sigsan-glitchtip
+  #   environment:
+  #     DATABASE_URL: postgres://sigsan_app:${POSTGRES_PASSWORD:-sigsan_dev_password}@postgres-primary:5432/glitchtip
+  #     REDIS_URL: redis://redis:6379/1
+  #     SECRET_KEY: ${GLITCHTIP_SECRET:-dev-secret-key}
+  #     ALLOWED_HOSTS: "*"
+  #     DEBUG: "true"
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - postgres-primary
+  #     - redis
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:8000/healthz"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+networks:
+  default:
+    name: sigsan-network
+    driver: bridge
+
+volumes:
+  postgres-primary-data:
+  postgres-replica-data:
+  timescaledb-data:
+  redis-data:
+  kafka-data:
+  zookeeper-data:
+  minio-data:
+  grafana-data:
+  prometheus-data:
+  loki-data:
+  tempo-data:
+  pyroscope-data:
+  gitea-data:
+  penpot-data:
+  geoserver-data:

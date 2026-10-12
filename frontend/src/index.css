@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Tokens de cor. Escolhidos para WCAG 2.1 AA:
+ *  - texto normal >= 4,5:1; bordas de campo (--input) >= 3:1 contra o fundo (1.4.11);
+ *  - o botão primário usa azul escuro com texto branco (o azul claro anterior dava ~2,7:1).
+ * Os contrastes foram calculados à mão (ver docs/frontend-cadastro.md); axe em jsdom não mede contraste.
+ */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 201 96% 32%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 93%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 19% 33%;
+    --accent: 210 40% 92%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 72% 40%;
+    --destructive-foreground: 0 0% 100%;
+    --warning: 32 95% 24%;
+    --warning-foreground: 0 0% 100%;
+    --border: 214 20% 80%;
+    --input: 215 16% 42%;
+    --ring: 201 96% 32%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222 47% 8%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 10%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 199 89% 58%;
+    --primary-foreground: 222 47% 8%;
+    --secondary: 217 32% 18%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 32% 15%;
+    --muted-foreground: 215 20% 72%;
+    --accent: 217 32% 20%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 90% 72%;
+    --destructive-foreground: 222 47% 8%;
+    --warning: 40 95% 65%;
+    --warning-foreground: 222 47% 8%;
+    --border: 217 25% 28%;
+    --input: 215 16% 60%;
+    --ring: 199 89% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+  /* Foco sempre visível para quem navega por teclado (WCAG 2.4.7). */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

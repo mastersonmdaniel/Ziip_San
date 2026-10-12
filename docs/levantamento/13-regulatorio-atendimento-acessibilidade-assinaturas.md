@@ -1,0 +1,314 @@
+# 13 - Regulatório: atendimento ao usuário, acessibilidade, assinatura eletrônica, governo digital e segurança da informação (2015-2026)
+
+Data: 12/10/2026. Área: atendimento ao usuário, acessibilidade, assinatura eletrônica, governo digital, segurança da informação, guarda de registros e documentos, prescrição, transparência.
+
+> **AVISO.** Este relatório **não é parecer jurídico**. É um levantamento técnico-regulatório para orientar requisitos de software. Toda decisão de produto, contrato ou prazo precisa de revisão por advogado e por especialista em regulação de saneamento antes de virar regra codificada. Onde não consegui confirmar algo na fonte primária, está escrito **NÃO CONFIRMADO** ou **fonte secundária**.
+
+## 0. Como esta pesquisa foi feita e seus limites
+
+- **Fontes primárias lidas (texto compilado; li os artigos relevantes de cada norma, não todas por inteiro):** Planalto (Leis 13.460, 14.015, 14.129, 14.063, 13.146, 8.078, 8.987, 12.527, 12.965, 14.133, 13.303, 11.445, 10.048, 14.534, 14.898, 13.726, 12.682, 13.874, 8.159, Código Civil, MP 2.200-2; Decretos 11.034, 8.771, 12.975, 12.572, 12.573, 11.856, 9.573, 10.569, 11.200, 10.543, 12.069, 12.198, 10.332, 10.278); ANA (Resolução ANA 230/2024 = NR 11, texto integral; Resolução ANA 271/2025 = NR 13, só trechos); GSI/PR (lista de resoluções do CNSIC e do CNCiber); Senado (página do PL 4.752/2025); gov.br Governo Digital (eMAG, assinatura eletrônica); SINIR (lista de legislação).
+- **Acesso:** `planalto.gov.br` recusou a conexão do `WebFetch` (ECONNRESET); li as páginas pelo painel de navegador. Fontes que **não** consegui ler no original ficam marcadas como secundárias.
+- **Fonte secundária (confiança menor):** texto da Portaria MMA 280/2020 (legisweb), jurisprudência do STJ em portais de teses, leis estaduais de conta em braile, ARES-PCJ 363/2020, Resolução CNSIC 20/2026 (conteúdo operacional), Súmulas 359/404/548/323 em compilações.
+- **Exemplo regulatório regional lido na íntegra:** Resolução ARIS-MG 185/2025 (condições gerais, Minas Gerais), usada só para mostrar **variação**; não vale como regra geral.
+- **Fora do escopo (outros relatórios desta pasta):** LGPD em profundidade, tarifa, perdas, qualidade da água, SINIR/MTR em profundidade, cobrança/negativação em profundidade. Listo apenas o que toca a minha área.
+
+## 1. Achados mais importantes (resumo)
+
+1. **A ANA já fixou, na NR 11 (Resolução ANA 230/2024), o conteúdo mínimo dos padrões de atendimento** (24x7, registro numerado com protocolo, manual de prestação aprovado pelo regulador, relatório mensal de reclamações, cadastro com 120 meses de histórico). Os reguladores infranacionais **devem publicar normativo próprio**; a ANA **começa a verificar em 20/05/2027** (art. 74 §3). Não é lei: chega ao prestador via regulador local e via condicionante de recursos federais.
+2. **O Decreto do SAC (Decreto 11.034/2022) não vale diretamente para saneamento.** Seu art. 1º alcança "fornecedores dos serviços regulados pelo Poder Executivo federal". Água e esgoto são regulados por entidades infranacionais. Serve como **referência** (7 dias para resposta, gravação por 90 dias, registro por 2 anos), mas esses números devem ser **parâmetros**, não regras fixas.
+3. **Aviso prévio e vedação de corte em sexta, fim de semana, feriado e véspera** valem para concessionárias e para a administração direta e indireta: Lei 14.015/2020 (art. 1º) incluiu o art. 5º XVI e o art. 6º VII e parágrafo único na Lei 13.460, e o §4º no art. 6º da Lei 8.987. Sem notificação prévia, a taxa de religação não é devida. É P0 para o futuro módulo de corte.
+4. **Acessibilidade digital é obrigação legal direta** (LBI, art. 63) para órgãos de governo **e** para empresas com sede ou representação no País, inclusive o próprio SIGSAN e seus portais. O frontend atual quase não tem atributos de acessibilidade.
+5. **Assinatura eletrônica:** a Lei 14.063/2020 (art. 5º) deixa a cada ente definir o **nível mínimo** por tipo de interação. O sistema precisa de nível configurável por tenant e por documento. O `GovBrSignatureService` está pendente, e a assinatura gov.br é **avançada**, não ICP-Brasil qualificada. O código mistura os dois conceitos.
+6. **Novidade de 2026 sobre logs:** o Decreto 12.975/2026 (DOU 21/05/2026, em vigor em **20/07/2026**) acrescentou o art. 15-A ao Decreto 8.771/2016. A guarda de IP passa a incluir a **porta lógica de origem**, sem prévia requisição. O SIGSAN não tem registro de acesso nenhum (só triggers de CREATE/UPDATE/DELETE).
+7. **Segurança cibernética: não existe lei geral.** O PL 4.752/2025 (Marco Legal da Cibersegurança) está no Senado (CCT, relatoria redistribuída em 03/09/2026). Em 2025-2026 o governo federal substituiu a PNSI (Decreto 12.572/2025) e a E-Ciber (Decreto 12.573/2025). Abastecimento urbano de águas é setor prioritário do PLANSIC. Nada disso obriga hoje o software de um SAAE; é tendência regulatória.
+8. **Prescrição e guarda:** a cobrança de tarifa de água e esgoto segue o prazo do Código Civil, **decenal** segundo o repetitivo REsp 1.117.903/RS (nº do Tema: NÃO CONFIRMADO). A NR 11 exige 120 meses de histórico de leitura e faturamento. Os prazos de retenção do módulo LGPD **não estão semeados** e o motor não elimina nada.
+9. **O módulo de atendimento (RA/protocolo, ouvidoria, carta de serviços, pesquisa de satisfação) ainda não existe**: `commercial/sigsan-portal` é um diretório vazio e `commercial`/`operations` não estão no reator Maven.
+10. **Defeito que atrapalha a parametrização por tenant:** `public.tenant_settings.tenant_id` é `UNIQUE`, o que permite **uma única linha de configuração por tenant**, apesar de a tabela ter `setting_key`/`setting_value`.
+
+---
+
+## (a) Quadro de normas
+
+Legenda de vigência: **Sim** = em vigor na data; **Parcial** = em vigor com partes revogadas; **N/A direto** = vigente, mas não vincula o SIGSAN/saneamento municipal.
+
+### a.1 Atendimento ao usuário e proteção do consumidor
+
+| Norma | Esfera | Data / última alteração | Vigente? | Fonte (URL) | Confiança |
+|---|---|---|---|---|---|
+| Lei 13.460/2017 (direitos do usuário de serviços públicos) | Federal (norma geral p/ União, Estados, DF e Municípios, art. 1º §1º) | 26/06/2017. Alterada por Lei 14.015/2020, Lei 14.129/2021 (art. 7º §6º e art. 10-A) e Lei 14.534/2023 (art. 10-A §1º) | Sim | https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2017/lei/l13460.htm | Alta |
+| Lei 14.015/2020 (interrupção e religação) | Federal; aplica-se à administração direta e indireta **e a serviços concedidos ou permitidos** (art. 1º) | 15/06/2020; sem alteração identificada | Sim | https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l14015.htm | Alta |
+| Lei 8.987/1995, art. 6º §§3º-4º e art. 7º-A (concessões; 6 datas de vencimento) | Federal | §4º incluído pela Lei 14.015/2020; art. 7º-A pela Lei 9.791/1999 | Sim | https://www.planalto.gov.br/ccivil_03/leis/l8987cons.htm | Alta |
+| Lei 8.078/1990 (CDC), arts. 6º, 22, 26, 27, 39, 42, 43 | Federal | Art. 6º parágrafo único e art. 43 §6º: Lei 13.146/2015. Art. 6º XI-XIII: Lei 14.181/2021. Art. 57 alterado pela **MP 1.393/2026** (multa; só consta no texto compilado; status de conversão NÃO CONFIRMADO; não afeta requisitos de software) | Sim | https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm | Alta |
+| Decreto 11.034/2022 (SAC) | Federal; só "serviços regulados pelo Poder Executivo federal" (art. 1º) | 05/04/2022; vigor em 03/10/2022 (180 dias, calculado); revogou o Decreto 6.523/2008; sem alteração identificada | Sim, **N/A direto** a saneamento | https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/decreto/d11034.htm | Alta |
+| Lei 11.445/2007, arts. 23 X, 25 e 27 III (padrões de atendimento; manual de atendimento aprovado pelo regulador) | Federal | Redação do art. 23 pela Lei 14.026/2020; art. 27 V pela Lei 15.012/2024 | Sim | https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2007/lei/l11445.htm | Alta |
+| **NR 11/2024 da ANA** (Resolução ANA 230/2024, condições gerais de prestação de água e esgoto) | Agência federal (norma de referência; destinatários: entidades reguladoras infranacionais e titulares, art. 2º) | 18/12/2024; DOU 19/12/2024; em vigor na publicação; **verificação a partir de 20/05/2027** (art. 74 §3º); não encontrei alteração até a Res. ANA 305/2026 (lista possivelmente incompleta) | Sim | https://www.gov.br/ana/pt-br/legislacao/resolucoes/resolucoes-regulatorias/2024/230 | Alta |
+| NR 13/2025 da ANA (Resolução ANA 271/2025, estrutura tarifária e tarifa social) | Agência federal | 21/11/2025; verificação a partir de 20/05/2028; art. 26 §1º dá 24 meses para a tarifa social | Sim | https://www.gov.br/ana/pt-br/legislacao/resolucoes/resolucoes-regulatorias/2025/271 | Média/alta (li só definições, art. 26 e arts. 60-64; é de outra área) |
+| Lei 14.898/2024 (Tarifa Social de Água e Esgoto) | Federal | 13/06/2024; vigor 180 dias depois (11/12/2024, calculado) | Sim | https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/L14898.htm | Alta (leitura parcial; é de outra área) |
+| Lei 10.048/2000 (atendimento prioritário) | Federal | Art. 1º: Lei 14.626/2023 (inclui TEA, obesos, doadores de sangue); parágrafos: Lei 14.364/2022 | Sim | https://www.planalto.gov.br/ccivil_03/leis/l10048.htm | Alta |
+| Lei 13.726/2018 (racionalização de atos; dispensa reconhecimento de firma, autenticação etc.) | Federal (União, Estados, DF, Municípios) | 2018 (data exata não conferida nesta consulta) | Sim | https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/L13726.htm | Alta (art. 1º e 3º) |
+| Lei 14.534/2023 (CPF como número único) | Federal | 11/01/2023 | Sim | https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/L14534.htm | Alta |
+| Resolução ARIS-MG 185/2025 (exemplo regional) | Agência intermunicipal (MG) | 20/08/2025; revoga a Res. 030/2022 | Sim (no território regulado; vigor na publicação) | https://aris.mg.gov.br/wp-content/uploads/2023/06/Resolucao_ARIS_MG_n_185_2025_Condicoes_Gerais_SAE.pdf | Alta (texto lido), mas **só vale para o território da ARIS-MG** |
+| Resolução ARES-PCJ 363/2020 (aviso de 30 dias antes da suspensão) | Agência regional (SP) | 2020 | NÃO CONFIRMADO | citada em resultado de busca; não li o texto | Baixa |
+
+### a.2 Acessibilidade
+
+| Norma | Esfera | Data / última alteração | Vigente? | Fonte (URL) | Confiança |
+|---|---|---|---|---|---|
+| Lei 13.146/2015 (LBI), art. 63 (sítios), art. 69, art. 9º, art. 3º V; art. 100 altera o CDC | Federal | 06/07/2015. Art. 63 sem alteração | Sim | https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm | Alta |
+| eMAG 3.1 (Modelo de Acessibilidade em Governo Eletrônico) e Portaria SLTI 3/2007 | Federal (SISP); obrigatório para sítios do governo federal | eMAG 3.1 de abril/2014 (base WCAG 2.0); Portaria de 07/05/2007; **sem atualização encontrada** | Sim; **N/A direto** a SAAE municipal | https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital/modelo-de-acessibilidade | Alta |
+| WCAG 2.x (W3C) | Padrão internacional (não é norma brasileira) | WCAG 2.2 em 2023 | Referência técnica | NÃO é norma; o art. 63 da LBI remete a "melhores práticas e diretrizes internacionais" | Média (interpretação) |
+| Leis estaduais/municipais de conta em braile (DF Lei 3.819/2006; RS Lei 12.498/2006; MG Lei 17.354/2008; RR Lei 886/2013; João Pessoa Lei 12.692/2013) | Estadual/municipal | vários anos | NÃO CONFIRMADO (texto e vigência) | notícias; sem URL oficial lida | **Baixa** |
+| Lei federal obrigando conta de água em braile | - | - | **Não encontrei** | - | Alta de que não achei; **NÃO CONFIRMADO** que não exista |
+
+### a.3 Governo digital e assinatura eletrônica
+
+| Norma | Esfera | Data / última alteração | Vigente? | Fonte (URL) | Confiança |
+|---|---|---|---|---|---|
+| Lei 14.129/2021 (Governo Digital) | Federal. **Art. 2º:** vale para a administração federal (inclui empresas públicas e sociedades de economia mista que prestem serviço público) e, para Estados/Municípios, **só se adotarem a lei por ato normativo próprio** (art. 2º III e §2º) | 29/03/2021; vetos derrubados em 11/06/2021; vigor 28/06/2021 (União), 28/07/2021 (Estados/DF), 26/09/2021 (Municípios), calculado. Altera Leis 7.116, 12.527, 12.682, 13.460 | Sim | https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14129.htm | Alta |
+| Decreto 12.069/2024 (Estratégia Nacional de Governo Digital 2024-2027 e Rede Gov.br; vale para todos os entes, "observado o art. 2º da Lei 14.129") | Federal/nacional | 21/06/2024 | Sim | https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/D12069.htm | Alta |
+| Decreto 12.198/2024 (Estratégia Federal de Governo Digital 2024-2027) | Federal (só administração federal) | 24/09/2024; sucede o Decreto 10.332/2020 (2020-2022), que teve o art. 1º revogado por ele | Sim, N/A direto | https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/D12198.htm | Alta |
+| Decreto 10.332/2020 (Estratégia de Governo Digital 2020-2022) | Federal | 28/04/2020; período expirado; art. 1º revogado pelo Decreto 12.198/2024 | **Superado** | https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/decreto/D10332.htm | Alta |
+| MP 2.200-2/2001 (ICP-Brasil), art. 10 §§1º-2º | Federal | 24/08/2001; art. 7º com redação da Lei 14.063/2020 | Sim | https://www.planalto.gov.br/ccivil_03/mpv/antigas_2001/2200-2.htm | Alta |
+| Lei 14.063/2020 (assinaturas eletrônicas com entes públicos) | Federal. **Cap. II vale para administração direta, autárquica e fundacional** (art. 2º); **não** lista empresas públicas, sociedades de economia mista nem concessionárias | 23/09/2020. Alterações: Lei 14.620/2023 incluiu o art. 17-A (instituições financeiras de crédito imobiliário; **não afeta saneamento**). Prazo de adaptação de sistemas: 01/07/2021 (art. 18) | Sim | https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l14063.htm | Alta |
+| Decreto 10.543/2020 (assinaturas na administração federal) | Federal | 13/11/2020; parte revogada pelo Decreto 11.077/2022 | Parcial; N/A direto | https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/decreto/D10543.htm | Alta |
+| Níveis de assinatura gov.br (simples: bronze/prata/ouro; avançada: prata/ouro) | Governo Digital | página institucional | Informativo | https://www.gov.br/governodigital/pt-br/identidade/assinatura-eletronica/saiba-mais-sobre-a-assinatura-eletronica | Alta |
+| Lei 12.682/2012 (digitalização), art. 2º-A §§1º-3º e art. 3º; Lei 13.874/2019 art. 3º X; Decreto 10.278/2020 (técnica) | Federal | art. 2º-A incluído pela Lei 13.874/2019; art. 3º alterado pela Lei 14.129/2021 (assinatura eletrônica) | Sim | https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12682.htm | Alta |
+| Portaria MMA 280/2020 (MTR nacional; CDF) | Federal | 29/06/2020; a página do SINIR ainda a lista como a norma do MTR; consulta pública de revisão em 01-02/2025, **sem portaria revogadora encontrada** | Sim (presumido) | https://sinir.gov.br/informacoes/legislacao/ | Média; o artigo exato da assinatura do CDF veio de **fonte secundária** (legisweb: art. 14 §5º) |
+
+### a.4 Segurança da informação, logs e infraestrutura crítica
+
+| Norma | Esfera | Data / última alteração | Vigente? | Fonte (URL) | Confiança |
+|---|---|---|---|---|---|
+| Lei 12.965/2014 (Marco Civil), arts. 10, 13, 15, 16 | Federal | 23/04/2014 | Sim | https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm | Alta |
+| Decreto 8.771/2016, art. 13 (padrões de segurança dos registros) e **art. 15-A (porta lógica de origem)** | Federal | 11/05/2016; **alterado pelo Decreto 12.975/2026** (DOU 21/05/2026; em vigor 20/07/2026) | Sim | https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/decreto/d12975.htm | Alta |
+| Lei 13.709/2018 (LGPD), arts. 46-48 | Federal | **Lei 15.352/2026** converteu a ANPD em "Agência Nacional de Proteção de Dados" (texto da LGPD já reflete) | Sim | https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm | Alta (é de outra área) |
+| Resolução CD/ANPD 15/2024 (comunicação de incidente: 3 dias úteis; registro por 5 anos) | Agência federal | 24/04/2024 | Sim | https://www.gov.br/anpd/pt-br/canais_atendimento/agente-de-tratamento/comunicado-de-incidente-de-seguranca-cis | Média (prazo conferido por reprodução do DOU; artigos citados por fonte secundária) |
+| Decreto 12.572/2025 (Política Nacional de Segurança da Informação) | Federal; **só administração pública federal** (art. 1º) | 04/08/2025; revogou o Decreto 9.637/2018 | Sim, N/A direto | https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/D12572.htm | Alta |
+| Decreto 12.573/2025 (Estratégia Nacional de Cibersegurança, E-Ciber) | Federal | 04/08/2025; revogou o Decreto 10.222/2020. Plano Nacional de Cibersegurança ainda a ser publicado (art. 11) | Sim | https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/D12573.htm | Alta |
+| Decreto 11.856/2023 (PNCiber e Comitê Nacional de Cibersegurança) | Federal | 26/12/2023 | Sim | https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/decreto/D11856.htm | Alta |
+| Decretos 9.573/2018 (PNSIC), 10.569/2020 (ENSIC), 11.200/2022 (PLANSIC; setor **Abastecimento Urbano de Águas**) | Federal; orientam os demais entes sem obrigá-los (Decreto 9.573, art. 3º parágrafo único) | 2018/2020/2022 | Sim | https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/decreto/D11200.htm | Alta |
+| Resoluções CNSIC 20/2026 (31/08/2026; diretrizes das instâncias de acionamento da segurança pública) e 21/2026 (04/09/2026; conteúdo mínimo dos planos setoriais) | Federal (CNSIC, criado pela Portaria Interministerial 4/2024, de 21/11/2024) | agosto-setembro/2026 | Sim | https://www.gov.br/gsi/pt-br/colegiados-do-gsi/comite-nacional-de-seguranca-de-infraestruturas-criticas/resolucoes | Alta (títulos/datas); **média/baixa** (obrigações dos operadores, só de fonte secundária) |
+| PL 4.752/2025 (Marco Legal da Cibersegurança) | Federal, **projeto** | apresentado 24/09/2025; CCT/Senado; última movimentação lida: 04/09/2026 | **Não vigente** | https://www25.senado.leg.br/web/atividade/materias/-/materia/170613 | Alta |
+| Lei 12.737/2012 e Lei 14.155/2021 (crimes informáticos: art. 154-A do Código Penal; estelionato eletrônico) | Federal | 2012; 2021 | Sim | https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12737.htm | Alta (só cabeçalho) |
+
+### a.5 Guarda, prescrição, transparência e contratação
+
+| Norma | Esfera | Data / última alteração | Vigente? | Fonte (URL) | Confiança |
+|---|---|---|---|---|---|
+| Código Civil (Lei 10.406/2002), arts. 189, 205 (10 anos), 206 §5º I (5 anos) | Federal | art. 206 §1º II revogado pela Lei 15.040/2024 (irrelevante aqui) | Sim | https://www.planalto.gov.br/ccivil_03/leis/2002/l10406compilada.htm | Alta |
+| STJ, REsp 1.117.903/RS (repetitivo, Rel. Min. Luiz Fux): tarifa de água e esgoto tem natureza **tarifária/preço público**; prescrição pelo Código Civil (10 anos; 20 anos para vencidos há mais de 10 anos em 11/01/2003) | Judiciário | julgado em 2009-2010 (data exata NÃO CONFIRMADA; notícia de 05/01/2010) | Sim | https://www.migalhas.com.br/Quentes/17,MI99819,81042-1+secao+do+STJ+define+natureza+e+prazo+prescricional+da+tarifa+de | **Média** (secundária; Tema 251-254, número NÃO CONFIRMADO) |
+| STJ, Súmula 412 (repetição de indébito de tarifas de água e esgoto: prazo do Código Civil; origem REsp 1.113.403/RJ, Rel. Teori Zavascki, 25/11/2009) e Súmula 407 (tarifa por categoria e faixa de consumo é legítima) | Judiciário | 2009 | Sim | https://www.stj.jus.br/docs_internet/revista/eletronica/stj-revista-sumulas-2014_39_capSumula412.pdf | Alta (Súmula 412); média (407) |
+| STJ, Corte Especial, devolução em dobro do CDC art. 42 p.u. (conduta contrária à boa-fé objetiva, sem exigir má-fé; DJe 30/03/2021; paradigmas citados: EAREsp 676.608/RS, EREsp 1.413.542/RS, EAREsp 600.663/RS) | Judiciário | 2021 | Sim | https://scon.stj.jus.br/SCON/GetInteiroTeorDoAcordao?num_registro=201303558269&dt_publicacao=30%2F03%2F2021 | **Média**; a modulação para serviços públicos tem leitura divergente nas fontes: NÃO CONFIRMADO |
+| Súmulas STJ 359, 404, 548 (Tema 735) e 323 (negativação) | Judiciário | vários | Sim | https://processo.stj.jus.br/SCON/sumstj/toc.jsp?sumula=359.num. | Baixa/média (secundárias; é tema de cobrança) |
+| Lei 8.159/1991 (arquivos), art. 7º §1º: também são públicos os documentos de **entidades privadas encarregadas da gestão de serviços públicos**; CONARQ Res. 40/2014 (eliminação; alterada) e Res. 51/2023 (RDC-Arq v2) | Federal | 1991; 2014; 2023 | Sim | https://www.planalto.gov.br/ccivil_03/leis/l8159.htm | Alta (Lei 8.159); **média** (CONARQ, texto consolidado da Res. 51 não lido) |
+| Lei 12.527/2011 (LAI), arts. 1º p.u., 8º, 9º, 10 §2º, 11, 15, 30 | Federal (União, Estados, DF, Municípios; autarquias, empresas públicas, sociedades de economia mista) | art. 12 alterado pela Lei 14.129/2021; art. 8º-A incluído pela Lei 15.141/2025 (não relevante) | Sim | https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm | Alta |
+| Lei 13.303/2016, art. 8º (transparência de estatais) | Federal | art. 8º X incluído pela Lei 15.177/2025 | Sim | https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/lei/l13303.htm | Alta |
+| Lei 14.133/2021, arts. 1º §1º, 93, 107, 114 | Federal | várias alterações (inclusive Lei 15.471/2026, não lida) | Sim | https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/L14133.htm | Alta |
+
+---
+
+## (b) Requisitos acionáveis para o software
+
+Legenda: **ATENDE / PARCIAL / NÃO ATENDE / N/A**. Prioridade: **P0** = obrigatório e sem o qual não opera; **P1**; **P2**.
+Estado do código (conferido em 12/10/2026): o reator Maven só tem 8 módulos (`pom.xml`, linhas 128-135); `commercial/sigsan-portal` e todos os `operations/*` são **diretórios vazios**; `commercial/sigsan-registry` tem POM e duas classes de regra (`Matricula`, `Inscription`) fora do reator; o frontend tem **uma** página (`Consumers.tsx`).
+
+### b.1 Atendimento, protocolo e ouvidoria
+
+| ID | Requisito | Origem | Módulo SIGSAN | Situação atual | Lacuna | Recomendação | Prio |
+|---|---|---|---|---|---|---|---|
+| AT-01 | Toda solicitação ou reclamação deve ser **registrada e numerada**, e o usuário recebe o **protocolo**; comprovante de recebimento em qualquer canal | NR 11 art. 52 §1º; Lei 13.460 art. 12 p.u. II; Lei 14.129 art. 27 IV (se adotada); ARIS-MG art. 127 | `commercial/sigsan-portal` (RA) | **NÃO ATENDE.** Só existe `service_orders.order_number` (V1_1, linha 170). Doc 04 planeja RA/protocolo (E1, E2) | Não há entidade de atendimento, numeração, canal, estados nem comprovante | Implementar RA com numeração única por tenant (parametrizável: prefixo, ano), canal de origem, comprovante por e-mail/SMS/PDF, consulta pública pelo número | **P0** |
+| AT-02 | Atendimento **24x7** por meio telefônico/eletrônico + posto presencial; canais definidos pelo regulador | NR 11 art. 52 caput; ARIS-MG art. 127 | portal + integração de telefonia | **NÃO ATENDE** | Sem canal registrado; sem timestamps de espera/atendimento (o GSAN tinha `inicioEspera/fimEspera`, doc 04 §1.2) | Registrar canal, início da espera, início e fim do atendimento; integração opcional com URA/telefonia. Disponibilidade 24x7 é do operador, mas o sistema deve **não ser janela de indisponibilidade** para registro | P1 |
+| AT-03 | **Lista de serviços com prazos de execução** aprovada pelo regulador; serviços sem prazo definido são acordados na solicitação; antes de multar, o regulador avalia causas externas | NR 11 arts. 72-73 | portal (E1) + OS | **NÃO ATENDE** | Sem catálogo de tipos/especificações com SLA, dias úteis/corridos, feriados | Catálogo versionado por tenant (serviço, prazo, unidade, úteis/corridos, calendário de feriados municipal/estadual), campo "causa externa" para justificar atraso | **P0** |
+| AT-04 | **Prazo de resposta** ao usuário e de comunicação de providências (varia: ARIS-MG 10 dias úteis; Decreto 11.034, 7 dias corridos, só federal) | NR 11 art. 51 (remete ao regulador); ARIS-MG art. 128 | portal | **NÃO ATENDE** | Sem controle de prazo, alerta, prorrogação justificada | SLA parametrizável por tipo; alertas de vencimento; registro da resposta conclusiva (ver AT-17) | P0 |
+| AT-05 | **Ouvidoria**: manifestação sem justificativa de motivos, sem exigências que inviabilizem a identificação, nenhuma pode ser recusada, comprovante, decisão final em **30 dias, prorrogável uma vez por igual período**, relatório anual de gestão publicado | Lei 13.460 arts. 10-16 (direto: administração direta e indireta; subsidiário: particulares, art. 1º §3º); NR 11 art. 52 §§2º-3º (recomenda ouvidoria do prestador) | portal | **NÃO ATENDE** | Sem fluxo de manifestação nem tipos (reclamação, sugestão, elogio, denúncia, solicitação) | Módulo de ouvidoria separado do RA, com prazos 30+30 dias, anonimato quando a norma local permitir, relatório anual gerado. Atenção: a Lei 14.063 art. 2º p.u. III **exclui sistemas de ouvidoria** das regras de assinatura | P1 |
+| AT-06 | **Relatório ao regulador** com reclamações por mês, por motivo e por sistema, e % de reclamações não atendidas | NR 11 art. 54 | `intelligence/*` + portal | **NÃO ATENDE** (depende de AT-01) | Sem base de dados | Relatório parametrizável (periodicidade e layout por regulador), exportação CSV/XLSX e API | P1 |
+| AT-07 | **Carta de Serviços ao Usuário** e **manual/regulamento de prestação e de atendimento**, aprovado pelo regulador, publicado no sítio e no posto presencial | Lei 13.460 art. 7º; Lei 11.445 art. 27 III; NR 11 art. 53; Lei 14.129 art. 18 II | portal (CMS do tenant) | **NÃO ATENDE** | Sem gestão de conteúdo publicável nem versionamento com data de aprovação | Cadastro de serviços publicável (alimenta a Carta e o catálogo AT-03): requisitos, documentos, etapas, prazo máximo, canais, compromissos; versão com data de aprovação do regulador | P1 |
+| AT-08 | **Pesquisa de satisfação** e avaliação continuada, **no mínimo anual**, com resultado publicado (inclusive ranking de mais reclamadas) | Lei 13.460 art. 23 §§1º-2º; Lei 14.129 art. 21 V | portal (E21) | **NÃO ATENDE** | Sem pesquisa vinculada ao atendimento | Pesquisa pós-encerramento (e-mail/SMS/QR) e pesquisa periódica; publicação de resultados | P1 |
+| AT-09 | **Painel de desempenho**: solicitações em andamento e concluídas por ano, tempo médio, satisfação, por serviço | Lei 14.129 art. 22 (**só se o tenant adotou a lei**) | `intelligence/*` | **NÃO ATENDE** | - | Painel padrão baseado em AT-01/AT-08 | P2 |
+| AT-10 | **Atendimento prioritário** (PcD, TEA, idosos 60+, gestantes, lactantes, criança de colo, obesos, mobilidade reduzida; doadores de sangue por último, com comprovante de 120 dias; acompanhante junto) | Lei 10.048 arts. 1º-2º; LBI art. 9º; ARIS-MG art. 125 p.u. | portal (atendimento presencial: senha/fila) | **NÃO ATENDE** | Sem fila/senha | Fila com classes de prioridade configuráveis e relatório de tempo de espera por classe | P1 |
+| AT-11 | **Acompanhamento** das próprias demandas em todos os canais e **histórico de cobrança/medição ≥ 12 meses** em web/app (esta última é facultativa: "pode") | Lei 14.129 art. 21 IV; NR 11 art. 55; Decreto 11.034 art. 12 (referência federal) | portal / frontend | **NÃO ATENDE** | Sem portal do cliente | Portal do cliente com histórico de 12+ meses e acompanhamento por protocolo | P1 |
+| AT-12 | **Conselho de usuários** (órgão consultivo; participação sem remuneração) | Lei 13.460 arts. 18-22 | - | **N/A** (organização do titular, não do software) | - | Opcional: cadastro de membros e atas | P2 |
+
+### b.2 Cobrança, aviso de corte, fatura e CDC
+
+| ID | Requisito | Origem | Módulo | Situação atual | Lacuna | Recomendação | Prio |
+|---|---|---|---|---|---|---|---|
+| CB-01 | **Comunicação prévia** do corte por inadimplência com a **data** do desligamento, **em horário comercial**; vedado iniciar corte em sexta, sábado, domingo, feriado e **véspera de feriado**; sem notificação não é devida a taxa de religação (e há multa à concessionária, "conforme regulamentação") | Lei 13.460 art. 5º XVI e p.u., art. 6º VII e p.u. (Lei 14.015/2020, art. 1º); Lei 8.987 art. 6º §4º; NR 11 art. 43 p.u.; ARIS-MG arts. 111 e 113 | `commercial/sigsan-dunning` + OS de corte | **NÃO ATENDE** (módulos inexistentes) | Sem notificação, sem calendário | Gerar OS de corte só após notificação comprovada; calendário de feriados municipais/estaduais por tenant; **bloqueio de agendamento** de corte nos dias vedados; texto da notificação com motivos, faturas em aberto e providências (NR 11 art. 43; ARIS-MG art. 111 §3º) | **P0** |
+| CB-02 | **Antecedência e comprovação do aviso** (ARIS-MG: 30 dias, comprovação de recebimento; religação 12 h se corte indevido, indenização = maior entre dobro da religação de urgência e 20% da última fatura) | ARIS-MG arts. 111, 116; outras agências variam | dunning | **NÃO ATENDE** | Sem parâmetros | Parâmetros por tenant: dias de antecedência, meio e comprovante aceito, prazos de religação por tipo, cálculo de indenização por corte indevido, categorias protegidas (saúde, educação, internação, tarifa social: ARIS-MG art. 112) | **P0** |
+| CB-03 | Oferecer **opções de data de vencimento**; concessionárias nos Estados e DF devem oferecer **no mínimo 6 datas** no mês | Lei 8.987 art. 7º-A; NR 11 art. 33; ARIS-MG art. 80 §7º | `sigsan-billing` | **NÃO ATENDE** | - | Tabela de datas de vencimento por tenant (mínimo configurável) e escolha do usuário com histórico | P0 |
+| CB-04 | **Conteúdo mínimo da fatura** (ex. ARIS-MG art. 87: nome e CPF/CNPJ, inscrição, endereço, medidor, leituras, datas, consumo, histórico de 6 meses, total, discriminação, tributos, multa e mora, telefones e e-mails do atendimento e das ouvidorias, parcelamento, qualidade da água) | CDC art. 6º III; Lei 13.460 art. 6º; NR 11 art. 38 (revisão de fatura) e art. 55; **o conteúdo exato é do regulador** | billing + relatórios | **NÃO ATENDE** | - | Modelo de fatura por tenant, com **campos obrigatórios configuráveis** e prévia de conformidade | **P0** |
+| CB-05 | **Segunda via** sem ônus quando houver problema de emissão ou envio; detectar e informar **pagamento em duplicidade** | ARIS-MG art. 80 §6º; NR 11 art. 37 | billing/collection | **NÃO ATENDE** | - | Regra de duplicidade na baixa bancária e fluxo de devolução/crédito | P1 |
+| CB-06 | **Cobrança indevida**: suspender a cobrança imediatamente quando a demanda tratar de cobrança indevida (regra federal, referência); **devolução em dobro** (CDC art. 42 p.u.) com correção monetária e juros; revisão de fatura a pedido do usuário conforme diretriz do regulador | CDC art. 42 p.u.; STJ Corte Especial 2021; Decreto 11.034 art. 13 §3º (referência); NR 11 art. 38 | collection + portal | **NÃO ATENDE** | - | Contestação com **bloqueio de cobrança, de corte e de negativação** enquanto pendente; cálculo da devolução em dobro como política parametrizável (a aplicação a serviços públicos é pergunta aberta, ver (e)) | P1 |
+| CB-07 | **Decadência e prova de reclamação**: reclamação comprovada obsta decadência até "resposta negativa correspondente, transmitida de forma inequívoca" | CDC art. 26 §2º I (prazos de 30 e 90 dias) | portal | **NÃO ATENDE** | - | Guardar data/hora da reclamação e da resposta conclusiva com prova de entrega (carimbo de data, canal, IP) | P1 |
+| CB-08 | **Negativação**: comunicação prévia por escrito (art. 43 §2º), cadastros objetivos, sem informação negativa acima de 5 anos (§1º), baixa após pagamento (Súmula 548: 5 dias úteis, fonte secundária) | CDC art. 43; Súmulas 359, 404, 323 (secundárias) | `sigsan-dunning` | **NÃO ATENDE** | Doc 00 (§4, item 9) já aponta risco | Fluxo do relatório de cobrança (outro agente). Aqui: **não permitir** negativação sem comunicação prévia comprovada e sem cadastro de prova | P1 |
+| CB-09 | **Correção de dados** pelo consumidor: o arquivista comunica a alteração aos destinatários em **5 dias úteis**; informações do cadastro devem estar disponíveis em **formatos acessíveis** mediante solicitação | CDC art. 43 §§3º e 6º | compliance/lgpd + portal | **PARCIAL.** O motor de titulares usa prazo único de 15 dias (`DataSubjectRightsEngine.DEADLINE_DAYS = 15`, linha 29) | Prazo único não distingue CDC art. 43 §3º (5 dias úteis) de LGPD art. 18/19 | Prazo por tipo de pedido e por origem legal | P1 |
+
+### b.3 Cadastro, contrato e identificação
+
+| ID | Requisito | Origem | Módulo | Situação atual | Lacuna | Recomendação | Prio |
+|---|---|---|---|---|---|---|---|
+| CD-01 | Cadastro da unidade usuária com **código único**, nome, **CPF/CNPJ**, telefone, e-mail, endereço, atividade, economias por categoria (residencial, comercial, industrial, pública), data de início, **histórico de leituras e faturamento de 120 meses**, código de cobrança e medidor (número, instalação, última aferição) | NR 11 arts. 21-22 | `commercial/sigsan-registry` | **PARCIAL.** `consumer_units` (V1_1, linhas 84-108) tem matrícula, economias, medidor, endereço; **sem** CPF/CNPJ, telefone, e-mail, categoria textual, data de aferição; `owner_id`/`responsible_id` apontam para `users` (erro conceitual, doc 00 §4.1) | Cliente separado, contato, histórico | Seguir o plano do doc 00 (fase 1); incluir os campos do art. 22 como obrigatórios de acordo com o regulador | **P0** |
+| CD-02 | **CPF como identificador suficiente**: campo CPF de preenchimento obrigatório e vedada a exigência de outro número; documento com fé pública com CPF basta | Lei 13.460 art. 10-A (Lei 14.129/2021 e Lei 14.534/2023); Lei 14.534 art. 1º | registry + portal | **NÃO ATENDE** | Sem validação nem política de documentos | Validar CPF/CNPJ (dígito verificador); não exigir RG/outros por padrão; exceções por ato do ente (art. 10-A §3º) como parâmetro | P1 |
+| CD-03 | **Contrato de adesão** conforme modelo homologado pelo regulador, com cláusulas mínimas (local, prazo, interrupção e rescisão, direitos e deveres, canais, sanções, serviços complementares, reajuste, juros e multa), disponível em meio físico ou digital; entrega na solicitação da ligação | NR 11 arts. 17-20; CDC arts. 46, 51 e 54 (não lidos nesta rodada) | registry + portal + assinatura | **NÃO ATENDE** | Sem modelo versionado nem aceite | Versionar o modelo homologado (data, versão, regulador); registrar aceite com evidências (hash, IP, data); permitir assinatura por nível definido pelo tenant (ver AS-01) | P1 |
+| CD-04 | **Dispensas de formalidade** (reconhecimento de firma, autenticação de cópia, certidão de nascimento etc.; vedada nova prova de fato já comprovado) | Lei 13.726 art. 3º; Lei 13.460 art. 5º IX, XV | portal/RA | **NÃO ATENDE** | - | Checklist de documentos por serviço **sem** campos que exijam firma reconhecida | P2 |
+| CD-05 | Consentimento e termos (LGPD) e **aceite versionado** | LGPD arts. 7º-8º (outra área) | compliance/lgpd | **PARCIAL.** `lgpd_consent` existe (V2_5) com `consent_text`, `consent_hash`, IP, user agent | Sem ligação com contrato e com assinatura | Ligar o aceite ao contrato de adesão e à versão do termo | P1 |
+
+### b.4 Acessibilidade
+
+| ID | Requisito | Origem | Módulo | Situação atual | Lacuna | Recomendação | Prio |
+|---|---|---|---|---|---|---|---|
+| AC-01 | **Acessibilidade dos sítios** mantidos por empresa com sede ou representação no País ou por órgão de governo, conforme melhores práticas internacionais; **símbolo de acessibilidade em destaque** | LBI art. 63 caput e §1º; Lei 14.129 art. 3º XIX; LAI art. 8º §3º VIII | `frontend`, portal do cliente | **PARCIAL/NÃO ATENDE.** `frontend/index.html` tem `lang="pt-BR"`; no `frontend/src` inteiro só há **4 ocorrências** de atributos de acessibilidade (2 em `index.css`, 1 em `Button.tsx`, 1 em `Input.tsx`); `Layout.tsx` não tem `aria-*` em botões e navegação | Sem auditoria, sem teste automatizado, sem símbolo, sem declaração de acessibilidade | Adotar **WCAG 2.2 nível AA** como critério de aceite (a LBI não cita versão; eMAG 3.1 é base WCAG 2.0 e só obriga o governo federal); testes axe no CI; teclado e leitor de tela; contraste; "declaração de acessibilidade" por tenant | **P0** (para o portal público) |
+| AC-02 | **Informação acessível** à pessoa com deficiência (CDC art. 6º p.u.) e **dados do cadastro em formato acessível** mediante solicitação (art. 43 §6º) | CDC; LBI arts. 69 e 100 | billing/portal | **NÃO ATENDE** | - | Preferência de formato por cliente: braile, fonte ampliada, PDF acessível (PDF/UA), áudio, sintetizador de voz; geração sob demanda e sem custo | P1 |
+| AC-03 | **Conta em braile** | Leis estaduais (DF, RS, MG, RR; **fonte secundária**); nenhuma lei federal encontrada | billing | **NÃO ATENDE** | O GSAN tinha lote de impressão em braile (doc 04 §6.3); o doc 04 trata como requisito de acessibilidade | Gerar arquivo/layout para impressora braile **por tenant** (flag por usuário + laudo/documento opcional, como pratica a Caesb, fonte secundária). Confirmar a lei local antes de tornar obrigatório | P1 |
+| AC-04 | Atendimento presencial acessível e canal acessível a PcD | NR 11 não trata; ARIS-MG art. 125; Decreto 11.034 art. 6º (referência federal) | portal | **NÃO ATENDE** | - | Registrar necessidades de acessibilidade do usuário (Libras, intérprete, acompanhante) no cadastro de atendimento. Obrigação de Libras para concessionárias de saneamento: **NÃO CONFIRMADO** | P2 |
+
+### b.5 Assinatura eletrônica e governo digital
+
+| ID | Requisito | Origem | Módulo | Situação atual | Lacuna | Recomendação | Prio |
+|---|---|---|---|---|---|---|---|
+| AS-01 | **Nível mínimo de assinatura por tipo de interação definido pelo próprio ente** (simples para baixo impacto e sem sigilo; avançada; qualificada obrigatória em atos de chefe de Poder, NF-e etc.); o ente publica no site os requisitos de reconhecimento da avançada; em conflito entre normas prevalece a qualificada | Lei 14.063 arts. 4º-5º (Cap. II vale para administração direta, autárquica e fundacional, art. 2º) | `platform/sigsan-tenant` + serviço de assinatura | **NÃO ATENDE.** Não há configuração de nível; `tenant_settings.tenant_id UNIQUE` impede várias configurações por tenant | Matriz documento x nível mínimo | Tabela `signature_policy` (tenant, tipo de documento, nível mínimo, provedores aceitos). Para **empresa pública, sociedade de economia mista e concessionária**, a Lei 14.063 Cap. II **não** se aplica por força do art. 2º; vale o acordo entre as partes (MP 2.200-2 art. 10 §2º) | P1 |
+| AS-02 | **Assinatura do CDF** pelo responsável técnico da destinação e MTR autodeclaratório emitido no SINIR | Portaria MMA 280/2020 art. 14 §5º (**fonte secundária**) | `grs/sigsan-mtr` | **PARCIAL.** `GovBrSignatureService.sign()` devolve sempre `PENDING`, sem assinatura; `MtrService` injeta o serviço (linha 39) **mas nunca o chama**; `transporterSignature` e `destinationSignature` são strings livres vindas do request (linhas 108, 130, 173) sem verificação; cadeia de hash SHA-256 interna; PDF gerado | **Integridade sem autoria** | Definir com o jurídico/SINIR qual tipo de assinatura é exigido; implementar assinador com certificado ICP-Brasil (A1/A3 ou nuvem) para o CDF; guardar PAdES com carimbo de tempo; verificação de validade da cadeia | **P0** (para GRS) |
+| AS-03 | **Distinguir gov.br (avançada) de ICP-Brasil (qualificada)**: contas prata/ouro permitem assinatura **avançada**; qualificada exige certificado ICP-Brasil (MP 2.200-2, art. 10 §1º) | Lei 14.063 art. 4º; página Governo Digital | MTR + assinatura | **PARCIAL.** O Javadoc do serviço chama de "ICP-Brasil / Gov.br" como se fossem a mesma coisa | Modelo de dados não registra o **nível** do que foi assinado | Campo `signature_level` (SIMPLE/ADVANCED/QUALIFIED) e `provider` em cada assinatura | P1 |
+| AS-04 | **Documento nato-digital assinado é original**; digitalização com integridade, autenticidade e confidencialidade por assinatura eletrônica; original físico pode ser destruído após integridade verificada | Lei 14.129 art. 11; Lei 12.682 art. 2º-A §1º e art. 3º; Lei 13.874 art. 3º X; Decreto 10.278/2020 | `documents` (tabela do tenant) | **PARCIAL.** `documents` guarda `checksum` SHA-256 e `storage_path` | Sem assinatura/carimbo na digitalização; sem política de destruição | Pipeline de digitalização conforme Decreto 10.278 (metadados mínimos); assinatura do lote | P2 |
+| AS-05 | **Notificações eletrônicas** (domicílio eletrônico): só por opção do usuário; permitir comprovar autoria, emissão e recebimento; auditáveis; **guardar dados de envio e recebimento por 5 anos** | Lei 14.129 arts. 42-43 (se o tenant adotou a lei) | portal + notificação | **NÃO ATENDE** | - | Registro de envio/recebimento/leitura (quando possível); opt-in e opt-out a qualquer momento; **não usar só e-mail/SMS** como prova de aviso de corte ou de negativação sem confirmar a regra local (jurisprudência do STJ, fonte secundária, exige correspondência no caso de negativação) | P1 |
+| AS-06 | **Interoperabilidade e dados abertos** (formato aberto, legível por máquina) para transparência ativa | Lei 14.129 arts. 29, 38-41; LAI art. 8º §3º | `intelligence/*` | **NÃO ATENDE** | - | Exportações CSV/JSON abertas do painel de serviços (AT-09), sem dados pessoais | P2 |
+| AS-07 | Software desenvolvido **exclusivamente** por órgão/entidade da administração direta e autárquica deve ter **licença de código aberto** | Lei 14.063 art. 16 | contratação | **N/A (provável)**; é SaaS de terceiro. Pergunta aberta (ver (e)): customizações sob encomenda | - | Revisar contratos; cláusulas de propriedade intelectual | P2 |
+
+### b.6 Segurança da informação e registros
+
+| ID | Requisito | Origem | Módulo | Situação atual | Lacuna | Recomendação | Prio |
+|---|---|---|---|---|---|---|---|
+| SG-01 | **Guarda de registros de acesso a aplicações de internet por 6 meses**, sob sigilo, em ambiente controlado, pelo **provedor de aplicações** constituído como pessoa jurídica que exerça a atividade de forma organizada, profissional e com fins econômicos (o operador do SaaS) | Lei 12.965 art. 15 | `shared/sigsan-core` (log de acesso) | **NÃO ATENDE.** `public.audit_log` só recebe CREATE/UPDATE/DELETE por trigger (V1_1, linhas 270-312), sem IP. `AuditAction` define LOGIN/READ/EXPORT/SIGN/VERIFY, mas **nenhum código os emite** (busca no repositório sem ocorrências de uso). O `GRANT` à aplicação é só SELECT/INSERT (V1, linha 180) | Sem evento de login, de leitura, de exportação | Tabela de **registro de acesso** separada do audit de dados: data/hora UTC, usuário, tenant, IP, **porta de origem**, user agent, ação, recurso. Retenção mínima de 6 meses e depois eliminar (Decreto 8.771 art. 13 §2º) | **P0** |
+| SG-02 | **Porta lógica de origem** junto ao IP, guardada por conta própria do provedor, sem prévia requisição | Decreto 8.771 art. 15-A (Decreto 12.975/2026; **em vigor em 20/07/2026**) | idem | **NÃO ATENDE** | `audit_log.ip_address VARCHAR(45)` não tem porta | Capturar porta TCP de origem na borda (proxy/ingress); atenção a CGNAT e a `X-Forwarded-For` | **P0** |
+| SG-03 | **Controle estrito de acesso aos registros**, autenticação dupla para acessar os registros, **inventário de acessos** (momento, duração, identidade, arquivo), **criptografia ou proteção equivalente**, formato interoperável e estruturado, divulgação clara dos padrões de segurança adotados | Decreto 8.771 arts. 13, 15, 16 | core + platform | **PARCIAL.** RLS FORCE e GRANT somente-insere (V1, linhas 90-93 e 175-180); `KeycloakAdminService` ativa proteção de força bruta e política de senha (`length(8)`, `expirePassword(90)`); **MFA não é exigido** (campos `mfa_enabled`/`mfa_secret` existem em `users`, mas sem fluxo) | MFA para papéis que consultam logs; inventário de acesso ao próprio log; página pública de padrões de segurança | Exigir OTP/WebAuthn para administradores e DPO; trilha de quem consulta o log; publicar resumo de segurança | P1 |
+| SG-04 | **Incidente de segurança com dado pessoal**: comunicar ANPD e titulares em **3 dias úteis**; **registrar todos os incidentes por 5 anos**, inclusive os não comunicados | LGPD art. 48; Resolução CD/ANPD 15/2024 (arts. 6º, 9º e 10, fonte secundária para a numeração) | `compliance/sigsan-lgpd` | **NÃO ATENDE.** Não há entidade de incidente (tabelas LGPD: consentimento, titulares, RIPD, retenção) | - | Entidade `security_incident` com datas de ciência, avaliação, comunicações, evidências. Cuidado: o prazo de 3 dias úteis vale **para o controlador** (o tenant); o SIGSAN (operador) deve **notificar o tenant** com folga | P1 |
+| SG-05 | **Classificação e comunicação de incidentes em infraestrutura crítica** (níveis baixo, médio, elevado, excepcional; operador, agência reguladora e ministério) | Res. CNSIC 20/2026 (lista de assuntos: primária; obrigações do operador: **secundária**); PLANSIC (Decreto 11.200/2022, setor Abastecimento Urbano de Águas) | `intelligence/sigsan-quality` e SCADA | **NÃO ATENDE** | Não vincula hoje o software; é **tendência** | Registro de incidentes operacionais e cibernéticos com classificação de impacto e canal de comunicação ao regulador | P2 |
+| SG-06 | Lei geral de cibersegurança, requisitos mínimos para SEICs (Guia em elaboração no CNCiber, Res. 11/CNCiber), Plano Nacional de Cibersegurança (art. 11 do Decreto 12.573) | PL 4.752/2025; Decreto 12.573/2025 | plataforma | **N/A hoje** (projeto e guia em elaboração) | - | Monitorar (ver skill `monitor-regulatorio`) | P2 |
+| SG-07 | Política Nacional de Segurança da Informação, E-Ciber, PPSI e normas do GSI | Decreto 12.572/2025 e 12.573/2025 | - | **N/A direto** (administração federal) | - | Usar como referência de controles (ex.: ISO 27001) em propostas comerciais | P2 |
+
+### b.7 Guarda de documentos, prescrição e retenção
+
+| ID | Requisito | Origem | Módulo | Situação atual | Lacuna | Recomendação | Prio |
+|---|---|---|---|---|---|---|---|
+| RT-01 | **Manter histórico de leituras e faturamento de 120 meses** por unidade usuária (compatível com prescrição decenal) | NR 11 art. 22 VII; CC art. 205; STJ REsp 1.117.903/RS | billing + retenção | **NÃO ATENDE.** Não há tabelas comerciais; `RetentionEngine` não elimina nada (`deleted=0`) e a migration V2_5 diz que **prazos não são semeados** (decisão correta, mas sem catálogo de classes) | Falta o catálogo de classes documentais com prazo e âncora | Catálogo de classes: contas, leituras, contratos, OS, laudos, reclamações, gravações, logs. Default conservador **não elimina antes de 10 anos** nos dados comerciais; `legal_hold` por unidade em litígio | **P0** |
+| RT-02 | **Eliminação só após prescrição/decadência**; para entidade pública, com **tabela de temporalidade aprovada** pela instituição arquivística e comissão de avaliação; documentos de concessionárias de serviço público também são públicos | Lei 12.682 art. 2º-A §3º; Lei 8.159 art. 7º §1º; CONARQ Res. 40/2014 (alterada) | compliance/lgpd + documents | **NÃO ATENDE** | Sem fluxo de aprovação e listagem de eliminação | Workflow de eliminação com lista, aprovação, evidência e relatório; opção "tabela de temporalidade do tenant" | P1 |
+| RT-03 | **Calcular a data-limite de cobrança** (prescrição) e marcos interruptivos; o prazo varia por **tipo de devedor** (10 anos: CC art. 205 e STJ; **5 anos**, Decreto 20.910/1932, quando o devedor é Fazenda Pública: fonte secundária, NÃO CONFIRMADO) | CC; STJ | `sigsan-collection` | **NÃO ATENDE** | - | Parâmetros de prescrição por tipo de devedor; alerta de débito prestes a prescrever; registro de reconhecimento de dívida (parcelamento) e ajuizamento | P1 |
+| RT-04 | **Atendimento**: gravações e registros de atendimento (federal: gravação 90 dias; registro 2 anos). **Não vale** para saneamento, mas é padrão de mercado | Decreto 11.034 art. 12 §§3º e 5º (referência) | portal | **NÃO ATENDE** | - | Parâmetros por tenant, com defaults documentados como "referência" | P2 |
+| RT-05 | **Registros de incidente 5 anos; notificações eletrônicas 5 anos; logs de acesso 6 meses** | Res. CD/ANPD 15/2024 art. 10; Lei 14.129 art. 43 V; Lei 12.965 art. 15 | core | **NÃO ATENDE** | - | Entradas no catálogo de retenção (RT-01) | P1 |
+
+### b.8 Transparência e contratação (dependem do tipo de tenant)
+
+| ID | Requisito | Origem | Módulo | Situação atual | Lacuna | Recomendação | Prio |
+|---|---|---|---|---|---|---|---|
+| TR-01 | **Serviço de Informação ao Cidadão** e pedido de acesso também pelo sítio; prazo de 20 dias prorrogável por 10; recurso em 10 dias, resposta em 5; relatório estatístico anual | LAI arts. 9º, 10 §2º, 11, 15, 30 (autarquias, empresas públicas e sociedades de economia mista) | portal (opcional) | **NÃO ATENDE** | - | Módulo LAI **opcional** (muitos entes usam portal próprio); integração para localizar dados do sistema | P2 |
+| TR-02 | **Transparência ativa**: competências, endereços, telefones e horários de atendimento, perguntas frequentes, formatos abertos, acessibilidade; estatais: Lei 13.303 art. 8º | LAI art. 8º; Lei 13.303 art. 8º | portal/CMS | **NÃO ATENDE** | - | Publicar horários e canais (mesmos dados da Carta de Serviços AT-07) | P2 |
+| TR-03 | Contratação do próprio SIGSAN por autarquia: Lei 14.133 (estatais usam a Lei 13.303; art. 1º §1º). **Art. 93: cessão dos direitos patrimoniais** em serviços de desenvolvimento de software sob encomenda; **art. 114: até 15 anos** para sistemas estruturantes; **art. 107: 10 anos** para serviços contínuos | Lei 14.133 | contratos | **N/A ao código; relevante ao modelo comercial** | Risco: cláusula de cessão de PI em customizações | Contrato SaaS com licença (não encomenda); revisar com o jurídico | P2 |
+
+---
+
+## (c) Prazos e marcos
+
+Datas marcadas "(calc.)" foram calculadas por mim a partir do dia de publicação e da regra de vacância; confirme no DOU.
+
+### c.1 O que já venceu
+
+| Data | Marco | Fonte |
+|---|---|---|
+| 22/06/2018 (calc.) | Lei 13.460 em vigor: União, Estados, DF e municípios > 500 mil hab. (360 dias) | art. 25 I |
+| 19/12/2018 (calc.) | idem, municípios de 100 a 500 mil hab. (540 dias) | art. 25 II |
+| 17/06/2019 (calc.) | idem, municípios < 100 mil hab. (720 dias): **todos os prestadores públicos já estão sujeitos** | art. 25 III |
+| 16/06/2020 | Lei 14.015: aviso prévio e vedação de corte em sexta/fim de semana/feriado/véspera (vigor na publicação) | Lei 14.015 |
+| 01/07/2021 | Prazo para adaptar sistemas que usam assinatura eletrônica à Lei 14.063 | Lei 14.063 art. 18 |
+| 28/06/2021, 28/07/2021, 26/09/2021 (calc.) | Lei 14.129 em vigor para União, Estados/DF e municípios; **efeito sobre município depende de adoção por ato próprio** (art. 2º III) | Lei 14.129 arts. 2º e 55 |
+| 03/10/2022 (calc.) | Decreto 11.034 em vigor (só serviços regulados pelo Executivo federal) | art. 18 |
+| 11/12/2024 (calc.) | Lei 14.898 (tarifa social) em vigor, 180 dias após 14/06/2024 | art. 13 |
+| 19/12/2024 | NR 11 da ANA publicada e em vigor | Res. ANA 230/2024, art. 2º |
+| 04/08/2025 | PNSI (Decreto 12.572) e E-Ciber (Decreto 12.573) substituem os Decretos 9.637/2018 e 10.222/2020 | decretos |
+| 20/05/2026 | Decreto 12.975/2026 editado (DOU 21/05/2026) | decreto |
+| 20/07/2026 (calc.) | **Decreto 12.975: porta lógica de origem (art. 15-A) em vigor** | art. 2º do decreto |
+| 31/08/2026 e 04/09/2026 | Resoluções CNSIC 20 e 21 | GSI |
+
+### c.2 O que vem
+
+| Data | Marco | Observação |
+|---|---|---|
+| **Até 20/05/2027** | Reguladores infranacionais devem ter normativo de condições gerais com o conteúdo mínimo da NR 11 (art. 74 §1º). Muita regra local será editada ou revista nesse intervalo | **Risco de mudança de parâmetros**; manter regras versionadas por regulador |
+| **20/05/2027** | ANA **inicia a verificação** da NR 11 (art. 74 §3º) | Requisito de condicionamento de recursos federais |
+| **11/12/2026 (calc.)** | Fim dos 24 meses para implementação da tarifa social (NR 13 art. 26 §1º, contados da entrada em vigor da Lei 14.898) | Outra área (tarifa) |
+| **20/05/2028** | ANA inicia a verificação da NR 13 | idem |
+| Anual | Pesquisa de satisfação (no mínimo uma por ano) e relatório de gestão da ouvidoria | Lei 13.460 arts. 14 II e 23 §1º |
+| Mensal (periodicidade do regulador) | Relatório de reclamações ao regulador | NR 11 art. 54 |
+| 31/03 de cada ano | Reporte anual de metas dos planos setoriais de infraestruturas críticas (ministérios) | Res. CNSIC 21/2026 (**fonte secundária**) |
+| 4 anos | Vigência dos planos setoriais do PLANSIC, renováveis | idem |
+| **Sem data** | PL 4.752/2025 (Marco Legal da Cibersegurança); minuta do PL da PNSIC (apresentada à CREDEN em 27/08/2026); Plano Nacional de Cibersegurança; Guia de Requisitos Mínimos de Cibersegurança para SEICs; revisão da Portaria MMA 280/2020 | Monitorar; **nenhum vigente** |
+| 2027-2030 | **NÃO CONFIRMADO:** não encontrei outro marco datado de 2027-2030 na minha área | Metas de universalização e outros marcos estão nos relatórios das outras áreas |
+
+---
+
+## (d) Variação regulatória e parâmetros por tenant
+
+### d.1 Por que o sistema precisa ser parametrizável
+
+1. **Quem regula varia:** agência estadual, intermunicipal (ex.: ARIS-MG), consórcio, município (SAAE), ou o próprio titular. A ANA só edita **normas de referência**; a NR 11 manda cada regulador publicar normativo próprio (art. 74 §1º).
+2. **O tipo de prestador muda quais leis incidem:**
+   - **Autarquia municipal/estadual (SAAE, DMAE):** Lei 13.460 direta; LAI; Lei 14.133; Lei 14.063 Cap. II (administração autárquica); Lei 14.129 **só se adotada** por ato próprio.
+   - **Empresa pública ou sociedade de economia mista:** Lei 13.460 direta (administração indireta); LAI e Lei 13.303; Lei 14.063 Cap. II **não lista** essas entidades; Lei 14.129 só se adotada, e no âmbito federal inclui as que prestam serviço público.
+   - **Concessionária privada / PPP:** Lei 13.460 subsidiária (art. 1º §3º), Lei 14.015 direta (art. 1º), Lei 8.987 (art. 6º §4º e art. 7º-A) e contrato; NR 11 **não** se aplica a concessão licitada com edital publicado antes da vigência (art. 2º §1º), salvo aditivo (§2º).
+3. **Exemplo concreto de divergência entre regras locais (ARIS-MG 185/2025):** aviso de 30 dias com comprovação de recebimento (art. 111), religação em 12 h por corte indevido, 48 h por corte com aviso e 72 h por retirada de ramal (art. 116), resposta em 10 dias úteis (art. 128), 6 datas de vencimento (art. 80 §7º), 24x7 telefônico (art. 127). Outra agência pode ter números diferentes.
+
+### d.2 Parâmetros que devem ser configuráveis (por tenant e com histórico de vigência)
+
+| Grupo | Parâmetros |
+|---|---|
+| Identidade regulatória | Regulador (nome, norma de condições gerais, versão, data de vigência), natureza jurídica do prestador (autarquia, empresa pública, sociedade de economia mista, concessionária, PPP), flags de aplicabilidade: Lei 14.129 adotada (sim/não, ato), LAI, Lei 14.133 ou 13.303, Lei 14.063 Cap. II |
+| Atendimento | Canais obrigatórios (telefone, presencial, web, app, mensageria), janela 24x7, tempo máximo de espera, gratuidade, gravação (dias), retenção de registro (anos), ouvidoria própria (sim/não), ouvidoria do regulador (contato), classes de prioridade |
+| Prazos | Prazo de resposta por tipo de manifestação (dias úteis ou corridos), catálogo de serviços e prazos de execução, calendário de feriados (nacional, estadual, municipal), regra de contagem (exclui dia do início, art. 167 da ARIS-MG) |
+| Corte e religação | Dias de antecedência do aviso, meio e comprovante aceitos, horário comercial, dias vedados, categorias protegidas (saúde, educação, internação, tarifa social), prazos de religação (normal, urgência, corte indevido, retirada de ramal), indenização por corte indevido (fórmula) |
+| Fatura | Conteúdo obrigatório, número mínimo de datas de vencimento, histórico exibido (meses), contatos, formatos acessíveis, braile (lei local) |
+| Cadastro | Campos obrigatórios (CPF/CNPJ, telefone, e-mail), histórico mínimo (120 meses), categorias de economia, modelo de contrato de adesão (versão homologada) |
+| Retenção | Classes e prazos (contas e leituras, contratos, OS, reclamações, logs de acesso, incidentes, notificações), prescrição por tipo de devedor, `legal_hold`, tabela de temporalidade do tenant |
+| Assinatura | Nível mínimo por tipo de documento (simples, avançada, qualificada), provedores aceitos, requisito de carimbo de tempo |
+| Pesquisa e relatórios | Periodicidade da pesquisa de satisfação, escala, layout e periodicidade do relatório de reclamações ao regulador |
+| Segurança | Retenção dos logs de acesso (padrão 6 meses), exigência de MFA, contato do encarregado, endereço de comunicação de incidentes |
+
+**Defeito de infraestrutura a corrigir antes de qualquer parametrização:** `public.tenant_settings` (V1, linhas 107-118) tem `tenant_id UUID NOT NULL UNIQUE`, ou seja, **uma linha por tenant**. A intenção parece ser `UNIQUE (tenant_id, setting_key)`. `tenant_catalog.settings JSONB` e `tenant_metadata.settings JSONB` existem, mas ambos sem versionamento de vigência.
+
+---
+
+## (e) Perguntas em aberto para o jurídico e o regulatório
+
+1. **CDC e serviço público remunerado por taxa:** em municípios onde o esgoto ou o resíduo é cobrado como **taxa** (tributo), o CDC e o Decreto 11.034 como referência ainda se aplicam? A pesquisa confirmou tarifa/preço público para água e esgoto prestados por concessionária (REsp 1.117.903/RS); **não confirmei** o tratamento de taxa.
+2. **Prescrição da cobrança:** adotar 10 anos (CC art. 205) como padrão? E qual o prazo quando o devedor é prefeitura ou outro ente público (Decreto 20.910/1932, 5 anos, fonte secundária)? Qual é o número correto do Tema repetitivo do REsp 1.117.903/RS (as fontes indicam 251 a 254)?
+3. **Devolução em dobro (CDC art. 42 p.u.):** a modulação do julgamento da Corte Especial (DJe 30/03/2021) alcança serviços públicos? As fontes divergem. Qual política padrão o SIGSAN deve aplicar?
+4. **Aplicação da Lei 14.129 e da Lei 14.063 Cap. II** ao tenant: o município/estado adotou por ato próprio? Autarquia usa a Lei 14.063 art. 5º (ato do titular do Poder). **Empresa estatal**: como fica, já que o art. 2º da Lei 14.063 não a menciona?
+5. **Assinatura do CDF e do MTR:** qual nível o SINIR/IBAMA aceita (avançada gov.br ou qualificada ICP-Brasil)? Qual o texto vigente do art. 14 da Portaria MMA 280/2020 (lido só em fonte secundária)? Houve nova portaria em 2025-2026? (Uma busca retornou um resultado intitulado "Portaria MTR nº 313, de 06 de maio de 2026"; **não confirmei existência nem conteúdo**.)
+6. **Conta em braile:** existe lei estadual ou municipal vigente para cada tenant? Algum regulador de saneamento a exige? Os textos que li são secundários.
+7. **Libras e acessibilidade presencial:** há exigência para concessionária de saneamento além da LBI (art. 3º V define "comunicação" com Libras)? **NÃO CONFIRMADO.**
+8. **Marco Civil e o SIGSAN:** o operador do SaaS (e não o tenant) é o "provedor de aplicações" do art. 15? O portal público do cliente muda esse enquadramento? A guarda de 6 meses deve ser **mínima** ou **máxima** diante da LGPD? O capítulo III-A do Decreto 8.771 (acrescentado pelo Decreto 12.975/2026, deveres dos provedores) alcança SaaS B2B? O art. 16-O só exclui e-mail, mensageria e reuniões; o art. 16-P permite critérios diferenciados.
+9. **Retenção diante do arquivo público:** a Lei 8.159 art. 7º §1º torna públicos os documentos de entidades privadas que gerem serviços públicos. Isso obriga concessionárias a seguir tabela de temporalidade (CONARQ)? Qual instituição arquivística aprova?
+10. **Segurança cibernética setorial:** existe norma de saneamento (ANA, Ministério das Cidades, CNSIC) com requisito de segurança aplicável a prestador de água? Não encontrei. Quais obrigações a Resolução CNSIC 20/2026 impõe a operadores privados? (conteúdo lido só de fonte secundária)
+11. **Prazo de 3 dias úteis de incidente (ANPD):** quem comunica quando o incidente ocorre no SIGSAN (operador)? Qual a cláusula contratual padrão?
+12. **Lei 14.133 art. 93:** customizações do SIGSAN contratadas por autarquia como "serviço técnico especializado de desenvolvimento de software" exigem cessão dos direitos patrimoniais? Como proteger o código-base do SaaS?
+13. **Lei 14.063 art. 16 (código aberto):** o SIGSAN é "sistema desenvolvido exclusivamente" por órgão público? Em hipótese de co-desenvolvimento com um SAAE, aplica-se?
+14. **MP 1.393/2026 (CDC art. 57)** foi convertida em lei? Não afeta requisitos, mas altera o teto de multa administrativa.
+15. **Aviso prévio do corte por regra federal:** a Lei 13.460 não fixa o número de dias; a regra vem do regulador. Há decreto de regulamentação federal da multa do art. 5º p.u.? **NÃO CONFIRMADO.**
+
+---
+
+## Anexo A. Principais achados no código (para consulta rápida)
+
+| Tema | Arquivo | O que há |
+|---|---|---|
+| Assinatura | `grs/sigsan-mtr/src/main/java/br/com/sigsan/grs/mtr/integration/GovBrSignatureService.java` | Só SHA-256; `sign()` devolve `PENDING`; sem certificado |
+| Assinatura | `grs/sigsan-mtr/.../service/MtrService.java` (linha 39) | `GovBrSignatureService` injetado e nunca chamado; assinaturas são strings do request |
+| Assinatura | `grs/sigsan-mtr/.../domain/WasteMtr.java` (linhas 91, 95, 99, 103) | Campos de assinatura em texto livre e `hashChain` |
+| Auditoria | `shared/sigsan-core/src/main/resources/db/migration/core/V1__create_core_schema.sql` | `audit_log` com `ip_address VARCHAR(45)`, `user_agent`; somente INSERT/SELECT para a aplicação |
+| Auditoria | `platform/sigsan-platform/src/main/resources/db/migration/tenant/V1_1__create_tenant_schema.sql` (linhas 267-328) | Trigger de CREATE/UPDATE/DELETE; sem IP, sem LOGIN/READ |
+| Autenticação | `platform/sigsan-platform/.../tenant/KeycloakAdminService.java` | Força bruta ativa; política de senha; sem OTP obrigatório |
+| LGPD | `compliance/sigsan-lgpd/.../engine/DataSubjectRightsEngine.java` (linha 29) | Prazo único de 15 dias |
+| LGPD | `compliance/sigsan-lgpd/.../engine/RetentionEngine.java` | Expira consentimentos e solicitações; **não elimina** nada |
+| Configuração | `shared/sigsan-core/.../V1__create_core_schema.sql` (linhas 107-118) | `tenant_settings.tenant_id UNIQUE` |
+| Cadastro | `V1_1__create_tenant_schema.sql` (linhas 84-108) | `consumer_units` sem CPF, telefone e e-mail do cliente |
+| Frontend | `frontend/index.html`, `frontend/src/components/Layout.tsx` | `lang="pt-BR"`; sem `aria-*` |
+| Atendimento | `commercial/sigsan-portal` | Diretório vazio |
+| Doc de planejamento | `docs/levantamento/04-gsan-operacional-atendimento-seguranca-api.md` | RA/protocolo (E1, E2), pesquisa de satisfação (E21), portal (E22), log de acesso a dado pessoal (E16), conta em braile (§6.3) |

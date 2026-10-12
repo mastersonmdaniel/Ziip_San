@@ -1,0 +1,14 @@
+package br.com.sigsan.grs.mtr.repository;
+
+import br.com.sigsan.grs.mtr.domain.WasteGenerator;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+@Repository
+public interface WasteGeneratorRepository extends JpaRepository<WasteGenerator, UUID> {
+
+    Optional<WasteGenerator> findByIdAndTenantId(UUID id, UUID tenantId);
+}

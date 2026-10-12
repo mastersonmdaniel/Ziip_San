@@ -1,0 +1,25 @@
+# Build
+target/
+dist/
+coverage/
+node_modules/
+*.tsbuildinfo
+
+# Ambiente e segredos: so o exemplo e versionado
+.env
+.env.*
+!.env.example
+
+# Artefatos locais
+*.log
+*.tar
+*.tmp
+*.bak
+
+# IDE e sistema
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+desktop.ini

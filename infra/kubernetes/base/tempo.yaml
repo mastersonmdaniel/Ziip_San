@@ -1,0 +1,132 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tempo
+  namespace: sigsan
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tempo
+  template:
+    metadata:
+      labels:
+        app: tempo
+    spec:
+      containers:
+      - name: tempo
+        image: grafana/tempo:2.4.0
+        args:
+        - -config.file=/etc/tempo.yaml
+        ports:
+        - containerPort: 3200
+          name: http
+        - containerPort: 4317
+          name: otlp-grpc
+        - containerPort: 4318
+          name: otlp-http
+        - containerPort: 9411
+          name: zipkin
+        volumeMounts:
+        - name: config
+          mountPath: /etc/tempo
+        - name: data
+          mountPath: /var/tempo
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "1Gi"
+          limits:
+            cpu: "1000m"
+            memory: "4Gi"
+        livenessProbe:
+          httpGet:
+            path: /ready
+            port: 3200
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 3200
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      volumes:
+      - name: config
+        configMap:
+          name: tempo-config
+      - name: data
+        persistentVolumeClaim:
+          claimName: tempo-data
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tempo-config
+  namespace: sigsan
+data:
+  tempo.yaml: |
+    server:
+      http_listen_port: 3200
+      grpc_listen_port: 9095
+    distributor:
+      receivers:
+        otlp:
+          protocols:
+            http:
+              endpoint: 0.0.0.0:4318
+            grpc:
+              endpoint: 0.0.0.0:4317
+        zipkin:
+          endpoint: 0.0.0.0:9411
+    ingester:
+      trace_idle_period: 30s
+      max_block_duration: 30m
+      max_block_bytes: 1_000_000
+      complete_block_timeout: 30m
+    querier:
+      frontend_workers: 2
+    query_frontend:
+      compress_responses: true
+    storage:
+      trace:
+        backend: local
+        local:
+          path: /var/tempo
+        block:
+          bloom_filter_false_positive: 0.05
+        wal:
+          path: /var/tempo/wal
+    limits:
+      ingestion_rate_limit: 10MB
+      ingestion_burst_size: 20MB
+      per_stream_rate_limit: 1MB
+      max_bytes_per_trace: 50MB
+    compactor:
+      compaction_window: 1h
+      compaction_block_retention: 24h
+      retention: 720h
+      compaction_concurrency: 4
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tempo
+  namespace: sigsan
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3200
+    targetPort: 3200
+    name: http
+  - port: 4317
+    targetPort: 4317
+    name: otlp-grpc
+  - port: 4318
+    targetPort: 4318
+    name: otlp-http
+  - port: 9411
+    targetPort: 9411
+    name: zipkin
+  selector:
+    app: tempo

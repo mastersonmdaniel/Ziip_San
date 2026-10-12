@@ -1,0 +1,10 @@
+* text=auto
+
+# Executados dentro de containers Linux: sempre LF
+*.sh   text eol=lf
+*.sql  text eol=lf
+
+*.png  binary
+*.jpg  binary
+*.pdf  binary
+*.jar  binary

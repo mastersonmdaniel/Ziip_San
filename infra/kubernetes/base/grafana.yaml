@@ -1,0 +1,218 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+  namespace: sigsan
+data:
+  grafana.ini: |
+    [server]
+    domain = grafana.sigsan.local
+    root_url = %(protocol)s://%(domain)s/
+    serve_from_sub_path = true
+
+    [database]
+    type = postgres
+    host = postgres-primary:5432
+    name = grafana
+    user = sigsan_app
+    password = ${POSTGRES_PASSWORD}
+
+    [security]
+    admin_user = admin
+    admin_password = ${GRAFANA_PASSWORD}
+    secret_key = ${GRAFANA_SECRET_KEY}
+    login_remember_days = 7
+    cookie_secure = true
+    cookie_samesite = lax
+
+    [auth]
+    disable_login_form = false
+    disable_signout_menu = false
+
+    [auth.generic_oauth]
+    name = Keycloak
+    enabled = true
+    allow_sign_up = true
+    client_id = sigsan-grafana
+    client_secret = ${GRAFANA_OAUTH_SECRET}
+    scopes = openid profile email
+    auth_url = https://keycloak.sigsan.local/realms/sigsan/protocol/openid-connect/auth
+    token_url = https://keycloak.sigsan.local/realms/sigsan/protocol/openid-connect/token
+    api_url = https://keycloak.sigsan.local/realms/sigsan/protocol/openid-connect/userinfo
+    role_attribute_path = contains(realm_access.roles[*], 'admin') && 'Admin' || contains(realm_access.roles[*], 'editor') && 'Editor' || 'Viewer'
+
+    [plugins]
+    allow_loading_unsigned_plugins = grafana-piechart-panel,grafana-worldmap-panel
+
+    [log]
+    mode = console
+    level = info
+
+    [metrics]
+    enabled = true
+    interval_seconds = 10
+
+    [snapshots]
+    external_enabled = true
+    external_snapshot_url = https://snapshots-origin.raintank.io
+    external_snapshot_name = Publish to snapshots.raintank.io
+
+    [unified_alerting]
+    enabled = true
+
+    [alerting]
+    enabled = true
+    execute_alerts = true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: sigsan
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      access: proxy
+      url: http://prometheus:9090
+      isDefault: true
+      editable: false
+      jsonData:
+        timeInterval: "15s"
+        queryTimeout: "60s"
+
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki:3100
+      editable: false
+      jsonData:
+        derivedFields:
+        - name: traceID
+          matcherRegex: "trace_id=(\\w+)"
+          url: "http://tempo:3200/tempo/traces/${__value.raw}"
+          datasourceUid: tempo
+
+    - name: Tempo
+      type: tempo
+      access: proxy
+      url: http://tempo:3200
+      editable: false
+      jsonData:
+        httpMethod: GET
+        tracesToLogs:
+          datasourceUid: loki
+          tags: ["job", "namespace", "pod"]
+          spanStartTimeShift: "1h"
+          spanEndTimeShift: "-1h"
+
+    - name: Pyroscope
+      type: pyroscope
+      access: proxy
+      url: http://pyroscope:4040
+      editable: false
+
+    - name: PostgreSQL
+      type: postgres
+      access: proxy
+      url: postgres-primary:5432
+      database: sigsan
+      user: sigsan_app
+      secureJsonData:
+        password: ${POSTGRES_PASSWORD}
+      jsonData:
+        sslmode: "disable"
+        maxOpenConns: 100
+        maxIdleConns: 10
+        connMaxLifetime: 14400
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: sigsan
+data:
+  sigsan-overview.json: |
+    {
+      "dashboard": {
+        "title": "SIGSAN Overview",
+        "tags": ["sigsan", "overview"],
+        "timezone": "browser",
+        "panels": [
+          {
+            "title": "Request Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(http_requests_total[5m])",
+                "legendFormat": "{{job}} - {{method}} {{path}}"
+              }
+            ]
+          },
+          {
+            "title": "Error Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(http_requests_total{status=~\"5..\"}[5m])",
+                "legendFormat": "{{job}} - {{status}}"
+              }
+            ]
+          },
+          {
+            "title": "Latency (p95)",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+                "legendFormat": "{{job}}"
+              }
+            ]
+          },
+          {
+            "title": "Active Tenants",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "count(sigsan_tenant_status{status=\"ACTIVE\"})"
+              }
+            ]
+          },
+          {
+            "title": "Water Balance NRW %",
+            "type": "gauge",
+            "targets": [
+              {
+                "expr": "sigsan_nrw_percentage",
+                "legendFormat": "{{dma}}"
+              }
+            ]
+          },
+          {
+            "title": "Active Leaks",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "count(sigsan_leak_status{status=~\"DETECTED|CONFIRMED|IN_REPAIR\"})"
+              }
+            ]
+          },
+          {
+            "title": "Water Quality Alerts",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "count(sigsan_quality_alert{status=\"ACTIVE\"})"
+              }
+            ]
+          }
+        ],
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        },
+        "refresh": "30s"
+      }
+    }

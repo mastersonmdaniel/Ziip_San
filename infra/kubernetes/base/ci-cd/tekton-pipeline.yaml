@@ -1,0 +1,236 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: sigsan-build
+  namespace: sigsan
+spec:
+  params:
+  - name: MODULE
+    type: string
+    description: "Module to build (e.g., sigsan-billing, sigsan-losses, sigsan-gis, etc.)"
+  - name: MAVEN_OPTS
+    type: string
+    default: "-DskipTests=false -Dmaven.test.failure.ignore=false"
+  - name: JAVA_VERSION
+    type: string
+    default: "21"
+  workspaces:
+  - name: source
+    description: "Source code workspace"
+  - name: maven-cache
+    description: "Maven cache"
+    optional: true
+  steps:
+  - name: setup-java
+    image: eclipse-temurin:21-jdk
+    script: |
+      #!/bin/bash
+      echo "Java version:"
+      java -version
+      echo "Maven version:"
+      mvn -version
+  - name: build
+    image: maven:3.9-eclipse-temurin-21
+    workingDir: $(workspaces.source.path)/$(params.MODULE)
+    env:
+    - name: MAVEN_OPTS
+      value: "$(params.MAVEN_OPTS)"
+    script: |
+      #!/bin/bash
+      set -e
+      echo "Building module: $(params.MODULE)"
+      mvn clean package $(params.MAVEN_OPTS) -Dmaven.repo.local=$(workspaces.maven-cache.path)
+      echo "Build completed successfully"
+  - name: test
+    image: maven:3.9-eclipse-temurin-21
+    workingDir: $(workspaces.source.path)/$(params.MODULE)
+    env:
+    - name: MAVEN_OPTS
+      value: "$(params.MAVEN_OPTS)"
+    script: |
+      #!/bin/bash
+      set -e
+      echo "Running tests for module: $(params.MODULE)"
+      mvn test $(params.MAVEN_OPTS) -Dmaven.repo.local=$(workspaces.maven-cache.path)
+      echo "Tests completed successfully"
+  - name: docker-build
+    image: gcr.io/kaniko-project/executor:v1.12.0
+    env:
+    - name: DOCKER_CONFIG
+      value: /tekton/home/.docker
+    script: |
+      /kaniko/executor \
+        --context $(workspaces.source.path) \
+        --dockerfile $(workspaces.source.path)/$(params.MODULE)/Dockerfile \
+        --destination $(params.REGISTRY)/sigsan-$(params.MODULE):$(params.VERSION) \
+        --cache=true \
+        --cache-repo=$(params.REGISTRY)/sigsan-cache \
+        --build-arg MAVEN_OPTS="$(params.MAVEN_OPTS)"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: sigsan-test-integration
+  namespace: sigsan
+spec:
+  params:
+  - name: MODULES
+    type: array
+    default: ["sigsan-billing", "sigsan-collection", "sigsan-dunning", "sigsan-losses", "sigsan-quality", "sigsan-gis", "sigsan-mtr", "sigsan-lgpd"]
+  workspaces:
+  - name: source
+  - name: maven-cache
+  steps:
+  - name: integration-test
+    image: maven:3.9-eclipse-temurin-21
+    workingDir: $(workspaces.source.path)
+    env:
+    - name: MAVEN_OPTS
+      value: "-DskipTests=false -Dmaven.test.failure.ignore=false"
+    script: |
+      #!/bin/bash
+      set -e
+      for module in "$(params.MODULES[*])"; do
+        echo "Running integration tests for $module"
+        cd "$module"
+        mvn verify -DskipUnitTests=true -Dmaven.repo.local=$(workspaces.maven-cache.path)
+        cd ..
+      done
+      echo "All integration tests passed"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: sigsan-deploy
+  namespace: sigsan
+spec:
+  params:
+  - name: ENVIRONMENT
+    type: string
+    default: "dev"
+  - name: MODULES
+    type: array
+    default: ["all"]
+  - name: REGISTRY
+    type: string
+    default: "ghcr.io/sigsan"
+  workspaces:
+  - name: source
+  steps:
+  - name: deploy
+    image: bitnami/kubectl:latest
+    script: |
+      #!/bin/bash
+      set -e
+      ENV=$(params.ENVIRONMENT)
+      REGISTRY=$(params.REGISTRY)
+      
+      for module in "$(params.MODULES[*])"; do
+        if [ "$module" = "all" ]; then
+          # Deploy all modules
+          for m in sigsan-billing sigsan-collection sigsan-dunning sigsan-losses sigsan-quality sigsan-gis sigsan-mtr sigsan-lgpd sigsan-portal sigsan-accounting sigsan-field sigsan-metering sigsan-reading sigsan-assets sigsan-maintenance; do
+            echo "Deploying $m to $ENV"
+            kubectl set image deployment/$m $m=$REGISTRY/sigsan-$m:latest -n sigsan-$ENV
+            kubectl rollout status deployment/$m -n sigsan-$ENV --timeout=300s
+          done
+        else
+          echo "Deploying $module to $ENV"
+          kubectl set image deployment/$module $module=$REGISTRY/sigsan-$module:latest -n sigsan-$ENV
+          kubectl rollout status deployment/$module -n sigsan-$ENV --timeout=300s
+        fi
+      done
+      
+      echo "Deployment completed"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: sigsan-ci-cd
+  namespace: sigsan
+spec:
+  workspaces:
+  - name: source
+  - name: maven-cache
+  params:
+  - name: MODULE
+    type: string
+    default: "all"
+  - name: ENVIRONMENT
+    type: string
+    default: "dev"
+  - name: REGISTRY
+    type: string
+    default: "ghcr.io/sigsan"
+  - name: VERSION
+    type: string
+    default: "latest"
+  tasks:
+  - name: build
+    taskRef:
+      name: sigsan-build
+    workspaces:
+    - name: source
+      workspace: source
+    - name: maven-cache
+      workspace: maven-cache
+    params:
+    - name: MODULE
+      value: "$(params.MODULE)"
+    - name: VERSION
+      value: "$(params.VERSION)"
+  - name: test
+    taskRef:
+      name: sigsan-test-integration
+    workspaces:
+    - name: source
+      workspace: source
+    - name: maven-cache
+      workspace: maven-cache
+    runAfter:
+    - build
+  - name: deploy
+    taskRef:
+      name: sigsan-deploy
+    workspaces:
+    - name: source
+      workspace: source
+    params:
+    - name: ENVIRONMENT
+      value: "$(params.ENVIRONMENT)"
+    - name: REGISTRY
+      value: "$(params.REGISTRY)"
+    runAfter:
+    - test
+  - name: smoke-test
+    taskRef:
+      name: sigsan-smoke-test
+    params:
+    - name: ENVIRONMENT
+      value: "$(params.ENVIRONMENT)"
+    runAfter:
+    - deploy
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: sigsan-ci-cd-run
+  namespace: sigsan
+spec:
+  pipelineRef:
+    name: sigsan-ci-cd
+  workspaces:
+  - name: source
+    persistentVolumeClaim:
+      claimName: sigsan-source
+  - name: maven-cache
+    persistentVolumeClaim:
+      claimName: sigsan-maven-cache
+  params:
+  - name: MODULE
+    value: "all"
+  - name: ENVIRONMENT
+    value: "dev"
+  - name: REGISTRY
+    value: "ghcr.io/sigsan"
+  - name: VERSION
+    value: "latest"
