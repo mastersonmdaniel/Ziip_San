@@ -1,4 +1,4 @@
-package br.com.sigsan.commercial.registry.rules;
+package br.com.sigsan.core.document;
 
 import java.util.Locale;
 

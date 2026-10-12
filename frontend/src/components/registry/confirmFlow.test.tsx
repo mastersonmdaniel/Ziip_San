@@ -15,6 +15,8 @@ const EXISTING: CrudItem = { id: 'item-1', version: 7, name: 'TESTE Item', econo
 function makeClient(overrides: Partial<Client> = {}): Client {
   return {
     path: 'tests',
+    personalSearch: false,
+    search: vi.fn().mockResolvedValue({ content: [EXISTING], page: 0, size: 25, totalElements: 1, totalPages: 1 }),
     list: vi.fn().mockResolvedValue({ content: [EXISTING], page: 0, size: 25, totalElements: 1, totalPages: 1 }),
     get: vi.fn().mockResolvedValue({ ...EXISTING, version: 8 }),
     create: vi.fn().mockResolvedValue({ ...EXISTING, id: 'novo', version: 0 }),

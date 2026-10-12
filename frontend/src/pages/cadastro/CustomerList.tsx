@@ -48,7 +48,7 @@ export function CustomerList() {
   const [applied, setApplied] = useState<Filters>(EMPTY)
   const [page, setPage] = useState(0)
   const params = toParams(applied, page)
-  const list = useQuery({ queryKey: ['customers', params], queryFn: ({ signal }) => customers.list(params, signal) })
+  const list = useQuery({ queryKey: ['customers', params], queryFn: ({ signal }) => customers.search(params, signal) })
 
   const onSubmit = (event: FormEvent) => {
     event.preventDefault()

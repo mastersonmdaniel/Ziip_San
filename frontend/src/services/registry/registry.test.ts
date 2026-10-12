@@ -100,6 +100,30 @@ describe('cliente de recurso', () => {
     expect(config?.params).toEqual({ q: 'ab', page: 1, sort: 'name,asc', size: 25 })
   })
 
+  it('documento nunca vai na URL: parâmetro com cara de CPF/CNPJ é recusado antes da requisição', async () => {
+    expect(() => cleanParams({ q: '529.982.247-25' })).toThrow(/CPF\/CNPJ/)
+    expect(() => cleanParams({ doc: '52998224725' })).toThrow()
+    expect(() => cleanParams({ q: '11.222.333/0001-81' })).toThrow()
+    expect(() => cleanParams({ q: '12.ABC.345/01DE-35' })).toThrow()
+    expect(cleanParams({ q: 'Rua das Flores', cep: '70000000' })).toEqual({ q: 'Rua das Flores', cep: '70000000' })
+    await expect(things.list({ q: '52998224725' })).rejects.toThrow()
+    expect(request).not.toHaveBeenCalled()
+  })
+
+  it('recurso de pessoa: busca livre só por search() (POST com corpo); list() recusa q', async () => {
+    const people = createResourceClient<Thing, Thing, { name: string }>('people', { personalSearch: true })
+    await expect(people.list({ q: 'Fulana' })).rejects.toThrow(/search\(\)/)
+    expect(request).not.toHaveBeenCalled()
+
+    request.mockResolvedValue(response(200, { content: [], page: 0, size: 25, totalElements: 0, totalPages: 0 }))
+    await people.search({ q: '529.982.247-25', page: 0 })
+    const config = request.mock.calls[0]?.[0]
+    expect(config?.method).toBe('POST')
+    expect(config?.url).toBe('/registry/people/search')
+    expect(config?.params).toBeUndefined()
+    expect(config?.data).toEqual({ q: '529.982.247-25', page: 0, size: 25 })
+  })
+
   it('PUT envia a version no corpo e os confirmTokens aceitos', async () => {
     request.mockResolvedValue(response(200, { id: 'x', version: 4, name: 'n' }))
     await things.update('x', { name: 'n' }, 3, { confirmTokens: ['tok-1'] })

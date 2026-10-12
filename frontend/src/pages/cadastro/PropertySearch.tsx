@@ -106,7 +106,7 @@ export function PropertySearch() {
   const params = toListParams(applied, page)
   const list = useQuery({
     queryKey: ['consumer-units', params],
-    queryFn: ({ signal }) => consumerUnits.list(params, signal),
+    queryFn: ({ signal }) => consumerUnits.search(params, signal),
   })
 
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) => setDraft((d) => ({ ...d, [key]: value }))

@@ -22,8 +22,36 @@ export async function request<T>(config: AxiosRequestConfig): Promise<T> {
   }
 }
 
-/** Remove parâmetros vazios para não poluir a URL (nunca colocar dado pessoal aqui). */
+/**
+ * Parece CPF ou CNPJ (numérico ou alfanumérico), com ou sem pontuação? Usado para impedir que um
+ * documento vá na URL, onde fica gravado em log de servidor, proxy e histórico do navegador.
+ */
+export function looksLikeDocument(value: unknown): boolean {
+  if (typeof value !== 'string') return false
+  const compact = value.replace(/[\s.\-/]/g, '').toUpperCase()
+  if (/^\d{11}$/.test(compact) || /^\d{14}$/.test(compact)) return true
+  return /^[0-9A-Z]{12}\d{2}$/.test(compact) && /\d/.test(compact.slice(0, 12))
+}
+
+/**
+ * Remove parâmetros vazios para não poluir a URL. Recusa (lança erro) valor com cara de CPF/CNPJ:
+ * dado pessoal nunca vai na URL; a busca por documento é POST com corpo (ResourceClient.search).
+ */
 export function cleanParams(params: Record<string, FilterValue> | undefined): Record<string, string | number | boolean> {
+  const out: Record<string, string | number | boolean> = {}
+  if (!params) return out
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null || value === '') continue
+    if (looksLikeDocument(value)) {
+      throw new Error(`parâmetro "${key}" parece CPF/CNPJ: documento não vai na URL, use search() (POST)`)
+    }
+    out[key] = value
+  }
+  return out
+}
+
+/** Corpo de busca: mesmos filtros de list(), sem vazios, enviados no corpo de um POST. */
+function cleanBody(params: Record<string, FilterValue> | undefined): Record<string, string | number | boolean> {
   const out: Record<string, string | number | boolean> = {}
   if (!params) return out
   for (const [key, value] of Object.entries(params)) {
@@ -60,7 +88,14 @@ export const DEFAULT_PAGE_SIZE = 25
 
 export interface ResourceClient<TItem extends Versioned, TSummary, TInput> {
   readonly path: string
+  /**
+   * Recurso de pessoa (clientes, imóveis com titular): a busca livre (q = nome ou documento) só vai
+   * pelo corpo de search(). list() recusa q.
+   */
+  readonly personalSearch: boolean
   list(params?: ListParams, signal?: AbortSignal): Promise<Page<TSummary>>
+  /** Busca por POST /registry/{path}/search com os filtros no corpo, nunca na URL. */
+  search(params?: ListParams, signal?: AbortSignal): Promise<Page<TSummary>>
   get(id: Uuid, signal?: AbortSignal): Promise<TItem>
   create(input: TInput, options?: WriteOptions): Promise<TItem>
   /** `version` é enviado no corpo do PUT (controle otimista). */
@@ -83,17 +118,38 @@ export function resourceUrl(path: string, id?: Uuid, suffix?: string): string {
   return parts.join('/')
 }
 
+export interface ResourceOptions {
+  /** Ver ResourceClient.personalSearch. */
+  personalSearch?: boolean
+}
+
 export function createResourceClient<TItem extends Versioned, TSummary = TItem, TInput = Omit<TItem, keyof Versioned>>(
   path: string,
+  options: ResourceOptions = {},
 ): ResourceClient<TItem, TSummary, TInput> {
+  const personalSearch = options.personalSearch === true
   return {
     path,
+    personalSearch,
     async list(params, signal) {
+      if (personalSearch && typeof params?.q === 'string' && params.q.trim() !== '') {
+        throw new Error(`busca livre em "${path}" vai por search() (POST): nome e documento não vão na URL`)
+      }
       const size = params?.size ?? DEFAULT_PAGE_SIZE
       const raw = await request<unknown>({
         method: 'GET',
         url: resourceUrl(path),
         params: cleanParams({ ...params, size }),
+        signal,
+      })
+      return normalizePage<TSummary>(raw, size)
+    },
+    async search(params, signal) {
+      const size = params?.size ?? DEFAULT_PAGE_SIZE
+      const raw = await request<unknown>({
+        method: 'POST',
+        url: resourceUrl(path, undefined, 'search'),
+        data: cleanBody({ ...params, size }),
         signal,
       })
       return normalizePage<TSummary>(raw, size)

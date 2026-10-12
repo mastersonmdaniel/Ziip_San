@@ -25,6 +25,9 @@ export interface LookupSource<T extends LookupItem> {
   /** Identifica o recurso na cache de consultas. */
   path: string
   list(params?: ListParams, signal?: AbortSignal): Promise<Page<T>>
+  /** Fonte de pessoa: o texto digitado vai pelo corpo de search() (POST), nunca na URL. */
+  personalSearch?: boolean
+  search?(params?: ListParams, signal?: AbortSignal): Promise<Page<T>>
 }
 
 export interface LookupFieldProps<T extends LookupItem> {
@@ -106,7 +109,10 @@ export function LookupField<T extends LookupItem>({
 
   const query = useQuery({
     queryKey: ['lookup', source.path, filterKey, debounced],
-    queryFn: ({ signal }) => source.list({ ...filters, q: debounced, page: 0, size: PAGE_SIZE }, signal),
+    queryFn: ({ signal }) => {
+      const params = { ...filters, q: debounced, page: 0, size: PAGE_SIZE }
+      return source.personalSearch && source.search ? source.search(params, signal) : source.list(params, signal)
+    },
     enabled: open && !disabled,
     staleTime: 30_000,
     retry: false,

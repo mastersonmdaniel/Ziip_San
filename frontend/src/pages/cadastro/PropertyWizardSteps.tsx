@@ -487,8 +487,9 @@ export function StepCharacteristics({ form, sewerRequiresDischarge }: Step5Props
 
 const unitSource = {
   path: consumerUnits.path,
+  // A busca de imóvel aceita nome ou documento do titular: vai pelo corpo (POST), não pela URL.
   async list(params?: ListParams, signal?: AbortSignal): Promise<Page<LookupItem>> {
-    const page = await consumerUnits.list(params, signal)
+    const page = await consumerUnits.search(params, signal)
     return {
       ...page,
       content: page.content.map((u: ConsumerUnitSummary) => ({ id: u.id, code: formatMatricula(u.registration, u.registrationDv), name: u.addressText })),

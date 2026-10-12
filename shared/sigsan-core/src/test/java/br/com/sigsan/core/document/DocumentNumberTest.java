@@ -1,6 +1,6 @@
-package br.com.sigsan.commercial.registry.rules;
+package br.com.sigsan.core.document;
 
-import br.com.sigsan.commercial.registry.rules.DocumentNumber.Kind;
+import br.com.sigsan.core.document.DocumentNumber.Kind;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -24,7 +24,9 @@ import type {
 
 // ---- Imóveis ---------------------------------------------------------------------------------
 
-const consumerUnitsBase = createResourceClient<ConsumerUnit, ConsumerUnitSummary, ConsumerUnitInput>('consumer-units')
+const consumerUnitsBase = createResourceClient<ConsumerUnit, ConsumerUnitSummary, ConsumerUnitInput>('consumer-units', {
+  personalSearch: true,
+})
 
 export const consumerUnits = {
   ...consumerUnitsBase,
@@ -45,7 +47,7 @@ export const consumerUnitDrafts = createDraftClient<unknown, ConsumerUnitStepPay
 
 // ---- Clientes --------------------------------------------------------------------------------
 
-const customersBase = createResourceClient<Customer, CustomerSummary, CustomerInput>('customers')
+const customersBase = createResourceClient<Customer, CustomerSummary, CustomerInput>('customers', { personalSearch: true })
 
 export const customers = {
   ...customersBase,

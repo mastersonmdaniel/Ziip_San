@@ -71,7 +71,7 @@ const PAGE_AXE = { rules: { region: { enabled: false } } }
 
 describe('acessibilidade (axe) das telas principais', () => {
   it('S1 Pesquisa de imóveis', async () => {
-    useApi({ ...emptyCatalogs, 'GET /registry/consumer-units': page([TEST_UNIT_SUMMARY]) })
+    useApi({ ...emptyCatalogs, 'POST /registry/consumer-units/search': page([TEST_UNIT_SUMMARY]) })
     const { container } = renderWithProviders(<PropertySearch />)
     expect(await screen.findByText('1234567-9')).toBeInTheDocument()
     expect(await axe(container, PAGE_AXE)).toHaveNoViolations()
@@ -115,7 +115,7 @@ describe('acessibilidade (axe) das telas principais', () => {
   it('S4 Cliente: lista, formulário e ficha', async () => {
     useApi({
       ...emptyCatalogs,
-      'GET /registry/customers': page([TEST_CUSTOMER_SUMMARY]),
+      'POST /registry/customers/search': page([TEST_CUSTOMER_SUMMARY]),
       'GET /registry/customers/cus-1': TEST_CUSTOMER,
     })
     const list = renderWithProviders(<CustomerList />)
@@ -188,7 +188,7 @@ describe('acessibilidade (axe) das telas principais', () => {
     useApi({
       ...emptyCatalogs,
       'GET /auth/me': TEST_USER,
-      'GET /registry/consumer-units': page([TEST_UNIT_SUMMARY]),
+      'POST /registry/consumer-units/search': page([TEST_UNIT_SUMMARY]),
     })
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     const { container } = render(
@@ -258,34 +258,36 @@ describe('navegação honesta: o menu só aponta para telas que existem', () => 
 })
 
 describe('S1: sem dados falsos e LGPD', () => {
-  it('mostra o documento só mascarado e envia a busca em q', async () => {
+  it('mostra o documento só mascarado e envia a busca no corpo (POST), nunca na URL', async () => {
     const user = userEvent.setup()
-    const api = useApi({ ...emptyCatalogs, 'GET /registry/consumer-units': page([TEST_UNIT_SUMMARY]) })
+    const api = useApi({ ...emptyCatalogs, 'POST /registry/consumer-units/search': page([TEST_UNIT_SUMMARY]) })
     renderWithProviders(<PropertySearch />)
     expect(await screen.findByText('***.TST.000-**')).toBeInTheDocument()
     expect(screen.getByText('001.002.003.0004.005')).toBeInTheDocument()
     await user.type(screen.getByLabelText('Busca livre'), 'maria')
     await user.click(screen.getByRole('button', { name: /Pesquisar/ }))
     await waitFor(() => {
-      const last = api.mock.calls.filter((c) => c[0].url === '/registry/consumer-units').slice(-1)[0]?.[0]
-      expect(last?.params).toMatchObject({ q: 'maria', page: 0, size: 25 })
+      const last = api.mock.calls.filter((c) => c[0].url === '/registry/consumer-units/search').slice(-1)[0]?.[0]
+      expect(last?.method).toBe('POST')
+      expect(last?.params).toBeUndefined()
+      expect(last?.data).toMatchObject({ q: 'maria', page: 0, size: 25 })
     })
   })
 
-  it('inscrição completa tem prioridade e vai formatada em q', async () => {
+  it('inscrição completa tem prioridade e vai formatada em q, no corpo', async () => {
     const user = userEvent.setup()
-    const api = useApi({ ...emptyCatalogs, 'GET /registry/consumer-units': page([]) })
+    const api = useApi({ ...emptyCatalogs, 'POST /registry/consumer-units/search': page([]) })
     renderWithProviders(<PropertySearch />)
     await user.type(await screen.findByLabelText('Inscrição'), '0010020030004005')
     await user.click(screen.getByRole('button', { name: /Pesquisar/ }))
     await waitFor(() => {
-      const last = api.mock.calls.filter((c) => c[0].url === '/registry/consumer-units').slice(-1)[0]?.[0]
-      expect(last?.params).toMatchObject({ q: '001.002.003.0004.005' })
+      const last = api.mock.calls.filter((c) => c[0].url === '/registry/consumer-units/search').slice(-1)[0]?.[0]
+      expect(last?.data).toMatchObject({ q: '001.002.003.0004.005' })
     })
   })
 
   it('lista vazia mostra o estado vazio, sem linhas inventadas', async () => {
-    useApi({ ...emptyCatalogs, 'GET /registry/consumer-units': page([]) })
+    useApi({ ...emptyCatalogs, 'POST /registry/consumer-units/search': page([]) })
     renderWithProviders(<PropertySearch />)
     expect(await screen.findByText('Nenhum imóvel encontrado com estes filtros.')).toBeInTheDocument()
     expect(screen.queryByRole('table')).not.toBeInTheDocument()
