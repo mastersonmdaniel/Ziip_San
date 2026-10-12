@@ -37,6 +37,12 @@ public class KeycloakAdminService {
     private final String masterRealm = "master";
 
     public void createTenantRealm(UUID tenantId, String schemaName, TenantProvisioningService.TenantProvisioningRequest request) {
+        if (keycloakProvider.getIfAvailable() == null) {
+            // Realm unico "sigsan" (decisao D5): o tenant entra pelo atributo tenant_id do usuario,
+            // nao por um realm proprio. Com a administracao desligada nao ha o que criar.
+            log.info("Keycloak admin desligado: realm unico, nenhum realm criado para o tenant {}", schemaName);
+            return;
+        }
         String realmName = "sigsan-" + schemaName;
 
         try {

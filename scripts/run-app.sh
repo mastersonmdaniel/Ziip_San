@@ -34,4 +34,5 @@ MSYS_NO_PATHCONV=1 docker run --rm --name sigsan-app -p 127.0.0.1:8090:8090 \
   -e SIGSAN_DB_APP_PASSWORD -e SIGSAN_DB_MIGRATOR_PASSWORD \
   -e SIGSAN_OIDC_JWK_SET_URI="http://host.docker.internal:8080/realms/sigsan/protocol/openid-connect/certs" \
   -e SIGSAN_CRYPTO_PROVIDER=dev-env -e SIGSAN_DEV_MASTER_KEY \
+  -e SIGSAN_DEV_TENANT_ID -e SIGSAN_DEV_TENANT_SCHEMA \
   eclipse-temurin:21-jre java -jar "/app/$(basename "$JAR")"
