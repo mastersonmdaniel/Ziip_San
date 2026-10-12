@@ -4,6 +4,9 @@
 - **Decisor:** dono do produto
 - **Afeta:** ADR-0006 (BFF), ADR-0009 (desenvolvimento fora do Drive), ADR-0021 (Sobre); detalhes em
   `docs/arquitetura/MARCA-E-TEMAS.md` §§2, 3, 5 e 6
+- **Ajuste de 12/10/2026 (plano v2.3), antes de qualquer implementação:** item 4 passa a incluir na renomeação os
+  códigos de contrato da API em inglês (prefixo `urn:ziipsan:problem:` e códigos de problema, tabela do plano P0.33),
+  por decisão do dono do produto; mensagens ao usuário seguem em português.
 
 ## Contexto
 
@@ -29,7 +32,10 @@ Clientes querem a própria marca em contas, documentos e portal.
 3. **Antes do login**, a marca do tenant vem do subdomínio; Keycloak Organizations é avaliado na P0.13.
 4. **Renomeação completa `sigsan` → `ziipsan` no P0**, como tarefa única, na ordem de MARCA-E-TEMAS §5.2, com todos os
    testes. Inclui o contexto HKDF, que passa a `ziipsan/enc/v1` e `ziipsan/bidx/v1` e fica **congelado para sempre**.
-   URN de erro, prefixo MQTT, realm, audiência e emissor também ficam congelados.
+   Inclui também a URN de erro, que passa de `urn:sigsan:problema:` a `urn:ziipsan:problem:`, com os códigos de
+   problema em inglês (`versao-desatualizada` → `stale-version`, `nao-encontrado` → `not-found`; lista no plano
+   P0.33); `title` e `detail` continuam em português. URN e códigos, prefixo MQTT, realm, audiência e emissor também
+   ficam congelados depois da renomeação.
 5. Nada visível ao usuário traz o nome em literal; teste do CI recusa literais de marca fora do pacote.
 6. White-label por revenda não entra; o pacote é resolvido num único ponto para não impedi-lo.
 
@@ -54,8 +60,9 @@ Clientes querem a própria marca em contas, documentos e portal.
 
 - Novo módulo `shared/ziipsan-brand` com `BrandProvider`; plugin do Vite para a casca; `GET /api/v1/public/brand` e
   `GET /api/v1/public/tenant-brand`; tema do Keycloak gerado; `tenant_assets` e `TenantAssetStore`.
-- Renomeação de módulos, pacotes, propriedades, variáveis, roles, realm, URN, tópico e contexto HKDF; teste de vetor
-  fixo da cifra.
+- Renomeação de módulos, pacotes, propriedades, variáveis, roles, realm, URN e códigos de problema, tópico e contexto
+  HKDF; teste de vetor fixo da cifra; teste de contrato dos códigos de problema, com `errors.ts` do frontend e testes
+  atualizados no mesmo commit.
 - `KeycloakAdminService` removido com a P0.13.
 - `scripts/check-brand-literals.sh` no `ci.sh`.
 
@@ -77,7 +84,7 @@ Clientes querem a própria marca em contas, documentos e portal.
 
 | Tarefa | Fase |
 |---|---|
-| Renomeação `sigsan` → `ziipsan` com todos os testes, contexto HKDF congelado por teste de vetor fixo | P0 |
+| Renomeação `sigsan` → `ziipsan` com todos os testes, contexto HKDF congelado por teste de vetor fixo, URN `urn:ziipsan:problem:` e códigos de problema em inglês | P0 |
 | Pacote de marca com schema, `BrandProvider`, plugin do Vite, endpoint público e teste de literais | P0 |
 | Tema de login e de e-mail do Keycloak gerado do pacote | P0 |
 | Marca do tenant: chaves, upload de logo, subdomínio, endpoint pré-login, cabeçalho | P1 |

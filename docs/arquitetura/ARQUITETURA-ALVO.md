@@ -15,7 +15,7 @@ Monólito modular: um artefato (imagem única, não-root, assinada) executado em
 | `worker` | Outbox, lote, retorno bancário, fiscal (ADR-0003), PDFs, notificações e coletor da Central Ziip (ADR-0018); réplicas por fila; role `sigsan_worker` |
 | ClamAV | Varredura dos arquivos enviados (anexos de chamados e logos de tenant), junto do `worker`, com quarentena até a varredura; substituível pelo serviço da hospedagem (exceção do ADR-0010) |
 | `migrate` | Job antes de cada rollout; único detentor da credencial `sigsan_migrator` |
-| Keycloak 26.8 | 2+ réplicas, `start --optimized`, banco próprio; MFA conforme ADR-0007; realm `ziipsan` para backoffice e plataforma e realm `ziipsan-portal` para os consumidores do portal, com client e emissor próprios (ADR-0022) |
+| Keycloak 26.8 | 2+ réplicas, `start --optimized`, banco próprio; MFA conforme ADR-0007; realm `ziipsan` para backoffice e plataforma e realm `ziipsan-portal` para os consumidores do portal, com client e emissor próprios (ADR-0022); no portal, login por CPF/CNPJ ou e-mail e senha, sem SMS, com autenticador próprio que localiza a conta pelo índice cego do documento e eventos de login sem o identificador digitado |
 | PostgreSQL 17 + PostGIS 3.5 | Primário com standby síncrono, PITR e réplica de leitura para relatórios e SINISA (ADR-0013); pooler em modo transaction |
 | Armazenamento de objetos | Prefixo e chave por tenant; retenção imutável para documentos fiscais (XML autorizado servido como gravado, ADR-0022) |
 | Outbox | Tabela no PostgreSQL, workers com `SKIP LOCKED` (ADR-0014) |
@@ -42,7 +42,7 @@ flowchart LR
   PG --> RR[(réplica de leitura)]
   PG --> BK[(backup + WAL)]
   W --> OBJ
-  W --> EXT[SEFAZ, banco, gráfica, SMS/e-mail]
+  W --> EXT["SEFAZ, banco, gráfica, e-mail, SMS/WhatsApp (P4)"]
   API & W --> KMS[Cofre/KMS]
   API & W & KC --> OTEL[OTel Collector]
 ```

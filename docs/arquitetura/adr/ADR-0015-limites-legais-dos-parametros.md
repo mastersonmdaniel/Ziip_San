@@ -7,6 +7,9 @@
 - **Detalhamento dos parâmetros:** `docs/arquitetura/PARAMETROS-DO-TENANT.md`
 - **Ajuste de 12/10/2026 (plano v2.2), antes de qualquer implementação:** item 5 passa a fixar a carência de 30 dias
   antes da eliminação e o prazo do certificado de descarte, por decisão do dono do produto, alinhado ao RNF-42.
+- **Ajuste de 12/10/2026 (plano v2.3), antes de qualquer implementação:** item 5 passa a dizer que contestação na
+  carência e ordem judicial suspendem a eliminação, com resposta do Ziip em até 15 dias e prazo máximo de 75 dias do
+  fim do contrato, por decisão do dono do produto, alinhado ao RNF-42.
 
 ## Contexto
 
@@ -70,9 +73,12 @@ recusado. O catálogo de parâmetros apontou quatro pontos em que essa regra ún
    - demais categorias de G6 sem norma no levantamento: piso a definir.
    A eliminação ao fim do contrato e o descarte em backups seguem procedimento do Ziip SAN (classe a), com certificado
    de descarte entregue ao cliente. Carência de **30 dias** contados do fim do contrato, para o cliente baixar a
-   exportação e contestá-la; eliminação concluída e certificado emitido em até 30 dias após o fim da carência, ou
-   seja, até 60 dias do fim do contrato (RNF-42). Só `PLATFORM_OWNER` agenda e executa a eliminação
-   (`CENTRAL-ZIIP.md` §6.3).
+   exportação e contestá-la. Contestação registrada na carência **suspende** a eliminação; o Ziip responde em até 15
+   dias e, respondida a última contestação, a eliminação segue. Eliminação concluída e certificado emitido em até 30
+   dias após o fim da carência ou da resposta à última contestação, o que ocorrer depois: até 60 dias do fim do
+   contrato sem contestação e no máximo **75 dias** com ela (30 de carência, até 15 de resposta e até 30 para concluir
+   e certificar; RNF-42). Ordem judicial sempre suspende a eliminação, e o prazo não corre enquanto ela vigorar. Só
+   `PLATFORM_OWNER` agenda e executa a eliminação (`CENTRAL-ZIIP.md` §6.3).
 
 ## Consequências
 
@@ -138,4 +144,4 @@ recusado. O catálogo de parâmetros apontou quatro pontos em que essa regra ún
 | Pisos de retenção sem norma no levantamento (lote CadÚnico, documentos do pedido manual, protocolos, prova de aviso) e confirmação do piso de 10 anos | P1 |
 | Motor de retenção com recusa abaixo do piso; versão gravada no expurgo | P2 |
 | Regra de corte por motivo, exceção de emergência técnica com justificativa e foto | P3 |
-| Procedimento de eliminação ao fim do contrato, com carência de 30 dias, e descarte em backup, com certificado de descarte em até 30 dias após a carência, citado no DPA | P3 |
+| Procedimento de eliminação ao fim do contrato, com carência de 30 dias, suspensão por contestação (resposta em até 15 dias) e por ordem judicial, e descarte em backup, com certificado de descarte em até 30 dias após a carência ou a resposta, no máximo 75 dias do fim do contrato, citado no DPA | P3 |

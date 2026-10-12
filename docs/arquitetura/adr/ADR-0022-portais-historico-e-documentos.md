@@ -9,6 +9,10 @@
 - **Ajuste de 12/10/2026 (plano v2.2), antes de qualquer implementação:** item 4 deixa de remeter ao desenho da P3.3 e
   registra a decisão do dono do produto sobre conta e vínculo do consumidor; item 7 incluído (documentos anteriores ao
   go-live); nomes técnicos em inglês (plano §8, Idioma).
+- **Ajuste de 12/10/2026 (plano v2.3), antes de qualquer implementação:** item 4 passa a definir o login do
+  consumidor por CPF/CNPJ ou e-mail, com senha, sem SMS nem login por celular no go-live, com os cuidados de LGPD do
+  documento como identificador e o mapeamento de login por atributo no Keycloak como item técnico do P3; decisão do
+  dono do produto.
 
 ## Contexto
 
@@ -36,8 +40,20 @@ liquidação da despesa. Hoje a Central só prevê o lado do financeiro do Ziip.
    matrícula ou ao imóvel vê o histórico e baixa documentos; nunca dados de outro titular da mesma ligação ou de
    ligação anterior ao vínculo. Cada download vai para o `personal_data_access_log` (ADR-0008), com limite de taxa por
    consumidor e por IP (429).
-   - **Conta própria no Keycloak:** e-mail ou celular e senha, MFA opcional (TOTP ou WebAuthn/passkey, ADR-0007,
-     item 4). Uma conta pode reunir vários imóveis.
+   - **Conta própria no Keycloak** (login redefinido pelo dono do produto, plano v2.3): o consumidor entra com o
+     **CPF** (ou o **CNPJ**, se pessoa jurídica) **ou o e-mail** da conta, e a senha; MFA opcional (TOTP ou
+     WebAuthn/passkey, ADR-0007, item 4). Não há SMS nem login por celular no go-live; celular e WhatsApp ficam só
+     como canal de notificação futuro (P4). Uma conta pode reunir vários imóveis.
+   - **Documento como identificador de login** (LGPD, coerente com o ADR-0008): o CPF/CNPJ da conta é guardado
+     cifrado e com índice cego, como no cadastro, e a conta é localizada pelo índice cego do valor digitado, nunca pelo
+     valor em claro. O documento nunca vai em URL (inclusive `login_hint`) nem em log, o que alcança os eventos de
+     login do Keycloak (RNF-52). Mensagens de erro genéricas: documento ou e-mail inexistente e senha errada recebem a
+     mesma resposta, no mesmo tempo, e a recuperação de senha responde igual exista a conta ou não. Tentativas
+     limitadas por identificador e por IP, com bloqueio progressivo, 429 e alerta de volume anômalo na Central.
+   - **Mapeamento de login por atributo** (item técnico do P3, plano P3.3): o Keycloak não traz login por atributo
+     cifrado pronto; um autenticador próprio do realm `ziipsan-portal` recebe o documento, calcula o índice cego e
+     localiza a conta. A chave desse índice cego é definida no mesmo item, porque a conta do portal não pertence a um
+     tenant e não pode usar a chave de um tenant.
    - **Usuários do portal separados dos do backoffice, em realm próprio** (`ziipsan-portal`), um só para todos os
      tenants. O realm `ziipsan` continua único para backoffice e plataforma (D5/D6). Escolha e motivos: o realm do
      backoffice aplica MFA por política de tenant em fluxo condicional (ADR-0007), atribui papéis e o claim
@@ -85,11 +101,12 @@ liquidação da despesa. Hoje a Central só prevê o lado do financeiro do Ziip.
 - Mais superfície exposta à internet com dado pessoal; exige vínculo bem provado, limite de taxa e pentest (P3.8).
 - Contas anteriores ao go-live dependem da qualidade do histórico importado; NFAg-e anterior ao go-live só aparece se
   o cliente entregar os XML autorizados, e o que faltar não é reconstruído.
-- Um segundo realm a operar (tema, políticas de senha, backup e atualização junto do Keycloak da P0.29). Login por
-  celular exige verificação do número por SMS: o Keycloak não traz isso pronto e o provedor de SMS entra como
-  suboperador no DPA.
+- Um segundo realm a operar (tema, políticas de senha, backup e atualização junto do Keycloak da P0.29).
+- O login por CPF/CNPJ exige o autenticador próprio do item 4, a manter a cada atualização do Keycloak, e torna o
+  documento um identificador exposto à tentativa de enumeração; a mitigação é a do item 4 e o pentest (P3.8). Sem SMS
+  no go-live, não há provedor de SMS como suboperador nessa fase, e a recuperação de senha depende do e-mail da conta.
 - A conta do portal é uma só por pessoa e pode reunir imóveis de mais de um tenant; o papel do Ziip sobre os dados da
-  conta (e-mail, celular, credenciais) precisa constar do DPA (P3.9).
+  conta (CPF/CNPJ, e-mail, credenciais) precisa constar do DPA (P3.9).
 - O código de vinculação passa a ser impresso em toda conta (P2.8), o que exige cuidado com o arquivo da gráfica.
 - O bloqueio de retenção do armazenamento convive com a eliminação no fim do contrato: o objeto é cifrado com a chave
   do tenant (RNF-32), e a destruição da DEK o torna ilegível (RNF-43); o certificado de descarte registra a data de
@@ -100,6 +117,8 @@ liquidação da despesa. Hoje a Central só prevê o lado do financeiro do Ziip.
 - Tenant `V8_2` (portal): vínculo da conta do consumidor (`sub` do realm `ziipsan-portal`) com a matrícula, com
   método de comprovação, data e revogação; hash do código de vinculação por imóvel; tentativas de vinculação.
 - Realm `ziipsan-portal`, client confidencial do BFF do portal e validação do emissor por grupo de rotas na API.
+- Autenticador de login por CPF/CNPJ no realm `ziipsan-portal` (índice cego do valor digitado), documento cifrado na
+  conta e filtro que retira o identificador digitado dos eventos de login do Keycloak.
 - Serviço de documentos do portal: PDF de conta paga e DANFAG sob demanda, XML lido do armazenamento com conferência do
   hash; registro de acesso e limite de taxa; origem de cada documento.
 - Tenant `V14_3` (importação de legado): lotes de XML anteriores ao go-live, resultado da validação e origem.
@@ -128,6 +147,9 @@ liquidação da despesa. Hoje a Central só prevê o lado do financeiro do Ziip.
   organização; não isola políticas de senha, de MFA e de cadastro por tipo de usuário.
 - **Acesso só por matrícula e CPF, sem conta.** Rejeitada: matrícula e CPF circulam em papel e em outros sistemas, não
   provam posse da conta, e não há sessão para limitar e registrar.
+- **Login por celular com verificação por SMS no go-live** (versão anterior deste ADR). Rejeitada pelo dono do
+  produto em 12/10/2026. Pesavam contra ela, já nas consequências desta decisão, a verificação por SMS que o Keycloak
+  não traz pronta e o provedor de SMS como suboperador; o celular fica como canal de notificação futuro (P4).
 - **Mostrar só documentos emitidos pelo Ziip SAN.** Rejeitada: o morador perderia o histórico anterior ao go-live,
   que o piso de 120 meses alcança.
 
@@ -139,6 +161,7 @@ liquidação da despesa. Hoje a Central só prevê o lado do financeiro do Ziip.
 | Área do tenant: histórico de faturas e pagamentos do contrato; fatura paga e NFS-e em PDF e XML | P2, antes do primeiro contrato |
 | Código de vinculação por imóvel impresso na conta e no arquivo da gráfica | P2 (P2.8) |
 | Importação dos XML autorizados anteriores ao go-live e PDF das contas antigas a partir dos dados importados | P2 (P2.19), repetida na carga final (GL.1) |
-| Realm `ziipsan-portal`, conta do consumidor e client do BFF do portal | P3 (P3.3) |
+| Realm `ziipsan-portal`, conta do consumidor com login por CPF/CNPJ ou e-mail e senha, e client do BFF do portal | P3 (P3.3) |
+| Mapeamento de login por atributo (CPF/CNPJ) no Keycloak: autenticador com índice cego, chave própria do portal, documento fora de URL e de log, resposta genérica e limite de tentativas | P3 (P3.3, item técnico) |
 | Vínculo por código e CPF/CNPJ com limites; histórico de 120 meses com a origem de cada documento, conta paga com quitação, DANFAG e XML; registro de acesso e limite de taxa | P3 (P3.20) |
-| Pentest do portal cobrindo vínculo, enumeração de matrícula e de código, troca de token entre realms e download | P3 |
+| Pentest do portal cobrindo vínculo, enumeração de matrícula, de código e de CPF/CNPJ ou e-mail no login, troca de token entre realms e download | P3 |

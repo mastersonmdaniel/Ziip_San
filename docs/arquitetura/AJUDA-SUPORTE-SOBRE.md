@@ -2,10 +2,12 @@
 
 Decisões em ADR-0020 (ajuda e suporte) e ADR-0021 (Sobre, versão e changelog). Dependências: ADR-0010 (exceção do
 ClamAV), ADR-0014 (outbox), ADR-0016 (pacote de marca), ADR-0018 (Central Ziip), ADR-0019 (cobrança por contrato),
-RNF-10/11/26/40/52/54. O prefixo `urn:sigsan:problema:` passa a `urn:ziipsan:problema:` com a renomeação do P0
-(plano P0.33). Todas as rotas seguem o prefixo `/api/v1` (plano P0.10); as do operador ficam sob `/api/v1/platform`,
-como as demais da Central. Tabelas, colunas, rotas, chaves e identificadores estão em inglês, e os textos ao usuário
-em português (plano §8, Idioma); o prefixo do URN e os códigos de problema seguem o contrato atual.
+RNF-10/11/26/40/52/54. O prefixo `urn:sigsan:problema:` passa a `urn:ziipsan:problem:`, com os códigos de problema
+em inglês, na renomeação do P0 (plano P0.33, tabela de códigos; decisão do dono do produto, plano v2.3). Todas as
+rotas seguem o prefixo `/api/v1` (plano P0.10); as do operador ficam sob `/api/v1/platform`, como as demais da
+Central. Tabelas, colunas, rotas, chaves, códigos de problema e identificadores estão em inglês, e os textos ao
+usuário, inclusive `title` e `detail` do problem+json, em português (plano §8, Idioma). A única exceção é o formato do
+protocolo `SUP-AAAA-NNNNNN`, que permanece por ser visível ao cliente.
 
 ## 1. Objetivos
 
@@ -214,7 +216,7 @@ Tarefas correspondentes no plano: P0.39–P0.42; P1.20–P1.24; P2.15, P2.16; P3
 | Fase | Entregas | Critério de aceite |
 |---|---|---|
 | P0 | Versão pelo build, `build-info`, `version.json`, cabeçalhos de versão e aviso de recarga; licenças pelo SBOM; estrutura de `content/release-notes` com validação no CI; `GET /api/v1/about` mínimo | Nenhuma versão escrita à mão no repositório; dois builds do mesmo commit dão a mesma versão; SPA antigo mostra aviso após implantação em homologação |
-| P1 | Estrutura de `content/help` e pipeline de publicação; busca e ajuda contextual; hook de tour e componente de dica; catálogo para todo `urn:...:problema:*`; chamados com protocolo, conversa, estados, anexos com varredura e notificações; fila v0 na Central; Sobre completo; `document_acceptance`; novidades por usuário | Teste falha se um código de problema não tiver explicação ou se um alvo de tour não existir; EICAR é bloqueado e um PDF limpo é liberado; usuário de outro tenant recebe 404 em chamado alheio; e-mail sem conteúdo do chamado |
+| P1 | Estrutura de `content/help` e pipeline de publicação; busca e ajuda contextual; hook de tour e componente de dica; catálogo para todo `urn:ziipsan:problem:*`; chamados com protocolo, conversa, estados, anexos com varredura e notificações; fila v0 na Central; Sobre completo; `document_acceptance`; novidades por usuário | Teste falha se um código de problema não tiver explicação ou se um alvo de tour não existir; EICAR é bloqueado e um PDF limpo é liberado; usuário de outro tenant recebe 404 em chamado alheio; e-mail sem conteúdo do chamado |
 | P2 | SLA por contrato com calendário útil, pausa, alertas e escalonamento; CSAT; rejeições da NFAg-e e da NFS-e no catálogo; notas de versão filtradas por tenant; métricas de conteúdo | Prazo calculado bate com casos de teste com feriado municipal e pausa; relatório mensal de FRT, MTTR, SLA e CSAT gerado na Central |
 | P3 (antes do go-live) | Página pública de status com sondas e janelas; acesso assistido com consentimento; acesso de emergência em incidente declarado; retenção pela vigência do contrato mais 5 anos e expurgo; exportação no fim do contrato; pentest cobrindo o módulo; RIPD atualizado; plantão e manual de atendimento | Acesso sem consentimento e fora de incidente declarado é negado e auditado; emergência só com `PLATFORM_OWNER` reautenticado, somente leitura e aviso ao tenant em até 24 h; revogação encerra a sessão em até 1 minuto; status muda sozinho com a sonda fora; ensaio de expurgo com contagem |
 | P4 | Resposta por e-mail; assistente de deflexão com citação e transbordo humano; assinatura de status; notas do tenant; editor visual; NPS | A definir no P4 |

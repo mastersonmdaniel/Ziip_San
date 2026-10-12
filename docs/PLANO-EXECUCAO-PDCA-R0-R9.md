@@ -1,6 +1,6 @@
 # Plano de execução do Ziip SAN: fases P0–P4 e go-live piloto
 
-**Versão 2.2, 12/10/2026.** Produto Ziip SAN; nome interno do código, SIGSAN, renomeado para `ziipsan` na P0.33. O
+**Versão 2.3, 12/10/2026.** Produto Ziip SAN; nome interno do código, SIGSAN, renomeado para `ziipsan` na P0.33. O
 nome do arquivo foi mantido por causa dos links. Este é o plano canônico; em divergência com um ADR, vale o ADR mais
 recente.
 
@@ -21,6 +21,12 @@ recente.
   que suspendem e eliminam, acesso de emergência, conta do consumidor no portal, documentos anteriores ao go-live,
   cores dos temas e idioma dos identificadores), com tarefas e critérios ajustados, a nova P2.19 e a convenção de
   idioma no §8.
+- Versão 2.3: três decisões do dono do produto em 12/10/2026 (§2.4): contestação durante a carência suspende a
+  eliminação de dados do tenant, com resposta do Ziip em até 15 dias e prazo máximo de 75 dias do fim do contrato;
+  login do consumidor no portal por CPF/CNPJ ou e-mail, com senha, sem SMS nem login por celular no go-live; códigos
+  de contrato da API em inglês (`urn:ziipsan:problem:`), aplicados na P0.33. Ajustados P0.33 (com a tabela de
+  códigos), P0.43, P1.6, P1.22, P3.3, P3.8 e P3.16, os riscos e o §8, cuja única exceção de idioma passa a ser o
+  protocolo `SUP-AAAA-NNNNNN`.
 
 **Referências.** Revisão 17: [levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md](levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md);
 ADRs: [arquitetura/adr/README.md](arquitetura/adr/README.md); parâmetros: [arquitetura/PARAMETROS-DO-TENANT.md](arquitetura/PARAMETROS-DO-TENANT.md);
@@ -96,13 +102,13 @@ portões de decisão. As etapas foram executadas no mesmo dia, um commit por eta
 | [0013](arquitetura/adr/ADR-0013-postgresql-17-no-p0.md) | PostgreSQL 17 + PostGIS 3.5 no P0, antes de dado real |
 | [0014](arquitetura/adr/ADR-0014-outbox-no-postgresql.md) | Outbox no PostgreSQL com workers `SKIP LOCKED`, atrás de interface |
 | [0015](arquitetura/adr/ADR-0015-limites-legais-dos-parametros.md) | Classes de parâmetro (a–d); multa padrão 2% com aceite reforçado acima; vedações de corte por inadimplência travadas; piso da tarifa social; pisos de retenção |
-| [0016](arquitetura/adr/ADR-0016-rebrand-e-renomeacao-ziipsan.md) | Pacote de marca único; marca do tenant; renomeação `sigsan` → `ziipsan` no P0, com contexto HKDF congelado |
+| [0016](arquitetura/adr/ADR-0016-rebrand-e-renomeacao-ziipsan.md) | Pacote de marca único; marca do tenant; renomeação `sigsan` → `ziipsan` no P0, com contexto HKDF congelado e códigos de problema da API em inglês (`urn:ziipsan:problem:`) |
 | [0017](arquitetura/adr/ADR-0017-temas-claro-escuro-azul-e-verde-agua.md) | Temas claro, escuro e do sistema; padrões Azul Água e Verde Água; preferência no servidor; contraste no CI |
 | [0018](arquitetura/adr/ADR-0018-central-ziip-propria.md) | Central Ziip própria com o console; papéis de plataforma com MFA; sem leitura de dado pessoal de tenant; API de métricas `v1` |
 | [0019](arquitetura/adr/ADR-0019-cobranca-saas-por-contrato.md) | Cobrança do SaaS por contrato; nenhum bloqueio automático; restrição só manual |
 | [0020](arquitetura/adr/ADR-0020-ajuda-e-suporte-com-protocolo.md) | Ajuda e suporte com protocolo e SLA por contrato; ClamAV; acesso assistido com consentimento no lugar da impersonação; acesso de emergência só em incidente de segurança declarado |
 | [0021](arquitetura/adr/ADR-0021-sobre-versao-e-changelog.md) | SemVer gerado no build; changelog do cliente obrigatório para segurança, legislação e parâmetro regulatório; Sobre |
-| [0022](arquitetura/adr/ADR-0022-portais-historico-e-documentos.md) | Portal do consumidor com 120 meses, conta paga, DANFAG e XML original; conta do consumidor no realm `ziipsan-portal`, vínculo por código impresso na conta e CPF/CNPJ; documentos anteriores ao go-live importados; área do tenant com faturas e NFS-e do contrato |
+| [0022](arquitetura/adr/ADR-0022-portais-historico-e-documentos.md) | Portal do consumidor com 120 meses, conta paga, DANFAG e XML original; conta do consumidor no realm `ziipsan-portal`, com login por CPF/CNPJ ou e-mail e senha, sem SMS; vínculo por código impresso na conta e CPF/CNPJ; documentos anteriores ao go-live importados; área do tenant com faturas e NFS-e do contrato |
 
 **Decisões do dono do produto (cartões de 12/10/2026)**, aplicadas nos ADRs 0018–0020, no ADR-0010 e nos documentos
 de arquitetura:
@@ -110,9 +116,10 @@ de arquitetura:
 - Suspensão de tenant sempre manual, com aviso prévio; backoffice em somente leitura; portal do consumidor, Pix,
   retornos bancários e 2ª via continuam (serviço essencial).
 - Suspensão, bloqueio e eliminação de dados de tenant: uma pessoa com MFA basta, sempre com justificativa e auditoria;
-  a eliminação tem carência de 30 dias e certificado de descarte. Suspensão e bloqueio: `PLATFORM_OWNER` ou
-  `PLATFORM_FINANCE`, este só por inadimplência contratual; eliminação: só `PLATFORM_OWNER` (§2.4). A aprovação dupla
-  continua nos parâmetros do tenant (ADR-0015), no ajuste de conciliação e na liberação da emissão fiscal em produção.
+  a eliminação tem carência de 30 dias e certificado de descarte, e contestação na carência ou ordem judicial a
+  suspende (§2.4). Suspensão e bloqueio: `PLATFORM_OWNER` ou `PLATFORM_FINANCE`, este só por inadimplência
+  contratual; eliminação: só `PLATFORM_OWNER` (§2.4). A aprovação dupla continua nos parâmetros do tenant (ADR-0015),
+  no ajuste de conciliação e na liberação da emissão fiscal em produção.
 - Chamados de suporte e anexos retidos pela vigência do contrato mais 5 anos, com minimização, acesso restrito e
   eliminação no fim do prazo.
 - ClamAV junto do `worker`, com quarentena até a varredura, substituível pelo serviço da hospedagem: exceção do
@@ -154,12 +161,15 @@ obrigatório aceito.
 | Pendência | Decisão | Onde foi aplicada |
 |---|---|---|
 | Valores HSL de Azul Água e Verde Água | Proposta de MARCA-E-TEMAS §4.2 aprovada, nos modos claro e escuro; ajustes finos permitidos depois de ver as telas, mantendo o teste de contraste | ADR-0017; MARCA-E-TEMAS §4.2; P0.37 |
-| Duração da carência antes da eliminação de dados de tenant | 30 dias contados do fim do contrato, para o cliente baixar a exportação e contestar. O RNF-42 passa a exigir eliminação concluída e certificado de descarte em até 30 dias após o fim da carência, ou seja, até 60 dias do fim do contrato | RNF-42; ADR-0015; ADR-0018; CENTRAL-ZIIP §6.3; PARAMETROS G6; P1.6, P3.16 |
+| Duração da carência antes da eliminação de dados de tenant | 30 dias contados do fim do contrato, para o cliente baixar a exportação e contestar. O RNF-42 passa a exigir eliminação concluída e certificado de descarte em até 30 dias após o fim da carência, ou seja, até 60 dias do fim do contrato. Complementada na v2.3 pela regra da contestação (abaixo) | RNF-42; ADR-0015; ADR-0018; CENTRAL-ZIIP §6.3; PARAMETROS G6; P1.6, P3.16 |
 | Quem executa suspensão, bloqueio e eliminação | Suspensão e bloqueio: `PLATFORM_OWNER` ou `PLATFORM_FINANCE`, este só por inadimplência contratual; eliminação: só `PLATFORM_OWNER`. Sempre uma pessoa com MFA, step-up, justificativa e auditoria; sempre manual, com aviso prévio; suspensão deixa o backoffice só leitura e mantém portal, Pix, retornos e 2ª via | ADR-0018; ADR-0019; CENTRAL-ZIIP §2 e §6.2; P0.43, P1.6, P2.12 |
 | Exceção de emergência ao consentimento do acesso assistido | Admitida só em incidente de segurança declarado: somente leitura, só `PLATFORM_OWNER`, reautenticação com MFA no momento, aviso ao tenant em até 24 h, registro completo na auditoria e no registro do incidente | ADR-0020 (seção Exceção); CENTRAL-ZIIP §7; AJUDA-SUPORTE-SOBRE §5; P3.17 |
-| Autenticação do consumidor no portal e vínculo com a matrícula | Conta própria no Keycloak, no realm `ziipsan-portal`, separado do realm do backoffice (e-mail ou celular e senha, MFA opcional); vínculo comprovado pelo código de vinculação impresso na conta mais o CPF/CNPJ do titular; uma conta com vários imóveis; limite de taxa e resposta indistinta na vinculação | ADR-0022; ARQUITETURA-ALVO §1; P2.8, P3.3, P3.8, P3.20; tenant `V8_2` |
+| Autenticação do consumidor no portal e vínculo com a matrícula | Conta própria no Keycloak, no realm `ziipsan-portal`, separado do realm do backoffice (MFA opcional; o identificador de login foi redefinido na v2.3, abaixo); vínculo comprovado pelo código de vinculação impresso na conta mais o CPF/CNPJ do titular; uma conta com vários imóveis; limite de taxa e resposta indistinta na vinculação | ADR-0022; ARQUITETURA-ALVO §1; P2.8, P3.3, P3.8, P3.20; tenant `V8_2` |
 | Contas e NFAg-e anteriores ao go-live no portal | Na migração, importar os XML autorizados que o cliente tiver (sistema antigo ou emissor usado no intervalo) e gerar o PDF das contas antigas a partir dos dados importados; o portal mostra os 120 meses num lugar só, com a origem de cada documento | ADR-0022; FISCAL-PORTE-JAVA §3.8; nova P2.19 (`V14_3`); GL.1; P3.20 |
-| Idioma dos identificadores | Tabelas, colunas, schemas, rotas e identificadores de código em inglês, como no código atual; textos ao usuário e documentação em português. Nomes renomeados em todos os documentos (`suporte` → `support`, `chamado` → `ticket`, `aceite_documento` → `document_acceptance`, `implantacao` → `deployment`, `/ajuda` → `/help`, `/suporte` → `/support`, `/sobre` → `/about`) | §8 (Idioma); §3; ADR-0014, ADR-0020 a ADR-0022; AJUDA-SUPORTE-SOBRE; CENTRAL-ZIIP; FISCAL-PORTE-JAVA; ARQUITETURA-ALVO |
+| Idioma dos identificadores | Tabelas, colunas, schemas, rotas e identificadores de código em inglês, como no código atual; textos ao usuário e documentação em português. Nomes renomeados em todos os documentos (`suporte` → `support`, `chamado` → `ticket`, `aceite_documento` → `document_acceptance`, `implantacao` → `deployment`, `/ajuda` → `/help`, `/suporte` → `/support`, `/sobre` → `/about`). A exceção para URN e códigos de problema foi retirada na v2.3 (abaixo) | §8 (Idioma); §3; ADR-0014, ADR-0020 a ADR-0022; AJUDA-SUPORTE-SOBRE; CENTRAL-ZIIP; FISCAL-PORTE-JAVA; ARQUITETURA-ALVO |
+| Contestação durante a carência da eliminação de dados de tenant (v2.3) | Contestação registrada durante a carência de 30 dias **suspende** a eliminação; o Ziip responde em até 15 dias e, respondida a última contestação, a eliminação segue. O prazo de 30 dias para concluir a eliminação e emitir o certificado de descarte conta do fim da carência ou da resposta à última contestação, o que ocorrer depois. Prazo máximo total: **75 dias do fim do contrato** (30 de carência, até 15 de resposta e até 30 para concluir e certificar); sem contestação, continua em até 60 dias. Ordem judicial sempre suspende a eliminação; enquanto vigorar, o prazo de 75 dias não corre | RNF-42; ADR-0015 item 5; ADR-0018 item 2; CENTRAL-ZIIP §4, §6.3 e §11; PARAMETROS G6; P1.6, P3.16 |
+| Login do consumidor final no portal (v2.3) | Identificador **CPF** (ou **CNPJ**, para pessoa jurídica) **ou e-mail**, com senha; MFA opcional mantido. Sem SMS e sem login por celular no go-live; celular e WhatsApp só como canal de notificação futuro (P4). Mantidos o realm `ziipsan-portal` e o vínculo com o imóvel pelo código impresso na conta mais o documento do titular. Documento como identificador, com cuidado LGPD: guardado cifrado e com índice cego, como no cadastro; nunca em URL nem em log; mensagens de erro genéricas e tentativas limitadas (anti-enumeração, coerente com o ADR-0008). Item técnico do P3: mapeamento de login por atributo (CPF/CNPJ) no Keycloak | ADR-0022 item 4; ARQUITETURA-ALVO §1; P3.3, P3.8; riscos (§6) |
+| Idioma dos códigos de contrato da API (v2.3) | Prefixo `urn:ziipsan:problem:` e códigos de problema em inglês, em minúsculas com hífen (`versao-desatualizada` → `stale-version`, `mfa_obrigatorio` → `mfa-required`, `nao-encontrado` → `not-found`, `validacao` → `validation`, `confirmacao-necessaria` → `confirmation-required`; lista completa na P0.33), aplicados na renomeação do P0. Mensagens ao usuário continuam em português. O protocolo `SUP-AAAA-NNNNNN` permanece, por ser visível ao cliente | §8 (Idioma); §4 (nomes depois da renomeação); P0.33, P0.43, P1.22; ADR-0016, ADR-0018, ADR-0020; MARCA-E-TEMAS §5; AJUDA-SUPORTE-SOBRE; CENTRAL-ZIIP |
 
 ---
 
@@ -251,7 +261,8 @@ com testes verdes, registro no diário e push.
 **Nomes depois da renomeação.** A partir da P0.33, os caminhos, módulos, pacotes, propriedades, roles e realm citados
 neste plano com `sigsan` (`commercial/sigsan-fiscal`, `sigsan_worker`, `sigsan.fiscal.*`, realm `sigsan`) leem-se com
 `ziipsan`. O plano não é reescrito por isso; tarefas novas já usam o nome final (`ziipsan_central`,
-`urn:ziipsan:problema:`). Commits e diário anteriores valem até a tag `pre-rename`.
+`urn:ziipsan:problem:`, códigos de problema em inglês da tabela da P0.33). Commits e diário anteriores valem até a tag
+`pre-rename`.
 
 ### P0 — Plataforma operável · 13/10–27/11/2026
 
@@ -263,7 +274,7 @@ produção com PITR e R1.
 |---|---|---|---|---|---|
 | P0.1 | Desenvolvimento em disco local; GitHub como fonte da verdade | ADR-0009, 17:M15 | M | — | build e `ci.sh` verdes num clone fora do Drive, sem robocopy nem PowerShell; `.env` fora do Drive |
 | P0.2 | Push automático ao fim de etapa | ADR-0009 | P | P0.1 | com teste vermelho nada é publicado |
-| P0.33 | Renomeação `sigsan` → `ziipsan` como tarefa única, logo após a P0.1 e antes das demais tarefas de código do P0, na ordem de MARCA-E-TEMAS §5.2 | ADR-0016 | M | P0.1 | tag `pre-rename`, sem branch aberto; `mvn clean verify`, testes do frontend, `ci.sh` e `dev-up.sh` do zero verdes; login ponta a ponta no realm `ziipsan`; teste de vetor fixo de `ziipsan/enc/v1` e `ziipsan/bidx/v1`, congelados daí em diante; busca residual sem `sigsan` fora da lista permitida |
+| P0.33 | Renomeação `sigsan` → `ziipsan` como tarefa única, logo após a P0.1 e antes das demais tarefas de código do P0, na ordem de MARCA-E-TEMAS §5.2; inclui os códigos de contrato da API em inglês: prefixo `urn:sigsan:problema:` → `urn:ziipsan:problem:` e códigos da tabela abaixo | ADR-0016 | M | P0.1 | tag `pre-rename`, sem branch aberto; `mvn clean verify`, testes do frontend, `ci.sh` e `dev-up.sh` do zero verdes; login ponta a ponta no realm `ziipsan`; teste de vetor fixo de `ziipsan/enc/v1` e `ziipsan/bidx/v1`, congelados daí em diante; todo problem+json com `type` `urn:ziipsan:problem:<código>` e código da tabela abaixo (teste de contrato); `title`, `detail` e mensagens de campo seguem em português; backend, `frontend/src/services/registry/errors.ts` e testes (Java e frontend) atualizados no mesmo commit; busca residual sem `sigsan` fora da lista permitida e sem `problema:` nem código antigo da tabela |
 | P0.3 | CI no GitHub Actions | 17:X1, 17:S6 | M | P0.1 | Java com Postgres de serviço e frontend; `npm audit` alto e gitleaks bloqueiam; `main` protegida |
 | P0.4 | PostgreSQL 17 + PostGIS 3.5 | ADR-0013, 17:X2 | M | — | dev, integração e CI na mesma versão; suíte verde |
 | P0.5 | Dockerfile multi-stage não root; uma imagem para `api`, `worker`, `migrate`; `config.json` do frontend em execução | 17:X1, 17:B7 | M | P0.3 | UID ≠ 0, sem segredo, SBOM, tag fixa; trocar o emissor OIDC não exige novo build |
@@ -303,10 +314,35 @@ produção com PITR e R1.
 | P0.40 | Licenças de terceiros pelo SBOM | ADR-0021, RNF-35 | P | P0.5 | `third-party-licenses.json` gerado do CycloneDX (Maven e npm); licença fora da lista permitida bloqueia o CI |
 | P0.41 | Changelog do cliente | ADR-0021 | P | P0.3 | esquema de `content/release-notes/<version>.yaml` validado; commit marcado como segurança, legislação ou parâmetro regulatório sem item bloqueia a release (teste do CI) |
 | P0.42 | Registro de implantação e Sobre mínimo | ADR-0021 | P | P0.6, P0.39 | core `V5_1`; o `migrate` grava `platform.deployment`; `GET /api/v1/about` devolve versão, commit, ambiente e data gravada |
-| P0.43 | Papéis de plataforma | ADR-0018, ADR-0007 | P | P0.13, P0.15 | `PLATFORM_OWNER`, `PLATFORM_OPS`, `PLATFORM_SUPPORT` e `PLATFORM_FINANCE` no realm; matriz de permissões de CENTRAL-ZIIP §2 com teste por papel; rota `/api/v1/platform/*` sem `amr` → 403 `mfa_obrigatorio`; token com `tenant_id` recusado em rota de plataforma |
+| P0.43 | Papéis de plataforma | ADR-0018, ADR-0007 | P | P0.13, P0.15 | `PLATFORM_OWNER`, `PLATFORM_OPS`, `PLATFORM_SUPPORT` e `PLATFORM_FINANCE` no realm; matriz de permissões de CENTRAL-ZIIP §2 com teste por papel; rota `/api/v1/platform/*` sem `amr` → 403 `mfa-required`; token com `tenant_id` recusado em rota de plataforma |
 
 P0.33 vem logo depois da P0.1: as demais tarefas de código do P0 dependem dela (dependência implícita, não repetida
 na coluna). P0.27–P0.29 só começam depois da P0.26. A regra pura do R3 pode começar no P0, em paralelo.
+
+**Códigos de problema na P0.33** (decisão do dono do produto, 12/10/2026, §2.4). Lista dos códigos emitidos hoje,
+conferida em `ApiException.java`, `GlobalExceptionHandler.java`, `ProblemResponses.java`, `JwtTenantFilter.java`,
+`SecurityConfig.java` e nos serviços do cadastro, mais o código previsto na P0.43. Os códigos de campo e de aviso
+(`errors[].code`, `warnings[].code`, como `REQUIRED` e `DOCUMENT_IN_USE`) já estão em inglês e não mudam. Código novo
+nasce em inglês, em minúsculas com hífen, e entra no catálogo de erros explicados (P1.22).
+
+| Atual | Novo | Status |
+|---|---|---|
+| `nao-autenticado` | `unauthenticated` | 401 |
+| `acesso-negado` | `access-denied` | 403 |
+| `mfa_obrigatorio` (previsto) | `mfa-required` | 403 |
+| `tenant-ausente`, `tenant-inativo`, `tenant-divergente` | `tenant-missing`, `tenant-inactive`, `tenant-mismatch` | 403 |
+| `nao-encontrado` | `not-found` | 404 |
+| `exclusao-indisponivel` | `deletion-unavailable` | 405 |
+| `versao-desatualizada` | `stale-version` | 409 |
+| `conflito-de-dados` | `data-conflict` | 409 |
+| `registro-excluido`, `registro-ja-excluido` | `record-deleted`, `record-already-deleted` | 409 |
+| `cliente-com-vinculo-vigente`, `cliente-sem-documento` | `customer-has-active-link`, `customer-without-document` | 409 |
+| `busca-na-url` | `search-in-url` | 400 |
+| `filtro-indisponivel`, `filtro-invalido` | `filter-unavailable`, `invalid-filter` | 400 |
+| `ordenacao-invalida`, `pagina-invalida`, `inscricao-invalida` | `invalid-sort`, `invalid-page`, `invalid-inscription` | 400 |
+| `validacao` | `validation` | 422 |
+| `confirmacao-necessaria` | `confirmation-required` | 422 |
+| `erro-interno` | `internal-error` | 500 |
 
 ### P1 — Migração e satélite · 30/11/2026–29/01/2027
 
@@ -320,7 +356,7 @@ ajuda e chamados v0.
 | P1.3 | R2: cadastro completo | R2 (v1) | G | — | `V3_6`; cliente cadastrado pela tela; rascunho e `validate-step`; CEP; CSV |
 | P1.4 | Matrícula por sequência | 17:M9 | P | — | `V3_5`; dois lotes paralelos sem espera, sem lacuna nem duplicata |
 | P1.5 | R3: tarifa social satélite + N4 | R3 (v1), G1, G2 | M | P0.20 | `V4_2`; casos da v1 (T-03 → 102,00 e 87,00; CadÚnico de 25 meses inelegível; `GRACE_3M`); benefício abaixo do piso federal recusado; em homologação até 11/12/2026 |
-| P1.6 | Console da plataforma v0 | 17:P1, ADR-0002, ADR-0018 | G | P0.13, P0.19, P0.43, P1.9 | core `V9`; assistente de implantação; produção bloqueada sem parâmetros aceitos; planos, cotas, flags; suspensão manual com aviso prévio, por uma pessoa com MFA, step-up e justificativa (`PLATFORM_OWNER`, ou `PLATFORM_FINANCE` só com motivo inadimplência contratual), deixando o backoffice só leitura e o portal, o Pix, os retornos e a 2ª via funcionando (teste); `PLATFORM_FINANCE` com outro motivo ou pedindo eliminação → 403 (teste); exportação e eliminação com carência de 30 dias e certificado de descarte, eliminação só por `PLATFORM_OWNER`; toda ação auditada em `platform.audit_event`. A impersonação sai: acesso assistido na P3.17 (ADR-0020) |
+| P1.6 | Console da plataforma v0 | 17:P1, ADR-0002, ADR-0018 | G | P0.13, P0.19, P0.43, P1.9 | core `V9`; assistente de implantação; produção bloqueada sem parâmetros aceitos; planos, cotas, flags; suspensão manual com aviso prévio, por uma pessoa com MFA, step-up e justificativa (`PLATFORM_OWNER`, ou `PLATFORM_FINANCE` só com motivo inadimplência contratual), deixando o backoffice só leitura e o portal, o Pix, os retornos e a 2ª via funcionando (teste); `PLATFORM_FINANCE` com outro motivo ou pedindo eliminação → 403 (teste); exportação e eliminação com carência de 30 dias e certificado de descarte, eliminação só por `PLATFORM_OWNER`; contestação registrada na carência e ordem judicial suspendem a eliminação (estado e datas em `tenant_lifecycle`); toda ação auditada em `platform.audit_event`. A impersonação sai: acesso assistido na P3.17 (ADR-0020) |
 | P1.7 | Partição do `audit_log` | 17:X3, 17:M7 | G | P0.4 | core `V7`; UUIDv7; retenção com piso; consulta por período poda partições |
 | P1.8 | Porte fiscal: NFS-e Nacional, cofre de certificado, numeração | ADR-0003 | G | P0.32, P0.28 | `V4_5`; emissão, cancelamento e substituição na produção restrita; sem número repetido ou perdido |
 | P1.9 | Outbox e `worker` básico | ADR-0014, 17:X4 | G | P0.5 | core `V8`; mensagem na transação do negócio; `SKIP LOCKED` com prazo de posse; role `sigsan_worker`; usado no provisionamento e no console |
@@ -336,7 +372,7 @@ ajuda e chamados v0.
 | P1.19 | Marca do tenant | ADR-0016 | M | P0.34, P1.6, P1.20 | core `V9_2`; chaves `branding.*`; logo PNG/WebP reencodado e varrido (EICAR e arquivo poliglota recusados); `GET /api/v1/public/tenant-brand` pelo subdomínio, com slug desconhecido devolvendo a marca do produto e o mesmo status; regra de contraste da cor aplicada ao salvar |
 | P1.20 | Pipeline de arquivos enviados com ClamAV | ADR-0010 (Exceções), ADR-0020 | M | P1.9 | tipo pelo conteúdo; arquivo em quarentena até a varredura; EICAR bloqueado e com alerta; PDF limpo liberado; idade das assinaturas monitorada; varredor atrás de interface substituível pelo serviço da hospedagem |
 | P1.21 | Ajuda: conteúdo, publicação e ajuda contextual | ADR-0020 | M | P0.3, P0.6 | core `V9_3`; `content/help` validado no CI (cabeçalho, links, rotas, alvos `data-tour` existentes); publicação pelo `migrate` sem nova imagem; busca em português; `useContextualHelp` e `<Hint>` |
-| P1.22 | Catálogo de erros explicados | ADR-0020 | P | P1.21 | teste falha se um código `urn:ziipsan:problema:*` não tiver explicação |
+| P1.22 | Catálogo de erros explicados | ADR-0020 | P | P1.21 | teste falha se um código `urn:ziipsan:problem:*` não tiver explicação |
 | P1.23 | Chamados v0 e fila na Central | ADR-0020 | G | P1.9, P1.17, P1.20 | core `V9_4`; protocolo `SUP-AAAA-NNNNNN`; conversa, estados e notificações pela outbox; usuário de outro tenant recebe 404; e-mail sem conteúdo nem anexo; formulário orienta a não anexar dado pessoal e marca `contains_personal_data` |
 | P1.24 | Sobre completo e novidades por usuário | ADR-0021 | M | P0.34, P0.41, P0.42 | core `V9_5`; Sobre com marca, versão, documentos com versão vigente e aceita (`platform.document_acceptance`) e licenças; novidades uma vez por versão por usuário, com estado no servidor |
 
@@ -373,12 +409,12 @@ tenant prontas antes do primeiro contrato.
 |---|---|---|---|---|---|
 | P3.1 | R5a: retorno e conciliação N3 | R5 (v1), G4 | G | P2.5 | `V6_2`; retorno idempotente (NSA + hash); aprovação dupla |
 | P3.2 | R5b: Pix Cobrança e boleto híbrido | R5 (v1), 17:P4 | G | P3.1 | `V6_3`; webhook assinado; tenant do convênio; 200 em < 2 s após gravar na `pix_inbox` |
-| P3.3 | Portal do cliente: 2ª via, Pix, protocolo | 17:P2, ADR-0022 | G | P3.2, P0.14 | realm `ziipsan-portal` com conta própria do consumidor (e-mail ou celular e senha, MFA opcional) e client confidencial do BFF; token do realm do portal recusado nas rotas do backoffice e token do backoffice recusado nas do portal (teste); sem acesso ao backoffice; disponibilidade medida contra 99,9%; histórico, documentos e vínculo na P3.20 |
+| P3.3 | Portal do cliente: 2ª via, Pix, protocolo | 17:P2, ADR-0022 | G | P3.2, P0.14 | realm `ziipsan-portal` com conta própria do consumidor (login por CPF, CNPJ ou e-mail, com senha; MFA opcional; sem SMS nem login por celular) e client confidencial do BFF; item técnico: mapeamento de login por atributo no Keycloak, em que um autenticador próprio calcula o índice cego do documento digitado e localiza a conta, sem gravar nem consultar o valor em claro; CPF/CNPJ da conta cifrado e com índice cego; documento ausente de URL (inclusive `login_hint`), de logs da API e dos eventos de login do Keycloak (teste de log, RNF-52); resposta e tempo iguais para documento ou e-mail inexistente e senha errada, inclusive na recuperação de senha; tentativas limitadas por identificador e por IP, com bloqueio progressivo, 429 e alerta na Central; token do realm do portal recusado nas rotas do backoffice e token do backoffice recusado nas do portal (teste); sem acesso ao backoffice; disponibilidade medida contra 99,9%; histórico, documentos e vínculo na P3.20 |
 | P3.4 | R7 mínimo: protocolo NR 11, OS com bloqueio de corte | R7 (v1), G9 | G | P2.5 | `V8_1`, `V9_1`; casos da v1 (aviso em 15/10 → 16/11; 19/11 e 20/11 bloqueados; ADASA; sem prova, religação sem taxa); vedações para todos os motivos; emergência exige justificativa e foto |
 | P3.5 | Notificações com prova de entrega | 17:P4 | M | P1.9 | aviso de corte sem prova bloqueia a OS |
 | P3.6 | NFS-e de serviços avulsos | ADR-0003 | M | P1.8 | serviço da OS gera NFS-e na produção restrita |
 | P3.7 | Homologação fiscal com certificado do piloto | ADR-0003 | M | P2.6 | contingência e restauração do XML autorizado testadas |
-| P3.8 | Pentest: isolamento, cofre, portal do consumidor, acesso assistido e de emergência | 17 §7, ADR-0020, ADR-0022 | M | P0.27 | nenhum achado crítico ou alto aberto; vínculo, enumeração de matrícula e de código de vinculação, troca de token entre realms e download do portal cobertos |
+| P3.8 | Pentest: isolamento, cofre, portal do consumidor, acesso assistido e de emergência | 17 §7, ADR-0020, ADR-0022 | M | P0.27 | nenhum achado crítico ou alto aberto; vínculo, enumeração de matrícula, de código de vinculação e de CPF/CNPJ ou e-mail no login e na recuperação de senha, troca de token entre realms e download do portal cobertos |
 | P3.9 | Contrato SaaS, DPA, termos, SLA, suboperadores | ADR-0002, ADR-0019, ADR-0020 | M | P2.12, P2.14, P2.15 | assinados; Ziip SAN operador, cliente controlador; cláusulas de aviso, restrição só manual e saída; política de SLA de suporte; retenção de chamados pela vigência mais 5 anos e a exceção no certificado de descarte previstas no DPA |
 | P3.10 | Resposta a incidente; modelo de RIPD | 17 §7 | P | — | prazos ao controlador e à ANPD; simulação de mesa feita |
 | P3.11 | Operação: runbook, plantão, status, error tracking, burn rate | 17:O1 | M | P0.8, P0.27 | falha provocada dispara alerta; runbook exercitado |
@@ -386,7 +422,7 @@ tenant prontas antes do primeiro contrato.
 | P3.13 | Plano de paralelo e de corte | ADR-0001 | P | P0.30 | critérios e plano de volta aprovados pelo piloto |
 | P3.14 | Spring Boot na linha com suporte | D4 | M | — | atualizado antes de 31/07/2027 |
 | P3.15 | Central Ziip completa | ADR-0018 | G | P2.11, P3.1, P3.2, P3.11 | abas Arrecadação, Pix, LGPD, Regulatório, Infraestrutura com SLO, Radar e Suporte; falha provocada alerta; kit de evidências com hash na trilha |
-| P3.16 | Ensaio de saída de tenant sintético | ADR-0018, ADR-0015, RNF-42 | M | P1.6, P0.28 | exportação em até 15 dias; carência de 30 dias contada do fim do contrato, com download da exportação e contestação registradas; eliminação agendada só por `PLATFORM_OWNER` com MFA e cancelável durante a carência; execução antes do fim da carência recusada (teste); crypto-shredding; eliminação concluída e certificado emitido em até 30 dias após o fim da carência; certificado com hashes, expiração de backups e de cópias imutáveis e a exceção dos chamados |
+| P3.16 | Ensaio de saída de tenant sintético | ADR-0018, ADR-0015, RNF-42 | M | P1.6, P0.28 | exportação em até 15 dias; carência de 30 dias contada do fim do contrato, com download da exportação e contestação registradas; eliminação agendada só por `PLATFORM_OWNER` com MFA e cancelável durante a carência; execução antes do fim da carência recusada (teste); contestação registrada na carência suspende a execução, e a resposta do Ziip sai em até 15 dias, com alerta na Central antes do vencimento (teste com relógio); ordem judicial registrada suspende a execução enquanto vigorar (teste); crypto-shredding; eliminação concluída e certificado emitido em até 30 dias após o fim da carência ou da resposta à última contestação, o que ocorrer depois, no máximo 75 dias do fim do contrato (60 sem contestação); certificado com hashes, expiração de backups e de cópias imutáveis e a exceção dos chamados |
 | P3.17 | Acesso assistido com consentimento e acesso de emergência | ADR-0020 | M | P1.23, P0.43, P3.10 | core `V10_3`; sem consentimento → negado e auditado; revogação encerra a sessão em até 1 min; revelar documento e exportar bloqueados; cada requisição no `audit_log` do tenant com o id do consentimento. Emergência: sem incidente de segurança declarado, sem `PLATFORM_OWNER` ou sem reautenticação com MFA no momento → negado e auditado; qualquer escrita → 403; aviso ao tenant enviado pela outbox em até 24 h (teste com relógio); cada requisição no `audit_log` do tenant e em `audit_event` com o id do incidente, e a sessão no registro do incidente |
 | P3.18 | Página pública de status | ADR-0020, RNF-54 | M | P0.27, P3.11 | core `V10_4`; hospedagem separada da produção; status muda sozinho com a sonda fora; janela de manutenção publicada com 72 h |
 | P3.19 | Retenção, expurgo e exportação de chamados | ADR-0020 | P | P1.23, P2.12 | `purge_at` = fim da vigência do contrato mais 5 anos; ensaio de expurgo com contagem; chamados na exportação de fim de contrato; RIPD do módulo atualizado; manual de atendimento |
@@ -437,7 +473,8 @@ As tarefas da versão 2.1 não mudam esse caminho, com três ressalvas: a renome
 antes de toda tarefa de código do P0, em paralelo com a decisão de hospedagem; cobrança por contrato, NFS-e da venda e
 área do tenant (P2.12–P2.14) precedem a assinatura do contrato do piloto (P3.9); e o histórico com documentos no
 portal (P3.20) depende da NFAg-e (P2.6), da cópia imutável do XML (P2.18), que depende da hospedagem (P0.27), e da
-importação dos documentos anteriores ao go-live (P2.19). As decisões da versão 2.2 não alteram o caminho.
+importação dos documentos anteriores ao go-live (P2.19). As decisões das versões 2.2 e 2.3 não alteram o caminho; a
+troca dos códigos de problema cabe na P0.33, que já toca todos os pontos que os emitem.
 
 | Marco | Data | Critério |
 |---|---|---|
@@ -476,9 +513,12 @@ facultativo (P3); NR 11 em 20/05/2027 e Lei 14.015, em vigor (P3); SINISA anual 
 | Homologação em terceiros (SEFAZ, PSP, banco, gráfica) | Daniel | credenciamento a partir do P1; simuladores |
 | Fim de suporte (Spring Boot 4.1 em 31/07/2027; PostgreSQL 15 em nov/2027) | técnico | P3.14; P0.4 |
 | Escopo da versão 2.1 (marca, temas, Central, cobrança, suporte, portais) sobre a mesma capacidade | Daniel | Central e suporte crescem por fase (v0 no P1); P4 cede antes do go-live; tarefas fora do caminho crítico escorregam primeiro |
-| Renomeação em massa (P0.33) quebra build ou cifra | técnico | tag `pre-rename`; nenhum branch aberto; commit só de `git mv` separado do de conteúdo; teste de vetor fixo da cifra; busca residual no CI |
+| Renomeação em massa (P0.33) quebra build, cifra ou contrato da API | técnico | tag `pre-rename`; nenhum branch aberto; commit só de `git mv` separado do de conteúdo; teste de vetor fixo da cifra; teste de contrato dos códigos de problema, com backend, frontend e testes no mesmo commit; busca residual no CI |
 | Retenção longa de chamados com dado pessoal (vigência mais 5 anos) | Daniel | minimização no formulário, acesso restrito e registrado, expurgo com contagem, previsão no DPA |
 | XML do intervalo antes do go-live não entregues ou incompletos | Daniel | pedido formal ao piloto na P1.1; relatório de recusas da P2.19; o portal mostra a origem de cada documento e não inventa o que falta |
+| CPF/CNPJ como identificador de login do portal: enumeração de titulares ou vazamento do documento | técnico | documento cifrado e com índice cego, nunca em URL nem em log (inclusive eventos do Keycloak); resposta e tempo iguais para conta inexistente e senha errada; limite de tentativas com bloqueio progressivo; pentest (P3.8) |
+| Mapeamento de login por atributo sem suporte pronto no Keycloak | técnico | autenticador próprio coberto por teste na P3.3; revisão a cada atualização do Keycloak; o e-mail continua como identificador alternativo |
+| Contestação sem resposta em 15 dias estoura o prazo de 75 dias da eliminação | Daniel | alerta na Central antes do vencimento da resposta; ensaio de saída com contestação (P3.16) |
 | Acesso de emergência usado fora de incidente real | Daniel | só `PLATFORM_OWNER`, incidente declarado e registrado, reautenticação, somente leitura, aviso ao tenant em 24 h e revisão de cada uso na simulação de incidente (P3.10) |
 
 ---
@@ -510,15 +550,17 @@ facultativo (P3); NR 11 em 20/05/2027 e Lei 14.015, em vigor (P3); SINISA anual 
 - **Feature flags por tenant.** No console (core `V9`); módulo contratado é flag de plano; flag de rollout tem dono e
   data de remoção; mudança vai para a auditoria.
 - **ADRs.** Regras em `arquitetura/adr/README.md`; decisão nova só por ADR, que este plano cita sem repetir.
-- **Idioma (decisão do dono do produto, 12/10/2026).** Tabelas, colunas, schemas, valores de enumeração gravados,
+- **Idioma (decisões do dono do produto, 12/10/2026).** Tabelas, colunas, schemas, valores de enumeração gravados,
   rotas da API e do frontend, cabeçalhos HTTP, propriedades, permissões, chaves de configuração e de arquivos de
   conteúdo, pastas e identificadores de código em inglês, como o código atual (`consumer_units`, `'ACTIVE'`,
   `/api/registry/consumer-units`); textos exibidos ao usuário, conteúdo de ajuda, mensagens e documentação em português. Rotas
-  novas: `/help`, `/support`, `/about`; `/api/v1/public/status` se mantém. Exceções: o prefixo
-  `urn:ziipsan:problema:` e os códigos de problema já existentes ou novos (`versao-desatualizada`, `mfa_obrigatorio`),
-  contrato congelado da API (MARCA-E-TEMAS §5.5); o formato do protocolo exibido ao usuário (`SUP-AAAA-NNNNNN`);
-  nomes de campos de leiautes oficiais (`tpAmb`, `cStat`) e de código de terceiros citado (C# do Ziip Cloud). Em
-  revisão de PR e de documento, nome novo em português é corrigido antes do merge.
+  novas: `/help`, `/support`, `/about`; `/api/v1/public/status` se mantém. Os códigos de contrato da API também ficam
+  em inglês: prefixo `urn:ziipsan:problem:` e códigos de problema em minúsculas com hífen (`stale-version`,
+  `mfa-required`), aplicados na P0.33 (tabela no P0) e congelados depois dela (MARCA-E-TEMAS §5.5); `title` e
+  `detail` do problem+json continuam em português. Única exceção: o formato do protocolo exibido ao usuário
+  (`SUP-AAAA-NNNNNN`). Nomes definidos fora do produto, como campos de leiautes oficiais (`tpAmb`, `cStat`) e código
+  de terceiros citado (C# do Ziip Cloud), ficam como na fonte. Em revisão de PR e de documento, nome novo em
+  português é corrigido antes do merge.
 - **Diário.** `docs/DIARIO-DE-BORDO.md` ao fim de cada tarefa: o que foi feito, testes, pendências, commit.
 - **Push automático (ADR-0009).** Fim de etapa com suíte verde → commit e push; vermelho não publica.
 - **Aceite de fase.** Todos os critérios cumpridos e registrados; tarefa que escorregar recebe nova data aqui e no diário.

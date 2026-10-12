@@ -8,6 +8,9 @@
   ADR-0010; chamados e anexos pela vigência do contrato mais 5 anos), antes de qualquer implementação.
 - **Segundo ajuste de 12/10/2026 (plano v2.2), antes de qualquer implementação:** seção "Exceção: acesso de emergência"
   incluída por decisão do dono do produto; nomes de schema, tabela, coluna e rota passam ao inglês (plano §8, Idioma).
+- **Ajuste de 12/10/2026 (plano v2.3), antes de qualquer implementação:** o catálogo de erros explicados passa a usar
+  o prefixo `urn:ziipsan:problem:` e os códigos de problema em inglês (plano P0.33); o protocolo `SUP-AAAA-NNNNNN`
+  permanece, por ser visível ao cliente; decisão do dono do produto.
 
 ## Contexto
 
@@ -21,8 +24,10 @@ O cliente de saneamento exige prazo contratual medido, e chamados podem trazer d
    `platform` (`tenant_id` e RLS), para a fila da Central Ziip (ADR-0018) funcionar entre clusters.
 2. Conteúdo (artigos, tours, dicas, erros explicados) em arquivos versionados no repositório, editados por pull
    request e publicados por pipeline próprio. Tours apontam para atributos `data-tour`; o catálogo de erros usa o
-   código exato do problem+json e da rejeição fiscal.
-3. Chamado com protocolo `SUP-AAAA-NNNNNN`, conversa encadeada com notas internas, estados com pausa do relógio,
+   código exato do problem+json (`urn:ziipsan:problem:<código>`, em inglês; textos da explicação em português) e da
+   rejeição fiscal.
+3. Chamado com protocolo `SUP-AAAA-NNNNNN` (formato mantido em português por ser visível ao cliente; única exceção de
+   idioma do plano §8), conversa encadeada com notas internas, estados com pausa do relógio,
    prioridade P1–P4 e prazos pela política de SLA referenciada no contrato (ADR-0019), escalonamento e CSAT.
 4. Anexos validados pelo conteúdo, mantidos em quarentena até a varredura pelo ClamAV, que roda junto do `worker`, e
    guardados no armazenamento de objetos sob prefixo e chave do tenant. ClamAV é exceção registrada no ADR-0010
@@ -93,7 +98,7 @@ Central a ler tabelas de tenant (ADR-0018, item 5). O DPA (plano P3.9) precisa p
 | Tarefa | Fase |
 |---|---|
 | Estrutura `content/help`, validação no CI e pipeline de publicação | P1 |
-| Catálogo para todos os códigos `urn:...:problema:*` existentes | P1 |
+| Catálogo para todos os códigos `urn:ziipsan:problem:*` existentes | P1 |
 | Chamados com protocolo, conversa, estados, anexos com varredura e notificações; fila v0 na Central | P1 |
 | Hook de ajuda contextual, tour e dica no frontend | P1 |
 | SLA por contrato com calendário útil, escalonamento e CSAT | P2 |

@@ -1,7 +1,8 @@
 # Marca e temas
 
 Desenho do pacote de marca, da marca do tenant, dos temas e da renomeação `sigsan` → `ziipsan`. Decisões em ADR-0016
-e ADR-0017. Estado em 12/10/2026: nada implementado; valores de cor do §4.2 aprovados pelo dono do produto.
+e ADR-0017. Estado em 12/10/2026: nada implementado; valores de cor do §4.2 aprovados pelo dono do produto; códigos de
+contrato da API em inglês decididos pelo dono do produto e incluídos na renomeação (§5, plano v2.3).
 
 ## 1. Objetivos e não objetivos
 
@@ -197,9 +198,10 @@ Em 12/10/2026, 544 arquivos citam `sigsan`: 27 módulos `*/sigsan-*` e seus arti
 `SigsanApplication`, `SigsanProperties`; propriedades `sigsan.*`; variáveis `SIGSAN_*`; roles `sigsan_owner`,
 `sigsan_app`, `sigsan_migrator`, `sigsan_ts` (e `sigsan_worker`, prevista na P1.9); contêineres e banco do
 `docker-compose.yml`; realm `sigsan`, client `sigsan-web`, audiência `sigsan-api` e `sigsan-realm.json`;
-`urn:sigsan:problema:` (`ProblemResponses.java:20` e testes); tópico MQTT `sigsan/{tenant}/scada/...`
-(`ScadaTopic.java:8`); `spring.application.name`; contexto HKDF (`EnvDerivedTenantKeyProvider.java:32-33`); scripts;
-pasta raiz e repositório.
+`urn:sigsan:problema:` (`ProblemResponses.java:20` e testes) e os códigos de problema em português
+(`ApiException.java`, `GlobalExceptionHandler.java`, `JwtTenantFilter.java`, `SecurityConfig.java` e serviços do
+cadastro); tópico MQTT `sigsan/{tenant}/scada/...` (`ScadaTopic.java:8`); `spring.application.name`; contexto HKDF
+(`EnvDerivedTenantKeyProvider.java:32-33`); scripts; pasta raiz e repositório.
 
 ### 5.2 Ordem
 
@@ -209,7 +211,10 @@ pasta raiz e repositório.
 3. Commit só de `git mv` (módulos, pastas de pacote, arquivos com o nome), sem mudar conteúdo, para o
    `git log --follow` achar a origem.
 4. Commit de conteúdo, padrão por padrão, do mais específico ao mais genérico (`br.com.sigsan`, artifactId, classe,
-   `SIGSAN_`, `sigsan.`, roles, URN, tópico, realm, client, audiência), revisando o diff de cada um.
+   `SIGSAN_`, `sigsan.`, roles, URN, tópico, realm, client, audiência), revisando o diff de cada um. A URN passa a
+   `urn:ziipsan:problem:` e os códigos de problema passam ao inglês pela tabela do plano P0.33 (`versao-desatualizada`
+   → `stale-version`, `validacao` → `validation`), no mesmo commit do frontend (`errors.ts`) e dos testes; `title`,
+   `detail` e mensagens continuam em português.
 5. Textos visíveis com "SIGSAN" (`frontend/index.html:6,8`, `Layout.tsx:61`, `Login.tsx:40`, `AuthCallback.tsx:45`,
    `PageHeader.tsx:6`, `sigsan-realm.json:3,298`) passam a ler o pacote de marca; não viram "Ziip SAN" literal.
 6. `KeycloakAdminService.java` (realm por tenant e domínios `sigsan.com.br` nas linhas 59, 107-122, 154, 186) é
@@ -234,14 +239,15 @@ pasta raiz e repositório.
 - Trabalho paralelo: nenhum branch aberto durante a execução.
 
 Verificação: `mvn clean verify`, testes do frontend, `scripts/ci.sh`, `scripts/dev-up.sh` do zero, login, testes da
-URN e do tópico, ida e volta da cifra e busca residual sem `sigsan` fora da lista permitida.
+URN, dos códigos de problema (teste de contrato) e do tópico, ida e volta da cifra e busca residual sem `sigsan` fora
+da lista permitida e sem `problema:` nem código de problema antigo.
 
 ### 5.5 Congelados depois
 
 | Item | Mudança futura só por |
 |---|---|
 | `ziipsan/enc/v1`, `ziipsan/bidx/v1` (dado cifrado e índice cego ficariam ilegíveis) | versão `v2` com recifragem |
-| `urn:ziipsan:problema:` (contrato da API) | nova versão da API |
+| `urn:ziipsan:problem:` e os códigos de problema em inglês da P0.33 (contrato da API) | nova versão da API; código novo é aditivo |
 | Prefixo de tópico MQTT (equipamento de campo) | período de convivência |
 | Realms (`ziipsan` e, para os consumidores do portal, `ziipsan-portal`, ADR-0022), audiência e emissor | migração planejada |
 
@@ -264,7 +270,7 @@ caixa fora de `docs/` e do diário; exceções só em `branding/` e numa lista p
 
 | Tarefa | Fase | Plano |
 |---|---|---|
-| Renomeação `sigsan` → `ziipsan`, com HKDF congelado por teste de vetor fixo | P0, logo após a P0.1 | P0.33 |
+| Renomeação `sigsan` → `ziipsan`, com HKDF congelado por teste de vetor fixo e códigos de contrato da API em inglês | P0, logo após a P0.1 | P0.33 |
 | Pacote de marca, schema, `BrandProvider`, plugin do Vite, endpoint público, teste de literais | P0 | P0.34 |
 | Tema do Keycloak gerado do pacote | P0, entra na imagem da P0.29 | P0.35 |
 | Tokens, registro, Azul Água e Verde Água, script sem piscar com hash na CSP, contraste no CI | P0, com a P0.16 | P0.36 |

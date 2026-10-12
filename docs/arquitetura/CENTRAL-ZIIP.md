@@ -6,7 +6,9 @@ ADR-0022 (área do tenant). Base: revisão 17 (achado P1), ADR-0005, ADR-0007, A
 (`Nfse.Api/Servicos/CentralEndpoints.cs`, `CentralColetorService.cs`, `Nfse.Domain/Central.cs`). Documento de
 12/10/2026, revisto no mesmo dia com as decisões do dono do produto sobre suspensão, eliminação e acesso assistido e,
 depois, com as do plano v2.2 (§2.4): carência de 30 dias, papéis que suspendem e eliminam, acesso de emergência e
-identificadores em inglês; nada foi implementado. Nomes de role e realm já seguem a renomeação `ziipsan` (plano P0.33).
+identificadores em inglês; e, por fim, com as do plano v2.3: contestação e ordem judicial suspendem a eliminação
+(prazo máximo de 75 dias) e códigos de erro da API em inglês. Nada foi implementado. Nomes de role e realm já seguem a
+renomeação `ziipsan` (plano P0.33).
 
 ## 1. Objetivos
 
@@ -22,7 +24,7 @@ identificadores em inglês; nada foi implementado. Nomes de role e realm já seg
 
 Papéis de plataforma no realm `ziipsan`, sem `tenant_id`. O token de plataforma não abre rota de tenant, salvo pelo
 acesso assistido ou de emergência (§7). Toda rota `/api/v1/platform/*` exige segundo fator verificado no token (`amr`), sem exceção
-(ADR-0007); sem ele, 403 `mfa_obrigatorio`.
+(ADR-0007); sem ele, 403 `mfa-required`.
 
 | Papel | Pode | Exige também |
 |---|---|---|
@@ -36,7 +38,7 @@ aprovador, sempre com step-up, justificativa e auditoria (decisões do dono do p
 bloqueio: `PLATFORM_OWNER` por qualquer motivo, ou `PLATFORM_FINANCE` só com o motivo inadimplência contratual, que
 exige referência a fatura vencida e ao aviso prévio registrados no contrato (ADR-0019); com outro motivo, o pedido do
 financeiro é recusado com 403. Eliminação: só `PLATFORM_OWNER`, depois da carência de 30 dias e com certificado de
-descarte (§6.3). A aprovação dupla continua onde o ADR-0015 e `PARAMETROS-DO-TENANT.md` a exigem (parâmetros do
+descarte, suspensa por contestação ou ordem judicial (§6.3). A aprovação dupla continua onde o ADR-0015 e `PARAMETROS-DO-TENANT.md` a exigem (parâmetros do
 tenant, ajuste de conciliação) e na liberação da emissão fiscal em produção (`FISCAL-PORTE-JAVA.md` §3.6). Toda ação
 mutante grava em `platform.audit_event` (§4).
 
@@ -55,7 +57,7 @@ Frequência padrão: coleta a cada 5 min. "Tenant" significa indicador por tenan
 | Plataforma | migração por tenant e onda (ok, pendente, quarentena); tenants e ligações por shard contra o teto; profundidade e idade por fila; mensagens `DEAD` | `tenant_schema_version`, catálogo, outbox | 5 min | quarentena; 80% do teto (RNF-21); RNF-09; `DEAD` > 0 |
 | Infraestrutura | SLO de 30 dias e burn rate (RNF-01, 02, 10, 11); idade do WAL arquivado; última restauração testada; TLS; uptime externo | backend OTel, ferramenta de backup, sonda externa | 5 min | RNF-53; WAL > 15 min (RNF-14); restauração > 90 dias |
 | Segurança | % de MFA por papel e tenants com MFA afrouxado; falhas de login (z-score de 14 dias); buscas por documento com 429; tentativas de vinculação no portal com 429; sessões de acesso assistido e de emergência ativas; integridade da trilha | Keycloak, contadores, `audit_log` | 5 min; trilha a cada 6 h | pico de login; cota excedida (ADR-0008); trilha quebrada |
-| LGPD | pedidos de titular por status e prazo (só contagem); expurgos executados; tenants em saída e prazos; kit de evidências | módulo LGPD, `platform.tenant_lifecycle` | diária | pedido a 3 dias do prazo; RNF-42 em risco |
+| LGPD | pedidos de titular por status e prazo (só contagem); expurgos executados; tenants em saída e prazos; contestações de exportação abertas e suspensões judiciais; kit de evidências | módulo LGPD, `platform.tenant_lifecycle` | diária | pedido a 3 dias do prazo; contestação a 3 dias do prazo de resposta de 15 dias; RNF-42 em risco |
 | Suporte | definido no ADR-0020 | — | — | — |
 | Contratos | vigência, saldo de empenho, cota usada, faturas em aberto, pagamento × fatura | ADR-0019 | diária | ADR-0019, item 7 |
 | Radar | normas e NTs acompanhadas, com situação e data | `POST` de agentes (skill `monitor-regulatorio`) | sob demanda | norma com prazo ≤ 30 dias |
@@ -84,7 +86,7 @@ separados. Chamados, acesso assistido e acesso de emergência ficam no schema `s
 | `plan`, `tenant_subscription` | plano, módulos, cotas e vigência por tenant | permanente |
 | `feature_flag` | chave, tenant, valor, tipo (plano ou rollout), dono, data de remoção | até a remoção |
 | `onboarding_step` | tenant, passo do §6.1, status, referência ao aceite | permanente |
-| `tenant_lifecycle` | estado, motivo (inclusive inadimplência contratual, com a fatura vencida de referência), justificativa, aviso enviado em, executor e papel, fator de MFA do step-up, fim do contrato, carência até, contestação, cancelado em | permanente |
+| `tenant_lifecycle` | estado, motivo (inclusive inadimplência contratual, com a fatura vencida de referência), justificativa, aviso enviado em, executor e papel, fator de MFA do step-up, fim do contrato, carência até, contestações (aberta em, respondida em, resposta), suspensão por ordem judicial (referência ao processo, início, fim), prazo de conclusão, cancelado em | permanente |
 | contrato e afins | ADR-0019: contrato (com a política de SLA de suporte), aditivo, empenho, reajuste, fatura e pagamento, com referência aos documentos da fatura e da NFS-e (ADR-0022) | prazo fiscal e contratual |
 | `document_acceptance` | tenant, usuário (nulo no aceite do tenant), documento (termos, privacidade, contrato, DPA), versão, hash do texto, data, IP | prazo contratual |
 | `deployment` | versão, commit, ambiente, início e fim da implantação do software (ADR-0021) | permanente |
@@ -138,14 +140,19 @@ auditada. A suspensão do SaaS não altera nenhuma regra de corte do consumidor 
 2. Exportação em formato aberto em até 15 dias, com manifesto e hash por arquivo (RNF-42).
 3. **Carência de 30 dias**, contada do fim do contrato (decisão do dono do produto, 12/10/2026): o cliente baixa a
    exportação, confirma o recebimento e pode contestá-la (arquivo faltante ou divergente). Download, confirmação e
-   contestação ficam registrados. Contestação aberta impede a execução até ser respondida; a resposta corrige a
-   exportação ou reagenda a eliminação, com registro.
+   contestação ficam registrados. Contestação registrada na carência **suspende** a eliminação (decisão do dono do
+   produto, plano v2.3): o Ziip responde em até 15 dias, corrigindo a exportação quando a contestação procede, e,
+   respondida a última contestação, a eliminação segue. Ordem judicial registrada sempre suspende a eliminação,
+   enquanto vigorar.
 4. Eliminação agendada só por `PLATFORM_OWNER`, com MFA, step-up e justificativa, e executada só depois do fim da
-   carência, durante a qual pode ser cancelada com registro; o sistema recusa execução antes do fim da carência.
+   carência, durante a qual pode ser cancelada com registro; o sistema recusa execução antes do fim da carência, com
+   contestação sem resposta ou com ordem judicial vigente.
    Execução: `DROP SCHEMA` ou remoção por `tenant_id` no schema compartilhado, seguida de destruição da DEK
    (crypto-shredding, RNF-43); backups expiram em até 35 dias.
-5. Eliminação concluída e certificado de descarte emitido em até 30 dias após o fim da carência, ou seja, até 60 dias
-   do fim do contrato (RNF-42). O certificado traz data, escopo, hashes, prazo de expiração dos backups e das cópias
+5. Eliminação concluída e certificado de descarte emitido em até 30 dias após o fim da carência ou da resposta à
+   última contestação, o que ocorrer depois: até 60 dias do fim do contrato sem contestação e no máximo 75 dias com
+   ela (30 de carência, até 15 de resposta e até 30 para concluir e certificar; RNF-42). Enquanto vigorar ordem
+   judicial, esse prazo não corre. O certificado traz data, escopo, hashes, prazo de expiração dos backups e das cópias
    imutáveis (ADR-0015 item 5, ADR-0022) e a exceção dos chamados de suporte, retidos pela vigência do contrato mais 5
    anos (ADR-0020); estado `ERASED`; métricas do tenant permanecem só como agregados anônimos.
 
@@ -227,7 +234,7 @@ regra do plano, §8). `tenant_ref` é o UUID do catálogo, nunca nome ou documen
 
 | Entrega | Fase | Critérios de aceite |
 |---|---|---|
-| Central v0 (P1.17) com console v0 (P1.6) | P1 | rota de plataforma sem `amr` → 403 `mfa_obrigatorio`; `SELECT` de `ziipsan_central` em tabela de tenant falha no teste; abas Visão geral (fatores medidos), Plataforma, Segurança e Alertas; alerta abre e fecha sem duplicar; implantação com bloqueio "B"; suspensão manual por uma pessoa com MFA (`PLATFORM_OWNER`, ou `PLATFORM_FINANCE` só por inadimplência contratual), com o backoffice só leitura e o portal, o Pix e os retornos funcionando (teste); financeiro com outro motivo ou pedindo eliminação recebe 403; API v1 com catálogo e teste de contrato |
+| Central v0 (P1.17) com console v0 (P1.6) | P1 | rota de plataforma sem `amr` → 403 `mfa-required`; `SELECT` de `ziipsan_central` em tabela de tenant falha no teste; abas Visão geral (fatores medidos), Plataforma, Segurança e Alertas; alerta abre e fecha sem duplicar; implantação com bloqueio "B"; suspensão manual por uma pessoa com MFA (`PLATFORM_OWNER`, ou `PLATFORM_FINANCE` só por inadimplência contratual), com o backoffice só leitura e o portal, o Pix e os retornos funcionando (teste); financeiro com outro motivo ou pedindo eliminação recebe 403; API v1 com catálogo e teste de contrato |
 | Abas Faturamento e Fiscal (P2.11) | P2 | junto de P2.1 e P2.6; ciclo atrasado e fila fiscal acima do RNF-08 disparam alerta em homologação |
 | Contratos e financeiro (P2.12–P2.14, ADR-0019 e ADR-0022) | P2, antes da assinatura do piloto (P3.9) | fatura gera NFS-e na produção restrita; nenhum caminho de código bloqueia tenant sozinho (teste); alertas de vencimento e de cota; tenant baixa a fatura paga e a NFS-e em PDF e XML e não vê contrato de outro tenant |
-| Central completa (P3.15–P3.17) | P3 | Arrecadação, Pix, LGPD, Regulatório, Infraestrutura com SLO, Radar, Suporte; falha provocada alerta (P3.11); acesso assistido sem consentimento negado e auditado; acesso de emergência só com incidente declarado, `PLATFORM_OWNER` reautenticado, somente leitura e aviso ao tenant em até 24 h; saída de tenant sintético dentro do RNF-42, com carência de 30 dias cancelável, eliminação só por `PLATFORM_OWNER` e certificado em até 30 dias após a carência; kit com hash na trilha |
+| Central completa (P3.15–P3.17) | P3 | Arrecadação, Pix, LGPD, Regulatório, Infraestrutura com SLO, Radar, Suporte; falha provocada alerta (P3.11); acesso assistido sem consentimento negado e auditado; acesso de emergência só com incidente declarado, `PLATFORM_OWNER` reautenticado, somente leitura e aviso ao tenant em até 24 h; saída de tenant sintético dentro do RNF-42, com carência de 30 dias cancelável, eliminação só por `PLATFORM_OWNER`, suspensa por contestação (resposta em até 15 dias) e por ordem judicial, e certificado em até 30 dias após a carência ou a resposta, no máximo 75 dias do fim do contrato; kit com hash na trilha |

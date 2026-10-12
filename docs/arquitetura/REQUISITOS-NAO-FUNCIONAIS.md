@@ -66,7 +66,7 @@ indica quando a meta passa a ser critério de aceite.
 |---|---|---|---|---|---|
 | RNF-40 | Retenção por categoria em tabela aprovada pelo jurídico e pelo DPO; expurgo por partição. Chamados de suporte e anexos: vigência do contrato mais 5 anos (ADR-0020) | Relatório mensal de expurgo | Job do worker | P1 (tabela), P2 (expurgo) | Não atende: `audit_log` sem partição (`V1__create_core_schema.sql:43`, X3) |
 | RNF-41 | Registro de acesso a dado pessoal em lista, busca, detalhe, revelação e exportação | Teste por endpoint | Testes de integração | P1 | Parcial: só o `reveal` é registrado |
-| RNF-42 | Fim de contrato: exportação em formato aberto em até 15 dias; carência de 30 dias contados do fim do contrato, para o cliente baixar a exportação e contestar; eliminação concluída e certificado de descarte emitido em até 30 dias após o fim da carência, ou seja, até 60 dias do fim do contrato, salvo contestação ainda sem resposta (ADR-0015; decisão do dono do produto, 12/10/2026) | Ensaio com tenant sintético | Console da plataforma | P3 | Não atende (P1) |
+| RNF-42 | Fim de contrato: exportação em formato aberto em até 15 dias; carência de 30 dias contados do fim do contrato, para o cliente baixar a exportação e contestar; contestação registrada na carência suspende a eliminação e é respondida pelo Ziip em até 15 dias, depois do que a eliminação segue; eliminação concluída e certificado de descarte emitido em até 30 dias após o fim da carência ou da resposta à última contestação, o que ocorrer depois: até 60 dias do fim do contrato sem contestação e no máximo 75 dias com ela; ordem judicial sempre suspende a eliminação, e o prazo não corre enquanto ela vigorar (ADR-0015; decisões do dono do produto, 12/10/2026, plano v2.3) | Ensaio com tenant sintético | Console da plataforma | P3 | Não atende (P1) |
 | RNF-43 | Crypto-shredding: destruir a chave do tenant torna ilegível o dado cifrado, inclusive em backup; backups expiram em até 35 dias | Ensaio | Cofre/KMS | P3 | Não atende: depende do R1 |
 | RNF-44 | Dados de tenant e backups no Brasil; exceções (telemetria sem dado pessoal) registradas no RIPD | Inventário | — | P0 | Não atende: Terraform em `us-east-1` (O2) |
 
@@ -76,7 +76,7 @@ indica quando a meta passa a ser critério de aceite.
 |---|---|---|---|---|---|
 | RNF-50 | Métricas RED por rota e por tenant, Hikari, JVM, filas, `pg_stat_statements` | — | Micrometer, OTel Collector | P0 | Não atende: só `health` |
 | RNF-51 | Traces com `tenant_id`, `correlation_id` e `run_id`; amostragem de 10% mais todos os erros e lentas | — | OpenTelemetry | P0 | Não atende |
-| RNF-52 | Logs JSON sem dado pessoal; teste falha se CPF, e-mail ou telefone aparecer no log | Teste de log | JUnit, filtro no Collector | P0 | Parcial: ECS no perfil `prod` (`application-prod.yml`); sem filtro |
+| RNF-52 | Logs JSON sem dado pessoal; teste falha se CPF, e-mail ou telefone aparecer no log, inclusive o CPF/CNPJ digitado no login do portal e registrado em evento do Keycloak (ADR-0022) | Teste de log | JUnit, filtro no Collector | P0 | Parcial: ECS no perfil `prod` (`application-prod.yml`); sem filtro |
 | RNF-53 | SLOs de RNF-01, 02, 06, 10 e 11 com alerta por burn rate (14,4x em 1 h/5 min; 6x em 6 h/30 min) e política de error budget | — | Backend de métricas | P2 | Não atende (O1) |
 | RNF-54 | Error tracking, página de status pública e plantão definido | — | — | P3 | Não atende |
 

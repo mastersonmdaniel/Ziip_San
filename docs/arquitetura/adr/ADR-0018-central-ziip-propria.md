@@ -8,6 +8,9 @@
 - **Segundo ajuste de 12/10/2026 (plano v2.2), antes de qualquer implementação:** item 2 passa a dizer quais papéis
   executam suspensão, bloqueio e eliminação e fixa a carência de 30 dias; item 4 cita o acesso de emergência do
   ADR-0020; decisões do dono do produto.
+- **Ajuste de 12/10/2026 (plano v2.3), antes de qualquer implementação:** item 2 passa a dizer que contestação na
+  carência e ordem judicial suspendem a eliminação, com prazo máximo de 75 dias do fim do contrato; o código de erro
+  de MFA ausente passa a `mfa-required` (códigos de contrato da API em inglês); decisões do dono do produto.
 
 ## Contexto
 
@@ -26,7 +29,9 @@ ler dado pessoal do controlador.
    Suspensão, bloqueio e eliminação de dados de tenant são executados por **uma pessoa** com MFA, sem segundo
    aprovador. Suspensão e bloqueio: dono (`PLATFORM_OWNER`) ou financeiro (`PLATFORM_FINANCE`), este só por
    inadimplência contratual. Eliminação: só o dono, depois de carência de 30 dias contados do fim do contrato, com
-   certificado de descarte em até 30 dias após a carência (ADR-0015, RNF-42).
+   certificado de descarte em até 30 dias após a carência (ADR-0015, RNF-42). Contestação registrada na carência
+   suspende a eliminação até a resposta do Ziip, dada em até 15 dias; o prazo máximo total é de 75 dias do fim do
+   contrato. Ordem judicial sempre suspende.
 3. **Indicadores de saneamento** por tenant e consolidados, conforme `CENTRAL-ZIIP.md` §3, com Health Score adaptado.
 4. **Incorpora o console da plataforma**: implantação com checklist de parâmetros, planos, módulos, cotas, flags,
    suspensão manual com aviso prévio (backoffice em somente leitura; portal do consumidor, Pix, retornos bancários e
@@ -65,11 +70,11 @@ ler dado pessoal do controlador.
 
 | Tarefa | Fase |
 |---|---|
-| Papéis de plataforma no realm, verificação de `amr`, 403 `mfa_obrigatorio` | P0 (com P0.13 e P0.15) |
+| Papéis de plataforma no realm, verificação de `amr`, 403 `mfa-required` | P0 (com P0.13 e P0.15) |
 | Schema `platform`, role `ziipsan_central`, funções `platform_stats.*` com teste de ausência de dado pessoal | P1 |
 | Console v0 (P1.6): implantação, planos, cotas, flags, suspensão, saída | P1 |
 | Central v0: coletor com trava, alertas, Visão geral, Plataforma, Segurança; API de métricas `v1` | P1 |
 | Abas Faturamento e Fiscal | P2 |
 | Abas Arrecadação, Pix, LGPD, Regulatório, Infraestrutura com SLO, Radar, Suporte (ADR-0020); kit de evidências | P3 |
 | Acesso assistido com consentimento e acesso de emergência (ADR-0020), no lugar da impersonação | P3 |
-| Ensaio de saída com tenant sintético, carência de 30 dias e certificado de descarte | P3 |
+| Ensaio de saída com tenant sintético, carência de 30 dias, suspensão por contestação e por ordem judicial e certificado de descarte em até 75 dias do fim do contrato | P3 |
