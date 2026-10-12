@@ -966,7 +966,7 @@ Feita no branch `e4-mtr` (worktree separada).
 
 ### 12/10/2026 — Acesso ao GitHub
 
-- Gerada chave SSH ed25519 só para este repositório (deploy key), sem passphrase: `~/.ssh/id_ed25519_github_sigsan`
-  (fora do Drive), alias `github-sigsan` no `~/.ssh/config`. Remoto previsto: `git@github-sigsan:<dono>/sigsan.git`.
+- Gerada chave SSH ed25519 só para este repositório (deploy key), sem passphrase: `~/.ssh/id_ed25519_github_ziip_san`
+  (fora do Drive), alias `github-ziip-san` no `~/.ssh/config`. Remoto previsto: `git@github-ziip-san:<dono>/ziip-san.git` (o produto e o repositório se chamam Ziip SAN; SIGSAN é o nome interno do código).
 - Pendente com o usuário: criar o repositório privado e cadastrar a chave pública como deploy key com escrita. Nenhum push
   feito; o push continua dependendo de autorização explícita.
