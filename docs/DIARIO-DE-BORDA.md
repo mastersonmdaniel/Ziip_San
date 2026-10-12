@@ -804,3 +804,27 @@ Feita no branch `e3-json` (worktree separada), em paralelo à E3.
   `ObjectMapper` estático (objetos de valor, falham alto; migrar quando o Jackson 2 sair do core);
   `sigsan-gis/pom.xml` mantém `jackson-datatype-jsr310`/`jdk8` sem uso no código; `KeycloakAdminService` envia o
   hash como senha em texto (E5); `grantConsent` incrementa `version` à mão em consentimento existente.
+
+### E4 — dado pessoal: achados C4 e C5 (12/10/2026) — parcial ✔
+
+- **Auditoria sem dado pessoal (C4)**: core `V2__audit_redaction.sql` cria `public.audit_redaction_rule` (sem GRANT para a
+  aplicação) e `public.audit_redact(tabela, linha, changed)`: `REDACT` troca o valor por `"[redacted]"`, `OMIT` remove a
+  chave (em `changed_fields`, `"[changed]"`). `V1_4` (platform) reescreve o trigger: `changed_fields` é calculado sobre as
+  linhas cruas e redigido depois (senão a troca de nome sumiria da trilha). Regras por módulo: platform `V1_4` (users,
+  addresses, documents, service_orders), registry `V3_2`, lgpd `V2_7`, mtr `V2_6`, quality `V2_9`, losses `V2_10`,
+  metering `V5_2`. **`AuditRedactionCoverageTest`**: coluna com nome de dado pessoal em tabela auditada sem regra nem
+  justificativa explícita quebra o build — na primeira execução achou 10 colunas não classificadas (3 viraram regra:
+  `consumer_units.notes`, `meters.notes`, `lgpd_dpia.dpo_signature`). `AuditRedactionTest` (6) prova no PostgreSQL real.
+- **Cifra ligada ao cadastro**: `FieldProtector` (cifra + índice cego + máscara com contexto único) e
+  `EnvDerivedTenantKeyProvider` (HKDF-SHA256 conferido com o vetor da RFC 5869; **só desenvolvimento**, chave mestra em
+  `SIGSAN_DEV_MASTER_KEY`). `CustomerDocumentService` (registry): grava só cifra/índice/máscara, recusa documento inválido
+  ou incompatível com PF/PJ, detecta duplicidade pelo índice, e `reveal` exige finalidade e registra o acesso na
+  auditoria sem o valor. `DocumentNumber` foi para `shared/sigsan-core` (decisão S1). O bean de configuração
+  (`CryptoConfig`) fica para a E5, junto com a aplicação.
+- **Busca por documento fora da URL (C5)**: no frontend, `customers` e `consumer-units` buscam por `POST .../search`
+  com os filtros no corpo; `list()` desses recursos recusa `q`; `cleanParams` recusa qualquer valor com cara de CPF/CNPJ
+  (numérico ou alfanumérico). As três telas e a busca de imóvel do assistente passaram a usar `search`. Frontend: 97 testes,
+  typecheck limpo. Os endpoints do backend nascem na E5.
+- **Merge da E3'** (worktree paralela) sem regressão: **906 testes verdes**.
+- **Falta na E4**: cifra das colunas do MTR (`waste_mtr.driver_cpf`, `waste_generator.cnpj_cpf`, `waste_transporter.drivers`)
+  — em andamento num branch separado (`e4-mtr`).
