@@ -109,6 +109,9 @@ O relatório diz "orientado a eventos e APIs" como se fosse capacidade existente
 
 ## 3. Prioridades contra os prazos regulatórios
 
+> **Superado em 12/10/2026.** A ordem de prioridade canônica é a de `docs/PLANO-EXECUCAO-PDCA-R0-R9.md`. Esta seção fica como registro do raciocínio da época.
+
+
 Referência: `14 §3` e `08`, `11`, `13`. Hoje = 11/10/2026. Dias contados daqui.
 
 | Marco | Data | Dias | O relatório |

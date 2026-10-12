@@ -96,6 +96,9 @@ Já venceram: prazos de esporos (05/2022) e dureza (05/2023) da Portaria 888; a 
 
 ## 6. Plano de atendimento, ordenado pelo prazo mais próximo
 
+> **Superado em 12/10/2026.** A ordem de prioridade canônica é a de `docs/PLANO-EXECUCAO-PDCA-R0-R9.md`. Esta seção fica como registro do raciocínio da época.
+
+
 | Prioridade | Entrega | Prazo que a motiva | Estado |
 |---|---|---|---|
 | 1 | Tarifa social parametrizável (classificação, desconto, aviso, relatório) | 11/12/2026 | Regra de cálculo em construção no módulo `billing`; classificação por CadÚnico depende de integração e de base legal |

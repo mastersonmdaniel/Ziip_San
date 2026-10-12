@@ -11,12 +11,12 @@ Registro vivo do projeto: o que é, como está, o que travou e o que vem agora.
 |---|---|
 | Nome do produto | SIGSAN |
 | Tipo | Plataforma SaaS vertical multi-empresa para saneamento básico |
-| Raiz do repositório | `G:\Meu Drive\PROJETOS\Ziip SAN\sigsan` (antes `C:\PROJETOS\Ziip SAN\sigsan`). **Não é repositório git.** O Docker não enxerga o drive `G:`: o build usa um espelho local, ver seção 13 |
+| Raiz do repositório | `G:\Meu Drive\PROJETOS\Ziip SAN\sigsan`. Git desde 12/10/2026, com os dados do repositório fora do Drive (`C:\Users\shyka\.sigsan-git\sigsan.git`; no G: há só o arquivo `.git`). A cópia antiga em `C:\PROJETOS\Ziip SAN\sigsan` não é editada. O Docker não enxerga o drive `G:`: o build usa um espelho local, ver seção 13 |
 | Organização | `br.com.sigsan` |
 | Versão | `1.0.0-SNAPSHOT` |
-| Build | Maven reactor, 9 módulos, Java 21 |
+| Build | Maven reactor, 13 módulos, Java 21 |
 
-**Escopo que interessa primeiro:** perdas hídricas, qualidade da água, LGPD e resíduos sólidos (MTR/GRS).
+**Ordem de prioridade:** a única válida é a de `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` (desde 12/10/2026). Perdas, qualidade da água, LGPD e MTR correm como trilha paralela ao comercial, não à frente dele.
 
 **Fora do escopo:** POC, editais, blockchain no MTR, integração de escrita com ESRI.
 
@@ -419,31 +419,16 @@ named pipe e não monta. O teste de RLS foi directing para o PostgreSQL do compo
 
 ## 12. Próximos passos
 
-### Fase A — fechar o núcleo
+**Substituída em 12/10/2026.** As antigas Fases A–D desta seção ficaram desatualizadas (parte já feita, e a ordem
+conflitava com `00` §3, `14` §3 e `15c` §3). O roadmap canônico é `docs/PLANO-EXECUCAO-PDCA-R0-R9.md`:
 
-1. **Testar o cálculo IWA/AWWA** de `LossesService` com volumes conhecidos e resultado esperado
-   calculado à mão. Hoje a entrada é placeholder, então a inteligência central do produto não é
-   verificável.
-2. **Substituir os placeholders** por telemetria real do SCADA.
-3. **Testar `MtrService`**: transições de estado e encadeamento de hash.
+- **Fundações (ações do PDCA):** E0 git e linha de base → E1 scripts, banco de teste, POMs → E2 Spring Boot 4.1.1 →
+  E3 banco e tenant (C1, C2) + JSON e falhas silenciosas → E4 auditoria sem dado pessoal e cifra (C4) →
+  E5 aplicação executável, JWT, API do cadastro (C3, C5) → E6 CI e documentação. Alvo: 27/11/2026.
+- **Produto:** R3 tarifa social → R1 Vault → R4a alíquotas → GRS → R4 ciclo e conta → R5a conciliação / R6 SINISA 2027
+  → R7 protocolo e OS com bloqueio de corte → R5b/c Pix → R8 cobrança → R9 GIS e perdas.
 
-### Fase B — tornar o produto executável
-
-4. **Criar `@SpringBootApplication`** e um módulo `operations` como entry point.
-5. **Controllers REST** de OS, cadastro e faturamento.
-6. **Módulos `commercial` e `operations`** com POM, entidade e repository.
-
-### Fase C — o que hoje é stub
-
-7. **Solver EPANET** real, ou biblioteca hidráulica. Perdas e GIS não têm cálculo.
-8. **SINIR** quando houver credenciais.
-9. **Assinatura ICP-Brasil** com certificado real.
-
-### Fase D — produto
-
-10. Frontend integrado consumindo a API real.
-11. Infra como código com Terraform.
-12. OS Mobile com Capacitor.
+O andamento de cada etapa é registrado na seção 18.
 
 ---
 
@@ -684,3 +669,19 @@ ser a ordem de prioridade canônica (a seção 12 deste diário será substituí
 
 **Decisões do usuário (12/10/2026):** git com `.git` fora do Drive (`--separate-git-dir`); remoto GitHub privado
 (push só com autorização); Spring Boot 4.1.1; Keycloak com realm único `sigsan` e claim `tenant_id` (UUID).
+
+---
+
+## 18. Execução do plano (a partir de 12/10/2026)
+
+### E0 — linha de base (12/10/2026) ✔
+
+- `git init -b main --separate-git-dir=C:/Users/shyka/.sigsan-git/sigsan.git` (o Drive corrompe `.git` ao sincronizar
+  `index.lock` e objetos); `core.autocrlf=false` no repositório; `.gitignore` e `.gitattributes` (`*.sh`/`*.sql` em LF).
+- Varredura de segredos (gitleaks 8.21.2, em container, sobre uma cópia que incluía `docs/levantamento`): 0 achados. Busca
+  manual: só senhas de desenvolvimento conhecidas (`changeme` no Kubernetes, senhas de dev no compose e nos scripts),
+  tratadas na E3.
+- Commit `e749025`: linha de base com 524 arquivos (793 testes verdes).
+- Roadmap canônico: seção 12 substituída; remissões em `00` §3, `14` §3 e `15c` §3; `DIARIO_DE_BORDO.md` na raiz aponta para este arquivo.
+- `scripts/build.sh`: robocopy passa a excluir o arquivo `.git` (`/XF .git`). Pasta vazia `sigsan/sigsan` removida.
+- Remoto GitHub: pendente de autorizar o MCP `github` (`/mcp`). Push só com autorização do usuário.

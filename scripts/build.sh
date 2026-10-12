@@ -26,7 +26,7 @@ IT_PORT="${SIGSAN_IT_PORT:-55433}"
 
 mkdir -p "$MIRROR"
 # robocopy devolve 0-7 em sucesso; o PowerShell normaliza para 0 para nao confundir o shell.
-powershell.exe -NoProfile -Command "robocopy '$(cygpath -w "$SRC")' '$(cygpath -w "$MIRROR")' /MIR /XD target node_modules levantamento .git /XF *.tar /NFL /NDL /NJH /NJS /NP | Out-Null; exit 0" >/dev/null 2>&1
+powershell.exe -NoProfile -Command "robocopy '$(cygpath -w "$SRC")' '$(cygpath -w "$MIRROR")' /MIR /XD target node_modules levantamento .git /XF *.tar .git /NFL /NDL /NJH /NJS /NP | Out-Null; exit 0" >/dev/null 2>&1
 
 MSYS_NO_PATHCONV=1 docker run --rm \
   -e SIGSAN_IT_JDBC_URL="jdbc:postgresql://host.docker.internal:${IT_PORT}/sigsan" \

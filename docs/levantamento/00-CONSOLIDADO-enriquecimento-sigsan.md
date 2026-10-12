@@ -41,6 +41,9 @@ Nenhum quebra o build. Todos quebram em runtime ou em produção.
 
 ## 3. Ordem de ataque proposta
 
+> **Superado em 12/10/2026.** A ordem de prioridade canônica é a de `docs/PLANO-EXECUCAO-PDCA-R0-R9.md`. Esta seção fica como registro do raciocínio da época.
+
+
 Cruza as recomendações dos 6 relatórios com as Fases A–D do diário. Uma trilha comercial e uma trilha GIS/perdas, que se encontram no balanço hídrico.
 
 | Fase | Entrega | Origem | Depende de |
