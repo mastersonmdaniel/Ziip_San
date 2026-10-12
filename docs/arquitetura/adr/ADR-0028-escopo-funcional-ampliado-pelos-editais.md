@@ -9,6 +9,15 @@
   P4.2, P4.4, P4.5; RNF-44
 - **Base:** `docs/levantamento/editais/18d-aderencia-cadastro-medicao-gis.md` §3 e §4; `18e-aderencia-faturamento-arrecadacao-cobranca.md`
   §3 e §4; `18f-aderencia-atendimento-os-portal.md` §3 e §4; `18g-aderencia-operacao-qualidade-bi.md` §3 e §4
+- **Ajuste de 12/10/2026 (editais, v2.5), antes de qualquer implementação:** item (c) passa a incluir, como conectores
+  oficiais no mesmo modelo do WhatsApp (conversa no protocolo, opt-in por canal, provedor como suboperador no DPA),
+  Facebook Messenger e Instagram pela API oficial da Meta e Telegram pela Bot API; item (f) passa a ser condicional ao
+  piloto: a escolha do piloto (plano P0.30) levanta se há optantes de débito automático e, havendo, o FEBRABAN 150
+  legado sobe para o P3 como requisito do go-live (plano P3.24), senão fica na trilha do P4 (ED-27); item (i) passa ao
+  recorte "núcleo saneamento + integração": constroem-se o almoxarifado (materiais e estoque para a OS, com alçada,
+  reserva e baixa automática pelo ADR-0032) e a frota (veículos e equipes de campo), integra-se por API e/ou arquivo
+  com Betha, IPM e Fiorilli, e compras, RH e orçamento ficam para 2029, sob demanda, o que cumpre a tarefa derivada
+  "Definir o recorte"; decisão do dono do produto.
 
 ## Contexto
 

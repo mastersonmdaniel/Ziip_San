@@ -8,6 +8,11 @@
   `docs/arquitetura/AJUDA-SUPORTE-SOBRE.md` (`sla_policy`)
 - **Base:** `docs/levantamento/editais/18h-aderencia-nao-funcionais-servicos-habilitacao.md` §3.1, §3.2, §5 (E7, E9)
   e §6 (decisão 6)
+- **Ajuste de 12/10/2026 (editais, v2.5), antes de qualquer implementação:** item 3 passa a ter equipe pelo ADR-0029
+  (4 a 5 desenvolvedores a partir de agosto de 2027), com escala de plantão para a S1 ativa até 31/01/2028 (ED-05);
+  continua vedado assinar contrato neste nível antes da escala ativa; o padrão do produto também passa a usar as
+  severidades S1 a S5 (ADR-0020, ajuste v2.5), e a linha "Prioridades P1–P4" do Contexto fica como registro do padrão
+  anterior; decisão do dono do produto.
 
 ## Contexto
 

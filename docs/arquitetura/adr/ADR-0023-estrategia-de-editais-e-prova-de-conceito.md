@@ -7,6 +7,11 @@
   P0.23 (carga sintética), P0.27 (homologação)
 - **Base:** `docs/levantamento/editais/18a` a `18h`, em especial `18h` §3.5, §4 e §6 (decisões 1, 4 e 5), `18d` §4
   (decisão 5), `18e` §1.4 e `18g` §4 (D5)
+- **Ajuste de 12/10/2026 (editais, v2.5), antes de qualquer implementação:** item 4 decidido pelo ADR-0029: contratação
+  de 4 a 5 desenvolvedores a partir de agosto de 2027, prontidão de POC em 30/06/2028 e disputa de licitações no 2º
+  semestre de 2028; a tarefa derivada "Decisão de equipe para editais" fica cumprida, e o parceiro de implantação e
+  treinamento presencial (ED-11) e o custo da equipe seguem como pendências do plano (§2.4); decisão do dono do
+  produto.
 
 ## Contexto
 

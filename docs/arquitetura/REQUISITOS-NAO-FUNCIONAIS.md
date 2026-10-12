@@ -10,7 +10,8 @@ indica quando a meta passa a ser critério de aceite.
 As metas abaixo são o padrão do produto. O nível de serviço **Setor Público** (ADR-0025), contratável por cliente,
 substitui algumas delas no contrato que o escolher: 99,9% de disponibilidade (RNF-10), exportação em 10 dias úteis e
 consulta pós-contrato de até 120 dias (RNF-42), relatórios em 2 ou 5 minutos (RNF-71) e cinco severidades de suporte
-com prazo de solução (ADR-0020). Hospedagem: AWS `sa-east-1` (ADR-0011).
+com prazo de solução (ADR-0020). Hospedagem: AWS `sa-east-1` (ADR-0011). Apps Capacitor: autenticação pelo RNF-39
+(ADR-0030) e sincronização de campo pelo RNF-07 (ADR-0031).
 
 ## 1. Desempenho
 
@@ -22,7 +23,7 @@ com prazo de solução (ADR-0020). Hospedagem: AWS `sa-east-1` (ADR-0011).
 | RNF-04 | Listas: no máximo 3 consultas por página; keyset acima de 10 mil linhas | Contagem de statements por requisição | Estatísticas do Hibernate em teste | P1 | Não atende: N+1 e offset com `count(*)` (D4) |
 | RNF-05 | Faturamento: 100 mil contas em < 2 h por tenant; p95 da API piora no máximo 20% durante o lote | Lote cronometrado em homologação com k6 em paralelo | k6, métricas do worker | P2 | Não medido: não há lote (X4) |
 | RNF-06 | Webhook Pix: resposta < 2 s (p99); baixa conciliada < 60 s (p95) | Recebimento × baixa | Métricas da caixa de entrada | P3 | Não atende: endpoint inexistente |
-| RNF-07 | Sincronização de leitura: lote de até 500 leituras confirmado < 5 s (p95); reenvio idempotente | k6 com lotes repetidos | k6 | P2 (importação), P4 (app) | Não atende: `meter_readings` sem chave de idempotência |
+| RNF-07 | Sincronização de leitura: lote de até 500 leituras confirmado < 5 s (p95); reenvio idempotente pela chave da tarefa (`task_id`), sem segunda conta, segunda baixa de material nem segunda NFAg-e; conta emitida em campo recalculada no servidor com as mesmas versões de parâmetro (ADR-0031, ADR-0032) | k6 com lotes repetidos; vetores comuns no JVM e no emulador Android | k6, JUnit, teste instrumentado Android | P2 (importação), P4 (app) | Não atende: `meter_readings` sem chave de idempotência |
 | RNF-08 | Emissão fiscal: 95% autorizadas < 10 min após o fechamento da conta, exceto indisponibilidade do autorizador | Idade da mensagem na fila fiscal | Métricas da outbox | P2 | Não medido |
 | RNF-09 | Filas interativas: mensagem mais antiga < 5 min | Gauge por fila | Micrometer | P2 | Não medido |
 | RNF-71 | Relatórios e arquivos gerados sob demanda: no nível Setor Público (ADR-0025), concluídos em até 2 min ou 5 min, conforme o contrato; no padrão do produto, sem prazo contratual (ADR-0012, ajuste de 12/10/2026) | Cada relatório do catálogo padrão (ADR-0027) cronometrado na carga de referência contra 2 min, o prazo mais exigente dos editais | k6, métricas do `worker` | P3 | Não atende: não há módulo de relatórios nem exportação PDF/XLSX/CSV (`docs/levantamento/editais/18g-aderencia-operacao-qualidade-bi.md` §1.2) |
@@ -57,7 +58,7 @@ com prazo de solução (ADR-0020). Hospedagem: AWS `sa-east-1` (ADR-0011).
 | ID | Meta | Como medir | Ferramenta | Fase | Estado (evidência) |
 |---|---|---|---|---|---|
 | RNF-30 | MFA sempre na plataforma; por tenant configurável, padrão ligado para ADMIN, MANAGER e revelação de documento (ADR-0007) | % de usuários com MFA por papel | Relatório do Keycloak | P0 (plataforma), P1 (tenants) | Não atende: realm sem OTP/WebAuthn (S4) |
-| RNF-31 | Nenhum token acessível a JavaScript: cookie `__Host-`, HttpOnly, Secure, SameSite; refresh com rotação (ADR-0006) | E2E que inspeciona o storage | Playwright | P0 | Não atende: `sessionStorage` (`frontend/src/services/auth/oidc.ts:28`) |
+| RNF-31 | Nenhum token acessível a JavaScript no navegador: cookie `__Host-`, HttpOnly, Secure, SameSite; refresh com rotação (ADR-0006); nos apps, RNF-39 | E2E que inspeciona o storage | Playwright | P0 | Não atende: `sessionStorage` (`frontend/src/services/auth/oidc.ts:28`) |
 | RNF-32 | AES-GCM por campo com AAD de tenant; chave por tenant no AWS KMS (ADR-0011), rotação anual, backup da KEK (forma definida na P0.28, porque o KMS não exporta a chave); disco e backups cifrados | Teste e inspeção | Testes, console do provedor | P0 | Parcial: cifra existe; provedor de produção não (`sigsan.crypto.provider`) |
 | RNF-33 | TLS 1.2+ (1.3 preferido), HSTS de 1 ano, TLS até banco e Keycloak, `sslRequired=all` | Varredura | testssl.sh | P0 | Não atende: Keycloak em HTTP; sem `forward-headers-strategy` |
 | RNF-34 | CSP estrita sem `unsafe-inline` (o SPA é estático; o único script inline, o de tema, entra por hash, ADR-0017), `frame-ancestors 'none'` e demais cabeçalhos | Varredura em homologação | OWASP ZAP no CI | P0 | Não atende: sem CSP (S5) |
@@ -65,6 +66,7 @@ com prazo de solução (ADR-0020). Hospedagem: AWS `sa-east-1` (ADR-0011).
 | RNF-36 | Pentest externo com foco em isolamento antes do go-live; críticos e altos corrigidos; reteste anual | Relatório | Terceiro | P3 | Não atende |
 | RNF-37 | Credencial de migração só no job `migrate` | Inspeção da configuração | — | P0 | Não atende: `migratorDataSource` sempre criado (`DataSourceConfig.java:29-39`, S2) |
 | RNF-38 | Testes de cobertura de RLS e de isolamento bloqueiam o CI | CI | JUnit | P0 | Atende: `FreshInstallTest` e isolamento no PostgreSQL real |
+| RNF-39 | Apps (ADR-0030): login só pelo navegador do sistema, com PKCE (S256) e retorno por App Link ou Universal Link; access token de 5 min; refresh rotativo, guardado só no Android Keystore ou no iOS Keychain e nunca legível pelo JavaScript da WebView; reutilização de refresh revoga a sessão; app de campo só em dispositivo registrado, com recusa imediata de sincronização após o bloqueio e apagamento dos dados locais no contato seguinte; revogação pela área do tenant e pela Central efetiva em até 5 min | Teste instrumentado que inspeciona armazenamento e WebView; teste de revogação e de bloqueio; pentest dos apps | Emulador Android e simulador iOS no CI, ferramenta de análise de app móvel | P4 | Não atende: apps inexistentes |
 
 ## 5. LGPD
 

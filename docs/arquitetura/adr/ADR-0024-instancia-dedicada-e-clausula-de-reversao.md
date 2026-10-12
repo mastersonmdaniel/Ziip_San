@@ -6,6 +6,14 @@
   ADR-0019 (contrato); ADR-0023 (editais); ADR-0025 (nível de serviço); `docs/arquitetura/ARQUITETURA-ALVO.md` §3 e §7
 - **Base:** `docs/levantamento/editais/18h-aderencia-nao-funcionais-servicos-habilitacao.md` §3.4, §5 (E4) e §6
   (decisão 3)
+- **Ajuste de 12/10/2026 (editais, v2.5), antes de qualquer implementação:** item 3 passa a prever que o pacote de
+  reversão, em contêineres Linux, roda também em Windows Server 2022 ou superior, sobre Docker numa distribuição Linux
+  do WSL2 (com virtualização aninhada habilitada quando o servidor for máquina virtual; forma exata do runtime
+  conferida na homologação), com requisitos mínimos publicados para Linux e para Windows Server; a combinação Windows é
+  homologada uma vez, na construção do pacote (ED-04), e volta a ser homologada só se um cliente a adotar na reversão;
+  o SaaS continua em Linux na AWS (ADR-0011); a URA segue a integração mínima do ADR-0028 (item k), com API de consulta
+  para URA de terceiros; a consequência negativa sobre Windows fica tratada por este ajuste; decisão do dono do
+  produto.
 
 ## Contexto
 

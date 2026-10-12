@@ -9,7 +9,7 @@ Data: 12/10/2026. Produto Ziip SAN (código interno SIGSAN, renomeado `ziipsan` 
 portal e canais), [18g](18g-aderencia-operacao-qualidade-bi.md) (operação, qualidade da água e BI) e
 [18h](18h-aderencia-nao-funcionais-servicos-habilitacao.md) (não funcionais, serviços, POC e habilitação).
 
-As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4
+As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4, atualizado pela v2.5 (abaixo)
 ([PLANO-EXECUCAO-PDCA-R0-R9.md](../../PLANO-EXECUCAO-PDCA-R0-R9.md)) e contra as decisões do dono do produto de
 12/10/2026, registradas nos ADRs [0011](../../arquitetura/adr/ADR-0011-hospedagem-a-decidir.md) (aceito),
 [0023](../../arquitetura/adr/ADR-0023-estrategia-de-editais-e-prova-de-conceito.md),
@@ -19,6 +19,16 @@ As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o pla
 [0027](../../arquitetura/adr/ADR-0027-bi-hibrido-com-apache-superset.md) e
 [0028](../../arquitetura/adr/ADR-0028-escopo-funcional-ampliado-pelos-editais.md). As matrizes 18d a 18h ficam como
 estão, como linha de base; a situação viva passa a ser mantida pelo processo do §7.
+
+**Atualização de 12/10/2026 (plano v2.5).** Aplicadas as decisões do dono do produto registradas nos ADRs
+[0029](../../arquitetura/adr/ADR-0029-capacidade-e-equipe-da-trilha-de-editais.md) (equipe da trilha),
+[0030](../../arquitetura/adr/ADR-0030-autenticacao-nos-apps.md) (autenticação nos apps),
+[0031](../../arquitetura/adr/ADR-0031-calculo-offline-e-nota-fiscal-na-emissao-em-campo.md) (emissão em campo) e
+[0032](../../arquitetura/adr/ADR-0032-material-da-os-com-alcada-e-baixa-automatica.md) (material da OS com alçada) e
+nos ajustes da v2.5 dos ADRs 0024 (Windows Server) e 0028 (ERP no recorte "núcleo saneamento + integração", conectores
+Messenger, Instagram e Telegram, FEBRABAN 150 condicional ao piloto). Mudaram as entregas ED-04, ED-11, ED-18, ED-19,
+ED-20, ED-27, ED-36, ED-39, ED-42, ED-58, ED-59 e ED-62; ED-60, ED-61 e a parte de compras da ED-58 saem da trilha
+para 2029. O esforço (§5.2) e a capacidade (§8.1) foram recalculados.
 
 **Convenções.** Esforço na escala do plano (§4): **P** até 2 dias, **M** até 1 semana, **G** mais de 1 semana, para uma
 pessoa com agentes. Para somar, P vale 0,4 semana, M vale 1 semana e G vale a estimativa da matriz de origem ou, na
@@ -45,11 +55,13 @@ deduplicadas (ED-01 a ED-62, §5), para disputar licitações em 2028. A prontid
 146 de 162 pontos na VISAN e nenhuma falha crítica no SAMAE) passa a ser medida em toda fase a partir do P1 e entra no
 aceite de fase a partir do P3. O go-live do piloto (30/07/2027) não muda.
 
-**Condição.** O esforço estimado das 62 entregas é de cerca de 220 semanas-pessoa (51 meses-pessoa), das quais 13
-semanas caem no P0 a P3 e 206 na trilha do P4. Só a prontidão de POC (ondas A e B, §5.2) pede cerca de 178
-semanas-pessoa. Com uma pessoa e agentes, a prontidão chegaria por volta de 2031. Para disputar em 2028 é preciso
-equipe de cerca de 4,3 pessoas-equivalentes a partir de agosto de 2027 (prontidão em junho de 2028) ou de 2,7 (prontidão
-em dezembro de 2028). A decisão de equipe, que o ADR-0023 deixa para o P4, é o fator que decide a data (§8).
+**Condição.** Recalculado na v2.5 do plano, o esforço das entregas que ficam na trilha até 2028 é de cerca de 220
+semanas-pessoa (51 meses-pessoa), das quais 13 semanas caem no P0 a P3 e 206 na trilha do P4; compras, RH e orçamento
+(cerca de 9 semanas) passaram para 2029. Só a prontidão de POC (ondas A e B, §5.2) pede cerca de 183 semanas-pessoa,
+192 com as tarefas originais do P4. Com uma pessoa e agentes, a prontidão chegaria por volta de 2031. Para junho de
+2028 são precisas cerca de 4,5 pessoas-equivalentes a partir de agosto de 2027 (2,8 para dezembro de 2028). O
+ADR-0029 decidiu contratar de 4 a 5 desenvolvedores a partir de agosto de 2027, com prontidão em 30/06/2028 e
+licitações no 2º semestre de 2028 (§8).
 
 **Habilitação.** O primeiro atestado vem do piloto, que precisa ser público, em Santa Catarina, contratado por
 dispensa ou por CPSI (LC 182/2021) e com cláusula de atestado (critério já incluído na P0.30). Com ele, editais do tipo
@@ -231,10 +243,10 @@ Seções essenciais não críticas (contam nos 90%): 2.1, 2.3, 2.6, 2.16 (salvo 
 | H3 | Provedor de nuvem certificado | ISO 9001, 27001, 27017, SOC 1 e SOC 3 do provedor | não exigido | AWS `sa-east-1` gerenciada; relatórios do AWS Artifact no kit a cada proposta | ADR-0011; P0.26–P0.28; ED-03 |
 | H4 | Lote único completo | omnichannel, BI e SIG obrigatórios, sem subcontratação | idem, mais laboratório e CTI | trilha de editais com todos os módulos como componentes do produto (Superset licenciado, LLM por API como suboperador) | ADR-0026 a ADR-0028; ED-42, ED-43, ED-47, ED-50, ED-52 |
 | H5 | Balanço de 2 exercícios | exigido | exigido (empresa nova: último exercício) | empresa licitante definida e escrituração por contador já em 2026; para licitar em 2028, balanços de 2026 e 2027 | P0.44; ED-02 |
-| H6 | Implantação e equipe presencial | 90 dias, 2 especialistas presenciais, técnico por 30 dias, treinamento presencial de 40 h | 60 dias, especialistas presenciais, 2 técnicos por 30 dias | implantação e treinamento remotos no piloto; equipe para editais decidida no P4; metodologia e importadores padronizados | ADR-0023 item 4; ED-09, ED-11 |
+| H6 | Implantação e equipe presencial | 90 dias, 2 especialistas presenciais, técnico por 30 dias, treinamento presencial de 40 h | 60 dias, especialistas presenciais, 2 técnicos por 30 dias | implantação e treinamento remotos no piloto; equipe de 4 a 5 desenvolvedores a partir de agosto de 2027 (ADR-0029); parceiro de implantação presencial em aberto (plano §2.4); metodologia e importadores padronizados | ADR-0023 item 4; ADR-0029; ED-09, ED-11 |
 | H7 | Registro no INPI e vedação a software livre (ETP) | no ETP | — | registro do programa no INPI; bibliotecas livres não tornam o produto software livre | P0.44; ED-02 |
-| H8 | Hospedagem local e licença instalável | VISAN pode assumir a infraestrutura, com desconto na mensalidade (TR 4.4.12); acesso administrativo da TI (TR 4.15) | licenças instaláveis em qualquer servidor (SG-020); Windows Server 2022+ | instância dedicada gerenciada; pacote em contêiner só como cláusula de reversão; acesso da TI do órgão só na instância dedicada | ADR-0024; ED-04 |
-| H9 | Metas contratuais acima do padrão | 99% em horário comercial; cinco severidades (2 a 32 h); dados em 10 dias úteis; consulta por 120 dias | 99,9%; cinco severidades (2 a 160 h) com multa; monitoramento 24/7 | nível "Setor Público" contratável; o padrão do produto não muda; plantão depende da equipe do P4 | ADR-0025; P2.15, P3.16, P3.22; ED-05 |
+| H8 | Hospedagem local e licença instalável | VISAN pode assumir a infraestrutura, com desconto na mensalidade (TR 4.4.12); acesso administrativo da TI (TR 4.15) | licenças instaláveis em qualquer servidor (SG-020); Windows Server 2022+ | instância dedicada gerenciada; pacote em contêiner só como cláusula de reversão, em Linux ou em Windows Server 2022+ com Docker no WSL2, homologado uma vez; acesso da TI do órgão só na instância dedicada | ADR-0024 (ajuste v2.5); ED-04 |
+| H9 | Metas contratuais acima do padrão | 99% em horário comercial; cinco severidades (2 a 32 h); dados em 10 dias úteis; consulta por 120 dias | 99,9%; cinco severidades (2 a 160 h) com multa; monitoramento 24/7 | nível "Setor Público" contratável; o padrão do produto não muda; plantão da S1 com a equipe do ADR-0029, ativo até 31/01/2028 | ADR-0025; ADR-0029; P2.15, P3.16, P3.22; ED-05 |
 | H10 | Preço | teto de R$ 18.866,65/mês e R$ 77.900 de implantação | teto de R$ 7.636,74/mês com hospedagem, BI e Google Maps | tabela de custo da AWS (ADR-0011) e preço por porte; o teto do SAMAE só fecha com vários tenants no mesmo cluster | ED-10 |
 
 Sequência que decorre: (1) até 13/11/2026, piloto escolhido com o critério de atestado (P0.30); (2) em paralelo,
@@ -250,7 +262,9 @@ tipo VISAN. A prontidão de POC (§8) é a condição que pode atrasar cada pass
 
 As matrizes propuseram 74 entregas (18d: 16; 18e: 17; 18f: 16; 18g: 13; 18h: 12), com sobreposições. A consolidação
 abaixo junta as equivalentes, separa as que misturavam etapas de natureza diferente (app de campo, relatórios) e
-acrescenta os módulos de ERP que o ADR-0028 (item i) decidiu construir. Resultado: 62 entregas.
+acrescenta os módulos de ERP que o ADR-0028 (item i) decidiu construir. Resultado: 62 entregas. Com o recorte da v2.5
+(ADR-0028, item i, ajustado), 60 ficam na trilha até 2028; ED-60, ED-61 e a parte de compras da ED-58 passam a 2029,
+sob demanda, e continuam listadas para manter a numeração.
 
 Colunas: **Fase/onda** (fase do plano ou onda da trilha, §5.2); **Esf.** em semanas-pessoa; **POC** com a alínea da
 VISAN (V) e a seção do SAMAE (S, "crít." quando crítica). Requisitos por faixa de IDs; "exceto" remete ao que outra ED
@@ -263,14 +277,14 @@ cobre.
 | ED-01 | Prontidão de POC: roteiros VISAN e SAMAE, ambiente de demonstração permanente com tenant ≥ 10 mil unidades fictícias, kit de campo, ensaio cronometrado por fase | 18h-E3 (M22–M25) | ED-055, ED-056, ED-074; TR-038–TR-045, TR-112; SG-001; roteiro POC-01–POC-81; 18c §3 | todas | P1 (P1.25), P3 (P3.23), P4 onda B | 4,4 | P0.23, P0.27, P2.9 | 0023 |
 | ED-02 | Kit de habilitação e propriedade intelectual: empresa licitante, certidões, balanço, declarações, e-CNPJ, INPI, cláusula de licença das customizações, prova do vínculo com o provedor | 18h-E1 (M03, M05, M07, M12, M13) | ED-010–ED-016, ED-022, ED-025, ED-070, ED-090; ETP-005, ETP-007; TR-103, TR-105, TR-1100–TR-1103; SG-1398; 18c §2.2 | habilitação | P0 (P0.44), renovado a cada proposta | 0,4 | P0.26 | 0023, 0011 |
 | ED-03 | Hospedagem certificada e serviços de segurança do provedor (detecção de ameaças, inspeção de vulnerabilidades, registro de configuração, backup só no Brasil) | 18h-E2 (M38–M43) | ED-063–ED-066; TR-061, TR-062, TR-064, TR-068–TR-092, TR-095, TR-096, TR-098, TR-100, TR-101; SG-003, SG-033, SG-667, SG-1406 | V a; S 2.4 crít. | P0 (P0.26–P0.28) | 1 | — | 0011 |
-| ED-04 | Instância dedicada gerenciada e pacote de reversão em contêiner, com requisitos mínimos, runbook e acesso administrativo restrito do órgão | 18h-E4 (M35, M36, M44) | ED-067, ED-071; TR-065, TR-067, TR-097, TR-099, TR-104; SG-004, SG-019, SG-020 | proposta e contrato | P0 (IaC parametrizada na P0.27); P4 onda B | 3 | P0.5, P0.27, P4.6 | 0024 |
+| ED-04 | Instância dedicada gerenciada e pacote de reversão em contêiner, com requisitos mínimos, runbook e acesso administrativo restrito do órgão; pacote também em Windows Server 2022+ com Docker no WSL2, homologado uma vez | 18h-E4 (M35, M36, M44) | ED-067, ED-071; TR-065, TR-067, TR-097, TR-099, TR-104; SG-004, SG-019, SG-020 | proposta e contrato | P0 (IaC parametrizada na P0.27); P4 onda B | 3,5 | P0.5, P0.27, P4.6 | 0024 |
 | ED-05 | Nível de serviço Setor Público: 99,9%, cinco severidades com prazo, aderência e multa, exportação em 10 dias úteis com dicionário, consulta somente leitura por até 120 dias, relatórios em 2 ou 5 min (RNF-71), telefone e canal de contingência | 18h-E7, E9 (M49, M56, M75–M77, M93–M97) | TR-029, TR-030, TR-102, TR-108, TR-1068, TR-1076–TR-1090, TR-1097, TR-1098; SG-043, SG-668, SG-1284–SG-1313; ED-051, ED-052, ED-069, ED-081, ED-084–ED-086, ED-088; ETP-006, ETP-013 | S Item 3 crít.; S 2.5 | P2 (P2.15), P3 (P3.15, P3.16, P3.22), P4 onda A | 3 | P1.23, P2.12, P1.6 | 0025 |
 | ED-06 | Controle de acesso de edital: bloqueio e expiração de senha por tenant, LDAP/AD por organização, perfis compostos pelo administrador, sessões e trilha visíveis ao tenant, consulta da trilha por usuário | 18h-E5 (M58–M63, M68, M69) | TR-115–TR-128; SG-049–SG-064, SG-1250, SG-1251, SG-1253; ED-075 | V b; S 2.7 crít. | P4 onda A | 3 | P0.13, P0.15, P0.43, P1.7 | — |
 | ED-07 | Monitoramento e alertas para o cliente: eventos de negócio com alerta, painel de uso e desempenho do tenant, alerta de lote ao responsável | 18h-E6 (M50–M52) | ED-073; TR-109–TR-111; SG-044–SG-046 | S 2.5 crít. | P4 onda A | 1 | P1.9, P1.17, P2.1, P3.5 | — |
 | ED-08 | Compatibilidade técnica: navegadores mínimos da VISAN, tamanho de página e salto de página com keyset, argumentação sobre gatilhos e linguagem | 18h-E12 (M27, M28, M33) | TR-055, TR-057–TR-060; SG-012, SG-021, SG-023–SG-026 | V a | P4 onda A | 0,4 | P0.22, P1.12 | — |
 | ED-09 | Serviços de implantação padronizados: metodologia e plano-modelo de 60 e 90 dias, importador por legado (GSAN primeiro, se confirmado), promoção de parâmetros entre ambientes, dicionário de dados gerado do schema, linhagem da migração | 18h-E8, sem o DWG (M30, M78, M79, M81, M83, M84, M87) | TR-007, TR-008, TR-010–TR-018, TR-023, TR-026, TR-027, TR-051; SG-011, SG-1326, SG-1328–SG-1332, SG-1382, SG-1384; ED-029, ED-043, ED-045, ED-048, ED-049, ED-062; ETP-002 | contrato | P4 onda C | 4 | P1.2, P2.10, P2.19 | 0023 |
 | ED-10 | Política comercial: custo e preço por porte, perfis e homem-hora, banco de horas, garantia de 12 meses, correção de vícios em 48 h, customização por parâmetro ou flag, percentual de desconto da reversão | 18h-E10 (M14, M15, M19, M20, M100) | ED-004–ED-007, ED-030, ED-036–ED-040, ED-083; ETP-011, ETP-014; PP-001–PP-024 (exceto PP-019); TR-1075; SG-1190, SG-1283, SG-1367–SG-1374, SG-1395, SG-1396, SG-1399, SG-1400, SG-1407–SG-1415 | proposta | P4 onda C | 0,4 | ED-04; tabela de custo do ADR-0011 | 0024, 0011 |
-| ED-11 | Rede de implantação e treinamento: equipe decidida no P4, plano de 40 h, material online, tenant de pré-treinamento, capacitação de TI, documentação de customizações | 18h-E11 (M85, M86, M89–M92) | ED-044, ED-046, ED-053, ED-054; TR-009, TR-019, TR-020, TR-031–TR-037, TR-1072; SG-1280, SG-1314–SG-1325, SG-1327, SG-1333, SG-1381 | contrato | P4 onda C | 3 | decisão de equipe (§2.4 do plano) | 0023 |
+| ED-11 | Rede de implantação e treinamento: equipe do ADR-0029 e parceiro presencial a decidir, plano de 40 h, material online, tenant de pré-treinamento, capacitação de TI, documentação de customizações | 18h-E11 (M85, M86, M89–M92) | ED-044, ED-046, ED-053, ED-054; TR-009, TR-019, TR-020, TR-031–TR-037, TR-1072; SG-1280, SG-1314–SG-1325, SG-1327, SG-1333, SG-1381 | contrato | P4 onda C | 3 | equipe do ADR-0029; parceiro de implantação (§2.4 do plano) | 0023, 0029 |
 
 **Cadastro, medição e campo**
 
@@ -282,9 +296,9 @@ cobre.
 | ED-15 | Ciclo de leitura: roteiro com reordenação, sequenciamento, boletim de contingência, regra de condomínio, autoleitura | 18d-E5; 18e-E17 (parte) | TR-172, TR-173, TR-188, TR-190; SG-174, SG-175, SG-185, SG-186, SG-190, SG-192, SG-755 | S 2.10 crít. | P4 onda A | 2 | P2.5, P2.7, P3.3 | — |
 | ED-16 | Recadastramento: lote, coleta no app, aprovação campo a campo, aplicação e cinco relatórios | 18d-E11 | TR-234, TR-684–TR-688; SG-232, SG-910–SG-914 | S 2.11 e 2.28 crít. | P4 onda A | 3 | ED-18, P1.3 | — |
 | ED-17 | Telemetria e supervisório por REST e arquivo: leituras AMR, grandes consumidores com alarmes, registro manual de paradas da ETA; MQTT só sob demanda | 18d-E10; 18g-E-AMR, E-SUP | TR-167, TR-210; SG-169, SG-208, SG-209, SG-810 | S 2.9, 2.10 e 2.26 crít. | P4 onda A | 2 | P1.9, P2.3, P2.7 | 0028 (j) |
-| ED-18 | App de campo Android (Capacitor), base: projeto, build e assinatura, banco local cifrado, leitura offline com sincronização idempotente, fotos por ocorrência, ADR de autenticação nos apps. É a P4.4 redefinida | 18d-E6 (parte), 18d §4 (decisão 1), 18f §4 (D1) | TR-621, TR-639 (APK e banco local); SG-782; base de ED-19 e ED-20 | V e; S 2.11 crít. | P4 onda A (P4.4) | 4 | P2.3, P2.7 | 0026 |
-| ED-19 | Emissão simultânea e impressão térmica: cálculo da conta no dispositivo idêntico ao do servidor, Zebra série ZQ com editor de leiaute ZPL e CPCL, código de barras e QR Pix, comunicados, retidas, reimpressão, bobinas, cabeçote e bateria, contingência da NFAg-e | 18d-E6, 18e-E6 | TR-207, TR-209, TR-221–TR-232, TR-237–TR-244, TR-404; SG-220–SG-230, SG-235–SG-241, SG-388 | V e (POC-15, 16, 21); S 2.11 crít. | P4 onda A | 6 | ED-18, P2.5, P2.6, P3.2 | 0026 |
-| ED-20 | OS em campo e acompanhamento: app de OS offline com fotos, GPS e crachá, trilha do leiturista, mapa por status, painel de deslocamento, tempo e paradas | 18f-ENT-05, 18d-E7 | TR-193, TR-196, TR-200–TR-205, TR-208, TR-217, TR-620–TR-652, TR-762, TR-767; SG-195, SG-201–SG-207, SG-216, SG-506–SG-519, SG-989, SG-994 | V p; S 2.18 e 2.12.5 crít. | P4 onda A | 5 | ED-18, ED-36, ED-52 | 0026 |
+| ED-18 | App de campo Android (Capacitor), base: projeto, build e assinatura, autenticação pelo navegador do sistema com PKCE e token no Keystore, dispositivo registrado com bloqueio remoto, banco local cifrado, leitura offline com sincronização idempotente por `task_id`, fotos por ocorrência. É a P4.4 redefinida | 18d-E6 (parte), 18d §4 (decisão 1), 18f §4 (D1) | TR-621, TR-639 (APK e banco local); SG-782; base de ED-19 e ED-20 | V e; S 2.11 crít. | P4 onda A (P4.4) | 5 | P2.3, P2.7 | 0026, 0030 |
+| ED-19 | Emissão simultânea e impressão térmica: cálculo da conta no dispositivo pelo mesmo módulo Java do servidor, vetores comuns no JVM e no emulador, pacote da rota com versões de parâmetro, recálculo no servidor e fila de divergências, Zebra série ZQ com editor de leiaute ZPL e CPCL, código de barras e QR Pix, comunicados, retidas, reimpressão, bobinas, cabeçote e bateria, chave da NFAg-e em contingência se o leiaute permitir | 18d-E6, 18e-E6 | TR-207, TR-209, TR-221–TR-232, TR-237–TR-244, TR-404; SG-220–SG-230, SG-235–SG-241, SG-388 | V e (POC-15, 16, 21); S 2.11 crít. | P4 onda A | 8 | ED-18, P2.5, P2.6, P2.20, P3.2; leiaute de contingência da NFAg-e | 0026, 0031 |
+| ED-20 | OS em campo e acompanhamento: app de OS offline com fotos, GPS e crachá, material usado por tarefa, trilha do leiturista, mapa por status, painel de deslocamento, tempo e paradas | 18f-ENT-05, 18d-E7 | TR-193, TR-196, TR-200–TR-205, TR-208, TR-217, TR-620–TR-652, TR-762, TR-767; SG-195, SG-201–SG-207, SG-216, SG-506–SG-519, SG-989, SG-994 | V p; S 2.18 e 2.12.5 crít. | P4 onda A | 5 | ED-18, ED-36, ED-52 | 0026, 0030 |
 
 **Faturamento, arrecadação, cobrança e contabilidade**
 
@@ -296,7 +310,7 @@ cobre.
 | ED-24 | Controle de fraudes e fiscalização de consumo | 18e-E4 | TR-325, TR-331–TR-336, TR-761; SG-312, SG-318–SG-323, SG-988 | S 2.13 crít. | P4 onda A | 1 | ED-36, ED-21 | — |
 | ED-25 | Resíduos sólidos na conta: componente tarifário, isenção, contrato especial, fatura e carnê separados | 18e-E15, 18g-E-RES (faturamento) | SG-324, SG-325 e as partes de resíduos de SG-222, SG-264, SG-281, SG-310, SG-311 | S 2.13 crít. | P4 onda A | 3 | P2.5, ED-22 | — |
 | ED-26 | Arrecadação ampliada: documento agrupador com quitação em cascata, fechamento mensal congelado, depósitos identificados e não identificados, VAN | 18e-E7 | TR-345, TR-350–TR-353; SG-333, SG-338–SG-341 | S 2.14 crít. | P4 onda A | 1 | P3.1, P2.1 | — |
-| ED-27 | Débito em conta: Pix Automático para autorizações novas e FEBRABAN 150 para as legadas migradas, com data de desligamento; optantes, reenvio, relatórios | 18e-E8 (D2); amplia P4.5 | TR-321, TR-322, TR-339, TR-354, TR-566, TR-583, TR-733–TR-735; SG-308, SG-309, SG-327, SG-342, SG-543, SG-560, SG-748, SG-960–SG-962 | V h (POC-29); S 2.14 crít. | P4 onda A (antes do go-live se o piloto tiver optantes) | 2 | P3.1, P4.5 | 0028 (f) |
+| ED-27 | Débito em conta: Pix Automático para autorizações novas e FEBRABAN 150 para as legadas migradas, com data de desligamento; optantes, reenvio, relatórios | 18e-E8 (D2); amplia P4.5 | TR-321, TR-322, TR-339, TR-354, TR-566, TR-583, TR-733–TR-735; SG-308, SG-309, SG-327, SG-342, SG-543, SG-560, SG-748, SG-960–SG-962 | V h (POC-29); S 2.14 crít. | P4 onda A; a parte FEBRABAN 150 (≈ 1,5) vai ao P3 (P3.24), como requisito do go-live, se a P0.30 encontrar optantes no piloto | 2 | P3.1, P4.5 | 0028 (f) |
 | ED-28 | Cartão no parcelamento por adaptador para a credenciadora do cliente, com conciliação, sem dado de cartão no produto | 18e-E14 (D3) | TR-374 | V (avaliável) | P4 onda B | 1 | P3.1, P4.1 | 0028 (h) |
 | ED-29 | Cobrança: cartas, prioridade e cota diária de OS de corte, níveis sucessivos, equipes especiais, corte e religação de água e esgoto por nível, cartas de liberação de esgoto, alteração de vencimento do aviso, carnê | 18e-E9, 18f-ENT-04 (corte e religação) | TR-372, TR-390, TR-409, TR-410, TR-417, TR-529, TR-539, TR-540, TR-590; SG-375, SG-389, SG-393, SG-394, SG-400, SG-486, SG-501–SG-505, SG-567, SG-571 | V j; S 2.15 crít. | P4 onda A | 4 | P3.4, P4.1, ED-36 | 0015 |
 | ED-30 | Negativação e protesto por arquivo, com carta de aviso prévio, baixa no prazo legal e retorno importado | 18e-E10 (D4) | TR-572, TR-715; SG-402–SG-411, SG-424, SG-425, SG-548, SG-725, SG-942 | S 2.15 crít. | P4 onda A | 3 | P4.1, ED-31 | 0028 (g) |
@@ -310,13 +324,13 @@ cobre.
 |---|---|---|---|---|---|---|---|---|
 | ED-34 | Catálogo de serviços, termos e carta de serviços; serviços e materiais faturáveis com tabela de preço e vigência, rubrica e cobrança no encerramento da OS; parcelamento de serviço | 18f-ENT-01, 18e-E5 | TR-496–TR-513, TR-519, TR-530, TR-535–TR-538; SG-358, SG-449–SG-467, SG-473, SG-487, SG-497–SG-500, SG-760, SG-763 | V m, i (POC-31); S 2.17 crít. | P4 onda A | 4 | P0.19, P3.4, P3.6, ED-32 | — |
 | ED-35 | Atendimento completo: protocolo multicanal, visão 360, fila por prazo, documentos do cliente | 18f-ENT-02 | TR-544–TR-552, TR-574, TR-576; SG-520–SG-528, SG-551, SG-553 | V o (POC-47, 48); S 2.19 crít. | P4 onda A | 3 | P3.4, P3.5, P1.20 | — |
-| ED-36 | OS completa no backoffice: estados, programação, baixa parametrizável, desdobramento, lote, retrabalho, mapa, equipes, veículos e materiais na OS | 18f-ENT-03; 18g-E-ALMOX (cadastros na OS) | TR-495, TR-514–TR-534 e TR-594–TR-616, exceto os atribuídos a ED-22, ED-29, ED-34 e ED-62; SG-448, SG-468–SG-491 e SG-572–SG-597, idem; POC-46 | V n; S 2.17 crít. | P4 onda A | 4 | ED-34, P3.4, P1.9, P2.1 | — |
+| ED-36 | OS completa no backoffice: estados, programação, baixa parametrizável, desdobramento, lote, retrabalho, mapa, equipes, veículos e materiais na OS (quantidade prevista e usada; requisição com alçada e baixa no estoque pela ED-58, ADR-0032) | 18f-ENT-03; 18g-E-ALMOX (cadastros na OS) | TR-495, TR-514–TR-534 e TR-594–TR-616, exceto os atribuídos a ED-22, ED-29, ED-34 e ED-62; SG-448, SG-468–SG-491 e SG-572–SG-597, idem; POC-46 | V n; S 2.17 crít. | P4 onda A | 4 | ED-34, P3.4, P1.9, P2.1 | — |
 | ED-37 | Empreiteiras terceirizadas: cadastro, contratos, penalidades e medição | 18f-ENT-06 | SG-492–SG-496 | S 2.17 crít. | P4 onda A | 1 | ED-36 | — |
 | ED-38 | Portal e autoatendimento ampliados: ficha, histórico de consumo, simulações de fatura e de parcelamento, declaração anual de quitação, certidão, tabela tarifária, qualidade da água, OS e solicitações | 18f-ENT-08, 18e-E17 | TR-543, TR-658–TR-660, TR-837–TR-849; SG-602–SG-624 (exceto SG-614), SG-713, SG-715, SG-717, SG-721–SG-724, SG-726, SG-761, SG-766, SG-767 | V r (POC-69); S 2.20 | P4 onda A | 4 | P3.3, P3.20, P1.5, ED-34 | 0022 |
-| ED-39 | App do cliente Android e iOS nas lojas com a marca do tenant, gerado por pipeline, com push sem dado pessoal | 18f-ENT-09 | TR-653, TR-654, TR-656, TR-657, TR-661–TR-663; SG-704–SG-782, exceto os do portal (ED-38) e das notificações (ED-41) | V q; S 2.24 crít. | P4 onda B | 4 | ED-18, ED-38, P3.21 | 0026 |
+| ED-39 | App do cliente Android e iOS nas lojas com a marca do tenant, gerado por pipeline, com login pelo navegador do sistema no realm `ziipsan-portal` e push sem dado pessoal | 18f-ENT-09 | TR-653, TR-654, TR-656, TR-657, TR-661–TR-663; SG-704–SG-782, exceto os do portal (ED-38) e das notificações (ED-41) | V q; S 2.24 crít. | P4 onda B | 4 | ED-18, ED-38, P3.21 | 0026, 0030 |
 | ED-40 | Totem em modo quiosque no hardware do cliente; senhas com prioridade legal, chamada na tela de atendimento e painel em navegador | 18f-ENT-10 | TR-836; SG-614, SG-625, SG-626 | S 2.21 | P4 onda B | 1 | ED-38, ED-35 | 0028 (k) |
 | ED-41 | Notificações multicanal e fatura por e-mail: link autenticado por padrão, PDF anexo por opt-in, SMS, WhatsApp e push com opt-in por canal e finalidade | 18f-ENT-11; 18f §2.15 | TR-206, TR-273, TR-403, TR-518, TR-542, TR-570, TR-571, TR-581, TR-850, TR-891; SG-263, SG-472, SG-546, SG-547, SG-558, SG-627, SG-759, SG-774–SG-776; POC-20 | V e (POC-20); S 2.19 crít. | P4 onda A | 3 | P1.9, P3.5, P3.9 | 0028 (l), 0022 |
-| ED-42 | Omnichannel híbrido: tela de atendimento, filas e protocolo no produto, conectores oficiais, conversa gravada, logs íntegros, medição de mensagens | 18f-ENT-12 | TR-851–TR-853, TR-869–TR-881, TR-883–TR-885, TR-887–TR-890; SG-628–SG-630, SG-632, SG-633, SG-647–SG-665, SG-669 | V s (POC-70, 75); S 2.22 crít. | P4 onda B | 5 | ED-35, ED-41 | 0028 (c) |
+| ED-42 | Omnichannel híbrido: tela de atendimento, filas e protocolo no produto, conectores oficiais (WhatsApp, Messenger e Instagram pela API da Meta, Telegram pela Bot API, e-mail, chat do portal), conversa gravada, logs íntegros, medição de mensagens | 18f-ENT-12 | TR-851–TR-853, TR-869–TR-881, TR-883–TR-885, TR-887–TR-890; SG-628–SG-630, SG-632, SG-633, SG-647–SG-665, SG-669 | V s (POC-70, 75); S 2.22 crít.; VISAN TR 21.1 e SAMAE item 4 do lote (Messenger, Instagram, Telegram) | P4 onda B | 7 | ED-35, ED-41 | 0028 (c) |
 | ED-43 | Chatbot e IA com modelo de linguagem de terceiro por API, só com funções do portal, minimização de dado pessoal, transbordo humano e auditoria | 18f-ENT-13 | TR-854–TR-868, TR-882, TR-886; SG-631, SG-634–SG-646, SG-670–SG-702 | V s (POC-71–74, 76); S 2.22 crít., 2.23 | P4 onda B | 5 | ED-42, ED-38 | 0028 (c) |
 | ED-44 | Telefonia mínima: CTI com o PABX do cliente pelo número chamador, API de consulta para URA de terceiros, listas de discagem | 18f-ENT-14 (forma reduzida) | SG-783–SG-788 | S 2.25 (avaliável) | P4 onda C | 1 | ED-35, ED-43 | 0028 (k) |
 
@@ -338,15 +352,15 @@ cobre.
 | ED-56 | Ativos e manutenção de rede: cadastro técnico com vínculo patrimonial, manutenção preventiva e corretiva ligada ao GIS | 18g-E-ATIVOS | TR-155 (parte patrimonial), TR-1010 (parte); SG-1180 | — | P4 onda C | 3 | ED-53, ED-32 | — |
 | ED-57 | Integrações de cadastro: beneficiários de Bolsa Família e BPC por lista com base legal (sem API pública) | 18d-E16 (parte) | TR-144 | V (avaliável) | P4 onda C | 1 | P1.5 | — |
 
-**ERP (ADR-0028, item i: construído no recorte ligado ao saneamento e integrado)**
+**ERP (ADR-0028, item i, ajustado na v2.5: "núcleo saneamento + integração")**
 
 | ED | Entrega | Origem | Requisitos cobertos | POC | Fase/onda | Esf. | Dependências | ADR |
 |---|---|---|---|---|---|---|---|---|
-| ED-58 | Almoxarifado e compras: estoque por local (hidrômetros e materiais de rede), movimentação, custo médio, kits da OS, inventário, requisição, cotação e pedido | 18g-E-ALMOX (parte); 18f-ENT-07 | relatórios de materiais e insumos TR-808–TR-810, TR-817, TR-820, TR-821, TR-990; SG-1035–SG-1037, SG-1044, SG-1047, SG-1048, SG-1167; indicadores de compras do painel estratégico | — | P4 onda C | 8 | ED-36, ED-12, recorte definido (§2.4 do plano) | 0028 (i) |
-| ED-59 | Frota: veículos, abastecimento, manutenção, custo por veículo e consumo na OS | 18g-E-ALMOX, E-ERPIND (parte) | SG-1181 e indicadores de frota | — | P4 onda C | 2 | ED-36 | 0028 (i) |
-| ED-60 | RH no recorte do saneamento: equipes de campo, lotação, competências e indicadores de RH | 18g-E-ERPIND (parte) | indicadores de RH (TR 22.6.19; SG 2.29) | — | P4 onda C | 3 | ED-36; RIPD e DPA atualizados | 0028 (i) |
-| ED-61 | Orçamento: dotações, rubricas ligadas à ED-32, previsto × realizado | 18g-E-ERPIND (parte) | indicadores orçamentários (TR 22.6.18; SG 2.29) | — | P4 onda C | 3 | ED-32 | 0028 (i) |
-| ED-62 | Integração com ERP do cliente (Betha, IPM, Fiorilli) por API ou arquivo: contabilidade, estoque e RH; previsão de materiais da OS ao estoque; indicadores de ERP no painel estratégico | 18g-E-ERPIND; 18f-ENT-07; 18e-E12 (destino) | TR-468, TR-521, TR-1001, TR-1003, TR-1004, TR-1007; SG-437, SG-476, SG-1179–SG-1184, SG-1189, SG-1277 | S 2.16.18 e 2.17 crít.; V t | P4 onda A | 7 | ED-32, ED-36 | 0028 (i) |
+| ED-58 | Almoxarifado (materiais e estoque para a OS): estoque por local (hidrômetros e materiais de rede), entradas, ajustes, custo médio, inventário; requisição de material da OS com alçada por valor e por item, reserva na aprovação, entrega, baixa automática da quantidade usada e devolução da sobra no encerramento, custo na OS; saldo negativo permitido com alerta de reposição e regularização; baixa do material de campo na sincronização por `task_id`, com alçada a posteriori para item controlado. Compras (requisição de compra, cotação e pedido) sai para 2029 | 18g-E-ALMOX (parte); 18f-ENT-07 | relatórios de materiais e insumos TR-808–TR-810, TR-817, TR-820, TR-821, TR-990; SG-1035–SG-1037, SG-1044, SG-1047, SG-1048, SG-1167; estoque da SAMAE 2.17 quando o estoque oficial for o do produto | S 2.17 (estoque), quando sem ERP do cliente | P4 onda C | 7,5 (5 do almoxarifado, 2,5 do ADR-0032) | ED-36, ED-20, ED-12, ED-14 | 0028 (i), 0032 |
+| ED-59 | Frota e equipes de campo: veículos, abastecimento, manutenção, custo por veículo e consumo na OS; equipes de campo (composição, veículo, escala) na programação e no custo da OS | 18g-E-ALMOX, E-ERPIND (parte) | SG-1181 e indicadores de frota | — | P4 onda C | 3 | ED-36 | 0028 (i) |
+| ED-60 | RH no recorte do saneamento: lotação, competências e indicadores de RH (equipes de campo passaram à ED-59) | 18g-E-ERPIND (parte) | indicadores de RH (TR 22.6.19; SG 2.29), atendidos até 2029 pela ED-62 | — | **2029, sob demanda** (fora da trilha) | (3, fora do total) | ED-36; RIPD e DPA atualizados | 0028 (i) |
+| ED-61 | Orçamento: dotações, rubricas ligadas à ED-32, previsto × realizado | 18g-E-ERPIND (parte) | indicadores orçamentários (TR 22.6.18; SG 2.29), atendidos até 2029 pela ED-62 | — | **2029, sob demanda** (fora da trilha) | (3, fora do total) | ED-32 | 0028 (i) |
+| ED-62 | Integração com ERP do cliente (Betha, IPM, Fiorilli) por API e/ou arquivo: contabilidade, estoque e RH; previsão de materiais da OS ao estoque; movimentos de material da OS quando o estoque oficial for o do ERP; indicadores de compras, RH e orçamento lidos do ERP no painel estratégico | 18g-E-ERPIND; 18f-ENT-07; 18e-E12 (destino) | TR-468, TR-521, TR-1001, TR-1003, TR-1004, TR-1007; SG-437, SG-476, SG-1179–SG-1184, SG-1189, SG-1277 | S 2.16.18 e 2.17 crít.; V t | P4 onda A | 7 | ED-32, ED-36 | 0028 (i) |
 
 ### 5.2 Ondas da trilha e esforço
 
@@ -356,13 +370,32 @@ a aderência total exige as três.
 | Onda | Critério | Entregas | Esforço (sem.) | Meta de ensaio ao fim da onda |
 |---|---|---|---|---|
 | Antes do P4 | o que o piloto precisa e o que os ADRs puseram no P0 a P3 | ED-02, ED-03 (P0); ED-01 parte (P1, P3); ED-21 (P2); ED-05 parte (P2, P3); ED-45 (P3) | 13,3 | fim do P3: VISAN ≥ 50 de 162; SAMAE 2.4 e 2.5 sem falha |
-| A | itens que pontuam nas alíneas b a p e r da VISAN ou são críticos no SAMAE nas áreas comercial, de campo e de suporte; habilitação (e-Sfinge) | ED-05 (resto), 06, 07, 08, 12–20, 22–27, 29–38, 41, 46, 62 | 105,9 | VISAN ≥ 120; SAMAE sem falha em 2.4–2.19, 2.28 e Item 3 |
-| B | canais digitais, BI, qualidade e GIS (VISAN q, s, t; SAMAE 2.22, 2.24, 2.26, 2.27 e "Item 0") e itens de proposta | ED-01 (resto), 04, 28, 39, 40, 42, 43, 47–55 | 72 | VISAN ≥ 146 e nenhuma falha crítica no SAMAE, em dois ensaios seguidos (prontidão de POC) |
-| C | aderência total fora das POCs e serviços de implantação | ED-09, 10, 11, 44, 56–61 | 28,4 | requisitos restantes da matriz viva atendidos ou com pedido de esclarecimento registrado |
-| **Total** | | **62** | **219,6 (≈ 51 meses-pessoa)** | |
+| A | itens que pontuam nas alíneas b a p e r da VISAN ou são críticos no SAMAE nas áreas comercial, de campo e de suporte; habilitação (e-Sfinge) | ED-05 (resto), 06, 07, 08, 12–20, 22–27, 29–38, 41, 46, 62 | 108,9 | VISAN ≥ 120; SAMAE sem falha em 2.4–2.19, 2.28 e Item 3 |
+| B | canais digitais, BI, qualidade e GIS (VISAN q, s, t; SAMAE 2.22, 2.24, 2.26, 2.27 e "Item 0") e itens de proposta | ED-01 (resto), 04, 28, 39, 40, 42, 43, 47–55 | 74,5 | VISAN ≥ 146 e nenhuma falha crítica no SAMAE, em dois ensaios seguidos (prontidão de POC) |
+| C | aderência total fora das POCs e serviços de implantação | ED-09, 10, 11, 44, 56–59 | 22,9 | requisitos restantes da matriz viva atendidos ou com pedido de esclarecimento registrado |
+| **Total até 2028** | | **60** | **219,6 (≈ 51 meses-pessoa)** | |
+| 2029, sob demanda (fora do total) | compras (parte retirada da ED-58), ED-60 (RH) e ED-61 (orçamento) | 2 e parte da ED-58 | 9 | — |
 
 Distribuição das 13,3 semanas antes do P4: P0 1,4 (P0.44 e serviços do provedor na P0.27); P1 0,4 (P1.25); P2 4
-(P2.20 e cinco severidades na P2.15); P3 7,5 (P3.22, P3.23 e itens do ADR-0025 na P3.15 e P3.16).
+(P2.20 e cinco severidades na P2.15); P3 7,5 (P3.22, P3.23 e itens do ADR-0025 na P3.15 e P3.16). Se a P0.30 encontrar
+optantes de débito automático, a parte FEBRABAN 150 da ED-27 (≈ 1,5) vai para o P3 (P3.24): o P3 passa a 9 semanas e a
+onda A a 107,4, sem mudar o total.
+
+**Recálculo da v2.5** (semanas-pessoa):
+
+| Entrega | Onda | v2.4 | v2.5 | Motivo |
+|---|---|---|---|---|
+| ED-18 | A | 4 | 5 | autenticação, armazenamento seguro, registro e bloqueio de dispositivo (ADR-0030) |
+| ED-19 | A | 6 | 8 | módulo de cálculo compartilhado, vetores no emulador, pacote com versões, fluxo de divergência (ADR-0031) |
+| ED-04 | B | 3 | 3,5 | homologação única em Windows Server com WSL2 (ADR-0024, ajuste) |
+| ED-42 | B | 5 | 7 | conectores Messenger, Instagram e Telegram (ADR-0028, item c, ajuste) |
+| ED-58 | C | 8 | 7,5 | −3 de compras, que vai para 2029; +2,5 de alçada, reserva, baixa automática, saldo negativo e baixa de campo (ADR-0032) |
+| ED-59 | C | 2 | 3 | equipes de campo, antes na ED-60 |
+| ED-60 | C → 2029 | 3 | — | RH para 2029, sob demanda |
+| ED-61 | C → 2029 | 3 | — | orçamento para 2029, sob demanda |
+| **Ondas A + B** | | **177,9** | **183,4** | +5,5 |
+| **Onda C** | | **28,4** | **22,9** | −5,5 |
+| **Trilha do P4** | | **206,3** | **206,3** | igual, por compensação |
 
 ### 5.3 De onde veio cada ED
 
@@ -373,18 +406,22 @@ Distribuição das 13,3 semanas antes do P4: P0 1,4 (P0.44 e serviços do proved
 | 18f | ENT-01 → ED-34; ENT-02 → ED-35; ENT-03 → ED-36; ENT-04 → ED-29, ED-34; ENT-05 → ED-20; ENT-06 → ED-37; ENT-07 → ED-62, ED-58; ENT-08 → ED-38; ENT-09 → ED-39; ENT-10 → ED-40; ENT-11 → ED-41; ENT-12 → ED-42; ENT-13 → ED-43; ENT-14 → ED-44; ENT-15 → ED-21; ENT-16 → ED-22 |
 | 18g | E-REL → ED-45, ED-46; E-BI → ED-47; E-IND → ED-48; E-PAIN → ED-49; E-QUAL → ED-50; E-LIMS17025 → ED-51; E-SUP, E-AMR → ED-17; E-MACRO → ED-48; E-ALMOX → ED-36, ED-58, ED-59; E-ERPIND → ED-62, ED-59–ED-61; E-ATIVOS → ED-56; E-RES → ED-25, ED-53 |
 | 18h | E1 → ED-02; E2 → ED-03; E3 → ED-01; E4 → ED-04; E5 → ED-06; E6 → ED-07; E7, E9 → ED-05; E8 → ED-09, ED-55; E10 → ED-10; E11 → ED-11; E12 → ED-08 |
-| ADR-0028 (i) | sem origem em matriz: ED-58 a ED-61 (ERP construído) |
+| ADR-0028 (i) | sem origem em matriz: ED-58 a ED-61 (ERP construído; ED-60, ED-61 e compras em 2029 desde a v2.5) |
+| ADR-0032 | ampliação da ED-58 (material da OS com alçada e baixa automática) |
 
 ### 5.4 Pontos em aberto que afetam as ED
 
-- **Conectores do omnichannel.** O ADR-0028 (item c) fixa WhatsApp oficial, e-mail e chat do portal. A VISAN pede também
-  Facebook Messenger (TR 21.1) e o SAMAE, Facebook, Instagram e Telegram (2.22; item 4 do lote). Sem esses conectores a
-  aderência não é total. Decisão pendente no plano (§2.4): incluir na ED-42 ou tratar por pedido de esclarecimento.
-- **Recorte do ERP.** O ADR-0028 (item i) limita os módulos ao "recorte ligado ao saneamento", a definir no P3. As
-  estimativas de ED-58 a ED-61 supõem esse recorte; folha de pagamento, eSocial e contabilidade pública ficam fora.
-- **FEBRABAN 150 antes do go-live.** Se o discovery do legado (P1.1) encontrar optantes de débito automático no piloto,
-  parte da ED-27 sobe para o P3 (ADR-0028, consequências).
+Resolvidos na v2.5 do plano: os conectores Facebook Messenger, Instagram e Telegram entram na ED-42 (ADR-0028, item c,
+ajustado); o recorte do ERP ficou em almoxarifado e frota construídos e integração pela ED-62, com compras, RH e
+orçamento em 2029 (item i, ajustado; folha de pagamento, eSocial e contabilidade pública continuam fora); o FEBRABAN
+150 passa a ser levantado na escolha do piloto (P0.30) e, havendo optantes, entra no P3 (P3.24). Continuam em aberto:
+
 - **Licença do ODA File Converter** para uso comercial, a conferir no P1 (P1.25), antes de planejar a ED-55.
+- **Contingência da NFAg-e** (manual e XSD oficiais): define se a conta de campo sai com a chave fiscal (ADR-0031,
+  item 4), antes da ED-19.
+- **Onda do almoxarifado.** A ED-58 fica na onda C; se o roteiro da P1.25 mostrar item crítico do SAMAE 2.17 que
+  dependa da baixa de estoque no produto, ela passa à onda A, com +7,5 semanas na prontidão de POC (plano §2.4).
+- **DPoP no Keycloak** para ligar o token ao aparelho do app de campo (ADR-0030, item 6), a conferir no início da ED-18.
 
 ---
 
@@ -478,13 +515,29 @@ no CI.
 |---|---|---|
 | Acréscimos ao P0–P3 (P0.44, P1.25, P2.20, P2.15, P3.15, P3.16, P3.22, P3.23) | 13,3 | cerca de 50% do P2 e 80% do P3, fases já sem folga |
 | Tarefas originais do P4 que continuam (P4.1, P4.2, P4.5, P4.7, P4.8) | ≈ 8,4 | já ocupavam metade do P4 (ago–dez/2027, cerca de 20 semanas) |
-| Trilha de editais, ondas A e B (prontidão de POC) | 177,9 | cerca de 4 anos: prontidão por volta de 2031 |
-| Trilha completa (ondas A, B e C) | 206,3 | cerca de 4,7 anos |
+| Trilha de editais, ondas A e B (prontidão de POC) | 183,4 (v2.4: 177,9) | cerca de 4,2 anos: prontidão por volta de 2031 |
+| Trilha completa (ondas A, B e C) | 206,3 (igual à v2.4) | cerca de 4,7 anos |
+| Fora da trilha: compras, RH e orçamento (2029, sob demanda) | 9 | — |
 
-Para a prontidão de POC (ondas A e B mais as tarefas originais do P4, cerca de 186 semanas-pessoa) a partir de
-02/08/2027: em 30/06/2028 são precisos cerca de 4,3 pessoas-equivalentes (43 semanas produtivas); em 31/12/2028,
-cerca de 2,7 (68 semanas produtivas). As estimativas usam a escala do plano (uma pessoa com agentes) e têm incerteza de
-±30%; a matriz 18g, sozinha, já estimava de 13 a 16 meses-pessoa para operação, qualidade e BI.
+Para a prontidão de POC (ondas A e B mais as tarefas originais do P4, cerca de 192 semanas-pessoa; na v2.4, 186) a
+partir de 02/08/2027: em 30/06/2028 são precisas cerca de 4,5 pessoas-equivalentes produtivas (43 semanas
+produtivas; na v2.4, 4,3); em 31/12/2028, cerca de 2,8 (68 semanas produtivas; na v2.4, 2,7). As estimativas usam a
+escala do plano (uma pessoa com agentes) e têm incerteza de ±30%; a matriz 18g, sozinha, já estimava de 13 a 16
+meses-pessoa para operação, qualidade e BI.
+
+**Capacidade com a equipe do ADR-0029.** Premissas: dono do produto a cerca de 0,7 pessoa-equivalente na trilha;
+cada contratado com 8 semanas de onboarding a 50% (perda de cerca de 4 semanas-pessoa), entrando até 31/08/2027.
+
+| Equipe a partir de agosto de 2027 | Capacidade até 30/06/2028 (semanas-pessoa) | Frente a 192 | Prontidão de POC |
+|---|---|---|---|
+| Dono e 5 contratados | ≈ 225 | ≈ +17% | 30/06/2028, com folga menor que a incerteza de ±30% |
+| Dono e 4 contratados | ≈ 186 | ≈ −3% | meados de julho de 2028 |
+| Dono e 2 contratados | ≈ 108 | ≈ −44% | 1º trimestre de 2029 |
+| Só o dono, em tempo integral na trilha | ≈ 43 | ≈ −78% | por volta de 2031 |
+
+Com a equipe completa, a onda C (≈ 23 semanas) termina no 3º trimestre de 2028. Cada mês de atraso na entrada da
+equipe adia a prontidão em cerca de um mês. Antecipar a ED-58 para a onda A (§5.4) leva a prontidão a ≈ 199
+semanas-pessoa e a necessidade a ≈ 4,6 pessoas-equivalentes.
 
 **Recomendações.**
 
@@ -493,13 +546,13 @@ cerca de 2,7 (68 semanas produtivas). As estimativas usam a escala do plano (uma
    ordem: a meta de ensaio do P3 (o ensaio continua, só a meta sai do aceite), os itens do ADR-0025 da P3.15 e da P3.16
    e as tarefas fora do caminho crítico já listadas no plano; P2.20 e P3.22 ficam, porque o paralelo (GL.2) depende
    delas.
-2. **Antecipar a preparação da decisão de equipe.** O ADR-0023 decide a equipe no P4. Com a velocidade medida do P0 ao
-   P3 e os ensaios registrados, a proposta de equipe (contratação, parceiro de implantação, plantão) deve estar pronta
-   no fim do P3 (M8), para que a decisão na abertura do P4 (M11) não consuma meses de recrutamento.
+2. **Contratar no prazo.** A equipe foi decidida (ADR-0029): 4 a 5 desenvolvedores a partir de agosto de 2027. O
+   plano de contratação e o orçamento precisam estar aprovados no M8 (28/05/2027), com a seleção em junho e julho, para
+   que toda a equipe entre até 31/08/2027; o número final (4 ou 5) sai da velocidade medida do P0 ao P3.
 3. **Seguir as ondas.** A antes de B antes de C; dentro de cada onda, primeiro o que é crítico no SAMAE e pontua na
-   VISAN. A onda C (ERP construído, ativos, telefonia, Bolsa Família) não pesa na POC e soma 28 semanas; o ERP
-   construído, sozinho, 16 semanas além da integração (ED-62). Convém confirmar no início do P4 se essas entregas
-   esperam a primeira licitação.
+   VISAN. A onda C (implantação, almoxarifado com alçada, frota, ativos, telefonia, Bolsa Família) não pesa na POC e
+   soma cerca de 23 semanas; o ERP construído, 10,5 semanas além da integração (ED-62). Compras, RH e orçamento ficam
+   para 2029.
 4. **Mirar primeiro editais do tipo SAMAE.** Exigem um atestado, que o piloto pode dar no fim de 2027. Os do tipo VISAN
    exigem dois atestados, 8.500 ligações e e-Sfinge em operação, o que dificilmente se reúne antes do segundo semestre
    de 2028.
@@ -513,11 +566,14 @@ cerca de 2,7 (68 semanas produtivas). As estimativas usam a escala do plano (uma
 | Piloto escolhido não ser público, catarinense ou contratado com cláusula de atestado | Sem atestado em 2027; nenhum edital com POC disputável em 2028 | Critério na P0.30 (até 13/11/2026); cliente privado como alternativa para editais do tipo SAMAE |
 | Balanço de dois exercícios | Inabilitação em 2028 sem os balanços de 2026 e 2027 | P0.44: empresa licitante e contador desde já |
 | Editais de 2028 diferentes dos de 2026 | Entregas feitas para o texto antigo; itens novos sem tarefa | Matriz viva com requisito canônico; extração em 3 dias úteis; go/no-go (§7.3) |
-| Severidade 1 em 2 horas e monitoramento 24/7 sem equipe (ADR-0025) | Multas cumulativas de 5% a 10% da fatura por severidade | Não assinar o nível Setor Público antes da decisão de equipe; plantão definido na ED-05 |
+| Severidade 1 em 2 horas e monitoramento 24/7 sem equipe (ADR-0025) | Multas cumulativas de 5% a 10% da fatura por severidade | Equipe do ADR-0029; não assinar o nível Setor Público antes da escala de plantão ativa (até 31/01/2028, ED-05) |
+| Contratação abaixo do previsto ou atrasada (ADR-0029) | Prontidão de POC depois de 30/06/2028; perda das licitações de 2028 | Plano e orçamento no M8; seleção em junho e julho de 2027; contingência por empresa contratada por entrega, com código e direitos do Ziip; datas de M12 e M13 registradas de novo a cada onda |
+| Divergência entre conta impressa em campo e recálculo (ED-19) | Conta errada entregue ao consumidor; retrabalho fiscal | Mesmo módulo de cálculo no servidor e no app, vetores comuns no CI, fila de divergências com retificação (ADR-0031) |
+| Saldo negativo no almoxarifado (ED-58) | Custo médio e inventário distorcidos; perda ou desvio escondidos | Alerta de reposição, relatório diário, regularização com prazo, inventário periódico, alerta na Central (ADR-0032) |
 | Custo da AWS acima do teto do SAMAE (≈ US$ 2 mil/mês contra R$ 7.636,74/mês) | Proposta inexequível ou prejuízo | Vários tenants por cluster; dimensionamento mínimo nos primeiros clientes; tabela de custo (ADR-0011) antes de qualquer proposta |
 | Modelo de linguagem de terceiro (ED-43) | Resposta errada ao consumidor; transferência internacional; custo por uso | Só funções do portal; minimização; transbordo; DPA e RIPD; franquia ou repasse no contrato (ADR-0028, c) |
 | Publicação nas lojas por tenant (ED-39) | Prazos de revisão fora do controle do Ziip; recusa da Apple a app gerado de modelo | Conta de desenvolvedor do prestador; pipeline por tenant; publicar com antecedência à POC (ADR-0026) |
-| Autenticação nos apps incompatível com o BFF de cookie (ADR-0006) | Retrabalho no app e risco de segurança | ADR de autenticação nos apps antes do primeiro app (ED-18) |
+| Autenticação nos apps incompatível com o BFF de cookie (ADR-0006) | Retrabalho no app e risco de segurança | Decidida no ADR-0030: navegador do sistema com PKCE, token no armazenamento seguro, dispositivo registrado no app de campo (ED-18, ED-39) |
 | QGIS com escrita direta no banco (ED-55) | Caminho de escrita fora da `api` | Role individual, `WITH CHECK`, auditoria por gatilho, acesso por rede restrita, pentest (ADR-0028, b) |
 | Superset como segunda pilha (ED-47) | Operação, atualização e superfície de ataque a mais; contestação de "autoria própria" | Role por tenant com teste de isolamento; modo síncrono; exceção no ADR-0010; pedido de esclarecimento-modelo (ADR-0027) |
 | Licença do ODA File Converter | Etapa de migração do DWG sem ferramenta | Conferência no P1 (P1.25); alternativa: SDK licenciado da ODA, com custo |

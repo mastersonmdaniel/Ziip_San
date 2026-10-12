@@ -7,7 +7,9 @@ em inglês, na renomeação do P0 (plano P0.33, tabela de códigos; decisão do 
 rotas seguem o prefixo `/api/v1` (plano P0.10); as do operador ficam sob `/api/v1/platform`, como as demais da
 Central. Tabelas, colunas, rotas, chaves, códigos de problema e identificadores estão em inglês, e os textos ao
 usuário, inclusive `title` e `detail` do problem+json, em português (plano §8, Idioma). A única exceção é o formato do
-protocolo `SUP-AAAA-NNNNNN`, que permanece por ser visível ao cliente.
+protocolo `SUP-AAAA-NNNNNN`, que permanece por ser visível ao cliente. Chamados são classificados pelas cinco
+severidades S1 a S5 do ADR-0025, no lugar das antigas prioridades P1–P4, cujo nome colidia com o das fases do roadmap
+(ADR-0020, ajuste da v2.5 do plano).
 
 ## 1. Objetivos
 
@@ -26,7 +28,7 @@ protocolo `SUP-AAAA-NNNNNN`, que permanece por ser visível ao cliente.
 | Base | Contrato e SLA (ADR-0019) | NR 11 e regras de SAC |
 | Dados | Schema `support` no banco do core | Schema do tenant |
 | Protocolo | `SUP-AAAA-NNNNNN`, sequência da plataforma | Formato e sequência do tenant |
-| Prazos | Contratuais, por prioridade | Legais, por tipo de manifestação |
+| Prazos | Contratuais, por severidade (S1–S5) | Legais, por tipo de manifestação |
 
 Os dois não compartilham tabelas, filas, numeração nem atendentes. Compartilham componentes: máquina de estados,
 gerador de protocolo parametrizado, pipeline de anexos (validação, varredura, armazenamento), notificação pela outbox,
@@ -66,11 +68,11 @@ documento não se confunde com `parameter_acceptances`, que é o aceite do conju
 | `article_feedback` | artigo, usuário, útil (sim/não), comentário, rota de origem |
 | `tour_completion` | usuário, tour, versão do tour, data |
 | `error_explanation` | código (`problem:<code>`, `nfage:<cStat>`, `nfse:<code>`), textos, artigo |
-| `ticket` | id UUIDv7, protocolo, tenant, solicitante, assunto, categoria (dúvida, incidente, requisição, melhoria, segurança, privacidade), módulo, rota e versão de origem, `correlation_id`, prioridade P1–P4, estado, política de SLA, prazos de primeira resposta e resolução, pausa, violação, nível (N1, N2, engenharia), responsável, marcos de tempo, reaberturas, `contains_personal_data`, `purge_at` |
+| `ticket` | id UUIDv7, protocolo, tenant, solicitante, assunto, categoria (dúvida, incidente, requisição, melhoria, segurança, privacidade), módulo, rota e versão de origem, `correlation_id`, severidade S1–S5, estado, política de SLA, prazos de primeira resposta e resolução, pausa, violação, nível (N1, N2, engenharia), responsável, marcos de tempo, reaberturas, `contains_personal_data`, `purge_at` |
 | `ticket_message` | chamado, autor (solicitante, agente, sistema), visibilidade (pública ou interna), corpo sanitizado, data |
 | `ticket_attachment` | mensagem, nome, MIME detectado, tamanho, SHA-256, chave do objeto, estado da varredura |
-| `ticket_event` | transições de estado, prioridade, atribuição e SLA |
-| `sla_policy` | nome, calendário (24x7 ou útil), alvos por prioridade; referenciada pelo contrato (ADR-0019) |
+| `ticket_event` | transições de estado, severidade, atribuição e SLA |
+| `sla_policy` | nome, calendário (24x7 ou útil), alvos por severidade (S1–S5); no nível Setor Público, também prazo de solução, meta de aderência e multa por severidade (ADR-0025); referenciada pelo contrato (ADR-0019) |
 | `csat_response` | chamado, nota 1–5, comentário, data |
 | `access_consent` | tenant, chamado, concedente, escopo (leitura ou leitura e escrita), módulos, início, fim, revogação |
 | `assisted_access_session` | tipo (`CONSENTED` ou `EMERGENCY`), consentimento (nulo na emergência), incidente (obrigatório na emergência), agente, fator da reautenticação, início, fim, aviso ao tenant enviado em |
@@ -80,9 +82,11 @@ documento não se confunde com `parameter_acceptances`, que é o aceite do conju
 ## 5. Fluxos
 
 **Abrir.** O formulário sugere artigos enquanto o usuário digita. Ao enviar, grava rota, versão, módulo e, vindo de
-uma tela de erro, o `correlation_id` e o código do problema, sem payload. Gera o protocolo, sugere a prioridade
-(impacto × urgência), calcula os prazos pela política do contrato e publica as notificações na outbox. P1 fica para
-faturamento ou portal parado e suspeita de incidente de segurança.
+uma tela de erro, o `correlation_id` e o código do problema, sem payload. Gera o protocolo, sugere a severidade
+(impacto × criticidade, ADR-0025), calcula os prazos pela política do contrato e publica as notificações na outbox.
+Padrão de classificação, ajustável pela matriz do contrato: S1, função essencial parada (faturamento, arrecadação ou
+portal) ou suspeita de incidente de segurança; S2, função essencial degradada sem contorno; S3, falha com contorno;
+S4, dúvida ou falha sem impacto operacional; S5, solicitação ou melhoria.
 
 **Estados.** `NEW` → `IN_PROGRESS` → `WAITING_CUSTOMER` (relógio pausado) → `RESOLVED` → `CLOSED`, exibidos ao
 usuário como novo, em atendimento, aguardando cliente, resolvido e fechado. Sete dias sem resposta em
@@ -128,7 +132,7 @@ Lado do tenant (BFF, sessão do usuário):
 Telas do frontend: `/help`, `/support` e `/about`.
 
 Lado do operador (Central Ziip, MFA obrigatório): `GET /api/v1/platform/support/queue`;
-`PATCH /api/v1/platform/support/tickets/{protocol}` (estado, prioridade, nível, responsável); `POST .../messages`
+`PATCH /api/v1/platform/support/tickets/{protocol}` (estado, severidade, nível, responsável); `POST .../messages`
 (com visibilidade); `POST .../access-requests`; `POST /api/v1/platform/assisted-access/{consent}/sessions`;
 `POST /api/v1/platform/emergency-access/{incident}/sessions` (só `PLATFORM_OWNER`, com reautenticação); incidentes e
 janelas da página de status.
@@ -138,7 +142,7 @@ Público, sem autenticação e com cache: `GET /api/v1/public/status` (mesmo pre
 
 ## 7. Integração com a Central Ziip (ADR-0018)
 
-A Central é o lado do operador: fila por prioridade, prazo e tenant; visão do tenant (contrato, SLA, versão, módulos,
+A Central é o lado do operador: fila por severidade, prazo e tenant; visão do tenant (contrato, SLA, versão, módulos,
 erros recentes pelo `correlation_id`); respostas-modelo; pedido de acesso assistido; incidentes da página de status;
 painel de conteúdo (buscas sem resultado, artigos mal avaliados, erros mais exibidos); FRT, MTTR, SLA cumprido,
 reabertura, CSAT e deflexão. A Central não lê o schema do tenant fora de uma sessão de acesso assistido ou de

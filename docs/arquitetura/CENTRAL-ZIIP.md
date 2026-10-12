@@ -1,14 +1,16 @@
 # Central Ziip do Ziip SAN
 
 Decisões: ADR-0018 (Central própria), ADR-0019 (cobrança por contrato), ADR-0020 (suporte e acesso assistido) e
-ADR-0022 (área do tenant). Base: revisão 17 (achado P1), ADR-0005, ADR-0007, ADR-0008, ADR-0014, ADR-0015,
+ADR-0022 (área do tenant). Base: revisão 17 (achado 17:P1), ADR-0005, ADR-0007, ADR-0008, ADR-0014, ADR-0015,
 `PARAMETROS-DO-TENANT.md` §5 e `REQUISITOS-NAO-FUNCIONAIS.md`. Referência: Ziip Central do Ziip Cloud
 (`Nfse.Api/Servicos/CentralEndpoints.cs`, `CentralColetorService.cs`, `Nfse.Domain/Central.cs`). Documento de
 12/10/2026, revisto no mesmo dia com as decisões do dono do produto sobre suspensão, eliminação e acesso assistido e,
 depois, com as do plano v2.2 (§2.4): carência de 30 dias, papéis que suspendem e eliminam, acesso de emergência e
 identificadores em inglês; e, por fim, com as do plano v2.3: contestação e ordem judicial suspendem a eliminação
-(prazo máximo de 75 dias) e códigos de erro da API em inglês. Nada foi implementado. Nomes de role e realm já seguem a
-renomeação `ziipsan` (plano P0.33).
+(prazo máximo de 75 dias) e códigos de erro da API em inglês. Na v2.5 do plano entraram a revogação de sessões e o
+bloqueio de dispositivos dos apps (ADR-0030), o alerta de divergência da emissão em campo (ADR-0031) e o contador de
+itens com saldo negativo no almoxarifado (ADR-0032); chamados de suporte passam a usar as severidades S1 a S5
+(ADR-0020, ajuste v2.5). Nada foi implementado. Nomes de role e realm já seguem a renomeação `ziipsan` (plano P0.33).
 
 ## 1. Objetivos
 
@@ -29,7 +31,7 @@ acesso assistido ou de emergência (§7). Toda rota `/api/v1/platform/*` exige s
 | Papel | Pode | Exige também |
 |---|---|---|
 | `PLATFORM_OWNER` (dono) | tudo; suspensão e bloqueio por qualquer motivo; eliminação de dados de tenant (exclusiva); acesso de emergência (§7) | step-up e justificativa nas ações destrutivas; incidente declarado na emergência |
-| `PLATFORM_OPS` (operação) | painéis técnicos, alertas, implantação, migrações, flags de rollout | — |
+| `PLATFORM_OPS` (operação) | painéis técnicos, alertas, implantação, migrações, flags de rollout; revogação de sessão de app e bloqueio de dispositivo do app de campo (ADR-0030) | step-up, justificativa e aviso ao tenant na revogação e no bloqueio |
 | `PLATFORM_SUPPORT` (suporte) | painéis do tenant, fila de chamados, pedido de acesso assistido | consentimento do tenant |
 | `PLATFORM_FINANCE` (financeiro) | contratos, faturas, pagamentos, cotas (ADR-0019); suspensão e bloqueio só por inadimplência contratual, e a reativação correspondente | step-up e justificativa; fatura vencida e aviso prévio registrados |
 
@@ -49,14 +51,15 @@ Frequência padrão: coleta a cada 5 min. "Tenant" significa indicador por tenan
 | Aba | Indicador | Fonte | Freq. | Alerta |
 |---|---|---|---|---|
 | Visão geral | Health Score 0–100 por tenant (fatores abaixo); "3 coisas para hoje"; tendências de 7 dias; briefing diário | métricas da Central | 5 min; briefing às 8h | score < 65 |
-| Faturamento | ciclos abertos, % de rotas concluídas, atraso sobre o calendário do tenant, rotas com falha | `job_runs` | 5 min | rota falha; ciclo além da janela; RNF-05 |
+| Faturamento | ciclos abertos, % de rotas concluídas, atraso sobre o calendário do tenant, rotas com falha; contas emitidas em campo com divergência no recálculo (ADR-0031) | `job_runs`, fila de divergências | 5 min | rota falha; ciclo além da janela; RNF-05; divergência de emissão em campo > 0 no ciclo |
+| Estoque | itens com saldo negativo e há quantos dias; alertas de reposição abertos (ADR-0032) | função agregadora do módulo `inventory` | diária | item negativo além do prazo de regularização do tenant |
 | Arrecadação | retornos recebidos e pendentes por convênio; divergências de conciliação abertas | tabelas de retorno (P3.1) | 15 min | retorno esperado ausente no dia útil; divergência > 2 dias |
 | Pix | idade da última notificação por PSP; p99 do webhook; `pix_inbox` pendente | `pix_inbox`, Micrometer | 5 min | RNF-06; PSP sem notificação em horário comercial por 1 h |
 | Fiscal | autorizadas, rejeições por código, idade da fila, certificado a vencer | outbox `fiscal`, documentos fiscais | 5 min | RNF-08; rejeição > 2% no dia; certificado ≤ 30 dias |
 | Regulatório | parâmetros com `valid_to` em 60 dias; feriados do ano seguinte ausentes; tarifa social sem conferência no DOU; janela do SINISA assistido | `parameter_versions`, catálogo de limites | diária | prazo ≤ 30 dias; parâmetro bloqueante ausente |
 | Plataforma | migração por tenant e onda (ok, pendente, quarentena); tenants e ligações por shard contra o teto; profundidade e idade por fila; mensagens `DEAD` | `tenant_schema_version`, catálogo, outbox | 5 min | quarentena; 80% do teto (RNF-21); RNF-09; `DEAD` > 0 |
 | Infraestrutura | SLO de 30 dias e burn rate (RNF-01, 02, 10, 11); idade do WAL arquivado; última restauração testada; TLS; uptime externo | backend OTel, ferramenta de backup, sonda externa | 5 min | RNF-53; WAL > 15 min (RNF-14); restauração > 90 dias |
-| Segurança | % de MFA por papel e tenants com MFA afrouxado; falhas de login (z-score de 14 dias); buscas por documento com 429; tentativas de vinculação no portal com 429; sessões de acesso assistido e de emergência ativas; integridade da trilha | Keycloak, contadores, `audit_log` | 5 min; trilha a cada 6 h | pico de login; cota excedida (ADR-0008); trilha quebrada |
+| Segurança | % de MFA por papel e tenants com MFA afrouxado; falhas de login (z-score de 14 dias); buscas por documento com 429; tentativas de vinculação no portal com 429; sessões de acesso assistido e de emergência ativas; dispositivos do app de campo por estado e sem contato há mais de 7 dias (ADR-0030); integridade da trilha | Keycloak, contadores, `audit_log` | 5 min; trilha a cada 6 h | pico de login; cota excedida (ADR-0008); trilha quebrada |
 | LGPD | pedidos de titular por status e prazo (só contagem); expurgos executados; tenants em saída e prazos; contestações de exportação abertas e suspensões judiciais; kit de evidências | módulo LGPD, `platform.tenant_lifecycle` | diária | pedido a 3 dias do prazo; contestação a 3 dias do prazo de resposta de 15 dias; RNF-42 em risco |
 | Suporte | definido no ADR-0020 | — | — | — |
 | Contratos | vigência, saldo de empenho, cota usada, faturas em aberto, pagamento × fatura | ADR-0019 | diária | ADR-0019, item 7 |
@@ -72,7 +75,7 @@ Modo TV: Visão geral com atualização a cada 60 s, sem nome de pessoa na tela.
 ## 4. Modelo de dados
 
 Schema `platform` no banco do core, criado pelo `migrate` (versões no plano §3: core `V5_1`, `V9`, `V9_1`, `V9_5`,
-`V10_1`). Nenhuma tabela guarda dado pessoal de tenant: só `tenant_id` (UUID), contagens, durações e códigos. Dados de
+`V10_1`, `V11_1`). Nenhuma tabela guarda dado pessoal de tenant: só `tenant_id` (UUID), contagens, durações e códigos. Dados de
 operadores da plataforma e de contatos do contratante (ADR-0019) pertencem à relação comercial do Ziip e ficam
 separados. Chamados, acesso assistido e acesso de emergência ficam no schema `support` (`AJUDA-SUPORTE-SOBRE.md` §4).
 
@@ -90,6 +93,7 @@ separados. Chamados, acesso assistido e acesso de emergência ficam no schema `s
 | contrato e afins | ADR-0019: contrato (com a política de SLA de suporte), aditivo, empenho, reajuste, fatura e pagamento, com referência aos documentos da fatura e da NFS-e (ADR-0022) | prazo fiscal e contratual |
 | `document_acceptance` | tenant, usuário (nulo no aceite do tenant), documento (termos, privacidade, contrato, DPA), versão, hash do texto, data, IP | prazo contratual |
 | `deployment` | versão, commit, ambiente, início e fim da implantação do software (ADR-0021) | permanente |
+| `app_device` | tenant, aparelho, app, `sub` do usuário (sem outro dado pessoal), plataforma, resumo da atestação, estado (`ACTIVE`, `BLOCKED`, `RETIRED`), aprovação, último contato, motivo do bloqueio (ADR-0030; core `V11_1`) | vigência do contrato do tenant |
 | `audit_event` | ator, papel, ação, alvo, antes e depois sem dado pessoal, `prev_hash`, `hash` (SHA-256 encadeado) | piso do ADR-0015 |
 | `config_item` | briefing, radar, marcadores do coletor | permanente |
 

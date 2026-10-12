@@ -72,8 +72,8 @@ classe d (PARAMETROS-DO-TENANT §2), `is_sensitive = false`: `branding.display_n
   varredura pelo ClamAV junto do `worker`, o mesmo pipeline dos anexos de chamados (exceção registrada no ADR-0010,
   substituível pelo serviço da hospedagem); troca e remoção auditadas.
 - Armazenamento em `public.tenant_assets` (core `V9_2`; `bytea`, SHA-256, tipo, dimensões, estado da varredura) atrás
-  de `TenantAssetStore`, para migrar a objeto quando a hospedagem for decidida (ADR-0011; MinIO congelado pelo
-  ADR-0010).
+  de `TenantAssetStore`, que pode passar ao S3 da hospedagem decidida (ADR-0011, aceito: AWS `sa-east-1`) sem mudar
+  quem a usa; MinIO segue congelado (ADR-0010).
 - Entrega com o hash na URL, `Cache-Control: immutable`, `X-Content-Type-Options: nosniff` e
   `Content-Security-Policy: default-src 'none'`.
 

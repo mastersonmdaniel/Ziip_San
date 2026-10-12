@@ -1,7 +1,7 @@
 # Arquitetura-alvo de produção
 
 Base: revisão 17 (§4 e §5) e ADRs 0003, 0005, 0006, 0007, 0010, 0011, 0012, 0013, 0014, 0018, 0020, 0022 e 0024 a
-0028. Hospedagem: AWS `sa-east-1` com serviços gerenciados (ADR-0011, aceito em 12/10/2026); o código continua neutro
+0032. Hospedagem: AWS `sa-east-1` com serviços gerenciados (ADR-0011, aceito em 12/10/2026); o código continua neutro
 quanto a provedor, para a cláusula de reversão do ADR-0024. Metas em `REQUISITOS-NAO-FUNCIONAIS.md`. Os nomes de roles
 abaixo (`sigsan_*`) passam a `ziipsan_*` na renomeação do P0 (plano P0.33). Nomes técnicos em inglês (plano §8,
 Idioma).
@@ -23,7 +23,7 @@ Monólito modular: um artefato (imagem única, não-root, assinada) executado em
 | Outbox | Tabela no PostgreSQL, workers com `SKIP LOCKED` (ADR-0014) |
 | Cofre/KMS | AWS KMS (KEK e DEK por tenant, R1) e Secrets Manager (segredos de execução) (ADR-0011) |
 | Relatórios e BI | Relatórios e painéis padrão nativos (`api` e `worker`); Apache Superset embarcado a partir do P4, lendo só a réplica, com role de banco por tenant (ADR-0027; exceção do ADR-0010) |
-| Apps | App de campo Android e app do cliente Android e iOS por tenant, em Capacitor sobre o mesmo frontend (ADR-0026) |
+| Apps | App de campo Android e app do cliente Android e iOS por tenant, em Capacitor sobre o mesmo frontend (ADR-0026); login pelo navegador do sistema com PKCE, token no armazenamento seguro do aparelho e chamadas à `api` pela camada nativa; app de campo no realm `ziipsan`, em dispositivo registrado e com bloqueio remoto; app do cliente no realm `ziipsan-portal` (ADR-0030); conta calculada no aparelho pelo mesmo módulo Java do servidor (ADR-0031) |
 | Observabilidade | OpenTelemetry Collector para métricas, logs e traces; error tracking; página de status pública em hospedagem separada da produção (ADR-0020) |
 | CI/CD | GitHub Actions: testes, imagem com SBOM, homologação, produção com aprovação manual e rollback |
 
@@ -57,7 +57,9 @@ flowchart LR
 
 1. **Requisição autenticada.** O navegador envia só o cookie `__Host-` HttpOnly ao `/bff`. O BFF obtém o access token
    da sessão, renova com rotação quando necessário e chama a API internamente. A API valida emissor, audiência e
-   `tenant_id` contra o catálogo, abre a transação, aplica o contexto local (§4) e a RLS filtra.
+   `tenant_id` contra o catálogo, abre a transação, aplica o contexto local (§4) e a RLS filtra. Nos apps (ADR-0030),
+   a camada nativa envia o Bearer token do client público do app; a API confere também o client e, no app de campo, o
+   dispositivo registrado.
 2. **Faturamento em lote.** O operador abre o ciclo; `job_runs` recebe trava única `(tenant_id, cycle_id)`. O ciclo é
    particionado por rota, cada rota vira uma mensagem na fila `billing`. O worker processa em blocos com commit e
    checkpoint (última ligação); falha retoma do checkpoint; `UNIQUE (cycle_id, unit_id)` impede conta duplicada. Ao fim,
@@ -70,7 +72,10 @@ flowchart LR
    consulta diária ao PSP recupera notificações perdidas.
 5. **Sincronização de campo.** O app guarda leituras offline com `client_reading_id` (UUIDv7) e envia lotes de até 500.
    A API grava com `UNIQUE (client_reading_id)` e responde item a item (aceita, duplicada, rejeitada). A crítica de
-   leitura roda no worker. A carga de rota usa delta por `updated_at` com keyset.
+   leitura roda no worker. A carga de rota usa delta por `updated_at` com keyset. Na emissão simultânea (ADR-0031), o
+   pacote da rota leva uma tarefa por ligação (`task_id`), tarifas e parâmetros com as versões vigentes; a conta
+   calculada no aparelho volta com as versões usadas, é única por `task_id`, é recalculada pelo worker e, se divergir,
+   vai para a fila de divergências; o material usado na OS de campo é baixado na mesma sincronização (ADR-0032).
 6. **Migração em ondas.** O job `migrate` aplica o core e depois os tenants com paralelismo limitado, em ondas: tenant
    sintético, canário (1–2 tenants), 10%, restante. `tenant_schema_version` registra o status; falha põe o tenant em
    quarentena sem parar os demais. Mudanças em expand/contract, compatíveis com as versões N e N-1 da aplicação;
@@ -159,7 +164,8 @@ Instância dedicada (ADR-0024): a mesma pilha, criada pela mesma IaC numa conta 
 ### 7.2 Histórico: opções não escolhidas
 
 Mantido como registro da comparação do ADR-0011. A coluna "VPS/servidor próprio" serve de referência para o pacote de
-reversão do ADR-0024 (execução na infraestrutura do órgão).
+reversão do ADR-0024 (execução na infraestrutura do órgão). O pacote roda em Linux e, pelo ajuste da v2.5 do ADR-0024,
+também em Windows Server 2022 ou superior, com os contêineres Linux sobre Docker no WSL2, homologado uma vez na ED-04.
 
 | Componente | AWS sa-east-1 | Azure Brasil | VPS/servidor próprio |
 |---|---|---|---|

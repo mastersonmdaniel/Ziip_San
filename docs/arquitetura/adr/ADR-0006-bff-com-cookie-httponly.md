@@ -4,6 +4,11 @@
 - **Decisor:** dono do produto
 - **Substitui:** decisão D13 do plano ("`oidc-client-ts`, PKCE, token em memória"), na parte de onde o token fica
 - **Afeta:** revisão 17, achados S5 e X1
+- **Ajuste de 12/10/2026 (editais, v2.5), antes de qualquer implementação:** este ADR continua valendo para o
+  navegador (backoffice e portal web); os apps Capacitor (ADR-0026) seguem o ADR-0030 (navegador do sistema com PKCE,
+  token no armazenamento seguro do aparelho e chamadas pela camada nativa), porque o cookie `__Host-` não se aplica à
+  origem local da WebView; a API passa a aceitar, além do BFF, tokens dos clients públicos dos apps, com emissor,
+  audiência e client conferidos; decisão do dono do produto.
 
 ## Contexto
 

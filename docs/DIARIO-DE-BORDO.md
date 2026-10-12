@@ -9,7 +9,7 @@ Registro vivo do projeto: o que é, como está, o que travou e o que vem agora.
 
 | Item | Valor |
 |---|---|
-| Nome do produto | SIGSAN |
+| Nome do produto | **Ziip SAN** (nome comercial; vem do pacote de marca, ADR-0016). "SIGSAN" é o nome interno do código até a renomeação para `ziipsan` (tarefa P0.33) |
 | Tipo | Plataforma SaaS vertical multi-empresa para saneamento básico |
 | Raiz do repositório | `G:\Meu Drive\PROJETOS\Ziip SAN\sigsan`. Git desde 12/10/2026, com os dados do repositório fora do Drive (`C:\Users\shyka\.sigsan-git\sigsan.git`; no G: há só o arquivo `.git`). A cópia antiga em `C:\PROJETOS\Ziip SAN\sigsan` não é editada. O Docker não enxerga o drive `G:`: o build usa um espelho local, ver seção 13 |
 | Organização | `br.com.sigsan` |
@@ -18,7 +18,9 @@ Registro vivo do projeto: o que é, como está, o que travou e o que vem agora.
 
 **Ordem de prioridade:** a única válida é a de `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` (desde 12/10/2026). Perdas, qualidade da água, LGPD e MTR correm como trilha paralela ao comercial, não à frente dele.
 
-**Fora do escopo:** POC, editais, blockchain no MTR, integração de escrita com ESRI.
+**Fora do escopo:** blockchain no MTR, integração de escrita com ESRI. *(Até 12/10/2026 POC e editais também estavam fora; o ADR-0023 os trouxe para o escopo: trilha de editais no P4 e prova de conceito como critério de aceite a partir do P3.)*
+
+**Decisões e arquitetura:** registradas como ADRs em `docs/arquitetura/adr/` (índice no `README.md` da pasta). O plano canônico continua sendo `docs/PLANO-EXECUCAO-PDCA-R0-R9.md`, agora organizado em fases P0–P4.
 
 ---
 
@@ -984,3 +986,43 @@ Feita no branch `e4-mtr` (worktree separada).
 - Proposto roadmap revisado P0–P4 com marco de go-live piloto (§7 do relatório) e metas não funcionais (§6). O plano
   canônico **não** foi alterado: depende das decisões do §8 (hospedagem, adoção do roadmap, piloto, jurídico/DPO, infra
   não usada, push, ambiente de dev).
+
+### 12/10/2026 — Replanejamento: plano v2 a v2.5, 32 ADRs e aderência a editais
+
+Escopo desta etapa: **só plano e documentação** (decisão do dono); a execução em código fica para as fases do plano.
+Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla escolha e estão registradas como ADRs.
+
+- **Plano canônico** (`docs/PLANO-EXECUCAO-PDCA-R0-R9.md`) reescrito no lugar e levado de v2 a **v2.5**: fases P0
+  (plataforma operável) → P1 (migração e satélite) → P2 (ciclo de faturamento) → P3 (pronto para operar) → go-live do
+  piloto (jun–jul/2027) → P4 (inclui a **trilha de editais**, ondas A/B/C) → 2029. Tarefas numeradas com origem, tamanho,
+  dependência e critério de aceite; mapa Flyway reservado por módulo; riscos e marcos.
+- **Arquitetura** em `docs/arquitetura/`: parâmetros do tenant (classes de parâmetro e limites legais), requisitos não
+  funcionais (RNF-01…71), arquitetura-alvo (AWS São Paulo), porte do motor fiscal do Ziip Cloud para Java (NFAg-e
+  modelo 75), marca e temas, Central Ziip, Ajuda/Suporte/Sobre.
+- **ADRs 0001–0032** (`docs/arquitetura/adr/README.md`). Principais: roadmap P0–P4 (0001); G1/G2/G4/G5/G6/G9 como
+  parâmetros do tenant com limites legais (0002, 0015: multa padrão 2% configurável, vedações de corte para todos os
+  motivos e inadimplência sempre travada, piso federal da tarifa social, pisos de retenção); motor fiscal portado para
+  Java (0003); SINISA/SINIR assistidos (0004); isolamento híbrido por porte (0005); BFF com cookie no web (0006) e PKCE
+  nativo nos apps (0030); MFA configurável por tenant (0007); máscara de documento configurável (0008); push automático
+  e dev fora do Drive (0009); infra parada congelada (0010); **hospedagem AWS sa-east-1** (0011); metas não funcionais
+  (0012); PostgreSQL 17 no P0 (0013); outbox no PostgreSQL (0014); re-brand com pacote de marca e renomeação
+  `sigsan`→`ziipsan` no P0 (0016); temas claro/escuro Azul Água e Verde Água (0017); Central Ziip própria (0018);
+  cobrança SaaS por contrato (0019); suporte com protocolo (0020); Sobre/versão/changelog (0021); portais com histórico
+  e download de conta paga e nota em PDF/XML (0022); **editais e POC no escopo** (0023); instância dedicada com reversão
+  (0024); nível de serviço Setor Público (0025); apps híbridos Capacitor com impressão Zebra (0026); BI nativo +
+  Superset (0027); escopo ampliado — qualidade, GIS, omnichannel, dívida ativa, contabilidade/e-Sfinge, débito, SPC/
+  protesto, cartão, ERP núcleo (almoxarifado e frota), telemetria, telefonia/totem (0028); equipe de 4–5 pessoas a
+  partir de ago/2027 com prontidão de POC em jun/2028 (0029); cálculo offline e nota na emissão em campo (0031);
+  **material da OS com alçada, reserva, baixa automática e saldo negativo permitido** (0032).
+- **Editais** (PDFs fora do repositório, em `../editais/`): VISAN Videira PE 06/2026 e SAMAE São Ludgero PE 2/2026.
+  Extração em `docs/levantamento/editais/18a`–`18c` (2.663 requisitos distintos) e matrizes por área `18d`–`18h`;
+  consolidado em `18-ADERENCIA-EDITAIS-CONSOLIDADO.md`. Hoje o código atende ~3%, em parte ~21%; com o plano, a meta é
+  aderência total na trilha P4 (62 entregas ED-xx, ≈220 semanas-pessoa). Itens de edital contrários à lei são
+  respondidos com a regra legal e pedido de esclarecimento.
+- **Revisão de estrutura SaaS** (relatório 17) e falhas de segurança do Ziip Cloud levantadas em passagem (tarefa
+  separada sugerida).
+- **Pendências do dono** (plano §2.4): escolha do piloto (P0.30, inclusive optantes de débito automático); custo e
+  regime da equipe até o M8; parceiro de implantação presencial; manual/XSD de contingência da NFAg-e; antecipação da
+  ED-58 (almoxarifado) para a onda A.
+- **Próximo passo de execução:** P0 (Dockerfile, CI no GitHub Actions, PostgreSQL 17, migração do dev para disco local,
+  renomeação `ziipsan`, correções de segurança S1–S6, AWS/R1), quando o dono autorizar o início da execução.

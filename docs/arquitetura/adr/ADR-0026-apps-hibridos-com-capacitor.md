@@ -7,6 +7,12 @@
   `docs/arquitetura/ARQUITETURA-ALVO.md` §1 e §2 (sincronização de campo); RNF-07, RNF-31, RNF-60; plano P4.4
 - **Base:** `docs/levantamento/editais/18d-aderencia-cadastro-medicao-gis.md` §3 (E6) e §4 (decisões 1 e 2);
   `18f-aderencia-atendimento-os-portal.md` §3 (ENT-05, ENT-09) e §4 (D1)
+- **Ajuste de 12/10/2026 (editais, v2.5), antes de qualquer implementação:** a autenticação nos apps fica decidida no
+  ADR-0030 (navegador do sistema com PKCE, token no armazenamento seguro do aparelho, app do cliente no realm
+  `ziipsan-portal`, app de campo no realm `ziipsan` em dispositivo registrado e com bloqueio remoto), o que cumpre a
+  primeira tarefa derivada; o cálculo da conta no dispositivo e o documento fiscal em campo ficam decididos no
+  ADR-0031 (mesmo motor Java no plugin Android, vetores comuns no CI, recálculo no servidor, fluxo de divergência e
+  idempotência pela chave da tarefa); o material usado na OS de campo segue o ADR-0032; decisão do dono do produto.
 
 ## Contexto
 

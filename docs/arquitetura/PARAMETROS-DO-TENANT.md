@@ -2,7 +2,8 @@
 
 Data: 12/10/2026. Origem: ADR-0002, ADR-0015, plano `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` §2.3, relatórios
 `docs/levantamento/08`, `10`, `11`, `13`, `14`, `17` e o código. Fases (ADR-0001): P1 tarifa social (R3), P2 ciclo
-(R4), P3 arrecadação, corte e portal (R5a/R5b, R7), P4 cobrança e Pix Automático (R8, R5c).
+(R4), P3 arrecadação, corte e portal (R5a/R5b, R7), P4 cobrança e Pix Automático (R8, R5c) e, na trilha de editais,
+emissão em campo e almoxarifado (ADR-0031, ADR-0032).
 
 > **Não é parecer jurídico.** Os limites vêm dos relatórios do projeto, com as ressalvas deles ("NÃO CONFIRMADO", fonte
 > secundária). Limite do sistema é trava mínima, não validação da escolha do cliente.
@@ -187,6 +188,23 @@ O tenant pode excluir motivo que não seja inadimplência mediante aceite formal
 | `rec.urgent_fee`, `rec.requires_settlement` | preço da urgência; exige quitação | R$, bool | sem | ERI | d | OPE+JUR | P3 | novo |
 | `sac.response_days` | prazos de resposta do atendimento | dias | sem | ERI; Decreto 11.034/2022 só como referência (`13`) | d | REG | P3 | novo |
 
+### Emissão em campo e almoxarifado (ADR-0031, ADR-0032; plano v2.5)
+
+Travado (classe a): quem requisita material não aprova a própria requisição (segregação de funções); toda requisição,
+decisão, reserva, baixa, devolução e ajuste vai para a auditoria; a conta impressa em campo nunca é alterada sem nova
+versão, motivo e aprovação (ADR-0031, item 6).
+
+| Chave | Descrição | Tipo | Sug. | Limite | Cl. | Apr. | Fase | Código |
+|---|---|---|---|---|---|---|---|---|
+| `bill.field_undercharge_rule` | tratamento da diferença quando a conta impressa em campo cobrou a menos | enum | diferença em conta posterior, como item separado, com motivo e aviso | norma da ERI, quando houver; cobrança a maior é sempre retificada (travado) | b | REG | P4 | novo (ED-19) |
+| `inv.approval_bands` | faixas de valor da requisição de material e papel que aprova cada faixa (encarregado, almoxarife, gerente) | tabela | três faixas, com valores a definir na ED-58 | toda faixa com aprovador; segregação travada | b | OPE+FIN | P4 | novo (`approval_rule`, ED-58) |
+| `inv.auto_approve_below` | valor abaixo do qual a requisição é aprovada automaticamente | R$ | a definir na ED-58 | não alcança itens controlados | b | OPE+FIN | P4 | novo |
+| `inv.controlled_items` | itens e classes que sempre exigem aprovação, em qualquer valor | lista | hidrômetros e materiais de alto valor | hidrômetro não sai da lista (controle do parque, ED-14) | b | OPE | P4 | novo |
+| `inv.allow_negative_balance` | aprovação de requisição sem saldo disponível, com alerta de reposição | bool | permitido | proibir exige aceite; permitido exige o relatório diário de negativos ligado | b | OPE+FIN | P4 | novo |
+| `inv.negative_regularization_days` | prazo para regularizar item negativo por entrada ou ajuste com justificativa | dias | 5 dias úteis | teto de fábrica a definir na ED-58; só reduz | c | OPE | P4 | novo |
+| `inv.inventory_cycle_days` | intervalo máximo entre inventários do almoxarifado | dias | 90 | teto de fábrica a definir na ED-58; só reduz | c | OPE+FIN | P4 | novo |
+| `inv.costing_method` | método de custeio do material apropriado na OS | enum | custo médio ponderado | métodos suportados pelo produto | b | FIN | P4 | novo |
+
 ---
 
 ## 4. Segurança e LGPD por tenant (decididos em 12/10/2026)
@@ -265,7 +283,9 @@ jurídico do prestador.
 
 1. **Canais suportados.** Hoje: arrecadação FEBRABAN 150 v08 e boleto de cobrança. A decidir: lista de bancos com
    manual de campo livre conferido (diário: ~20 de varejo), CNAB 240 V11.0 final, CNAB 400 só sob demanda, PSPs Pix
-   homologados, data do Pix Automático. Débito automático FEBRABAN 150 não entra como padrão (`11` R15).
+   homologados, data do Pix Automático. Débito automático FEBRABAN 150 só para autorizações legadas migradas
+   (ADR-0028, item f, ajustado na v2.5): no P3, como requisito do go-live, se a escolha do piloto (plano P0.30)
+   encontrar optantes; senão, na trilha do P4 (ED-27). Autorizações novas, só por Pix Automático.
 2. **Perfis pré-carregados.** Há levantamento de dez ERIs (ARSAE-MG, ADASA, ARSESP, AGERGS, AGEPAR, ARES-PCJ,
    AGENERSA, AGR-GO, ARIS, ARCE); ARPE, AGEMS, AGER-MT, ARSAL e ARSEP não foram levantadas. Perfil é conjunto de
    sugestões com fonte; prioridade é a ERI do piloto.

@@ -10,6 +10,12 @@
   de 20 relatórios operacionais já no P3 (ADR-0027); qualidade da água, GIS web, edição, migração do cadastro técnico,
   manobras e SPC/Serasa saem de 2028 para o P4, e o restante do R9 e a trilha GRS seguem em 2028 (ADR-0028); decisão
   do dono do produto.
+- **Ajuste de 12/10/2026 (editais, v2.5), antes de qualquer implementação:** a trilha de editais do P4 ganha equipe
+  própria contratada a partir de agosto de 2027, com prontidão de POC em 30/06/2028 e licitações no 2º semestre de 2028
+  (ADR-0029); o app de leitura do P4 segue os ADRs 0030 (autenticação) e 0031 (cálculo offline e nota fiscal em
+  campo); compras, RH e orçamento do ERP passam a 2029, sob demanda (ADR-0028, ajuste v2.5); o FEBRABAN 150 legado
+  pode subir para o P3 se o piloto tiver optantes de débito automático (ADR-0028, ajuste v2.5); decisão do dono do
+  produto.
 
 ## Contexto
 

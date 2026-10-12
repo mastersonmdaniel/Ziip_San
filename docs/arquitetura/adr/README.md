@@ -47,10 +47,16 @@ cada tarefa entra.
 | [0026](ADR-0026-apps-hibridos-com-capacitor.md) | Apps híbridos com Capacitor | Aceito | 12/10/2026 |
 | [0027](ADR-0027-bi-hibrido-com-apache-superset.md) | BI híbrido com Apache Superset | Aceito | 12/10/2026 |
 | [0028](ADR-0028-escopo-funcional-ampliado-pelos-editais.md) | Escopo funcional ampliado pelos editais | Aceito | 12/10/2026 |
+| [0029](ADR-0029-capacidade-e-equipe-da-trilha-de-editais.md) | Capacidade e equipe para a trilha de editais | Aceito | 12/10/2026 |
+| [0030](ADR-0030-autenticacao-nos-apps.md) | Autenticação nos apps | Aceito | 12/10/2026 |
+| [0031](ADR-0031-calculo-offline-e-nota-fiscal-na-emissao-em-campo.md) | Cálculo offline e nota fiscal na emissão em campo | Aceito | 12/10/2026 |
+| [0032](ADR-0032-material-da-os-com-alcada-e-baixa-automatica.md) | Material da OS com alçada e baixa automática | Aceito | 12/10/2026 |
 
 ## Referências
 
 - `docs/levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md` — revisão de estrutura SaaS (achados X, S, D, O, P, F).
 - `docs/levantamento/editais/18a` a `18h` — extrações e matrizes de aderência aos editais VISAN Videira PE 06/2026 e
-  SAMAE São Ludgero PE 2/2026 (base dos ADRs 0011, aceito, e 0023 a 0028).
+  SAMAE São Ludgero PE 2/2026 (base dos ADRs 0011, aceito, e 0023 a 0032).
+- `docs/levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md` — consolidado das entregas de edital, com o esforço
+  recalculado no plano v2.5 (base do ADR-0029).
 - `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` — plano canônico: decisões (§2), mapa Flyway (§3) e fases P0–P4 (§4).

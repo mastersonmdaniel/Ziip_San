@@ -16,6 +16,11 @@
   impacto × criticidade, prazo de solução por severidade (severidade 1 em 2 horas úteis como referência), meta de
   aderência e cálculo de multa no relatório mensal; o plantão 24x7 para a severidade 1 depende da decisão de equipe
   do P4 (ADR-0023); decisão do dono do produto.
+- **Ajuste de 12/10/2026 (editais, v2.5), antes de qualquer implementação:** item 3 passa a classificar todo chamado
+  pelas cinco severidades S1 a S5 do ADR-0025, no lugar das prioridades P1–P4, cujo nome colidia com o das fases do
+  roadmap; no padrão do produto, os prazos de cada severidade seguem a política de SLA do contrato, sem multa; no
+  nível Setor Público, com prazo de solução, aderência e multa (ADR-0025); o plantão da S1 passa a ter equipe pelo
+  ADR-0029; decisão do dono do produto.
 
 ## Contexto
 
