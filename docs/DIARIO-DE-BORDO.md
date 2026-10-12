@@ -1021,8 +1021,9 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   respondidos com a regra legal e pedido de esclarecimento.
 - **Revisão de estrutura SaaS** (relatório 17) e falhas de segurança do Ziip Cloud levantadas em passagem (tarefa
   separada sugerida).
+- **Plano v2.6:** almoxarifado (ED-58) antecipado para a onda A, junto da OS completa (decisão do dono); prontidão de
+  POC ≈199 semanas-pessoa, ≈4,6 pessoas-equivalentes para jun/2028.
 - **Pendências do dono** (plano §2.4): escolha do piloto (P0.30, inclusive optantes de débito automático); custo e
-  regime da equipe até o M8; parceiro de implantação presencial; manual/XSD de contingência da NFAg-e; antecipação da
-  ED-58 (almoxarifado) para a onda A.
+  regime da equipe até o M8; parceiro de implantação presencial; manual/XSD de contingência da NFAg-e.
 - **Próximo passo de execução:** P0 (Dockerfile, CI no GitHub Actions, PostgreSQL 17, migração do dev para disco local,
   renomeação `ziipsan`, correções de segurança S1–S6, AWS/R1), quando o dono autorizar o início da execução.

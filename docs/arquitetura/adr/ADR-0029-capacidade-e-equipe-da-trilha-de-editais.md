@@ -6,6 +6,14 @@
   da trilha); plano §2.4, §5 (M8, M11, M12, M13), §6 e trilha de editais; consolidado 18 §5.2 e §8
 - **Base:** `docs/levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md` §5.2 e §8.1 (esforço recalculado na v2.5
   do plano); `18h-aderencia-nao-funcionais-servicos-habilitacao.md` §6 (decisão 5)
+- **Ajuste de 12/10/2026 (editais, v2.6), antes de qualquer implementação:** com a ED-58 antecipada da onda C para a
+  onda A (ADR-0032, ajuste v2.6), a prontidão de POC passa a cerca de 191 semanas-pessoa nas ondas A e B e cerca de
+  199 com as tarefas originais do P4 (antes, 183 e 192); a necessidade para 30/06/2028 sobe de cerca de 4,5 para 4,6
+  pessoas-equivalentes produtivas (para 31/12/2028, de 2,8 para 2,9), dentro da contratação de 4 a 5 do item 1, que não
+  muda; com 5 contratações, a capacidade até 30/06/2028 (cerca de 225) fica cerca de 13% acima do esforço (antes,
+  17%); com 4 (cerca de 186), cerca de 13 semanas-pessoa abaixo (antes, 6), com prontidão por volta do fim de julho de
+  2028; com 2, no início do 2º trimestre de 2029; sem contratação, continua por volta de 2031; os números do Contexto,
+  de "Sem a contratação" e de "Margem pequena" leem-se com esses valores; decisão do dono do produto.
 
 ## Contexto
 

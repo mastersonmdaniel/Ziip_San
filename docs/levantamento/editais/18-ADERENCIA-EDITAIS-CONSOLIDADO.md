@@ -9,7 +9,7 @@ Data: 12/10/2026. Produto Ziip SAN (código interno SIGSAN, renomeado `ziipsan` 
 portal e canais), [18g](18g-aderencia-operacao-qualidade-bi.md) (operação, qualidade da água e BI) e
 [18h](18h-aderencia-nao-funcionais-servicos-habilitacao.md) (não funcionais, serviços, POC e habilitação).
 
-As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4, atualizado pela v2.5 (abaixo)
+As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4, atualizado pelas v2.5 e v2.6 (abaixo)
 ([PLANO-EXECUCAO-PDCA-R0-R9.md](../../PLANO-EXECUCAO-PDCA-R0-R9.md)) e contra as decisões do dono do produto de
 12/10/2026, registradas nos ADRs [0011](../../arquitetura/adr/ADR-0011-hospedagem-a-decidir.md) (aceito),
 [0023](../../arquitetura/adr/ADR-0023-estrategia-de-editais-e-prova-de-conceito.md),
@@ -29,6 +29,13 @@ nos ajustes da v2.5 dos ADRs 0024 (Windows Server) e 0028 (ERP no recorte "núcl
 Messenger, Instagram e Telegram, FEBRABAN 150 condicional ao piloto). Mudaram as entregas ED-04, ED-11, ED-18, ED-19,
 ED-20, ED-27, ED-36, ED-39, ED-42, ED-58, ED-59 e ED-62; ED-60, ED-61 e a parte de compras da ED-58 saem da trilha
 para 2029. O esforço (§5.2) e a capacidade (§8.1) foram recalculados.
+
+**Atualização de 12/10/2026 (plano v2.6).** Por decisão do dono do produto, a ED-58 (almoxarifado com reserva, alçada
+e baixa automática, ADR-0032) passa da onda C para a onda A, junto da ED-36 (OS completa), para que a requisição de
+material da OS afete o estoque desde a primeira onda; compras continua em 2029. Onda A de 108,9 para 116,4
+semanas-pessoa, onda C de 22,9 para 15,4, trilha igual (206,3); prontidão de POC de cerca de 192 para cerca de 199
+semanas-pessoa e necessidade para junho de 2028 de cerca de 4,5 para 4,6 pessoas-equivalentes (§5.2, §5.4 e §8.1).
+Mudaram as ED-20, ED-36, ED-58 e ED-62 (dependências) e o item 2.17 do SAMAE (§3.2).
 
 **Convenções.** Esforço na escala do plano (§4): **P** até 2 dias, **M** até 1 semana, **G** mais de 1 semana, para uma
 pessoa com agentes. Para somar, P vale 0,4 semana, M vale 1 semana e G vale a estimativa da matriz de origem ou, na
@@ -55,11 +62,12 @@ deduplicadas (ED-01 a ED-62, §5), para disputar licitações em 2028. A prontid
 146 de 162 pontos na VISAN e nenhuma falha crítica no SAMAE) passa a ser medida em toda fase a partir do P1 e entra no
 aceite de fase a partir do P3. O go-live do piloto (30/07/2027) não muda.
 
-**Condição.** Recalculado na v2.5 do plano, o esforço das entregas que ficam na trilha até 2028 é de cerca de 220
-semanas-pessoa (51 meses-pessoa), das quais 13 semanas caem no P0 a P3 e 206 na trilha do P4; compras, RH e orçamento
-(cerca de 9 semanas) passaram para 2029. Só a prontidão de POC (ondas A e B, §5.2) pede cerca de 183 semanas-pessoa,
-192 com as tarefas originais do P4. Com uma pessoa e agentes, a prontidão chegaria por volta de 2031. Para junho de
-2028 são precisas cerca de 4,5 pessoas-equivalentes a partir de agosto de 2027 (2,8 para dezembro de 2028). O
+**Condição.** Recalculado nas v2.5 e v2.6 do plano, o esforço das entregas que ficam na trilha até 2028 é de cerca de
+220 semanas-pessoa (51 meses-pessoa), das quais 13 semanas caem no P0 a P3 e 206 na trilha do P4; compras, RH e
+orçamento (cerca de 9 semanas) passaram para 2029. Só a prontidão de POC (ondas A e B, §5.2, com o almoxarifado na
+onda A desde a v2.6) pede cerca de 191 semanas-pessoa, 199 com as tarefas originais do P4. Com uma pessoa e agentes, a
+prontidão chegaria por volta de 2031. Para junho de 2028 são precisas cerca de 4,6 pessoas-equivalentes a partir de
+agosto de 2027 (2,9 para dezembro de 2028). O
 ADR-0029 decidiu contratar de 4 a 5 desenvolvedores a partir de agosto de 2027, com prontidão em 30/06/2028 e
 licitações no 2º semestre de 2028 (§8).
 
@@ -201,7 +209,7 @@ Cerca de 1.037 das 1.415 linhas pertencem a seções críticas, e o "Item 1.1.2"
 | 2.14 Arrecadação | falha | parcial (P3.1, P3.2) | ED-26, ED-27 |
 | 2.15 Cobrança (negativação, protesto, dívida ativa) | falha | falha | P4.1, ED-29, ED-30, ED-31 |
 | 2.16.18 Importação e exportação de lançamentos contábeis | falha | falha | ED-32, ED-62 |
-| 2.17 Gestão de serviços (inclui empreiteiras e estoque) | falha | falha | ED-34, ED-36, ED-37, ED-62 |
+| 2.17 Gestão de serviços (inclui empreiteiras e estoque) | falha | falha | ED-34, ED-36, ED-37, ED-58, ED-62 |
 | 2.18 OS móvel | falha | falha | ED-20 |
 | 2.19 Atendimento | falha | parcial (P3.4) | ED-35, ED-21 |
 | 2.22 Omnichannel | falha | falha | ED-42, ED-43 |
@@ -324,7 +332,7 @@ cobre.
 |---|---|---|---|---|---|---|---|---|
 | ED-34 | Catálogo de serviços, termos e carta de serviços; serviços e materiais faturáveis com tabela de preço e vigência, rubrica e cobrança no encerramento da OS; parcelamento de serviço | 18f-ENT-01, 18e-E5 | TR-496–TR-513, TR-519, TR-530, TR-535–TR-538; SG-358, SG-449–SG-467, SG-473, SG-487, SG-497–SG-500, SG-760, SG-763 | V m, i (POC-31); S 2.17 crít. | P4 onda A | 4 | P0.19, P3.4, P3.6, ED-32 | — |
 | ED-35 | Atendimento completo: protocolo multicanal, visão 360, fila por prazo, documentos do cliente | 18f-ENT-02 | TR-544–TR-552, TR-574, TR-576; SG-520–SG-528, SG-551, SG-553 | V o (POC-47, 48); S 2.19 crít. | P4 onda A | 3 | P3.4, P3.5, P1.20 | — |
-| ED-36 | OS completa no backoffice: estados, programação, baixa parametrizável, desdobramento, lote, retrabalho, mapa, equipes, veículos e materiais na OS (quantidade prevista e usada; requisição com alçada e baixa no estoque pela ED-58, ADR-0032) | 18f-ENT-03; 18g-E-ALMOX (cadastros na OS) | TR-495, TR-514–TR-534 e TR-594–TR-616, exceto os atribuídos a ED-22, ED-29, ED-34 e ED-62; SG-448, SG-468–SG-491 e SG-572–SG-597, idem; POC-46 | V n; S 2.17 crít. | P4 onda A | 4 | ED-34, P3.4, P1.9, P2.1 | — |
+| ED-36 | OS completa no backoffice: estados, programação, baixa parametrizável, desdobramento, lote, retrabalho, mapa, equipes, veículos e materiais na OS (quantidade prevista e usada; requisição com alçada e baixa no estoque pela ED-58, na mesma onda desde a v2.6, ADR-0032) | 18f-ENT-03; 18g-E-ALMOX (cadastros na OS) | TR-495, TR-514–TR-534 e TR-594–TR-616, exceto os atribuídos a ED-22, ED-29, ED-34 e ED-62; SG-448, SG-468–SG-491 e SG-572–SG-597, idem; POC-46 | V n; S 2.17 crít. | P4 onda A | 4 | ED-34, P3.4, P1.9, P2.1 | — |
 | ED-37 | Empreiteiras terceirizadas: cadastro, contratos, penalidades e medição | 18f-ENT-06 | SG-492–SG-496 | S 2.17 crít. | P4 onda A | 1 | ED-36 | — |
 | ED-38 | Portal e autoatendimento ampliados: ficha, histórico de consumo, simulações de fatura e de parcelamento, declaração anual de quitação, certidão, tabela tarifária, qualidade da água, OS e solicitações | 18f-ENT-08, 18e-E17 | TR-543, TR-658–TR-660, TR-837–TR-849; SG-602–SG-624 (exceto SG-614), SG-713, SG-715, SG-717, SG-721–SG-724, SG-726, SG-761, SG-766, SG-767 | V r (POC-69); S 2.20 | P4 onda A | 4 | P3.3, P3.20, P1.5, ED-34 | 0022 |
 | ED-39 | App do cliente Android e iOS nas lojas com a marca do tenant, gerado por pipeline, com login pelo navegador do sistema no realm `ziipsan-portal` e push sem dado pessoal | 18f-ENT-09 | TR-653, TR-654, TR-656, TR-657, TR-661–TR-663; SG-704–SG-782, exceto os do portal (ED-38) e das notificações (ED-41) | V q; S 2.24 crít. | P4 onda B | 4 | ED-18, ED-38, P3.21 | 0026, 0030 |
@@ -356,11 +364,11 @@ cobre.
 
 | ED | Entrega | Origem | Requisitos cobertos | POC | Fase/onda | Esf. | Dependências | ADR |
 |---|---|---|---|---|---|---|---|---|
-| ED-58 | Almoxarifado (materiais e estoque para a OS): estoque por local (hidrômetros e materiais de rede), entradas, ajustes, custo médio, inventário; requisição de material da OS com alçada por valor e por item, reserva na aprovação, entrega, baixa automática da quantidade usada e devolução da sobra no encerramento, custo na OS; saldo negativo permitido com alerta de reposição e regularização; baixa do material de campo na sincronização por `task_id`, com alçada a posteriori para item controlado. Compras (requisição de compra, cotação e pedido) sai para 2029 | 18g-E-ALMOX (parte); 18f-ENT-07 | relatórios de materiais e insumos TR-808–TR-810, TR-817, TR-820, TR-821, TR-990; SG-1035–SG-1037, SG-1044, SG-1047, SG-1048, SG-1167; estoque da SAMAE 2.17 quando o estoque oficial for o do produto | S 2.17 (estoque), quando sem ERP do cliente | P4 onda C | 7,5 (5 do almoxarifado, 2,5 do ADR-0032) | ED-36, ED-20, ED-12, ED-14 | 0028 (i), 0032 |
+| ED-58 | Almoxarifado (materiais e estoque para a OS): estoque por local (hidrômetros e materiais de rede), entradas, ajustes, custo médio, inventário; requisição de material da OS com alçada por valor e por item, reserva na aprovação, entrega, baixa automática da quantidade usada e devolução da sobra no encerramento, custo na OS; saldo negativo permitido com alerta de reposição e regularização; baixa do material de campo na sincronização por `task_id`, com alçada a posteriori para item controlado. Compras (requisição de compra, cotação e pedido) sai para 2029 | 18g-E-ALMOX (parte); 18f-ENT-07 | relatórios de materiais e insumos TR-808–TR-810, TR-817, TR-820, TR-821, TR-990; SG-1035–SG-1037, SG-1044, SG-1047, SG-1048, SG-1167; estoque da SAMAE 2.17 quando o estoque oficial for o do produto | S 2.17 crít. (estoque), quando sem ERP do cliente | P4 onda A (antes C; antecipada na v2.6, junto da ED-36) | 7,5 (5 do almoxarifado, 2,5 do ADR-0032) | ED-36, ED-12, ED-14; ED-20 só para a baixa de campo | 0028 (i), 0032 |
 | ED-59 | Frota e equipes de campo: veículos, abastecimento, manutenção, custo por veículo e consumo na OS; equipes de campo (composição, veículo, escala) na programação e no custo da OS | 18g-E-ALMOX, E-ERPIND (parte) | SG-1181 e indicadores de frota | — | P4 onda C | 3 | ED-36 | 0028 (i) |
 | ED-60 | RH no recorte do saneamento: lotação, competências e indicadores de RH (equipes de campo passaram à ED-59) | 18g-E-ERPIND (parte) | indicadores de RH (TR 22.6.19; SG 2.29), atendidos até 2029 pela ED-62 | — | **2029, sob demanda** (fora da trilha) | (3, fora do total) | ED-36; RIPD e DPA atualizados | 0028 (i) |
 | ED-61 | Orçamento: dotações, rubricas ligadas à ED-32, previsto × realizado | 18g-E-ERPIND (parte) | indicadores orçamentários (TR 22.6.18; SG 2.29), atendidos até 2029 pela ED-62 | — | **2029, sob demanda** (fora da trilha) | (3, fora do total) | ED-32 | 0028 (i) |
-| ED-62 | Integração com ERP do cliente (Betha, IPM, Fiorilli) por API e/ou arquivo: contabilidade, estoque e RH; previsão de materiais da OS ao estoque; movimentos de material da OS quando o estoque oficial for o do ERP; indicadores de compras, RH e orçamento lidos do ERP no painel estratégico | 18g-E-ERPIND; 18f-ENT-07; 18e-E12 (destino) | TR-468, TR-521, TR-1001, TR-1003, TR-1004, TR-1007; SG-437, SG-476, SG-1179–SG-1184, SG-1189, SG-1277 | S 2.16.18 e 2.17 crít.; V t | P4 onda A | 7 | ED-32, ED-36 | 0028 (i) |
+| ED-62 | Integração com ERP do cliente (Betha, IPM, Fiorilli) por API e/ou arquivo: contabilidade, estoque e RH; previsão de materiais da OS ao estoque; movimentos de material da OS quando o estoque oficial for o do ERP; indicadores de compras, RH e orçamento lidos do ERP no painel estratégico | 18g-E-ERPIND; 18f-ENT-07; 18e-E12 (destino) | TR-468, TR-521, TR-1001, TR-1003, TR-1004, TR-1007; SG-437, SG-476, SG-1179–SG-1184, SG-1189, SG-1277 | S 2.16.18 e 2.17 crít.; V t | P4 onda A | 7 | ED-32, ED-36; ED-58 para os movimentos de material | 0028 (i) |
 
 ### 5.2 Ondas da trilha e esforço
 
@@ -370,16 +378,16 @@ a aderência total exige as três.
 | Onda | Critério | Entregas | Esforço (sem.) | Meta de ensaio ao fim da onda |
 |---|---|---|---|---|
 | Antes do P4 | o que o piloto precisa e o que os ADRs puseram no P0 a P3 | ED-02, ED-03 (P0); ED-01 parte (P1, P3); ED-21 (P2); ED-05 parte (P2, P3); ED-45 (P3) | 13,3 | fim do P3: VISAN ≥ 50 de 162; SAMAE 2.4 e 2.5 sem falha |
-| A | itens que pontuam nas alíneas b a p e r da VISAN ou são críticos no SAMAE nas áreas comercial, de campo e de suporte; habilitação (e-Sfinge) | ED-05 (resto), 06, 07, 08, 12–20, 22–27, 29–38, 41, 46, 62 | 108,9 | VISAN ≥ 120; SAMAE sem falha em 2.4–2.19, 2.28 e Item 3 |
+| A | itens que pontuam nas alíneas b a p e r da VISAN ou são críticos no SAMAE nas áreas comercial, de campo e de suporte; habilitação (e-Sfinge) | ED-05 (resto), 06, 07, 08, 12–20, 22–27, 29–38, 41, 46, 58, 62 | 116,4 | VISAN ≥ 120; SAMAE sem falha em 2.4–2.19, 2.28 e Item 3 |
 | B | canais digitais, BI, qualidade e GIS (VISAN q, s, t; SAMAE 2.22, 2.24, 2.26, 2.27 e "Item 0") e itens de proposta | ED-01 (resto), 04, 28, 39, 40, 42, 43, 47–55 | 74,5 | VISAN ≥ 146 e nenhuma falha crítica no SAMAE, em dois ensaios seguidos (prontidão de POC) |
-| C | aderência total fora das POCs e serviços de implantação | ED-09, 10, 11, 44, 56–59 | 22,9 | requisitos restantes da matriz viva atendidos ou com pedido de esclarecimento registrado |
+| C | aderência total fora das POCs e serviços de implantação | ED-09, 10, 11, 44, 56, 57, 59 | 15,4 | requisitos restantes da matriz viva atendidos ou com pedido de esclarecimento registrado |
 | **Total até 2028** | | **60** | **219,6 (≈ 51 meses-pessoa)** | |
 | 2029, sob demanda (fora do total) | compras (parte retirada da ED-58), ED-60 (RH) e ED-61 (orçamento) | 2 e parte da ED-58 | 9 | — |
 
 Distribuição das 13,3 semanas antes do P4: P0 1,4 (P0.44 e serviços do provedor na P0.27); P1 0,4 (P1.25); P2 4
 (P2.20 e cinco severidades na P2.15); P3 7,5 (P3.22, P3.23 e itens do ADR-0025 na P3.15 e P3.16). Se a P0.30 encontrar
 optantes de débito automático, a parte FEBRABAN 150 da ED-27 (≈ 1,5) vai para o P3 (P3.24): o P3 passa a 9 semanas e a
-onda A a 107,4, sem mudar o total.
+onda A a 114,9, sem mudar o total.
 
 **Recálculo da v2.5** (semanas-pessoa):
 
@@ -396,6 +404,17 @@ onda A a 107,4, sem mudar o total.
 | **Ondas A + B** | | **177,9** | **183,4** | +5,5 |
 | **Onda C** | | **28,4** | **22,9** | −5,5 |
 | **Trilha do P4** | | **206,3** | **206,3** | igual, por compensação |
+
+**Recálculo da v2.6** (semanas-pessoa): a ED-58 muda de onda sem mudar de tamanho.
+
+| Onda | v2.5 | v2.6 | Motivo |
+|---|---|---|---|
+| A | 108,9 | 116,4 | +7,5 da ED-58, antecipada para junto da ED-36 (decisão do dono do produto) |
+| B | 74,5 | 74,5 | — |
+| C | 22,9 | 15,4 | −7,5 da ED-58 |
+| **Ondas A + B** | **183,4** | **190,9** | +7,5 |
+| **Trilha do P4** | **206,3** | **206,3** | igual |
+| **Até 2028, com o P0–P3** | **219,6** | **219,6** | igual |
 
 ### 5.3 De onde veio cada ED
 
@@ -414,13 +433,13 @@ onda A a 107,4, sem mudar o total.
 Resolvidos na v2.5 do plano: os conectores Facebook Messenger, Instagram e Telegram entram na ED-42 (ADR-0028, item c,
 ajustado); o recorte do ERP ficou em almoxarifado e frota construídos e integração pela ED-62, com compras, RH e
 orçamento em 2029 (item i, ajustado; folha de pagamento, eSocial e contabilidade pública continuam fora); o FEBRABAN
-150 passa a ser levantado na escolha do piloto (P0.30) e, havendo optantes, entra no P3 (P3.24). Continuam em aberto:
+150 passa a ser levantado na escolha do piloto (P0.30) e, havendo optantes, entra no P3 (P3.24). Resolvido na v2.6: a
+onda do almoxarifado; a ED-58 passa à onda A, junto da ED-36, com +7,5 semanas na prontidão de POC (§5.2, §8.1),
+compras continuando em 2029. Continuam em aberto:
 
 - **Licença do ODA File Converter** para uso comercial, a conferir no P1 (P1.25), antes de planejar a ED-55.
 - **Contingência da NFAg-e** (manual e XSD oficiais): define se a conta de campo sai com a chave fiscal (ADR-0031,
   item 4), antes da ED-19.
-- **Onda do almoxarifado.** A ED-58 fica na onda C; se o roteiro da P1.25 mostrar item crítico do SAMAE 2.17 que
-  dependa da baixa de estoque no produto, ela passa à onda A, com +7,5 semanas na prontidão de POC (plano §2.4).
 - **DPoP no Keycloak** para ligar o token ao aparelho do app de campo (ADR-0030, item 6), a conferir no início da ED-18.
 
 ---
@@ -515,29 +534,31 @@ no CI.
 |---|---|---|
 | Acréscimos ao P0–P3 (P0.44, P1.25, P2.20, P2.15, P3.15, P3.16, P3.22, P3.23) | 13,3 | cerca de 50% do P2 e 80% do P3, fases já sem folga |
 | Tarefas originais do P4 que continuam (P4.1, P4.2, P4.5, P4.7, P4.8) | ≈ 8,4 | já ocupavam metade do P4 (ago–dez/2027, cerca de 20 semanas) |
-| Trilha de editais, ondas A e B (prontidão de POC) | 183,4 (v2.4: 177,9) | cerca de 4,2 anos: prontidão por volta de 2031 |
-| Trilha completa (ondas A, B e C) | 206,3 (igual à v2.4) | cerca de 4,7 anos |
+| Trilha de editais, ondas A e B (prontidão de POC), com a ED-58 na onda A | 190,9 (v2.5: 183,4; v2.4: 177,9) | cerca de 4,3 anos: prontidão por volta de 2031 |
+| Trilha completa (ondas A, B e C) | 206,3 (igual às v2.4 e v2.5) | cerca de 4,7 anos |
 | Fora da trilha: compras, RH e orçamento (2029, sob demanda) | 9 | — |
 
-Para a prontidão de POC (ondas A e B mais as tarefas originais do P4, cerca de 192 semanas-pessoa; na v2.4, 186) a
-partir de 02/08/2027: em 30/06/2028 são precisas cerca de 4,5 pessoas-equivalentes produtivas (43 semanas
-produtivas; na v2.4, 4,3); em 31/12/2028, cerca de 2,8 (68 semanas produtivas; na v2.4, 2,7). As estimativas usam a
+Para a prontidão de POC (ondas A e B mais as tarefas originais do P4, cerca de 199 semanas-pessoa; na v2.5, 192; na
+v2.4, 186) a partir de 02/08/2027: em 30/06/2028 são precisas cerca de 4,6 pessoas-equivalentes produtivas (43
+semanas produtivas; na v2.5, 4,5; na v2.4, 4,3); em 31/12/2028, cerca de 2,9 (68 semanas produtivas; na v2.5, 2,8; na
+v2.4, 2,7). As estimativas usam a
 escala do plano (uma pessoa com agentes) e têm incerteza de ±30%; a matriz 18g, sozinha, já estimava de 13 a 16
 meses-pessoa para operação, qualidade e BI.
 
 **Capacidade com a equipe do ADR-0029.** Premissas: dono do produto a cerca de 0,7 pessoa-equivalente na trilha;
 cada contratado com 8 semanas de onboarding a 50% (perda de cerca de 4 semanas-pessoa), entrando até 31/08/2027.
 
-| Equipe a partir de agosto de 2027 | Capacidade até 30/06/2028 (semanas-pessoa) | Frente a 192 | Prontidão de POC |
+| Equipe a partir de agosto de 2027 | Capacidade até 30/06/2028 (semanas-pessoa) | Frente a 199 | Prontidão de POC |
 |---|---|---|---|
-| Dono e 5 contratados | ≈ 225 | ≈ +17% | 30/06/2028, com folga menor que a incerteza de ±30% |
-| Dono e 4 contratados | ≈ 186 | ≈ −3% | meados de julho de 2028 |
-| Dono e 2 contratados | ≈ 108 | ≈ −44% | 1º trimestre de 2029 |
+| Dono e 5 contratados | ≈ 225 | ≈ +13% (v2.5: +17%) | 30/06/2028, com folga menor que a incerteza de ±30% |
+| Dono e 4 contratados | ≈ 186 | ≈ −7% (v2.5: −3%), ≈ 13 semanas-pessoa abaixo | por volta do fim de julho de 2028 (v2.5: meados de julho) |
+| Dono e 2 contratados | ≈ 108 | ≈ −46% (v2.5: −44%) | início do 2º trimestre de 2029 (v2.5: 1º trimestre) |
 | Só o dono, em tempo integral na trilha | ≈ 43 | ≈ −78% | por volta de 2031 |
 
-Com a equipe completa, a onda C (≈ 23 semanas) termina no 3º trimestre de 2028. Cada mês de atraso na entrada da
-equipe adia a prontidão em cerca de um mês. Antecipar a ED-58 para a onda A (§5.4) leva a prontidão a ≈ 199
-semanas-pessoa e a necessidade a ≈ 4,6 pessoas-equivalentes.
+Com a equipe completa, a onda C (≈ 15 semanas desde a v2.6, que passou a ED-58 à onda A) termina no 3º trimestre de
+2028. Cada mês de atraso na entrada da equipe adia a prontidão em cerca de um mês. A antecipação da ED-58 (§5.4) acrescenta
+cerca de 7,5 semanas-pessoa à prontidão e mantém a necessidade (≈ 4,6 pessoas-equivalentes) dentro da contratação de
+4 a 5 do ADR-0029; com 4 contratados, o déficit passa de cerca de 6 para cerca de 13 semanas-pessoa.
 
 **Recomendações.**
 
@@ -550,9 +571,9 @@ semanas-pessoa e a necessidade a ≈ 4,6 pessoas-equivalentes.
    plano de contratação e o orçamento precisam estar aprovados no M8 (28/05/2027), com a seleção em junho e julho, para
    que toda a equipe entre até 31/08/2027; o número final (4 ou 5) sai da velocidade medida do P0 ao P3.
 3. **Seguir as ondas.** A antes de B antes de C; dentro de cada onda, primeiro o que é crítico no SAMAE e pontua na
-   VISAN. A onda C (implantação, almoxarifado com alçada, frota, ativos, telefonia, Bolsa Família) não pesa na POC e
-   soma cerca de 23 semanas; o ERP construído, 10,5 semanas além da integração (ED-62). Compras, RH e orçamento ficam
-   para 2029.
+   VISAN. A onda C (implantação, frota, ativos, telefonia, Bolsa Família) não pesa na POC e soma cerca de 15 semanas.
+   O ERP construído soma 10,5 semanas além da integração (ED-62): o almoxarifado (7,5) na onda A, junto da OS, desde a
+   v2.6, e a frota (3) na onda C. Compras, RH e orçamento ficam para 2029.
 4. **Mirar primeiro editais do tipo SAMAE.** Exigem um atestado, que o piloto pode dar no fim de 2027. Os do tipo VISAN
    exigem dois atestados, 8.500 ligações e e-Sfinge em operação, o que dificilmente se reúne antes do segundo semestre
    de 2028.

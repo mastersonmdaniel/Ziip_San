@@ -8,6 +8,13 @@
   (faixa `V20_x`), ED-20, ED-36, ED-58, ED-62
 - **Base:** ADR-0028, item i (recorte "núcleo saneamento + integração", plano v2.5); `18g-aderencia-operacao-qualidade-bi.md`
   (E-ALMOX); `18f-aderencia-atendimento-os-portal.md` (ENT-03, ENT-07)
+- **Ajuste de 12/10/2026 (editais, v2.6), antes de qualquer implementação:** a ED-58, que carrega o ciclo deste ADR,
+  sai da onda C para a onda A da trilha de editais, junto da OS completa (ED-36), para que a requisição de material da
+  OS afete o estoque desde a primeira onda; a ED-58 vem logo depois da ED-36 e depende dela, da ED-12 e da ED-14, e a
+  baixa de campo (item 4) é feita depois da ED-20, na mesma onda; a ED-62 passa a depender da ED-58 para exportar os
+  movimentos (item 6); o tamanho não muda (7,5 semanas-pessoa) e compras continua em 2029, sob demanda (ADR-0028, item
+  i, ajuste v2.5); a linha "na onda C, depois da ED-36 e da ED-20" de "O que muda no roadmap" fica substituída por este
+  ajuste; efeito na capacidade no ADR-0029 (ajuste v2.6); decisão do dono do produto.
 
 ## Contexto
 
