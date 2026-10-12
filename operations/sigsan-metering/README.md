@@ -105,9 +105,8 @@ bash scripts/build.sh -pl operations/sigsan-metering -am test
 * O mapeamento das seis entidades foi validado com `hibernate.hbm2ddl.auto=validate` contra esse banco, e
   um roundtrip (persistir, limpar, recarregar, inclusive jsonb e enums) passou com a RLS e o trigger de
   auditoria ativos. Esse teste de rascunho foi apagado depois.
-* **Pendente:** `platform/sigsan-app/pom.xml` ainda **não depende de `sigsan-metering`**, então a migration
-  V5_1 e as entidades só entram no `FreshInstallTest` quando alguém acrescentar a dependência (fora do
-  escopo desta entrega, que não podia tocar o `sigsan-app`).
+* **Resolvido (12/10/2026):** `platform/sigsan-app/pom.xml` depende de `sigsan-metering`; a migration
+  V5_1 e as entidades entram no provisionamento e no `FreshInstallTest`.
 
 ## O que NÃO foi implementado
 

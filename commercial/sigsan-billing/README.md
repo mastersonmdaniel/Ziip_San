@@ -69,8 +69,8 @@ Invariantes impostos pelo banco (não só pelo código):
 - Tabelas persistidas de consumo mínimo por área e por parâmetro; tabela de parâmetros de faturamento
   do tenant (`billing_parameters`); calendário de feriados; persistência do percentual de esgoto da
   ligação (pertence ao cadastro da ligação).
-- Mapeadores entidade → domínio puro, serviços e API REST. `sigsan-app` ainda **não depende** de
-  `sigsan-billing`: é preciso incluí-lo para a migration V4_1 entrar no provisionamento.
+- Mapeadores entidade → domínio puro, serviços e API REST. (O `sigsan-app` já depende de
+  `sigsan-billing` desde 12/10/2026: a migration V4_1 entra no provisionamento e no `FreshInstallTest`.)
 - **Bônus social do legado** (crédito condicionado a "conta anterior paga no prazo"): o próprio
   levantamento o marca como regra de uma concessionária (inferência) e ele **contradiz** a Lei
   14.898/2024 (concessão não pode depender de adimplência). Não foi implementado.

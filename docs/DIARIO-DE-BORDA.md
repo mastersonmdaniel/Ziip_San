@@ -54,7 +54,7 @@ seção 15, porque nenhum teste juntava os módulos nem rodava a migration de co
 
 A suíte de integração de `platform/sigsan-app` (`FreshInstallTest`) agora faz o que o primeiro
 deploy faria: migra o core num banco virgem, provisiona um tenant com **todos** os módulos e
-valida o mapeamento JPA das 25 entidades contra as tabelas criadas.
+valida o mapeamento JPA das entidades contra as tabelas criadas (eram 25 nesta data; 66 em 12/10/2026).
 
 Stack local: os containers do compose precisam ser iniciados (`docker compose up -d`). Em
 11/10/2026 só o `sigsan-postgres-primary` foi religado, o que basta para os testes.
@@ -275,6 +275,10 @@ valores malformados. `TenantFilterTest` cobre os 9 casos, incluindo a tentativa 
 ---
 
 ## 8. Infraestrutura: estado
+
+> **Desatualizado (12/10/2026):** esta tabela é de quando o compose subia 9 serviços. Desde a E3 só
+> `postgres-primary` e `keycloak` são usados (`scripts/dev-up.sh`); `postgres-replica` foi removido (não
+> replicava) e o Keycloak é o 26.8.0 com banco próprio. Ver seção 18.
 
 9 serviços, todos saudáveis.
 
@@ -588,6 +592,11 @@ destes quebrava o build.** Todos quebrariam o primeiro deploy.
   precisam de revisão por especialista em qualidade da água.
 
 ### 15.5 Ainda aberto
+
+> **Resolvido depois (12/10/2026):** escritor `.inp`, `analyzePressure`, `LossesService.auditLog`,
+> `PlatformConfig` e a falta de `@SpringBootApplication` (seções 16.2 e 18, E3–E5). O
+> `TenantProvisioningServiceTest` passou a rodar a migration de core real (E1). Os itens abaixo ficam
+> como registro.
 
 - **Escritor `.inp` do EPANET continua inválido** (nós dos pipes vazios, `[PUMPS]` fora da
   sintaxe, `[OPTIONS]` com palavras de `[TIMES]`, diâmetro em metros, locale pt-BR, sem

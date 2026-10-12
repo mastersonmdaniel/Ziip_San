@@ -3,6 +3,8 @@
 Data: 11/10/2026. Base: 6 relatórios desta pasta (`01` a `06`), cruzados com o `DIARIO-DE-BORDA.md` (09/10/2026).
 Convenção: **[verificado]** = conferi no código do SIGSAN; **[agente]** = afirmado por um relatório, não conferido por mim.
 
+> **Atualização (12/10/2026, fim do dia):** vários defeitos de código citados aqui já foram corrigidos (RLS e dono do banco, tenant pelo token, auditoria sem dado pessoal, cifra de CPF/CNPJ no cadastro e no MTR, JSON, MTR com testes, aplicação executável). O estado atual está no diário, seção 18; a ordem de prioridade, em `docs/PLANO-EXECUCAO-PDCA-R0-R9.md`.
+
 ---
 
 ## 1. Resumo em 10 linhas

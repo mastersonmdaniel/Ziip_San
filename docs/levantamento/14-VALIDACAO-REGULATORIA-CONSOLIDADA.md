@@ -4,6 +4,8 @@ Síntese dos relatórios `08` a `13`, cada um produzido por um agente que pesqui
 
 > **Não é parecer jurídico.** Os relatórios de origem são levantamento técnico para orientar requisitos de software. Toda decisão sobre prazo, multa, juros, tarifa social, corte, negativação e tributos exige revisão por advogado, tributarista e regulatório. As fontes primárias nem sempre abriram no ambiente de pesquisa: o relatório `08` leu os textos legais na Câmara dos Deputados (o Planalto e o DOU não responderam); o `13` leu o Planalto por navegador; vários prazos de 2026 vêm de **fonte secundária**, marcados nos relatórios de origem.
 
+> **Atualização (12/10/2026, fim do dia):** vários defeitos de código citados aqui já foram corrigidos (RLS e dono do banco, tenant pelo token, auditoria sem dado pessoal, cifra de CPF/CNPJ no cadastro e no MTR, JSON, MTR com testes, aplicação executável). O estado atual está no diário, seção 18; a ordem de prioridade, em `docs/PLANO-EXECUCAO-PDCA-R0-R9.md`.
+
 ---
 
 ## 1. Resposta direta
