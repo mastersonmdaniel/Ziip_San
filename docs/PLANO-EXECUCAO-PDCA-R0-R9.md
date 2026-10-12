@@ -1,252 +1,391 @@
-# Plano de execução: ações do PDCA + roadmap R0–R9
+# Plano de execução do Ziip SAN: fases P0–P4 e go-live piloto
 
-Data: 12/10/2026. Origem: PDCA de 12/10 (`docs/levantamento/16-PDCA-2026-10-12.md`) e roadmap R0–R9
-(`docs/levantamento/15c-*` §3). Detalhado por três agentes de planejamento e consolidado aqui. Nenhum arquivo de
-código foi alterado para produzir este plano.
+**Versão 2, 12/10/2026.** Produto Ziip SAN; nome interno do código, SIGSAN. O nome do arquivo foi mantido por causa dos
+links. Este é o plano canônico; em divergência com um ADR, vale o ADR mais recente.
 
-Este documento **substitui** as ordens de prioridade do diário §1 e §12, do `00` §3, do `14` §3 e do `15c` §3
-(ação 7.1 aplica isso aos documentos).
+**O que mudou em relação à v1**
 
----
+- Roadmap oficial P0–P4 com marco de go-live piloto; R1–R9 vira conteúdo das fases (ADR-0001).
+- G1, G2, G4, G5, G6 e G9 viram parâmetros do tenant com aceite formal e deixam de bloquear fases (ADR-0002); G3, G7 e
+  G8 foram decididas pelo produto (ADR-0003, ADR-0004).
+- Entram a camada de serviço operado (artefato, ambientes, backup, lote, observabilidade, carga), a migração do legado
+  e todos os achados críticos, altos e médios da revisão 17.
+- `outOfOrder(true)` ganha prazo; depois dele, versões Flyway sempre crescentes (§3).
+- NFAg-e sobre motor fiscal próprio, portado do Ziip Cloud, no lugar do integrador.
+- BFF com cookie, MFA por tenant, máscara configurável, push automático, desenvolvimento fora do Google Drive.
 
-## 1. Leitura realista dos prazos
+**Referências.** Revisão 17: [levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md](levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md);
+ADRs: [arquitetura/adr/README.md](arquitetura/adr/README.md); parâmetros: [arquitetura/PARAMETROS-DO-TENANT.md](arquitetura/PARAMETROS-DO-TENANT.md);
+RNF: [arquitetura/REQUISITOS-NAO-FUNCIONAIS.md](arquitetura/REQUISITOS-NAO-FUNCIONAIS.md); arquitetura-alvo:
+[arquitetura/ARQUITETURA-ALVO.md](arquitetura/ARQUITETURA-ALVO.md); porte fiscal: [arquitetura/FISCAL-PORTE-JAVA.md](arquitetura/FISCAL-PORTE-JAVA.md);
+PDCA: [levantamento/16-PDCA-2026-10-12.md](levantamento/16-PDCA-2026-10-12.md); execução: [DIARIO-DE-BORDO.md](DIARIO-DE-BORDO.md) §18.
 
-Os prazos regulatórios são do **prestador** (tenant). Não há cliente em produção nem aplicação executável. Até
-31/12/2026 o máximo entregável é **pacote de regra + decisões + exportação assistida em tenant de homologação**.
-
-| Marco | Data | Entregável realista |
-|---|---|---|
-| DMR 3º tri | 31/10/2026 | **Nada de software.** MTR do SIGSAN não vale sem SINIR; a DMR é feita no SINIR |
-| SINISA (ano-base 2025) | 03/11, 17/11, 31/12/2026 | **Nada de software.** A coleta fechou em 03/09/2026 (`08` §c.1); novembro é conferência. R6 mira o ciclo 2027 |
-| NFAg-e | 01/12/2026 (a confirmar) | Só a decisão G3 e a parametrização. Emissor não fica pronto em 50 dias |
-| Tarifa social | 11/12/2026 | **Pacote**: classificação, importador, simulador, relatório anual (R3) |
-| CBS/IBS | 01/01/2027 | Só parametrização de alíquota com vigência (R4a) |
-| Pix híbrido | 01/02/2027 | Facultativo e dependente do PSP; R5b |
-| NR 11 ANA | 20/05/2027 | R7 (data de verificação da agência; dúvida 20 × 27/05) |
-| Lei 14.015 | em vigor | O bloqueio de corte nasce com a OS (R7) |
-
-Ação para o Daniel (G0): comunicar isso aos clientes-alvo até 23/10.
+**Convenção.** Achados da revisão 17 levam o prefixo `17:` (`17:X1`, `17:S1`, `17:D1`), para não confundir com as
+decisões D1–D13 e S1–S3 da v1. Os médios foram numerados aqui `17:M1`–`17:M15` e os baixos `17:B1`–`17:B11`, na ordem
+do relatório.
 
 ---
 
-## 2. Decisões necessárias (portões)
+## 1. Estado atual (12/10/2026)
 
-### 2.1 Técnicas (bloqueiam o início da execução)
+- Fundações E0–E6 concluídas em 12/10/2026 (alvo era 27/11): 973 testes Java e 134 do frontend verdes.
+- Isolamento por tenant provado no PostgreSQL real: roles separadas, função da RLS de `sigsan_owner`, RLS FORCE, GUC
+  definida e limpa pela conexão, tenant só do JWT.
+- Auditoria sem dado pessoal; CPF/CNPJ cifrados com índice cego no cadastro e no MTR.
+- Aplicação executável (Spring Boot 4.1.1, Keycloak 26.8.0, PKCE, API do cadastro), aceita de ponta a ponta.
+- Cadastro de cliente pela tela bloqueado até o R2 (tipo de cliente, perfil de imóvel, endereço).
+- Faturamento, medição e arrecadação: motores puros, sem serviço, API nem lote.
+- Chave só de desenvolvimento; nenhum CPF real antes do R1.
+- Só ambiente local: sem Dockerfile, CI remoto, backup nem observabilidade.
+- GitHub privado `mastersonmdaniel/Ziip_San` (push manual até `fb2b53d`); código ainda editado no Google Drive.
+- Sem cliente piloto e sem hospedagem definidos.
 
-**Decididas pelo usuário em 12/10/2026:** D1 = `.git` fora do Drive (`--separate-git-dir`); D2 = GitHub privado
-(push só com autorização; o MCP `github` precisa ser autorizado via `/mcp`); D4 = Spring Boot 4.1.1; D5/D6 = realm
-único `sigsan` com claim `tenant_id` (UUID). As demais seguem a recomendação da tabela salvo decisão em contrário.
+**Histórico.** A v1 consolidou o PDCA de 12/10 (C1–C5) e o roadmap R0–R9 do `15c` em fundações E0–E6, com mapa Flyway e
+portões de decisão. As etapas foram executadas no mesmo dia, um commit por etapa (diário §18). A revisão 17, sobre
+`fb2b53d`, concluiu que o código está correto mas ainda não é serviço operável, o que motivou esta versão.
 
-| # | Decisão | Recomendação |
+---
+
+## 2. Decisões
+
+### 2.1 Técnicas da v1
+
+**=** mantida; **Δ** alterada.
+
+| # | Decisão | Situação |
 |---|---|---|
-| D1 | Onde fica o git | `git init --separate-git-dir` em `C:\Users\shyka\.sigsan-git\sigsan.git` (o Drive corrompe `.git`); no G: só o arquivo `.git` |
-| D2 | Remoto | GitHub privado como backup externo; exige autorizar o MCP `github` (`/mcp`) e autorizar cada push |
-| D3 | Autor dos commits | nome + e-mail do usuário |
-| D4 | Versão do Spring Boot | **4.1.1** (suporte OSS até 31/07/2027). 3.5.16 está sem suporte OSS desde 30/06/2026 [verificado em endoflife.date] |
-| D5/D6 | Keycloak | realm único `sigsan`, claim `tenant_id` com o **UUID** do tenant; um usuário pertence a um tenant no R0. Hoje o `KeycloakAdminService` cria um realm por tenant |
-| D7 | Keycloak 24 ou 26; banco próprio | 26 com banco e role `keycloak` próprios |
-| D8 | Porta da API | 8090 (Keycloak fica em 8080) |
-| D9 | Cifra em dev antes do Vault | chave derivada por HKDF de `SIGSAN_DEV_MASTER_KEY` (fora do repo), só dados sintéticos até o R1 |
-| D10 | Migrations em produção | job separado (na subida da aplicação só em local/test) |
-| D11 | Rascunhos e `validate-step` do cadastro | ficam para o R2 |
-| D12 | Papéis | ADMIN, MANAGER, OPERATOR, VIEWER + `registry.reveal-document` |
-| D13 | OIDC no frontend | `oidc-client-ts`, PKCE, token em memória |
-| G10a | Flyway fora de ordem | ligar `outOfOrder(true)` + teste "tenant antigo alcança o atual". Sem isso, uma `V1_3` criada depois da `V6_1` é recusada em tenant existente |
-| S1 | Onde fica `DocumentNumber` | mover de `registry/rules` para `shared/sigsan-core` (MTR também precisa) |
-| S2 | CPF no PDF do MTR | máscara, salvo exigência do SINIR |
-| S3 | `waste_transporter.drivers` (JSONB com CPF/CNH) | cifrar na mesma migration do MTR |
-| — | Nome do diário | `docs/DIARIO-DE-BORDO.md` (renomeado de `DIARIO-DE-BORDA.md` em 12/10/2026), com `DIARIO_DE_BORDO.md` na raiz apontando para ele (instrução global). Comentários em migrations já aplicadas mantêm o nome antigo, porque alterá-los muda o checksum do Flyway |
+| D1 | `.git` fora do Drive (`--separate-git-dir`) | Δ todo o desenvolvimento sai do Drive no P0 (ADR-0009) |
+| D2 | Push só com autorização | Δ **revogada pelo ADR-0009**: push automático com testes verdes |
+| D3 | Autor: nome e e-mail do usuário | = |
+| D4 | Spring Boot 4.1.1 (suporte OSS até 31/07/2027) | = linha seguinte antes de 31/07/2027 (P3.14) |
+| D5/D6 | Realm único, claim `tenant_id` (UUID) | Δ mais gestão de usuários que fixa o `tenant_id` (17:S3) |
+| D7 | Keycloak 26, banco próprio | = modo de produção na P0.29 |
+| D8 | API na 8090 | = |
+| D9 | Cifra de dev por HKDF; só dado sintético até o R1 | Δ `dev-env` só em lista fechada de perfis (17:M2) |
+| D10 | Migrations por job separado | Δ a JVM da API não recebe credencial de migração (17:S2) |
+| D11 | Rascunhos e `validate-step` no R2 | = (P1.3) |
+| D12 | ADMIN, MANAGER, OPERATOR, VIEWER, `registry.reveal-document` | Δ novos: busca por documento, aprovação de parâmetros, plataforma |
+| D13 | `oidc-client-ts`, token em memória | Δ **substituída pelo ADR-0006** (BFF); hoje o token está em `sessionStorage` |
+| G10a | `outOfOrder(true)` + teste "tenant antigo alcança o atual" | Δ só até o fim do P3; depois, versões sempre crescentes (17:D1) |
+| S1–S3 (v1) | `DocumentNumber` no core; CPF mascarado no PDF do MTR; `drivers` cifrado | = implementadas; máscara segue o ADR-0008 |
 
-### 2.2 De negócio (bloqueiam fases do roadmap)
+### 2.2 Decisões de 12/10/2026
 
-| # | Decisão | Quem | Até | Bloqueia |
+| ADR | Decisão |
+|---|---|
+| [0001](arquitetura/adr/ADR-0001-roadmap-p0-p4.md) | P0–P4 com go-live piloto; piloto escolhido no P0 |
+| [0002](arquitetura/adr/ADR-0002-decisoes-g-como-parametros-do-tenant.md) | Parâmetros do tenant com vigência, sugerido, limite e aceite; contrato, DPA e termos no P3 |
+| [0003](arquitetura/adr/ADR-0003-motor-fiscal-portado-para-java.md) | Motor fiscal C# portado para Java; NFAg-e (modelo 75) e NFS-e avulsa sobre ele |
+| [0004](arquitetura/adr/ADR-0004-sinisa-e-sinir-assistidos.md) | SINISA e SINIR assistidos: arquivo oficial, o cliente envia |
+| [0005](arquitetura/adr/ADR-0005-isolamento-hibrido-por-porte.md) | Isolamento híbrido por porte; shard no catálogo; teste com 300 schemas |
+| [0006](arquitetura/adr/ADR-0006-bff-com-cookie-httponly.md) | BFF com cookie HttpOnly, no processo `api`, sessão no PostgreSQL |
+| [0007](arquitetura/adr/ADR-0007-mfa-configuravel-por-tenant.md) | MFA configurável por tenant; plataforma sempre com MFA. Prevalece sobre o 17:S4 (MFA obrigatório por papel) |
+| [0008](arquitetura/adr/ADR-0008-mascara-de-documento-configuravel.md) | Máscara configurável com teto; busca por documento com papel, registro e cota |
+| [0009](arquitetura/adr/ADR-0009-push-automatico-e-dev-fora-do-drive.md) | Push automático; desenvolvimento em disco local + GitHub |
+| [0010](arquitetura/adr/ADR-0010-infra-nao-usada-congelada.md) | Infra não usada em perfis em 127.0.0.1; k8s e Terraform em `infra/_arquivado/` |
+| [0011](arquitetura/adr/ADR-0011-hospedagem-a-decidir.md) | Hospedagem: **proposto, pendente**; plano neutro; R1, backup e IaC bloqueados |
+| [0012](arquitetura/adr/ADR-0012-metas-nao-funcionais.md) | Metas não funcionais do §6 da revisão 17 |
+| [0013](arquitetura/adr/ADR-0013-postgresql-17-no-p0.md) | PostgreSQL 17 + PostGIS 3.5 no P0, antes de dado real |
+| [0014](arquitetura/adr/ADR-0014-outbox-no-postgresql.md) | Outbox no PostgreSQL com workers `SKIP LOCKED`, atrás de interface |
+
+### 2.3 G1–G9 reclassificadas e padrões do produto
+
+Padrões definidos pelo dono do produto em 12/10/2026 estão na última coluna.
+
+| # | Tema | Classe | Fase | Padrão do produto |
 |---|---|---|---|---|
-| G1 | Agência e norma dos primeiros clientes; adesão a NR 11/13 | Daniel + regulatório | 06/11/2026 | R3, R4, R7, R8 |
-| G2 | Tarifa social: renda/NIS sensível? base legal; desconto na parte fixa e no esgoto; formato da base CadÚnico/BPC | jurídico + regulatório | 13/11/2026 | R3 |
-| G3 | NFAg-e: obrigação do cliente; SAAE; modelo 29; **construir ou integrar emissor**; CBS/IBS | tributarista + Daniel | 20/11/2026 | R4 |
-| G7 | SINISA: envio automatizado? glossário vigente? quem preenche | regulatório | 30/11/2026 | R6 |
-| G4 | Bancos e convênios; código 8 × boleto de cobrança; Pix no MVP; PSP; Pix Automático | Daniel | 15/12/2026 | R5 |
-| G8 | SINIR: Web Service para terceiros, credencial, lodo de ETA/ETE | jurídico + regulatório | 15/12/2026 | trilha GRS |
-| G5 | Multa 2% CDC em tarifa; juros pro rata die × mês | jurídico | 15/01/2027 | R4, R5 |
-| G6 | Retenção 120 meses × LGPD; prescrição | jurídico | 31/01/2027 | R4, R7, R8 |
-| G9 | "Horário comercial" do corte; corte por outros motivos; débito pretérito; Decreto do SAC | jurídico | 28/02/2027 | R7, R8 |
+| G1 | Agência, norma, NR 11/13 | parâmetro | P1 | — |
+| G2 | Tarifa social | parâmetro | P1 | piso federal travado no sistema após conferência no DOU; o tenant só concede benefício maior |
+| G3 | NFAg-e | produto | P1–P2 | construir sobre o motor portado (ADR-0003) |
+| G4 | Bancos, convênios, Pix, PSP | parâmetro, dentro do escopo suportado (§2.4) | P3 | — |
+| G5 | Multa e juros | parâmetro | P2 | multa padrão 2%; acima de 2% só com aceite formal registrado |
+| G6 | Retenção e prescrição | parâmetro | P2 | pisos fixos pelo Ziip SAN (logs de acesso 6 meses, Marco Civil; histórico 120 meses, NR 11); o tenant só amplia; eliminação no fim do contrato por procedimento do Ziip com certificado de descarte |
+| G7, G8 | SINISA, SINIR | produto | P4, 2028 | assistidos (ADR-0004) |
+| G9 | Corte | parâmetro | P3 | vedações da Lei 14.015 (sexta, fim de semana, feriado, véspera) para todos os motivos; exceção só emergência técnica com justificativa e foto; outra regra só com aceite formal |
 
-Não há responsável jurídico nomeado em nenhum documento (`00` Q5). Sem decisão, o parâmetro fica sem valor e o
-código dá erro explícito; o teste de aceite de cada fase cita a decisão que o desbloqueou.
+Sem valor aceito e vigente, a operação falha com erro explícito; o tenant não entra em produção sem o conjunto
+obrigatório aceito.
 
----
+### 2.4 Pendências de decisão
 
-## 3. Mapa de versões Flyway (reconciliado)
-
-Os planos parciais usavam `V1_3` para coisas diferentes. Faixas finais:
-
-| Versão | Módulo | Conteúdo | Etapa |
+| Decisão | Dono | Até | Bloqueia |
 |---|---|---|---|
-| core `V2` | core | `audit_redaction_rule` + `public.audit_redact()` | E4 |
-| `V1_3` | platform | `audit_trigger_function` endurecida (`SET search_path`, `NULLIF(..,'')::uuid`, `public.current_tenant_id()`) | E3 |
-| `V1_4` | platform | trigger de auditoria com redação + regras de `users` | E4 |
-| `V1_5` | platform | `regulatory_profiles`, `regulatory_parameters` (vigência), `holidays` (sai de `V6_1`) | R4 |
-| `V2_6` | mtr | documentos cifrados (`driver_cpf`, `cnpj_cpf`, `drivers`) | E4 |
-| `V2_7` | lgpd | regras de redação de colunas LGPD | E4 |
-| `V3_2` | registry | regras de redação do cadastro | E4 |
-| `V3_3` | registry | `personal_data_access_log` | E5 |
-| `V4_2`…`V4_5` | billing | tarifa social; ciclo; modelos de conta; tributos/fiscal | R3, R4 |
-| `V5_2` | metering | tarefas e importação de leitura | R4 |
-| `V6_2` | collection | conciliação, Pix, ajustes | R5 |
-| `V7_x` | `compliance/sigsan-integration` | SINISA e exportadores | R6 |
-| `V8_x` / `V9_x` / `V10_x` | portal / field / dunning | protocolo / OS / cobrança | R7, R8 |
-| `V11_x` | `shared/sigsan-events` | outbox, `job_runs` | R4 |
-| `V12_x` / `V13_x` | GRS / GIS-perdas | DMR, lodo, IBAMA / incidente, campanhas | GRS, R9 |
+| Hospedagem (ADR-0011) | Daniel | 30/10/2026 | P0.27–P0.29; P1.2 com dado real |
+| Cliente piloto, acesso ao legado, acordo de tratamento de dados mínimo | Daniel | 13/11/2026 | P1.1, P1.2, go-live |
+| G4 no produto: leiautes (FEBRABAN 150, CNAB 240) e PSPs suportados no go-live | Daniel | 29/01/2027 | P3.1, P3.2 |
+| NFAg-e: obrigatoriedade e data para o perfil do piloto, no DOU; manual e XSD oficiais | Daniel | 27/11/2026 | P2.6 |
+| Arredondamento (half-even no C#, `HALF_DOWN` no billing) e tributo no CHECK de total de `bills` (hoje tratado como retenção) | técnico | 29/01/2027 | P2.4, P2.5 |
 
 ---
 
-## 4. Etapas de execução (ações do PDCA = fundações)
+## 3. Mapa de versões Flyway
 
-> **Situação em 12/10/2026 (fim do dia): E0 a E6 concluídas**, com 973 testes Java e 134 do frontend verdes e aceite de
-> ponta a ponta no navegador (diário §18). Ficaram para depois: R1 (Vault) e o R2 do cadastro (lacunas listadas no diário).
+Duas histórias: **core** (`public`, uma vez por banco) e **tenant** (uma por schema). Existentes, conferidas em
+`**/db/migration/**` em 12/10/2026: core `V1`, `V2`; tenant `V1_1`–`V1_4`, `V2_1`–`V2_10`, `V3_1`–`V3_3`, `V4_1`, `V5_1`,
+`V5_2`, `V6_1`.
 
+**Regra de ordem.**
+- Core nunca usa `outOfOrder`: o número sai na ordem do merge; a tabela mostra a ordem esperada e é corrigida se ela mudar.
+- Tenant: faixa por módulo com `outOfOrder(true)` até o fim do P3; até lá todo tenant é recriável (massa sintética ou
+  reimportação do legado, que segue como fonte da verdade). Na P3.12, antes do paralelo, `outOfOrder(false)`; daí em
+  diante a versão vem de uma sequência global a partir de `V100`, com o módulo no nome (`V100__dunning_actions.sql`), e o
+  CI recusa versão menor ou igual à maior publicada. Reservas não usadas até lá são renumeradas aqui.
+- Expand/contract: coluna só sai na release seguinte à que deixou de usá-la.
 
-Meta: fundações prontas até **20/11/2026**. Cada etapa termina com build verde no banco virgem, registro no
-diário e commit.
+**Mapa da v1, corrigido pelo que foi aplicado**
 
-### E0 — Linha de base (P) · depende de D1–D3
-- 7.1: este plano vira o roadmap canônico; diário §12 substituído por remissão a este arquivo; `00`, `14`, `15c` e diário §1 recebem remissão.
-- 6.1: `.gitignore` (`target/`, `node_modules/`, `dist/`, `coverage/`, `.env*` exceto `.env.example`, `*.log`, `*.tar`, IDE), `.gitattributes` (`*.sh`, `*.sql` com `eol=lf`), varredura de segredos (gitleaks em container sobre o espelho), **commit da linha de base** (793 testes).
-- `robocopy` com `/XF .git`; remover a pasta vazia `sigsan/sigsan`; `DIARIO_DE_BORDO.md` na raiz apontando para o diário.
-- **Aceite:** `git log` com 1 commit; nenhum segredo real versionado.
+| Versão | Módulo | Conteúdo | Situação |
+|---|---|---|---|
+| core `V1`, `V2`; `V1_1`–`V1_4` | core, platform | catálogo e `audit_log`; redação; schema do tenant; auditoria endurecida | existentes |
+| `V1_5` | platform | parâmetros do tenant; `holidays` sai do `V6_1` | reservada, P0 (era R4) |
+| `V2_1`–`V2_10` | quality, losses, gis, mtr, lgpd | schemas; redação; cifra do MTR em `V2_8` (a v1 previa `V2_6`) | existentes |
+| `V3_1`–`V3_3` | registry | schema; redação (a v1 reservava `V3_3` para o log de acesso, que vai para `V1_6`) | existentes |
+| `V4_1`; `V5_1`, `V5_2`; `V6_1` | billing, metering, collection | schemas; `V5_2` é redação (tarefas de leitura vão para `V5_3`) | existentes |
+| `V4_2` / `V4_3`, `V4_4` | billing | tarifa social / ciclo, modelos de conta | reservadas, P1 / P2 |
+| `V4_5` | `sigsan-fiscal` | tributos com vigência (CBS/IBS) e motor fiscal: certificados, séries, documentos, eventos, lotes | reservada, P1 |
+| `V6_2`; `V8_1`, `V9_1` | collection; portal, field | conciliação, Pix; protocolo; OS e bloqueios | reservadas, P3 |
+| `V7_x`, `V10_x`, `V12_x`, `V13_x` | integration, dunning, GRS, GIS | SINISA; cobrança; DMR; incidente | P4/2028, sequência global |
+| `V11_x` | events | outbox por tenant | substituída por core `V8` (ADR-0014: uma outbox por banco) |
 
-### E1 — Scripts, banco de teste e POMs (P)
-- `scripts/lib.sh`: `set -euo pipefail`, lock atômico (`mkdir`, PID, `trap EXIT`, lock velho por `kill -0`), espelho que falha se `pom.xml` não existir no G: e com robocopy ≥ 8.
-- `build.sh`, `reset-it-db.sh`, `validate-inp.sh` usam a lib; `docker rm -f … || true`.
-- `TenantRlsIsolationTest` e `TenantProvisioningServiceTest` com URL padrão = banco de integração (55433); `ensureCoreSchema()` trocado por `CoreMigrationRunner`.
-- POMs: remover `javafaker`, `keycloak-spring-boot-starter`, `spring-cloud-starter-vault-config`/MinIO (voltam no R1), Testcontainers; `jts.version` único; pins de `postgresql`/`flyway` entregues ao BOM; `<parameters>true</parameters>`; `lombok.config` copiando `@Qualifier`.
-- **Aceite:** com `sigsan-postgres-primary` parado, `reset-it-db` + `build.sh clean test` verde; `dependency:tree` sem snakeyaml 1.x e com um único jts.
+**Reservas novas**
 
-### E2 — Spring Boot 4.1.1 (M; G se o GeoTools conflitar) · depende de D4
-- Starters modulares (`-webmvc`, resource server), Hibernate 7 + hibernate-spatial 7 (interfaces de multi-tenant genéricas), Flyway 11, Jackson 3 como padrão (`TenantProvisioningService` deixa de injetar `ObjectMapper`; usa `Json`), remover `FlywayProperties` não usado, `keycloak-admin-client` 26.x.
-- Feito **antes** da ação 1 porque ela reescreve o provider de multi-tenant, cuja interface muda no Hibernate 7.
-- **Aceite:** 793 testes + `FreshInstallTest` (66 entidades) verdes, em commit próprio. Se gis/losses quebrarem por jts × GeoTools 29, decidir GeoTools ≥ 33.
+| Versão | Módulo | Conteúdo | Tarefa |
+|---|---|---|---|
+| core `V3` | core | `parameter_definitions`, `parameter_legal_limits` (catálogo global do produto, só leitura para a aplicação) | P0.19 |
+| core `V4` | core | `tenant_catalog.cluster_id`, `isolation_mode`; revisão do `schema_name UNIQUE` (`core/V1:21`); `tenant_schema_version`; `sigsan_app` só com SELECT | P0.17, P0.21, P1.14 |
+| core `V5` | core | sessões do BFF | P0.14 |
+| core `V6` | core | `tenant_key` (DEK por tenant). Era "core `V3`" no R1 da v1: o R1 depende da hospedagem e o core não aceita fora de ordem | P0.28 |
+| core `V7` | core | `audit_log` particionado por mês, PK `(created_at, id)` com UUIDv7, retenção | P1.7 |
+| core `V8` | core | `outbox` com `tenant_id`, RLS e partição diária | P1.9 |
+| core `V9` | core | planos, cotas, módulos e flags por tenant; implantação; impersonação | P1.6 |
+| core `V10` | core | `job_runs` e travas por (tenant, ciclo) | P2.1 |
+| `V1_5` | platform | `parameter_versions` (vigência com EXCLUDE, quem propõe ≠ quem aprova), `parameter_acceptances`, `regulatory_profiles`, `holidays` | P0.19 |
+| `V1_6` | platform | `personal_data_access_log`; cota de busca por documento | P0.11 |
+| `V3_4` | registry | GIN trigram sobre `unaccent(lower(name))` | P0.22 |
+| `V3_5` | registry | sequência de matrícula por tenant | P1.4 |
+| `V3_6` | registry | R2: `customer_types`, `property_profiles`, endereço, `block_faces`, rascunhos | P1.3 |
+| `V4_6` | billing | partição de `bills`/`bill_items`; auditoria por lote; CHECK de total com tributo | P2.3, P2.5 |
+| `V4_7` | `sigsan-fiscal` | NFAg-e e NFS-e avulsa: leiaute, contingência, inutilização | P2.6, P3.6 |
+| `V5_3` / `V5_4` | metering | tarefas e importação de leitura / partição de `meter_readings`, chave de idempotência | P2.7 / P2.3 |
+| `V6_3` | collection | partição de `payments`; `pix_inbox` | P3.2 |
+| `V14_1`, `V14_2` | importação de legado | lotes, staging, conciliação; histórico de 120 meses | P1.2, P2.10 |
 
-### E3 — Ação 1: banco e tenant (C1, C2) (G)
-- **Roles:** `postgres` (superusuário de bootstrap, só init/operação), `sigsan_owner` NOLOGIN (dono do banco, de `public` e de `current_tenant_id()`), `sigsan_migrator` (CREATE em `public`), `sigsan_app` (sem CREATE nem TEMP). Nenhuma role de login é membro de `sigsan_owner`.
-- `infra/postgres/init/00-roles.sh` (senhas por variável, falha se vazias) + `init/sql/security.sql` (reescrita do atual): `ALTER DATABASE … OWNER TO sigsan_owner`, `REVOKE ALL ON SCHEMA public FROM PUBLIC`, `REVOKE TEMPORARY`, função com dono `sigsan_owner`; remove a seção 6 e o `ALTER DEFAULT PRIVILEGES` (sem efeito hoje; "corrigido" daria UPDATE/DELETE em `audit_log`); verificação com `RAISE EXCEPTION` (container não sobe se errado).
-- `docker-compose.yml`: `POSTGRES_USER: postgres`, senhas com `:?` sem padrão, `.env.example`; réplica removida ou corrigida. `reset-it-db.sh` e `scripts/it-db.env` (valores só de teste). Kubernetes: Patroni com superusuário próprio + job de bootstrap; Secrets externos.
-- `V1_3` (acima). `MultiTenantConnectionProvider`: na entrega da conexão, uma ida ao banco com `set_config('search_path'|'app.current_tenant'|'app.current_user', …, false)`; sem tenant, `RESET`; na devolução, `RESET` e, se falhar, descarta a conexão do pool; schema validado por regex. `TenantSchemaResolver` devolve `TenantRef(schema, id)` conferido em `tenant_catalog` (cache). `PlatformConfig` passa **instâncias** ao Hibernate (hoje passa nome de classe, e o provider não tem construtor vazio).
-- **Testes novos** (`platform/sigsan-app`): `DatabaseHardeningTest` (app e migrador recebem 42501 ao redefinir a função e ao criar tabela em `public`; dono = `sigsan_owner`; trigger com `search_path`); `TenantConnectionProviderTest` com pool de 1 conexão e dois tenants (A não vê B; sem tenant, 0 linhas e INSERT barrado; conexão devolvida sem GUC; `audit_log` com `tenant_id` certo sem GUC manual).
-- Recriar o banco de dev (`down -v`) — os dados de dev são descartáveis; a cópia em `C:` não é tocada.
-- **Aceite:** testes verdes; nenhum teste aponta para 5432; um container com `sigsan_app` superusuário **não sobe**.
-
-### E3' — Ação 3: JSON e falhas silenciosas (M) · em paralelo com E3
-- `Json.readMap/readTree` (inválido → erro). LGPD: `DpiaEngine:160` → `Json.write`; `DataSubjectRightsEngine:118` com `readMap`; `LgpdEngineService` e `LabService` sem `toJson` próprio, usando *snapshots* sem dado pessoal (sem IP, user agent, geolocalização, `consentText`, `responseData`); `MtrService:199` → `Json`.
-- `ScadaIntegrationService`: desligado por padrão (`sigsan.scada.mqtt.enabled`), `ScadaTopic.parse` (`sigsan/{tenantUuid}/scada/{data|alert}/{tag}`), tenant validado e contexto em try/finally, mensagem sem `timestamp`/`quality` rejeitada.
-- `LossesService.loadInputs` lança `MissingInputDataException` (sem placeholders). `MtrService` aceita só array JSON de classes; vazio/ilegível → erro. `TenantProvisioningService:422` valida bcrypt antes de criar schema.
-- **Primeiros testes** de `sigsan-lgpd` e `sigsan-quality` (DpiaEngine, DataSubjectRights, LgpdEngineService, LabService, ScadaTopic, ScadaIntegrationService) + Losses, MTR, provisionamento.
-- **Aceite:** nenhum `toJson` próprio, nenhuma concatenação de JSON, nenhum `new ObjectMapper()` em service.
-
-### E4 — Ação 2: dado pessoal (C4, C5) (G) · migrations depois de E3
-- **Auditoria sem PII:** core `V2` (`audit_redaction_rule` sem acesso da app, `audit_redact()` com REDACT/OMIT); `V1_4` calcula `changed_fields` sobre as linhas cruas e redige depois; regras em `V3_2` (customers, contatos, endereços), `V2_7` (LGPD), `V1_4` (users). Script manual `scripts/dev/scrub-audit-log.sql` para bancos que precisem ser mantidos.
-- **MTR** `V2_6`: `driver_cpf`, `waste_generator.cnpj_cpf` e `waste_transporter.drivers` viram ciphertext + hash + máscara; a migration falha se houver valor em claro (sem backfill SQL). `MtrCanonical` continua sobre o CPF decifrado (hash da cadeia inalterado).
-- **Cifra ligada:** `FieldProtector` (security), `EnvDerivedTenantKeyProvider` (HKDF; recusa perfil `prod`), `CryptoConfig` (sem provider, a aplicação não sobe), `CustomerDocumentService` (registry: `assign`, `findActiveByDocument`, `reveal` com evento sem valor), `DocumentNumber` em core. Contrato do Vault (Transit, envelope com DEK por tenant em `public.tenant_key`) documentado + `TenantKeyProviderContract`.
-- **Frontend (parte pura):** `ResourceClient.search` via POST; guarda que **lança erro** se um parâmetro de URL parecer CPF/CNPJ.
-- **Testes:** `AuditRedactionTest` (o texto do `audit_log` não contém nome, e-mail, CPF, IP; `changed_fields` registra mudança de nome; app não lê as regras); `AuditRedactionCoverageTest` (coluna com nome pessoal sem regra nem justificativa quebra o build); `EnvDerivedTenantKeyProviderTest`, `FieldProtectorTest`, `CustomerDocumentServiceTest`, `MtrServiceTest` ajustado; `registry.test.ts`.
-- **Aceite:** nenhum dado pessoal em `audit_log` provado por teste; nenhuma coluna de documento em claro.
-
-### E5 — Ação 4: aplicação executável mínima (G) · depende de E2–E4, D5–D13
-- **Keycloak:** `infra/keycloak/realms/sigsan-realm.json` (client `sigsan-web` público com PKCE S256, audiência `sigsan-api`, claim `tenant_id`, papéis, sem usuários nem segredos); `scripts/kc-dev-user.sh`; compose com Keycloak 26, banco próprio, import de pasta única por execução; `KeycloakAdminService` atrás de propriedade.
-- **Aplicação** (`platform/sigsan-app`): `SigsanApplication` com `scanBasePackages` restrito (core, platform, registry, app — não sobe SCADA/SINIR/LGPD); dois datasources (`appDataSource` @Primary, `migrator` com 2 conexões); `DatabaseMigrator` antes do EMF (core + tenants ACTIVE); `spring.flyway.enabled=false` (senão o Boot aplica migrations de tenant em `public`); `application.yml` só com variáveis; perfis `local`/`test`/`prod`; `SigsanProperties` validado; actuator só `health`; log JSON (ECS) em prod.
-- **Segurança:** `SecurityConfig` stateless; `JwtDecoder` com issuer, audiência e expiração; `JwtTenantFilter` em platform depois do `BearerTokenAuthenticationFilter` — tenant **só do claim**, cabeçalho divergente → 403, tenant não ACTIVE → 403, MDC e contexto limpos no `finally`. `TenantFilter` do core removido.
-- **Erros:** `GlobalExceptionHandler` em problem+json com `errors[]`/`warnings[]` no formato do frontend; 422/409/404/403; 500 sem stack; `X-Request-ID`; nunca logar corpo.
-- **API do cadastro** (contrato de `docs/frontend-cadastro.md` §5): localities, commercial-sectors, blocks, reading-routes, 4 catálogos com tabela, customers (CRUD, `POST /customers/search`, `POST /customers/{id}/reveal-document` com `@PreAuthorize` e `V3_3`), consumer-units (CRUD, `POST /search`, vínculos, histórico), `GET /settings`, `GET /api/me`. GET com `q` que pareça documento → 400.
-- **Frontend:** proxy para `SIGSAN_API_URL` (8090); login PKCE com `oidc-client-ts`, callback, token em memória; sai campo de empresa, `X-Tenant-ID` e `localStorage`; três telas com busca por POST.
-- **Testes:** `ApplicationContextTest`, `JwtTenantFilterTest` (6 casos), `SecurityIntegrationTest` (tokens RSA reais; 401 por assinatura/issuer/audiência/expiração), `RegistryApiE2ETest` (fluxo completo, 409 de versão, exclusão lógica, busca por POST, documento em `?q=` → 400, reveal com e sem papel, tenant B não vê A, cabeçalho de A com token de B → 403, `audit_log` sem documento), `ProblemDetailsTest`, `TenantMigrationRunnerTest` (outOfOrder).
-- **Aceite:** `/actuator/health` UP; login no navegador com PKCE; cadastrar e buscar cliente sintético sem documento em URL; usuário de B não vê A; nenhum segredo em `application*.yml`.
-
-### E6 — CI, frontend e documentação (M)
-- `scripts/ci.sh` (lock, reset-it-db, `build.sh clean verify`, frontend `npm ci && typecheck && lint && test:run && npm audit --audit-level=high`); GitHub Actions só com remoto.
-- ESLint 9 flat (typescript-eslint, react-hooks, jsx-a11y); triagem do `npm audit`; remover `zustand`, `recharts`, `@hello-pangea/dnd` se confirmados sem uso; sourcemap fora do build de produção.
-- 7.2: corrigir as inconsistências do relatório 16 (13 módulos, 66 entidades, §15.5, `14`, `00`, `15c`, READMEs de billing/metering). 7.3: `README.md` na raiz (pré-requisitos, espelho, comandos, portas 5432/55433/8080/8090/3000, `.env.example`, aviso sobre a cópia em C:). 7.4: `docs/frontend-cadastro.md` atualizado.
-- **Aceite:** uma única ordem de prioridade nos documentos; nenhum número diverge do build.
+`current_tenant_id()` como SQL STABLE (17:M10) não é migration: a função é de `sigsan_owner` e nasce no init de
+segurança (`infra/postgres/init/sql/security.sql`); o migrador não pode redefini-la, por desenho. Nos bancos existentes,
+script de operação como `postgres`.
 
 ---
 
-## 5. Roadmap de produto (depois das fundações)
+## 4. Fases
 
-Capacidade suposta: duas trilhas — **A** comercial, **B** regulatório/GRS/atendimento. Com uma pessoa só, R6, R7 e
-GRS escorregam ~2 meses. Datas abaixo supõem fundações prontas até 20/11/2026.
+Tamanho: **P** até 2 dias, **M** até 1 semana, **G** mais de 1 semana, para uma pessoa com agentes. Toda tarefa termina
+com testes verdes, registro no diário e push.
 
-### R1 — Vault (M) · antes do primeiro CPF real
-`VaultTransitTenantKeyProvider` (KEK no Transit, DEK por tenant cifrada em `public.tenant_key`, cache em memória com
-TTL, rotação pelo byte de versão), core `V3`, Vault fora do modo dev. Passa no `TenantKeyProviderContract`.
+### P0 — Plataforma operável · 13/10–27/11/2026
 
-### R2 — Cadastro completo
-O que o R0 deixou: rascunhos e `validate-step`, 8 catálogos sem tabela, block-faces, CEP, exportação CSV.
+Objetivo: ambiente fora do Drive, artefato implantável, altos e médios de segurança, parâmetros do tenant e, se a
+hospedagem for decidida a tempo, homologação e produção com PITR e R1.
 
-### R3 — Tarifa social + simulador N4 (M) · alvo 09/12/2026 · G1, G2
-- `V4_2`: lotes de importação (hash, `purge_at`), elegibilidades (família por índice cego do NIS, base CadÚnico/BPC, `ELIGIBLE`/`GRACE_3M`/`LOST`), decisões, pedidos manuais.
-- `SocialTariffClassifier` puro (renda ≤ ½ SM carregado de fonte normativa e CadÚnico ≤ 2 anos, ou BPC; uma economia por família; nunca depende de adimplência), importador por agência (começar pelo CSV da ARSESP), `TariffImpactSimulator`, relatório anual.
-- Casos: T-03 com banda fictícia de 50% → 102,00 (só variável) e 87,00 (com fixa); CadÚnico de 25 meses → inelegível; família fora da nova base → `GRACE_3M` por 3 ciclos.
-- A parte de regra pura pode começar já, em paralelo às fundações.
+| # | Tarefa | Origem | Tam. | Dep. | Aceite |
+|---|---|---|---|---|---|
+| P0.1 | Desenvolvimento em disco local; GitHub como fonte da verdade | ADR-0009, 17:M15 | M | — | build e `ci.sh` verdes num clone fora do Drive, sem robocopy nem PowerShell; `.env` fora do Drive |
+| P0.2 | Push automático ao fim de etapa | ADR-0009 | P | P0.1 | com teste vermelho nada é publicado |
+| P0.3 | CI no GitHub Actions | 17:X1, 17:S6 | M | P0.1 | Java com Postgres de serviço e frontend; `npm audit` alto e gitleaks bloqueiam; `main` protegida |
+| P0.4 | PostgreSQL 17 + PostGIS 3.5 | ADR-0013, 17:X2 | M | — | dev, integração e CI na mesma versão; suíte verde |
+| P0.5 | Dockerfile multi-stage não root; uma imagem para `api`, `worker`, `migrate`; `config.json` do frontend em execução | 17:X1, 17:B7 | M | P0.3 | UID ≠ 0, sem segredo, SBOM, tag fixa; trocar o emissor OIDC não exige novo build |
+| P0.6 | Migração só no job `migrate` | 17:S2, D10 | P | P0.5 | perfil `prod` sem `migratorDataSource` (teste de contexto) |
+| P0.7 | Congelar infra parada | ADR-0010, 17:M13, 17:O2, 17:B8 | P | — | `docker compose up` sobe só PostgreSQL e Keycloak; demais em `profiles:` e 127.0.0.1; k8s e Terraform arquivados |
+| P0.8 | Observabilidade mínima | 17:O1 | M | P0.5 | métricas HTTP e Hikari, traces com `tenant_id`, `pg_stat_statements`, logs JSON com `X-Request-ID` |
+| P0.9 | Pools e timeouts | 17:D3 | P | — | Hikari dimensionado; `statement_timeout` e `idle_in_transaction_session_timeout` na role; consulta longa cancelada (teste) |
+| P0.10 | API versionada | 17:M12 | P | — | `/api/v1`; OpenAPI gerado e conferido no CI |
+| P0.11 | Máscara com teto; busca por documento com papel, registro e cota; leituras registradas | 17:S1, 17:M6, ADR-0008 | M | P0.19 | teto acima recusado; sem papel → 403; buscas e leituras em `V1_6`; cota excedida → 429 e alerta |
+| P0.12 | Recalcular em lote as máscaras já gravadas | ADR-0008 | P | P0.11 | job decifra e regrava `*_masked` (`CustomerDocumentService.java:72`, `MtrDocumentProtection.java:74,99`); nenhuma máscara acima do teto |
+| P0.13 | Gestão de usuários por tenant | 17:S3, 17:M5, 17:B3 | G | — | ADMIN de A não altera usuário de B; `tenant_id` só pela API própria; papel de plataforma auditado; realm por tenant e hash duplicado em `users` removidos |
+| P0.14 | BFF com cookie HttpOnly no processo `api`, sessão no PostgreSQL | 17:S5, ADR-0006 | G | P0.5 | core `V5`; nenhum token no navegador (teste E2E); cookie `__Host-` HttpOnly, Secure, SameSite; CSRF; refresh com rotação; réplicas sem afinidade |
+| P0.15 | MFA | ADR-0007 (prevalece sobre 17:S4) | M | P0.13 | plataforma sempre com segundo fator; política por tenant aplicada no login |
+| P0.16 | Superfície web | 17:S5 | M | P0.14 | CSP estrita; HSTS atrás de proxy; rate limit por IP, usuário e tenant (429); `@Size` (400); limite de corpo (413) |
+| P0.17 | Médios de segurança | 17:M1–M4, 17:B4, 17:S6 | P | P0.3 | um teste por item: cache com tenant do contexto; `dev-env` só em perfis listados; `sigsan_app` sem escrita no catálogo; schema existente recusado; `/api/me` sem schema; `maplibre-gl` 6 e `react-router` 7 |
+| P0.18 | `current_tenant_id()` como SQL STABLE | 17:M10 | P | P0.4 | `DatabaseHardeningTest` verde; sem subtransação por linha |
+| P0.19 | Parâmetros do tenant | ADR-0002 | G | P0.4 | core `V3` + `V1_5`; fora do limite recusado; vigência sobreposta recusada pelo banco; sem valor aceito → erro explícito |
+| P0.20 | Limites, sugeridos e pisos do §2.3 | ADR-0002 | M | P0.19 | cada limite com norma e teste; multa > 2% só com aceite (ajustar CHECK de `V6_1` e `LegalLimits`); piso de retenção não reduzível |
+| P0.21 | Shard no catálogo; teste com 300 schemas | ADR-0005, 17:D2 | G | P0.4 | core `V4`; tempo de migração, catálogo, vacuum e latência medidos; teto por cluster registrado |
+| P0.22 | Busca e listas | 17:D4, 17:D5 | M | — | `V3_4`; busca "contém" usa o índice; listas com número constante de consultas; keyset nas grandes |
+| P0.23 | Carga inicial | 17:O4, ADR-0012 | M | P0.8 | k6 ou Gatling noturno, 20 mil ligações sintéticas; p95 contra o RNF; regressão > 20% falha |
+| P0.24 | Modelagem de ameaças (STRIDE) | 17 §7 | P | P0.14 | API, BFF, worker, webhook e importador com controle ou tarefa |
+| P0.25 | Dívidas da execução; SINIR em modo assistido | diário §18, ADR-0004 | P | — | sem `ObjectMapper` do Jackson 2 em collection; `SinirIntegrationService` removido ou desligado sem caminho de chamada; `grantConsent` sem versão manual |
+| P0.26 | Decisão de hospedagem | ADR-0011 | P | — | ADR-0011 aceito: provedor, região brasileira, banco, cofre, custo |
+| P0.27 | Homologação e produção com IaC | 17:X1, 17:O2 | G | P0.26 | sem segredo no state; deploy pelo pipeline; produção com aprovação manual; rollback exercitado |
+| P0.28 | HA, backup e PITR; R1 (cofre e chaves) | 17:X2, R1 | G | P0.26 | PITR com RPO ≤ 15 min e RTO ≤ 4 h medidos; core `V6`; `TenantKeyProviderContract` verde no cofre; rotação; backup da KEK |
+| P0.29 | Keycloak de produção | 17:O3 | M | P0.27 | `start --optimized`, TLS, `sslRequired=all`, 2 réplicas |
+| P0.30 | Escolha do piloto | ADR-0001 | P | — | termo de intenção, acesso ao legado, acordo de tratamento de dados e critério de divergência do go-live |
+| P0.31 | Comunicação aos clientes-alvo | G0 (v1) | P | — | até 23/10/2026: o que entra em cada fase e o que segue no legado |
+| P0.32 | Esqueleto fiscal | ADR-0003 | M | — | `commercial/sigsan-fiscal`; vetores do C# passam no Java; sem `producao-permitida` não há `tpAmb=1` |
 
-### R4 — Medição, ciclo, conta, fiscal + N6 (G) · R4a 22/12/2026; R4 19/03/2027 · G1, G3, G5, G6
-- R4a: `tax_rates` com vigência e norma-fonte; alíquota ausente → erro.
-- `V11_1` (outbox, `job_runs`), `V1_5`, `V5_2`, `V4_3`–`V4_5`; ciclo M0–M12 em Spring Batch particionado por rota com a GUC reaplicada a cada *chunk*; PDF; porta `FiscalAuthorizer`; painel de fechamento (N6).
-- Casos do relatório 02 (T, E, C, I, V, L, A, X); leitura 1000→1027 com E-01 → 201,60; ciclo rodado duas vezes não cria segunda conta; reinício continua só as rotas pendentes.
-- NFAg-e por integrador: até 30/04/2027, se G3 confirmar.
+P0.27–P0.29 só começam depois da P0.26. A regra pura do R3 pode começar no P0, em paralelo.
 
-### Trilha GRS — MTR e DMR assistidos (M) · 29/01/2027 · G8
-Corrigir D-MTR-1..7; `V12_1` (itens, partes, lodo, DMR, CDF importado); ETL da Lista IBAMA (878 códigos, 449 com
-asterisco); NBR 10004 por edição e UF. DMR assistida útil a partir do 1º tri de 2027 (30/04/2027).
+### P1 — Migração e satélite · 30/11/2026–29/01/2027
 
-### R5 — Arrecadação, conciliação N3, Pix · G4, G5
-`V6_2`; retorno idempotente (NSA + hash) → `PaymentClassifier`; aprovação dupla (`requested_by ≠ approved_by`);
-porta `PixProvider` com webhook assinado — **o tenant do webhook vem do convênio, nunca de cabeçalho**. Entregas:
-R5a retorno e conciliação 30/04/2027; R5b Pix Cobrança e híbrido 31/05/2027; R5c Pix Automático 30/06/2027.
+Objetivo: cadastro do piloto importado e conciliado; R2, R3, console v0 e outbox.
 
-### R6 — SINISA ciclo 2027 e exportadores (M) · 30/04/2027 · G7
-`V7_1`: glossário por ETL com referência; `sinisa_values` com origem COMPUTED/IMPORTED/MANUAL e justificativa
-obrigatória para manual; checagens de consistência; exportação XLSX/CSV; plugins de agência depois. Levantamento do
-glossário começa já. Casos: água não faturada 3.000 m³ (diário §15.3); ILI com unidade corrigida.
+| # | Tarefa | Origem | Tam. | Dep. | Aceite |
+|---|---|---|---|---|---|
+| P1.1 | Discovery do legado | 17:X5 | M | P0.30 | dicionário, mapeamento campo a campo e volumes aprovados pelo piloto |
+| P1.2 | Importador v0 do cadastro com conciliação | 17:X5 | G | P1.1, P1.4, P0.28 | `V14_1`; reimportação não duplica; totais por setor e rota iguais ao legado; dado real só em produção |
+| P1.3 | R2: cadastro completo | R2 (v1) | G | — | `V3_6`; cliente cadastrado pela tela; rascunho e `validate-step`; CEP; CSV |
+| P1.4 | Matrícula por sequência | 17:M9 | P | — | `V3_5`; dois lotes paralelos sem espera, sem lacuna nem duplicata |
+| P1.5 | R3: tarifa social satélite + N4 | R3 (v1), G1, G2 | M | P0.20 | `V4_2`; casos da v1 (T-03 → 102,00 e 87,00; CadÚnico de 25 meses inelegível; `GRACE_3M`); benefício abaixo do piso federal recusado; em homologação até 11/12/2026 |
+| P1.6 | Console da plataforma v0 | 17:P1, ADR-0002 | G | P0.13, P0.19, P1.9 | core `V9`; assistente de implantação; produção bloqueada sem parâmetros aceitos; planos, cotas, flags; suspensão; exportação e eliminação com certificado de descarte; impersonação com MFA e auditoria |
+| P1.7 | Partição do `audit_log` | 17:X3, 17:M7 | G | P0.4 | core `V7`; UUIDv7; retenção com piso; consulta por período poda partições |
+| P1.8 | Porte fiscal: NFS-e Nacional, cofre de certificado, numeração | ADR-0003 | G | P0.32, P0.28 | `V4_5`; emissão, cancelamento e substituição na produção restrita; sem número repetido ou perdido |
+| P1.9 | Outbox e `worker` básico | ADR-0014, 17:X4 | G | P0.5 | core `V8`; mensagem na transação do negócio; `SKIP LOCKED` com prazo de posse; role `sigsan_worker`; usado no provisionamento e no console |
+| P1.10 | Corpus de XML de referência nos dois CIs | ADR-0003 | M | P0.32 | o mesmo corpus roda no Ziip Cloud e no Ziip SAN |
+| P1.11 | `Idempotency-Key` e ETag/If-Match | 17:M12 | M | P0.10 | POST repetido devolve a mesma resposta; sem `If-Match` → 428; versão velha → 412 |
+| P1.12 | Frontend robusto | 17:F1, 17:M14, 17:B9–B11 | M | P0.14 | Error Boundary; code splitting; ações por papel; filtro preservado; tabelas no celular; menu modal (axe limpo); retry por tipo; Web Vitals |
+| P1.13 | Fronteiras de módulos | 17:M11 | M | — | ArchUnit ou Spring Modulith no CI; duplicatas billing/metering removidas |
+| P1.14 | Rollout de migrations por tenant | 17:D1, ADR-0005 | M | P0.6, P0.21 | status por tenant; falha em quarentena sem parar os demais; paralelismo limitado; canário |
+| P1.15 | Baixos de dado pessoal | 17:B5, 17:B6 | P | — | VIEWER não vê excluídos; `consentId` conferido contra o titular |
+| P1.16 | Arredondamento e tributo na conta | FISCAL-PORTE-JAVA | P | P0.32 | regra única registrada em ADR; vetores C# e Java iguais; CHECK de `bills` definido para `V4_6` |
 
-### R7 — Protocolo + OS com bloqueio de corte (G) · 14/05/2027 · G1, G6, G9
-`V8_1` (protocolo único por tenant, SLA, resposta conclusiva), `V9_1` (tipos de serviço, OS, avisos com prova de
-entrega, bloqueios); `CutoffEligibilityPolicy` pura e **sem passar por cima**. Casos: aviso em 15/10/2026 → 14/11
-(sábado) bloqueado, primeira data válida 16/11/2026; 19/11 (véspera) e 20/11 (feriado) bloqueados, 23/11 permitido;
-perfil ADASA (< 60 ou > 120 dias de atraso → bloqueado); sem prova de aviso → religação sem taxa.
+### P2 — Ciclo de faturamento · 01/02–26/03/2027
 
-### R8 — Cobrança (G) · 30/09/2027 · R7, R5, G5, G6, G9
-`V10_1`: ações, critérios, parcelamento com demonstrativo, contestação bloqueia corte e negativação, prescrição sem
-padrão. Negativação por último (2028, se houver demanda).
+Objetivo: ciclo completo em homologação com NFAg-e, dentro das metas de carga.
 
-### R9 — GIS, incidente, perdas (G) · 2º semestre de 2027
-N2 incidente e afetados (após R7, base legal decidida), N5 crítica por pares, N1 campanhas de perdas (só com entrada
-real de R4/R6), N7 publicação de resultado hidráulico, pipeline GIS (`05` P1-7). `V13_x`.
+| # | Tarefa | Origem | Tam. | Dep. | Aceite |
+|---|---|---|---|---|---|
+| P2.1 | Fundação de lote: Spring Batch por tenant e rota, `job_runs`, trava (tenant, ciclo), fila justa | 17:X4, ADR-0014 | G | P1.9 | core `V10`; reinício continua só rotas pendentes; disparo duplo não corre; tenant grande não atrasa o pequeno além do RNF |
+| P2.2 | GUC por transação; pools por papel | 17:D3, ADR-0005 | M | P2.1 | `set_config(..., true)`; isolamento com PgBouncer em modo transaction; pools API, lote e ingestão; base para schema compartilhado |
+| P2.3 | Tabelas de fato particionadas; auditoria por lote | 17:M8, 17:X3, 17:B1, 17:B2 | G | P1.7 | `V4_6`, `V5_4`; 100 mil contas auditadas por `run_id`; leitura reenviada não duplica |
+| P2.4 | R4a: CBS/IBS com vigência | R4a (v1) | P | P1.8, P1.16 | alíquota ausente → erro; vigências sem sobreposição |
+| P2.5 | R4: medição, ciclo, conta, N6 | R4 (v1), G5, G6 | G | P2.1, P0.20 | `V4_3`, `V4_4`; casos da v1 (1000→1027 com E-01 → 201,60; ciclo repetido sem segunda conta); conta grava as versões de parâmetro |
+| P2.6 | NFAg-e (modelo 75) sobre o motor portado | ADR-0003, 17:P4 | G | P1.8, P2.5 | `V4_7`; autorizada na homologação da SEFAZ do piloto; ciclo reexecutado sem segunda NFAg-e |
+| P2.7 | Leitura terceirizada | 17:P3 | M | P2.5 | `V5_3`; arquivo do fornecedor do piloto; reenvio não duplica |
+| P2.8 | Arquivo para gráfica | 17:P4 | M | P2.5 | leiaute aprovado com amostra impressa |
+| P2.9 | Carga com 300 mil ligações | 17:O4, ADR-0012 | M | P2.5 | 100 mil contas em < 2 h sem estourar o p95 da API |
+| P2.10 | Importador v1 com 120 meses | 17:X5 | G | P1.2 | `V14_2`; saldo por matrícula igual ao legado |
 
-Trilhas paralelas sem data: catálogo de qualidade da água carregado da Portaria 888 com modelo de conformidade
-(percentil, média móvel, plano de amostragem); incidente LGPD (SEC-07).
+### P3 — Pronto para operar · 29/03–28/05/2027
+
+| # | Tarefa | Origem | Tam. | Dep. | Aceite |
+|---|---|---|---|---|---|
+| P3.1 | R5a: retorno e conciliação N3 | R5 (v1), G4 | G | P2.5 | `V6_2`; retorno idempotente (NSA + hash); aprovação dupla |
+| P3.2 | R5b: Pix Cobrança e boleto híbrido | R5 (v1), 17:P4 | G | P3.1 | `V6_3`; webhook assinado; tenant do convênio; 200 em < 2 s após gravar na `pix_inbox` |
+| P3.3 | Portal do cliente: 2ª via, Pix, protocolo | 17:P2 | G | P3.2 | sem acesso ao backoffice; disponibilidade medida contra 99,9% |
+| P3.4 | R7 mínimo: protocolo NR 11, OS com bloqueio de corte | R7 (v1), G9 | G | P2.5 | `V8_1`, `V9_1`; casos da v1 (aviso em 15/10 → 16/11; 19/11 e 20/11 bloqueados; ADASA; sem prova, religação sem taxa); vedações para todos os motivos; emergência exige justificativa e foto |
+| P3.5 | Notificações com prova de entrega | 17:P4 | M | P1.9 | aviso de corte sem prova bloqueia a OS |
+| P3.6 | NFS-e de serviços avulsos | ADR-0003 | M | P1.8 | serviço da OS gera NFS-e na produção restrita |
+| P3.7 | Homologação fiscal com certificado do piloto | ADR-0003 | M | P2.6 | contingência e restauração do XML autorizado testadas |
+| P3.8 | Pentest: isolamento e cofre | 17 §7 | M | P0.27 | nenhum achado crítico ou alto aberto |
+| P3.9 | Contrato SaaS, DPA, termos, SLA, suboperadores | ADR-0002 | M | — | assinados; Ziip SAN operador, cliente controlador |
+| P3.10 | Resposta a incidente; modelo de RIPD | 17 §7 | P | — | prazos ao controlador e à ANPD; simulação de mesa feita |
+| P3.11 | Operação: runbook, plantão, status, error tracking, burn rate | 17:O1 | M | P0.8, P0.27 | falha provocada dispara alerta; runbook exercitado |
+| P3.12 | Fim do `outOfOrder` | 17:D1, G10a | P | P1.14 | sequência global a partir de `V100`; CI recusa versão ≤ maior publicada |
+| P3.13 | Plano de paralelo e de corte | ADR-0001 | P | P0.30 | critérios e plano de volta aprovados pelo piloto |
+| P3.14 | Spring Boot na linha com suporte | D4 | M | — | atualizado antes de 31/07/2027 |
+
+### Go-live piloto · 01/06–30/07/2027
+
+| # | Tarefa | Origem | Tam. | Dep. | Aceite |
+|---|---|---|---|---|---|
+| GL.1 | Carga final do legado | 17:X5 | M | P2.10 | conciliação assinada pelo piloto |
+| GL.2 | Dois ou três ciclos de faturamento paralelo, conta a conta | ADR-0001 | G | GL.1 | divergência dentro do critério da P0.30, toda explicada; sem emissão fiscal de produção |
+| GL.3 | Restauração da produção | 17:X2 | P | P0.28 | dentro do RTO, antes do corte |
+| GL.4 | Corte do legado | ADR-0001 | P | GL.2, GL.3 | decisão formal; emissão fiscal ligada com aprovação dupla |
+
+### P4 · 02/08–17/12/2027
+
+| # | Tarefa | Origem | Tam. | Dep. | Aceite |
+|---|---|---|---|---|---|
+| P4.1 | R8: cobrança, sem negativação | R8 (v1) | G | P3.4 | parcelamento com demonstrativo; contestação bloqueia corte |
+| P4.2 | R6: SINISA assistido | R6 (v1), ADR-0004 | M | P2.5 | arquivo oficial; valor manual com justificativa; casos da v1 (água não faturada 3.000 m³; ILI) |
+| P4.3 | BI e prestação de contas em réplica | 17 §5 | M | P0.28 | relatórios fora do primário |
+| P4.4 | App de leitura offline (PWA) | 17:P3 | G | P2.3 | sincronização com chave de idempotência |
+| P4.5 | R5c: Pix Automático | R5 (v1) | M | P3.2 | cobrança recorrente no PSP do piloto |
+| P4.6 | Schema compartilhado e banco dedicado | ADR-0005 | G | P1.14, P2.2 | só com demanda; mesmo teste de isolamento |
+| P4.7 | Restauração mensal automatizada | ADR-0012 | P | P0.28 | relatório mensal |
+
+O R6 fica depois do alvo de 30/04/2027 da v1 porque, sem cliente em produção antes de junho de 2027, o primeiro envio
+assistido com dado do Ziip SAN é o do ano-base 2027; até lá o piloto envia pelo processo atual.
+
+**2028, sob demanda:** trilha GRS (D-MTR-1..7, DMR e SINIR assistidos, lista IBAMA, NBR 10004); R9 (incidente, N5, N1,
+N7, GIS); negativação; ISO 27001; instância dedicada; qualidade da água (Portaria 888).
+
+**Melhorias contínuas.** Os baixos 17:B1–B11 já estão distribuídos (P0.5, P0.7, P0.13, P0.17, P1.12, P1.15, P2.3);
+baixos de revisões futuras entram nesta lista.
 
 ---
 
-## 6. Tabela-resumo
+## 5. Caminho crítico e marcos
 
-| Etapa/fase | Entrega | Prazo legal | Alvo | Bloqueio |
-|---|---|---|---|---|
-| E0 | roadmap canônico, git, commit de base | — | 14/10/2026 | D1–D3 |
-| E1 | scripts, banco de teste, POMs | — | 16/10/2026 | — |
-| E2 | Spring Boot 4.1.1 | — | 23/10/2026 | D4 |
-| E3 + E3' | banco/tenant (C1, C2) + JSON e falhas silenciosas | — | 06/11/2026 | G10a |
-| E4 | auditoria sem PII, MTR cifrado, cifra no cadastro (C4) | LGPD | 13/11/2026 | S1–S3 |
-| E5 | aplicação, JWT, API do cadastro, login PKCE (C3, C5) | — | 20/11/2026 | D5–D13 |
-| E6 | CI, lint, docs | — | 27/11/2026 | — |
-| — | DMR 3º tri / SINISA 2025 | 31/10; 03/11–31/12/2026 | não entregável | ver §1 |
-| R3 | tarifa social (pacote) + N4 | 11/12/2026 | 09/12/2026 | G1, G2 |
-| R1 | Vault | antes do 1º CPF real | 18/12/2026 | — |
-| R4a | alíquotas CBS/IBS | 01/01/2027 | 22/12/2026 | G3 |
-| GRS | MTR/DMR assistidos | DMR trimestral | 29/01/2027 | G8 |
-| R4 | ciclo, conta, emissão, N6 | — | 19/03/2027 | G1, G5, G6 |
-| R5a / R6 | conciliação + N3 / SINISA 2027 | — / 31/12 anual | 30/04/2027 | G4 / G7 |
-| R7 | protocolo + OS com bloqueio de corte | Lei 14.015; NR 11 20/05/2027 | 14/05/2027 | G9 |
-| R5b / R5c | Pix híbrido / Pix Automático | 01/02/2027 (facult.) / 01/07/2027 | 31/05 / 30/06/2027 | G4 |
-| R8 | cobrança | Lei 11.445 art. 40 | 30/09/2027 | R7, G6 |
-| R9 | GIS, N1/N2/N5/N7 | NR 15 em 20/05/2028 | 2º sem. 2027 | R4, R6, R7 |
+Caminho crítico: hospedagem (P0.26) → ambientes, PITR e R1 (P0.27, P0.28) → importador com dado real (P1.2) → outbox
+(P1.9) → lote (P2.1) → ciclo (P2.5) → NFAg-e (P2.6) → arrecadação (P3.1, P3.2) → paralelo (GL.2) → corte (GL.4). Ramo
+igualmente crítico: piloto (P0.30) → discovery (P1.1) → importadores → carga final (GL.1). Não há folga: atraso na
+hospedagem ou no piloto desloca o go-live na mesma medida.
 
-As datas de E0–E6 supõem execução contínua com agentes; as de R3 em diante supõem as duas trilhas.
+| Marco | Data | Critério |
+|---|---|---|
+| M1 | 23/10/2026 | clientes-alvo comunicados |
+| M2 | 30/10/2026 | hospedagem decidida |
+| M3 | 13/11/2026 | piloto escolhido, com acordo de tratamento de dados |
+| M4 | 27/11/2026 | fim do P0: ambientes no ar, PITR testado, R1 |
+| M5 | 11/12/2026 | R3 em homologação |
+| M6 | 29/01/2027 | fim do P1: cadastro do piloto importado e conciliado |
+| M7 | 26/03/2027 | fim do P2: ciclo e NFAg-e em homologação |
+| M8 | 28/05/2027 | fim do P3: pronto para operar |
+| M9 | 01/06/2027 | início do paralelo |
+| M10 | 30/07/2027 | go-live: legado desligado |
+
+**Prazos legais do prestador.** Até o corte, o piloto cumpre pelo sistema atual: NFAg-e 01/12/2026, a confirmar (Ziip SAN
+no P2, emite após o corte); tarifa social 11/12/2026 (P1, satélite); CBS/IBS 01/01/2027 (P2); boleto híbrido 01/02/2027,
+facultativo (P3); NR 11 em 20/05/2027 e Lei 14.015, em vigor (P3); SINISA anual (P4); DMR trimestral (2028).
+
+---
+
+## 6. Riscos
+
+| Risco | Dono | Mitigação |
+|---|---|---|
+| Capacidade: uma pessoa com IA | Daniel | uma fase aberta por vez; infra congelada; tarefa bloqueada não libera antecipação de funcionalidade; revisão de escopo ao fim de cada fase; P4 cede antes do go-live |
+| Duplicação do motor fiscal C# × Java; o C# não é referência validada | Daniel | corpus comum nos dois CIs (P1.10) conferido contra o XSD oficial, não só contra o C#; tabela de versões de NT; monitor regulatório único; reavaliar em 2028 qual motor permanece |
+| NFAg-e sem manual e XSD oficiais; obrigatória em 01/12/2026 (a confirmar) e go-live só em jun/2027 | Daniel | o prestador precisa de outro emissor nesse intervalo, o que consta da comunicação de 23/10; builder gerado do XSD, vetores por versão |
+| Arredondamento divergente (half-even × `HALF_DOWN`) e CHECK de `bills` com tributo como retenção | técnico | P1.16 antes do P2 |
+| Hospedagem indefinida | Daniel | data-limite 30/10; imagem e IaC portáveis; sem decisão, P0 fecha sem P0.27–P0.29 e o P1 só usa dado sintético |
+| Piloto indefinido | Daniel | data-limite 13/11; critérios do ADR-0001; importador sobre leiaute genérico e massa sintética |
+| Prazos legais do prestador antes do go-live | Daniel | contrato explicita que as obrigações seguem no legado até o corte; nenhuma data regulatória prometida antes do go-live |
+| Multa acima de 2% aceita pelo tenant (CDC art. 52 §1º) | Daniel | aceite formal com responsável e justificativa; contrato aloca a responsabilidade ao controlador |
+| Limite legal errado no catálogo | Daniel | norma citada e teste por limite; revisão quando a norma muda |
+| Schema por tenant no limite | técnico | 300 schemas (P0.21); teto por cluster; shard |
+| Dado real antes do R1 ou do acordo de tratamento | técnico | `dev-env` recusado em `prod`; importador exige cofre ativo e acordo registrado |
+| Homologação em terceiros (SEFAZ, PSP, banco, gráfica) | Daniel | credenciamento a partir do P1; simuladores |
+| Fim de suporte (Spring Boot 4.1 em 31/07/2027; PostgreSQL 15 em nov/2027) | técnico | P3.14; P0.4 |
+
+---
+
+## 7. Resumo
+
+| Fase | Período | Entregas principais | Bloqueios |
+|---|---|---|---|
+| P0 | 13/10–27/11/2026 | dev fora do Drive, CI, Dockerfile, PG 17, segurança, BFF, MFA, parâmetros, 300 schemas, carga inicial; ambientes, PITR, R1 | hospedagem; piloto |
+| P1 | 30/11/2026–29/01/2027 | importador v0, R2, R3, console v0, partição do `audit_log`, outbox, porte fiscal | piloto; R1 |
+| P2 | 01/02–26/03/2027 | lote, R4, R4a, NFAg-e, leitura terceirizada, gráfica, carga, importador v1 | P1.9, P1.16; SEFAZ |
+| P3 | 29/03–28/05/2027 | R5a, R5b, portal, R7 mínimo, NFS-e avulsa, pentest, contrato, operação | escopo de G4; PSP |
+| Go-live | 01/06–30/07/2027 | paralelo e corte | aceite do piloto |
+| P4 | 02/08–17/12/2027 | R8, R6, BI, app offline, R5c, isolamento por porte | demanda |
+| 2028 | — | GRS, R9, ISO 27001, instância dedicada | demanda |
+
+---
+
+## 8. Governança
+
+- **Release.** `main` protegida; PR com CI verde; versão semântica com tag e notas de versão; homologação antes de
+  produção, com aprovação manual; `migrate` antes do rollout; rollback da imagem testado; janela de manutenção avisada
+  com a antecedência do SLA.
+- **Ambientes.** Local (sintético), CI (banco efêmero), homologação (sintético ou anonimizado) e produção, a única com
+  dado real e com cofre obrigatório. Segredos só no cofre.
+- **API.** `/api/v1`; OpenAPI no repositório, conferido no CI; mudança aditiva na mesma versão; incompatível vai para
+  `/api/v2`, com convivência mínima de seis meses.
+- **Feature flags por tenant.** No console (core `V9`); módulo contratado é flag de plano; flag de rollout tem dono e
+  data de remoção; mudança vai para a auditoria.
+- **ADRs.** Regras em `arquitetura/adr/README.md`; decisão nova só por ADR, que este plano cita sem repetir.
+- **Diário.** `docs/DIARIO-DE-BORDO.md` ao fim de cada tarefa: o que foi feito, testes, pendências, commit.
+- **Push automático (ADR-0009).** Fim de etapa com suíte verde → commit e push; vermelho não publica.
+- **Aceite de fase.** Todos os critérios cumpridos e registrados; tarefa que escorregar recebe nova data aqui e no diário.
