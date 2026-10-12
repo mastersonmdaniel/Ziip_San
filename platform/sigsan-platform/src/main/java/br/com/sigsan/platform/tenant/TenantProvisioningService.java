@@ -213,6 +213,11 @@ public class TenantProvisioningService {
                 .locations(TENANT_MIGRATIONS_LOCATION)
                 .baselineOnMigrate(true)
                 .baselineVersion("0")
+                // Cada modulo tem sua faixa de versao (V1_x platform, V3_x registry, V6_x collection...)
+                // e todas vao para o mesmo historico por tenant. Uma migration nova numa faixa baixa
+                // (ex.: V1_3) chega depois de V6_1 ja aplicada: sem outOfOrder o Flyway a recusa num
+                // tenant existente. Decisao G10a do plano de 12/10/2026.
+                .outOfOrder(true)
                 .table("flyway_schema_history")
                 .load();
 

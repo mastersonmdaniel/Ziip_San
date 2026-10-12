@@ -21,11 +21,14 @@
 #                      nao ser visivel ao Docker: aponte para uma pasta permitida.
 #   SIGSAN_IT_PORT     porta do PostgreSQL de integracao (padrao: 55433), ver scripts/reset-it-db.sh
 source "$(dirname "$0")/lib.sh"
+source "$(dirname "$0")/it-db.env"
 
 acquire_lock
 mirror
 
 MSYS_NO_PATHCONV=1 docker run --rm \
   -e SIGSAN_IT_JDBC_URL="jdbc:postgresql://host.docker.internal:${IT_PORT}/sigsan" \
+  -e SIGSAN_IT_DB_PASSWORD="$SIGSAN_IT_DB_PASSWORD" \
+  -e SIGSAN_IT_MIGRATOR_PASSWORD="$SIGSAN_IT_MIGRATOR_PASSWORD" \
   -v "$(cygpath -m "$MIRROR"):/app" -v sigsan-m2:/root/.m2 -w /app \
   maven:3.9-eclipse-temurin-21 mvn -B "$@"

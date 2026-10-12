@@ -1,7 +1,8 @@
 package br.com.sigsan.platform.config;
 
-import br.com.sigsan.core.tenant.TenantContextHolder;
 import br.com.sigsan.core.tenant.TenantFilter;
+import br.com.sigsan.platform.tenant.MultiTenantConnectionProvider;
+import br.com.sigsan.platform.tenant.TenantSchemaResolver;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +32,10 @@ public class PlatformConfig {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            DataSource dataSource,
+            MultiTenantConnectionProvider tenantConnectionProvider,
+            TenantSchemaResolver tenantSchemaResolver) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan("br.com.sigsan");
@@ -56,12 +60,14 @@ public class PlatformConfig {
         // do tenant na regiao; ligar de novo so depois de testar o isolamento.
         jpaProperties.setProperty("hibernate.cache.use_second_level_cache", "false");
         jpaProperties.setProperty("hibernate.cache.use_query_cache", "false");
-        // No Hibernate 6 a estrategia SCHEMA e inferida da presenca do provider; "hibernate.multi_tenant"
-        // foi removida.
-        jpaProperties.setProperty("hibernate.multi_tenant_connection_provider", "br.com.sigsan.platform.tenant.MultiTenantConnectionProvider");
-        jpaProperties.setProperty("hibernate.tenant_identifier_resolver", "br.com.sigsan.platform.tenant.TenantSchemaResolver");
-
         em.setJpaProperties(jpaProperties);
+
+        // Provider e resolver vao como INSTANCIAS (beans do Spring), nao como nome de classe: pelo
+        // nome o Hibernate tenta instanciar com construtor vazio, que o provider nao tem (ele
+        // precisa do DataSource), e a aplicacao nao subiria. A estrategia de multi-tenancy e
+        // inferida da presenca do provider.
+        em.getJpaPropertyMap().put("hibernate.multi_tenant_connection_provider", tenantConnectionProvider);
+        em.getJpaPropertyMap().put("hibernate.tenant_identifier_resolver", tenantSchemaResolver);
         return em;
     }
 

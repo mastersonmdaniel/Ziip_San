@@ -727,3 +727,41 @@ ser a ordem de prioridade canônica (a seção 12 deste diário será substituí
   `LgpdEngineService` ainda criam `ObjectMapper` do Jackson 2 por conta própria; sem o módulo jsr310 no classpath, datas
   nesses caminhos falham em tempo de execução. Já estavam na E3' (troca por `Json`).
 - Aceite: 793 testes verdes, `FreshInstallTest` validando as 66 entidades com Hibernate 7.4.5, sem aviso de depreciação do Hibernate.
+
+### E3 — banco e tenant: achados C1 e C2 (12/10/2026) ✔
+
+- **Roles (`infra/postgres/init`)**: `00-roles.sh` (senhas por variável de ambiente, falha se vazias) + `sql/security.sql`
+  (substitui `01-security-roles.sql`). Superusuário de bootstrap passa a ser `postgres`; **`sigsan_owner` (NOLOGIN) é dono do
+  banco, de `public` e de `current_tenant_id()`**; `sigsan_migrator` tem CREATE no banco e em `public`; `sigsan_app` não cria
+  nada (nem TEMP). `REVOKE ALL ... FROM PUBLIC` no banco e em `public`. Saíram o `ALTER DEFAULT PRIVILEGES` (sem efeito; se
+  "corrigido" daria UPDATE/DELETE em `audit_log`) e a seção de RLS em tabelas que ainda não existiam no init. A verificação
+  final usa `RAISE EXCEPTION`: o container **não sobe** se algo estiver errado (testado com a configuração antiga,
+  `POSTGRES_USER=sigsan_app`: o init aborta). Banco e role próprios do Keycloak quando `KEYCLOAK_DB_PASSWORD` é definida.
+- **`docker-compose.yml`**: `POSTGRES_USER=postgres`, senhas sem valor padrão (`:?`, ver `.env.example`), porta 5432 só em
+  127.0.0.1, healthcheck como `postgres`; Keycloak no banco `keycloak`; **`postgres-replica` removido** (não replicava e
+  expunha um PostgreSQL com `sigsan_app` superusuário na 5433).
+- **Banco de integração**: `reset-it-db.sh` com o mesmo modelo; senhas só de teste em `scripts/it-db.env`; detecta init
+  abortado (container parado) e falha com o log.
+- **`V1_3__harden_audit_function.sql`** (platform): `audit_trigger_function` com `SET search_path = pg_catalog, public, pg_temp`,
+  `public.current_tenant_id()` qualificada e `NULLIF(current_setting('app.current_user', true), '')::uuid` (sem isso, toda
+  gravação auditada quebraria quando a conexão passasse a limpar a GUC); `register_tenant_table` cria a policy com a função
+  qualificada.
+- **Tenant na conexão (C2)**: `TenantRef(schema, tenantId)` (novo) é o identificador de tenant do Hibernate;
+  `TenantSchemaResolver` devolve `TenantRef.NONE` sem contexto (antes: "public") e falha com contexto inconsistente;
+  `MultiTenantConnectionProvider` define `search_path`, `app.current_tenant` e `app.current_user` numa ida ao banco ao entregar
+  a conexão e limpa na devolução — se a limpeza falhar, a conexão é **descartada do pool** (Hikari `evictConnection`).
+  `PlatformConfig` passa as **instâncias** ao Hibernate (pelo nome da classe a aplicação não subiria: o provider não tem
+  construtor vazio). `TenantContextHolder` ganhou `userId`. Flyway dos tenants com **`outOfOrder(true)`** (G10a).
+- **Testes novos** (`platform/sigsan-app`): `DatabaseHardeningTest` (6: app e migrador recebem 42501 ao redefinir
+  `current_tenant_id()`; app não cria tabela em `public`; donos = `sigsan_owner` sem login; nenhuma role `sigsan*` com
+  privilégio elevado e um superusuário de operação existe; trigger com `search_path` fixo) e `TenantConnectionProviderTest`
+  (6, Hibernate real com o provider, dois tenants, pool de **uma** conexão: A só lê A; B só lê B na mesma conexão física;
+  sem tenant nada é alcançado; gravar linha de B no contexto de A é barrado pela RLS; a conexão volta limpa; a gravação
+  gera auditoria com o tenant certo sem GUC manual). Com o provider antigo o primeiro caso falharia (RLS devolveria zero linhas).
+- Aceite: **805 testes verdes** (793 + 12).
+- **Pendências registradas:** (1) o PostgreSQL de desenvolvimento (`sigsan-postgres-primary`) continua no modelo antigo:
+  foi criado a partir da cópia em `C:\PROJETOS` e recriá-lo exige montar o init a partir de um espelho local (o Docker não
+  enxerga o G:) — fica para a E5 (`scripts/dev-up.sh`), com `down -v`. (2) `infra/kubernetes/base/postgres.yaml` não é
+  funcional (Patroni ignora `POSTGRES_*`, chaves de ConfigMap inexistentes, bibliotecas ausentes na imagem, sem bootstrap
+  de segurança): saíram as senhas em texto e o usuário de aplicação como bootstrap, com aviso no topo do arquivo; a
+  correção completa exige um cluster para validar.

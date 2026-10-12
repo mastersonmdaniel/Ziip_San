@@ -1,3 +1,10 @@
+# ATENCAO (12/10/2026): manifesto NAO validado e NAO funcional como esta.
+# - A imagem do Patroni ignora POSTGRES_*: usa PATRONI_SUPERUSER_*, PATRONI_REPLICATION_* etc.
+# - Os configMapKeyRef de PATRONI_* apontam para chaves que nao existem no ConfigMap.
+# - shared_preload_libraries cita timescaledb, pg_cron e pg_tde, ausentes na imagem.
+# - Falta o bootstrap de seguranca (infra/postgres/init/sql/security.sql): roles sigsan_owner,
+#   sigsan_migrator e sigsan_app, donos e privilegios. Sem ele a RLS nao isola tenants.
+# Pendencia registrada no diario de bordo (secao 18, E3). Usar docker-compose ate la.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -49,12 +56,12 @@ metadata:
   name: postgres-secrets
   namespace: sigsan
 type: Opaque
+# Sem valores no repositorio: este Secret e criado fora do Git (ex.: kubectl create secret ou um
+# gerenciador de segredos), com as chaves abaixo. O usuario de bootstrap e "postgres", NUNCA a role
+# da aplicacao (sigsan_app), que precisa ser NOSUPERUSER/NOBYPASSRLS para a RLS valer.
 stringData:
   POSTGRES_DB: "sigsan"
-  POSTGRES_USER: "sigsan_app"
-  POSTGRES_PASSWORD: "changeme"
-  POSTGRES_REPLICATION_USER: "replicator"
-  POSTGRES_REPLICATION_PASSWORD: "repl_password"
+  POSTGRES_USER: "postgres"
   PATRONI_SCOPE: "sigsan"
   PATRONI_NAMESPACE: "/service/sigsan"
   PATRONI_KUBERNETES_USE_ENDPOINTS: "true"

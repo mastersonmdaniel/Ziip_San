@@ -105,10 +105,8 @@ class TenantRlsIsolationTest {
             // public entra no search_path porque é lá que as extensões moram.
             st.execute("SET search_path TO " + schema + ", public");
 
-            // A função fica em public, como em producao, e a policy a consome de la.
-            st.execute("SET search_path TO public");
-            st.execute("GRANT USAGE ON SCHEMA public TO sigsan_app");
-            st.execute("GRANT EXECUTE ON FUNCTION current_tenant_id() TO sigsan_app");
+            // USAGE em public e EXECUTE em current_tenant_id() vem do init de seguranca: a funcao
+            // pertence a sigsan_owner e o migrador nao pode conceder nem redefini-la.
 
             st.execute("SET search_path TO " + schema + ", public");
 
