@@ -14,6 +14,15 @@
   17%); com 4 (cerca de 186), cerca de 13 semanas-pessoa abaixo (antes, 6), com prontidão por volta do fim de julho de
   2028; com 2, no início do 2º trimestre de 2029; sem contratação, continua por volta de 2031; os números do Contexto,
   de "Sem a contratação" e de "Margem pequena" leem-se com esses valores; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.7), antes de qualquer implementação:** "go-live do piloto (M10)" lê-se "homologação local
+  do piloto (M10)" (ADR-0033), e a seleção de junho e julho de 2027 ocorre durante essa homologação; a entrada da
+  equipe a partir de 02/08/2027 e a prontidão de POC (M12) não mudam; a primeira licitação com POC (M13) passa a
+  depender do primeiro atestado, só possível depois do lançamento comercial, e o 2º semestre de 2028 só se mantém com a
+  opção B do plano §2.4; o onboarding do item 4 continua só com homologação local e massa sintética, e acesso à
+  produção só existe depois do lançamento; se o dono escolher lançar durante a trilha (opções B ou C), o lançamento
+  ocupa cerca de 15 semanas-pessoa (±30%), em boa parte do dono do produto, o que absorve quase toda a folga de cerca de
+  26 semanas-pessoa da contratação de 5 e aumenta o déficit da de 4; M12 e a necessidade de pessoas são recalculados com
+  a escolha; decisão do dono do produto.
 
 ## Contexto
 

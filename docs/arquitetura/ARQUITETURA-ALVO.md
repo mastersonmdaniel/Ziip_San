@@ -1,10 +1,15 @@
 # Arquitetura-alvo de produção
 
 Base: revisão 17 (§4 e §5) e ADRs 0003, 0005, 0006, 0007, 0010, 0011, 0012, 0013, 0014, 0018, 0020, 0022 e 0024 a
-0032. Hospedagem: AWS `sa-east-1` com serviços gerenciados (ADR-0011, aceito em 12/10/2026); o código continua neutro
+0033. Hospedagem: AWS `sa-east-1` com serviços gerenciados (ADR-0011, aceito em 12/10/2026); o código continua neutro
 quanto a provedor, para a cláusula de reversão do ADR-0024. Metas em `REQUISITOS-NAO-FUNCIONAIS.md`. Os nomes de roles
 abaixo (`sigsan_*`) passam a `ziipsan_*` na renomeação do P0 (plano P0.33). Nomes técnicos em inglês (plano §8,
 Idioma).
+
+**Alvo por etapa (ADR-0033, plano v2.7).** Até o lançamento comercial, o alvo de execução é o ambiente local em Docker
+Compose na máquina de desenvolvimento (§7.3), com dados sintéticos ou anonimizados na origem e nenhum dado pessoal
+real. A arquitetura descrita nas seções 1 a 6 e no §7.1 é o alvo de produção na AWS a partir do lançamento (plano, fase
+LC). O código chega pronto a ela por interfaces com teste de contrato (plano P0.45).
 
 ## 1. Componentes
 
@@ -25,7 +30,7 @@ Monólito modular: um artefato (imagem única, não-root, assinada) executado em
 | Relatórios e BI | Relatórios e painéis padrão nativos (`api` e `worker`); Apache Superset embarcado a partir do P4, lendo só a réplica, com role de banco por tenant (ADR-0027; exceção do ADR-0010) |
 | Apps | App de campo Android e app do cliente Android e iOS por tenant, em Capacitor sobre o mesmo frontend (ADR-0026); login pelo navegador do sistema com PKCE, token no armazenamento seguro do aparelho e chamadas à `api` pela camada nativa; app de campo no realm `ziipsan`, em dispositivo registrado e com bloqueio remoto; app do cliente no realm `ziipsan-portal` (ADR-0030); conta calculada no aparelho pelo mesmo módulo Java do servidor (ADR-0031) |
 | Observabilidade | OpenTelemetry Collector para métricas, logs e traces; error tracking; página de status pública em hospedagem separada da produção (ADR-0020) |
-| CI/CD | GitHub Actions: testes, imagem com SBOM, homologação, produção com aprovação manual e rollback |
+| CI/CD | GitHub Actions: testes, imagem com SBOM, homologação (local até o lançamento), produção com aprovação manual e rollback (a partir do lançamento, ADR-0033) |
 
 Kafka, Redis, MinIO, TimescaleDB e Loki/Tempo/Pyroscope ficam fora até haver caso concreto (ADR-0010). Exceções
 registradas (ADR-0010, seção Exceções): ClamAV; Apache Superset (P4); ODA File Converter, só na etapa assistida de
@@ -141,11 +146,11 @@ Valores de partida para o piloto, a validar pela carga de referência (RNF-70):
 
 ## 7. Mapeamento por hospedagem (ADR-0011)
 
-### 7.1 AWS `sa-east-1` (escolhida em 12/10/2026)
+### 7.1 AWS `sa-east-1` (escolhida em 12/10/2026; implantada no lançamento comercial, ADR-0033)
 
 | Componente | Serviço | Situação |
 |---|---|---|
-| CDN e WAF | CloudFront + AWS WAF | Referência; confirmar na IaC (P0.27) |
+| CDN e WAF | CloudFront + AWS WAF | Referência; confirmar na IaC (plano LC.2; era P0.27 até a v2.6) |
 | Balanceador | ALB | Referência; confirmar na IaC |
 | `api`, `worker`, Keycloak | ECS Fargate | Referência; confirmar na IaC |
 | `migrate` | Tarefa ECS avulsa | Referência; confirmar na IaC |
@@ -182,12 +187,37 @@ também em Windows Server 2022 ou superior, com os contêineres Linux sobre Dock
 | Observabilidade | CloudWatch, X-Ray ou Managed Prometheus/Grafana | Azure Monitor, Application Insights | Prometheus + Grafana auto-hospedados ou SaaS sem dado pessoal |
 | Registro de imagens | ECR | ACR | GHCR |
 
+### 7.3 Ambiente local até o lançamento comercial (ADR-0033)
+
+Alvo de execução do P0 até o lançamento: Docker Compose na máquina de desenvolvimento, com perfis de desenvolvimento,
+homologação local e demonstração local (plano P0.27), portas em 127.0.0.1 e nenhum dado pessoal real. O CI segue no
+GitHub Actions. As diferenças em relação à AWS (Multi-AZ, Object Lock, KMS, IAM, rede, TLS, latência) são conferidas no
+ensaio de implantação com dado sintético (plano LC.1), antes da implantação definitiva.
+
+| Componente | Ambiente local (até o lançamento) | AWS (a partir do lançamento, §7.1) | Interface com teste de contrato |
+|---|---|---|---|
+| `api`, `worker`, `migrate` | mesma imagem da P0.5, no compose | ECS Fargate | — |
+| Keycloak | `start --optimized`, TLS local, 2 réplicas (plano P0.29) | ECS Fargate, 2+ réplicas (LC.6) | — |
+| PostgreSQL 17 + PostGIS 3.5 | contêiner, PgBouncer em modo transaction; réplica de leitura local opcional | RDS Multi-AZ com réplica de leitura (LC.3) | — |
+| Backup e PITR | arquivamento de WAL e backup em volume local; PITR ensaiado com tempo registrado, sem meta (P0.28) | backup automático e PITR do RDS, snapshots em outra conta, metas do RNF-14 e RNF-15 (LC.3) | — |
+| Objetos | emulador compatível com S3, com retenção imutável se suportada (exceção do ADR-0010) | S3 com Object Lock (LC.5) | armazenamento de objetos |
+| Chaves | KEK no cofre local; DEK por tenant guardada cifrada (P0.28) | AWS KMS (LC.4) | `TenantKeyProvider` |
+| Segredos | cofre local fora do modo dev (exceção do ADR-0010) | Secrets Manager (LC.4) | segredos |
+| Fila | outbox no PostgreSQL (ADR-0014) | a mesma outbox no RDS | outbox |
+| E-mail | gravação da mensagem para inspeção, sem envio externo | serviço de e-mail definido na IaC (LC.2) | envio de e-mail |
+| Borda | acesso em 127.0.0.1, sem CDN nem WAF | CloudFront, AWS WAF e ALB (LC.2) | — |
+| Observabilidade | OpenTelemetry com exportação local, sem backend gerenciado | serviço gerenciado e página de status em hospedagem separada (LC.7) | OpenTelemetry |
+| Fiscal | simulador, produção restrita da NFS-e e homologação da SEFAZ (`tpAmb=2`); `production-allowed` falsa | produção (`tpAmb=1`) só a partir do corte (LC.13) | `FiscalDocumentIssuer` |
+
+O mesmo conjunto local (PostgreSQL, Keycloak, armazenamento compatível com S3 e cofre em contêineres) é a base do pacote
+de reversão do ADR-0024 (ED-04).
+
 ## 8. Lacunas em relação ao estado atual
 
 | Achado | Estado atual | Alvo |
 |---|---|---|
-| X1 | Sem Dockerfile, CI remoto ou ambientes | Imagem única e pipeline com homologação |
-| X2 | PG 15 em nó único, sem backup | PG 17 com HA, PITR e restauração testada |
+| X1 | Sem Dockerfile, CI remoto ou ambientes | Imagem única e pipeline com homologação local até o lançamento e na AWS a partir dele (ADR-0033) |
+| X2 | PG 15 em nó único, sem backup | PG 17 com PITR ensaiado no ambiente local; HA, PITR e restauração com meta no RDS a partir do lançamento |
 | X3 | `audit_log` sem partição, gatilho por linha | Partição mensal; auditoria por bloco no lote |
 | X4 | Sem lote nem assíncrono | Outbox e processo `worker` |
 | D1 | Rollout sequencial, `outOfOrder(true)` | Ondas com canário e quarentena |
@@ -197,7 +227,7 @@ também em Windows Server 2022 ou superior, com os contêineres Linux sobre Dock
 | S3, S4 | Realm único sem MFA | Organizações, MFA por política |
 | S5 | Token em `sessionStorage`, sem CSP | BFF com cookie, CSP estrita |
 | O1 | Sem métricas nem traces | OpenTelemetry e SLOs |
-| O2 | Terraform em `us-east-1` | IaC nova em AWS `sa-east-1` (ADR-0011) |
+| O2 | Terraform em `us-east-1` | IaC nova em AWS `sa-east-1` (ADR-0011), escrita no lançamento comercial (ADR-0033) |
 | O3 | Keycloak `start-dev` | 2+ réplicas com TLS |
 | O4 | Sem metas nem carga | RNF e k6 no CI |
 | P1, P2 | Sem console nem portal | Console e Central v0 (P1), Central completa e portal com histórico e documentos (P3) |

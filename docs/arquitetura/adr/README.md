@@ -51,6 +51,7 @@ cada tarefa entra.
 | [0030](ADR-0030-autenticacao-nos-apps.md) | Autenticação nos apps | Aceito | 12/10/2026 |
 | [0031](ADR-0031-calculo-offline-e-nota-fiscal-na-emissao-em-campo.md) | Cálculo offline e nota fiscal na emissão em campo | Aceito | 12/10/2026 |
 | [0032](ADR-0032-material-da-os-com-alcada-e-baixa-automatica.md) | Material da OS com alçada e baixa automática | Aceito | 12/10/2026 |
+| [0033](ADR-0033-desenvolvimento-local-e-aws-no-lancamento.md) | Desenvolvimento local até o lançamento comercial; AWS no lançamento | Aceito | 12/10/2026 |
 
 ## Referências
 

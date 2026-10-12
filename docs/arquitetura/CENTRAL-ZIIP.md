@@ -10,7 +10,9 @@ identificadores em inglês; e, por fim, com as do plano v2.3: contestação e or
 (prazo máximo de 75 dias) e códigos de erro da API em inglês. Na v2.5 do plano entraram a revogação de sessões e o
 bloqueio de dispositivos dos apps (ADR-0030), o alerta de divergência da emissão em campo (ADR-0031) e o contador de
 itens com saldo negativo no almoxarifado (ADR-0032); chamados de suporte passam a usar as severidades S1 a S5
-(ADR-0020, ajuste v2.5). Nada foi implementado. Nomes de role e realm já seguem a renomeação `ziipsan` (plano P0.33).
+(ADR-0020, ajuste v2.5). Na v2.7 (ADR-0033), a Central é construída e testada no ambiente local, a medição de
+disponibilidade e a coleta de backup e uptime da hospedagem passam a valer a partir do lançamento comercial, e a
+assinatura do contrato do piloto passa ao lançamento (plano LC.9). Nada foi implementado. Nomes de role e realm já seguem a renomeação `ziipsan` (plano P0.33).
 
 ## 1. Objetivos
 
@@ -240,5 +242,5 @@ regra do plano, §8). `tenant_ref` é o UUID do catálogo, nunca nome ou documen
 |---|---|---|
 | Central v0 (P1.17) com console v0 (P1.6) | P1 | rota de plataforma sem `amr` → 403 `mfa-required`; `SELECT` de `ziipsan_central` em tabela de tenant falha no teste; abas Visão geral (fatores medidos), Plataforma, Segurança e Alertas; alerta abre e fecha sem duplicar; implantação com bloqueio "B"; suspensão manual por uma pessoa com MFA (`PLATFORM_OWNER`, ou `PLATFORM_FINANCE` só por inadimplência contratual), com o backoffice só leitura e o portal, o Pix e os retornos funcionando (teste); financeiro com outro motivo ou pedindo eliminação recebe 403; API v1 com catálogo e teste de contrato |
 | Abas Faturamento e Fiscal (P2.11) | P2 | junto de P2.1 e P2.6; ciclo atrasado e fila fiscal acima do RNF-08 disparam alerta em homologação |
-| Contratos e financeiro (P2.12–P2.14, ADR-0019 e ADR-0022) | P2, antes da assinatura do piloto (P3.9) | fatura gera NFS-e na produção restrita; nenhum caminho de código bloqueia tenant sozinho (teste); alertas de vencimento e de cota; tenant baixa a fatura paga e a NFS-e em PDF e XML e não vê contrato de outro tenant |
+| Contratos e financeiro (P2.12–P2.14, ADR-0019 e ADR-0022) | P2, antes da assinatura do contrato do piloto (LC.9, no lançamento comercial; ADR-0033) | fatura gera NFS-e na produção restrita; nenhum caminho de código bloqueia tenant sozinho (teste); alertas de vencimento e de cota; tenant baixa a fatura paga e a NFS-e em PDF e XML e não vê contrato de outro tenant |
 | Central completa (P3.15–P3.17) | P3 | Arrecadação, Pix, LGPD, Regulatório, Infraestrutura com SLO, Radar, Suporte; falha provocada alerta (P3.11); acesso assistido sem consentimento negado e auditado; acesso de emergência só com incidente declarado, `PLATFORM_OWNER` reautenticado, somente leitura e aviso ao tenant em até 24 h; saída de tenant sintético dentro do RNF-42, com carência de 30 dias cancelável, eliminação só por `PLATFORM_OWNER`, suspensa por contestação (resposta em até 15 dias) e por ordem judicial, e certificado em até 30 dias após a carência ou a resposta, no máximo 75 dias do fim do contrato; kit com hash na trilha |

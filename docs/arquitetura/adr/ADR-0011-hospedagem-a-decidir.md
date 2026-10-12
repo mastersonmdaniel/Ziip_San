@@ -6,6 +6,16 @@
 - **Decisor:** dono do produto
 - **Afeta:** revisão 17, achados X1, X2 e O2, §5 (arquitetura-alvo) e §8.1; R1 (cofre e chaves); ADR-0010; ADR-0012;
   ADR-0024; `docs/arquitetura/ARQUITETURA-ALVO.md` §1, §4 e §7; RNF-14, RNF-32, RNF-43, RNF-44; plano P0.26 a P0.28
+- **Ajuste de 12/10/2026 (v2.7), antes de qualquer implementação:** provedor, região e serviços do item 2 não mudam;
+  muda o momento: a infraestrutura na AWS só é criada no lançamento comercial, depois do P4 (ADR-0033; plano, fase
+  LC); IaC de homologação e produção, RDS Multi-AZ com PITR e cópia de snapshots, R1 sobre o KMS, Secrets Manager, S3
+  com Object Lock, borda e observabilidade gerenciada saem do P0 e vão para a LC.2 a LC.7, precedidas de ensaio de
+  implantação com dado sintético (LC.1); até lá, o R1 roda sobre um cofre local e o backup e o PITR são ensaiados no
+  ambiente local, atrás das interfaces do item 4, com teste de contrato (plano P0.28, P0.45); no P0 ficam a tabela de
+  custo e as conferências documentais (certificações no AWS Artifact, versões de extensões no RDS); as tarefas
+  derivadas marcadas "P0" que exigem recurso na AWS leem-se "lançamento comercial"; a consequência positiva "P0.27 e
+  P0.28 podem começar" e a negativa sobre o perfil `vault` ficam substituídas: o cofre local é o provedor do R1 até o
+  lançamento (exceção no ADR-0010); decisão do dono do produto.
 
 ## Contexto
 

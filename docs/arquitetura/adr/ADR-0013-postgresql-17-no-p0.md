@@ -3,6 +3,12 @@
 - **Status:** Aceito, 12/10/2026
 - **Decisor:** dono do produto
 - **Afeta:** revisão 17 (achado X2); `docker-compose.yml`; `scripts/reset-it-db.sh`
+- **Ajuste de 12/10/2026 (v2.7), antes de qualquer implementação:** "todos os ambientes durante o P0" (item 1) passa
+  a significar o ambiente local de desenvolvimento, homologação e demonstração e o CI, porque não há ambiente na nuvem
+  até o lançamento comercial (ADR-0033); a conferência do PostgreSQL 17, do PostGIS 3.5 e do `pg_partman` na
+  hospedagem é documental no P0 e prática no ensaio de implantação na AWS (plano LC.1); `pg_stat_statements` e
+  arquivamento de WAL "em homologação" valem para a homologação local; "antes do primeiro dado real" passa a ser antes
+  do lançamento, e o "go-live piloto" do Contexto lê-se como o lançamento; decisão do dono do produto.
 
 ## Contexto
 

@@ -37,6 +37,16 @@ semanas-pessoa, onda C de 22,9 para 15,4, trilha igual (206,3); prontidão de PO
 semanas-pessoa e necessidade para junho de 2028 de cerca de 4,5 para 4,6 pessoas-equivalentes (§5.2, §5.4 e §8.1).
 Mudaram as ED-20, ED-36, ED-58 e ED-62 (dependências) e o item 2.17 do SAMAE (§3.2).
 
+**Atualização de 12/10/2026 (plano v2.7).** Por decisão do dono do produto (ADR-0033), todo o desenvolvimento passa a
+ser local até concluir as fases, e a AWS `sa-east-1` (ADR-0011, provedor mantido) só sobe no lançamento comercial,
+nova fase do plano depois do P4. O go-live do piloto de jun–jul/2027 vira homologação local, com dados sintéticos ou
+anonimizados e sem dado pessoal real; produção real, emissão fiscal em produção e atestado só acontecem no lançamento.
+Efeitos neste documento: o primeiro atestado depende do lançamento e de uma primeira operação real (§1, §4); a POC das
+licitações, que exige o sistema em nuvem, só é disputável depois do lançamento (§3.3); o ED-03 passa ao lançamento e o
+ED-04 tem a instância dedicada depois dele (§5.1); a meta de licitações no 2º semestre de 2028 só se mantém se o dono
+escolher lançar logo depois das tarefas originais do P4 (opção B do plano §2.4); na leitura literal da decisão (opção
+A), a primeira licitação com POC vai para o 3º trimestre de 2029 (§8).
+
 **Convenções.** Esforço na escala do plano (§4): **P** até 2 dias, **M** até 1 semana, **G** mais de 1 semana, para uma
 pessoa com agentes. Para somar, P vale 0,4 semana, M vale 1 semana e G vale a estimativa da matriz de origem ou, na
 falta dela, 3 semanas; incerteza de ±30%. Um mês-pessoa equivale a 4,33 semanas. Entregas de edital levam o código
@@ -60,7 +70,8 @@ corrige na P2.20 e na P3.22.
 **Meta do plano v2.4.** Aderência total aos dois editais pela trilha de editais do P4 (ADR-0023), com 62 entregas
 deduplicadas (ED-01 a ED-62, §5), para disputar licitações em 2028. A prontidão de POC (ensaio interno com pelo menos
 146 de 162 pontos na VISAN e nenhuma falha crítica no SAMAE) passa a ser medida em toda fase a partir do P1 e entra no
-aceite de fase a partir do P3. O go-live do piloto (30/07/2027) não muda.
+aceite de fase a partir do P3. O marco de 30/07/2027 passou a ser a homologação local do piloto, sem dado real (plano
+v2.7, ADR-0033); a primeira produção vem no lançamento comercial.
 
 **Condição.** Recalculado nas v2.5 e v2.6 do plano, o esforço das entregas que ficam na trilha até 2028 é de cerca de
 220 semanas-pessoa (51 meses-pessoa), das quais 13 semanas caem no P0 a P3 e 206 na trilha do P4; compras, RH e
@@ -69,13 +80,18 @@ onda A desde a v2.6) pede cerca de 191 semanas-pessoa, 199 com as tarefas origin
 prontidão chegaria por volta de 2031. Para junho de 2028 são precisas cerca de 4,6 pessoas-equivalentes a partir de
 agosto de 2027 (2,9 para dezembro de 2028). O
 ADR-0029 decidiu contratar de 4 a 5 desenvolvedores a partir de agosto de 2027, com prontidão em 30/06/2028 e
-licitações no 2º semestre de 2028 (§8).
+licitações no 2º semestre de 2028 (§8), meta que, desde o plano v2.7, depende do momento do lançamento comercial
+(plano §2.4).
 
 **Habilitação.** O primeiro atestado vem do piloto, que precisa ser público, em Santa Catarina, contratado por
-dispensa ou por CPSI (LC 182/2021) e com cláusula de atestado (critério já incluído na P0.30). Com ele, editais do tipo
-SAMAE (um atestado, sem quantitativo) ficam acessíveis a partir do fim de 2027, sujeitos à prontidão de POC. Editais do
-tipo VISAN (dois atestados, 8.500 ligações e e-Sfinge) exigem ainda o segundo atestado (cliente privado ou segundo
-piloto) e a remessa e-Sfinge em operação (§4).
+dispensa ou por CPSI (LC 182/2021) e com cláusula de atestado (critério já incluído na P0.30). Desde o plano v2.7
+(ADR-0033), o atestado só pode vir depois do lançamento comercial e de uma primeira operação real: a homologação local
+com dados anonimizados não é execução do objeto. Do início do lançamento ao atestado são de 7 a 9 meses; com a leitura
+literal da decisão (lançamento depois de toda a trilha), o atestado sai entre maio e julho de 2029; com a alternativa
+proposta (lançamento em janeiro de 2028), entre agosto e outubro de 2028. A escolha é pendência do dono do produto
+(plano §2.4). Com o atestado, editais do tipo SAMAE (um atestado, sem quantitativo) ficam acessíveis, sujeitos à
+prontidão de POC. Editais do tipo VISAN (dois atestados, 8.500 ligações e e-Sfinge) exigem ainda o segundo atestado
+(cliente privado ou segundo piloto) e a remessa e-Sfinge em operação (§4).
 
 ---
 
@@ -159,7 +175,7 @@ demonstrável e 1 por item parcial.
 
 | Alínea | Tema | Itens (pontos) | Hoje | Fim do P3 | Pontos estimados no fim do P3 | Entregas que fecham |
 |---|---|---|---|---|---|---|
-| a | Arquitetura, interface, banco e hospedagem | 3 (6) | sem ambiente | demonstrável (P0.27, ADR-0011) | 6 | ED-03 |
+| a | Arquitetura, interface, banco e hospedagem | 3 (6) | sem ambiente | demonstrável no ensaio local (P0.27); na POC real, só com a nuvem do lançamento (LC.2, ADR-0033) | 6 | ED-03 |
 | b | Controle de acesso | 4 (8) | parcial (bloqueio em 5 tentativas no realm, ADMIN global) | demonstrável com a P0.13 e bloqueio de 3 tentativas no realm | 8 | ED-06 (por tenant) |
 | c | Cadastros (usuários, endereços, unidades, catálogos) | 4 (8) | parcial (API, tela bloqueada) | parcial (P1.3; faltam RG, filiação, caixa d'água, cisterna, pavimentos, endereço alternativo, tipo de feriado) | 4 | ED-12, ED-13 |
 | d | Hidrômetros | 3 (6) | não | não | 0 | ED-14 |
@@ -197,7 +213,7 @@ Cerca de 1.037 das 1.415 linhas pertencem a seções críticas, e o "Item 1.1.2"
 |---|---|---|---|
 | 1.1.2 (todo o TR, inclusive SLA, segurança e LGPD) | falha | falha | todas |
 | "Item 0" (todos os módulos em base única, nativos) | falha (BI, GIS, omnichannel e laboratório inexistentes) | falha | ED-42, ED-47, ED-50, ED-52 |
-| 2.4 Banco de dados | falha (sem produção) | passa (RDS PostgreSQL 17, ADR-0011) | — |
+| 2.4 Banco de dados | falha (sem produção) | passa no ensaio local (PostgreSQL 17); na POC real, só com o RDS do lançamento (ADR-0011, ADR-0033) | — |
 | 2.5 Desempenho (10 s; arquivos e relatórios em 5 min; alertas) | falha | parcial (P0.23, P2.9, P3.22; faltam alertas ao cliente) | ED-07, ED-05 |
 | 2.7 Controle de acesso (inclui Active Directory) | falha | falha (sem AD nem perfis definidos pelo cliente) | ED-06 |
 | 2.8 Cadastro | falha (tela bloqueada) | falha (catálogos 2.8.10, ligações) | ED-12, ED-13 |
@@ -226,7 +242,9 @@ Seções essenciais não críticas (contam nos 90%): 2.1, 2.3, 2.6, 2.16 (salvo 
 
 - **Ambiente de demonstração permanente** (ADR-0023), separado de homologação e produção, com tenant de pelo menos 10
   mil unidades fictícias geradas pela massa sintética da P0.23, sem dado pessoal real, recriável a cada fase (P3.23).
-  Montar ambiente e massa em 5 ou 7 dias úteis não é viável.
+  Montar ambiente e massa em 5 ou 7 dias úteis não é viável. Até o lançamento comercial o ambiente é local (ADR-0033),
+  o que basta aos ensaios internos; as duas POCs exigem o sistema em nuvem, e a versão na nuvem é criada pela IaC do
+  lançamento (plano LC.2) antes da primeira POC de licitação.
 - **Roteiros internos** (P1.25): VISAN com os 81 itens e a forma de demonstração de cada um; SAMAE com a lista crítica
   completa, com subitens, e os 80 itens sorteáveis entre os demais; cada item ligado ao requisito, à entrega e à fase.
 - **Kit de campo**: aparelhos Android, um iPhone para o app do cliente, impressora Zebra série ZQ com bobinas
@@ -246,9 +264,9 @@ Seções essenciais não críticas (contam nos 90%): 2.1, 2.3, 2.6, 2.16 (salvo 
 
 | # | Barreira | VISAN | SAMAE | Caminho decidido | Onde está |
 |---|---|---|---|---|---|
-| H1 | Atestado de capacidade técnica | 2 atestados em prestadora de água, ≥ 8.500 ligações somadas, implantação, suporte, treinamento e relatórios do e-Sfinge | 1 atestado compatível, sem quantitativo | 1º: piloto público em SC, prestadora de água, por dispensa (Lei 14.133, art. 75, II) ou CPSI (LC 182/2021), com cláusula de atestado após os ciclos em produção; 2º: cliente privado; consórcio só oportunista | ADR-0023 item 3; P0.30; ED-02; ED-33 (e-Sfinge em operação no piloto) |
+| H1 | Atestado de capacidade técnica | 2 atestados em prestadora de água, ≥ 8.500 ligações somadas, implantação, suporte, treinamento e relatórios do e-Sfinge | 1 atestado compatível, sem quantitativo | 1º: piloto público em SC, prestadora de água, por dispensa (Lei 14.133, art. 75, II) ou CPSI (LC 182/2021), com cláusula de atestado após os ciclos em produção, que só começam no lançamento comercial (ADR-0033); 2º: cliente privado; consórcio só oportunista | ADR-0023 item 3 (ajuste v2.7); P0.30; LC.13, LC.14; ED-02; ED-33 (e-Sfinge em operação no piloto) |
 | H2 | POC eliminatória com produto completo | 81 itens, ≥ 146 de 162 | 80 itens binários, críticos eliminatórios | POC passa a ser escopo; ambiente de demonstração permanente; ensaio por fase; meta no aceite a partir do P3 | ADR-0023 item 2; P1.25, P3.23; ED-01 |
-| H3 | Provedor de nuvem certificado | ISO 9001, 27001, 27017, SOC 1 e SOC 3 do provedor | não exigido | AWS `sa-east-1` gerenciada; relatórios do AWS Artifact no kit a cada proposta | ADR-0011; P0.26–P0.28; ED-03 |
+| H3 | Provedor de nuvem certificado | ISO 9001, 27001, 27017, SOC 1 e SOC 3 do provedor | não exigido | AWS `sa-east-1` gerenciada, implantada no lançamento comercial; relatórios do AWS Artifact no kit a cada proposta | ADR-0011, ADR-0033; P0.26; LC.2–LC.5; ED-03 |
 | H4 | Lote único completo | omnichannel, BI e SIG obrigatórios, sem subcontratação | idem, mais laboratório e CTI | trilha de editais com todos os módulos como componentes do produto (Superset licenciado, LLM por API como suboperador) | ADR-0026 a ADR-0028; ED-42, ED-43, ED-47, ED-50, ED-52 |
 | H5 | Balanço de 2 exercícios | exigido | exigido (empresa nova: último exercício) | empresa licitante definida e escrituração por contador já em 2026; para licitar em 2028, balanços de 2026 e 2027 | P0.44; ED-02 |
 | H6 | Implantação e equipe presencial | 90 dias, 2 especialistas presenciais, técnico por 30 dias, treinamento presencial de 40 h | 60 dias, especialistas presenciais, 2 técnicos por 30 dias | implantação e treinamento remotos no piloto; equipe de 4 a 5 desenvolvedores a partir de agosto de 2027 (ADR-0029); parceiro de implantação presencial em aberto (plano §2.4); metodologia e importadores padronizados | ADR-0023 item 4; ADR-0029; ED-09, ED-11 |
@@ -257,10 +275,13 @@ Seções essenciais não críticas (contam nos 90%): 2.1, 2.3, 2.6, 2.16 (salvo 
 | H9 | Metas contratuais acima do padrão | 99% em horário comercial; cinco severidades (2 a 32 h); dados em 10 dias úteis; consulta por 120 dias | 99,9%; cinco severidades (2 a 160 h) com multa; monitoramento 24/7 | nível "Setor Público" contratável; o padrão do produto não muda; plantão da S1 com a equipe do ADR-0029, ativo até 31/01/2028 | ADR-0025; ADR-0029; P2.15, P3.16, P3.22; ED-05 |
 | H10 | Preço | teto de R$ 18.866,65/mês e R$ 77.900 de implantação | teto de R$ 7.636,74/mês com hospedagem, BI e Google Maps | tabela de custo da AWS (ADR-0011) e preço por porte; o teto do SAMAE só fecha com vários tenants no mesmo cluster | ED-10 |
 
-Sequência que decorre: (1) até 13/11/2026, piloto escolhido com o critério de atestado (P0.30); (2) em paralelo,
-desde já, empresa licitante, contador, INPI e certidões (P0.44); (3) no fim de 2027, atestado do piloto, que habilita
-para editais do tipo SAMAE; (4) em 2028, segundo atestado e remessa e-Sfinge em operação, que habilitam para editais do
-tipo VISAN. A prontidão de POC (§8) é a condição que pode atrasar cada passo.
+Sequência que decorre (plano v2.7): (1) até 13/11/2026, piloto escolhido com o critério de atestado e o prazo de
+produção no lançamento (P0.30), e momento do lançamento escolhido pelo dono (plano §2.4); (2) em paralelo, desde já,
+empresa licitante, contador, INPI e certidões (P0.44); (3) lançamento comercial e primeira produção do piloto (LC.13);
+(4) atestado do piloto de 3 a 5 meses depois do corte (LC.14), que habilita para editais do tipo SAMAE: entre agosto e
+outubro de 2028 na opção B, entre fevereiro e abril de 2029 na C e entre maio e julho de 2029 na A; (5) segundo
+atestado e remessa e-Sfinge em operação, que habilitam para editais do tipo VISAN, em 2029 em qualquer opção. A
+prontidão de POC (§8) é a condição que pode atrasar cada passo.
 
 ---
 
@@ -284,8 +305,8 @@ cobre.
 |---|---|---|---|---|---|---|---|---|
 | ED-01 | Prontidão de POC: roteiros VISAN e SAMAE, ambiente de demonstração permanente com tenant ≥ 10 mil unidades fictícias, kit de campo, ensaio cronometrado por fase | 18h-E3 (M22–M25) | ED-055, ED-056, ED-074; TR-038–TR-045, TR-112; SG-001; roteiro POC-01–POC-81; 18c §3 | todas | P1 (P1.25), P3 (P3.23), P4 onda B | 4,4 | P0.23, P0.27, P2.9 | 0023 |
 | ED-02 | Kit de habilitação e propriedade intelectual: empresa licitante, certidões, balanço, declarações, e-CNPJ, INPI, cláusula de licença das customizações, prova do vínculo com o provedor | 18h-E1 (M03, M05, M07, M12, M13) | ED-010–ED-016, ED-022, ED-025, ED-070, ED-090; ETP-005, ETP-007; TR-103, TR-105, TR-1100–TR-1103; SG-1398; 18c §2.2 | habilitação | P0 (P0.44), renovado a cada proposta | 0,4 | P0.26 | 0023, 0011 |
-| ED-03 | Hospedagem certificada e serviços de segurança do provedor (detecção de ameaças, inspeção de vulnerabilidades, registro de configuração, backup só no Brasil) | 18h-E2 (M38–M43) | ED-063–ED-066; TR-061, TR-062, TR-064, TR-068–TR-092, TR-095, TR-096, TR-098, TR-100, TR-101; SG-003, SG-033, SG-667, SG-1406 | V a; S 2.4 crít. | P0 (P0.26–P0.28) | 1 | — | 0011 |
-| ED-04 | Instância dedicada gerenciada e pacote de reversão em contêiner, com requisitos mínimos, runbook e acesso administrativo restrito do órgão; pacote também em Windows Server 2022+ com Docker no WSL2, homologado uma vez | 18h-E4 (M35, M36, M44) | ED-067, ED-071; TR-065, TR-067, TR-097, TR-099, TR-104; SG-004, SG-019, SG-020 | proposta e contrato | P0 (IaC parametrizada na P0.27); P4 onda B | 3,5 | P0.5, P0.27, P4.6 | 0024 |
+| ED-03 | Hospedagem certificada e serviços de segurança do provedor (detecção de ameaças, inspeção de vulnerabilidades, registro de configuração, backup só no Brasil) | 18h-E2 (M38–M43) | ED-063–ED-066; TR-061, TR-062, TR-064, TR-068–TR-092, TR-095, TR-096, TR-098, TR-100, TR-101; SG-003, SG-033, SG-667, SG-1406 | V a; S 2.4 crít. | lançamento comercial (LC.2–LC.5; até a v2.6, P0.26–P0.28), com a tabela de custo e as conferências na P0.26 | 1 | — | 0011, 0033 |
+| ED-04 | Instância dedicada gerenciada e pacote de reversão em contêiner, com requisitos mínimos, runbook e acesso administrativo restrito do órgão; pacote também em Windows Server 2022+ com Docker no WSL2, homologado uma vez | 18h-E4 (M35, M36, M44) | ED-067, ED-071; TR-065, TR-067, TR-097, TR-099, TR-104; SG-004, SG-019, SG-020 | proposta e contrato | P4 onda B (pacote de reversão sobre o ambiente local da P0.27); IaC parametrizada e instância dedicada no lançamento (LC.2) ou depois | 3,5 | P0.5, P0.27, P4.6; LC.2 para a instância dedicada | 0024, 0033 |
 | ED-05 | Nível de serviço Setor Público: 99,9%, cinco severidades com prazo, aderência e multa, exportação em 10 dias úteis com dicionário, consulta somente leitura por até 120 dias, relatórios em 2 ou 5 min (RNF-71), telefone e canal de contingência | 18h-E7, E9 (M49, M56, M75–M77, M93–M97) | TR-029, TR-030, TR-102, TR-108, TR-1068, TR-1076–TR-1090, TR-1097, TR-1098; SG-043, SG-668, SG-1284–SG-1313; ED-051, ED-052, ED-069, ED-081, ED-084–ED-086, ED-088; ETP-006, ETP-013 | S Item 3 crít.; S 2.5 | P2 (P2.15), P3 (P3.15, P3.16, P3.22), P4 onda A | 3 | P1.23, P2.12, P1.6 | 0025 |
 | ED-06 | Controle de acesso de edital: bloqueio e expiração de senha por tenant, LDAP/AD por organização, perfis compostos pelo administrador, sessões e trilha visíveis ao tenant, consulta da trilha por usuário | 18h-E5 (M58–M63, M68, M69) | TR-115–TR-128; SG-049–SG-064, SG-1250, SG-1251, SG-1253; ED-075 | V b; S 2.7 crít. | P4 onda A | 3 | P0.13, P0.15, P0.43, P1.7 | — |
 | ED-07 | Monitoramento e alertas para o cliente: eventos de negócio com alerta, painel de uso e desempenho do tenant, alerta de lote ao responsável | 18h-E6 (M50–M52) | ED-073; TR-109–TR-111; SG-044–SG-046 | S 2.5 crít. | P4 onda A | 1 | P1.9, P1.17, P2.1, P3.5 | — |
@@ -318,7 +339,7 @@ cobre.
 | ED-24 | Controle de fraudes e fiscalização de consumo | 18e-E4 | TR-325, TR-331–TR-336, TR-761; SG-312, SG-318–SG-323, SG-988 | S 2.13 crít. | P4 onda A | 1 | ED-36, ED-21 | — |
 | ED-25 | Resíduos sólidos na conta: componente tarifário, isenção, contrato especial, fatura e carnê separados | 18e-E15, 18g-E-RES (faturamento) | SG-324, SG-325 e as partes de resíduos de SG-222, SG-264, SG-281, SG-310, SG-311 | S 2.13 crít. | P4 onda A | 3 | P2.5, ED-22 | — |
 | ED-26 | Arrecadação ampliada: documento agrupador com quitação em cascata, fechamento mensal congelado, depósitos identificados e não identificados, VAN | 18e-E7 | TR-345, TR-350–TR-353; SG-333, SG-338–SG-341 | S 2.14 crít. | P4 onda A | 1 | P3.1, P2.1 | — |
-| ED-27 | Débito em conta: Pix Automático para autorizações novas e FEBRABAN 150 para as legadas migradas, com data de desligamento; optantes, reenvio, relatórios | 18e-E8 (D2); amplia P4.5 | TR-321, TR-322, TR-339, TR-354, TR-566, TR-583, TR-733–TR-735; SG-308, SG-309, SG-327, SG-342, SG-543, SG-560, SG-748, SG-960–SG-962 | V h (POC-29); S 2.14 crít. | P4 onda A; a parte FEBRABAN 150 (≈ 1,5) vai ao P3 (P3.24), como requisito do go-live, se a P0.30 encontrar optantes no piloto | 2 | P3.1, P4.5 | 0028 (f) |
+| ED-27 | Débito em conta: Pix Automático para autorizações novas e FEBRABAN 150 para as legadas migradas, com data de desligamento; optantes, reenvio, relatórios | 18e-E8 (D2); amplia P4.5 | TR-321, TR-322, TR-339, TR-354, TR-566, TR-583, TR-733–TR-735; SG-308, SG-309, SG-327, SG-342, SG-543, SG-560, SG-748, SG-960–SG-962 | V h (POC-29); S 2.14 crít. | P4 onda A; a parte FEBRABAN 150 (≈ 1,5) vai ao P3 (P3.24), como requisito da homologação local e do corte no lançamento, se a P0.30 encontrar optantes no piloto | 2 | P3.1, P4.5 | 0028 (f) |
 | ED-28 | Cartão no parcelamento por adaptador para a credenciadora do cliente, com conciliação, sem dado de cartão no produto | 18e-E14 (D3) | TR-374 | V (avaliável) | P4 onda B | 1 | P3.1, P4.1 | 0028 (h) |
 | ED-29 | Cobrança: cartas, prioridade e cota diária de OS de corte, níveis sucessivos, equipes especiais, corte e religação de água e esgoto por nível, cartas de liberação de esgoto, alteração de vencimento do aviso, carnê | 18e-E9, 18f-ENT-04 (corte e religação) | TR-372, TR-390, TR-409, TR-410, TR-417, TR-529, TR-539, TR-540, TR-590; SG-375, SG-389, SG-393, SG-394, SG-400, SG-486, SG-501–SG-505, SG-567, SG-571 | V j; S 2.15 crít. | P4 onda A | 4 | P3.4, P4.1, ED-36 | 0015 |
 | ED-30 | Negativação e protesto por arquivo, com carta de aviso prévio, baixa no prazo legal e retorno importado | 18e-E10 (D4) | TR-572, TR-715; SG-402–SG-411, SG-424, SG-425, SG-548, SG-725, SG-942 | S 2.15 crít. | P4 onda A | 3 | P4.1, ED-31 | 0028 (g) |
@@ -377,14 +398,15 @@ a aderência total exige as três.
 
 | Onda | Critério | Entregas | Esforço (sem.) | Meta de ensaio ao fim da onda |
 |---|---|---|---|---|
-| Antes do P4 | o que o piloto precisa e o que os ADRs puseram no P0 a P3 | ED-02, ED-03 (P0); ED-01 parte (P1, P3); ED-21 (P2); ED-05 parte (P2, P3); ED-45 (P3) | 13,3 | fim do P3: VISAN ≥ 50 de 162; SAMAE 2.4 e 2.5 sem falha |
+| Antes do P4 | o que o piloto precisa e o que os ADRs puseram no P0 a P3 (o ED-03 passou ao lançamento comercial na v2.7, sem mudar o total) | ED-02 (P0); ED-03 (lançamento, LC.2); ED-01 parte (P1, P3); ED-21 (P2); ED-05 parte (P2, P3); ED-45 (P3) | 13,3 | fim do P3: VISAN ≥ 50 de 162; SAMAE 2.4 e 2.5 sem falha |
 | A | itens que pontuam nas alíneas b a p e r da VISAN ou são críticos no SAMAE nas áreas comercial, de campo e de suporte; habilitação (e-Sfinge) | ED-05 (resto), 06, 07, 08, 12–20, 22–27, 29–38, 41, 46, 58, 62 | 116,4 | VISAN ≥ 120; SAMAE sem falha em 2.4–2.19, 2.28 e Item 3 |
 | B | canais digitais, BI, qualidade e GIS (VISAN q, s, t; SAMAE 2.22, 2.24, 2.26, 2.27 e "Item 0") e itens de proposta | ED-01 (resto), 04, 28, 39, 40, 42, 43, 47–55 | 74,5 | VISAN ≥ 146 e nenhuma falha crítica no SAMAE, em dois ensaios seguidos (prontidão de POC) |
 | C | aderência total fora das POCs e serviços de implantação | ED-09, 10, 11, 44, 56, 57, 59 | 15,4 | requisitos restantes da matriz viva atendidos ou com pedido de esclarecimento registrado |
 | **Total até 2028** | | **60** | **219,6 (≈ 51 meses-pessoa)** | |
 | 2029, sob demanda (fora do total) | compras (parte retirada da ED-58), ED-60 (RH) e ED-61 (orçamento) | 2 e parte da ED-58 | 9 | — |
 
-Distribuição das 13,3 semanas antes do P4: P0 1,4 (P0.44 e serviços do provedor na P0.27); P1 0,4 (P1.25); P2 4
+Distribuição das 13,3 semanas antes do P4: P0 1,4 (P0.44 e serviços do provedor, que passaram da P0.27 à LC.2 na
+v2.7); P1 0,4 (P1.25); P2 4
 (P2.20 e cinco severidades na P2.15); P3 7,5 (P3.22, P3.23 e itens do ADR-0025 na P3.15 e P3.16). Se a P0.30 encontrar
 optantes de débito automático, a parte FEBRABAN 150 da ED-27 (≈ 1,5) vai para o P3 (P3.24): o P3 passa a 9 semanas e a
 onda A a 114,9, sem mudar o total.
@@ -562,9 +584,9 @@ cerca de 7,5 semanas-pessoa à prontidão e mantém a necessidade (≈ 4,6 pesso
 
 **Recomendações.**
 
-1. **Proteger o go-live.** As 13,3 semanas acrescidas ao P0–P3 são, em grande parte, necessidade do próprio piloto
-   (retificação de conta e relatórios operacionais), não de edital. Se o P2 ou o P3 atrasar, escorregam primeiro, nesta
-   ordem: a meta de ensaio do P3 (o ensaio continua, só a meta sai do aceite), os itens do ADR-0025 da P3.15 e da P3.16
+1. **Proteger a homologação local do piloto** (antes, go-live; plano v2.7). As 13,3 semanas acrescidas ao P0–P3 são,
+   em grande parte, necessidade do próprio piloto (retificação de conta e relatórios operacionais), não de edital. Se
+   o P2 ou o P3 atrasar, escorregam primeiro, nesta ordem: a meta de ensaio do P3 (o ensaio continua, só a meta sai do aceite), os itens do ADR-0025 da P3.15 e da P3.16
    e as tarefas fora do caminho crítico já listadas no plano; P2.20 e P3.22 ficam, porque o paralelo (GL.2) depende
    delas.
 2. **Contratar no prazo.** A equipe foi decidida (ADR-0029): 4 a 5 desenvolvedores a partir de agosto de 2027. O
@@ -574,17 +596,25 @@ cerca de 7,5 semanas-pessoa à prontidão e mantém a necessidade (≈ 4,6 pesso
    VISAN. A onda C (implantação, frota, ativos, telefonia, Bolsa Família) não pesa na POC e soma cerca de 15 semanas.
    O ERP construído soma 10,5 semanas além da integração (ED-62): o almoxarifado (7,5) na onda A, junto da OS, desde a
    v2.6, e a frota (3) na onda C. Compras, RH e orçamento ficam para 2029.
-4. **Mirar primeiro editais do tipo SAMAE.** Exigem um atestado, que o piloto pode dar no fim de 2027. Os do tipo VISAN
-   exigem dois atestados, 8.500 ligações e e-Sfinge em operação, o que dificilmente se reúne antes do segundo semestre
-   de 2028.
+4. **Mirar primeiro editais do tipo SAMAE.** Exigem um atestado, que o piloto só pode dar depois do lançamento
+   comercial e da primeira operação real (ADR-0033): entre agosto e outubro de 2028 na opção B do plano §2.4, mais
+   tarde nas opções A e C. Os do tipo VISAN exigem dois atestados, 8.500 ligações e e-Sfinge em operação, o que
+   dificilmente se reúne antes de 2029.
 5. **Recalibrar a cada fase.** Comparar o tempo real das tarefas do P0 ao P3 com a escala P/M/G e corrigir as
    estimativas deste documento antes de assumir datas de licitação.
+6. **Escolher o momento do lançamento** (plano v2.7). A meta de licitações no 2º semestre de 2028 (ADR-0029) só se
+   mantém com o lançamento logo depois das tarefas originais do P4 (opção B do plano §2.4), com o piloto em produção
+   desde o 1º semestre de 2028 e cerca de 15 semanas-pessoa de lançamento concorrentes com a trilha. Com a leitura
+   literal da decisão (opção A), a primeira licitação com POC vai para o 3º trimestre de 2029; com a C, para o 2º
+   trimestre de 2029.
 
 ### 8.2 Outros riscos
 
 | Risco | Efeito | Mitigação |
 |---|---|---|
-| Piloto escolhido não ser público, catarinense ou contratado com cláusula de atestado | Sem atestado em 2027; nenhum edital com POC disputável em 2028 | Critério na P0.30 (até 13/11/2026); cliente privado como alternativa para editais do tipo SAMAE |
+| Piloto escolhido não ser público, catarinense ou contratado com cláusula de atestado | Sem atestado depois do lançamento; nenhum edital com POC disputável | Critério na P0.30 (até 13/11/2026); cliente privado como alternativa para editais do tipo SAMAE |
+| Atestado só depois do lançamento comercial (ADR-0033) | Com a leitura literal (opção A), primeira licitação com POC a partir do 3º trimestre de 2029; as de 2028 ficam perdidas | Escolha do momento do lançamento até 13/11/2026 (plano §2.4); opção B para manter 2028; piloto como cliente inicial em produção logo no lançamento; cláusula de atestado com prazo contado do corte |
+| POC em nuvem exigida pelos editais e ambiente de demonstração local até o lançamento | Nenhuma POC de licitação antes do lançamento | Ensaios internos no ambiente local; ambiente de demonstração na nuvem criado pela IaC do lançamento (plano LC.2) antes da primeira POC |
 | Balanço de dois exercícios | Inabilitação em 2028 sem os balanços de 2026 e 2027 | P0.44: empresa licitante e contador desde já |
 | Editais de 2028 diferentes dos de 2026 | Entregas feitas para o texto antigo; itens novos sem tarefa | Matriz viva com requisito canônico; extração em 3 dias úteis; go/no-go (§7.3) |
 | Severidade 1 em 2 horas e monitoramento 24/7 sem equipe (ADR-0025) | Multas cumulativas de 5% a 10% da fatura por severidade | Equipe do ADR-0029; não assinar o nível Setor Público antes da escala de plantão ativa (até 31/01/2028, ED-05) |

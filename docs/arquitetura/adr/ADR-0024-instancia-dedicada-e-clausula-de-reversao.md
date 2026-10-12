@@ -14,6 +14,12 @@
   o SaaS continua em Linux na AWS (ADR-0011); a URA segue a integração mínima do ADR-0028 (item k), com API de consulta
   para URA de terceiros; a consequência negativa sobre Windows fica tratada por este ajuste; decisão do dono do
   produto.
+- **Ajuste de 12/10/2026 (v2.7), antes de qualquer implementação:** o SaaS do item 1 roda na AWS só a partir do
+  lançamento comercial (ADR-0033); a IaC parametrizada (tarefa derivada do P0) e a instância dedicada do item 2 passam
+  à fase de lançamento ou depois dela (plano LC.2, ED-04); o pacote de reversão do item 3 pode ser construído antes, na
+  onda B, porque o ambiente local do ADR-0033 já reúne PostgreSQL 17, Keycloak, armazenamento compatível com S3 e cofre
+  próprio em contêineres; o item 4 lê-se com as exceções do ADR-0010 ajustadas na v2.7 (emulador de S3 e cofre local
+  no ambiente de desenvolvimento); decisão do dono do produto.
 
 ## Contexto
 

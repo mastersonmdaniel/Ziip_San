@@ -16,6 +16,15 @@
   campo); compras, RH e orçamento do ERP passam a 2029, sob demanda (ADR-0028, ajuste v2.5); o FEBRABAN 150 legado
   pode subir para o P3 se o piloto tiver optantes de débito automático (ADR-0028, ajuste v2.5); decisão do dono do
   produto.
+- **Ajuste de 12/10/2026 (v2.7), antes de qualquer implementação:** o marco "Go-live piloto" (jun–jul/2027) passa a
+  "Homologação local do piloto": dois ou três ciclos de faturamento paralelo no ambiente local, com dados sintéticos ou
+  anonimizados do cliente comparados com o sistema dele, e ensaio de POC, sem dado pessoal real, corte do legado nem
+  emissão fiscal real; o P0 deixa de criar homologação e produção na nuvem, backup e PITR no RDS e o R1 sobre o KMS,
+  que passam a versões locais atrás de interfaces; entra depois do P4 a fase final "Lançamento comercial", com a
+  infraestrutura na AWS (ADR-0011), o pentest, a carga e o paralelo reais, o corte do legado e o primeiro atestado, com
+  data a escolher pelo dono do produto (plano §2.4); o marco "primeiro cliente em produção" do Contexto passa a ser o
+  corte no lançamento; as tarefas derivadas "critério de aceite do go-live" e "plano de faturamento paralelo e de corte
+  do legado" leem-se para a homologação local e para o lançamento; decisão do dono do produto (ADR-0033).
 
 ## Contexto
 

@@ -13,6 +13,11 @@
   continua vedado assinar contrato neste nível antes da escala ativa; o padrão do produto também passa a usar as
   severidades S1 a S5 (ADR-0020, ajuste v2.5), e a linha "Prioridades P1–P4" do Contexto fica como registro do padrão
   anterior; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.7), antes de qualquer implementação:** o nível Setor Público só é contratável a partir do
+  lançamento comercial, primeira produção na AWS (ADR-0033); a disponibilidade de 99,9%, o relatório mensal de
+  disponibilidade e de aderência e o plantão da S1 valem a partir dele, e o ambiente local não tem meta de
+  disponibilidade; a escala de plantão continua montada até 31/01/2028 (ADR-0029, item 5) e passa a ser acionada a
+  partir da primeira produção; o item 4 refere-se à arquitetura na AWS; decisão do dono do produto.
 
 ## Contexto
 

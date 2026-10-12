@@ -8,6 +8,13 @@
   `sa-east-1`), o que tira o perfil `vault` do caminho de produção; seção "Exceções" ampliada com o Apache Superset
   (ADR-0027), o ODA File Converter como ferramenta de implantação e a ingestão de telemetria por REST e arquivo, sem
   broker (ADR-0028); decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.7), antes de qualquer implementação:** com o desenvolvimento local até o lançamento
+  comercial (ADR-0033), o cofre local e um emulador compatível com S3 deixam de estar congelados e passam a componentes
+  do ambiente local, em perfil próprio do compose, com portas em 127.0.0.1, credenciais fora do repositório e o cofre
+  fora do modo dev; ficam registrados na seção "Exceções"; na produção, a partir do lançamento, valem KMS, Secrets
+  Manager e S3 (ADR-0011); a consequência negativa sobre o Vault dev "enquanto a hospedagem não for decidida" e a
+  tarefa "perfil `vault` documentado para o desenvolvimento do R1" leem-se com o cofre local como provedor do R1 até o
+  lançamento; o congelamento "até o go-live" (O que muda no roadmap) vale até o lançamento; decisão do dono do produto.
 
 ## Contexto
 
@@ -91,4 +98,6 @@ não atenda, registrado aqui com o ADR de origem.
 | ClamAV | Arquivos enviados por usuários: anexos de chamados (ADR-0020) e logos de tenant (ADR-0016). O PostgreSQL não faz varredura de malware | Contêiner junto do processo `worker`, sem porta publicada; o arquivo fica em quarentena até a varredura e só então é liberado; infectado permanece bloqueado e gera alerta; atualização de assinaturas monitorada | Serviço equivalente da hospedagem (ADR-0011), atrás da mesma interface de varredura | Decisão do dono do produto, 12/10/2026 |
 | Apache Superset (licença Apache 2.0) | Consultas livres, modelo semântico e cubos exigidos pelos editais (`18g` §2.5), que o PostgreSQL e os relatórios nativos não atendem | Contêiner próprio, a partir do P4, lendo só a réplica de leitura; SSO pelo Keycloak; uma role de banco por tenant com restrição pela identidade da conexão; modo síncrono, metadados no PostgreSQL; Redis e Celery não entram sem nova exceção | Nenhuma prevista; relatórios e painéis padrão continuam nativos | ADR-0027 |
 | ODA File Converter (gratuito, licença proprietária) | Conversão de DWG atual para DXF na migração do cadastro técnico; o GDAL aberto não lê DWG 2007+ (`18d` §4, decisão 3) | Ferramenta da etapa assistida de implantação, fora da imagem de produção e do `docker compose`; o produto importa só formatos abertos; licença de uso comercial conferida antes do primeiro uso | SDK licenciado da ODA ou conversor equivalente, se a licença mudar | ADR-0028, item b |
+| Cofre local (Vault ou OpenBao) | R1 e segredos de execução no ambiente local até o lançamento comercial; KMS e Secrets Manager só existem a partir dele (ADR-0033) | Contêiner em perfil próprio do compose, porta em 127.0.0.1, fora do modo dev (armazenamento persistente, sem root token fixo), credenciais fora do repositório; nunca guarda segredo de produção | AWS KMS e Secrets Manager no lançamento (ADR-0011), atrás das mesmas interfaces | ADR-0033 |
+| Emulador compatível com S3 | Armazenamento de objetos no ambiente local até o lançamento, inclusive o teste de retenção imutável do XML autorizado (plano P2.18) | Contêiner em perfil próprio do compose (o SeaweedFS já existente ou equivalente, escolhido na P0.27), porta em 127.0.0.1; só dado sintético ou anonimizado | S3 com Object Lock no lançamento, atrás da mesma interface | ADR-0033 |
 | Ingestão de telemetria por REST e arquivo (sem componente novo) | Telemetria de grandes consumidores com alarmes (TR-210) e paradas da ETA (SG-810) | Endpoint na `api` e importação no `worker`, em tabela particionada no PostgreSQL; registrada aqui para deixar explícito que não há broker; MQTT e OPC seguem congelados e só entram por ADR de exceção com cliente pagante | — | ADR-0028, item j |

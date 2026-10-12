@@ -8,6 +8,15 @@
   disponibilidade, cinco severidades com prazo de solução, exportação em 10 dias úteis, consulta pós-contrato de até
   120 dias, relatórios em 2 ou 5 minutos); o item 1 passa a abranger RNF-01 a RNF-71, com o novo RNF-71 (tempo de
   relatório e arquivo); decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.7), antes de qualquer implementação:** com o desenvolvimento local até o lançamento
+  comercial (ADR-0033), as metas de disponibilidade e continuidade (RNF-10 a RNF-12 e RNF-14 a RNF-17), o pentest antes
+  da produção (RNF-36), a residência dos dados (RNF-44) e o plantão (RNF-54) passam a critério de aceite a partir do
+  lançamento; antes dele, backup, PITR, restauração e derrubada de réplica são ensaiados no ambiente local com o tempo
+  registrado, sem meta; as metas de desempenho e carga (RNF-01 a RNF-09, RNF-20 a RNF-26, RNF-70 e RNF-71) continuam
+  critério das fases indicadas, medidas no ambiente local ou no runner do CI, e são medidas de novo na AWS no ensaio de
+  implantação (plano LC.1); os valores das metas não mudam, só o momento em que valem; as tarefas derivadas "primeiro
+  ensaio de restauração" (P0) e "página de status, plantão e SLA no contrato" (P3) leem-se: ensaio local no P0;
+  página publicada, plantão e SLA em contrato no lançamento; decisão do dono do produto.
 
 ## Contexto
 

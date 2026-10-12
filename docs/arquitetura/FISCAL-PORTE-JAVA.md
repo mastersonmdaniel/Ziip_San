@@ -2,7 +2,8 @@
 
 - **Data:** 12/10/2026
 - **Decisão de origem:** ADR-0003 (motor fiscal do Ziip Cloud portado para Java; NFAg-e e NFS-e sobre ele); emissão
-  da conta em campo: ADR-0031; hospedagem: ADR-0011, aceito (AWS `sa-east-1`, KMS e S3 com Object Lock)
+  da conta em campo: ADR-0031; hospedagem: ADR-0011, aceito (AWS `sa-east-1`, KMS e S3 com Object Lock), implantada
+  só no lançamento comercial, com desenvolvimento e homologação locais até lá (ADR-0033, plano v2.7)
 - **Fonte lida (somente leitura):** `Ziip Clould\Ziip-cloud-source` (C#/.NET 8): README, SECURITY, `Nfse.Domain`,
   `Nfse.Application`, `Nfse.Infrastructure` (Sefin, Xml, Security, Adn, Nfe, Persistence) e `tests\Nfse.Tests`.
 - **Destino lido:** `commercial/sigsan-billing`, `shared/sigsan-security`, `docs/levantamento/11`, `14` e `17`,
@@ -63,7 +64,7 @@ UTF-8 sem BOM (E1229); `dhEmi` em America/Sao_Paulo (E0008); validação de chav
 
 | Item | Adaptação |
 |---|---|
-| Cofre | Sai do arquivo e vai para coluna de `fiscal_certificates`, cifrado por `FieldCipher` com contexto `fiscal_certificates.pfx`. `FieldCipher` trabalha com `String`: cifrar o PFX em Base64 ou acrescentar variante `byte[]`. Depende do `TenantKeyProvider` de produção sobre o AWS KMS (ADR-0011; plano P0.28), que **ainda não existe** (diário, R1) |
+| Cofre | Sai do arquivo e vai para coluna de `fiscal_certificates`, cifrado por `FieldCipher` com contexto `fiscal_certificates.pfx`. `FieldCipher` trabalha com `String`: cifrar o PFX em Base64 ou acrescentar variante `byte[]`. Depende do `TenantKeyProvider`: sobre o cofre local até o lançamento (plano P0.28, ADR-0033) e sobre o AWS KMS a partir dele (ADR-0011; plano LC.4); **ainda não existe** (diário, R1) |
 | Abertura do certificado | `KeyStore.getInstance("PKCS12")` em memória; zerar `char[]` da senha e `byte[]` do PFX após o uso; nada em `javax.net.ssl.keyStore` global |
 | mTLS | `SSLContext` por emitente, em cache com TTL curto e invalidação na troca do certificado; *truststore* próprio com as ACs ICP-Brasil (o C# embute `icp-brasil-acs.pem`) somado ao `cacerts`; revogação com `PKIXRevocationChecker`. Se a cadeia dos servidores da Sefin/SEFAZ exige ICP-Brasil: **a confirmar** |
 | Ambiente | Por tenant e por emitente, com trava de plataforma (seção 3.6) |
@@ -80,7 +81,8 @@ UTF-8 sem BOM (E1229); `dhEmi` em America/Sao_Paulo (E0008); validação de chav
   (c) certificado em nuvem de prestador credenciado ICP-Brasil com assinatura remota, que resolve a assinatura XML mas
   não o mTLS sem `KeyManager` próprio; viabilidade técnica e contratual **a confirmar**.
 - **Certificado de demonstração autoassinado** como recurso de produto (no Java, só em teste); licenciamento,
-  standalone/SQLite, Asaas e `NfeDistClient`. A distribuição ADN fica para depois do go-live.
+  standalone/SQLite, Asaas e `NfeDistClient`. A distribuição ADN fica para depois da primeira produção, no lançamento
+  comercial (ADR-0033).
 
 ## 3. Desenho alvo em Java
 
@@ -148,8 +150,12 @@ lote.
 - Ambiente por emitente: `SIMULATED`, `HOMOLOGATION` (produção restrita na NFS-e; homologação SVRS/SEFAZ na NFAg-e),
   `PRODUCTION`.
 - `tpAmb=1` exige três condições: `ziipsan.fiscal.production-allowed=true` na implantação (falsa em dev, CI e
-  homologação), *flag* do tenant aprovada por dois papéis distintos e certificado ICP-Brasil válido. Nos *clusters* de
-  teste, o egresso para os hosts de produção da Sefin e das SEFAZ fica bloqueado na rede.
+  homologação, e em todo perfil do ambiente local até o lançamento comercial, ADR-0033), *flag* do tenant aprovada por
+  dois papéis distintos e certificado ICP-Brasil válido. No ambiente local e nos *clusters* de teste, o egresso para os
+  hosts de produção da Sefin e das SEFAZ fica bloqueado na rede.
+- A produção restrita da NFS-e Nacional e a homologação da SEFAZ (`tpAmb=2`) são usadas a partir do ambiente local,
+  sem emissão real; o certificado digital dessa homologação é pendência do dono do produto (plano §2.4), porque o
+  e-CNPJ traz o CPF do responsável e nenhum dado pessoal real entra na base local (ADR-0033, item 5).
 
 ### 3.7 Contingência
 
@@ -169,11 +175,13 @@ Se o leiaute exigir XML assinado no momento da emissão, a forma volta ao dono d
   recusa UPDATE e DELETE, inclusive para o papel da aplicação); o hash entra na `HashChain`. `source` indica a origem:
   `ZIIPSAN` (autorizado pela emissão do Ziip SAN) ou `LEGACY_IMPORT` (importado na migração, com o sistema ou emissor
   de origem).
-- XML anteriores ao go-live (ADR-0022, item 7; plano P2.19): o importador confere assinatura, protocolo de
+- XML anteriores à primeira produção (ADR-0022, item 7; plano P2.19): o importador confere assinatura, protocolo de
   autorização, emitente igual ao do tenant e duplicidade pela chave de acesso; o aceito é gravado como recebido, sem
-  regerar nem reformatar, e segue a mesma retenção imutável; o recusado vai para o relatório do lote.
-- Cópia em S3 com Object Lock, com bloqueio de retenção (WORM), na hospedagem decidida (ADR-0011, aceito; plano P2.18);
-  MinIO segue congelado (ADR-0010).
+  regerar nem reformatar, e segue a mesma retenção imutável; o recusado vai para o relatório do lote. No ambiente local
+  o importador é testado só com XML sintéticos assinados com certificado de teste; os XML reais do piloto, que trazem
+  dado pessoal do destinatário, são importados só na produção, no lançamento (plano LC.10; ADR-0033).
+- Cópia com bloqueio de retenção (WORM): até o lançamento, no emulador de S3 local (exceção do ADR-0010, ajuste v2.7;
+  plano P2.18); a partir dele, em S3 com Object Lock na hospedagem decidida (ADR-0011, aceito; plano LC.5).
 - Prazo de retenção é parâmetro do tenant (G6), com piso de 120 meses para o histórico de faturamento (ADR-0015); o
   C# cita "5+ anos"; prazo fiscal **a confirmar**.
 - O XML autorizado é servido no portal do consumidor e na área do tenant exatamente como gravado, com conferência do
@@ -243,16 +251,18 @@ do R4: **a confirmar (tributarista do tenant e MOC)**.
 
 | Fase | Entregas | Critério de aceite |
 |---|---|---|
-| **P0** (out–nov/2026) | Esqueleto `sigsan-fiscal`; `TaxEngine` e `DpsId` com vetores; assinador JSR 105 com testes de XXE e assinatura cruzada; `CertificateVault` sobre `FieldCipher` (bloqueado até o `TenantKeyProvider` sobre o AWS KMS, P0.28); simulador; trava de produção; obtenção de MOC/XSD da NFAg-e e do XSD da DPS; confirmação do ato no DOU | Vetores do C# passam no Java; nenhum PFX fora da coluna cifrada; *build* sem `production-allowed` não gera `tpAmb=1` |
-| **P1** (nov/2026–jan/2027) | NFS-e Nacional completa (emissão, cancelamento, substituição, reconciliação) com builder do XSD; outbox, numeração com trava e idempotência; mTLS com *truststore* ICP-Brasil; builder e validador NFAg-e contra o XSD no simulador | Emissão, cancelamento e substituição aceitos na **produção restrita** com o certificado do emitente piloto; teste de concorrência sem número repetido nem perdido; queda simulada da Sefin sem nota duplicada |
-| **P2 Ciclo** (jan–mar/2027) | Integração com o ciclo do R4 (conta fechada → NFAg-e); cliente do autorizador por UF; DANFAG; cancelamento e inutilização; contingência conforme MOC; teste de carga | NFAg-e autorizada em **homologação** da SEFAZ do piloto em amostra de contas reais anonimizadas; ciclo reexecutado sem segunda NFAg-e; carga do tenant sintético dentro da meta ou desvio documentado |
+| **P0** (out–nov/2026) | Esqueleto `sigsan-fiscal`; `TaxEngine` e `DpsId` com vetores; assinador JSR 105 com testes de XXE e assinatura cruzada; `CertificateVault` sobre `FieldCipher` (bloqueado até o `TenantKeyProvider` sobre o cofre local, P0.28; o KMS só no lançamento, LC.4); simulador; trava de produção; obtenção de MOC/XSD da NFAg-e e do XSD da DPS; confirmação do ato no DOU | Vetores do C# passam no Java; nenhum PFX fora da coluna cifrada; *build* sem `production-allowed` não gera `tpAmb=1` |
+| **P1** (nov/2026–jan/2027) | NFS-e Nacional completa (emissão, cancelamento, substituição, reconciliação) com builder do XSD; outbox, numeração com trava e idempotência; mTLS com *truststore* ICP-Brasil; builder e validador NFAg-e contra o XSD no simulador | Emissão, cancelamento e substituição aceitos na **produção restrita**, a partir do ambiente local, com o certificado definido no plano §2.4; teste de concorrência sem número repetido nem perdido; queda simulada da Sefin sem nota duplicada |
+| **P2 Ciclo** (jan–mar/2027) | Integração com o ciclo do R4 (conta fechada → NFAg-e); cliente do autorizador por UF; DANFAG; cancelamento e inutilização; contingência conforme MOC; teste de carga | NFAg-e autorizada em **homologação** da SEFAZ do piloto, a partir do ambiente local, em amostra de contas anonimizadas na origem, sem dado pessoal real na base local (ADR-0033); ciclo reexecutado sem segunda NFAg-e; carga do tenant sintético dentro da meta ou desvio documentado |
 | **P3** (mar–mai/2027) | Painel de rejeições e reprocesso; exportação WORM; *runbook*; pentest com foco no cofre e no isolamento; alerta de vencimento do certificado | Pentest sem achado alto aberto; restauração do XML autorizado testada; *runbook* exercitado |
-| **Go-live piloto** (jun–jul/2027) | Faturamento paralelo com o legado | Durante o paralelo o Ziip SAN **não emite em produção** (o legado é o emissor); só simulador ou homologação. Produção liga no corte, com aprovação dupla registrada |
+| **Homologação local do piloto** (jun–jul/2027; antes "go-live piloto") | Faturamento paralelo local com dados sintéticos ou anonimizados, comparado com o sistema do piloto (ADR-0033) | O Ziip SAN **não emite em produção** (o legado é o emissor); só simulador ou homologação da SEFAZ (`tpAmb=2`), a partir do ambiente local |
+| **Lançamento comercial** (data no plano §2.4) | Carga real, paralelo com dado real e corte na AWS (LC.10 a LC.13) | Durante o paralelo real o legado continua emissor; produção (`tpAmb=1`) liga no corte (LC.13), com aprovação dupla registrada e `production-allowed=true` só na implantação de produção |
 | **P4, trilha de editais** (ED-19) | Emissão simultânea em campo conforme o ADR-0031: faixa de numeração por aparelho, autorização posterior em contingência, inutilização das sobras, fila de divergências ligada à retificação | Vetores comuns iguais no JVM e no emulador Android; reenvio da mesma tarefa não gera segunda NFAg-e; contingência testada na homologação da SEFAZ conforme o leiaute vigente |
 
-**Riscos e mitigação:** obrigatoriedade em 01/12/2026 contra go-live em jun/2027 (o piloto precisa de outro emissor no
-intervalo, plano §1); MOC/XSD em minuta (builder gerado do XSD, vetores por versão); KMS ainda não provisionado (cofre só com
-dados sintéticos até o R1 na P0.28, que precisa fechar antes do P1); contingência da NFAg-e indefinida para a emissão
-em campo (ADR-0031: conferir o manual antes da ED-19); arredondamento e base de IBS/CBS sem norma lida (regra
+**Riscos e mitigação:** obrigatoriedade em 01/12/2026 contra a primeira produção só no lançamento comercial (o piloto
+precisa de outro emissor no intervalo, plano §1 e §5); MOC/XSD em minuta (builder gerado do XSD, vetores por versão);
+KMS só no lançamento (cofre local com dados sintéticos ou anonimizados até lá; R1 sobre o cofre local na P0.28, que
+precisa fechar antes do P1); certificado da homologação local com CPF do responsável (pendência do plano §2.4);
+contingência da NFAg-e indefinida para a emissão em campo (ADR-0031: conferir o manual antes da ED-19); arredondamento e base de IBS/CBS sem norma lida (regra
 isolada e parametrizada, vetor oficial antes da homologação); emissão acidental em produção (seção 3.6); vazão do
 autorizador no ciclo (carga no P2).

@@ -12,6 +12,18 @@
   semestre de 2028; a tarefa derivada "Decisão de equipe para editais" fica cumprida, e o parceiro de implantação e
   treinamento presencial (ED-11) e o custo da equipe seguem como pendências do plano (§2.4); decisão do dono do
   produto.
+- **Ajuste de 12/10/2026 (v2.7), antes de qualquer implementação:** o go-live do item 1 passa a homologação local do
+  piloto, sem dado real (ADR-0033), e venda com produção só existe a partir do lançamento comercial; o ambiente de
+  demonstração do item 2 é local até o lançamento e ganha versão na nuvem pela IaC do lançamento antes da primeira POC
+  de licitação, que exige o sistema em nuvem; no item 3, os "ciclos em produção" só começam no lançamento: homologação
+  local com dado anonimizado não é execução do objeto nem gera atestado, e o primeiro atestado fica de 7 a 9 meses
+  depois do início do lançamento (ADR-0033, seção "Atestados e licitações"); com o lançamento depois de toda a trilha
+  (leitura literal), o atestado vai a meados de 2029 e a primeira licitação com POC ao 2º semestre de 2029; para manter
+  licitações no 2º semestre de 2028, a alternativa coerente é lançar logo depois das tarefas originais do P4 (janeiro
+  de 2028), com o piloto como cliente inicial em produção e a trilha seguindo depois do lançamento; a escolha é
+  pendência do dono do produto (plano §2.4, até 13/11/2026); a consequência negativa "um só atestado no fim de 2027" e
+  o critério da P0.30 ("cláusula de emissão do atestado depois dos ciclos em produção") leem-se com essas datas;
+  decisão do dono do produto.
 
 ## Contexto
 
