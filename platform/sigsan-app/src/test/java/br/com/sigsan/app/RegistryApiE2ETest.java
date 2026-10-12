@@ -248,6 +248,26 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                 .andExpect(jsonPath("$.documentMasked").value("***.982.247-**"))
                 .andExpect(jsonPath("$.unitCount").value(0))
                 .andExpect(content().string(not(containsString(CPF_DIGITS))));
+
+        // alteração sem documento mantém o atual; o telefone principal troca de linha sem violar o índice único
+        send(put("/api/registry/customers/" + customerId), operator, """
+                {"personType": "PF", "name": "%s", "version": 0, "billing": {"dueDay": 15},
+                 "emails": [{"address": "maria.e2e@exemplo.com.br"}],
+                 "phones": [{"number": "+5511987654321", "type": "MOBILE", "primary": false},
+                            {"number": "+5511912345678", "type": "RESIDENTIAL", "primary": true}]}"""
+                .formatted(CUSTOMER_NAME))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(1))
+                .andExpect(jsonPath("$.documentMasked").value("***.982.247-**"))
+                .andExpect(jsonPath("$.billing.dueDay").value(15))
+                .andExpect(jsonPath("$.phones.length()").value(2))
+                .andExpect(jsonPath("$.phones[?(@.number == '+5511912345678')].primary", hasItem(true)))
+                .andExpect(jsonPath("$.phones[?(@.number == '+5511987654321')].primary", hasItem(false)));
+        // mudar o tipo de pessoa sem reenviar o documento: 422
+        send(put("/api/registry/customers/" + customerId), operator, """
+                {"personType": "PJ", "name": "%s", "version": 1}""".formatted(CUSTOMER_NAME))
+                .andExpect(status().isUnprocessableContent())
+                .andExpect(jsonPath("$.errors[0].code").value("DOCUMENT_REQUIRED"));
     }
 
     @Test
@@ -472,6 +492,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                 .doesNotContain(CUSTOMER_NAME)
                 .doesNotContain("maria.e2e@exemplo.com.br")
                 .doesNotContain("5511987654321")
+                .doesNotContain("5511912345678")
                 .doesNotContain("Cadastro duplicado no teste")
                 .doesNotContain("Portão azul"));
         assertThat(auditRows("entity_id = '" + customerId + "' AND action = 'CREATE'"))

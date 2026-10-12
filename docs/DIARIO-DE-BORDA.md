@@ -860,3 +860,23 @@ Feita no branch `e3-json` (worktree separada), em paralelo à E3.
 - **Pendente**: integração com o backend da E5 (`/api/me`, validação de `iss`/`aud`/`tenant_id`); `maplibre-gl` 6 e
   `react-router-dom` 7 (avisos de produção); rotação de refresh token desligada de propósito (com `sessionStorage` cada aba
   tem o seu e a rotação derrubaria a aba que renovasse depois).
+
+### E5 — API do cadastro (12/10/2026) ✔ (branch `e5-api`)
+
+- **Cifra configurada (`CryptoConfig`, sigsan-app)**: `TenantKeyProvider` só com `sigsan.crypto.provider=dev-env`
+  (chave de `sigsan.crypto.dev-master-key` em teste ou `SIGSAN_DEV_MASTER_KEY`), recusado em perfil com "prod"; sem provider
+  a aplicação não sobe e diz por quê. `FieldCipher`, `BlindIndex`, `FieldProtector`, `CustomerDocumentService` como beans.
+  Perfil `local` usa `dev-env` por padrão; o provider do Vault continua por fazer.
+- **API REST** (`commercial/sigsan-registry`, pacotes `application` e `web`): `localities`, `commercial-sectors`, `blocks`,
+  `reading-routes` (sem exclusão: as tabelas não têm `deleted_at`; DELETE = 405 com o que usar), `categories`,
+  `subcategories`, `water-statuses`, `sewer-statuses`, `customers` (+ `/search`, `/{id}/reveal-document` com papel
+  `registry.reveal-document` e finalidade obrigatória), `consumer-units` (+ `/search`, `/{id}/customers`, `/{id}/history`;
+  matrícula gerada com DV, inscrição única, `UnitConsistency`, avisos confirmáveis por `confirmTokens`) e `settings`
+  (`public.tenant_settings`). Leitura `VIEWER`+, escrita `OPERATOR`/`MANAGER`/`ADMIN`; outro tenant = 404. Contrato real e
+  diferenças em `docs/frontend-cadastro.md` §5.4 (ex.: `reveal-document` exige corpo `{purpose}`).
+- **V3_3**: `consumer_units.deleted_reason` redigido na auditoria (texto livre que a API passou a gravar).
+- **Testes**: `CryptoConfigTest` (4) e `RegistryApiE2ETest` (10, banco real, dois tenants: fluxo completo, página, 409,
+  exclusão lógica, busca por CPF com/sem pontuação, `GET ?q=` → 400, reveal 403/200 com registro sem o valor, isolamento 404,
+  `X-Tenant-ID` divergente 403, auditoria sem CPF nem nome).
+- **Fora (pendente)**: rascunhos e `validate-step`, `block-faces`, catálogos sem tabela, CEP, exportação CSV, endereço e tipo
+  de cliente (filtros `city`/`customerTypeId` = 400), layout de inscrição por tenant, montagem das listas sem N+1.

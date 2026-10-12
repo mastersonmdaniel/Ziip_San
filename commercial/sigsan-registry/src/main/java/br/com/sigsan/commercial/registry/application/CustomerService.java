@@ -165,6 +165,8 @@ public class CustomerService {
         checks.throwIfAny();
         apply(c, in);
         RegistryContext.touch(c);
+        // Versão nova a cada PUT, mesmo quando só os contatos mudam: a versão protege o cadastro inteiro.
+        c.setUpdatedAt(OffsetDateTime.now());
         customers.saveAndFlush(c);
         replaceContacts(c, in);
         return view(c);

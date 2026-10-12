@@ -131,6 +131,34 @@ Base: `/api/registry` (o proxy do Vite **não** remove mais o prefixo `/api`). T
 5. PUT do imóvel envia `customers[]` com **o conjunto desejado de vínculos vigentes** (não há tela de "encerrar relação").
 6. DELETE com corpo `{reason}`.
 
+### 5.4 O que o backend implementa (E5, 12/10/2026)
+
+Código em `commercial/sigsan-registry` (`application/` e `web/`), provado por `RegistryApiE2ETest` (`platform/sigsan-app`).
+Confirmado: página `{content, page, size, totalElements, totalPages}` (`page` a partir de 0, `size` padrão 25, máximo 100),
+`sort=campo,asc|desc` só com as chaves de cada recurso (outra chave: 400), `version` no corpo do PUT (diferente: **409 sem
+`errors`/`warnings`**), DELETE lógico com `{reason}`, `confirmTokens[]` no corpo, 422 com `errors[]`/`warnings[]` (só avisos:
+`type` `confirmacao-necessaria`), busca de `customers` e `consumer-units` por `POST .../search`. Campo que o backend não
+conhece é ignorado (não derruba o corpo). Leitura: `VIEWER`, `OPERATOR`, `MANAGER`, `ADMIN`; escrita: `OPERATOR`, `MANAGER`,
+`ADMIN`; recurso de outro tenant: 404.
+
+| Recurso | Implementado | Diferença em relação a `types.ts` |
+|---|---|---|
+| `localities` | GET lista (`q` nome ou código, `blocked`), GET, POST, PUT | Campos: `code`, `name`, `municipalityIbge`, `blocked`. Sem `costCenter`, `headquarters`, `computerized`. **DELETE = 405** (`exclusao-indisponivel`): a tabela não tem exclusão lógica; usar `blocked=true`. |
+| `commercial-sectors` | idem, filtro `localityId` | Sem `alternative`. `localityId` não muda depois de criado (422 `IMMUTABLE`). DELETE = 405. |
+| `blocks` | idem, filtros `sectorId`, `localityId`, `readingRouteId`; `q` só código | Rede é booleana: `hasWaterNetwork`/`hasSewerNetwork` (não `waterNetwork: NONE/PARTIAL/FULL`). Sem `name`, `censusSector`, `autoIncrementLot`. `sectorId` imutável. DELETE = 405. |
+| `reading-routes` | idem, filtro `active` | Só `code`, `name`, `active`: a tabela não tem localidade, setor nem `maxUnits`. DELETE = 405 (usar `active=false`). |
+| `categories`, `subcategories` (filtro `categoryId`), `water-statuses`, `sewer-statuses` | GET lista (`q` código ou nome, `active`), GET, POST, PUT; sem DELETE | Situações: `billable` (coluna `bills`), `requiresNetwork` (≈ `hasNetwork`), `connected` (≈ `hasConnection`), `supplies` (água), `minimumConsumption` **booleano**; sem `abbreviation` nem consumo mínimo numérico. Categoria: só `code`, `name`, `publicEntity`, `active`. Subcategoria: `category{id,code,name}`. |
+| `customers` | GET lista (sem `q`: **400** `busca-na-url`; filtros `personType`, `includeDeleted`), `POST /search`, GET, POST, PUT, DELETE | Resposta: `documentMasked` (nunca o documento), `billing.dueDay`, `emails[{address, primary, consentId}]`, `phones[{number, type, primary}]`, `unitCount`, `deletedAt`. Sem `customerType`, `rg*`, `motherName`, `activityBranch`, `parentCustomer`, `addresses`, `billing` além de `dueDay`, `documentExemptionReason` (sem coluna; ignorados). Telefone: `type` vira rótulo; ramal e nome do contato não são gravados. Busca: `q` CPF/CNPJ válido casa pelo índice cego (com ou sem pontuação); senão nome (`nameMatch` `contains`/`startsWith`). `customerTypeId` e `city` na busca: **400** `filtro-indisponivel`. Cliente com vínculo vigente não pode ser excluído (409). |
+| `customers/{id}/reveal-document` | `POST` com papel `registry.reveal-document` | **O corpo é obrigatório**: `{ "purpose": "..." }` (finalidade do acesso, registrada na auditoria sem o valor). Sem o papel: 403; sem finalidade: 422. Resposta `{ document, expiresInSeconds: 15 }`. O `revealDocument()` de `resources.ts` precisa enviar o corpo. |
+| `consumer-units` | GET lista (sem `q`: 400; filtros `localityId`, `sectorId`, `blockId`, `waterStatusId`, `sewerStatusId`, `categoryId`, `routeId`, `includeDeleted`), `POST /search` (mais `q` e `cep`), GET, POST, PUT, DELETE | Matrícula gerada pelo servidor (`registration` + `registrationDv`, módulo 11). Payload aceito: `status`, `blockId`, `lot`, `sublot`, `localityId`/`sectorId` (opcionais, conferidos com a quadra), `readingRouteId` (padrão: a da quadra), `readingSequence`, `address{cep, streetName, number, complement, neighborhood, city, state}`, `customers[]` (conjunto desejado de vínculos vigentes), `subcategories[{subcategoryId, economies}]`, `builtAreaM2`, `waterStatusId`, `sewerStatusId`, `dueDay`, `notes`. Os demais campos de `ConsumerUnitInput` (face, perfil, poço, pavimento, IPTU, entrega, imóvel principal, `draftId`...) não têm coluna e são ignorados. `q` da busca: inscrição formatada, CPF/CNPJ do titular vigente, matrícula (`12345` ou `12345-6`) ou nome do titular. `profileId`, `numberFrom`, `numberTo`: 400. Sort: `inscription` (padrão), `registration`, `createdAt`. Regras do servidor: inscrição única (cita a matrícula), sequência de leitura ocupada (aviso), economias acima do limite (aviso), situação x rede da quadra, ≥1 usuário vigente, exatamente 1 nome na conta, documento do usuário (parâmetro), quadra/setor/localidade bloqueada. |
+| `consumer-units/{id}/customers` | GET | Como em `UnitCustomerLink`. |
+| `consumer-units/{id}/history` | GET | Eventos `STATUS` (unit_status_history) e `AUDIT` (trilha campo a campo, já redigida: dado pessoal aparece como `[redacted]`). Não há tipo `INSCRIPTION` separado (a mudança aparece como `AUDIT`). `actor` é o id do usuário, não o nome. |
+| `settings` | GET | `{useBlockFace, requireReadingSequence, requireUserDocument, economiesSoftLimit}`, lidos de `public.tenant_settings` (chaves `registry.use_block_face`, `registry.require_reading_sequence`, `registry.require_user_document`, `registry.economies_soft_limit`); ausente = `false`, `false`, `true`, `50`. |
+
+**Fora da E5 (sem rota):** `consumer-units/drafts`, `consumer-units/validate-step`, `block-faces`, catálogos sem tabela
+(`property-profiles`, `customer-types`, `activity-branches`, `bill-delivery-modes`, `sewer-discharges`, `water-sources`,
+`well-types`, `pavements`), `addresses/cep/{cep}` e exportação CSV. O frontend recebe 404 nessas rotas.
+
 ## 6. Componentes comuns (seção 6.2)
 
 | Componente | Observações |
