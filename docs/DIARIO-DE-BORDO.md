@@ -1041,3 +1041,18 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - **Equipe:** 4 pessoas a partir de ago/2027 (ADR-0029); 5ª vaga abre se a velocidade de 02/08 a 31/10/2027 ficar
   abaixo de 90% do planejado.
 - Escopo continua **só documentação**; a execução do P0 local aguarda ordem do dono.
+
+### 12/10/2026 — Projeto de enriquecimento do GIS de cadastro técnico (plano v2.10)
+
+- Pesquisa em `docs/levantamento/gis/19a`–`19e`: Gisbase (Hidrogeo; documentos de Nova Trento; o edital 09/2020 da
+  pasta é de São Ludgero), concorrentes nacionais e internacionais (Esri Utility Network, Giswater, TEKSI, Sansys,
+  Waterfy), normativos (NBR 12586/12587 de cadastro, NR 12/2025 e NR 16/2026 da ANA, SIRGAS2000, ET-EDGV, ISO 19157),
+  melhores práticas de modelo de dados e requisitos de GIS em 17 editais públicos.
+- Projeto em `docs/arquitetura/GIS-CADASTRO-TECNICO.md` e **ADR-0034**: água, esgoto, drenagem e resíduos no mesmo
+  modelo; catálogo brasileiro de fábrica extensível por tenant (curvas por ângulo, tês, reduções, caps, registros,
+  ventosas, hidrantes, PV, bocas de lobo, contêineres, rotas); edição por pacotes com revisão, ciclo de vida e histórico;
+  precisão por feição com meta por tenant; simbologia padrão Ziip sobrescrevível; QGIS com role por usuário e views;
+  EPANET e SWMM juntos; núcleo do GIS entre P1 e P3 (GIS-01 a GIS-08) e avançado na trilha (GIS-09 a GIS-19).
+- Esforço do GIS ≈61 semanas-pessoa (22 antes do P4, 39 na trilha). Total até 2028 passa de ≈220 para ≈260. Risco: o
+  núcleo antes do P4 cai sobre o dono sozinho; pendências de capacidade no §2.4 do plano.
+- MCPs Perplexity e Brave com chave inválida nesta sessão; pesquisa feita com WebSearch, WebFetch e markitdown.

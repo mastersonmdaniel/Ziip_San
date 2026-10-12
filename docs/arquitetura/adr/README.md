@@ -52,6 +52,7 @@ cada tarefa entra.
 | [0031](ADR-0031-calculo-offline-e-nota-fiscal-na-emissao-em-campo.md) | Cálculo offline e nota fiscal na emissão em campo | Aceito | 12/10/2026 |
 | [0032](ADR-0032-material-da-os-com-alcada-e-baixa-automatica.md) | Material da OS com alçada e baixa automática | Aceito | 12/10/2026 |
 | [0033](ADR-0033-desenvolvimento-local-e-aws-no-lancamento.md) | Desenvolvimento local até o lançamento comercial; AWS no lançamento | Aceito | 12/10/2026 |
+| [0034](ADR-0034-gis-cadastro-tecnico.md) | GIS e cadastro técnico de redes | Aceito | 12/10/2026 |
 
 ## Referências
 
@@ -59,5 +60,7 @@ cada tarefa entra.
 - `docs/levantamento/editais/18a` a `18h` — extrações e matrizes de aderência aos editais VISAN Videira PE 06/2026 e
   SAMAE São Ludgero PE 2/2026 (base dos ADRs 0011, aceito, e 0023 a 0032).
 - `docs/levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md` — consolidado das entregas de edital, com o esforço
-  recalculado no plano v2.5 (base do ADR-0029).
+  recalculado no plano v2.5 (base do ADR-0029) e no plano v2.10 (GIS, ADR-0034).
+- `docs/levantamento/gis/19a` a `19e` — Gisbase, concorrentes, normas, modelo de dados e editais de GIS (base do
+  ADR-0034 e de `docs/arquitetura/GIS-CADASTRO-TECNICO.md`).
 - `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` — plano canônico: decisões (§2), mapa Flyway (§3) e fases P0–P4 (§4).

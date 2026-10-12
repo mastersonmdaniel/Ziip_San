@@ -15,6 +15,13 @@
   Manager e S3 (ADR-0011); a consequência negativa sobre o Vault dev "enquanto a hospedagem não for decidida" e a
   tarefa "perfil `vault` documentado para o desenvolvimento do R1" leem-se com o cofre local como provedor do R1 até o
   lançamento; o congelamento "até o go-live" (O que muda no roadmap) vale até o lançamento; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (GIS, v2.10), antes de qualquer implementação:** com o GIS do ADR-0034, a seção "Exceções"
+  passa a registrar a extensão pgRouting no PostgreSQL (validação em lote da rede e rotas de coleta sobre logradouros),
+  sem processo novo, e o endpoint de banco próprio para o QGIS, com TLS e auditoria, fora do PgBouncer da `api`, sem
+  componente novo; a linha do ODA File Converter passa a valer desde a P3.26 (núcleo do GIS, antes do P4) e não só na
+  trilha. Continuam congelados GeoServer, QGIS Server, Martin e pg_tileserv: os tiles saem da `api`, e servidor de
+  mapas (Martin, como plano B de desempenho, ou WMS servidor exigido por edital) só entra por nova linha nesta seção;
+  decisão do dono do produto.
 
 ## Contexto
 
@@ -100,4 +107,6 @@ não atenda, registrado aqui com o ADR de origem.
 | ODA File Converter (gratuito, licença proprietária) | Conversão de DWG atual para DXF na migração do cadastro técnico; o GDAL aberto não lê DWG 2007+ (`18d` §4, decisão 3) | Ferramenta da etapa assistida de implantação, fora da imagem de produção e do `docker compose`; o produto importa só formatos abertos; licença de uso comercial conferida antes do primeiro uso | SDK licenciado da ODA ou conversor equivalente, se a licença mudar | ADR-0028, item b |
 | Cofre local (Vault ou OpenBao) | R1 e segredos de execução no ambiente local até o lançamento comercial; KMS e Secrets Manager só existem a partir dele (ADR-0033) | Contêiner em perfil próprio do compose, porta em 127.0.0.1, fora do modo dev (armazenamento persistente, sem root token fixo), credenciais fora do repositório; nunca guarda segredo de produção | AWS KMS e Secrets Manager no lançamento (ADR-0011), atrás das mesmas interfaces | ADR-0033 |
 | Emulador compatível com S3 | Armazenamento de objetos no ambiente local até o lançamento, inclusive o teste de retenção imutável do XML autorizado (plano P2.18) | Contêiner em perfil próprio do compose (o SeaweedFS já existente ou equivalente, escolhido na P0.27), porta em 127.0.0.1; só dado sintético ou anonimizado | S3 com Object Lock no lançamento, atrás da mesma interface | ADR-0033 |
+| pgRouting (extensão do PostgreSQL, sem processo novo) | Validação de componentes conexos da rede em lote e roteirização da coleta de resíduos sobre o grafo de logradouros (ADR-0034); traçado e isolamento continuam em Java sobre a topologia persistida | Extensão criada no init do banco, como a PostGIS, nunca pela migration de tenant; versão conferida na P0.26 (documental) e na LC.1 (prática) | Rotina própria em Java, se a extensão não estiver disponível | ADR-0034 |
+| Endpoint de banco para o QGIS (sem componente novo) | Edição e consulta pelo QGIS com role individual por usuário (ADR-0034, decisão 7); o modo transaction do PgBouncer da `api` não é adequado a sessões longas do QGIS | Listener próprio do PostgreSQL com TLS e verificação do servidor, acesso por VPN ou IP de origem, conexões e comandos auditados; no ambiente local até o lançamento (ADR-0033) | Endpoint dedicado do RDS no lançamento | ADR-0034 |
 | Ingestão de telemetria por REST e arquivo (sem componente novo) | Telemetria de grandes consumidores com alarmes (TR-210) e paradas da ETA (SG-810) | Endpoint na `api` e importação no `worker`, em tabela particionada no PostgreSQL; registrada aqui para deixar explícito que não há broker; MQTT e OPC seguem congelados e só entram por ADR de exceção com cliente pagante | — | ADR-0028, item j |

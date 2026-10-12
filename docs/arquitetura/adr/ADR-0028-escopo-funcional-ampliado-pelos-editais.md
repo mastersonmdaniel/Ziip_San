@@ -18,6 +18,24 @@
   reserva e baixa automática pelo ADR-0032) e a frota (veículos e equipes de campo), integra-se por API e/ou arquivo
   com Betha, IPM e Fiorilli, e compras, RH e orçamento ficam para 2029, sob demanda, o que cumpre a tarefa derivada
   "Definir o recorte"; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (GIS, v2.10), antes de qualquer implementação:** o item (b) passa a ser lido com o ADR-0034
+  e com `docs/arquitetura/GIS-CADASTRO-TECNICO.md`. (1) O núcleo do GIS (modelo e catálogo, topologia, pacotes de
+  edição, vínculo com imóvel, ligação e ramal, mapa web de consulta com tiles vetoriais, importador DWG/DXF/SHP/GPKG e
+  temáticos) sai da trilha do P4 para o P1 a P3, antes da homologação local do piloto; edição web completa (onda A),
+  QGIS, manobras, drenagem, resíduos, campo, EPANET e SWMM, exportação e OGC (onda B) e ativos (onda C) seguem na
+  trilha. (2) Item b.2: a edição pelo QGIS deixa de ser escrita nas tabelas autorizadas com `WITH CHECK` e passa a ser
+  feita só por views com gatilhos `INSTEAD OF`, que gravam no pacote de edição do usuário e passam pela validação, com
+  revisão por outra pessoa antes de entrar na rede em operação; a conexão usa endpoint próprio com TLS e auditoria,
+  fora do pooler; o projeto QGIS é gerado pelo produto; role individual, mapeamento ao tenant pela identidade da role e
+  acesso restrito por rede continuam. (3) Item b.4: manobras e isolamento passam a usar a topologia persistida
+  (`gis_node`/`gis_arc` com `node_1_id` e `node_2_id`), e não mais o `gis_network_element` com o
+  `NetworkTopologyBuilder` por proximidade, que fica só como view de compatibilidade até a exportação hidráulica ler o
+  modelo novo; a manobra inclui aviso aos afetados e OS em lote. (4) Drenagem e resíduos sólidos entram como domínios
+  do mesmo modelo, e a hidráulica cobre EPANET e SWMM. (5) A migração do cadastro técnico continua com o ODA File
+  Converter na etapa assistida e GDAL no `worker`, agora com staging, perfis Corsan e Saneago e relatório de qualidade
+  ISO 19157, publicada por pacote revisado. Em "O que muda no código", o segundo item lê-se pelo ADR-0034; na tabela de
+  tarefas derivadas, as linhas de GIS, QGIS, etapa DWG → DXF e manobras leem-se com as fases do ADR-0034; decisão do
+  dono do produto.
 
 ## Contexto
 

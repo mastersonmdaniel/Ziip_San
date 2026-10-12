@@ -9,7 +9,7 @@ Data: 12/10/2026. Produto Ziip SAN (código interno SIGSAN, renomeado `ziipsan` 
 portal e canais), [18g](18g-aderencia-operacao-qualidade-bi.md) (operação, qualidade da água e BI) e
 [18h](18h-aderencia-nao-funcionais-servicos-habilitacao.md) (não funcionais, serviços, POC e habilitação).
 
-As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4, atualizado pelas v2.5 a v2.9 (abaixo)
+As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4, atualizado pelas v2.5 a v2.10 (abaixo)
 ([PLANO-EXECUCAO-PDCA-R0-R9.md](../../PLANO-EXECUCAO-PDCA-R0-R9.md)) e contra as decisões do dono do produto de
 12/10/2026, registradas nos ADRs [0011](../../arquitetura/adr/ADR-0011-hospedagem-a-decidir.md) (aceito),
 [0023](../../arquitetura/adr/ADR-0023-estrategia-de-editais-e-prova-de-conceito.md),
@@ -61,6 +61,21 @@ volta do fim de julho de 2028 (faixa de junho a agosto). Se a velocidade medida 
 de 90% da planejada, a quinta pessoa é contratada no meio do caminho. Efeitos neste documento: §1, §4 (H6), §8.1
 (tabela da opção A, gatilho e recomendação 2) e §8.2.
 
+**Atualização de 12/10/2026 (plano v2.10).** Oito decisões do dono do produto sobre o GIS e o cadastro técnico
+([ADR-0034](../../arquitetura/adr/ADR-0034-gis-cadastro-tecnico.md); projeto em
+[GIS-CADASTRO-TECNICO.md](../../arquitetura/GIS-CADASTRO-TECNICO.md), com as entregas GIS-01 a GIS-19). O núcleo do GIS
+(modelo, catálogo, topologia, pacotes revisados, vínculo com imóvel, ligação e ramal, mapa web de consulta, importador
+e temáticos, cerca de 22 semanas-pessoa) passa para o P1 a P3, antes da homologação local do piloto: a ED-52 sai da
+onda B, a parte de migração da ED-55 vai à P3.26 e a base da ligação da ED-13 (0,5) vai à P2.23. A ED-53 passa à onda
+A; a ED-54 (4 → 5), a ED-55 (4 → 5 na trilha, agora QGIS e importação ampliada) e a ED-56 (3 → 4, com a NR 16/2026)
+crescem; entram as ED-63 (EPANET e SWMM), ED-64 (drenagem), ED-65 (resíduos sólidos), ED-66 (campo GIS) e ED-67
+(exportação, devolução da base e OGC), todas na onda B. Antes do P4, cerca de 35,3 semanas-pessoa (antes 13,3); onda
+A, 120,9 (antes 116,4); B, 87,5 (antes 74,5); C, 16,4 (antes 15,4); trilha, 224,8 (antes 206,3); até 2028, 260,1
+(antes 219,6). Prontidão de POC em cerca de 216,8 (antes 199) e trilha completa com as tarefas originais do P4 em cerca
+de 233,2 (antes 215): com 4 contratados, folga de cerca de 6% até 30/09/2028 (antes 15%) e prontidão por volta de
+meados de agosto de 2028. Efeitos neste documento: §1, §3.2, §5.1 (ED-13, ED-20, ED-52 a ED-56, ED-63 a ED-67), §5.2,
+§5.3, §5.4, §8.1 e §8.2.
+
 **Convenções.** Esforço na escala do plano (§4): **P** até 2 dias, **M** até 1 semana, **G** mais de 1 semana, para uma
 pessoa com agentes. Para somar, P vale 0,4 semana, M vale 1 semana e G vale a estimativa da matriz de origem ou, na
 falta dela, 3 semanas; incerteza de ±30%. Um mês-pessoa equivale a 4,33 semanas. Entregas de edital levam o código
@@ -99,7 +114,10 @@ licitações no 2º semestre de 2028 (§8). Com a opção A do lançamento (plan
 partir do 3º trimestre de 2029, com a contratação mantida; a trilha completa até 30/09/2028 pede cerca de 3,8
 pessoas-equivalentes (§8.1). Na v2.9, o dono do produto fixou a equipe em 4 contratações: folga de cerca de 15% na
 trilha completa, prontidão de POC por volta do fim de julho de 2028 e quinta contratação por gatilho de velocidade
-(§8.1).
+(§8.1). Na v2.10, o GIS do ADR-0034 eleva o total até 2028 a cerca de 260 semanas-pessoa (35 antes do P4, das quais 22
+do núcleo do GIS sobre o dono sozinho no P1 a P3, e 225 na trilha); com 4 contratados, a folga da trilha completa cai a
+cerca de 6% e a prontidão vai para meados de agosto de 2028; capacidade para o núcleo e gatilho da quinta contratação
+ficam como pendências do dono do produto (plano §2.4; §8.1).
 
 **Habilitação.** O primeiro atestado vem do piloto, que precisa ser público, em Santa Catarina, contratado por
 dispensa ou por CPSI (LC 182/2021) e com cláusula de atestado (critério já incluído na P0.30). Desde o plano v2.7
@@ -229,11 +247,11 @@ Cerca de 1.037 das 1.415 linhas pertencem a seções críticas, e o "Item 1.1.2"
 | Item crítico | Hoje | Fim do P3 (v2.4) | Entregas que fecham |
 |---|---|---|---|
 | 1.1.2 (todo o TR, inclusive SLA, segurança e LGPD) | falha | falha | todas |
-| "Item 0" (todos os módulos em base única, nativos) | falha (BI, GIS, omnichannel e laboratório inexistentes) | falha | ED-42, ED-47, ED-50, ED-52 |
+| "Item 0" (todos os módulos em base única, nativos) | falha (BI, GIS, omnichannel e laboratório inexistentes) | falha (núcleo do GIS presente desde o P3, v2.10) | ED-42, ED-47, ED-50, ED-52 (P1 a P3) |
 | 2.4 Banco de dados | falha (sem produção) | passa no ensaio local (PostgreSQL 17); na POC real, só com o RDS do lançamento (ADR-0011, ADR-0033) | — |
 | 2.5 Desempenho (10 s; arquivos e relatórios em 5 min; alertas) | falha | parcial (P0.23, P2.9, P3.22; faltam alertas ao cliente) | ED-07, ED-05 |
 | 2.7 Controle de acesso (inclui Active Directory) | falha | falha (sem AD nem perfis definidos pelo cliente) | ED-06 |
-| 2.8 Cadastro | falha (tela bloqueada) | falha (catálogos 2.8.10, ligações) | ED-12, ED-13 |
+| 2.8 Cadastro | falha (tela bloqueada) | falha (catálogos 2.8.10, ligações; base da ligação na P2.23 desde a v2.10) | ED-12, ED-13, ED-53 (unidades operacionais, SG-148 a SG-152) |
 | 2.9 Hidrometria | falha | falha | ED-14, ED-17 |
 | 2.10 Leituras e consumos | falha | parcial (P2.5, P2.7) | ED-15, ED-17 |
 | 2.11 Leitura e faturamento móvel | falha | falha | ED-18, ED-19, ED-16 |
@@ -248,7 +266,7 @@ Cerca de 1.037 das 1.415 linhas pertencem a seções críticas, e o "Item 1.1.2"
 | 2.22 Omnichannel | falha | falha | ED-42, ED-43 |
 | 2.24 App de autoatendimento nas lojas | falha | falha | ED-39 |
 | 2.26 Qualidade da água | falha | falha | ED-50, ED-51 |
-| 2.27 SIG/GIS (e implantação do GIS, 3.11.10) | falha | falha | ED-52 a ED-55 |
+| 2.27 SIG/GIS (e implantação do GIS, 3.11.10) | falha | parcial desde a v2.10: mapa, camadas, pesquisas, temáticos, vínculo comercial e importação DWG/SHP (núcleo, P1.26 a P3.27); faltam edição web, QGIS, manobras e WFS | ED-52 (P1 a P3), ED-53 a ED-55, ED-63, ED-67 |
 | 2.28 Relatórios gerenciais | falha | parcial (P3.22) | ED-46 |
 | Item 3 Manutenção e suporte (severidades, telefone, 99,9%) | falha | parcial (P2.15 com cinco severidades, ADR-0025) | ED-05 |
 
@@ -310,7 +328,8 @@ As matrizes propuseram 74 entregas (18d: 16; 18e: 17; 18f: 16; 18g: 13; 18h: 12)
 abaixo junta as equivalentes, separa as que misturavam etapas de natureza diferente (app de campo, relatórios) e
 acrescenta os módulos de ERP que o ADR-0028 (item i) decidiu construir. Resultado: 62 entregas. Com o recorte da v2.5
 (ADR-0028, item i, ajustado), 60 ficam na trilha até 2028; ED-60, ED-61 e a parte de compras da ED-58 passam a 2029,
-sob demanda, e continuam listadas para manter a numeração.
+sob demanda, e continuam listadas para manter a numeração. Na v2.10, o ADR-0034 acrescenta as ED-63 a ED-67 (GIS):
+67 entregas, 65 até 2028; a ED-52, parte da ED-55 e a base da ED-13 passam ao P1 a P3.
 
 Colunas: **Fase/onda** (fase do plano ou onda da trilha, §5.2); **Esf.** em semanas-pessoa; **POC** com a alínea da
 VISAN (V) e a seção do SAMAE (S, "crít." quando crítica). Requisitos por faixa de IDs; "exceto" remete ao que outra ED
@@ -337,14 +356,14 @@ cobre.
 | ED | Entrega | Origem | Requisitos cobertos | POC | Fase/onda | Esf. | Dependências | ADR |
 |---|---|---|---|---|---|---|---|---|
 | ED-12 | Cadastro comercial ampliado e catálogos auxiliares: RG e filiação cifrados com finalidade, anexos, faixa de logradouro, unidades por órgão pagador, termo de adesão, catálogos da SAMAE 2.8.10, endereço alternativo | 18d-E1, 18d-E2; 18e §2.19; 18f (destino cadastro) | TR-134, TR-135, TR-141, TR-151, TR-577–TR-580, TR-585, TR-611, TR-777; SG-070, SG-071, SG-078, SG-083, SG-091, SG-095–SG-144 (22 catálogos), SG-554–SG-557, SG-562, SG-591, SG-1004 | V c; S 2.8 crít. | P4 onda A | 2 | P1.3, P1.20 | — |
-| ED-13 | Ligações de água e esgoto como entidade, com catálogos técnicos e atualização pelo atendimento | 18d-E3 | TR-578; SG-098, SG-100, SG-101, SG-106, SG-117, SG-118, SG-124, SG-125, SG-136, SG-555 | V c; S 2.8 crít. | P4 onda A | 3 | P1.3, P3.4 | — |
+| ED-13 | Ligações de água e esgoto como entidade, com catálogos técnicos e atualização pelo atendimento | 18d-E3 | TR-578; SG-098, SG-100, SG-101, SG-106, SG-117, SG-118, SG-124, SG-125, SG-136, SG-555 | V c; S 2.8 crít. | P4 onda A; base da ligação (`service_connections`) na P2.23 desde a v2.10 | 2,5 (+0,5 na P2.23) | P1.3, P3.4, P2.23 | 0034 |
 | ED-14 | Hidrometria: parque, estoque, lacre, instalação, retirada, troca, aferição, validade Inmetro com OS em lote | 18d-E4; 18f §2.15 | TR-156–TR-170, TR-591, TR-592; SG-099, SG-113, SG-114, SG-135, SG-157–SG-172, SG-568, SG-569 | V d; S 2.9 crít. | P4 onda A | 3 | P2.5, P3.4, P1.20 | — |
 | ED-15 | Ciclo de leitura: roteiro com reordenação, sequenciamento, boletim de contingência, regra de condomínio, autoleitura | 18d-E5; 18e-E17 (parte) | TR-172, TR-173, TR-188, TR-190; SG-174, SG-175, SG-185, SG-186, SG-190, SG-192, SG-755 | S 2.10 crít. | P4 onda A | 2 | P2.5, P2.7, P3.3 | — |
 | ED-16 | Recadastramento: lote, coleta no app, aprovação campo a campo, aplicação e cinco relatórios | 18d-E11 | TR-234, TR-684–TR-688; SG-232, SG-910–SG-914 | S 2.11 e 2.28 crít. | P4 onda A | 3 | ED-18, P1.3 | — |
 | ED-17 | Telemetria e supervisório por REST e arquivo: leituras AMR, grandes consumidores com alarmes, registro manual de paradas da ETA; MQTT só sob demanda | 18d-E10; 18g-E-AMR, E-SUP | TR-167, TR-210; SG-169, SG-208, SG-209, SG-810 | S 2.9, 2.10 e 2.26 crít. | P4 onda A | 2 | P1.9, P2.3, P2.7 | 0028 (j) |
 | ED-18 | App de campo Android (Capacitor), base: projeto, build e assinatura, autenticação pelo navegador do sistema com PKCE e token no Keystore, dispositivo registrado com bloqueio remoto, banco local cifrado, leitura offline com sincronização idempotente por `task_id`, fotos por ocorrência. É a P4.4 redefinida | 18d-E6 (parte), 18d §4 (decisão 1), 18f §4 (D1) | TR-621, TR-639 (APK e banco local); SG-782; base de ED-19 e ED-20 | V e; S 2.11 crít. | P4 onda A (P4.4) | 5 | P2.3, P2.7 | 0026, 0030 |
 | ED-19 | Emissão simultânea e impressão térmica: cálculo da conta no dispositivo pelo mesmo módulo Java do servidor, vetores comuns no JVM e no emulador, pacote da rota com versões de parâmetro, recálculo no servidor e fila de divergências, Zebra série ZQ com editor de leiaute ZPL e CPCL, código de barras e QR Pix, comunicados, retidas, reimpressão, bobinas, cabeçote e bateria, chave da NFAg-e em contingência se o leiaute permitir | 18d-E6, 18e-E6 | TR-207, TR-209, TR-221–TR-232, TR-237–TR-244, TR-404; SG-220–SG-230, SG-235–SG-241, SG-388 | V e (POC-15, 16, 21); S 2.11 crít. | P4 onda A | 8 | ED-18, P2.5, P2.6, P2.20, P3.2; leiaute de contingência da NFAg-e | 0026, 0031 |
-| ED-20 | OS em campo e acompanhamento: app de OS offline com fotos, GPS e crachá, material usado por tarefa, trilha do leiturista, mapa por status, painel de deslocamento, tempo e paradas | 18f-ENT-05, 18d-E7 | TR-193, TR-196, TR-200–TR-205, TR-208, TR-217, TR-620–TR-652, TR-762, TR-767; SG-195, SG-201–SG-207, SG-216, SG-506–SG-519, SG-989, SG-994 | V p; S 2.18 e 2.12.5 crít. | P4 onda A | 5 | ED-18, ED-36, ED-52 | 0026, 0030 |
+| ED-20 | OS em campo e acompanhamento: app de OS offline com fotos, GPS e crachá, material usado por tarefa, trilha do leiturista, mapa por status, painel de deslocamento, tempo e paradas | 18f-ENT-05, 18d-E7 | TR-193, TR-196, TR-200–TR-205, TR-208, TR-217, TR-620–TR-652, TR-762, TR-767; SG-195, SG-201–SG-207, SG-216, SG-506–SG-519, SG-989, SG-994 | V p; S 2.18 e 2.12.5 crít. | P4 onda A | 5 | ED-18, ED-36, ED-52 (núcleo, P3.25) | 0026, 0030 |
 
 **Faturamento, arrecadação, cobrança e contabilidade**
 
@@ -391,12 +410,17 @@ cobre.
 | ED-49 | Sete painéis padrão: arrecadação, atendimento, cobrança, faturamento, medição, operacional, indicadores estratégicos | 18g-E-PAIN | TR-908–TR-1007 e SG-1082–SG-1189, exceto os da ED-48 e da ED-62; ED-060 | V t (POC-77–81); S 2.29 | P4 onda B (P4.3) | 7 | ED-47, ED-48 | 0027 |
 | ED-50 | Qualidade da água operacional: catálogo normativo versionado, plano de amostragem, cadeia de custódia, conformidade, bloco na conta, portal, SISAGUA assistido, relatórios | 18g-E-QUAL | SG-789–SG-821 (exceto SG-810), SG-802, SG-804, SG-1007–SG-1016; TR-225 (parte), TR-780–TR-789, TR-846, TR-1008 | S 2.26 e 2.28 crít. | P4 onda B | 9 | P2.5, P2.8, P3.3, ED-45 | 0028 (a) |
 | ED-51 | Apoio à ISO/IEC 17025: laboratório com escopo, calibração, Westgard, incerteza, validação por segunda pessoa | 18g-E-LIMS17025 | SG-792, SG-822 | S 2.26 crít. | P4 onda B (entrega em até 6 meses da implantação de quem exigir) | 5 | ED-50 | 0028 (a) |
-| ED-52 | GIS web: visualizador MapLibre com tiles do PostGIS, camadas, WMS, pesquisas, seleção, simbologia, temáticos, importação SHP e GeoPackage, OS no mapa | 18d-E12 | TR-534, TR-1009–TR-1024, TR-1054, TR-1057–TR-1063; SG-491, SG-823–SG-836, SG-842, SG-869–SG-883, SG-888, SG-1365 | S 2.27 crít. | P4 onda B | 4 | P0.4, P2.5, P3.4 | 0028 (b) |
-| ED-53 | GIS: edição e integração com o cadastro, permissões por camada, setores, projetos e obras, retroalimentação pelas OS, camadas de resíduos e drenagem | 18d-E13; 18g-E-RES (camadas) | TR-154, TR-626, TR-652, TR-1011, TR-1025–TR-1053; SG-148–SG-152, SG-154, SG-837–SG-866 (exceto os da ED-54) | S 2.27 crít. | P4 onda B | 5 | ED-52, ED-13, ED-36 | 0028 (b) |
-| ED-54 | Rede lógica, traçado e manobras: isolamento por válvulas, consumidores afetados, OS em lote | 18d-E14 | TR-1036, TR-1055, TR-1056, TR-1064, TR-1065; SG-153, SG-852, SG-859, SG-867, SG-868, SG-887, SG-889 | S 2.27 crít. | P4 onda B | 4 | ED-53, ED-36 | 0028 (b) |
-| ED-55 | Migração do cadastro técnico (DWG → DXF pelo ODA File Converter na implantação, importador de formatos abertos com GDAL) e acesso QGIS por role individual, com auditoria por gatilho e acesso restrito por rede | 18d-E15; 18h-E8 (M88) | TR-1066, TR-1067; SG-884–SG-886, SG-1334–SG-1363; ED-080 | S 2.27 e 3.11.10 crít.; implantação VISAN | P4 onda B | 4 | P1.9, P0.4, ED-52 | 0028 (b), 0010 |
-| ED-56 | Ativos e manutenção de rede: cadastro técnico com vínculo patrimonial, manutenção preventiva e corretiva ligada ao GIS | 18g-E-ATIVOS | TR-155 (parte patrimonial), TR-1010 (parte); SG-1180 | — | P4 onda C | 3 | ED-53, ED-32 | — |
+| ED-52 | Núcleo do GIS (ADR-0034; GIS-01 a GIS-06 e GIS-08): modelo de papel topológico fixo com classes, tipos e catálogo de fábrica extensíveis, histórico e metadados de precisão; topologia persistida e validação contínua; pacotes revisados e "rede na data"; vínculo feição ↔ imóvel ↔ ligação ↔ ramal; tiles vetoriais, simbologia padrão e mapa web de consulta (camadas, WMS, pesquisas, seleção); temáticos, precisão, OS no mapa e relatório de extensão | 18d-E12 | TR-534, TR-1009–TR-1024, TR-1054, TR-1057–TR-1063; SG-491, SG-823–SG-836, SG-842, SG-869–SG-883, SG-888, SG-1365 | S 2.27 crít. | **P1 a P3** (P1.26, P1.27, P2.21 a P2.23, P3.25, P3.27; antes, onda B) | 17,5 | P0.4, P0.19, P1.3, P1.9, P2.5, P3.1, P3.4, P3.22 | 0028 (b), 0034 |
+| ED-53 | GIS: edição web completa (GIS-09): editor de feições, cadastro de unidades operacionais, integração com o cadastro (ligação desenhada vira ligação), permissões por camada e operação, projetos e obras, pacotes de projeto e de as-built, retroalimentação pelas OS | 18d-E13 | TR-154, TR-626, TR-652, TR-1011, TR-1025–TR-1047, TR-1050–TR-1053; SG-148–SG-152, SG-154, SG-837–SG-866 (exceto os da ED-54) | S 2.8 e 2.27 crít. | P4 onda A (antes B; v2.10) | 5 | ED-52, ED-13, ED-36 | 0028 (b), 0034 |
+| ED-54 | Traçados, isolamento e manobras (GIS-11): montante e jusante, setores de manobra, válvulas a fechar, imóveis e clientes sensíveis afetados, aviso pela ED-41, OS em lote, período de desabastecimento, áreas de influência e polígonos de roteamento | 18d-E14 | TR-1036, TR-1055, TR-1056, TR-1064, TR-1065; SG-153, SG-852, SG-859, SG-867, SG-868, SG-887, SG-889 | S 2.27 crít. | P4 onda B | 5 (antes 4) | ED-52, ED-36, ED-41 | 0028 (b), 0034 |
+| ED-55 | Migração do cadastro técnico e acesso QGIS: importador DWG (via DXF pelo ODA File Converter), DXF, SHP e GPKG com staging, perfis e relatório ISO 19157 no núcleo (GIS-07, P3.26); na trilha, QGIS por role individual com escrita só por views `INSTEAD OF` que gravam no pacote, projeto gerado e endpoint próprio (GIS-10), e importação ampliada com DGN, INP, casamento de unidades e implantação em três etapas (GIS-18) | 18d-E15; 18h-E8 (M88) | TR-1066, TR-1067; SG-884–SG-886, SG-1334–SG-1363; ED-080 | S 2.27 e 3.11.10 crít.; implantação VISAN | P3 (P3.26) e P4 onda B | 4 + 5 (antes 4) | P1.9, P1.25, ED-52; P3.8 para o QGIS | 0028 (b), 0010, 0034 |
+| ED-56 | Ativos, manutenção de rede e inventário regulatório (GIS-19): cadastro com vínculo patrimonial e códigos MCPSB da NR 16/2026, extensão por subdivisão, conciliação com a contabilidade, manutenção preventiva e corretiva ligada ao GIS, risco e plano de renovação | 18g-E-ATIVOS | TR-155 (parte patrimonial), TR-1010 (parte); SG-1180 | — | P4 onda C | 4 (antes 3) | ED-53, ED-54, ED-32, ED-36 | 0034 |
 | ED-57 | Integrações de cadastro: beneficiários de Bolsa Família e BPC por lista com base legal (sem API pública) | 18d-E16 (parte) | TR-144 | V (avaliável) | P4 onda C | 1 | P1.5 | — |
+| ED-63 | Hidráulica (GIS-12): EPANET (água) e SWMM 5.2 (esgoto e drenagem) gerados da topologia, com demanda do consumo faturado; importação de `.inp` EPANET e SWMM como pacote; mapeamento tipo → elemento por tenant | ADR-0034 (decisão 8); 19e | SG-1339 (parte INP); exportação EPANET em 9 de 12 editais de software (19e) | — | P4 onda B (nova na v2.10) | 4 | ED-52, ED-64 | 0034 |
+| ED-64 | Drenagem no GIS (GIS-13): catálogo, regras de conectividade, declividade e sentido, estado de conservação, foto e inspeção (NR 12/2025 da ANA), sub-bacias para o SWMM, relatório do cadastro de drenagem | ADR-0034 (decisão 1); 18g-E-RES (camadas) | TR-1048 | — | P4 onda B (nova na v2.10) | 3 | ED-52, ED-53 | 0034 |
+| ED-65 | Resíduos sólidos no GIS (GIS-14): contêineres, PEV, ecopontos, lixeiras, pontos de coleta e de descarte irregular, setores e rotas de coleta sobre logradouros com pgRouting, imóvel ligado ao setor para a taxa | ADR-0034 (decisão 1); 18g-E-RES (camadas) | TR-1049; SG-1340 (parte de resíduos) | — | P4 onda B (nova na v2.10) | 3 | ED-52, ED-25 | 0034, 0010 |
+| ED-66 | Campo GIS no app de campo (GIS-15): pacote offline por área, coleta e edição como deltas em pacote revisado, GNSS/RTK externo, fotos e croqui, conflito por atributo | ADR-0034 (decisões 3 e 5); 18d-E13 (acesso móvel) | TR-1011 (parte móvel) | — | P4 onda B (nova na v2.10) | 5 | ED-18, ED-20, ED-53 | 0026, 0030, 0034 |
+| ED-67 | Exportação, devolução da base e OGC (GIS-16, GIS-17): GPKG, SHP, DXF, KML, GeoJSON, CSV e perfis Corsan e Saneago com metadados MGB; devolução da base ao fim do contrato; OGC API – Features (partes 1 a 3) e WFS 2.0 com `Transaction` no pacote | ADR-0034; 19e (F10) | SG-1357, SG-1365 (KML); devolução da base (19e, F10) | S 2.27 crít. (WFS) | P4 onda B (nova na v2.10) | 5 | ED-52 | 0034, 0010 |
 
 **ERP (ADR-0028, item i, ajustado na v2.5: "núcleo saneamento + integração")**
 
@@ -415,18 +439,20 @@ a aderência total exige as três.
 
 | Onda | Critério | Entregas | Esforço (sem.) | Meta de ensaio ao fim da onda |
 |---|---|---|---|---|
-| Antes do P4 | o que o piloto precisa e o que os ADRs puseram no P0 a P3 (o ED-03 passou ao lançamento comercial na v2.7, sem mudar o total) | ED-02 (P0); ED-03 (lançamento, LC.2); ED-01 parte (P1, P3); ED-21 (P2); ED-05 parte (P2, P3); ED-45 (P3) | 13,3 | fim do P3: VISAN ≥ 50 de 162; SAMAE 2.4 e 2.5 sem falha |
-| A | itens que pontuam nas alíneas b a p e r da VISAN ou são críticos no SAMAE nas áreas comercial, de campo e de suporte; habilitação (e-Sfinge) | ED-05 (resto), 06, 07, 08, 12–20, 22–27, 29–38, 41, 46, 58, 62 | 116,4 | VISAN ≥ 120; SAMAE sem falha em 2.4–2.19, 2.28 e Item 3 |
-| B | canais digitais, BI, qualidade e GIS (VISAN q, s, t; SAMAE 2.22, 2.24, 2.26, 2.27 e "Item 0") e itens de proposta | ED-01 (resto), 04, 28, 39, 40, 42, 43, 47–55 | 74,5 | VISAN ≥ 146 e nenhuma falha crítica no SAMAE, em dois ensaios seguidos (prontidão de POC) |
-| C | aderência total fora das POCs e serviços de implantação | ED-09, 10, 11, 44, 56, 57, 59 | 15,4 | requisitos restantes da matriz viva atendidos ou com pedido de esclarecimento registrado |
-| **Total até 2028** | | **60** | **219,6 (≈ 51 meses-pessoa)** | |
+| Antes do P4 | o que o piloto precisa e o que os ADRs puseram no P0 a P3 (o ED-03 passou ao lançamento comercial na v2.7, sem mudar o total; o núcleo do GIS entrou na v2.10) | ED-02 (P0); ED-03 (lançamento, LC.2); ED-01 parte (P1, P3); ED-21 (P2); ED-05 parte (P2, P3); ED-45 (P3); ED-52 (P1 a P3); ED-55 parte (P3); ED-13 parte (P2) | 35,3 (v2.9: 13,3) | fim do P3: VISAN ≥ 50 de 162; SAMAE 2.4 e 2.5 sem falha |
+| A | itens que pontuam nas alíneas b a p e r da VISAN ou são críticos no SAMAE nas áreas comercial, de campo e de suporte; habilitação (e-Sfinge); edição web do GIS (cadastro de unidades da SAMAE 2.8) | ED-05 (resto), 06, 07, 08, 12–20, 22–27, 29–38, 41, 46, 53, 58, 62 | 120,9 (v2.9: 116,4) | VISAN ≥ 120; SAMAE sem falha em 2.4–2.19, 2.28 e Item 3 |
+| B | canais digitais, BI, qualidade e GIS (VISAN q, s, t; SAMAE 2.22, 2.24, 2.26, 2.27 e "Item 0") e itens de proposta | ED-01 (resto), 04, 28, 39, 40, 42, 43, 47–51, 54, 55 (resto), 63–67 | 87,5 (v2.9: 74,5) | VISAN ≥ 146 e nenhuma falha crítica no SAMAE, em dois ensaios seguidos (prontidão de POC) |
+| C | aderência total fora das POCs e serviços de implantação | ED-09, 10, 11, 44, 56, 57, 59 | 16,4 (v2.9: 15,4) | requisitos restantes da matriz viva atendidos ou com pedido de esclarecimento registrado |
+| **Total até 2028** | | **65** | **260,1 (≈ 60 meses-pessoa; v2.9: 219,6)** | |
 | 2029, sob demanda (fora do total) | compras (parte retirada da ED-58), ED-60 (RH) e ED-61 (orçamento) | 2 e parte da ED-58 | 9 | — |
 
 Distribuição das 13,3 semanas antes do P4: P0 1,4 (P0.44 e serviços do provedor, que passaram da P0.27 à LC.2 na
 v2.7); P1 0,4 (P1.25); P2 4
 (P2.20 e cinco severidades na P2.15); P3 7,5 (P3.22, P3.23 e itens do ADR-0025 na P3.15 e P3.16). Se a P0.30 encontrar
 optantes de débito automático, a parte FEBRABAN 150 da ED-27 (≈ 1,5) vai para o P3 (P3.24): o P3 passa a 9 semanas e a
-onda A a 114,9, sem mudar o total.
+onda A a 114,9, sem mudar o total. Na v2.10, o núcleo do GIS (ADR-0034) soma 22 semanas antes do P4: P1 +5 (P1.26 e
+P1.27), P2 +7 (P2.21 a P2.23, com 0,5 da ED-13) e P3 +10 (P3.25 a P3.27); a distribuição passa a P0 1,4, P1 5,4, P2 11
+e P3 17,5, total 35,3. Com optantes, o P3 passa a 19 e a onda A a 119,4.
 
 **Recálculo da v2.5** (semanas-pessoa):
 
@@ -455,6 +481,24 @@ onda A a 114,9, sem mudar o total.
 | **Trilha do P4** | **206,3** | **206,3** | igual |
 | **Até 2028, com o P0–P3** | **219,6** | **219,6** | igual |
 
+**Recálculo da v2.10** (semanas-pessoa; ADR-0034):
+
+| Entrega | v2.9 | v2.10 | Motivo |
+|---|---|---|---|
+| ED-13 | A, 3 | P2 0,5 + A 2,5 | base da ligação antecipada para o vínculo do núcleo do GIS (P2.23) |
+| ED-52 | B, 4 | P1 a P3, 17,5 | núcleo do GIS antes da homologação local (decisão 4): modelo, catálogo, topologia, pacotes, vínculo, mapa web, temáticos |
+| ED-53 | B, 5 | A, 5 | edição web completa na onda A; fecha o cadastro de unidades da SAMAE 2.8 (SG-148 a SG-152) |
+| ED-54 | B, 4 | B, 5 | aviso aos afetados, clientes sensíveis, período de desabastecimento, áreas de influência |
+| ED-55 | B, 4 | P3 4 + B 5 | importador com staging, perfis e relatório ISO 19157 no núcleo; QGIS por views com pacote e projeto gerado; importação ampliada |
+| ED-56 | C, 3 | C, 4 | inventário pela NR 16/2026 e risco |
+| ED-63 a ED-67 | — | B, 20 | EPANET e SWMM (4), drenagem (3), resíduos (3), campo GIS (5), exportação, devolução e OGC (5) |
+| **Antes do P4** | **13,3** | **35,3** | +22 |
+| **Onda A** | **116,4** | **120,9** | +4,5 |
+| **Onda B** | **74,5** | **87,5** | +13 |
+| **Onda C** | **15,4** | **16,4** | +1 |
+| **Trilha do P4** | **206,3** | **224,8** | +18,5 |
+| **Até 2028** | **219,6** | **260,1** | +40,5 |
+
 ### 5.3 De onde veio cada ED
 
 | Matriz | Entrega de origem → ED |
@@ -466,6 +510,7 @@ onda A a 114,9, sem mudar o total.
 | 18h | E1 → ED-02; E2 → ED-03; E3 → ED-01; E4 → ED-04; E5 → ED-06; E6 → ED-07; E7, E9 → ED-05; E8 → ED-09, ED-55; E10 → ED-10; E11 → ED-11; E12 → ED-08 |
 | ADR-0028 (i) | sem origem em matriz: ED-58 a ED-61 (ERP construído; ED-60, ED-61 e compras em 2029 desde a v2.5) |
 | ADR-0032 | ampliação da ED-58 (material da OS com alçada e baixa automática) |
+| ADR-0034 | ED-52 redefinida como núcleo do GIS (P1 a P3); ED-53 a ED-56 redefinidas; novas ED-63 a ED-67; base da ED-13 na P2.23 |
 
 ### 5.4 Pontos em aberto que afetam as ED
 
@@ -480,6 +525,10 @@ compras continuando em 2029. Continuam em aberto:
 - **Contingência da NFAg-e** (manual e XSD oficiais): define se a conta de campo sai com a chave fiscal (ADR-0031,
   item 4), antes da ED-19.
 - **DPoP no Keycloak** para ligar o token ao aparelho do app de campo (ADR-0030, item 6), a conferir no início da ED-18.
+- **GIS (v2.10, plano §2.4):** capacidade para o núcleo do GIS antes da homologação local (até 27/11/2026); base da
+  ligação antecipada da ED-13; rede do piloto, sem imóveis, no ambiente local; piso de agregação para publicação
+  externa; compra das normas para a curadoria do catálogo; conversão de DGN v8 (com a licença da ODA); WMS servidor e
+  WCS só por exceção no ADR-0010, quando um edital exigir; `pgrouting`, `pg_jsonschema`, `pgaudit` e SRID 5396 no RDS.
 
 ---
 
@@ -572,9 +621,10 @@ no CI.
 | Item | Semanas-pessoa | Com uma pessoa e agentes (≈ 44 semanas produtivas por ano) |
 |---|---|---|
 | Acréscimos ao P0–P3 (P0.44, P1.25, P2.20, P2.15, P3.15, P3.16, P3.22, P3.23) | 13,3 | cerca de 50% do P2 e 80% do P3, fases já sem folga |
+| Núcleo do GIS antes do P4 (ADR-0034, v2.10: P1.26, P1.27, P2.21 a P2.23, P3.25 a P3.27) | 22 | cerca de meio ano de uma pessoa sobre o P1 a P3, sem folga; não cabe nas datas atuais sem capacidade adicional (pendência do plano §2.4) |
 | Tarefas originais do P4 que continuam (P4.1, P4.2, P4.5, P4.7, P4.8) | ≈ 8,4 | já ocupavam metade do P4 (ago–dez/2027, cerca de 20 semanas) |
-| Trilha de editais, ondas A e B (prontidão de POC), com a ED-58 na onda A | 190,9 (v2.5: 183,4; v2.4: 177,9) | cerca de 4,3 anos: prontidão por volta de 2031 |
-| Trilha completa (ondas A, B e C) | 206,3 (igual às v2.4 e v2.5) | cerca de 4,7 anos |
+| Trilha de editais, ondas A e B (prontidão de POC), com a ED-58 e a ED-53 na onda A e o GIS da trilha na onda B | 208,4 (v2.9: 190,9; v2.5: 183,4; v2.4: 177,9) | cerca de 4,7 anos: prontidão depois de 2031 |
+| Trilha completa (ondas A, B e C) | 224,8 (v2.4 a v2.9: 206,3) | cerca de 5,1 anos |
 | Fora da trilha: compras, RH e orçamento (2029, sob demanda) | 9 | — |
 
 Para a prontidão de POC (ondas A e B mais as tarefas originais do P4, cerca de 199 semanas-pessoa; na v2.5, 192; na
@@ -616,6 +666,22 @@ produto fixou a equipe em 4 contratações (plano v2.9, §2.4; ADR-0029, ajuste 
 prontidão fica por volta do fim de julho de 2028 (faixa de junho a agosto, pela incerteza; tabela anterior) e pode
 escorregar até cerca do início de setembro de 2028 sem mover o lançamento.
 
+**Capacidade com o GIS do ADR-0034 (plano v2.10).** O núcleo do GIS (22 semanas-pessoa) cai no P1 a P3, antes da
+entrada da equipe, e não entra nas tabelas acima: fica sobre o dono do produto, com a pendência de capacidade do plano
+§2.4. Na trilha, a demanda sobe para cerca de 216,8 semanas-pessoa na prontidão de POC e 233,2 na trilha completa com as
+tarefas originais do P4. Mesmas premissas.
+
+| Equipe a partir de agosto de 2027 | Até 30/06/2028, frente a 216,8 | Até 30/09/2028, frente a 233,2 | Prontidão de POC | Trilha completa |
+|---|---|---|---|---|
+| Dono e 5 contratados | ≈ 225 (≈ +4%) | ≈ 299 (≈ +28%) | por volta de meados de junho de 2028 | por volta de meados de julho de 2028 |
+| **Dono e 4 contratados (decidido na v2.9)** | ≈ 186 (≈ −14%) | ≈ 247 (≈ +6%) | por volta de meados de agosto de 2028 (faixa de julho a setembro) | por volta do início de setembro de 2028, com folga de cerca de 6% |
+| Dono e 3 contratados | ≈ 147 (≈ −32%) | ≈ 195 (≈ −16%) | por volta do início de novembro de 2028 | por volta de meados de dezembro de 2028, com lançamento, atestado e primeira licitação cerca de dois meses e meio depois |
+
+Com a demanda nova, fechar a trilha em 30/09/2028 exige velocidade de pelo menos 94% da planejada sem a quinta pessoa
+(233,2/247) e de 85% com ela (233,2/275). Os limiares do gatilho abaixo (90% e 80%) deixam de garantir a data; a revisão
+(limiares de 95% e 85%, aceitar até cerca de 3 semanas de atraso no lançamento ou retirar GIS-14, GIS-17 e GIS-19, cerca
+de 10 semanas, para 2029) é pendência do dono do produto até o M8 (plano §2.4).
+
 **Gatilho da quinta contratação.** A velocidade medida é a soma das estimativas do §5 das tarefas da trilha aceitas no
 período (tarefa G em andamento pela fração dos critérios de aceite cumpridos), dividida pela capacidade planejada do
 período com as premissas acima. É apurada em 01/11/2027 sobre 02/08 a 31/10/2027 (cerca de 40 semanas-pessoa
@@ -654,6 +720,9 @@ cerca de 28 semanas-pessoa até 30/09/2028 (capacidade de cerca de 275 com veloc
    2029; a meta de 2028 do ADR-0029 deixou de valer. A trilha inteira passa ao caminho até o atestado: atraso além de
    setembro de 2028 move o lançamento, o atestado e a primeira licitação na mesma medida, e a recalibração a cada onda
    (item 5) passa a proteger essa data.
+7. **GIS antes do P4** (plano v2.10). O núcleo do GIS (22 semanas-pessoa) não cabe no P1 a P3 com uma pessoa: decidir a
+   capacidade antes do início do P1 (plano §2.4, até 27/11/2026). Na trilha, revisar o gatilho da quinta contratação até
+   o M8, porque a folga caiu para cerca de 6%.
 
 ### 8.2 Outros riscos
 
@@ -673,7 +742,10 @@ cerca de 28 semanas-pessoa até 30/09/2028 (capacidade de cerca de 275 com veloc
 | Modelo de linguagem de terceiro (ED-43) | Resposta errada ao consumidor; transferência internacional; custo por uso | Só funções do portal; minimização; transbordo; DPA e RIPD; franquia ou repasse no contrato (ADR-0028, c) |
 | Publicação nas lojas por tenant (ED-39) | Prazos de revisão fora do controle do Ziip; recusa da Apple a app gerado de modelo | Conta de desenvolvedor do prestador; pipeline por tenant; publicar com antecedência à POC (ADR-0026) |
 | Autenticação nos apps incompatível com o BFF de cookie (ADR-0006) | Retrabalho no app e risco de segurança | Decidida no ADR-0030: navegador do sistema com PKCE, token no armazenamento seguro, dispositivo registrado no app de campo (ED-18, ED-39) |
-| QGIS com escrita direta no banco (ED-55) | Caminho de escrita fora da `api` | Role individual, `WITH CHECK`, auditoria por gatilho, acesso por rede restrita, pentest (ADR-0028, b) |
+| QGIS com conexão direta ao banco (ED-55) | Caminho de escrita fora da `api` | Desde a v2.10 (ADR-0034), escrita só por views `INSTEAD OF` que gravam no pacote de edição, com validação e revisão por outra pessoa; endpoint próprio com TLS fora do pooler; role individual, auditoria, acesso por rede restrita, pentest (ADR-0028, b) |
+| Núcleo do GIS sobre o dono sozinho no P1 a P3 (ADR-0034, v2.10) | Homologação local, entrada da equipe, lançamento, atestado e primeira licitação deslocados em até cerca de seis meses | Decisão de capacidade antes do P1 (plano §2.4; recomendada: antecipar o perfil 3 do ADR-0029); núcleo fora do caminho do paralelo; escorregam primeiro os temáticos (P3.27) e a parte não essencial do mapa (P3.25) |
+| Folga da trilha reduzida a cerca de 6% pelo GIS (v2.10) | Lançamento de outubro de 2028 sem margem frente à incerteza de ±30% | Gatilho da quinta contratação revisto até o M8; GIS-14, GIS-17 e GIS-19 como primeiros candidatos a sair da trilha; recalibração a cada onda |
+| Catálogo do GIS com valores sem norma conferida | Peça errada como padrão; perda de confiança da prestadora na POC | Itens marcados como valor de referência a validar, fora do padrão ativo até a curadoria; perfis Corsan e Saneago como referência; compra das normas |
 | Superset como segunda pilha (ED-47) | Operação, atualização e superfície de ataque a mais; contestação de "autoria própria" | Role por tenant com teste de isolamento; modo síncrono; exceção no ADR-0010; pedido de esclarecimento-modelo (ADR-0027) |
 | Licença do ODA File Converter | Etapa de migração do DWG sem ferramenta | Conferência no P1 (P1.25); alternativa: SDK licenciado da ODA, com custo |
 | Impugnação ou esclarecimento sem efeito | A comissão avalia pelo texto do edital | Demonstrar a regra legal e citar a norma; registrar a recusa para recurso |
