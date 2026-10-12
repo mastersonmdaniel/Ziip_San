@@ -42,9 +42,10 @@ public class WasteTransporter extends TenantAwareEntity {
     @Column(name = "vehicles", columnDefinition = "jsonb")
     private String vehicles; // Array of vehicles: [{plate, capacity, type, licenseExpiry}]
 
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
-    @Column(name = "drivers", columnDefinition = "jsonb")
-    private String drivers; // Array of drivers: [{name, cpf, cnh, cnhExpiry, moppExpiry}]
+    // Lista de motoristas [{name, cpf, cnh, cnhExpiry, moppExpiry}] cifrada inteira (V2_8): nome, CPF
+    // e CNH juntos identificam a pessoa, e a lista não é consultada por campo no banco.
+    @Column(name = "drivers_ciphertext", columnDefinition = "text")
+    private String driversCiphertext;
 
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     @Column(name = "insurance", columnDefinition = "jsonb")

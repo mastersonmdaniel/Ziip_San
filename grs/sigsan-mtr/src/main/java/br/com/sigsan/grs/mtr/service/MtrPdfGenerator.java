@@ -1,5 +1,6 @@
 package br.com.sigsan.grs.mtr.service;
 
+import br.com.sigsan.core.document.DocumentNumber;
 import br.com.sigsan.grs.mtr.domain.WasteCdf;
 import br.com.sigsan.grs.mtr.domain.WasteMtr;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,12 @@ import java.util.List;
  * Não há dependência externa de biblioteca PDF.
  *
  * Chameado por MtrService.destinateMtr para produzir o PDF do CDF e o PDF do MTR.
+ *
+ * Documentos das partes (decisão S2 do plano): o PDF circula fora do sistema (transportador,
+ * destinador, fiscalização), então o CPF do motorista e o CPF de gerador pessoa física saem
+ * MASCARADOS; o CNPJ (pessoa jurídica) sai completo. O CPF do motorista vem da máscara gravada no
+ * MTR; o documento do gerador é decifrado pelo chamador e a decisão de mascarar é tomada aqui, num
+ * só lugar, para nenhum chamador imprimir um CPF inteiro por engano.
  */
 @Slf4j
 @Service
@@ -37,7 +44,7 @@ public class MtrPdfGenerator {
     /**
      * Gera o PDF do Certificado de Destinação Final (CDF).
      */
-    public byte[] generateCdfPdf(WasteCdf cdf, WasteMtr mtr) {
+    public byte[] generateCdfPdf(WasteCdf cdf, WasteMtr mtr, String generatorDocument) {
         if (cdf == null || mtr == null) {
             throw new IllegalArgumentException("CDF e MTR são obrigatórios para gerar o PDF do CDF");
         }
@@ -47,7 +54,7 @@ public class MtrPdfGenerator {
         lines.add("");
         lines.add("Numero do MTR: " + safe(mtr.getMtrNumber()));
         lines.add("Gerador: " + safe(mtr.getGenerator() != null ? mtr.getGenerator().getCorporateName() : null)
-                + " - CNPJ/CPF " + safe(mtr.getGenerator() != null ? mtr.getGenerator().getCnpjCpf() : null));
+                + " - CNPJ/CPF " + printableGeneratorDocument(generatorDocument));
         lines.add("Transportador: " + safe(mtr.getTransporter() != null ? mtr.getTransporter().getCorporateName() : null)
                 + " - CNPJ " + safe(mtr.getTransporter() != null ? mtr.getTransporter().getCnpj() : null)
                 + " - RNTRC " + safe(mtr.getTransporter() != null ? mtr.getTransporter().getRntrc() : null));
@@ -57,7 +64,7 @@ public class MtrPdfGenerator {
                 + " - " + safe(mtr.getWasteClass() != null ? mtr.getWasteClass().getDescription() : null));
         lines.add("Quantidade: " + safe(mtr.getQuantityKg()) + " kg");
         lines.add("Embalagem: " + safe(mtr.getPackagingType()) + " x " + safe(mtr.getPackagingCount()));
-        lines.add("Placa: " + safe(mtr.getVehiclePlate()) + " - Motorista: " + safe(mtr.getDriverCpf()));
+        lines.add("Placa: " + safe(mtr.getVehiclePlate()) + " - Motorista: CPF " + safe(mtr.getDriverCpfMasked()));
         lines.add("");
         lines.add("METODO DE DESTINACAO: " + safe(cdf.getDestinationMethod() != null ? cdf.getDestinationMethod().name() : null));
         lines.add("Detalhes do processo: " + safe(cdf.getProcessDetails()));
@@ -74,7 +81,7 @@ public class MtrPdfGenerator {
     /**
      * Gera o PDF do MTR para registro.
      */
-    public byte[] generateMtrPdf(WasteMtr mtr) {
+    public byte[] generateMtrPdf(WasteMtr mtr, String generatorDocument) {
         if (mtr == null) {
             throw new IllegalArgumentException("MTR e obrigatorio para gerar o PDF");
         }
@@ -83,7 +90,7 @@ public class MtrPdfGenerator {
         lines.add("Padrao SINIR: " + safe(mtr.getMtrNumber()));
         lines.add("");
         lines.add("Gerador: " + safe(mtr.getGenerator() != null ? mtr.getGenerator().getCorporateName() : null)
-                + " - CNPJ/CPF " + safe(mtr.getGenerator() != null ? mtr.getGenerator().getCnpjCpf() : null));
+                + " - CNPJ/CPF " + printableGeneratorDocument(generatorDocument));
         lines.add("CADRI: " + safe(mtr.getGenerator() != null ? mtr.getGenerator().getCadriNumber() : null));
         lines.add("Transportador: " + safe(mtr.getTransporter() != null ? mtr.getTransporter().getCorporateName() : null)
                 + " - CNPJ " + safe(mtr.getTransporter() != null ? mtr.getTransporter().getCnpj() : null));
@@ -96,7 +103,7 @@ public class MtrPdfGenerator {
                         ? mtr.getWasteClass().getHazardClass().name() : null));
         lines.add("Quantidade: " + safe(mtr.getQuantityKg()) + " kg");
         lines.add("Embalagem: " + safe(mtr.getPackagingType()) + " x " + safe(mtr.getPackagingCount()));
-        lines.add("Placa: " + safe(mtr.getVehiclePlate()) + " - Motorista: " + safe(mtr.getDriverCpf()));
+        lines.add("Placa: " + safe(mtr.getVehiclePlate()) + " - Motorista: CPF " + safe(mtr.getDriverCpfMasked()));
         lines.add("");
         lines.add("Status: " + safe(mtr.getStatus() != null ? mtr.getStatus().name() : null));
         lines.add("Emitido em: " + formatDate(mtr.getIssuedAt()));
@@ -223,6 +230,17 @@ public class MtrPdfGenerator {
     private void write(ByteArrayOutputStream out, String text) throws IOException {
         byte[] data = text.getBytes(StandardCharsets.ISO_8859_1);
         out.write(data);
+    }
+
+    /**
+     * CNPJ completo e formatado; CPF mascarado; documento ausente ou inválido não é impresso.
+     */
+    static String printableGeneratorDocument(String document) {
+        return switch (DocumentNumber.kind(document)) {
+            case CNPJ -> DocumentNumber.format(document);
+            case CPF -> DocumentNumber.mask(document);
+            case INVALID -> "N/A";
+        };
     }
 
     private String formatDate(OffsetDateTime value) {

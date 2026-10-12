@@ -11,4 +11,7 @@ import java.util.UUID;
 public interface WasteGeneratorRepository extends JpaRepository<WasteGenerator, UUID> {
 
     Optional<WasteGenerator> findByIdAndTenantId(UUID id, UUID tenantId);
+
+    /** Gerador pelo índice cego do documento (nada é decifrado). */
+    Optional<WasteGenerator> findByTenantIdAndDocumentHash(UUID tenantId, String documentHash);
 }

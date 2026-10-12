@@ -16,10 +16,18 @@ import br.com.sigsan.grs.mtr.repository.WasteDestinationRepository;
 import br.com.sigsan.grs.mtr.repository.WasteGeneratorRepository;
 import br.com.sigsan.grs.mtr.repository.WasteMtrRepository;
 import br.com.sigsan.grs.mtr.repository.WasteTransporterRepository;
+import br.com.sigsan.grs.mtr.integration.SinirIntegrationService.PartyDocuments;
+import br.com.sigsan.grs.mtr.service.MtrDocumentProtection.Driver;
 import br.com.sigsan.grs.mtr.service.MtrService.CollectMtrRequest;
 import br.com.sigsan.grs.mtr.service.MtrService.CreateMtrRequest;
 import br.com.sigsan.grs.mtr.service.MtrService.DestinateMtrRequest;
+import br.com.sigsan.grs.mtr.service.MtrService.DuplicateGeneratorException;
 import br.com.sigsan.grs.mtr.service.MtrService.ReceiveMtrRequest;
+import br.com.sigsan.grs.mtr.service.MtrService.RegisterGeneratorRequest;
+import br.com.sigsan.security.crypto.BlindIndex;
+import br.com.sigsan.security.crypto.FieldCipher;
+import br.com.sigsan.security.crypto.FieldProtector;
+import br.com.sigsan.security.crypto.dev.EnvDerivedTenantKeyProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,9 +36,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,12 +52,18 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class MtrServiceTest {
 
     private static final UUID TENANT = UUID.fromString("11111111-1111-1111-1111-111111111111");
+    // CPF e CNPJ válidos de exemplo (os mesmos dos testes de DocumentNumber), não de pessoas reais.
+    private static final String DRIVER_CPF = "52998224725";
+    private static final String GENERATOR_CNPJ = "11222333000181";
+    private static final String OTHER_CPF = "11144477735";
 
     private WasteMtrRepository mtrRepo;
     private WasteGeneratorRepository generatorRepo;
@@ -52,7 +72,11 @@ class MtrServiceTest {
     private WasteClassRepository classRepo;
     private WasteCdfRepository cdfRepo;
     private MtrPdfGenerator pdf;
+    private SinirIntegrationService sinir;
+    private MtrDocumentProtection documents;
     private MtrService service;
+    /** Geradores "gravados", por índice cego: simula o índice único (tenant_id, document_hash). */
+    private Map<String, WasteGenerator> generatorsByHash;
 
     private WasteGenerator generator;
     private WasteTransporter transporter;
@@ -72,13 +96,21 @@ class MtrServiceTest {
         cdfRepo = mock(WasteCdfRepository.class);
         pdf = mock(MtrPdfGenerator.class);
 
-        // SINIR real, desligado: devolve PENDING com motivo, que é o comportamento de hoje
-        SinirIntegrationService sinir = new SinirIntegrationService("", false);
+        // SINIR real, desligado: devolve PENDING com motivo, que é o comportamento de hoje. Espião só
+        // para conferir os documentos entregues.
+        sinir = Mockito.spy(new SinirIntegrationService("", false));
+        // Cifra real com chave de teste (EnvDerivedTenantKeyProvider é só para desenvolvimento e teste).
+        byte[] master = new byte[32];
+        for (int i = 0; i < master.length; i++) {
+            master[i] = (byte) (i + 7);
+        }
+        var keys = new EnvDerivedTenantKeyProvider(master);
+        documents = new MtrDocumentProtection(new FieldProtector(new FieldCipher(keys), new BlindIndex(keys)));
         service = new MtrService(mtrRepo, generatorRepo, transporterRepo, destinationRepo, classRepo, cdfRepo,
-                sinir, mock(GovBrSignatureService.class), pdf);
+                sinir, mock(GovBrSignatureService.class), pdf, documents);
 
         generator = entity(new WasteGenerator(), "00000000-0000-0000-0000-000000000001");
-        generator.setCnpjCpf("11222333000181");
+        documents.assignGeneratorDocument(generator, GENERATOR_CNPJ);
         transporter = entity(new WasteTransporter(), "00000000-0000-0000-0000-000000000002");
         transporter.setCnpj("12ABC34501DE35");
         destination = entity(new WasteDestination(), "00000000-0000-0000-0000-000000000003");
@@ -95,7 +127,46 @@ class MtrServiceTest {
         when(mtrRepo.countByTenantId(TENANT)).thenReturn(0L);
         when(mtrRepo.save(any(WasteMtr.class))).thenAnswer(inv -> inv.getArgument(0));
         when(cdfRepo.save(any(WasteCdf.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(pdf.generateCdfPdf(any(), any())).thenReturn("pdf-de-teste".getBytes());
+        when(pdf.generateCdfPdf(any(), any(), any())).thenReturn("pdf-de-teste".getBytes());
+
+        generatorsByHash = new HashMap<>();
+        when(generatorRepo.findByTenantIdAndDocumentHash(eq(TENANT), anyString()))
+                .thenAnswer(inv -> Optional.ofNullable(generatorsByHash.get(inv.<String>getArgument(1))));
+        when(generatorRepo.save(any(WasteGenerator.class))).thenAnswer(inv -> {
+            WasteGenerator g = inv.getArgument(0);
+            if (generatorsByHash.putIfAbsent(g.getDocumentHash(), g) != null) {
+                throw new IllegalStateException("violação do índice único idx_waste_generator_document");
+            }
+            return g;
+        });
+        when(transporterRepo.save(any(WasteTransporter.class))).thenAnswer(inv -> inv.getArgument(0));
+    }
+
+    /**
+     * Nenhum campo de texto da entidade (incluindo os herdados) contém o documento em claro, com ou
+     * sem pontuação. É a prova de que o valor não chega ao banco: o que não está na entidade não é
+     * gravado.
+     */
+    private static void assertNoPlainDocument(Object entity, String digits) {
+        String formatted = br.com.sigsan.core.document.DocumentNumber.format(digits);
+        List<String> leaks = new ArrayList<>();
+        for (Class<?> type = entity.getClass(); type != null; type = type.getSuperclass()) {
+            for (Field field : type.getDeclaredFields()) {
+                if (field.getType() != String.class || java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
+                field.setAccessible(true);
+                try {
+                    String value = (String) field.get(entity);
+                    if (value != null && (value.contains(digits) || value.contains(formatted))) {
+                        leaks.add(type.getSimpleName() + "." + field.getName());
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
+        assertThat(leaks).as("campos com o documento em claro").isEmpty();
     }
 
     @AfterEach
@@ -110,7 +181,7 @@ class MtrServiceTest {
 
     private WasteMtr create() {
         return service.createMtr(new CreateMtrRequest(generator.getId(), transporter.getId(), destination.getId(),
-                wasteClass.getId(), new BigDecimal("250.5"), "TAMBOR", 2, "ABC1D23", "52998224725",
+                wasteClass.getId(), new BigDecimal("250.5"), "TAMBOR", 2, "ABC1D23", DRIVER_CPF,
                 Map.of("observacao", "teste", "volumes", 2)));
     }
 
@@ -127,7 +198,7 @@ class MtrServiceTest {
 
         assertThat(mtr.getStatus()).isEqualTo(MtrStatus.EMITTED);
         assertThat(mtr.getHashChain()).matches("[0-9a-f]{64}");
-        assertThat(mtr.getHashChain()).isEqualTo(HashChain.next(null, MtrCanonical.of(mtr)));
+        assertThat(mtr.getHashChain()).isEqualTo(HashChain.next(null, MtrCanonical.of(mtr, DRIVER_CPF)));
         // Map.toString() daria "{observacao=teste, volumes=2}", JSON inválido que o jsonb recusa
         assertThat(new ObjectMapper().readTree(mtr.getProperties()).get("observacao").asText()).isEqualTo("teste");
     }
@@ -150,7 +221,7 @@ class MtrServiceTest {
         mtr.setId(UUID.randomUUID());
         stored(mtr);
 
-        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", "52998224725", null, "assinatura-do-transportador"));
+        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", DRIVER_CPF, null, "assinatura-do-transportador"));
         assertThat(mtr.getStatus()).isEqualTo(MtrStatus.COLLECTED);
 
         service.receiveMtr(mtr.getId(), new ReceiveMtrRequest("assinatura-do-destinador"));
@@ -166,7 +237,7 @@ class MtrServiceTest {
         stored(mtr);
         String h0 = mtr.getHashChain();
 
-        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", "52998224725", null, null));
+        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", DRIVER_CPF, null, null));
         String h1 = mtr.getHashChain();
         service.receiveMtr(mtr.getId(), new ReceiveMtrRequest("destinador"));
         String h2 = mtr.getHashChain();
@@ -174,7 +245,7 @@ class MtrServiceTest {
         assertThat(h0).isNotEqualTo(h1);
         assertThat(h1).isNotEqualTo(h2);
         // o último elo é recalculável a partir do anterior e do conteúdo canônico atual
-        assertThat(h2).isEqualTo(HashChain.next(h1, MtrCanonical.of(mtr)));
+        assertThat(h2).isEqualTo(HashChain.next(h1, MtrCanonical.of(mtr, DRIVER_CPF)));
     }
 
     @Test
@@ -184,7 +255,7 @@ class MtrServiceTest {
         mtr.setId(UUID.randomUUID());
         stored(mtr);
 
-        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", "52998224725", null, null));
+        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", DRIVER_CPF, null, null));
 
         assertThat(mtr.getSinirSyncStatus()).isEqualTo(WasteMtr.SinirSyncStatus.PENDING);
         assertThat(mtr.getSinirSyncAt()).isNotNull();
@@ -211,7 +282,7 @@ class MtrServiceTest {
         WasteMtr mtr = create();
         mtr.setId(UUID.randomUUID());
         stored(mtr);
-        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", "52998224725", null, null));
+        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", DRIVER_CPF, null, null));
         service.receiveMtr(mtr.getId(), new ReceiveMtrRequest("destinador"));
 
         WasteCdf cdf = service.destinateMtr(mtr.getId(), new DestinateMtrRequest(destination.getId(),
@@ -231,7 +302,7 @@ class MtrServiceTest {
         WasteMtr mtr = create();
         mtr.setId(UUID.randomUUID());
         stored(mtr);
-        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", "52998224725", null, null));
+        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", DRIVER_CPF, null, null));
         service.receiveMtr(mtr.getId(), new ReceiveMtrRequest("destinador"));
 
         assertThatThrownBy(() -> service.destinateMtr(mtr.getId(), new DestinateMtrRequest(UUID.randomUUID(),
@@ -284,5 +355,173 @@ class MtrServiceTest {
         destination.setAcceptedWasteClasses("[\"OUTRA-CLASSE\"]");
         assertThatThrownBy(this::create).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("does not accept waste class: TESTE-001");
+    }
+    // --------------------------------------------------------------- documentos pessoais (E4, V2_8)
+
+    private RegisterGeneratorRequest generatorRequest(String document) {
+        return new RegisterGeneratorRequest(document, "Fulana de Tal", null, Map.of("cidade", "Teste"),
+                "3811400", null, null, null);
+    }
+
+    @Test
+    @DisplayName("emitir e coletar: o MTR guarda só cifra, índice e máscara do CPF do motorista")
+    void issuedMtrHoldsNoPlainDriverCpf() {
+        WasteMtr mtr = create();
+        assertNoPlainDocument(mtr, DRIVER_CPF);
+        assertThat(mtr.getDriverCpfCiphertext()).isNotBlank();
+        assertThat(mtr.getDriverCpfHash()).matches("[0-9a-f]{64}");
+        assertThat(mtr.getDriverCpfMasked()).isEqualTo("***.982.247-**");
+        assertThat(documents.revealDriverCpf(mtr)).isEqualTo(DRIVER_CPF);
+
+        mtr.setId(UUID.randomUUID());
+        stored(mtr);
+        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", "111.444.777-35", null, null));
+        assertNoPlainDocument(mtr, OTHER_CPF);
+        assertThat(documents.revealDriverCpf(mtr)).as("o CPF da coleta substitui o da emissão").isEqualTo(OTHER_CPF);
+    }
+
+    @Test
+    @DisplayName("cadastro de gerador: documento só cifrado, com índice e máscara; o CPF de pessoa física não fica em claro")
+    void registeredGeneratorHoldsNoPlainDocument() {
+        WasteGenerator pf = service.registerGenerator(generatorRequest("529.982.247-25"));
+        assertNoPlainDocument(pf, DRIVER_CPF);
+        assertThat(pf.getTenantId()).isEqualTo(TENANT);
+        assertThat(pf.getDocumentHash()).matches("[0-9a-f]{64}");
+        assertThat(pf.getDocumentMasked()).isEqualTo("***.982.247-**");
+        assertThat(documents.revealGeneratorDocument(pf)).isEqualTo(DRIVER_CPF);
+    }
+
+    @Test
+    @DisplayName("motoristas do transportador: a lista vai cifrada inteira e volta igual, com CPF normalizado")
+    void transporterDriversAreEncrypted() {
+        var drivers = List.of(new Driver("Motorista Um", "529.982.247-25", "01234567890",
+                LocalDate.of(2027, 1, 31), null));
+        WasteTransporter saved = service.replaceTransporterDrivers(transporter.getId(), drivers);
+
+        assertNoPlainDocument(saved, DRIVER_CPF);
+        assertThat(saved.getDriversCiphertext()).doesNotContain("Motorista Um").doesNotContain("01234567890");
+        assertThat(documents.revealDrivers(saved)).containsExactly(new Driver("Motorista Um", DRIVER_CPF,
+                "01234567890", LocalDate.of(2027, 1, 31), null));
+
+        service.replaceTransporterDrivers(transporter.getId(), List.of());
+        assertThat(saved.getDriversCiphertext()).as("lista vazia limpa a coluna").isNull();
+        assertThat(documents.revealDrivers(saved)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("duplicidade de gerador detectada pelo índice cego, com ou sem pontuação, sem decifrar")
+    void duplicateGeneratorIsDetectedByBlindIndex() {
+        service.registerGenerator(generatorRequest("11.222.333/0001-81"));
+
+        assertThatThrownBy(() -> service.registerGenerator(generatorRequest(GENERATOR_CNPJ)))
+                .isInstanceOf(DuplicateGeneratorException.class);
+        assertThatThrownBy(() -> service.registerGenerator(generatorRequest("11 222 333 0001 81")))
+                .isInstanceOf(DuplicateGeneratorException.class);
+        assertThat(generatorsByHash).hasSize(1);
+
+        // outro documento passa
+        service.registerGenerator(generatorRequest(DRIVER_CPF));
+        assertThat(generatorsByHash).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("o índice cego do documento depende do tenant: o mesmo CNPJ não liga cadastros de tenants diferentes")
+    void blindIndexIsPerTenant() {
+        String here = documents.generatorDocumentHash(GENERATOR_CNPJ);
+        TenantContextHolder.setTenantId(UUID.fromString("22222222-2222-2222-2222-222222222222"));
+        assertThat(documents.generatorDocumentHash(GENERATOR_CNPJ)).isNotEqualTo(here);
+    }
+
+    @Test
+    @DisplayName("hash da cadeia inalterado: calculado sobre o CPF decifrado, com ou sem pontuação na entrada")
+    void hashChainUsesTheDecryptedCpf() {
+        WasteMtr digits = create();
+        WasteMtr punctuated = service.createMtr(new CreateMtrRequest(generator.getId(), transporter.getId(),
+                destination.getId(), wasteClass.getId(), new BigDecimal("250.5"), "TAMBOR", 2, "ABC1D23",
+                "529.982.247-25", Map.of("observacao", "teste", "volumes", 2)));
+        // mesma emissão, só a pontuação do CPF muda
+        punctuated.setIssuedAt(digits.getIssuedAt());
+
+        assertThat(digits.getDriverCpfCiphertext()).as("a cifra muda a cada gravação (IV aleatório)")
+                .isNotEqualTo(punctuated.getDriverCpfCiphertext());
+        // o hash não depende da cifra: é o mesmo conteúdo canônico de antes da V2_8
+        assertThat(digits.getHashChain()).isEqualTo(HashChain.next(null, MtrCanonical.of(digits, DRIVER_CPF)));
+        assertThat(HashChain.next(null, MtrCanonical.of(punctuated, documents.revealDriverCpf(punctuated))))
+                .isEqualTo(digits.getHashChain());
+    }
+
+    @Test
+    @DisplayName("SINIR recebe os documentos decifrados; o PDF do CDF recebe o documento do gerador")
+    void sinirAndPdfReceiveTheDecryptedDocuments() {
+        WasteMtr mtr = create();
+        mtr.setId(UUID.randomUUID());
+        stored(mtr);
+        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", DRIVER_CPF, null, null));
+
+        ArgumentCaptor<PartyDocuments> sent = ArgumentCaptor.forClass(PartyDocuments.class);
+        Mockito.verify(sinir).syncMtr(eq(mtr), sent.capture());
+        assertThat(sent.getValue().generatorDocument()).isEqualTo(GENERATOR_CNPJ);
+        assertThat(sent.getValue().driverCpf()).isEqualTo(DRIVER_CPF);
+        assertThat(sent.getValue().toString()).doesNotContain(DRIVER_CPF).doesNotContain(GENERATOR_CNPJ);
+
+        service.receiveMtr(mtr.getId(), new ReceiveMtrRequest("destinador"));
+        service.destinateMtr(mtr.getId(), new DestinateMtrRequest(destination.getId(),
+                WasteCdf.DestinationMethod.RECYCLING, Map.of(), null, "Fulana", "CREA-123", null));
+        Mockito.verify(pdf).generateCdfPdf(any(), eq(mtr), eq(GENERATOR_CNPJ));
+    }
+
+    @ParameterizedTest(name = "CPF do motorista [{0}] -> recusado, nenhum MTR")
+    @ValueSource(strings = {"12345678900", "529.982.247-24", "11111111111", GENERATOR_CNPJ, "abc"})
+    @DisplayName("CPF do motorista inválido (ou um CNPJ) é recusado na emissão e na coleta")
+    void invalidDriverCpfIsRejected(String cpf) {
+        assertThatThrownBy(() -> service.createMtr(new CreateMtrRequest(generator.getId(), transporter.getId(),
+                destination.getId(), wasteClass.getId(), BigDecimal.ONE, null, null, "ABC1D23", cpf, null)))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("CPF do motorista inválido");
+        Mockito.verify(mtrRepo, Mockito.never()).save(any());
+
+        WasteMtr mtr = create();
+        mtr.setId(UUID.randomUUID());
+        stored(mtr);
+        assertThatThrownBy(() -> service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", cpf, null, null)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest(name = "documento do gerador [{0}] -> recusado")
+    @NullSource
+    @ValueSource(strings = {"", "11.222.333/0001-80", "529.982.247-24", "00000000000000"})
+    @DisplayName("documento de gerador inválido é recusado e nada é gravado")
+    void invalidGeneratorDocumentIsRejected(String document) {
+        assertThatThrownBy(() -> service.registerGenerator(generatorRequest(document)))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("CPF/CNPJ do gerador inválido");
+        Mockito.verify(generatorRepo, Mockito.never()).save(any());
+    }
+
+    @Test
+    @DisplayName("motorista com CPF inválido é recusado e a lista não é gravada")
+    void invalidDriverInListIsRejected() {
+        var drivers = List.of(new Driver("Motorista Um", DRIVER_CPF, null, null, null),
+                new Driver("Motorista Dois", "123", null, null, null));
+        assertThatThrownBy(() -> service.replaceTransporterDrivers(transporter.getId(), drivers))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("motorista 2 com CPF inválido");
+        assertThat(transporter.getDriversCiphertext()).isNull();
+    }
+
+    @Test
+    @DisplayName("sem tenant no contexto, nenhum documento é cifrado nem decifrado")
+    void noTenantNoDocument() {
+        TenantContextHolder.clear();
+        assertThatThrownBy(() -> service.registerGenerator(generatorRequest(GENERATOR_CNPJ)))
+                .isInstanceOf(IllegalStateException.class).hasMessageContaining("sem tenant");
+        assertThatThrownBy(() -> documents.revealGeneratorDocument(generator))
+                .isInstanceOf(IllegalStateException.class).hasMessageContaining("sem tenant");
+    }
+
+    @Test
+    @DisplayName("o toString das requisições não leva o documento para o log")
+    void requestsDoNotPrintDocuments() {
+        assertThat(generatorRequest("529.982.247-25").toString()).doesNotContain("529.982.247-25");
+        assertThat(new CreateMtrRequest(null, null, null, null, null, null, null, null, DRIVER_CPF, null).toString())
+                .doesNotContain(DRIVER_CPF);
+        assertThat(new CollectMtrRequest("ABC1D23", DRIVER_CPF, null, null).toString()).doesNotContain(DRIVER_CPF);
     }
 }

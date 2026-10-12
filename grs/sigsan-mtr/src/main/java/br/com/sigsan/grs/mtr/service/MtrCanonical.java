@@ -26,7 +26,14 @@ public final class MtrCanonical {
     private MtrCanonical() {
     }
 
-    public static String of(WasteMtr m) {
+    /**
+     * @param driverCpf CPF do motorista EM CLARO (só dígitos), ou {@code null} se não há motorista.
+     *                  Desde a V2_8 o MTR guarda só a cifra do CPF; o hash continua calculado sobre o
+     *                  CPF, não sobre a cifra (que muda a cada gravação por causa do IV aleatório e
+     *                  mudaria o significado da cadeia). Quem chama decifra e entrega o valor: esta
+     *                  classe é pura e não lê banco nem chave.
+     */
+    public static String of(WasteMtr m, String driverCpf) {
         return join(List.of(
                 FORMAT_VERSION,
                 "mtr",
@@ -40,7 +47,7 @@ public final class MtrCanonical {
                 s(m.getPackagingType()),
                 s(m.getPackagingCount()),
                 s(m.getVehiclePlate()),
-                s(m.getDriverCpf()),
+                s(driverCpf),
                 time(m.getIssuedAt()),
                 time(m.getCollectedAt()),
                 time(m.getReceivedAt()),

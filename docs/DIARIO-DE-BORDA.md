@@ -828,3 +828,36 @@ Feita no branch `e3-json` (worktree separada), em paralelo à E3.
 - **Merge da E3'** (worktree paralela) sem regressão: **906 testes verdes**.
 - **Falta na E4**: cifra das colunas do MTR (`waste_mtr.driver_cpf`, `waste_generator.cnpj_cpf`, `waste_transporter.drivers`)
   — em andamento num branch separado (`e4-mtr`).
+
+### E4 — MTR: documentos pessoais cifrados (12/10/2026) ✔
+
+Feita no branch `e4-mtr` (worktree separada).
+
+- **`V2_8__mtr_document_protection.sql`** (mtr): `waste_mtr.driver_cpf` → `driver_cpf_ciphertext`/`_hash`/`_masked` com
+  CHECK (cifra nula ⇔ índice nulo); `waste_generator.cnpj_cpf` → `document_ciphertext`/`document_hash` (NOT NULL) e
+  `document_masked`, com `idx_waste_generator_document (tenant_id, document_hash)` único no lugar de
+  `idx_waste_generator_cnpj`; `waste_transporter.drivers` → `drivers_ciphertext` (lista JSON cifrada inteira).
+  **Sem backfill** (a chave está na aplicação): antes de qualquer DROP define `app.current_tenant` (a RLS FORCE vale para
+  o migrador; sem a GUC ele vê zero linhas) e faz `RAISE EXCEPTION` se houver valor em claro nas colunas antigas — banco
+  com dados exige migração assistida pela aplicação antes desta versão. Regras de redação das colunas novas (`*_ciphertext`
+  e `*_hash` OMIT, `*_masked` REDACT). As regras das colunas removidas são apagadas **só quando nenhum outro schema ainda
+  tem a coluna** (`pg_attribute`): o catálogo é global e um tenant atrasado voltaria a gravar o CPF em claro na trilha.
+- **Java**: `MtrDocumentProtection` (contextos `waste_mtr.driver_cpf`, `waste_generator.document`,
+  `waste_transporter.drivers`; valida com `DocumentNumber`; tenant do `TenantContextHolder`, sem ele erro). `MtrService`
+  cifra na entrada; novos `registerGenerator` (duplicidade pelo índice cego → `DuplicateGeneratorException`) e
+  `replaceTransporterDrivers`. **`MtrCanonical.of(mtr, driverCpf)`** recebe o CPF decifrado: o hash da cadeia é o mesmo de
+  antes (teste com hash congelado calculado pela versão antiga). `SinirIntegrationService.syncMtr(mtr, PartyDocuments)`
+  recebe os documentos decifrados. `MtrPdfGenerator`: CPF do motorista e de gerador PF mascarados, CNPJ completo (S2).
+  `toString` dos requests e de `PartyDocuments` sem documento. `sigsan-mtr` depende de `sigsan-security`.
+- **Testes novos (38):** `MtrServiceTest` +20 (nada em claro nas entidades após emissão, coleta, cadastro de gerador e de
+  motoristas; duplicidade pelo índice cego com e sem pontuação; índice por tenant; hash sobre o CPF decifrado; SINIR e PDF
+  recebem os documentos decifrados; CPF/CNPJ inválido recusado; sem tenant → erro); `MtrCanonicalTest` +2 (formato e hash
+  congelados; CPF faz parte do conteúdo); `MtrPdfGeneratorTest` 3; `MtrDocumentProtectionTest` 5 (contextos separados,
+  outro tenant não decifra); `MtrDocumentProtectionMigrationTest` 8 (sigsan-app, PostgreSQL real: colunas antigas fora,
+  índice único e CHECK, sem GUC o migrador vê a tabela vazia, a V2_8 recusa cada uma das três colunas com dado e aplica
+  quando estão vazias). `FreshInstallTest` e `AuditRedactionCoverageTest` verdes sem allowlist nova.
+- Build completo: **944 testes verdes** (core 45, security 28, platform 18, quality 38, losses 24, gis 31, mtr 76, lgpd 15,
+  registry 37, billing 216, metering 200, collection 165, app 51).
+- **Pendências:** bean `FieldProtector` (CryptoConfig) na E5 — sem ele o `MtrService` não sobe num contexto Spring;
+  `reveal` do MTR (hash, SINIR, PDF) não registra acesso na auditoria (é processamento do sistema; avaliar com o DPO);
+  `SinirMtrRequest` ainda tem `toString` padrão com os documentos.
