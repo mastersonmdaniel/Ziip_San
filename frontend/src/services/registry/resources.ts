@@ -52,8 +52,13 @@ const customersBase = createResourceClient<Customer, CustomerSummary, CustomerIn
 export const customers = {
   ...customersBase,
   /** A API decide a permissão (403) e registra em log. A tela só chama e mostra por tempo curto. */
-  revealDocument(id: Uuid): Promise<RevealDocumentResult> {
-    return request<RevealDocumentResult>({ method: 'POST', url: resourceUrl('customers', id, 'reveal-document') })
+  revealDocument(id: Uuid, purpose: string): Promise<RevealDocumentResult> {
+    // A finalidade é obrigatória (LGPD art. 6º, I) e vai para a trilha de auditoria junto com o acesso.
+    return request<RevealDocumentResult>({
+      method: 'POST',
+      url: resourceUrl('customers', id, 'reveal-document'),
+      data: { purpose },
+    })
   },
 }
 

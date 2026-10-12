@@ -330,9 +330,13 @@ describe('S4: revelar documento (LGPD)', () => {
 
     vi.useFakeTimers({ shouldAdvanceTime: true })
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    expect(screen.getByRole('button', { name: /Revelar documento/ })).toBeDisabled()
+    await user.selectOptions(screen.getByLabelText('Finalidade do acesso'), 'Conferência cadastral')
     await user.click(screen.getByRole('button', { name: /Revelar documento/ }))
     expect(await screen.findByText('529.982.247-25')).toBeInTheDocument()
-    expect(api.mock.calls.some((c) => c[0].url === '/registry/customers/cus-1/reveal-document' && c[0].method === 'POST')).toBe(true)
+    const revealCall = api.mock.calls.find((c) => c[0].url === '/registry/customers/cus-1/reveal-document')?.[0]
+    expect(revealCall?.method).toBe('POST')
+    expect(revealCall?.data).toEqual({ purpose: 'Conferência cadastral' })
     // O limite local (15 s) vale mesmo se o servidor sugerir mais.
     expect(screen.getByText(`O documento some em ${REVEAL_SECONDS} s.`)).toBeInTheDocument()
 
@@ -356,7 +360,8 @@ describe('S4: revelar documento (LGPD)', () => {
       'POST /registry/customers/cus-1/reveal-document': { document: '52998224725' },
     })
     renderDetail()
-    await user.click(await screen.findByRole('button', { name: /Revelar documento/ }))
+    await user.selectOptions(await screen.findByLabelText('Finalidade do acesso'), 'Conferência cadastral')
+    await user.click(screen.getByRole('button', { name: /Revelar documento/ }))
     expect(await screen.findByText('529.982.247-25')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Ocultar agora/ }))
     expect(screen.queryByText('529.982.247-25')).not.toBeInTheDocument()
@@ -381,7 +386,8 @@ describe('S4: revelar documento (LGPD)', () => {
       return impl(config)
     })
     renderDetail()
-    await user.click(await screen.findByRole('button', { name: /Revelar documento/ }))
+    await user.selectOptions(await screen.findByLabelText('Finalidade do acesso'), 'Conferência cadastral')
+    await user.click(screen.getByRole('button', { name: /Revelar documento/ }))
     expect(await screen.findByText('Você não tem permissão para ver o documento completo.')).toBeInTheDocument()
     expect(screen.getByText('***.TST.000-**')).toBeInTheDocument()
   })

@@ -24,12 +24,24 @@ type RevealState =
   | { status: 'error'; message: string }
 
 /**
+ * Finalidades aceitas para ver o documento completo. Lista fechada de propósito: texto livre aqui
+ * acabaria com dado pessoal na trilha de auditoria, que registra a finalidade de cada acesso.
+ */
+export const REVEAL_PURPOSES = [
+  'Atendimento ao titular (confirmação de identidade)',
+  'Conferência cadastral',
+  'Cobrança e negociação de débito',
+  'Cumprimento de obrigação legal ou ordem judicial',
+] as const
+
+/**
  * Revela o documento por ação explícita: chama POST .../reveal-document (a API decide a
  * permissão e registra o log) e mostra o resultado por tempo curto. O valor fica só neste
  * estado: nunca em storage, URL ou console, e some ao desmontar.
  */
 export function RevealDocument({ customerId, masked }: { customerId: string; masked: string | null }) {
   const [state, setState] = useState<RevealState>({ status: 'hidden' })
+  const [purpose, setPurpose] = useState('')
   const timer = useRef<number | null>(null)
 
   const stopTimer = () => {
@@ -48,7 +60,7 @@ export function RevealDocument({ customerId, masked }: { customerId: string; mas
   const reveal = async () => {
     setState({ status: 'loading' })
     try {
-      const result = await customers.revealDocument(customerId)
+      const result = await customers.revealDocument(customerId, purpose)
       const limit = Math.min(result.expiresInSeconds ?? REVEAL_SECONDS, REVEAL_SECONDS)
       const text = formatDocument(result.document, detectDocumentKind(result.document))
       setState({ status: 'shown', text, secondsLeft: limit })
@@ -90,10 +102,33 @@ export function RevealDocument({ customerId, masked }: { customerId: string; mas
             </span>
           </div>
         ) : (
-          <Button size="sm" variant="outline" onClick={() => void reveal()} loading={state.status === 'loading'}>
-            <Eye className="h-4 w-4" aria-hidden="true" />
-            Revelar documento
-          </Button>
+          <div className="flex flex-wrap items-end gap-2">
+            <label className="text-xs text-muted-foreground">
+              Finalidade do acesso
+              <select
+                className="mt-1 block rounded-lg border border-input bg-background px-2 py-1 text-sm"
+                value={purpose}
+                onChange={(e) => setPurpose(e.target.value)}
+              >
+                <option value="">Selecione...</option>
+                {REVEAL_PURPOSES.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => void reveal()}
+              loading={state.status === 'loading'}
+              disabled={purpose === ''}
+            >
+              <Eye className="h-4 w-4" aria-hidden="true" />
+              Revelar documento
+            </Button>
+          </div>
         )
       ) : null}
       {state.status === 'error' ? <Alert tone="error">{state.message}</Alert> : null}

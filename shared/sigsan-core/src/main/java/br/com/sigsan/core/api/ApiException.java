@@ -85,6 +85,16 @@ public abstract class ApiException extends RuntimeException {
         }
     }
 
+    /**
+     * 405: a operação não existe para o recurso por decisão de modelo (ex.: exclusão de uma tabela sem
+     * coluna de exclusão lógica). Diferente de uma rota inexistente: a mensagem diz o que fazer no lugar.
+     */
+    public static class MethodNotAllowed extends ApiException {
+        public MethodNotAllowed(String code, String message) {
+            super(405, code, message);
+        }
+    }
+
     /** 400: requisição malformada que o cliente não deveria ter montado (ex.: documento na URL). */
     public static class BadRequest extends ApiException {
         public BadRequest(String code, String message) {

@@ -3,6 +3,7 @@ package br.com.sigsan.app.web;
 import br.com.sigsan.core.api.ApiException;
 import br.com.sigsan.platform.security.ProblemResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ProblemDetail> handleOptimisticLock(OptimisticLockingFailureException ex) {
         return respond(problem(409, "versao-desatualizada", "Conflito",
                 "O registro foi alterado por outra pessoa. Recarregue e tente de novo."));
+    }
+
+    /**
+     * Restrição do banco (índice único, chave estrangeira) que a validação da aplicação não pegou, em
+     * geral por corrida entre duas gravações. 409 genérico: o nome da restrição e o valor ficam no log.
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ProblemDetail> handleIntegrity(DataIntegrityViolationException ex) {
+        log.warn("Restrição do banco violada na API: {}", ex.getMostSpecificCause().getClass().getSimpleName());
+        return respond(problem(409, "conflito-de-dados", "Conflito",
+                "A gravação conflita com outro registro (duplicidade ou referência inválida). Recarregue e tente de novo."));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
