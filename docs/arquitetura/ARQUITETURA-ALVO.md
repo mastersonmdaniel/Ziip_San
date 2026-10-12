@@ -2,7 +2,7 @@
 
 Base: revisão 17 (§4 e §5) e ADRs 0003, 0005, 0006, 0007, 0010, 0012, 0013, 0014, 0018, 0020 e 0022. Neutra quanto a
 provedor enquanto o ADR-0011 estiver pendente. Metas em `REQUISITOS-NAO-FUNCIONAIS.md`. Os nomes de roles abaixo
-(`sigsan_*`) passam a `ziipsan_*` na renomeação do P0 (plano P0.33).
+(`sigsan_*`) passam a `ziipsan_*` na renomeação do P0 (plano P0.33). Nomes técnicos em inglês (plano §8, Idioma).
 
 ## 1. Componentes
 
@@ -15,7 +15,7 @@ Monólito modular: um artefato (imagem única, não-root, assinada) executado em
 | `worker` | Outbox, lote, retorno bancário, fiscal (ADR-0003), PDFs, notificações e coletor da Central Ziip (ADR-0018); réplicas por fila; role `sigsan_worker` |
 | ClamAV | Varredura dos arquivos enviados (anexos de chamados e logos de tenant), junto do `worker`, com quarentena até a varredura; substituível pelo serviço da hospedagem (exceção do ADR-0010) |
 | `migrate` | Job antes de cada rollout; único detentor da credencial `sigsan_migrator` |
-| Keycloak 26.8 | 2+ réplicas, `start --optimized`, banco próprio; MFA conforme ADR-0007 |
+| Keycloak 26.8 | 2+ réplicas, `start --optimized`, banco próprio; MFA conforme ADR-0007; realm `ziipsan` para backoffice e plataforma e realm `ziipsan-portal` para os consumidores do portal, com client e emissor próprios (ADR-0022) |
 | PostgreSQL 17 + PostGIS 3.5 | Primário com standby síncrono, PITR e réplica de leitura para relatórios e SINISA (ADR-0013); pooler em modo transaction |
 | Armazenamento de objetos | Prefixo e chave por tenant; retenção imutável para documentos fiscais (XML autorizado servido como gravado, ADR-0022) |
 | Outbox | Tabela no PostgreSQL, workers com `SKIP LOCKED` (ADR-0014) |
@@ -52,13 +52,13 @@ flowchart LR
 1. **Requisição autenticada.** O navegador envia só o cookie `__Host-` HttpOnly ao `/bff`. O BFF obtém o access token
    da sessão, renova com rotação quando necessário e chama a API internamente. A API valida emissor, audiência e
    `tenant_id` contra o catálogo, abre a transação, aplica o contexto local (§4) e a RLS filtra.
-2. **Faturamento em lote.** O operador abre o ciclo; `job_runs` recebe trava única `(tenant, ciclo)`. O ciclo é
+2. **Faturamento em lote.** O operador abre o ciclo; `job_runs` recebe trava única `(tenant_id, cycle_id)`. O ciclo é
    particionado por rota, cada rota vira uma mensagem na fila `billing`. O worker processa em blocos com commit e
-   checkpoint (última ligação); falha retoma do checkpoint; `UNIQUE (ciclo, ligação)` impede conta duplicada. Ao fim,
+   checkpoint (última ligação); falha retoma do checkpoint; `UNIQUE (cycle_id, unit_id)` impede conta duplicada. Ao fim,
    a mesma transação de cada bloco publica as mensagens fiscais e de gráfica.
-3. **Emissão fiscal.** A mensagem `fiscal.emitir` nasce na transação da conta. O worker monta a NFAg-e, assina com o
+3. **Emissão fiscal.** A mensagem `fiscal.issue` nasce na transação da conta. O worker monta a NFAg-e, assina com o
    certificado do cofre, envia por mTLS e grava o protocolo. Retry com backoff e jitter; idempotência por
-   `(conta, modelo, série)`; rejeição vai para a fila de pendências do operador; contingência conforme o leiaute.
+   `(bill_id, model, series)`; rejeição vai para a fila de pendências do operador; contingência conforme o leiaute.
 4. **Webhook Pix.** A API valida a origem e a assinatura do PSP, grava em `pix_inbox` com
    `UNIQUE (psp, end_to_end_id)` e `ON CONFLICT DO NOTHING`, e responde 200. O worker concilia e baixa a conta. Uma
    consulta diária ao PSP recupera notificações perdidas.
@@ -69,9 +69,9 @@ flowchart LR
    sintético, canário (1–2 tenants), 10%, restante. `tenant_schema_version` registra o status; falha põe o tenant em
    quarentena sem parar os demais. Mudanças em expand/contract, compatíveis com as versões N e N-1 da aplicação;
    `outOfOrder` desligado.
-7. **Provisionamento.** O console da plataforma (MFA obrigatório) cria o tenant no catálogo como `PROVISIONANDO`, com
+7. **Provisionamento.** O console da plataforma (MFA obrigatório) cria o tenant no catálogo como `PROVISIONING`, com
    porte e shard; recusa schema existente; cria estrutura conforme o porte, DEK no KMS, organização e primeiro
-   administrador no Keycloak (convite) e parâmetros G com aceite (ADR-0002); só então `ATIVO`. Cada passo é
+   administrador no Keycloak (convite) e parâmetros G com aceite (ADR-0002); só então `ACTIVE`. Cada passo é
    idempotente e retomável pela outbox.
 
 ## 3. Multi-tenant híbrido e roteamento
@@ -82,13 +82,13 @@ flowchart LR
 | Médio | 20–200 mil | Schema próprio no cluster compartilhado | Fila e janela de lote próprias |
 | Grande | acima de 200 mil | Cluster dedicado | Workers dedicados |
 
-O `tenant_catalog` ganha `porte`, `shard_id` e `schema`. Cada shard tem pool próprio; o roteador resolve
+O `tenant_catalog` ganha `size_tier` (porte), `shard_id` e `schema`. Cada shard tem pool próprio; o roteador resolve
 `tenant → shard → schema` a partir do JWT, com cache em memória invalidado por evento. Mudança de porte é migração
 assistida com janela.
 
 ## 4. Conexões e contexto de tenant
 
-- Pools separados por processo e finalidade: `api` (20 por réplica), `ingestao` (webhook e sincronização, 5 por réplica,
+- Pools separados por processo e finalidade: `api` (20 por réplica), `ingestion` (webhook e sincronização, 5 por réplica,
   para não disputar com o backoffice), `worker` (10 por réplica). Todos com `connectionTimeout`, `maxLifetime` e
   métricas.
 - Roles: `sigsan_app` com `statement_timeout` de 5 s; `sigsan_worker` com 15 min; ambas com

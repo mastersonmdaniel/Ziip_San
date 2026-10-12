@@ -1,7 +1,7 @@
 # Marca e temas
 
 Desenho do pacote de marca, da marca do tenant, dos temas e da renomeação `sigsan` → `ziipsan`. Decisões em ADR-0016
-e ADR-0017. Estado em 12/10/2026: nada implementado.
+e ADR-0017. Estado em 12/10/2026: nada implementado; valores de cor do §4.2 aprovados pelo dono do produto.
 
 ## 1. Objetivos e não objetivos
 
@@ -121,8 +121,9 @@ componentes.
 
 ### 4.2 Valores iniciais
 
-**Proposta a validar em contraste e com o dono.** Contrastes calculados pela fórmula WCAG; quem aceita é o teste do
-§4.6. Comuns aos dois padrões (no escuro, os `-foreground` de estado e da primária são `222 47% 8%`; no claro, branco):
+**Aprovada pelo dono em 12/10/2026; ajustes finos permitidos após ver as telas, mantendo o teste de contraste.**
+Contrastes calculados pela fórmula WCAG; quem aceita cada valor, inclusive o ajustado, é o teste do §4.6. Valor
+ajustado é registrado nesta tabela. Comuns aos dois padrões (no escuro, os `-foreground` de estado e da primária são `222 47% 8%`; no claro, branco):
 
 | Token | Claro | Escuro |
 |---|---|---|
@@ -148,7 +149,8 @@ O `theme-color #0361a0` de `frontend/index.html:7` não coincide com a primária
 
 ### 4.3 Registro de padrões
 
-`frontend/src/theme/palettes/<id>.json` (id, rótulo, tokens por modo, sobrescrevendo os comuns). Um script gera
+`frontend/src/theme/palettes/<id>.json` (id, rótulo, tokens por modo, sobrescrevendo os comuns). Ids em inglês
+(`aqua-blue` para Azul Água, `aqua-green` para Verde Água); rótulos em português (plano §8, Idioma). Um script gera
 `palettes.css` (seletores `:root[data-palette="<id>"]` e `:root[data-mode="dark"][data-palette="<id>"]`) e
 `palette-ids.json`, com que o backend valida preferências e configurações. Tailwind passa a
 `darkMode: ['selector', '[data-mode="dark"]']`.
@@ -180,7 +182,7 @@ o merge.
 
 ### 4.7 Como acrescentar um padrão
 
-1. Copiar `azul-agua.json` para `<id>.json`; definir id (minúsculas e hífen) e rótulo.
+1. Copiar `aqua-blue.json` para `<id>.json`; definir id (inglês, minúsculas e hífen) e rótulo.
 2. Preencher os tokens dos dois modos; omitir os que seguem os comuns.
 3. Rodar o gerador e o teste de contraste até passar; revisar as capturas do Playwright.
 4. Aprovação do dono e PR. O padrão fica disponível aos tenants sem restrição; quem tem lista precisa incluí-lo.
@@ -241,7 +243,7 @@ URN e do tópico, ida e volta da cifra e busca residual sem `sigsan` fora da lis
 | `ziipsan/enc/v1`, `ziipsan/bidx/v1` (dado cifrado e índice cego ficariam ilegíveis) | versão `v2` com recifragem |
 | `urn:ziipsan:problema:` (contrato da API) | nova versão da API |
 | Prefixo de tópico MQTT (equipamento de campo) | período de convivência |
-| Realm, audiência e emissor | migração planejada |
+| Realms (`ziipsan` e, para os consumidores do portal, `ziipsan-portal`, ADR-0022), audiência e emissor | migração planejada |
 
 ## 6. Re-brand
 
@@ -266,7 +268,7 @@ caixa fora de `docs/` e do diário; exceções só em `branding/` e numa lista p
 | Pacote de marca, schema, `BrandProvider`, plugin do Vite, endpoint público, teste de literais | P0 | P0.34 |
 | Tema do Keycloak gerado do pacote | P0, entra na imagem da P0.29 | P0.35 |
 | Tokens, registro, Azul Água e Verde Água, script sem piscar com hash na CSP, contraste no CI | P0, com a P0.16 | P0.36 |
-| Validação dos valores do §4.2 com o dono do produto | P0 | P0.37 |
+| Valores do §4.2, aprovados em 12/10/2026, no registro; ajuste fino após ver as telas, com contraste verde | P0 | P0.37 |
 | Avaliação de Keycloak Organizations | P0, com a P0.13 | P0.38 |
 | Preferência no servidor; padrão e restrição do tenant | P1 | P1.18 |
 | Marca do tenant: chaves, logo, subdomínio, endpoint pré-login, cabeçalho | P1, com a P1.6 | P1.19 |

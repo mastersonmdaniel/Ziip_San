@@ -134,8 +134,10 @@ Travado (classe a): ajuste de conciliação com aprovação dupla (plano R5).
 
 Pisos fixos definidos pelo Ziip SAN (classe c, ADR-0015): o cliente só amplia prazos. Eliminação ao fim do contrato e
 descarte em backups seguem procedimento do Ziip SAN (classe a), com certificado de descarte entregue ao cliente. A
-eliminação é executada por uma pessoa da plataforma com MFA, sem segundo aprovador, sempre com justificativa,
-auditoria e prazo de carência antes da execução (`CENTRAL-ZIIP.md` §6.3; decisão do dono do produto, 12/10/2026).
+eliminação é executada só pelo dono da plataforma (`PLATFORM_OWNER`), uma pessoa com MFA, sem segundo aprovador,
+sempre com justificativa e auditoria, depois de carência de 30 dias contados do fim do contrato; eliminação concluída
+e certificado emitido em até 30 dias após a carência (RNF-42; `CENTRAL-ZIIP.md` §6.3; decisões do dono do produto,
+12/10/2026).
 
 Chamados de suporte do Ziip ao tenant e seus anexos não são parâmetro do tenant: ficam retidos pela vigência do
 contrato mais 5 anos (ADR-0020) e não entram na eliminação de fim de contrato; o certificado de descarte registra a
@@ -153,7 +155,7 @@ exceção.
 | `ret.negative_listing_max_years` | informação negativa em birô | anos | 5 | teto 5 (CDC art. 43 §1º); só reduz | c | JUR | P4 | novo |
 | `ret.incident_record_years` | registro de incidente de segurança | anos | 5 | piso 5 (Res. CD/ANPD 15/2024 art. 10, `10`); ente público: tabela de temporalidade; só amplia | c | DPO | P1 | novo |
 | `lgpd.dsr_deadline_days` | prazo de resposta ao titular | dias | 15 (privado) | teto 15 (LGPD art. 19 II); ente público: LAI; só reduz | c | DPO | P1 | fixo em `compliance/sigsan-lgpd/src/main/java/br/com/sigsan/compliance/lgpd/engine/DataSubjectRightsEngine.java:31` e `.../service/LgpdEngineService.java:225` |
-| `ret.contract_end` | devolução e eliminação ao fim do contrato SaaS | procedimento | procedimento do Ziip SAN | devolução em formato aberto, carência antes da eliminação, eliminação por uma pessoa com MFA e justificativa, e certificado de descarte entregue ao cliente (DPA; `10` §1.2 item 10) | a | — | P3 | novo (não há offboarding, `10`) |
+| `ret.contract_end` | devolução e eliminação ao fim do contrato SaaS | procedimento | procedimento do Ziip SAN | devolução em formato aberto em até 15 dias, carência de 30 dias do fim do contrato, eliminação só por `PLATFORM_OWNER` com MFA e justificativa, e certificado de descarte entregue ao cliente em até 30 dias após a carência (RNF-42; DPA; `10` §1.2 item 10) | a | — | P3 | novo (não há offboarding, `10`) |
 | `ret.backup_disposal` | descarte nas cópias de backup do dado já eliminado | procedimento | procedimento do Ziip SAN | prazo de rotação a definir; incluído no certificado de descarte | a | — | P3 | novo |
 
 ### G9 — Corte e religação

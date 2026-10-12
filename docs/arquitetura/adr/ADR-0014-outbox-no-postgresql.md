@@ -3,6 +3,8 @@
 - **Status:** Aceito, 12/10/2026
 - **Decisor:** dono do produto
 - **Afeta:** revisão 17 (achado X4); `docs/arquitetura/ARQUITETURA-ALVO.md` §2
+- **Ajuste de 12/10/2026 (plano v2.2), antes de qualquer implementação:** nomes de coluna e de estado em inglês, por
+  decisão do dono do produto (plano §8, Idioma); a decisão não muda.
 
 ## Contexto
 
@@ -12,16 +14,17 @@ e provisionamento precisam de entrega garantida, retomada e isolamento entre ten
 
 ## Decisão
 
-1. Tabela `outbox` no mesmo banco do tenant (uma por shard), com `tenant_id`, `fila`, `tipo`, `chave_dedup`,
-   `payload` sem dado pessoal (só identificadores), `status`, `tentativas`, `disponivel_em`, `travado_ate` e
-   `ultimo_erro`. `UNIQUE (tenant_id, fila, chave_dedup)`; partição diária.
+1. Tabela `outbox` no mesmo banco do tenant (uma por shard), com `tenant_id`, `queue`, `type`, `dedup_key`,
+   `payload` sem dado pessoal (só identificadores), `status`, `attempts`, `available_at`, `locked_until` e
+   `last_error`. `UNIQUE (tenant_id, queue, dedup_key)`; partição diária.
 2. A mensagem é gravada na mesma transação do registro de negócio, com RLS `WITH CHECK` no `tenant_id`. Só a role
    `sigsan_worker` lê linhas de todos os tenants, e só nesta tabela; o handler processa com o contexto do tenant da
    mensagem.
 3. Workers do processo `worker` tomam mensagens com `FOR UPDATE SKIP LOCKED` e prazo de posse; posse vencida volta à
    fila. Entrega ao menos uma vez; todo handler é idempotente.
 4. Fila justa: a seleção percorre os tenants com pendência e respeita o limite de concorrência de cada um (RNF-25).
-5. Backoff exponencial com jitter; após o limite de tentativas, `MORTA`, visível no console com reprocessamento.
+5. Backoff exponencial com jitter; após o limite de tentativas, estado `DEAD` (mensagem morta), visível no console com
+   reprocessamento.
 6. O código usa as interfaces `MessagePublisher` e `MessageHandler`; o adaptador PostgreSQL é o único inicial. Uma
    fila gerenciada entra depois como transporte, com a outbox mantida como ponto de gravação transacional.
 

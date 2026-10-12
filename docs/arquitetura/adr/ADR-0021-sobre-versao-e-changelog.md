@@ -4,6 +4,8 @@
 - **Decisor:** dono do produto
 - **Afeta:** `docs/arquitetura/AJUDA-SUPORTE-SOBRE.md` §9; `pom.xml`; `frontend/package.json`; ADR-0002, ADR-0016,
   ADR-0019; RNF-35
+- **Ajuste de 12/10/2026 (plano v2.2), antes de qualquer implementação:** nomes de tabela, rota, cabeçalho, arquivo e
+  chave passam ao inglês, por decisão do dono do produto (plano §8, Idioma); a decisão não muda.
 
 ## Contexto
 
@@ -18,18 +20,19 @@ o registro de mudanças de segurança, legislação e parâmetro regulatório é
    `1.5.0-rc.1`; build sem tag `1.5.0-dev.N+sha`.
 2. **Geração no build:** a tag `vX.Y.Z` é a fonte. O CI passa `-Drevision` ao Maven e a mesma versão, commit e data
    ao Vite. Nenhuma versão é escrita à mão.
-3. **Detecção no frontend:** a API devolve `Ziip-Versao` e `Ziip-Versao-Minima-Cliente`; o SPA avisa para recarregar
+3. **Detecção no frontend:** a API devolve `Ziip-Version` e `Ziip-Min-Client-Version`; o SPA avisa para recarregar
    quando difere e bloqueia abaixo da mínima.
-4. **Implantação:** a data exibida é gravada pelo job `migrate` na tabela `platform.implantacao` (core `V5_1`).
-5. **Changelog do cliente:** um arquivo por versão em `conteudo/novidades/<versao>.yaml`, separado do changelog técnico
-   (`CHANGELOG.md`, gerado dos commits). Cada item tem `categoria` (novidade, melhoria, correção, segurança,
-   legislação, parâmetro regulatório), `modulo`, `texto`, `referencia` (norma ou resolução, obrigatória em legislação e
-   parâmetro regulatório), `afeta` (todos, módulos, agência reguladora ou parâmetro) e `acao_requerida` opcional.
+4. **Implantação:** a data exibida é gravada pelo job `migrate` na tabela `platform.deployment` (core `V5_1`).
+5. **Changelog do cliente:** um arquivo por versão em `content/release-notes/<version>.yaml`, separado do changelog
+   técnico (`CHANGELOG.md`, gerado dos commits). Cada item tem `category` (`feature`, `improvement`, `fix`,
+   `security`, `legislation`, `regulatory_parameter`: novidade, melhoria, correção, segurança, legislação, parâmetro
+   regulatório), `module`, `text` (em português), `reference` (norma ou resolução, obrigatória em legislação e
+   parâmetro regulatório), `affects` (`all`, módulos, agência reguladora ou parâmetro) e `required_action` opcional.
 6. **Regra permanente:** toda mudança de segurança, legislação ou parâmetro regulatório tem item no changelog do
    cliente. O CI bloqueia a release quando um commit marcado com essas categorias não tem item. Itens de segurança
    descrevem o efeito, sem detalhe explorável.
 7. **Sobre:** dados do produto e da empresa desenvolvedora vêm do pacote de marca (ADR-0016); documentos legais
-   mostram a versão vigente e a aceita (`platform.aceite_documento`, ao lado do contrato do ADR-0019; não confundir
+   mostram a versão vigente e a aceita (`platform.document_acceptance`, ao lado do contrato do ADR-0019; não confundir
    com `parameter_acceptances`, o aceite do conjunto de parâmetros do ADR-0002); licenças de terceiros saem do SBOM
    CycloneDX do RNF-35.
 8. **Novidades:** uma vez por versão por usuário, com estado no servidor, mostrando só os itens que afetam o tenant.
@@ -55,8 +58,8 @@ o registro de mudanças de segurança, legislação e parâmetro regulatório é
 |---|---|
 | Versão pela tag no CI, `build-info`, `git.properties` e `version.json` | P0 |
 | Cabeçalhos de versão e aviso de recarga no SPA | P0 |
-| SBOM CycloneDX, `licencas-terceiros.json` e lista de licenças permitidas no CI | P0 |
-| Esquema de `conteudo/novidades`, validação e bloqueio por categoria no CI | P0 |
-| Tabela `platform.implantacao` gravada pelo `migrate`; `GET /api/v1/sobre` mínimo | P0 |
+| SBOM CycloneDX, `third-party-licenses.json` e lista de licenças permitidas no CI | P0 |
+| Esquema de `content/release-notes`, validação e bloqueio por categoria no CI | P0 |
+| Tabela `platform.deployment` gravada pelo `migrate`; `GET /api/v1/about` mínimo | P0 |
 | Sobre completo com pacote de marca e aceites; novidades por usuário | P1 |
-| Filtro de novidades por tenant (`afeta`) | P2 |
+| Filtro de novidades por tenant (`affects`) | P2 |

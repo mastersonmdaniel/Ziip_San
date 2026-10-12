@@ -66,7 +66,7 @@ indica quando a meta passa a ser critério de aceite.
 |---|---|---|---|---|---|
 | RNF-40 | Retenção por categoria em tabela aprovada pelo jurídico e pelo DPO; expurgo por partição. Chamados de suporte e anexos: vigência do contrato mais 5 anos (ADR-0020) | Relatório mensal de expurgo | Job do worker | P1 (tabela), P2 (expurgo) | Não atende: `audit_log` sem partição (`V1__create_core_schema.sql:43`, X3) |
 | RNF-41 | Registro de acesso a dado pessoal em lista, busca, detalhe, revelação e exportação | Teste por endpoint | Testes de integração | P1 | Parcial: só o `reveal` é registrado |
-| RNF-42 | Fim de contrato: exportação em formato aberto em até 15 dias; eliminação até 30 dias após o prazo de devolução, depois da carência, com certificado de descarte (ADR-0015) | Ensaio com tenant sintético | Console da plataforma | P3 | Não atende (P1) |
+| RNF-42 | Fim de contrato: exportação em formato aberto em até 15 dias; carência de 30 dias contados do fim do contrato, para o cliente baixar a exportação e contestar; eliminação concluída e certificado de descarte emitido em até 30 dias após o fim da carência, ou seja, até 60 dias do fim do contrato, salvo contestação ainda sem resposta (ADR-0015; decisão do dono do produto, 12/10/2026) | Ensaio com tenant sintético | Console da plataforma | P3 | Não atende (P1) |
 | RNF-43 | Crypto-shredding: destruir a chave do tenant torna ilegível o dado cifrado, inclusive em backup; backups expiram em até 35 dias | Ensaio | Cofre/KMS | P3 | Não atende: depende do R1 |
 | RNF-44 | Dados de tenant e backups no Brasil; exceções (telemetria sem dado pessoal) registradas no RIPD | Inventário | — | P0 | Não atende: Terraform em `us-east-1` (O2) |
 

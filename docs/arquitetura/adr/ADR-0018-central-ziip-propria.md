@@ -5,6 +5,9 @@
 - **Afeta:** revisão 17 (achado P1); ADR-0007; ADR-0014; ADR-0020 (acesso assistido); P1.6; `docs/arquitetura/CENTRAL-ZIIP.md`
 - **Ajuste de 12/10/2026:** itens 2 e 4 alinhados às decisões do dono do produto sobre suspensão e eliminação e ao
   ADR-0020 (acesso assistido no lugar da impersonação), antes de qualquer implementação.
+- **Segundo ajuste de 12/10/2026 (plano v2.2), antes de qualquer implementação:** item 2 passa a dizer quais papéis
+  executam suspensão, bloqueio e eliminação e fixa a carência de 30 dias; item 4 cita o acesso de emergência do
+  ADR-0020; decisões do dono do produto.
 
 ## Contexto
 
@@ -21,12 +24,15 @@ ler dado pessoal do controlador.
 2. **Acesso só por papéis de plataforma** (dono, operação, suporte, financeiro), com MFA sempre exigido e verificado no
    token (ADR-0007). Ações destrutivas pedem step-up (reautenticação com segundo fator), justificativa e auditoria.
    Suspensão, bloqueio e eliminação de dados de tenant são executados por **uma pessoa** com MFA, sem segundo
-   aprovador; a eliminação tem ainda prazo de carência antes da execução e certificado de descarte (ADR-0015).
+   aprovador. Suspensão e bloqueio: dono (`PLATFORM_OWNER`) ou financeiro (`PLATFORM_FINANCE`), este só por
+   inadimplência contratual. Eliminação: só o dono, depois de carência de 30 dias contados do fim do contrato, com
+   certificado de descarte em até 30 dias após a carência (ADR-0015, RNF-42).
 3. **Indicadores de saneamento** por tenant e consolidados, conforme `CENTRAL-ZIIP.md` §3, com Health Score adaptado.
 4. **Incorpora o console da plataforma**: implantação com checklist de parâmetros, planos, módulos, cotas, flags,
    suspensão manual com aviso prévio (backoffice em somente leitura; portal do consumidor, Pix, retornos bancários e
    2ª via continuam), saída com certificado de descarte e acesso assistido com consentimento, prazo e auditoria
-   (ADR-0020).
+   (ADR-0020); sem consentimento, só o acesso de emergência em incidente de segurança declarado, somente leitura, pelo
+   dono (ADR-0020, seção Exceção).
 5. **Nunca lê dado pessoal de tenant.** Role `ziipsan_central` (nome posterior à renomeação do ADR-0016) acessa só
    funções agregadoras; as tabelas do schema `platform` guardam `tenant_id`, contagens e durações.
 6. **API de métricas `v1` estável** desde a primeira versão, para permitir uma Central única dos produtos Ziip. A
@@ -65,5 +71,5 @@ ler dado pessoal do controlador.
 | Central v0: coletor com trava, alertas, Visão geral, Plataforma, Segurança; API de métricas `v1` | P1 |
 | Abas Faturamento e Fiscal | P2 |
 | Abas Arrecadação, Pix, LGPD, Regulatório, Infraestrutura com SLO, Radar, Suporte (ADR-0020); kit de evidências | P3 |
-| Acesso assistido com consentimento (ADR-0020), no lugar da impersonação | P3 |
-| Ensaio de saída com tenant sintético, carência e certificado de descarte | P3 |
+| Acesso assistido com consentimento e acesso de emergência (ADR-0020), no lugar da impersonação | P3 |
+| Ensaio de saída com tenant sintético, carência de 30 dias e certificado de descarte | P3 |

@@ -8,6 +8,8 @@
   `docs/PLANO-EXECUCAO-PDCA-R0-R9.md`, ADR-0002.
 - **Nomes:** módulos, pacotes e propriedades `sigsan` passam a `ziipsan` na renomeação do P0 (ADR-0016, plano P0.33);
   por exemplo, `commercial/sigsan-fiscal` vira `commercial/ziipsan-fiscal`.
+- **Idioma:** tabelas, colunas, estados, propriedades e classes Java em inglês (plano §8, Idioma, decisão do dono do
+  produto de 12/10/2026); nomes do C# do Ziip Cloud e campos dos leiautes oficiais ficam como na origem.
 
 Regra deste documento: o que não está nos fontes nem nos documentos lidos aparece como **a confirmar (NT/manual
 oficial)**.
@@ -25,7 +27,7 @@ oficial)**.
 | `DpsXmlBuilder` | XML da DPS por *string template*; versão 1.00 ou 1.01 conforme o grupo IBSCBS; ordem `tpRetISSQN`/`pAliq` muda entre versões | nenhuma | JAXB (`jakarta.xml.bind`) gerado do XSD oficial + validação `javax.xml.validation` | M |
 | `XmlDsigSigner` | XMLDSig enveloped, C14N 1.0, RSA-SHA256 (NFS-e) e RSA-SHA1 (NF-e 55); anti-XXE; verificação com uma única `Signature` | `System.Security.Cryptography.Xml` | `javax.xml.crypto.dsig` (JSR 105, embutido no JDK) ou Apache Santuario | M |
 | `SefinClient` | mTLS, TLS 1.2/1.3, revogação online, retry exponencial, XML gzip+Base64 em JSON, extração tolerante de erros | `SocketsHttpHandler`, Polly | `java.net.http.HttpClient` com `SSLContext` por tenant (`KeyManagerFactory` sobre `KeyStore` PKCS12 em memória), Resilience4j, Jackson, `GZIPOutputStream` | M |
-| `SefinClientSimulado` + `SefinRouter` | Simulação padrão com idempotência por Id da DPS | nenhuma | implementação `simulador` da mesma porta | P |
+| `SefinClientSimulado` + `SefinRouter` | Simulação padrão com idempotência por Id da DPS | nenhuma | implementação `simulator` da mesma porta | P |
 | `AesGcmCertificateVault` | PFX + senha cifrados AES-256-GCM, AAD = tenant + referência; **grava em arquivo** | `AesGcm`, `X509Certificate2` | `FieldCipher` do `sigsan-security`, gravado em coluna | P |
 | `CertificadoProvider` / `CertificadoLojaWindows` | Origem cofre ou repositório do Windows (A1 instalado e A3) | `X509Store` | não porta (seção 2) | — |
 | `AdnClient` | Distribuição de NFS-e por NSU (mTLS) e simulador | `HttpClientHandler` | idem `SefinClient` | M (adiável) |
@@ -91,20 +93,20 @@ reconciliação, numeração), `adapter` (`nfse`, `nfag`, `sim`, `xml`, `http`) 
 tenant).
 
 ```java
-public interface EmissorDocumentoFiscal {
-    TipoDocumento tipo();                        // NFAG, NFSE_NACIONAL
-    ResultadoAutorizacao autorizar(DocumentoAssinado doc, Emitente e);
-    Optional<ResultadoAutorizacao> consultar(IdentificadorDocumento id, Emitente e); // reconciliação
-    ResultadoEvento registrarEvento(EventoAssinado ev, Emitente e);                   // cancelamento, substituição
+public interface FiscalDocumentIssuer {
+    FiscalDocumentType type();                   // NFAG, NFSE_NACIONAL
+    AuthorizationResult authorize(SignedDocument doc, Issuer issuer);
+    Optional<AuthorizationResult> query(DocumentIdentifier id, Issuer issuer); // reconciliação
+    EventResult registerEvent(SignedEvent event, Issuer issuer);               // cancelamento, substituição
 }
 ```
 
-O roteamento escolhe a implementação por `(tenant, emitente, tipo, ambiente)`. O simulador é o padrão de todo ambiente
+O roteamento escolhe a implementação por `(tenant, issuer, type, environment)`. O simulador é o padrão de todo ambiente
 que não seja produção, como no C#.
 
 ### 3.2 Multi-tenant e certificado
 
-- `fiscal_certificates(tenant_id, emitente_id, pfx_ciphertext, senha_ciphertext, thumbprint, cnpj, not_after)`, com RLS
+- `fiscal_certificates(tenant_id, issuer_id, pfx_ciphertext, password_ciphertext, thumbprint, cnpj, not_after)`, com RLS
   forçada; no upload, exige chave privada, validade e CNPJ igual ao do emitente.
 - Nunca em disco, log, API ou `audit_log` (que copia a linha inteira, segundo o diário). Só o *worker* fiscal decifra.
 
@@ -114,19 +116,19 @@ que não seja produção, como no C#.
   `V11_x` por tenant) e `job_runs` no core `V10` (P2.1); o fiscal usa a mesma outbox.
 - *Worker* com `FOR UPDATE SKIP LOCKED`, lote por tenant, Resilience4j (retry só para erro transitório; *circuit
   breaker* e *bulkhead* por autorizador e UF, para um tenant não esgotar a cota dos outros).
-- Estados: `RESERVADO → ASSINADO → TRANSMITIDO → AUTORIZADO | REJEITADO | PENDENTE_RECONCILIACAO`, mais `CANCELADO`,
-  `SUBSTITUIDO` e `INUTILIZADO`.
+- Estados: `RESERVED → SIGNED → TRANSMITTED → AUTHORIZED | REJECTED | PENDING_RECONCILIATION`, mais `CANCELLED`,
+  `REPLACED` (substituído) e `VOIDED` (inutilizado).
 - Timeout ou 5xx: nunca retransmitir sem consultar (`HEAD /dps/{id}` na NFS-e; consulta equivalente na NFAg-e: **a
   confirmar (MOC NFAg)**). A rejeição por duplicidade também leva à reconciliação.
 
 ### 3.4 Numeração sem lacuna e idempotência
 
-- `fiscal_series(tenant_id, emitente_id, modelo, serie, proximo_numero)` com `SELECT ... FOR UPDATE` na mesma transação
-  que grava o documento em `RESERVADO`. Número nunca volta ao estoque.
+- `fiscal_series(tenant_id, issuer_id, model, series, next_number)` com `SELECT ... FOR UPDATE` na mesma transação
+  que grava o documento em `RESERVED`. Número nunca volta ao estoque.
 - "Sem lacuna" significa que todo número reservado tem destino registrado: autorizado, rejeitado ou inutilizado. Se a
   NFAg-e permite reutilizar número rejeitado e como se inutiliza faixa: **a confirmar (MOC NFAg)**. Se a NFS-e Nacional
   aceita lacuna na DPS: **a confirmar (manual do contribuinte)**.
-- Idempotência por `UNIQUE (tenant_id, origem, origem_id, tipo_documento)`: a conta (`bill_id`, como pede o R39) gera no
+- Idempotência por `UNIQUE (tenant_id, source_type, source_id, document_type)`: a conta (`bill_id`, como pede o R39) gera no
   máximo uma NFAg-e viva; reprocessar o ciclo não emite de novo. Também ficam únicos o Id da DPS e a chave de acesso.
 
 ### 3.5 Eventos
@@ -138,9 +140,9 @@ lote.
 
 ### 3.6 Ambientes e trava de produção
 
-- Ambiente por emitente: `SIMULADO`, `HOMOLOGACAO` (produção restrita na NFS-e; homologação SVRS/SEFAZ na NFAg-e),
-  `PRODUCAO`.
-- `tpAmb=1` exige três condições: `sigsan.fiscal.producao-permitida=true` na implantação (falsa em dev, CI e
+- Ambiente por emitente: `SIMULATED`, `HOMOLOGATION` (produção restrita na NFS-e; homologação SVRS/SEFAZ na NFAg-e),
+  `PRODUCTION`.
+- `tpAmb=1` exige três condições: `ziipsan.fiscal.production-allowed=true` na implantação (falsa em dev, CI e
   homologação), *flag* do tenant aprovada por dois papéis distintos e certificado ICP-Brasil válido. Nos *clusters* de
   teste, o egresso para os hosts de produção da Sefin e das SEFAZ fica bloqueado na rede.
 
@@ -152,8 +154,13 @@ como documento fiscal sem autorização.
 
 ### 3.8 XML autorizado e retenção
 
-- `fiscal_documents_xml(tenant_id, documento_id, xml_gzip, sha256, recebido_em)` só com INSERT (*trigger* recusa UPDATE
-  e DELETE, inclusive para o papel da aplicação); o hash entra na `HashChain`.
+- `fiscal_documents_xml(tenant_id, document_id, xml_gzip, sha256, received_at, source)` só com INSERT (*trigger*
+  recusa UPDATE e DELETE, inclusive para o papel da aplicação); o hash entra na `HashChain`. `source` indica a origem:
+  `ZIIPSAN` (autorizado pela emissão do Ziip SAN) ou `LEGACY_IMPORT` (importado na migração, com o sistema ou emissor
+  de origem).
+- XML anteriores ao go-live (ADR-0022, item 7; plano P2.19): o importador confere assinatura, protocolo de
+  autorização, emitente igual ao do tenant e duplicidade pela chave de acesso; o aceito é gravado como recebido, sem
+  regerar nem reformatar, e segue a mesma retenção imutável; o recusado vai para o relatório do lote.
 - Cópia em armazenamento com bloqueio de retenção (WORM) após a decisão de hospedagem (ADR-0011); MinIO segue congelado
   (ADR-0010).
 - Prazo de retenção é parâmetro do tenant (G6), com piso de 120 meses para o histórico de faturamento (ADR-0015); o
@@ -184,7 +191,7 @@ credenciamento por UF; se a conta pode ser o próprio DANFAG; base de cálculo d
 
 **Reaproveita da NFS-e Nacional:** cofre A1 e abertura PKCS12; fábrica mTLS; assinador (com SHA-1 ou SHA-256 por
 documento); validação XSD; outbox, numeração, idempotência e reconciliação; tabelas de classificação IBS/CBS (`CST`,
-`cClassTrib`), que são nacionais da RTC (a confirmar se a NFAg-e usa as mesmas); `MotorTributario` com vigência;
+`cClassTrib`), que são nacionais da RTC (a confirmar se a NFAg-e usa as mesmas); `TaxEngine` com vigência;
 simulador; trilha de auditoria.
 
 **É novo:** leiaute e builder do modelo 75; cliente do autorizador por UF; chave de acesso e DV; DANFAG; inutilização;
@@ -215,8 +222,8 @@ do R4: **a confirmar (tributarista do tenant e MOC)**.
 4. **Assinatura cruzada:** o Java verifica XML assinado pelo C# e o C# verifica o assinado pelo Java. Como RSA PKCS#1
    v1.5 é determinístico, com a mesma entrada canônica e o mesmo certificado de teste o `SignatureValue` tem de ser
    idêntico; diferença indica erro de canonicalização ou de *whitespace*.
-5. **Rastreio de NT:** tabela `fiscal_layout_versions(documento, nt, schema, vigencia_inicio, vigencia_fim)` e anotação
-   `@NotaTecnica` nas classes de regra; mudança no C# (ex.: reescrita do grupo IBSCBS em 06/08/2026) só entra no Java
+5. **Rastreio de NT:** tabela `fiscal_layout_versions(document_type, nt, schema, valid_from, valid_to)` e anotação
+   `@TechnicalNote` nas classes de regra; mudança no C# (ex.: reescrita do grupo IBSCBS em 06/08/2026) só entra no Java
    com vetor novo. A matriz NT × implementação fica neste diretório.
 6. **CI:** JUnit roda os vetores em todo *build*; o C# roda os mesmos arquivos quando o Ziip Cloud mudar. Divergência
    bloqueia o *merge*.
@@ -225,7 +232,7 @@ do R4: **a confirmar (tributarista do tenant e MOC)**.
 
 | Fase | Entregas | Critério de aceite |
 |---|---|---|
-| **P0** (out–nov/2026) | Esqueleto `sigsan-fiscal`; `MotorTributario` e `DpsId` com vetores; assinador JSR 105 com testes de XXE e assinatura cruzada; `CofreCertificado` sobre `FieldCipher` (bloqueado até o `TenantKeyProvider` do Vault); simulador; trava de produção; obtenção de MOC/XSD da NFAg-e e do XSD da DPS; confirmação do ato no DOU | Vetores do C# passam no Java; nenhum PFX fora da coluna cifrada; *build* sem `producao-permitida` não gera `tpAmb=1` |
+| **P0** (out–nov/2026) | Esqueleto `sigsan-fiscal`; `TaxEngine` e `DpsId` com vetores; assinador JSR 105 com testes de XXE e assinatura cruzada; `CertificateVault` sobre `FieldCipher` (bloqueado até o `TenantKeyProvider` do Vault); simulador; trava de produção; obtenção de MOC/XSD da NFAg-e e do XSD da DPS; confirmação do ato no DOU | Vetores do C# passam no Java; nenhum PFX fora da coluna cifrada; *build* sem `production-allowed` não gera `tpAmb=1` |
 | **P1** (nov/2026–jan/2027) | NFS-e Nacional completa (emissão, cancelamento, substituição, reconciliação) com builder do XSD; outbox, numeração com trava e idempotência; mTLS com *truststore* ICP-Brasil; builder e validador NFAg-e contra o XSD no simulador | Emissão, cancelamento e substituição aceitos na **produção restrita** com o certificado do emitente piloto; teste de concorrência sem número repetido nem perdido; queda simulada da Sefin sem nota duplicada |
 | **P2 Ciclo** (jan–mar/2027) | Integração com o ciclo do R4 (conta fechada → NFAg-e); cliente do autorizador por UF; DANFAG; cancelamento e inutilização; contingência conforme MOC; teste de carga | NFAg-e autorizada em **homologação** da SEFAZ do piloto em amostra de contas reais anonimizadas; ciclo reexecutado sem segunda NFAg-e; carga do tenant sintético dentro da meta ou desvio documentado |
 | **P3** (mar–mai/2027) | Painel de rejeições e reprocesso; exportação WORM; *runbook*; pentest com foco no cofre e no isolamento; alerta de vencimento do certificado | Pentest sem achado alto aberto; restauração do XML autorizado testada; *runbook* exercitado |

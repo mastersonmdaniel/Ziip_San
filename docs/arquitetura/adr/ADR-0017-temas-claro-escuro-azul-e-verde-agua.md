@@ -3,6 +3,8 @@
 - **Status:** Aceito, 12/10/2026
 - **Decisor:** dono do produto
 - **Afeta:** ADR-0016 (marca), P0.16 (CSP); detalhes em `docs/arquitetura/MARCA-E-TEMAS.md` §4
+- **Ajuste de 12/10/2026 (plano v2.2), antes de qualquer implementação:** item 7 registra a aprovação dos valores pelo
+  dono do produto; ids dos padrões em inglês (plano §8, Idioma).
 
 ## Contexto
 
@@ -22,7 +24,9 @@ contraste foi calculado à mão; axe em jsdom não o mede.
 4. A cor do tenant **não** substitui a primária da interface (ADR-0016).
 5. Tema aplicado **antes da primeira pintura** por script inline estático, autorizado na CSP por hash.
 6. **Contraste WCAG 2.1 AA verificado no CI** para cada padrão nos dois modos; falha bloqueia o merge.
-7. Valores iniciais em MARCA-E-TEMAS §4.2, como **proposta a validar em contraste e com o dono**.
+7. Valores iniciais em MARCA-E-TEMAS §4.2, **aprovados pelo dono em 12/10/2026; ajustes finos permitidos após ver as
+   telas, mantendo o teste de contraste**. No registro, os padrões têm ids `aqua-blue` (Azul Água) e `aqua-green`
+   (Verde Água); o rótulo exibido segue em português.
 
 ## Consequências
 
@@ -68,5 +72,5 @@ contraste foi calculado à mão; axe em jsdom não o mede.
 | Registro com Azul Água e Verde Água, gerador e `darkMode` por atributo | P0 |
 | Script inline sem piscar com hash na CSP e teste do hash | P0 |
 | Teste de contraste no CI (Vitest e Playwright com axe) | P0 |
-| Validação dos valores com o dono | P0 |
+| Valores aprovados pelo dono em 12/10/2026 aplicados ao registro; ajuste fino após ver as telas, com o teste de contraste verde | P0 |
 | Preferência no servidor; padrão e restrição do tenant no console | P1 |

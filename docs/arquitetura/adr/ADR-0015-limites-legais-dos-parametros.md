@@ -5,6 +5,8 @@
 - **Afeta:** ADR-0002 (item 2, limites legais validados); `docs/arquitetura/PARAMETROS-DO-TENANT.md` §2, G2, G5, G6, G9
   e §4
 - **Detalhamento dos parâmetros:** `docs/arquitetura/PARAMETROS-DO-TENANT.md`
+- **Ajuste de 12/10/2026 (plano v2.2), antes de qualquer implementação:** item 5 passa a fixar a carência de 30 dias
+  antes da eliminação e o prazo do certificado de descarte, por decisão do dono do produto, alinhado ao RNF-42.
 
 ## Contexto
 
@@ -67,7 +69,10 @@ recusado. O catálogo de parâmetros apontou quatro pontos em que essa regra ún
      confirmado, `13`);
    - demais categorias de G6 sem norma no levantamento: piso a definir.
    A eliminação ao fim do contrato e o descarte em backups seguem procedimento do Ziip SAN (classe a), com certificado
-   de descarte entregue ao cliente.
+   de descarte entregue ao cliente. Carência de **30 dias** contados do fim do contrato, para o cliente baixar a
+   exportação e contestá-la; eliminação concluída e certificado emitido em até 30 dias após o fim da carência, ou
+   seja, até 60 dias do fim do contrato (RNF-42). Só `PLATFORM_OWNER` agenda e executa a eliminação
+   (`CENTRAL-ZIIP.md` §6.3).
 
 ## Consequências
 
@@ -133,4 +138,4 @@ recusado. O catálogo de parâmetros apontou quatro pontos em que essa regra ún
 | Pisos de retenção sem norma no levantamento (lote CadÚnico, documentos do pedido manual, protocolos, prova de aviso) e confirmação do piso de 10 anos | P1 |
 | Motor de retenção com recusa abaixo do piso; versão gravada no expurgo | P2 |
 | Regra de corte por motivo, exceção de emergência técnica com justificativa e foto | P3 |
-| Procedimento de eliminação ao fim do contrato e descarte em backup, com certificado de descarte, citado no DPA | P3 |
+| Procedimento de eliminação ao fim do contrato, com carência de 30 dias, e descarte em backup, com certificado de descarte em até 30 dias após a carência, citado no DPA | P3 |
