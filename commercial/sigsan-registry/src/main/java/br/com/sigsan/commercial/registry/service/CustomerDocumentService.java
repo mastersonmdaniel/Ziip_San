@@ -93,6 +93,18 @@ public class CustomerDocumentService {
     }
 
     /**
+     * Índice cego de um documento válido, para buscas que precisam de mais filtros (incluir excluídos,
+     * imóveis do titular). Documento inválido: vazio. Nada é decifrado.
+     */
+    public Optional<String> searchIndex(String rawDocument) {
+        UUID tenantId = requireTenant();
+        if (DocumentNumber.kind(rawDocument) == DocumentNumber.Kind.INVALID) {
+            return Optional.empty();
+        }
+        return Optional.of(protector.indexOf(tenantId, FIELD, DocumentNumber.normalize(rawDocument)));
+    }
+
+    /**
      * Documento em claro, formatado. Cada acesso fica registrado na trilha de auditoria (quem, quando,
      * qual cliente, com que finalidade), sem o valor.
      */

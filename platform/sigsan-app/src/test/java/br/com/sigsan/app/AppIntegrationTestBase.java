@@ -33,6 +33,17 @@ abstract class AppIntegrationTestBase {
         registry.add("sigsan.oidc.issuer", () -> TestTokens.ISSUER);
         registry.add("sigsan.oidc.audience", () -> TestTokens.AUDIENCE);
         registry.add("sigsan.oidc.public-key", TestTokens::publicKeyBase64);
+        registry.add("sigsan.crypto.provider", () -> "dev-env");
+        registry.add("sigsan.crypto.dev-master-key", () -> DEV_MASTER_KEY);
+    }
+
+    /** Chave mestra de teste, gerada a cada JVM: nenhum dado cifrado aqui sobrevive ao teste nem vale fora dele. */
+    static final String DEV_MASTER_KEY = randomKey();
+
+    private static String randomKey() {
+        byte[] key = new byte[32];
+        new java.security.SecureRandom().nextBytes(key);
+        return java.util.Base64.getEncoder().encodeToString(key);
     }
 
     protected static String bearer(String token) {
