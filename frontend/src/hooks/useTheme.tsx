@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { storage } from '@services/api'
+import { readPreference, writePreference } from '@utils/preferences'
 
 type Theme = 'light' | 'dark'
 
@@ -12,7 +12,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 function initialTheme(): Theme {
-  const saved = storage.read('theme')
+  const saved = readPreference('theme')
   if (saved === 'light' || saved === 'dark') return saved
   if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
@@ -27,7 +27,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const root = document.documentElement
     root.classList.remove('light', 'dark')
     root.classList.add(theme)
-    storage.write('theme', theme)
+    writePreference('theme', theme)
   }, [theme])
 
   const value = useMemo<ThemeContextType>(

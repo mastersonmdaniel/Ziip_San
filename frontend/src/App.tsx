@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Layout } from '@components/Layout'
 import { Spinner } from '@components/ui/Alert'
 import { useAuth } from '@hooks/useAuth'
+import { AuthCallback } from '@pages/AuthCallback'
 import { Login } from '@pages/Login'
 import { NotFound } from '@pages/NotFound'
 import { Catalogs } from '@pages/cadastro/Catalogs'
@@ -31,6 +32,7 @@ export function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route
         path="/"
         element={

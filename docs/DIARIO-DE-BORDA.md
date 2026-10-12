@@ -828,3 +828,35 @@ Feita no branch `e3-json` (worktree separada), em paralelo à E3.
 - **Merge da E3'** (worktree paralela) sem regressão: **906 testes verdes**.
 - **Falta na E4**: cifra das colunas do MTR (`waste_mtr.driver_cpf`, `waste_generator.cnpj_cpf`, `waste_transporter.drivers`)
   — em andamento num branch separado (`e4-mtr`).
+
+### E5 — identidade e frontend (12/10/2026) — frente do frontend ✔ (branch `e5-front`)
+
+- **Realm `sigsan`** (`infra/keycloak/realms/sigsan-realm.json`, para `--import-realm`; sem usuário nem segredo): client
+  público `sigsan-web` só com *standard flow* e **PKCE S256** obrigatório (sem implicit, direct grant, device, CIBA),
+  redirect `http://localhost:3000/*`, web origin `http://localhost:3000`; escopo `sigsan-api` com audiência `sigsan-api` e
+  claim `tenant_id` (atributo do usuário, String, só no access token); papéis `ADMIN`, `MANAGER`, `OPERATOR`, `VIEWER`,
+  `registry.reveal-document` (`fullScopeAllowed: false`: o token leva só esses); perfil de usuário com `tenant_id` visível e
+  editável só por admin, validado como UUID, atributos não gerenciados descartados; força bruta (5 falhas, espera até 15 min),
+  senha 12+ com maiúscula/minúscula/dígito e histórico 5; access token 5 min, SSO ocioso 30 min, máximo 10 h. Ao declarar
+  `clientScopes`, o Keycloak não cria os escopos padrão: `basic` (sub), `roles`, `profile` e `email` estão no arquivo.
+- **Verificado num Keycloak 26.8.0 descartável** (`start-dev --import-realm`): importação sem erro; PKCE ausente, `plain`,
+  implicit, redirect fora da lista, password grant e troca sem `code_verifier` recusados; código + PKCE S256 dá access token
+  com `iss=http://localhost:8080/realms/sigsan`, `aud="sigsan-api"` (string única), `tenant_id`, `realm_access.roles` só com os
+  papéis do SIGSAN, 300 s; refresh mantém `aud`/`tenant_id`; CORS para a 3000; `tenant_id` não-UUID e atributo não gerenciado
+  recusados; bloqueio de força bruta ativo. Ponta a ponta no navegador (Vite + API de mentira na 8090): login, `/api/me` só
+  com `Authorization: Bearer`, renovação por refresh, logout encerrando a sessão SSO. **Não verificado:** o compose completo
+  com o Keycloak no PostgreSQL (o teste usou o banco embutido do `start-dev`) e o backend real.
+- **docker-compose (`keycloak`)**: `quay.io/keycloak/keycloak:26.8.0`; `KC_BOOTSTRAP_ADMIN_PASSWORD` de
+  `KEYCLOAK_ADMIN_PASSWORD` sem padrão; `KC_PROXY` removido; `KC_HOSTNAME=http://localhost:8080` +
+  `KC_HOSTNAME_BACKCHANNEL_DYNAMIC`; health em `/health/ready` (9000); `depends_on` saudável; `127.0.0.1:8080`; import de
+  `${SIGSAN_KC_IMPORT_DIR:-./infra/keycloak/realms}`. `scripts/kc-dev-user.sh`: usuário de desenvolvimento via `kcadm.sh` no
+  container, senha e `tenant_id` por variável (sem padrão), papéis opcionais, idempotente.
+- **Frontend**: `oidc-client-ts` 3.5.0, tokens e estado em `sessionStorage`; `/login` com botão "Entrar", `/auth/callback`,
+  logout pelo `end_session_endpoint`; `api.ts` sem empresa, sem `X-Tenant-ID`, sem `/auth/login`/`/auth/refresh`, sem token em
+  `localStorage`; 401 renova uma vez ou volta ao login; `getMe` = `GET /api/me` (`{id, username, email, fullName, roles,
+  tenantId}`); proxy `/api` → `SIGSAN_API_URL` (padrão 8090); build sem sourcemap. Removidos `zustand`, `recharts`,
+  `@hello-pangea/dnd`; `tailwindcss` em dev. **134 testes** (97 → +37), typecheck e build limpos. `npm audit`: 24 avisos, todos
+  com correção só em versão principal nova (não aplicados; ver `docs/frontend-cadastro.md`, seção 1).
+- **Pendente**: integração com o backend da E5 (`/api/me`, validação de `iss`/`aud`/`tenant_id`); `maplibre-gl` 6 e
+  `react-router-dom` 7 (avisos de produção); rotação de refresh token desligada de propósito (com `sessionStorage` cada aba
+  tem o seu e a rotação derrubaria a aba que renovasse depois).

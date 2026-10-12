@@ -17,6 +17,8 @@ Rodado em cópia local fora do Drive (`npm install`, `tsc --noEmit`, `npm run bu
 
 Os testes de acessibilidade (`vitest-axe`) cobrem as telas principais, mas o axe em jsdom **não mede contraste de cor** (não há motor de renderização). O contraste foi calculado à mão (seção 8). Teste com NVDA/VoiceOver e navegação por teclado em navegador real continuam **pendentes**.
 
+**Atualização E5 (12/10/2026):** `npm ci`, `tsc --noEmit` (0 erros), `vitest run` (**10 arquivos, 134 testes, 0 falhas**) e `npm run build` (sem `.map` em `dist/`). `npm audit --audit-level=high`: 24 avisos (5 críticos, 13 altos, 6 moderados), **todos com correção só em versão principal nova** (Vite 8, Vitest 5, Tailwind 4, typescript-eslint 8, react-router-dom 7, maplibre-gl 6); nada foi subido. Só de produção (`--omit=dev`): 3 — `maplibre-gl` 4.7.1 (crítico, XSS no `DOM.sanitize`, corrigido na 6.x) e `react-router-dom`/`react-router` 6.x (moderados: open redirect por barra invertida em `<Link>`/`useNavigate` e um defeito de SSR que não se aplica a SPA). O caminho de volta do login já recusa `/\`. `oidc-client-ts` e `axios` sem aviso.
+
 ## 2. O que estava quebrado (confirmado) e como ficou
 
 | Defeito | Correção |
@@ -37,7 +39,8 @@ Os testes de acessibilidade (`vitest-axe`) cobrem as telas principais, mas o axe
 
 | Rota | Tela |
 |---|---|
-| `/login` | Entrada (ver ressalva abaixo) |
+| `/login` | Entrada: só o botão "Entrar", que leva ao Keycloak (seção 3.1) |
+| `/auth/callback` | Volta do Keycloak: troca o código pelos tokens e segue para a tela de origem |
 | `/cadastro/imoveis` | S1 Pesquisa de imóveis |
 | `/cadastro/imoveis/novo` e `/cadastro/imoveis/:id/editar` | S2 Assistente de imóvel (6 etapas). `?rascunho=<id>` retoma um rascunho. |
 | `/cadastro/imoveis/:id` | S3 Ficha do imóvel (cabeçalho fixo + abas Cadastro, Clientes, Histórico) |
@@ -48,12 +51,29 @@ Os testes de acessibilidade (`vitest-axe`) cobrem as telas principais, mas o axe
 
 `/` redireciona para `/cadastro/imoveis`. As rotas antigas (`/dashboard`, `/billing`...) foram removidas e caem em "Página não encontrada" (há teste disso).
 
-**Ressalva do `/login`:** o módulo `platform/sigsan-auth` está vazio, então `POST /api/auth/login`, `GET /api/auth/me` e `/auth/logout` **não existem**. A tela de entrada foi escrita contra o contrato herdado do código anterior (`authApi`), e hoje mostrará o erro real de rede. Sem backend de autenticação, nenhuma tela do cadastro é alcançável. O campo "Empresa" grava `tenant_id` (usado no cabeçalho `X-Tenant-ID`, que o `TenantFilter` do backend lê).
+### 3.1 Autenticação (E5, 12/10/2026)
+
+Login OIDC no Keycloak 26 (realm `sigsan`, client público `sigsan-web`, `infra/keycloak/realms/sigsan-realm.json`) com **authorization code + PKCE S256**, pela biblioteca `oidc-client-ts` 3.5.0 (`src/services/auth/oidc.ts`). O antigo contrato herdado (`POST /api/auth/login`, `/auth/refresh`, `/auth/logout`, campo "Empresa") foi **removido**.
+
+* **Fluxo:** `/login` → botão "Entrar" → formulário do Keycloak (a senha nunca passa pelo SPA) → `/auth/callback` (troca do código com o `code_verifier`) → `GET /api/me` → tela de origem (o caminho de volta vai no `state` e é saneado contra open redirect: só caminho interno, nunca `//host` nem URL absoluta).
+* **Tenant:** não é digitado nem enviado em cabeçalho. Vem do claim `tenant_id` do access token, gravado pelo administrador no atributo `tenant_id` do usuário no Keycloak. O frontend **não envia `X-Tenant-ID`/`X-Tenant-UUID`**; o backend responde 403 se receber um cabeçalho que diverge do token.
+* **Armazenamento:** tokens e estado do redirecionamento (state, nonce, `code_verifier`) em **`sessionStorage`** (`WebStorageStateStore`), nunca em `localStorage` — o padrão da biblioteca para o estado é `localStorage`, por isso os dois stores são configurados. `localStorage` guarda só a preferência de tema (`utils/preferences.ts`).
+* **Renovação:** `automaticSilentRenew` com **refresh token** (o realm emite para o `sigsan-web`); access token de 5 min, sessão SSO ociosa de 30 min. Token vencido numa aba parada é renovado antes da requisição. Sem iframe de sessão (`monitorSession: false`).
+* **401:** o interceptor do axios renova **uma vez** (renovações simultâneas viram uma só) e repete a requisição; se a renovação falhar, apaga a sessão local e volta a `/login`. Um segundo 401 com o token novo sobe como erro (sem laço). 403 não mexe na sessão.
+* **Logout:** pelo `end_session_endpoint` do Keycloak (`signoutRedirect`, encerra a sessão SSO) com volta para `/login`; se o Keycloak não responder, apaga a sessão local.
+* **Configuração:** `VITE_OIDC_AUTHORITY` (padrão `http://localhost:8080/realms/sigsan`) e `VITE_OIDC_CLIENT_ID` (padrão `sigsan-web`). O client só aceita `http://localhost:3000/*` como redirect; por isso o Vite usa `strictPort` na 3000.
+
+**O que o backend precisa devolver em `GET /api/me`** (200, JSON, montado a partir do token validado): `{ id, username, email, fullName, roles, tenantId }` — `id` = `sub`, `username` = `preferred_username`, `fullName` = `name`, `roles` = `realm_access.roles`, `tenantId` = `tenant_id`. O tipo é `AuthUser` (`services/api.ts`). Token sem `tenant_id` ou sem `aud` = `sigsan-api` deve dar 401.
+
+Verificado de verdade (12/10/2026, Keycloak 26.8.0 descartável + Vite + API de mentira na 8090): login pelo navegador volta à tela de origem, `/api/me` e as telas recebem só `Authorization: Bearer` (nenhum `X-Tenant-*`), o token tem `iss`, `aud`, `tenant_id` e papéis do contrato, renovação por refresh token com token vencido, logout encerra a sessão SSO (o Keycloak pede a senha de novo), `localStorage` só com o tema. **Não** verificado contra o backend real (sendo escrito em paralelo).
 
 ## 4. Estrutura
 
 ```
-src/services/api.ts                    axios, interceptores (Bearer, X-Tenant-ID, refresh), authApi
+src/services/api.ts                    axios, interceptores (Bearer do UserManager; 401 = renova uma vez ou volta ao login), authApi.getMe (GET /api/me)
+src/services/auth/oidc.ts              oidc-client-ts: UserManager (PKCE, sessionStorage), login, callback, renovação, logout
+src/pages/Login.tsx, AuthCallback.tsx  entrada (botão "Entrar") e volta do Keycloak
+src/utils/preferences.ts               preferência de tema em localStorage (nada de token/tenant)
 src/services/registry/types.ts         tipos do contrato (ConsumerUnit, Customer, Locality, CommercialSector, Block, ReadingRoute, Category, Subcategory, WaterStatus, SewerStatus...)
 src/services/registry/errors.ts        ApiError, problem+json (errors[], warnings[]), 409 = conflito
 src/services/registry/client.ts        createResourceClient: GET lista paginada, GET id, POST, PUT (version), DELETE lógico
@@ -63,18 +83,19 @@ src/utils/validators/                  cpf, cnpj (numérico e alfanumérico), do
 src/components/registry/               LookupField, InscriptionInput, CpfCnpjInput, CepInput, PhoneInput, MapPointPicker (+MapCanvas), Wizard, ConfirmWarning (+useConfirmable), ConflictAlert, Timeline, CatalogCrud (+crudMeta), CatalogSelect, AddressFields, DeleteReasonDialog
 src/components/ui/                     Button, Field (rótulo+erro), Input/Select/Textarea/Checkbox, Alert, Dialog, Tabs, Table, Pagination, Card, Badge, PageHeader
 src/pages/cadastro/                    S1..S6
-src/test/                              setup, render, fixtures (SÓ de teste, prefixo "TESTE")
+src/test/                              setup, render, fixtures (SÓ de teste, prefixo "TESTE"), auth (cliente OIDC falso, signInForTests)
 ```
 
 ## 5. Contrato esperado do backend
 
-Base: `/api/registry` (o proxy do Vite **não** remove mais o prefixo `/api`). Todas as chamadas levam `Authorization: Bearer` e `X-Tenant-ID`. Campos em inglês camelCase, como no relatório `07`. **Os itens marcados SUPOSIÇÃO não estão no relatório e precisam ser confirmados com o backend.**
+Base: `/api/registry` (o proxy do Vite **não** remove mais o prefixo `/api`). Todas as chamadas levam só `Authorization: Bearer <access token do Keycloak>`; **não há `X-Tenant-ID`** (o tenant é o claim `tenant_id` do token; seção 3.1). Campos em inglês camelCase, como no relatório `07`. **Os itens marcados SUPOSIÇÃO não estão no relatório e precisam ser confirmados com o backend.**
 
 ### 5.1 Regras gerais (relatório 6.2)
 
 | Item | Contrato usado |
 |---|---|
-| Lista | `GET /api/registry/{recurso}?q=&page=&size=&sort=` + filtros. Tela usa `size=25`. |
+| Lista | `GET /api/registry/{recurso}?page=&size=&sort=` + filtros. Tela usa `size=25`. |
+| Busca (E4, C5) | `customers` e `consumer-units` buscam por **`POST /api/registry/{recurso}/search`** com `q`, filtros, `page`, `size` e `sort` no **corpo**: busca livre pode conter CPF/CNPJ, que não vai na URL. `list()` desses recursos recusa `q`, e `cleanParams` recusa qualquer valor com cara de documento. |
 | Página (SUPOSIÇÃO) | `{ content[], page|number, size, totalElements, totalPages }`. Um array puro também é aceito. Ajuste em um lugar: `normalizePage` (`client.ts`). |
 | Item | `GET /{recurso}/{id}` |
 | Criar / alterar | `POST /{recurso}` e `PUT /{recurso}/{id}`. O PUT leva **`version` no corpo**. |
@@ -139,8 +160,8 @@ Base: `/api/registry` (o proxy do Vite **não** remove mais o prefixo `/api`). T
 * O documento só existe no estado do formulário (digitação) e no corpo do POST/PUT. Nunca em `localStorage`/`sessionStorage`/URL do navegador; a busca de S1/S4 não é espelhada na URL.
 * Nenhum `console.log` no código da aplicação.
 * Mínimo necessário: RG sob "use só se não tem CPF", data de nascimento e nome da mãe opcionais com a justificativa na tela; **sexo, profissão e nome abreviado não foram implementados** (marcados DESCARTAR no relatório); aviso de dado de terceiros no "nome do contato" e nos moradores; aviso de que coordenada de domicílio é dado de localização.
-* **Risco aberto:** o contrato manda o documento em `GET ...?q=` (busca livre). A URL da **API** aparece em logs de servidor/proxy. Recomendação ao backend: aceitar `POST /api/registry/{recurso}/search` para consultas com documento. A tela hoje segue o contrato.
-* O token de acesso continua em `localStorage` (decisão herdada). Alternativa melhor: cookie `HttpOnly` emitido pelo backend.
+* A busca livre (que pode conter documento) vai no corpo de `POST /api/registry/{recurso}/search`, nunca em `GET ...?q=` (E4, C5). O risco anterior de documento em log de servidor/proxy foi fechado no frontend; o endpoint nasce no backend na E5.
+* Tokens só em `sessionStorage` (oidc-client-ts), access token de 5 min; nada de token ou tenant em `localStorage` (E5, há teste). Ainda legível por script da própria origem em caso de XSS: a alternativa mais forte (BFF com cookie `HttpOnly`) fica registrada como evolução.
 
 ## 8. Acessibilidade (WCAG 2.1 AA / LBI)
 
@@ -174,7 +195,7 @@ Testes axe: S1, S2 (etapa 1), S3 (abas Cadastro, Clientes e Histórico), S4 (lis
 * **RG: órgão expedidor** (catálogo inexistente).
 * **Teste de assistente completo** (6 etapas até gravar) e testes do formulário de cliente com envio: só a etapa 1 do assistente e os fluxos de aviso/erro/409 do CRUD genérico têm teste de interação.
 * **Navegação com leitor de tela real** e **verificação em navegador móvel**.
-* Autenticação do backend (ver seção 3).
+* Teste do login contra o backend real (`GET /api/me` e validação do token no servidor): o backend da E5 está sendo escrito em paralelo (ver seção 3.1).
 
 ## 10. Dependências
 
@@ -183,7 +204,10 @@ Testes axe: S1, S2 (etapa 1), S3 (abas Cadastro, Clientes e Histórico), S4 (lis
 | Removido `@vis.gl/react-maplibre` | `^1.0.0` não resolve no npm (só 1.0.0-alpha e 8.x); `npm install` falhava. Não é usado. |
 | Removidos do `manualChunks` o `maps`, `charts` e `ui` | Referenciavam o pacote removido e módulos não usados. |
 | Mantidos `react-router-dom`, `@tanstack/react-query`, `react-hook-form`, `zod`, `@hookform/resolvers`, `axios`, `clsx`, `lucide-react`, `date-fns`, `maplibre-gl` | Já estavam no `package.json` e são usados. Zod e React Hook Form **já existiam**; nada foi acrescentado para formulários. |
-| `zustand`, `recharts`, `react-hot-toast`, `@hello-pangea/dnd` | Já presentes, **sem uso nesta entrega**. Podem ser removidos se continuarem sem uso. |
+| `zustand`, `recharts`, `@hello-pangea/dnd` | **Removidos na E5** (nenhum import no código). `react-hot-toast` ficou: é usado em `main.tsx`. |
+| Acrescentado `oidc-client-ts` 3.5.0 (versão exata; a `latest` do npm em 12/10/2026, publicada em 13/03/2026) | Login OIDC com PKCE (seção 3.1). Única dependência transitiva: `jwt-decode` 4.0.0. |
+| `tailwindcss` movido para `devDependencies` | Só é usado no build (PostCSS). |
+| `vite.config.ts`: proxy `/api` → `SIGSAN_API_URL` (padrão `http://localhost:8090`), `strictPort`, build sem sourcemap, chunk `auth` | A 8080 é do Keycloak; o redirect do client só aceita a porta 3000; sourcemap publicaria o fonte. |
 | Acrescentados (dev): `vitest-axe`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/user-event`, `@testing-library/jest-dom`, `jsdom` | Testes de componente e de acessibilidade (a regra 5 pede `vitest-axe`). |
 | Acrescentado `package-lock.json` | Instalação reproduzível. |
 | `vite.config.ts`: proxy sem `rewrite`; `test` (jsdom) | O contrato é `/api/registry/...`. |
@@ -194,14 +218,16 @@ O `node_modules` é grande e o Drive é lento: copie `frontend/` para uma pasta 
 
 ```bash
 cd <copia-local>/frontend
-npm install
+npm ci
 npx tsc --noEmit        # tipos
-npm run build           # tsc + vite build
-npx vitest run          # testes (95)
-npm run dev             # http://localhost:3000, /api -> http://localhost:8080
+npm run build           # tsc + vite build (sem sourcemap)
+npx vitest run          # testes (134)
+npm run dev             # http://localhost:3000, /api -> SIGSAN_API_URL (padrão http://localhost:8090)
 ```
 
-Variáveis (ver `.env.example`): `VITE_API_BASE_URL` (padrão `/api`) e `VITE_MAP_STYLE_URL` (sem ela, sem mapa).
+Para entrar: `docker compose up -d keycloak` (realm importado de `infra/keycloak/realms`) e um usuário de desenvolvimento criado com `scripts/kc-dev-user.sh` (senha e `tenant_id` por variável de ambiente; ver o cabeçalho do script).
+
+Variáveis (ver `.env.example`): `VITE_API_BASE_URL` (padrão `/api`), `SIGSAN_API_URL` (destino do proxy, só no servidor de dev), `VITE_OIDC_AUTHORITY`, `VITE_OIDC_CLIENT_ID` e `VITE_MAP_STYLE_URL` (sem ela, sem mapa).
 
 ## 12. Testes (resumo)
 
@@ -211,6 +237,9 @@ Variáveis (ver `.env.example`): `VITE_API_BASE_URL` (padrão `/api`) e `VITE_MA
 * `components/registry/confirmFlow.test.tsx`: aviso confirmável (mostra, não grava, reenvia com o token), erro de campo do servidor, 409 sem perder o digitado, estados vazio/erro, exclusão com motivo.
 * `pages/cadastro/propertyForm.test.ts`: regras por etapa do assistente e payload.
 * `pages/cadastro/PropertyWizard.test.tsx`: `validate-step` + rascunho no servidor + avanço; aviso confirmável e erro bloqueante dentro do assistente.
-* `pages/screens.test.tsx`: axe nas telas, menu honesto, S1 sem dado falso, "revelar documento" (tempo, 403, sem storage/console), validação da etapa 1.
+* `pages/screens.test.tsx`: axe nas telas, menu honesto, S1 sem dado falso, "revelar documento" (tempo, 403, sem storage/console), validação da etapa 1. A sessão de teste vem de `signInForTests()` (`test/auth.ts`), não mais de `localStorage`.
+* `services/auth/oidc.test.ts` (E5): configuração (realm, client, `code`, callback), URL de autorização real gerada pelo `oidc-client-ts` com `code_challenge_method=S256` e estado só em `sessionStorage`, usuário guardado em `sessionStorage`, `safeReturnPath` (open redirect), callback processado uma vez (StrictMode), renovação única e falha de renovação, logout pelo `end_session_endpoint`.
+* `services/api.test.ts` (E5): Bearer injetado, nenhum `X-Tenant-*`, nada em `localStorage`, `GET /api/me`, 401 → uma renovação e repetição, renovação falha → `/login`, sem laço no segundo 401, 403 sem efeito na sessão.
+* `pages/auth.test.tsx` (E5): `/login` só com o botão (axe), início do fluxo com a tela de origem, Keycloak fora do ar, sessão válida pula o login, `/api/me` falhando mostra erro; `/auth/callback` conclui e volta, erro do Keycloak mostrado (axe).
 
 As fixtures (`src/test/fixtures.ts`) são marcadas como de teste (prefixo "TESTE", documentos já mascarados) e só são importadas por arquivos `*.test.*`.
