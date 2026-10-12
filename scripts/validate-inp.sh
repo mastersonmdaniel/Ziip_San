@@ -10,25 +10,30 @@
 #   scripts/validate-inp.sh caminho/arquivo.inp  # valida um arquivo especifico
 #
 # Requer Docker e rede (instala o wntr no container, que e descartavel).
-set -u
+source "$(dirname "$0")/lib.sh"
 
-BUILD_DIR="${SIGSAN_BUILD_DIR:-$(cygpath -u "$LOCALAPPDATA")/sigsan-build}"
-SAMPLES="$BUILD_DIR/sigsan/intelligence/sigsan-gis/target/epanet-samples"
+WNTR_VERSION="1.5.0"
+SAMPLES="$MIRROR/intelligence/sigsan-gis/target/epanet-samples"
 
+FILES=()
 if [ $# -gt 0 ]; then
   TARGET_DIR="$(cd "$(dirname "$1")" && pwd)"
-  FILES="$(basename "$1")"
+  FILES=("$(basename "$1")")
 else
   TARGET_DIR="$SAMPLES"
-  FILES="$(ls "$SAMPLES"/*.inp 2>/dev/null | xargs -n1 basename | tr '\n' ' ')"
+  shopt -s nullglob
+  for f in "$SAMPLES"/*.inp; do FILES+=("$(basename "$f")"); done
+  shopt -u nullglob
 fi
-[ -z "$FILES" ] && { echo "nenhum .inp encontrado em $TARGET_DIR"; exit 2; }
+[ "${#FILES[@]}" -gt 0 ] || { echo "nenhum .inp encontrado em $TARGET_DIR"; exit 2; }
 
-MSYS_NO_PATHCONV=1 docker run --rm -v "$(cygpath -m "$TARGET_DIR"):/inp:ro" python:3.12-slim bash -c '
+# Os nomes vao como argumentos posicionais do bash do container (preserva espacos).
+MSYS_NO_PATHCONV=1 docker run --rm -v "$(cygpath -m "$TARGET_DIR"):/inp:ro" python:3.12-slim \
+  bash -c '
 set -e
-pip install -q wntr >/dev/null 2>&1 || { echo "falha ao instalar wntr"; exit 3; }
+pip install -q "wntr=='"$WNTR_VERSION"'" >/dev/null 2>&1 || { echo "falha ao instalar wntr"; exit 3; }
 cd /tmp
-python - '"$FILES"' <<PY
+python - "$@" <<PY
 import sys, wntr
 status = 0
 for name in sys.argv[1:]:
@@ -47,4 +52,4 @@ for name in sys.argv[1:]:
         print("FALHA %s: %s" % (name, ex))
 sys.exit(status)
 PY
-'
+' validate-inp "${FILES[@]}"

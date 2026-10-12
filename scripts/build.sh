@@ -11,22 +11,19 @@
 #   scripts/build.sh -pl shared/sigsan-core test                  # um modulo
 #   scripts/build.sh -pl platform/sigsan-app -am test -Dtest=FreshInstallTest -Dsurefire.failIfNoSpecifiedTests=false
 #
+# Os testes de banco (core, platform, app) usam o PostgreSQL DESCARTAVEL de integracao: rode
+# scripts/reset-it-db.sh antes. Nenhum teste usa o banco de desenvolvimento (porta 5432).
+#
 # Variaveis:
 #   SIGSAN_BUILD_DIR   pasta do espelho (padrao: %LOCALAPPDATA%\sigsan-build). Precisa ser um
 #                      caminho que o Docker Desktop enxerga (qualquer pasta em C:\Users). Em
 #                      ambientes com escrita restrita (ex.: sessao do Claude Code), o padrao pode
 #                      nao ser visivel ao Docker: aponte para uma pasta permitida.
 #   SIGSAN_IT_PORT     porta do PostgreSQL de integracao (padrao: 55433), ver scripts/reset-it-db.sh
-set -u
+source "$(dirname "$0")/lib.sh"
 
-SRC="$(cd "$(dirname "$0")/.." && pwd)"
-BUILD_DIR="${SIGSAN_BUILD_DIR:-$(cygpath -u "$LOCALAPPDATA")/sigsan-build}"
-MIRROR="$BUILD_DIR/sigsan"
-IT_PORT="${SIGSAN_IT_PORT:-55433}"
-
-mkdir -p "$MIRROR"
-# robocopy devolve 0-7 em sucesso; o PowerShell normaliza para 0 para nao confundir o shell.
-powershell.exe -NoProfile -Command "robocopy '$(cygpath -w "$SRC")' '$(cygpath -w "$MIRROR")' /MIR /XD target node_modules levantamento .git /XF *.tar .git /NFL /NDL /NJH /NJS /NP | Out-Null; exit 0" >/dev/null 2>&1
+acquire_lock
+mirror
 
 MSYS_NO_PATHCONV=1 docker run --rm \
   -e SIGSAN_IT_JDBC_URL="jdbc:postgresql://host.docker.internal:${IT_PORT}/sigsan" \

@@ -23,10 +23,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * dados de outro e todo o modelo multi-tenant cai. Não há mock envolvido: PostgreSQL de verdade,
  * schema de verdade, policies de verdade.
  *
- * Usa o PostgreSQL do docker-compose por padrão (host.docker.internal:5432 a partir do container
- * Maven). Para apontar outro banco, defina SIGSAN_TEST_JDBC_URL, SIGSAN_TEST_DB_USER e
- * SIGSAN_TEST_DB_PASSWORD. O schema de teste é sempre descartado e recriado, então o banco pode
- * ser compartilhado com a stack de desenvolvimento.
+ * Usa o PostgreSQL descartável de integração (scripts/reset-it-db.sh, porta 55433), nunca o banco de
+ * desenvolvimento: dois builds no mesmo banco colidiam ("tuple concurrently updated"). Para apontar
+ * outro banco, defina SIGSAN_IT_JDBC_URL, SIGSAN_IT_DB_USER/PASSWORD e
+ * SIGSAN_IT_MIGRATOR_USER/PASSWORD (as mesmas variáveis do sigsan-app).
  */
 class TenantRlsIsolationTest {
 
@@ -60,10 +60,10 @@ class TenantRlsIsolationTest {
     @BeforeAll
     static void connect() {
         String url = System.getenv().getOrDefault(
-                "SIGSAN_TEST_JDBC_URL", "jdbc:postgresql://host.docker.internal:5432/sigsan");
-        String user = System.getenv().getOrDefault("SIGSAN_TEST_DB_USER", "sigsan_app");
+                "SIGSAN_IT_JDBC_URL", "jdbc:postgresql://host.docker.internal:55433/sigsan");
+        String user = System.getenv().getOrDefault("SIGSAN_IT_DB_USER", "sigsan_app");
         String password = System.getenv().getOrDefault(
-                "SIGSAN_TEST_DB_PASSWORD", "sigsan_dev_password");
+                "SIGSAN_IT_DB_PASSWORD", "sigsan_dev_password");
 
         // A aplicacao conecta como sigsan_app, que e NOSUPERUSER e NOBYPASSRLS. E assim que
         // a RLS precisa valer, porque e a role real em producao.
@@ -74,8 +74,8 @@ class TenantRlsIsolationTest {
         // a RLS funciona para a aplicacao, e nao para um superusuario.
         migratorDataSource = new org.springframework.jdbc.datasource.DriverManagerDataSource(
                 url,
-                System.getenv().getOrDefault("SIGSAN_TEST_MIGRATOR_USER", "sigsan_migrator"),
-                System.getenv().getOrDefault("SIGSAN_TEST_MIGRATOR_PASSWORD", "sigsan_migrator_password"));
+                System.getenv().getOrDefault("SIGSAN_IT_MIGRATOR_USER", "sigsan_migrator"),
+                System.getenv().getOrDefault("SIGSAN_IT_MIGRATOR_PASSWORD", "sigsan_migrator_password"));
     }
 
     @BeforeEach

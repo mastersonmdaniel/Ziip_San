@@ -685,3 +685,25 @@ ser a ordem de prioridade canônica (a seção 12 deste diário será substituí
 - Roadmap canônico: seção 12 substituída; remissões em `00` §3, `14` §3 e `15c` §3; `DIARIO_DE_BORDO.md` na raiz aponta para este arquivo.
 - `scripts/build.sh`: robocopy passa a excluir o arquivo `.git` (`/XF .git`). Pasta vazia `sigsan/sigsan` removida.
 - Remoto GitHub: pendente de autorizar o MCP `github` (`/mcp`). Push só com autorização do usuário.
+
+### E1 — scripts, banco de teste e POMs (12/10/2026) ✔
+
+- **`scripts/lib.sh`** (novo): `set -euo pipefail`; trava exclusiva (`mkdir` atômico + PID, trava velha detectada) usada
+  por `build.sh` e `reset-it-db.sh` — dois builds simultâneos esperam em vez de colidir; espelho que **falha** se o
+  `pom.xml` do G: não existir (Drive offline) ou se o robocopy devolver código ≥ 8 (antes o exit era forçado a 0).
+  `validate-inp.sh`: nomes com espaço preservados, `wntr==1.5.0` fixo.
+- **Testes fora do banco de dev:** `TenantRlsIsolationTest` (core) e `TenantProvisioningServiceTest` (platform) usam
+  `SIGSAN_IT_*` com padrão na porta 55433. Aceite feito com `sigsan-postgres-primary` **parado**: 793 testes verdes.
+- **`TenantProvisioningServiceTest` escondia dois defeitos de teste**, expostos ao trocar as tabelas criadas à mão
+  pela migration de core real (`CoreMigrationRunner`): (1) CNPJ fixo em todos os testes, e o `tenant_catalog` real
+  tem `UNIQUE (cnpj)` — o provisionamento colidia com linhas de outros testes e falhava; (2) 14 chamadas ignoravam o
+  resultado do provisionamento, então asserções como "nenhuma senha no `audit_log`" passavam **no vazio**. Agora há
+  CNPJ por tenant e `provisionOk()` exige sucesso.
+- **POMs:** removidas dependências declaradas e não usadas por nenhuma classe (verificado por `git grep` de imports):
+  GeoTools (14 artefatos) e o repositório OSGeo, PDFBox, POI, BouncyCastle, Spring Integration (MQTT/HTTP/file/JMS),
+  `jackson-dataformat-xml`, WebFlux, Spring Security (sem uso ainda; volta na E5 como resource server),
+  `keycloak-spring-boot-starter`, Vault e MinIO (voltam no R1), Redis, javafaker, Guava, mapstruct, micrometer-prometheus,
+  Testcontainers; BOMs de Spring Cloud e Testcontainers; perfis Maven sem perfil Spring correspondente.
+  `jts-core` com versão única (1.19.0) no POM raiz; compilador com uma configuração só, `--release 21` e `-parameters`;
+  `lombok.config` copia `@Qualifier` para o construtor. `dependency:tree`: um só JTS, `snakeyaml` só 2.2.
+- Banco de desenvolvimento religado ao final.

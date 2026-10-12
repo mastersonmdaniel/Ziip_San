@@ -42,28 +42,12 @@
         <dependency>
             <groupId>org.locationtech.jts</groupId>
             <artifactId>jts-core</artifactId>
-            <version>1.19.0</version>
         </dependency>
         <dependency>
             <!-- Mapeia Point/Polygon/LineString do JTS para colunas PostGIS. Sem ele, o Hibernate falha
                  com "Could not determine recommended JdbcType for org.locationtech.jts.geom.Point". -->
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-spatial</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
-            <version>29.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-epsg-hsql</artifactId>
-            <version>29.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-geojson</artifactId>
-            <version>29.0</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

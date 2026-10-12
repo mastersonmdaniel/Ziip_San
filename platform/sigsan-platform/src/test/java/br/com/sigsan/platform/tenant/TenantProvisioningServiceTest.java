@@ -1,6 +1,7 @@
 package br.com.sigsan.platform.tenant;
 
 import br.com.sigsan.core.audit.AuditLogRepository;
+import br.com.sigsan.core.migration.CoreMigrationRunner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
@@ -55,92 +56,19 @@ class TenantProvisioningServiceTest {
     @BeforeAll
     static void connect() {
         String url = System.getenv().getOrDefault(
-                "SIGSAN_TEST_JDBC_URL", "jdbc:postgresql://host.docker.internal:5432/sigsan");
+                "SIGSAN_IT_JDBC_URL", "jdbc:postgresql://host.docker.internal:55433/sigsan");
         appDataSource = new org.springframework.jdbc.datasource.DriverManagerDataSource(
                 url,
-                System.getenv().getOrDefault("SIGSAN_TEST_DB_USER", "sigsan_app"),
-                System.getenv().getOrDefault("SIGSAN_TEST_DB_PASSWORD", "sigsan_dev_password"));
+                System.getenv().getOrDefault("SIGSAN_IT_DB_USER", "sigsan_app"),
+                System.getenv().getOrDefault("SIGSAN_IT_DB_PASSWORD", "sigsan_dev_password"));
         migratorDataSource = new org.springframework.jdbc.datasource.DriverManagerDataSource(
                 url,
-                System.getenv().getOrDefault("SIGSAN_TEST_MIGRATOR_USER", "sigsan_migrator"),
-                System.getenv().getOrDefault("SIGSAN_TEST_MIGRATOR_PASSWORD", "sigsan_migrator_password"));
+                System.getenv().getOrDefault("SIGSAN_IT_MIGRATOR_USER", "sigsan_migrator"),
+                System.getenv().getOrDefault("SIGSAN_IT_MIGRATOR_PASSWORD", "sigsan_migrator_password"));
 
-        ensureCoreSchema();
-    }
-
-    /**
-     * As tabelas de public (tenant_catalog, audit_log) vêm da migration de core. Em dev ela
-     * pode não ter rodado ainda; o teste garante o mínimo de que precisa.
-     */
-    private static void ensureCoreSchema() {
-        try (Connection conn = migratorDataSource.getConnection(); Statement st = conn.createStatement()) {
-            st.execute("""
-                    CREATE TABLE IF NOT EXISTS public.tenant_catalog (
-                        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-                        schema_name VARCHAR(100) NOT NULL UNIQUE,
-                        name VARCHAR(200) NOT NULL,
-                        cnpj VARCHAR(18),
-                        email VARCHAR(255),
-                        phone VARCHAR(20),
-                        address JSONB,
-                        status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
-                        plan VARCHAR(50),
-                        settings JSONB DEFAULT '{}',
-                        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                        created_by UUID,
-                        updated_by UUID
-                    )
-                    """);
-            st.execute("GRANT SELECT, INSERT, UPDATE, DELETE ON public.tenant_catalog TO sigsan_app");
-            st.execute("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO sigsan_app");
-
-            // audit_log e o destino do registro de auditoria do provisionamento. Vem da
-            // migration de core; em dev ela pode nao ter rodado ainda.
-            st.execute("""
-                    CREATE TABLE IF NOT EXISTS public.audit_log (
-                        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-                        tenant_id UUID NOT NULL,
-                        entity_type VARCHAR(100) NOT NULL,
-                        entity_id UUID NOT NULL,
-                        action VARCHAR(20) NOT NULL,
-                        user_id UUID,
-                        correlation_id UUID,
-                        ip_address INET,
-                        user_agent TEXT,
-                        request_id VARCHAR(100),
-                        old_values JSONB,
-                        new_values JSONB,
-                        changed_fields JSONB,
-                        metadata JSONB DEFAULT '{}',
-                        success BOOLEAN NOT NULL DEFAULT TRUE,
-                        error_message TEXT,
-                        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                        updated_at TIMESTAMPTZ,
-                        version BIGINT,
-                        created_by UUID,
-                        updated_by UUID
-                    )
-                    """);
-            st.execute("GRANT SELECT, INSERT, UPDATE, DELETE ON public.audit_log TO sigsan_app");
-
-            // RLS em audit_log, que guarda o histórico completo com snapshots JSONB.
-            // tenant_catalog fica de fora de propósito: é o cadastro global da plataforma,
-            // e uma policy por id quebraria o próprio INSERT de provisionamento.
-            applySharedTableRls(st, "audit_log", "tenant_id");
-        } catch (SQLException e) {
-            throw new IllegalStateException("Falha ao preparar schema public", e);
-        }
-    }
-
-    private static void applySharedTableRls(Statement st, String table, String tenantColumn)
-            throws SQLException {
-        st.execute("ALTER TABLE public." + table + " ENABLE ROW LEVEL SECURITY");
-        st.execute("ALTER TABLE public." + table + " FORCE ROW LEVEL SECURITY");
-        st.execute("DROP POLICY IF EXISTS " + table + "_isolation ON public." + table);
-        st.execute("CREATE POLICY " + table + "_isolation ON public." + table
-                + " USING (" + tenantColumn + " = current_tenant_id())"
-                + " WITH CHECK (" + tenantColumn + " = current_tenant_id())");
+        // Migration de core real (idempotente), não uma cópia das tabelas: o teste precisa ver os
+        // mesmos privilégios e a mesma RLS de public.audit_log que a produção.
+        new CoreMigrationRunner(migratorDataSource).run(null);
     }
 
     @BeforeEach
@@ -167,12 +95,30 @@ class TenantProvisioningServiceTest {
                 migratorDataSource);
     }
 
+    private static String cnpjFor(UUID tenantId) {
+        return String.format("%014d", Math.floorMod(tenantId.getMostSignificantBits(), 100_000_000_000_000L));
+    }
+
+    /**
+     * Provisiona e exige sucesso. Os testes chamavam provisionTenant e ignoravam o resultado: com
+     * o provisionamento falhando, asserções do tipo "nenhuma linha com senha no audit_log" passavam
+     * no vazio.
+     */
+    private void provisionOk(UUID tenantId, String schema) {
+        var result = service().provisionTenant(request(tenantId, schema));
+        assertThat(result.success())
+                .as("provisionamento de %s: %s", schema, result.error())
+                .isTrue();
+    }
+
     private TenantProvisioningService.TenantProvisioningRequest request(UUID tenantId, String schema) {
         return TenantProvisioningService.TenantProvisioningRequest.builder()
                 .tenantId(tenantId)
                 .schemaName(schema)
                 .displayName("Concessionaria Teste")
-                .cnpj("12345678000199")
+                // CNPJ distinto por tenant: public.tenant_catalog tem UNIQUE (cnpj). Com um CNPJ fixo,
+                // o provisionamento colidia com linhas deixadas por outros testes e falhava em silêncio.
+                .cnpj(cnpjFor(tenantId))
                 .email("contato@teste.com.br")
                 .phone("11999999999")
                 .plan("PRO")
@@ -293,7 +239,7 @@ class TenantProvisioningServiceTest {
     @Test
     @DisplayName("grava histórico de migration, provando que o Flyway rodou de verdade")
     void recordsFlywayHistory() {
-        service().provisionTenant(request(UUID.randomUUID(), SCHEMA));
+        provisionOk(UUID.randomUUID(), SCHEMA);
 
         int history = count("SELECT count(*) FROM " + SCHEMA + ".flyway_schema_history");
         assertThat(history)
@@ -306,7 +252,7 @@ class TenantProvisioningServiceTest {
     void registersTenantInCatalog() {
         UUID tenantId = UUID.randomUUID();
 
-        service().provisionTenant(request(tenantId, SCHEMA));
+        provisionOk(tenantId, SCHEMA);
 
         int catalog = count("SELECT count(*) FROM public.tenant_catalog WHERE schema_name = ? AND id = ?",
                 SCHEMA, tenantId);
@@ -317,7 +263,7 @@ class TenantProvisioningServiceTest {
     @DisplayName("cria os quatro papéis padrão")
     void createsDefaultRoles() {
         UUID tenantId = UUID.randomUUID();
-        service().provisionTenant(request(tenantId, SCHEMA));
+        provisionOk(tenantId, SCHEMA);
 
         int roles = countAsTenant(tenantId, "SELECT count(*) FROM " + SCHEMA + ".roles");
         assertThat(roles)
@@ -333,7 +279,7 @@ class TenantProvisioningServiceTest {
     @DisplayName("cria usuário admin e o vincula ao papel ADMIN")
     void createsAdminUserWithAdminRole() {
         UUID tenantId = UUID.randomUUID();
-        service().provisionTenant(request(tenantId, SCHEMA));
+        provisionOk(tenantId, SCHEMA);
 
         int users = countAsTenant(tenantId,
                 "SELECT count(*) FROM " + SCHEMA + ".users WHERE username = 'admin'");
@@ -355,7 +301,7 @@ class TenantProvisioningServiceTest {
     @DisplayName("grava metadata do tenant no schema dele")
     void writesTenantMetadata() {
         UUID tenantId = UUID.randomUUID();
-        service().provisionTenant(request(tenantId, SCHEMA));
+        provisionOk(tenantId, SCHEMA);
 
         int metadata = countAsTenant(tenantId,
                 "SELECT count(*) FROM " + SCHEMA + ".tenant_metadata WHERE tenant_id = ?",
@@ -366,7 +312,7 @@ class TenantProvisioningServiceTest {
     @Test
     @DisplayName("todas as tabelas de negócio têm RLS habilitada")
     void enablesRowLevelSecurityOnEveryTable() {
-        service().provisionTenant(request(UUID.randomUUID(), SCHEMA));
+        provisionOk(UUID.randomUUID(), SCHEMA);
 
         // flyway_schema_history é a única exceção: guarda o histórico de migration, que por
         // definição é visível ao deploy. Não tem dado de tenant, então não precisa de RLS.
@@ -385,7 +331,7 @@ class TenantProvisioningServiceTest {
     @Test
     @DisplayName("role da aplicação não é dona do schema de tenant")
     void appRoleIsNotSchemaOwner() {
-        service().provisionTenant(request(UUID.randomUUID(), SCHEMA));
+        provisionOk(UUID.randomUUID(), SCHEMA);
 
         String owner = new JdbcTemplate(migratorDataSource).queryForObject(
                 "SELECT nspowner::regrole::text FROM pg_namespace WHERE nspname = ?",
@@ -400,7 +346,7 @@ class TenantProvisioningServiceTest {
     @DisplayName("a RLS distingue dono, estranho e ausência de contexto")
     void appRoleSeesOnlyItsOwnRows() {
         UUID tenantId = UUID.randomUUID();
-        service().provisionTenant(request(tenantId, SCHEMA));
+        provisionOk(tenantId, SCHEMA);
 
         // Duas ordens no MESMO schema, de dois tenant_id diferentes. Sem semear nada, o
         // resultado seria zero por ausência de dado, não por RLS — o teste passaria mesmo
@@ -490,7 +436,7 @@ class TenantProvisioningServiceTest {
         UUID tenantId = UUID.randomUUID();
 
         // 1. Tenant provisionado com sucesso, com dado de negócio.
-        service().provisionTenant(request(tenantId, SCHEMA));
+        provisionOk(tenantId, SCHEMA);
         seedOrder(SCHEMA, tenantId, "ordem-do-cliente");
 
         // 2. Reprovisionamento com Keycloak fora do ar — falha comum e rotineira.
@@ -535,8 +481,8 @@ class TenantProvisioningServiceTest {
         UUID tenantA = UUID.randomUUID();
         UUID tenantB = UUID.randomUUID();
 
-        service().provisionTenant(request(tenantA, SCHEMA));
-        service().provisionTenant(request(tenantB, SCHEMA_B));
+        provisionOk(tenantA, SCHEMA);
+        provisionOk(tenantB, SCHEMA_B);
 
         // O trigger de auditoria grava automaticamente. Cada provisionamento gera registros
         // para o seu tenant.
@@ -581,7 +527,7 @@ class TenantProvisioningServiceTest {
     @DisplayName("trigger de auditoria não grava senha em texto claro")
     void auditTriggerDoesNotLeakPasswords() {
         UUID tenantId = UUID.randomUUID();
-        service().provisionTenant(request(tenantId, SCHEMA));
+        provisionOk(tenantId, SCHEMA);
 
         int comSenha = countAsTenant(tenantId,
                 "SELECT count(*) FROM public.audit_log "
@@ -597,7 +543,7 @@ class TenantProvisioningServiceTest {
     @DisplayName("schema fica isolado: linhas de um tenant não aparecem para outro")
     void provisionedTenantIsIsolatedFromOthers() throws SQLException {
         UUID tenantId = UUID.randomUUID();
-        service().provisionTenant(request(tenantId, SCHEMA));
+        provisionOk(tenantId, SCHEMA);
 
         int visible = countAsTenant(tenantId, "SELECT count(*) FROM " + SCHEMA + ".roles");
         assertThat(visible)
