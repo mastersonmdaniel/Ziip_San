@@ -9,7 +9,7 @@ Data: 12/10/2026. Produto Ziip SAN (código interno SIGSAN, renomeado `ziipsan` 
 portal e canais), [18g](18g-aderencia-operacao-qualidade-bi.md) (operação, qualidade da água e BI) e
 [18h](18h-aderencia-nao-funcionais-servicos-habilitacao.md) (não funcionais, serviços, POC e habilitação).
 
-As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4, atualizado pelas v2.5 e v2.6 (abaixo)
+As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4, atualizado pelas v2.5 a v2.8 (abaixo)
 ([PLANO-EXECUCAO-PDCA-R0-R9.md](../../PLANO-EXECUCAO-PDCA-R0-R9.md)) e contra as decisões do dono do produto de
 12/10/2026, registradas nos ADRs [0011](../../arquitetura/adr/ADR-0011-hospedagem-a-decidir.md) (aceito),
 [0023](../../arquitetura/adr/ADR-0023-estrategia-de-editais-e-prova-de-conceito.md),
@@ -47,6 +47,13 @@ ED-04 tem a instância dedicada depois dele (§5.1); a meta de licitações no 2
 escolher lançar logo depois das tarefas originais do P4 (opção B do plano §2.4); na leitura literal da decisão (opção
 A), a primeira licitação com POC vai para o 3º trimestre de 2029 (§8).
 
+**Atualização de 12/10/2026 (plano v2.8).** O dono do produto escolheu a opção A do plano §2.4 (ADR-0033, ajuste
+v2.8): lançamento comercial depois de todas as fases, inclusive a trilha de editais, a partir de outubro de 2028;
+primeira produção do piloto por volta de fevereiro de 2029; primeiro atestado entre maio e julho de 2029; licitações
+com POC a partir do 3º trimestre de 2029. A meta de disputar no 2º semestre de 2028 deixa de valer. A contratação do
+ADR-0029 não muda; o limite passa a ser a trilha completa até 30/09/2028, com necessidade menor que a da prontidão em
+junho (§8.1). Efeitos neste documento: §1, §4 (H5 e sequência), §8.1 (capacidade na opção A e recomendações) e §8.2.
+
 **Convenções.** Esforço na escala do plano (§4): **P** até 2 dias, **M** até 1 semana, **G** mais de 1 semana, para uma
 pessoa com agentes. Para somar, P vale 0,4 semana, M vale 1 semana e G vale a estimativa da matriz de origem ou, na
 falta dela, 3 semanas; incerteza de ±30%. Um mês-pessoa equivale a 4,33 semanas. Entregas de edital levam o código
@@ -71,7 +78,8 @@ corrige na P2.20 e na P3.22.
 deduplicadas (ED-01 a ED-62, §5), para disputar licitações em 2028. A prontidão de POC (ensaio interno com pelo menos
 146 de 162 pontos na VISAN e nenhuma falha crítica no SAMAE) passa a ser medida em toda fase a partir do P1 e entra no
 aceite de fase a partir do P3. O marco de 30/07/2027 passou a ser a homologação local do piloto, sem dado real (plano
-v2.7, ADR-0033); a primeira produção vem no lançamento comercial.
+v2.7, ADR-0033); a primeira produção vem no lançamento comercial. Desde o plano v2.8 (opção A do lançamento), as
+licitações com POC começam no 3º trimestre de 2029.
 
 **Condição.** Recalculado nas v2.5 e v2.6 do plano, o esforço das entregas que ficam na trilha até 2028 é de cerca de
 220 semanas-pessoa (51 meses-pessoa), das quais 13 semanas caem no P0 a P3 e 206 na trilha do P4; compras, RH e
@@ -80,16 +88,16 @@ onda A desde a v2.6) pede cerca de 191 semanas-pessoa, 199 com as tarefas origin
 prontidão chegaria por volta de 2031. Para junho de 2028 são precisas cerca de 4,6 pessoas-equivalentes a partir de
 agosto de 2027 (2,9 para dezembro de 2028). O
 ADR-0029 decidiu contratar de 4 a 5 desenvolvedores a partir de agosto de 2027, com prontidão em 30/06/2028 e
-licitações no 2º semestre de 2028 (§8), meta que, desde o plano v2.7, depende do momento do lançamento comercial
-(plano §2.4).
+licitações no 2º semestre de 2028 (§8). Com a opção A do lançamento (plano v2.8), essa meta passou a licitações a
+partir do 3º trimestre de 2029, com a contratação mantida; a trilha completa até 30/09/2028 pede cerca de 3,8
+pessoas-equivalentes (§8.1).
 
 **Habilitação.** O primeiro atestado vem do piloto, que precisa ser público, em Santa Catarina, contratado por
 dispensa ou por CPSI (LC 182/2021) e com cláusula de atestado (critério já incluído na P0.30). Desde o plano v2.7
 (ADR-0033), o atestado só pode vir depois do lançamento comercial e de uma primeira operação real: a homologação local
-com dados anonimizados não é execução do objeto. Do início do lançamento ao atestado são de 7 a 9 meses; com a leitura
-literal da decisão (lançamento depois de toda a trilha), o atestado sai entre maio e julho de 2029; com a alternativa
-proposta (lançamento em janeiro de 2028), entre agosto e outubro de 2028. A escolha é pendência do dono do produto
-(plano §2.4). Com o atestado, editais do tipo SAMAE (um atestado, sem quantitativo) ficam acessíveis, sujeitos à
+com dados anonimizados não é execução do objeto. Do início do lançamento ao atestado são de 7 a 9 meses. O dono do
+produto escolheu a leitura literal da decisão (opção A do plano §2.4, v2.8): lançamento depois de toda a trilha, a
+partir de outubro de 2028, e atestado entre maio e julho de 2029. Com o atestado, editais do tipo SAMAE (um atestado, sem quantitativo) ficam acessíveis, sujeitos à
 prontidão de POC. Editais do tipo VISAN (dois atestados, 8.500 ligações e e-Sfinge) exigem ainda o segundo atestado
 (cliente privado ou segundo piloto) e a remessa e-Sfinge em operação (§4).
 
@@ -268,20 +276,20 @@ Seções essenciais não críticas (contam nos 90%): 2.1, 2.3, 2.6, 2.16 (salvo 
 | H2 | POC eliminatória com produto completo | 81 itens, ≥ 146 de 162 | 80 itens binários, críticos eliminatórios | POC passa a ser escopo; ambiente de demonstração permanente; ensaio por fase; meta no aceite a partir do P3 | ADR-0023 item 2; P1.25, P3.23; ED-01 |
 | H3 | Provedor de nuvem certificado | ISO 9001, 27001, 27017, SOC 1 e SOC 3 do provedor | não exigido | AWS `sa-east-1` gerenciada, implantada no lançamento comercial; relatórios do AWS Artifact no kit a cada proposta | ADR-0011, ADR-0033; P0.26; LC.2–LC.5; ED-03 |
 | H4 | Lote único completo | omnichannel, BI e SIG obrigatórios, sem subcontratação | idem, mais laboratório e CTI | trilha de editais com todos os módulos como componentes do produto (Superset licenciado, LLM por API como suboperador) | ADR-0026 a ADR-0028; ED-42, ED-43, ED-47, ED-50, ED-52 |
-| H5 | Balanço de 2 exercícios | exigido | exigido (empresa nova: último exercício) | empresa licitante definida e escrituração por contador já em 2026; para licitar em 2028, balanços de 2026 e 2027 | P0.44; ED-02 |
+| H5 | Balanço de 2 exercícios | exigido | exigido (empresa nova: último exercício) | empresa licitante definida e escrituração por contador já em 2026; para licitar a partir do 3º trimestre de 2029 (plano v2.8), balanços de 2027 e 2028 | P0.44; ED-02 |
 | H6 | Implantação e equipe presencial | 90 dias, 2 especialistas presenciais, técnico por 30 dias, treinamento presencial de 40 h | 60 dias, especialistas presenciais, 2 técnicos por 30 dias | implantação e treinamento remotos no piloto; equipe de 4 a 5 desenvolvedores a partir de agosto de 2027 (ADR-0029); parceiro de implantação presencial em aberto (plano §2.4); metodologia e importadores padronizados | ADR-0023 item 4; ADR-0029; ED-09, ED-11 |
 | H7 | Registro no INPI e vedação a software livre (ETP) | no ETP | — | registro do programa no INPI; bibliotecas livres não tornam o produto software livre | P0.44; ED-02 |
 | H8 | Hospedagem local e licença instalável | VISAN pode assumir a infraestrutura, com desconto na mensalidade (TR 4.4.12); acesso administrativo da TI (TR 4.15) | licenças instaláveis em qualquer servidor (SG-020); Windows Server 2022+ | instância dedicada gerenciada; pacote em contêiner só como cláusula de reversão, em Linux ou em Windows Server 2022+ com Docker no WSL2, homologado uma vez; acesso da TI do órgão só na instância dedicada | ADR-0024 (ajuste v2.5); ED-04 |
 | H9 | Metas contratuais acima do padrão | 99% em horário comercial; cinco severidades (2 a 32 h); dados em 10 dias úteis; consulta por 120 dias | 99,9%; cinco severidades (2 a 160 h) com multa; monitoramento 24/7 | nível "Setor Público" contratável; o padrão do produto não muda; plantão da S1 com a equipe do ADR-0029, ativo até 31/01/2028 | ADR-0025; ADR-0029; P2.15, P3.16, P3.22; ED-05 |
 | H10 | Preço | teto de R$ 18.866,65/mês e R$ 77.900 de implantação | teto de R$ 7.636,74/mês com hospedagem, BI e Google Maps | tabela de custo da AWS (ADR-0011) e preço por porte; o teto do SAMAE só fecha com vários tenants no mesmo cluster | ED-10 |
 
-Sequência que decorre (plano v2.7): (1) até 13/11/2026, piloto escolhido com o critério de atestado e o prazo de
-produção no lançamento (P0.30), e momento do lançamento escolhido pelo dono (plano §2.4); (2) em paralelo, desde já,
-empresa licitante, contador, INPI e certidões (P0.44); (3) lançamento comercial e primeira produção do piloto (LC.13);
-(4) atestado do piloto de 3 a 5 meses depois do corte (LC.14), que habilita para editais do tipo SAMAE: entre agosto e
-outubro de 2028 na opção B, entre fevereiro e abril de 2029 na C e entre maio e julho de 2029 na A; (5) segundo
-atestado e remessa e-Sfinge em operação, que habilitam para editais do tipo VISAN, em 2029 em qualquer opção. A
-prontidão de POC (§8) é a condição que pode atrasar cada passo.
+Sequência que decorre (plano v2.8, opção A do lançamento): (1) até 13/11/2026, piloto escolhido com o critério de
+atestado e o prazo de produção da opção A no termo de intenção (P0.30); (2) em paralelo, desde já, empresa licitante,
+contador, INPI e certidões (P0.44); (3) trilha de editais completa até 30/09/2028 e lançamento comercial a partir de
+outubro de 2028, com a primeira produção do piloto por volta de fevereiro de 2029 (LC.13); (4) atestado do piloto de 3
+a 5 meses depois do corte (LC.14), entre maio e julho de 2029, que habilita para editais do tipo SAMAE a partir do 3º
+trimestre de 2029; (5) segundo atestado e remessa e-Sfinge em operação, que habilitam para editais do tipo VISAN,
+depois disso. A conclusão da trilha até setembro de 2028 (§8.1) é a condição que pode atrasar cada passo.
 
 ---
 
@@ -582,6 +590,23 @@ Com a equipe completa, a onda C (≈ 15 semanas desde a v2.6, que passou a ED-58
 cerca de 7,5 semanas-pessoa à prontidão e mantém a necessidade (≈ 4,6 pessoas-equivalentes) dentro da contratação de
 4 a 5 do ADR-0029; com 4 contratados, o déficit passa de cerca de 6 para cerca de 13 semanas-pessoa.
 
+**Capacidade na opção A do lançamento (plano v2.8; ADR-0029, ajuste v2.8).** O lançamento comercial só começa com
+todas as fases concluídas. Para começar em outubro de 2028, as ondas A, B e C e as tarefas originais do P4 (cerca de
+215 semanas-pessoa) precisam terminar até 30/09/2028: cerca de 56 semanas produtivas desde 02/08/2027 e cerca de 3,8
+pessoas-equivalentes, contra 4,6 para a prontidão de POC em junho. Mesmas premissas da tabela anterior.
+
+| Equipe a partir de agosto de 2027 | Capacidade até 30/09/2028 (semanas-pessoa) | Frente a 215 | Trilha completa | Efeito no lançamento |
+|---|---|---|---|---|
+| Dono e 5 contratados | ≈ 299 | ≈ +39% | início do 3º trimestre de 2028 | outubro de 2028, com folga acima da incerteza de ±30% |
+| Dono e 4 contratados | ≈ 247 | ≈ +15% | por volta do fim de agosto de 2028 | outubro de 2028, com folga menor que a incerteza |
+| Dono e 3 contratados | ≈ 195 | ≈ −9% | início de novembro de 2028 | cerca de um mês e meio depois, com atestado e primeira licitação adiados na mesma medida |
+| Dono e 2 contratados | ≈ 143 | ≈ −33% | por volta de abril de 2029 | lançamento em 2029 e primeira licitação em 2030 |
+
+A prontidão de POC em 30/06/2028 continua como alvo, por ser anterior ao lançamento, mas deixa de ser o marco que limita
+a primeira licitação: com a equipe completa, pode escorregar até cerca do fim de agosto de 2028 sem mover o lançamento.
+A folga permite fixar a equipe em 4 no M8 ou adiar a entrada, decisão do dono do produto (plano §2.4); a contratação
+decidida no ADR-0029 não muda.
+
 **Recomendações.**
 
 1. **Proteger a homologação local do piloto** (antes, go-live; plano v2.7). As 13,3 semanas acrescidas ao P0–P3 são,
@@ -591,34 +616,36 @@ cerca de 7,5 semanas-pessoa à prontidão e mantém a necessidade (≈ 4,6 pesso
    delas.
 2. **Contratar no prazo.** A equipe foi decidida (ADR-0029): 4 a 5 desenvolvedores a partir de agosto de 2027. O
    plano de contratação e o orçamento precisam estar aprovados no M8 (28/05/2027), com a seleção em junho e julho, para
-   que toda a equipe entre até 31/08/2027; o número final (4 ou 5) sai da velocidade medida do P0 ao P3.
+   que toda a equipe entre até 31/08/2027; o número final (4 ou 5) sai da velocidade medida do P0 ao P3 e da
+   pendência aberta na v2.8 (fixar 4 ou adiar a entrada, com a folga da opção A; plano §2.4).
 3. **Seguir as ondas.** A antes de B antes de C; dentro de cada onda, primeiro o que é crítico no SAMAE e pontua na
    VISAN. A onda C (implantação, frota, ativos, telefonia, Bolsa Família) não pesa na POC e soma cerca de 15 semanas.
    O ERP construído soma 10,5 semanas além da integração (ED-62): o almoxarifado (7,5) na onda A, junto da OS, desde a
    v2.6, e a frota (3) na onda C. Compras, RH e orçamento ficam para 2029.
 4. **Mirar primeiro editais do tipo SAMAE.** Exigem um atestado, que o piloto só pode dar depois do lançamento
-   comercial e da primeira operação real (ADR-0033): entre agosto e outubro de 2028 na opção B do plano §2.4, mais
-   tarde nas opções A e C. Os do tipo VISAN exigem dois atestados, 8.500 ligações e e-Sfinge em operação, o que
-   dificilmente se reúne antes de 2029.
+   comercial e da primeira operação real (ADR-0033): entre maio e julho de 2029, pela opção A do plano §2.4 (v2.8).
+   Os do tipo VISAN exigem dois atestados, 8.500 ligações e e-Sfinge em operação, o que, com o primeiro atestado em
+   meados de 2029, dificilmente se reúne antes de 2030.
 5. **Recalibrar a cada fase.** Comparar o tempo real das tarefas do P0 ao P3 com a escala P/M/G e corrigir as
    estimativas deste documento antes de assumir datas de licitação.
-6. **Escolher o momento do lançamento** (plano v2.7). A meta de licitações no 2º semestre de 2028 (ADR-0029) só se
-   mantém com o lançamento logo depois das tarefas originais do P4 (opção B do plano §2.4), com o piloto em produção
-   desde o 1º semestre de 2028 e cerca de 15 semanas-pessoa de lançamento concorrentes com a trilha. Com a leitura
-   literal da decisão (opção A), a primeira licitação com POC vai para o 3º trimestre de 2029; com a C, para o 2º
-   trimestre de 2029.
+6. **Momento do lançamento escolhido** (plano v2.8). O dono do produto escolheu a opção A do plano §2.4: lançamento
+   depois de toda a trilha, a partir de outubro de 2028, e primeira licitação com POC a partir do 3º trimestre de
+   2029; a meta de 2028 do ADR-0029 deixou de valer. A trilha inteira passa ao caminho até o atestado: atraso além de
+   setembro de 2028 move o lançamento, o atestado e a primeira licitação na mesma medida, e a recalibração a cada onda
+   (item 5) passa a proteger essa data.
 
 ### 8.2 Outros riscos
 
 | Risco | Efeito | Mitigação |
 |---|---|---|
 | Piloto escolhido não ser público, catarinense ou contratado com cláusula de atestado | Sem atestado depois do lançamento; nenhum edital com POC disputável | Critério na P0.30 (até 13/11/2026); cliente privado como alternativa para editais do tipo SAMAE |
-| Atestado só depois do lançamento comercial (ADR-0033) | Com a leitura literal (opção A), primeira licitação com POC a partir do 3º trimestre de 2029; as de 2028 ficam perdidas | Escolha do momento do lançamento até 13/11/2026 (plano §2.4); opção B para manter 2028; piloto como cliente inicial em produção logo no lançamento; cláusula de atestado com prazo contado do corte |
+| Atestado só depois do lançamento comercial (ADR-0033) | Com a opção A, escolhida na v2.8, primeira licitação com POC a partir do 3º trimestre de 2029; as de 2028 ficam perdidas | Trilha completa até 30/09/2028 para manter o lançamento em outubro; piloto como cliente inicial em produção logo no lançamento; cláusula de atestado com prazo contado do corte; cliente privado como segundo atestado |
+| Custo fixo da equipe do ADR-0029 por cerca de dois anos antes da primeira licitação (opção A) | Despesa sem receita de editais de agosto de 2027 ao 3º trimestre de 2029; primeira receita de produção do piloto só por volta de fevereiro de 2029 | Pendência do plano §2.4 sobre fixar 4 contratações ou adiar a entrada, decidida no M8; venda sem POC a partir do lançamento |
 | POC em nuvem exigida pelos editais e ambiente de demonstração local até o lançamento | Nenhuma POC de licitação antes do lançamento | Ensaios internos no ambiente local; ambiente de demonstração na nuvem criado pela IaC do lançamento (plano LC.2) antes da primeira POC |
-| Balanço de dois exercícios | Inabilitação em 2028 sem os balanços de 2026 e 2027 | P0.44: empresa licitante e contador desde já |
-| Editais de 2028 diferentes dos de 2026 | Entregas feitas para o texto antigo; itens novos sem tarefa | Matriz viva com requisito canônico; extração em 3 dias úteis; go/no-go (§7.3) |
+| Balanço de dois exercícios | Inabilitação nas licitações a partir do 3º trimestre de 2029 sem os balanços de 2027 e 2028 | P0.44: empresa licitante e contador desde já |
+| Editais de 2029 diferentes dos de 2026 | Entregas feitas para o texto antigo; itens novos sem tarefa | Matriz viva com requisito canônico; extração em 3 dias úteis; go/no-go (§7.3) |
 | Severidade 1 em 2 horas e monitoramento 24/7 sem equipe (ADR-0025) | Multas cumulativas de 5% a 10% da fatura por severidade | Equipe do ADR-0029; não assinar o nível Setor Público antes da escala de plantão ativa (até 31/01/2028, ED-05) |
-| Contratação abaixo do previsto ou atrasada (ADR-0029) | Prontidão de POC depois de 30/06/2028; perda das licitações de 2028 | Plano e orçamento no M8; seleção em junho e julho de 2027; contingência por empresa contratada por entrega, com código e direitos do Ziip; datas de M12 e M13 registradas de novo a cada onda |
+| Contratação abaixo do previsto ou atrasada (ADR-0029) | Prontidão de POC depois de 30/06/2028; com 3 contratados ou menos, trilha completa depois de setembro de 2028, com lançamento, atestado e primeira licitação adiados na mesma medida (opção A, §8.1) | Plano e orçamento no M8; seleção em junho e julho de 2027; contingência por empresa contratada por entrega, com código e direitos do Ziip; datas de M12 e M13 registradas de novo a cada onda |
 | Divergência entre conta impressa em campo e recálculo (ED-19) | Conta errada entregue ao consumidor; retrabalho fiscal | Mesmo módulo de cálculo no servidor e no app, vetores comuns no CI, fila de divergências com retificação (ADR-0031) |
 | Saldo negativo no almoxarifado (ED-58) | Custo médio e inventário distorcidos; perda ou desvio escondidos | Alerta de reposição, relatório diário, regularização com prazo, inventário periódico, alerta na Central (ADR-0032) |
 | Custo da AWS acima do teto do SAMAE (≈ US$ 2 mil/mês contra R$ 7.636,74/mês) | Proposta inexequível ou prejuízo | Vários tenants por cluster; dimensionamento mínimo nos primeiros clientes; tabela de custo (ADR-0011) antes de qualquer proposta |

@@ -9,6 +9,24 @@
   regra de leitura do item 7); `docs/arquitetura/ARQUITETURA-ALVO.md` (§7.3); `REQUISITOS-NAO-FUNCIONAIS.md`;
   `FISCAL-PORTE-JAVA.md` (§3.6, §3.8 e §6); `CENTRAL-ZIIP.md` (§11); plano v2.7 (P0.26 a P0.29, P0.45, GL.1 a GL.4,
   fase LC, §2.2, §2.4, §5 a §8); consolidado 18
+- **Ajuste de 12/10/2026 (v2.8), antes de qualquer implementação:** resolvidas as duas pendências deste ADR. (a)
+  **Momento do lançamento:** escolhida a opção A da seção "Atestados e licitações": o lançamento comercial começa
+  depois de todas as fases, inclusive a trilha de editais (ondas A, B e C), a partir de outubro de 2028; primeira
+  produção por volta de fevereiro de 2029; primeiro atestado entre maio e julho de 2029; licitações com POC a partir do
+  3º trimestre de 2029. A meta de disputar no 2º semestre de 2028 deixa de valer, e as opções B e C passam a
+  alternativas rejeitadas; a consequência negativa "com a opção A, a meta de 2028 do ADR-0029 cai" deixa de ser
+  hipótese; o efeito na capacidade da trilha está no ADR-0029 (ajuste v2.8). (b) **Exceção explícita ao item 5**
+  (certificado do item 6): a produção restrita da NFS-e Nacional e a homologação da SEFAZ (`tpAmb=2`), a partir do
+  ambiente local e sem emissão real, usam o e-CNPJ da própria Ziip/TGP, e nenhum certificado de cliente entra no
+  ambiente local; o CPF contido nesse certificado é do responsável pela empresa, que consente por escrito, e não é
+  dado de cliente nem de consumidor; o certificado (arquivo e senha) fica no cofre local, fora do banco, e cada acesso
+  a ele é registrado (quem, quando e para quê); o XML assinado leva o certificado público, com o mesmo CPF, e os XML de
+  homologação gravados no ambiente local ficam abrangidos pela mesma exceção e pelo mesmo consentimento; fora dessa
+  exceção, a regra do item 5 e o teste de varredura da base local continuam valendo sem mudança; certificado de cliente
+  só na produção, a partir do lançamento (plano LC.4). Se a homologação da NFAg-e aceita o CNPJ da Ziip/TGP como
+  emitente de teste do modelo 75 fica a confirmar no manual e no credenciamento (plano §2.4). As tarefas derivadas
+  "Escolha do momento do lançamento" e "Certificado digital da homologação fiscal no ambiente local" ficam cumpridas;
+  decisão do dono do produto.
 
 ## Contexto
 

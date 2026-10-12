@@ -25,6 +25,11 @@
   data a escolher pelo dono do produto (plano §2.4); o marco "primeiro cliente em produção" do Contexto passa a ser o
   corte no lançamento; as tarefas derivadas "critério de aceite do go-live" e "plano de faturamento paralelo e de corte
   do legado" leem-se para a homologação local e para o lançamento; decisão do dono do produto (ADR-0033).
+- **Ajuste de 12/10/2026 (v2.8), antes de qualquer implementação:** a data da fase "Lançamento comercial" foi escolhida
+  pelo dono do produto (opção A do plano §2.4): depois de todas as fases, inclusive a trilha de editais, a partir de
+  outubro de 2028, com a primeira produção (corte do legado do piloto) por volta de fevereiro de 2029; as licitações do
+  ajuste v2.5 passam do 2º semestre de 2028 para a partir do 3º trimestre de 2029 (ADR-0023, ADR-0029 e ADR-0033,
+  ajustes v2.8); decisão do dono do produto.
 
 ## Contexto
 

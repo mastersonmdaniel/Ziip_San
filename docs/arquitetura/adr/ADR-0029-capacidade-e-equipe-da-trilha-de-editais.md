@@ -23,6 +23,30 @@
   ocupa cerca de 15 semanas-pessoa (±30%), em boa parte do dono do produto, o que absorve quase toda a folga de cerca de
   26 semanas-pessoa da contratação de 5 e aumenta o déficit da de 4; M12 e a necessidade de pessoas são recalculados com
   a escolha; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.8), antes de qualquer implementação:** com a opção A do plano §2.4 (ADR-0033, ajuste
+  v2.8), o lançamento comercial começa depois de todas as fases, inclusive a trilha completa, em outubro de 2028, e a
+  meta do item 2 de disputar licitações com POC no 2º semestre de 2028 deixa de valer: a primeira licitação com POC
+  (M13) passa a ser a partir do 3º trimestre de 2029, depois do primeiro atestado (maio a julho de 2029). A contratação
+  do item 1 (4 a 5 desenvolvedores a partir de 02/08/2027) e a prontidão de POC em 30/06/2028 (M12) não mudam.
+  **Análise de capacidade.** A prontidão em junho de 2028 continua coerente, por ser anterior ao lançamento, mas deixa
+  de limitar a primeira licitação; o limite passa a ser a conclusão das ondas A, B e C e das tarefas originais do P4
+  (cerca de 215 semanas-pessoa) até 30/09/2028. De 02/08/2027 a essa data há cerca de 56 semanas produtivas (43 até
+  30/06/2028), e a necessidade cai para cerca de 3,8 pessoas-equivalentes (4,6 para a prontidão em junho). Com as
+  premissas do Contexto (dono a 0,7, onboarding de 8 semanas a 50%), a capacidade até 30/09/2028 é de cerca de 299
+  semanas-pessoa com 5 contratações (39% acima do esforço, acima da incerteza de ±30%; trilha completa no início do 3º
+  trimestre de 2028), 247 com 4 (15% acima; trilha completa por volta do fim de agosto de 2028), 195 com 3 (9% abaixo;
+  trilha completa no início de novembro de 2028, com lançamento, atestado e M13 cerca de um mês e meio depois) e 143
+  com 2 (trilha completa por volta de abril de 2029 e primeira licitação em 2030). Com a equipe completa, o M12 pode
+  escorregar até cerca do fim de agosto de 2028 sem mover o lançamento; atraso da trilha além de setembro de 2028
+  desloca o lançamento, o atestado e o M13 na mesma medida, porque na opção A a trilha inteira fica no caminho até o
+  atestado. A folga permite fixar a equipe em 4 no M8, limite inferior do item 1, ou adiar a entrada (até cerca de 3
+  meses com 5 e de 1,5 mês com 4, com M12 por volta do início de setembro de 2028 e sem folga frente à incerteza);
+  abaixo de 4 há déficit. A escolha fica como pendência do dono do produto no plano §2.4, até o M8 (28/05/2027), junto
+  do número final do item 1. **Outros efeitos:** a consequência negativa "Custo fixo" lê-se com a primeira licitação a
+  partir do 3º trimestre de 2029, cerca de dois anos depois da entrada, e a primeira receita de produção do piloto só
+  depois do corte, por volta de fevereiro de 2029; a escala de plantão da S1 (item 5), montada até 31/01/2028, só é
+  acionada na primeira produção; a alternativa "Equipe menor (duas pessoas)" deixa de perder as licitações de 2028,
+  que a opção A já não disputa, mas leva a primeira licitação a 2030; decisão do dono do produto.
 
 ## Contexto
 

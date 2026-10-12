@@ -24,6 +24,16 @@
   pendência do dono do produto (plano §2.4, até 13/11/2026); a consequência negativa "um só atestado no fim de 2027" e
   o critério da P0.30 ("cláusula de emissão do atestado depois dos ciclos em produção") leem-se com essas datas;
   decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.8), antes de qualquer implementação:** o dono do produto escolheu a opção A do plano §2.4
+  (ADR-0033, ajuste v2.8): lançamento comercial depois de todas as fases, inclusive a trilha de editais, a partir de
+  outubro de 2028; primeira produção do piloto por volta de fevereiro de 2029; primeiro atestado entre maio e julho de
+  2029; licitações com POC a partir do 3º trimestre de 2029, começando por editais do tipo SAMAE. A meta de disputar
+  no 2º semestre de 2028 deixa de valer: "licitações de 2028" (item 1 e "O que muda no roadmap") lê-se "licitações a
+  partir do 3º trimestre de 2029", e a consequência negativa "Nenhuma licitação com POC do perfil analisado é
+  disputável antes de 2028" lê-se "antes do 3º trimestre de 2029"; até lá a venda segue por piloto, dispensa, CPSI e
+  clientes que não exijam POC, com produção só a partir do lançamento; o termo de intenção do piloto (P0.30) informa o
+  prazo de produção da opção A; editais do tipo VISAN (dois atestados, 8.500 ligações e e-Sfinge em operação) ficam
+  depois do primeiro atestado, em meados de 2029; decisão do dono do produto.
 
 ## Contexto
 
