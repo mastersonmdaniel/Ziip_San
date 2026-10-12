@@ -1,8 +1,10 @@
 # Arquitetura-alvo de produção
 
-Base: revisão 17 (§4 e §5) e ADRs 0003, 0005, 0006, 0007, 0010, 0012, 0013, 0014, 0018, 0020 e 0022. Neutra quanto a
-provedor enquanto o ADR-0011 estiver pendente. Metas em `REQUISITOS-NAO-FUNCIONAIS.md`. Os nomes de roles abaixo
-(`sigsan_*`) passam a `ziipsan_*` na renomeação do P0 (plano P0.33). Nomes técnicos em inglês (plano §8, Idioma).
+Base: revisão 17 (§4 e §5) e ADRs 0003, 0005, 0006, 0007, 0010, 0011, 0012, 0013, 0014, 0018, 0020, 0022 e 0024 a
+0028. Hospedagem: AWS `sa-east-1` com serviços gerenciados (ADR-0011, aceito em 12/10/2026); o código continua neutro
+quanto a provedor, para a cláusula de reversão do ADR-0024. Metas em `REQUISITOS-NAO-FUNCIONAIS.md`. Os nomes de roles
+abaixo (`sigsan_*`) passam a `ziipsan_*` na renomeação do P0 (plano P0.33). Nomes técnicos em inglês (plano §8,
+Idioma).
 
 ## 1. Componentes
 
@@ -16,19 +18,22 @@ Monólito modular: um artefato (imagem única, não-root, assinada) executado em
 | ClamAV | Varredura dos arquivos enviados (anexos de chamados e logos de tenant), junto do `worker`, com quarentena até a varredura; substituível pelo serviço da hospedagem (exceção do ADR-0010) |
 | `migrate` | Job antes de cada rollout; único detentor da credencial `sigsan_migrator` |
 | Keycloak 26.8 | 2+ réplicas, `start --optimized`, banco próprio; MFA conforme ADR-0007; realm `ziipsan` para backoffice e plataforma e realm `ziipsan-portal` para os consumidores do portal, com client e emissor próprios (ADR-0022); no portal, login por CPF/CNPJ ou e-mail e senha, sem SMS, com autenticador próprio que localiza a conta pelo índice cego do documento e eventos de login sem o identificador digitado |
-| PostgreSQL 17 + PostGIS 3.5 | Primário com standby síncrono, PITR e réplica de leitura para relatórios e SINISA (ADR-0013); pooler em modo transaction |
-| Armazenamento de objetos | Prefixo e chave por tenant; retenção imutável para documentos fiscais (XML autorizado servido como gravado, ADR-0022) |
+| PostgreSQL 17 + PostGIS 3.5 | RDS Multi-AZ: primário com standby síncrono, PITR e réplica de leitura para relatórios, SINISA e BI (ADR-0011, ADR-0013, ADR-0027); pooler PgBouncer em modo transaction (RDS Proxy só após teste de pinning, ADR-0011) |
+| Armazenamento de objetos | S3 com Object Lock; prefixo e chave por tenant; retenção imutável para documentos fiscais (XML autorizado servido como gravado, ADR-0022) |
 | Outbox | Tabela no PostgreSQL, workers com `SKIP LOCKED` (ADR-0014) |
-| Cofre/KMS | Segredos de execução, KEK e DEK por tenant (R1) |
+| Cofre/KMS | AWS KMS (KEK e DEK por tenant, R1) e Secrets Manager (segredos de execução) (ADR-0011) |
+| Relatórios e BI | Relatórios e painéis padrão nativos (`api` e `worker`); Apache Superset embarcado a partir do P4, lendo só a réplica, com role de banco por tenant (ADR-0027; exceção do ADR-0010) |
+| Apps | App de campo Android e app do cliente Android e iOS por tenant, em Capacitor sobre o mesmo frontend (ADR-0026) |
 | Observabilidade | OpenTelemetry Collector para métricas, logs e traces; error tracking; página de status pública em hospedagem separada da produção (ADR-0020) |
 | CI/CD | GitHub Actions: testes, imagem com SBOM, homologação, produção com aprovação manual e rollback |
 
-Kafka, Redis, MinIO, TimescaleDB e Loki/Tempo/Pyroscope ficam fora até haver caso concreto (ADR-0010). A única
-exceção registrada até aqui é o ClamAV (ADR-0010, seção Exceções).
+Kafka, Redis, MinIO, TimescaleDB e Loki/Tempo/Pyroscope ficam fora até haver caso concreto (ADR-0010). Exceções
+registradas (ADR-0010, seção Exceções): ClamAV; Apache Superset (P4); ODA File Converter, só na etapa assistida de
+implantação; ingestão de telemetria por REST e arquivo, sem broker.
 
 ```mermaid
 flowchart LR
-  U[Navegador / app de campo] --> E[CDN + WAF]
+  U[Navegador / apps Capacitor] --> E[CDN + WAF]
   PSP[PSP Pix] --> E
   E -->|estáticos| OBJ[(Objetos)]
   E --> LB[Balanceador]
@@ -40,6 +45,7 @@ flowchart LR
   PGB --> PG[(PostgreSQL 17 primário)]
   PG --> SB[(standby)]
   PG --> RR[(réplica de leitura)]
+  BI["Superset (P4)"] --> RR
   PG --> BK[(backup + WAL)]
   W --> OBJ
   W --> EXT["SEFAZ, banco, gráfica, e-mail, SMS/WhatsApp (P4)"]
@@ -96,6 +102,12 @@ assistida com janela.
 - Contexto transacional: `search_path`, `app.current_tenant` e `app.current_user` aplicados com
   `set_config(..., true)` no início de cada transação, o que torna o pooler em modo transaction seguro. Hoje o escopo é
   de sessão (`MultiTenantConnectionProvider.java:39-47`).
+- RDS Proxy: contexto de sessão (`SET` ou `set_config` sem escopo de transação), prepared statements do driver e
+  outros estados de sessão fixam a conexão (pinning) e anulam a multiplexação; o proxy só entra após teste que meça
+  as sessões fixadas e prove que o contexto de um tenant não aparece em outro (ADR-0011).
+- Ferramentas com conexão direta ao banco (Superset, QGIS) não usam a GUC de tenant como fronteira, porque a sessão
+  pode alterá-la: usam role de login por tenant ou por usuário, com a restrição de linhas feita pela identidade da
+  conexão (ADR-0027, ADR-0028).
 - `current_tenant_id()` reescrita como SQL `STABLE`.
 
 ## 5. Partição e retenção
@@ -123,6 +135,31 @@ Valores de partida para o piloto, a validar pela carga de referência (RNF-70):
 | Cluster dedicado (grande) | 8 vCPU / 32 GB, workers próprios |
 
 ## 7. Mapeamento por hospedagem (ADR-0011)
+
+### 7.1 AWS `sa-east-1` (escolhida em 12/10/2026)
+
+| Componente | Serviço | Situação |
+|---|---|---|
+| CDN e WAF | CloudFront + AWS WAF | Referência; confirmar na IaC (P0.27) |
+| Balanceador | ALB | Referência; confirmar na IaC |
+| `api`, `worker`, Keycloak | ECS Fargate | Referência; confirmar na IaC |
+| `migrate` | Tarefa ECS avulsa | Referência; confirmar na IaC |
+| PostgreSQL com HA | RDS for PostgreSQL 17 Multi-AZ | Decidido (ADR-0011) |
+| Réplica de leitura | Read replica RDS (relatórios, SINISA, BI) | Decidido |
+| Pooler | PgBouncer em modo transaction; RDS Proxy só após teste de pinning | Decidido |
+| Backup e PITR | Backup automático do RDS com PITR; cópia de snapshots em outra conta na mesma região, com política de expiração | Decidido |
+| Objetos | S3 com Object Lock | Decidido |
+| Cofre/KMS | AWS KMS (KEK, DEK por tenant) + Secrets Manager | Decidido |
+| Observabilidade | CloudWatch, X-Ray ou Managed Prometheus/Grafana, alimentados pelo OpenTelemetry Collector | Referência; confirmar na IaC |
+| Registro de imagens | ECR | Referência; confirmar na IaC |
+| Serviços de segurança do provedor (detecção de ameaças, inspeção de vulnerabilidades, registro de configuração) | Catálogo da AWS, conforme custo | A habilitar (edital de Videira) |
+
+Instância dedicada (ADR-0024): a mesma pilha, criada pela mesma IaC numa conta ou ambiente separado.
+
+### 7.2 Histórico: opções não escolhidas
+
+Mantido como registro da comparação do ADR-0011. A coluna "VPS/servidor próprio" serve de referência para o pacote de
+reversão do ADR-0024 (execução na infraestrutura do órgão).
 
 | Componente | AWS sa-east-1 | Azure Brasil | VPS/servidor próprio |
 |---|---|---|---|
@@ -154,7 +191,7 @@ Valores de partida para o piloto, a validar pela carga de referência (RNF-70):
 | S3, S4 | Realm único sem MFA | Organizações, MFA por política |
 | S5 | Token em `sessionStorage`, sem CSP | BFF com cookie, CSP estrita |
 | O1 | Sem métricas nem traces | OpenTelemetry e SLOs |
-| O2 | Terraform em `us-east-1` | Região brasileira após ADR-0011 |
+| O2 | Terraform em `us-east-1` | IaC nova em AWS `sa-east-1` (ADR-0011) |
 | O3 | Keycloak `start-dev` | 2+ réplicas com TLS |
 | O4 | Sem metas nem carga | RNF e k6 no CI |
 | P1, P2 | Sem console nem portal | Console e Central v0 (P1), Central completa e portal com histórico e documentos (P3) |

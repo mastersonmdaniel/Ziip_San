@@ -3,6 +3,11 @@
 - **Status:** Aceito, 12/10/2026
 - **Decisor:** dono do produto
 - **Afeta:** revisão 17 (achado O4, §6); `docs/arquitetura/REQUISITOS-NAO-FUNCIONAIS.md`
+- **Ajuste de 12/10/2026 (editais), antes de qualquer implementação:** as metas deste ADR continuam o padrão do
+  produto; o ADR-0025, como novo ADR exigido pelo item 4, cria o nível "Setor Público" contratável por cliente (99,9% de
+  disponibilidade, cinco severidades com prazo de solução, exportação em 10 dias úteis, consulta pós-contrato de até
+  120 dias, relatórios em 2 ou 5 minutos); o item 1 passa a abranger RNF-01 a RNF-71, com o novo RNF-71 (tempo de
+  relatório e arquivo); decisão do dono do produto.
 
 ## Contexto
 

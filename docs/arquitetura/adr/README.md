@@ -29,7 +29,7 @@ cada tarefa entra.
 | [0008](ADR-0008-mascara-de-documento-configuravel.md) | Máscara de CPF/CNPJ configurável com teto validado; busca por documento controlada | Aceito | 12/10/2026 |
 | [0009](ADR-0009-push-automatico-e-dev-fora-do-drive.md) | Push automático para o GitHub e desenvolvimento fora do Google Drive | Aceito | 12/10/2026 |
 | [0010](ADR-0010-infra-nao-usada-congelada.md) | Infraestrutura não usada congelada em perfis opcionais e arquivo | Aceito | 12/10/2026 |
-| [0011](ADR-0011-hospedagem-a-decidir.md) | Hospedagem de produção | Proposto | 12/10/2026 |
+| [0011](ADR-0011-hospedagem-a-decidir.md) | Hospedagem de produção: AWS `sa-east-1` gerenciado | Aceito | 12/10/2026 |
 | [0012](ADR-0012-metas-nao-funcionais.md) | Metas não funcionais como critério de aceite | Aceito | 12/10/2026 |
 | [0013](ADR-0013-postgresql-17-no-p0.md) | PostgreSQL 17 e PostGIS 3.5 no P0 | Aceito | 12/10/2026 |
 | [0014](ADR-0014-outbox-no-postgresql.md) | Trabalho assíncrono por outbox no PostgreSQL | Aceito | 12/10/2026 |
@@ -41,8 +41,16 @@ cada tarefa entra.
 | [0020](ADR-0020-ajuda-e-suporte-com-protocolo.md) | Ajuda e Suporte com protocolo, SLA por contrato e acesso assistido com consentimento | Aceito | 12/10/2026 |
 | [0021](ADR-0021-sobre-versao-e-changelog.md) | Sobre, versão gerada no build e changelog do cliente versionado | Aceito | 12/10/2026 |
 | [0022](ADR-0022-portais-historico-e-documentos.md) | Histórico e documentos no portal do consumidor e na área do tenant | Aceito | 12/10/2026 |
+| [0023](ADR-0023-estrategia-de-editais-e-prova-de-conceito.md) | Estratégia de editais e prova de conceito | Aceito | 12/10/2026 |
+| [0024](ADR-0024-instancia-dedicada-e-clausula-de-reversao.md) | Instância dedicada e cláusula de reversão | Aceito | 12/10/2026 |
+| [0025](ADR-0025-nivel-de-servico-setor-publico-contratavel.md) | Nível de serviço Setor Público contratável | Aceito | 12/10/2026 |
+| [0026](ADR-0026-apps-hibridos-com-capacitor.md) | Apps híbridos com Capacitor | Aceito | 12/10/2026 |
+| [0027](ADR-0027-bi-hibrido-com-apache-superset.md) | BI híbrido com Apache Superset | Aceito | 12/10/2026 |
+| [0028](ADR-0028-escopo-funcional-ampliado-pelos-editais.md) | Escopo funcional ampliado pelos editais | Aceito | 12/10/2026 |
 
 ## Referências
 
 - `docs/levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md` — revisão de estrutura SaaS (achados X, S, D, O, P, F).
+- `docs/levantamento/editais/18a` a `18h` — extrações e matrizes de aderência aos editais VISAN Videira PE 06/2026 e
+  SAMAE São Ludgero PE 2/2026 (base dos ADRs 0011, aceito, e 0023 a 0028).
 - `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` — plano canônico: decisões (§2), mapa Flyway (§3) e fases P0–P4 (§4).

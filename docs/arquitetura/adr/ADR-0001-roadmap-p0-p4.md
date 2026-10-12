@@ -3,6 +3,13 @@
 - **Status:** Aceito, 12/10/2026
 - **Decisor:** dono do produto
 - **Afeta:** `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` §5 e §6 (roadmap R1–R9); revisão 17 §7 e §8.2
+- **Ajuste de 12/10/2026 (editais), antes de qualquer implementação:** o go-live piloto e as fases P0–P3 não mudam; o
+  P4 ganha a trilha de editais, mirando licitações de 2028, e a prontidão de POC passa a ser critério de aceite a
+  partir do P3 (ADR-0023); a instância dedicada sai de 2028 para o P4, sob demanda (ADR-0024); o app de leitura
+  offline do P4 deixa de ser PWA e passa a app Android com Capacitor (ADR-0026); o BI do P4 passa a híbrido, com cerca
+  de 20 relatórios operacionais já no P3 (ADR-0027); qualidade da água, GIS web, edição, migração do cadastro técnico,
+  manobras e SPC/Serasa saem de 2028 para o P4, e o restante do R9 e a trilha GRS seguem em 2028 (ADR-0028); decisão
+  do dono do produto.
 
 ## Contexto
 

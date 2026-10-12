@@ -10,6 +10,12 @@
 - **Ajuste de 12/10/2026 (plano v2.3), antes de qualquer implementação:** item 5 passa a dizer que contestação na
   carência e ordem judicial suspendem a eliminação, com resposta do Ziip em até 15 dias e prazo máximo de 75 dias do
   fim do contrato, por decisão do dono do produto, alinhado ao RNF-42.
+- **Ajuste de 12/10/2026 (editais), antes de qualquer implementação:** item 5 passa a admitir, no nível de serviço
+  Setor Público (ADR-0025), consulta somente leitura aos dados por até 120 dias após o fim do contrato, pelo prazo e
+  pelo número de usuários do contrato; quando o contrato exigir prazo maior que o padrão de 30 + 15 + 30 dias, a
+  carência de 30 dias começa no fim da consulta e os prazos de resposta e de eliminação correm a partir dela; contrato
+  que vede retenção após o fim mantém o padrão; decisão do dono do produto, alinhado ao RNF-42. As travas dos itens 3 e
+  4 seguem valendo diante de cláusula de edital em contrário (ADR-0023, item 5).
 
 ## Contexto
 

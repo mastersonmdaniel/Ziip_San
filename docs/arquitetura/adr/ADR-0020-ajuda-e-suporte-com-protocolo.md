@@ -11,6 +11,11 @@
 - **Ajuste de 12/10/2026 (plano v2.3), antes de qualquer implementação:** o catálogo de erros explicados passa a usar
   o prefixo `urn:ziipsan:problem:` e os códigos de problema em inglês (plano P0.33); o protocolo `SUP-AAAA-NNNNNN`
   permanece, por ser visível ao cliente; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (editais), antes de qualquer implementação:** item 3 passa a admitir, além das prioridades
+  P1–P4 do padrão, a política do nível Setor Público (ADR-0025) com cinco severidades (S1 a S5) classificadas por
+  impacto × criticidade, prazo de solução por severidade (severidade 1 em 2 horas úteis como referência), meta de
+  aderência e cálculo de multa no relatório mensal; o plantão 24x7 para a severidade 1 depende da decisão de equipe
+  do P4 (ADR-0023); decisão do dono do produto.
 
 ## Contexto
 

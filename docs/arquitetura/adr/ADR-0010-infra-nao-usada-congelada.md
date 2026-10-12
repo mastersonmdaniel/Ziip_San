@@ -4,6 +4,10 @@
 - **Decisor:** dono do produto
 - **Afeta:** revisão 17, §4.3 (compose expõe serviços não usados), achado O2 (Terraform), §7 (lista de congelamento) e
   §8.5
+- **Ajuste de 12/10/2026 (editais), antes de qualquer implementação:** hospedagem decidida (ADR-0011, AWS
+  `sa-east-1`), o que tira o perfil `vault` do caminho de produção; seção "Exceções" ampliada com o Apache Superset
+  (ADR-0027), o ODA File Converter como ferramenta de implantação e a ingestão de telemetria por REST e arquivo, sem
+  broker (ADR-0028); decisão do dono do produto.
 
 ## Contexto
 
@@ -85,3 +89,6 @@ não atenda, registrado aqui com o ADR de origem.
 | Componente | Caso concreto | Forma | Substituição | Origem |
 |---|---|---|---|---|
 | ClamAV | Arquivos enviados por usuários: anexos de chamados (ADR-0020) e logos de tenant (ADR-0016). O PostgreSQL não faz varredura de malware | Contêiner junto do processo `worker`, sem porta publicada; o arquivo fica em quarentena até a varredura e só então é liberado; infectado permanece bloqueado e gera alerta; atualização de assinaturas monitorada | Serviço equivalente da hospedagem (ADR-0011), atrás da mesma interface de varredura | Decisão do dono do produto, 12/10/2026 |
+| Apache Superset (licença Apache 2.0) | Consultas livres, modelo semântico e cubos exigidos pelos editais (`18g` §2.5), que o PostgreSQL e os relatórios nativos não atendem | Contêiner próprio, a partir do P4, lendo só a réplica de leitura; SSO pelo Keycloak; uma role de banco por tenant com restrição pela identidade da conexão; modo síncrono, metadados no PostgreSQL; Redis e Celery não entram sem nova exceção | Nenhuma prevista; relatórios e painéis padrão continuam nativos | ADR-0027 |
+| ODA File Converter (gratuito, licença proprietária) | Conversão de DWG atual para DXF na migração do cadastro técnico; o GDAL aberto não lê DWG 2007+ (`18d` §4, decisão 3) | Ferramenta da etapa assistida de implantação, fora da imagem de produção e do `docker compose`; o produto importa só formatos abertos; licença de uso comercial conferida antes do primeiro uso | SDK licenciado da ODA ou conversor equivalente, se a licença mudar | ADR-0028, item b |
+| Ingestão de telemetria por REST e arquivo (sem componente novo) | Telemetria de grandes consumidores com alarmes (TR-210) e paradas da ETA (SG-810) | Endpoint na `api` e importação no `worker`, em tabela particionada no PostgreSQL; registrada aqui para deixar explícito que não há broker; MQTT e OPC seguem congelados e só entram por ADR de exceção com cliente pagante | — | ADR-0028, item j |

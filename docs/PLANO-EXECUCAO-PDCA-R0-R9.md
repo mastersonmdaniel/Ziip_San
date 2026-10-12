@@ -1,6 +1,6 @@
 # Plano de execução do Ziip SAN: fases P0–P4 e go-live piloto
 
-**Versão 2.3, 12/10/2026.** Produto Ziip SAN; nome interno do código, SIGSAN, renomeado para `ziipsan` na P0.33. O
+**Versão 2.4, 12/10/2026.** Produto Ziip SAN; nome interno do código, SIGSAN, renomeado para `ziipsan` na P0.33. O
 nome do arquivo foi mantido por causa dos links. Este é o plano canônico; em divergência com um ADR, vale o ADR mais
 recente.
 
@@ -27,12 +27,25 @@ recente.
   de contrato da API em inglês (`urn:ziipsan:problem:`), aplicados na P0.33. Ajustados P0.33 (com a tabela de
   códigos), P0.43, P1.6, P1.22, P3.3, P3.8 e P3.16, os riscos e o §8, cuja única exceção de idioma passa a ser o
   protocolo `SUP-AAAA-NNNNNN`.
+- Versão 2.4: decisões do dono do produto de 12/10/2026 sobre os editais VISAN Videira PE 06/2026 e SAMAE São Ludgero
+  PE 2/2026 (ADR-0023 a ADR-0028) e hospedagem decidida (ADR-0011 aceito: AWS `sa-east-1` gerenciada). POC e editais
+  entram no escopo, revogando a linha "Fora do escopo: POC, editais" do diário §1 (ADR-0023, item 7). Hospedagem sai
+  das pendências e P0.26–P0.29 (IaC, backup, PITR, R1) ficam desbloqueadas; P0.27, P0.28 e P0.30 ajustadas; novas
+  P0.44 (kit de habilitação), P1.25 (roteiros de POC), P2.20 (retificação de conta), P3.22 (relatórios operacionais) e
+  P3.23 (ambiente de demonstração); P2.15, P3.15 e P3.16 ampliadas pelo nível Setor Público (ADR-0025); P4.3 e P4.4
+  redefinidas (ADR-0027, ADR-0026); **trilha de editais** no P4 com as entregas ED-01 a ED-62 do consolidado
+  [18](levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md), em ondas A, B e C; qualidade da água, GIS web,
+  migração do cadastro técnico, manobras, negativação e protesto e instância dedicada saem de 2028 para o P4; mapa
+  Flyway com faixas dos módulos novos; caminho crítico, riscos (capacidade quantificada), marcos ("prontidão de POC" e
+  "primeira licitação 2028") e resumo atualizados.
 
 **Referências.** Revisão 17: [levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md](levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md);
 ADRs: [arquitetura/adr/README.md](arquitetura/adr/README.md); parâmetros: [arquitetura/PARAMETROS-DO-TENANT.md](arquitetura/PARAMETROS-DO-TENANT.md);
 RNF: [arquitetura/REQUISITOS-NAO-FUNCIONAIS.md](arquitetura/REQUISITOS-NAO-FUNCIONAIS.md); arquitetura-alvo:
 [arquitetura/ARQUITETURA-ALVO.md](arquitetura/ARQUITETURA-ALVO.md); porte fiscal: [arquitetura/FISCAL-PORTE-JAVA.md](arquitetura/FISCAL-PORTE-JAVA.md);
-PDCA: [levantamento/16-PDCA-2026-10-12.md](levantamento/16-PDCA-2026-10-12.md); execução: [DIARIO-DE-BORDO.md](DIARIO-DE-BORDO.md) §18.
+PDCA: [levantamento/16-PDCA-2026-10-12.md](levantamento/16-PDCA-2026-10-12.md); execução: [DIARIO-DE-BORDO.md](DIARIO-DE-BORDO.md) §18;
+editais: [levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md](levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md)
+(consolidado das extrações 18a–18c e das matrizes 18d–18h).
 
 **Convenção.** Achados da revisão 17 levam o prefixo `17:` (`17:X1`, `17:S1`, `17:D1`), para não confundir com as
 decisões D1–D13 e S1–S3 da v1. Os médios foram numerados aqui `17:M1`–`17:M15` e os baixos `17:B1`–`17:B11`, na ordem
@@ -52,7 +65,9 @@ do relatório.
 - Chave só de desenvolvimento; nenhum CPF real antes do R1.
 - Só ambiente local: sem Dockerfile, CI remoto, backup nem observabilidade.
 - GitHub privado `mastersonmdaniel/Ziip_San` (push manual até `fb2b53d`); código ainda editado no Google Drive.
-- Sem cliente piloto e sem hospedagem definidos.
+- Sem cliente piloto definido. Hospedagem decidida em 12/10/2026: AWS `sa-east-1` gerenciada (ADR-0011).
+- Editais analisados (consolidado 18): dos 2.663 requisitos distintos da VISAN e do SAMAE, 3% atendidos, 21% em parte
+  e 75% não atendidos; o produto hoje reprova nas duas provas de conceito.
 
 **Histórico.** A v1 consolidou o PDCA de 12/10 (C1–C5) e o roadmap R0–R9 do `15c` em fundações E0–E6, com mapa Flyway e
 portões de decisão. As etapas foram executadas no mesmo dia, um commit por etapa (diário §18). A revisão 17, sobre
@@ -97,7 +112,7 @@ portões de decisão. As etapas foram executadas no mesmo dia, um commit por eta
 | [0008](arquitetura/adr/ADR-0008-mascara-de-documento-configuravel.md) | Máscara configurável com teto; busca por documento com papel, registro e cota |
 | [0009](arquitetura/adr/ADR-0009-push-automatico-e-dev-fora-do-drive.md) | Push automático; desenvolvimento em disco local + GitHub |
 | [0010](arquitetura/adr/ADR-0010-infra-nao-usada-congelada.md) | Infra não usada em perfis em 127.0.0.1; k8s e Terraform em `infra/_arquivado/` |
-| [0011](arquitetura/adr/ADR-0011-hospedagem-a-decidir.md) | Hospedagem: **proposto, pendente**; plano neutro; R1, backup e IaC bloqueados |
+| [0011](arquitetura/adr/ADR-0011-hospedagem-a-decidir.md) | Hospedagem: **aceito em 12/10/2026** (v2.4): AWS `sa-east-1` gerenciada (RDS PostgreSQL 17 Multi-AZ com PITR e réplica de leitura, KMS, Secrets Manager, S3 com Object Lock); nenhum dado, réplica ou backup fora da região; certificações exigidas em edital conferidas no AWS Artifact; código continua neutro; desbloqueia R1, backup, PITR e IaC (P0.26–P0.29) |
 | [0012](arquitetura/adr/ADR-0012-metas-nao-funcionais.md) | Metas não funcionais do §6 da revisão 17 |
 | [0013](arquitetura/adr/ADR-0013-postgresql-17-no-p0.md) | PostgreSQL 17 + PostGIS 3.5 no P0, antes de dado real |
 | [0014](arquitetura/adr/ADR-0014-outbox-no-postgresql.md) | Outbox no PostgreSQL com workers `SKIP LOCKED`, atrás de interface |
@@ -109,6 +124,16 @@ portões de decisão. As etapas foram executadas no mesmo dia, um commit por eta
 | [0020](arquitetura/adr/ADR-0020-ajuda-e-suporte-com-protocolo.md) | Ajuda e suporte com protocolo e SLA por contrato; ClamAV; acesso assistido com consentimento no lugar da impersonação; acesso de emergência só em incidente de segurança declarado |
 | [0021](arquitetura/adr/ADR-0021-sobre-versao-e-changelog.md) | SemVer gerado no build; changelog do cliente obrigatório para segurança, legislação e parâmetro regulatório; Sobre |
 | [0022](arquitetura/adr/ADR-0022-portais-historico-e-documentos.md) | Portal do consumidor com 120 meses, conta paga, DANFAG e XML original; conta do consumidor no realm `ziipsan-portal`, com login por CPF/CNPJ ou e-mail e senha, sem SMS; vínculo por código impresso na conta e CPF/CNPJ; documentos anteriores ao go-live importados; área do tenant com faturas e NFS-e do contrato |
+| [0023](arquitetura/adr/ADR-0023-estrategia-de-editais-e-prova-de-conceito.md) | Trilha de editais no P4, mirando licitações de 2028, sem mexer no go-live; POC passa a ser escopo, com prontidão de POC no aceite de fase a partir do P3, ambiente de demonstração permanente (≥ 10 mil unidades fictícias), roteiros internos VISAN e SAMAE e ensaio por fase; atestados pelo piloto público em SC (dispensa ou LC 182/2021, com cláusula de atestado) e por cliente privado; implantação e treinamento remotos no piloto, equipe para editais decidida no P4; itens ilegais de edital: segue-se a lei, com pedido de esclarecimento ou impugnação; revoga "POC, editais" do diário §1 |
+| [0024](arquitetura/adr/ADR-0024-instancia-dedicada-e-clausula-de-reversao.md) | Padrão SaaS multi-tenant; instância dedicada gerenciada para quem exigir em contrato; execução na infraestrutura do órgão só como cláusula de reversão (pacote em contêiner, requisitos mínimos, runbook, desconto); acesso administrativo do órgão só na instância dedicada |
+| [0025](arquitetura/adr/ADR-0025-nivel-de-servico-setor-publico-contratavel.md) | Nível de serviço "Setor Público" contratável: 99,9%, cinco severidades com prazo de solução, aderência e multa, exportação em 10 dias úteis com dicionário, consulta somente leitura por até 120 dias após o contrato, relatórios e arquivos em 2 ou 5 min (RNF-71); padrão do produto inalterado; plantão depende da equipe do P4 |
+| [0026](arquitetura/adr/ADR-0026-apps-hibridos-com-capacitor.md) | Apps híbridos com Capacitor: app de campo só Android, por APK (leitura com emissão simultânea, OS, impressão Zebra série ZQ com editor de leiaute ZPL/CPCL); app do cliente Android e iOS nas lojas com a marca do tenant; substitui o PWA da P4.4 |
+| [0027](arquitetura/adr/ADR-0027-bi-hibrido-com-apache-superset.md) | Relatórios e painéis padrão nativos, com cerca de 20 relatórios operacionais já no P3; Apache Superset embarcado na trilha do P4, na réplica de leitura, com SSO e isolamento por role de banco por tenant; exceção registrada no ADR-0010 |
+| [0028](arquitetura/adr/ADR-0028-escopo-funcional-ampliado-pelos-editais.md) | Escopo da trilha: qualidade da água no P4 com apoio à ISO 17025 e SISAGUA assistido; GIS web próprio, QGIS com role individual e DWG convertido pelo ODA File Converter (revoga o R9 de 2028 para esses itens e para manobras); omnichannel híbrido com chatbot por modelo de linguagem de terceiro; dívida ativa (núcleo); eventos contábeis e e-Sfinge assistido; Pix Automático e FEBRABAN 150 legado; negativação e protesto por arquivo; cartão pela credenciadora do cliente; ERP construído no recorte do saneamento e integrado com Betha, IPM e Fiorilli; telemetria por REST e arquivo (MQTT só sob demanda); CTI mínimo e totem em modo quiosque; fatura por e-mail com link seguro e PDF por opt-in |
+
+Os ADRs 0010, 0011, 0012, 0015, 0020 e 0022 foram ajustados em consequência das decisões da v2.4 (exceções de
+infraestrutura, hospedagem, metas do nível Setor Público, consulta pós-contrato, severidades e fatura por e-mail); em
+divergência com este plano, vale o ADR.
 
 **Decisões do dono do produto (cartões de 12/10/2026)**, aplicadas nos ADRs 0018–0020, no ADR-0010 e nos documentos
 de arquitetura:
@@ -125,6 +150,27 @@ de arquitetura:
 - ClamAV junto do `worker`, com quarentena até a varredura, substituível pelo serviço da hospedagem: exceção do
   ADR-0010 (anexos de chamados e logos de tenant).
 - Corte por inadimplência: nenhuma configuração do tenant afrouxa (ADR-0015, item 3).
+
+**Decisões do dono do produto sobre editais e hospedagem (cartões de 12/10/2026, v2.4)**, aplicadas no ADR-0011 e nos
+ADRs 0023–0028, a partir das matrizes 18d–18h e do consolidado 18:
+
+- **Escopo.** POC e editais passam a ser escopo. Fica revogada a linha "Fora do escopo: POC, editais" do diário §1
+  (ADR-0023, item 7); blockchain no MTR e escrita com ESRI continuam fora.
+- **Calendário.** Trilha de editais no P4 (a partir de 02/08/2027), mirando licitações de 2028; o caminho crítico do P0
+  ao go-live não muda. Do piloto entram antes do P4 só o que ele mesmo precisa e as matrizes mostraram faltar:
+  retificação e manutenção de conta (P2.20) e cerca de 20 relatórios operacionais (P3.22); da prontidão de POC, os
+  roteiros (P1.25) e o ambiente de demonstração (P3.23).
+- **Prontidão de POC.** A partir do P1, ensaio interno ao fim de cada fase, com resultado registrado; a partir do P3, a
+  meta da fase entra no aceite (§8). Meta final da trilha: roteiro da VISAN com pelo menos 146 de 162 pontos e nenhuma
+  falha em item crítico do SAMAE, em dois ensaios seguidos.
+- **Habilitação.** Primeiro atestado pelo piloto público em SC, por dispensa ou CPSI, com cláusula de atestado (P0.30);
+  segundo por cliente privado; kit de habilitação e INPI em paralelo (P0.44).
+- **Hospedagem.** AWS `sa-east-1` gerenciada (ADR-0011); instância dedicada e cláusula de reversão (ADR-0024).
+- **Nível de serviço.** "Setor Público" contratável (ADR-0025), sem mudar o padrão do produto.
+- **Módulos.** Apps Capacitor (ADR-0026); BI híbrido (ADR-0027); escopo funcional da trilha (ADR-0028), inclusive o ERP
+  construído no recorte do saneamento e integrado com Betha, IPM e Fiorilli.
+- **Itens de edital contrários à lei.** O produto segue a lei e as travas do ADR-0015; pedido de esclarecimento ou
+  impugnação (consolidado 18, §6).
 
 ### 2.3 G1–G9 reclassificadas e padrões do produto
 
@@ -150,16 +196,20 @@ obrigatório aceito.
 
 | Decisão | Dono | Até | Bloqueia |
 |---|---|---|---|
-| Hospedagem (ADR-0011) | Daniel | 30/10/2026 | P0.27–P0.29; P1.2 com dado real |
-| Cliente piloto, acesso ao legado, acordo de tratamento de dados mínimo | Daniel | 13/11/2026 | P1.1, P1.2, go-live |
+| Cliente piloto (público, em SC, contratado por dispensa ou CPSI, com cláusula de atestado: ADR-0023), acesso ao legado, acordo de tratamento de dados mínimo | Daniel | 13/11/2026 | P1.1, P1.2, go-live; primeiro atestado |
 | G4 no produto: leiautes (FEBRABAN 150, CNAB 240) e PSPs suportados no go-live | Daniel | 29/01/2027 | P3.1, P3.2 |
 | NFAg-e: obrigatoriedade e data para o perfil do piloto, no DOU; manual e XSD oficiais | Daniel | 27/11/2026 | P2.6 |
 | Arredondamento (half-even no C#, `HALF_DOWN` no billing) e tributo no CHECK de total de `bills` (hoje tratado como retenção) | técnico | 29/01/2027 | P2.4, P2.5 |
+| Recorte "ligado ao saneamento" dos módulos de ERP (ADR-0028, item i): o que entra de almoxarifado, compras, RH, frota e orçamento; folha de pagamento, eSocial e contabilidade pública ficam fora salvo decisão contrária | Daniel | 28/05/2027 | ED-58 a ED-61 |
+| Equipe da trilha de editais (contratação, parceiro de implantação, plantão para a severidade 1) e data-alvo da prontidão de POC; proposta pronta no fim do P3 com a velocidade medida (consolidado 18, §8) | Daniel | 02/08/2027 | ED-05 (plantão), ED-11, ritmo da trilha, M12 |
+| Conectores Facebook Messenger, Instagram e Telegram, pedidos pela VISAN (TR 21.1) e pelo SAMAE (2.22), fora do ADR-0028 (item c): incluir na ED-42 ou tratar por pedido de esclarecimento | Daniel | 02/08/2027 | ED-42 |
 
 **Resolvidas pelo dono do produto em 12/10/2026 (cartões)**
 
 | Pendência | Decisão | Onde foi aplicada |
 |---|---|---|
+| Hospedagem (v2.4) | AWS `sa-east-1` gerenciada, com certificações do provedor exigidas em edital (ISO 9001, 27001, 27017, SOC 1, SOC 3); nenhum dado, réplica ou backup fora da região. Antes prevista para 30/10/2026; desbloqueia P0.27–P0.29 e o P1.2 com dado real | ADR-0011 (aceito); P0.26–P0.28; M2 |
+| POC e editais (v2.4) | Passam a ser escopo, com trilha no P4 e licitações em 2028; revogada a linha "Fora do escopo: POC, editais" do diário §1 | ADR-0023 a ADR-0028; §2.2; P0.30, P0.44, P1.25, P2.20, P3.22, P3.23; trilha de editais no P4 |
 | Valores HSL de Azul Água e Verde Água | Proposta de MARCA-E-TEMAS §4.2 aprovada, nos modos claro e escuro; ajustes finos permitidos depois de ver as telas, mantendo o teste de contraste | ADR-0017; MARCA-E-TEMAS §4.2; P0.37 |
 | Duração da carência antes da eliminação de dados de tenant | 30 dias contados do fim do contrato, para o cliente baixar a exportação e contestar. O RNF-42 passa a exigir eliminação concluída e certificado de descarte em até 30 dias após o fim da carência, ou seja, até 60 dias do fim do contrato. Complementada na v2.3 pela regra da contestação (abaixo) | RNF-42; ADR-0015; ADR-0018; CENTRAL-ZIIP §6.3; PARAMETROS G6; P1.6, P3.16 |
 | Quem executa suspensão, bloqueio e eliminação | Suspensão e bloqueio: `PLATFORM_OWNER` ou `PLATFORM_FINANCE`, este só por inadimplência contratual; eliminação: só `PLATFORM_OWNER`. Sempre uma pessoa com MFA, step-up, justificativa e auditoria; sempre manual, com aviso prévio; suspensão deixa o backoffice só leitura e mantém portal, Pix, retornos e 2ª via | ADR-0018; ADR-0019; CENTRAL-ZIIP §2 e §6.2; P0.43, P1.6, P2.12 |
@@ -208,7 +258,7 @@ Duas histórias: **core** (`public`, uma vez por banco) e **tenant** (uma por sc
 | `V4_2` / `V4_3`, `V4_4` | billing | tarifa social / ciclo, modelos de conta | reservadas, P1 / P2 |
 | `V4_5` | `sigsan-fiscal` | tributos com vigência (CBS/IBS) e motor fiscal: certificados, séries, documentos, eventos, lotes | reservada, P1 |
 | `V6_2`; `V8_1`, `V9_1` | collection; portal, field | conciliação, Pix; protocolo; OS e bloqueios | reservadas, P3 |
-| `V7_x`, `V10_x`, `V12_x`, `V13_x` | integration, dunning, GRS, GIS | SINISA; cobrança; DMR; incidente | P4/2028, sequência global |
+| `V7_x`, `V10_x`, `V12_x`, `V13_x` | integration, dunning, GRS, GIS | SINISA, e-Sfinge e conectores de ERP (ED-33, ED-62); cobrança, negativação e protesto (P4.1, ED-30); DMR; GIS web, edição, manobras e acesso QGIS (ED-52 a ED-55) e incidente | P4 (trilha de editais) e 2028, sequência global |
 | `V11_x` | events | outbox por tenant | substituída por core `V8` (ADR-0014: uma outbox por banco) |
 
 **Reservas novas**
@@ -230,9 +280,11 @@ Duas histórias: **core** (`public`, uma vez por banco) e **tenant** (uma por sc
 | core `V9_5` | core | `platform.document_acceptance`; `support.release_note_view` | P1.24 |
 | core `V10` | core | `job_runs` e travas por (tenant, ciclo) | P2.1 |
 | core `V10_1` | core | contrato SaaS no schema `platform`: contrato (com a política de SLA), aditivo, empenho, reajuste, fatura, pagamento, referências aos documentos da fatura e da NFS-e | P2.12–P2.14 |
-| core `V10_2` | core | `support.sla_policy`, `csat_response`; prazos e pausa no chamado | P2.15 |
+| core `V10_2` | core | `support.sla_policy` (com as cinco severidades do nível Setor Público, ADR-0025: prazo de solução, aderência e multa; matriz impacto × criticidade), `csat_response`; prazos e pausa no chamado | P2.15 |
 | core `V10_3` | core | `support.access_consent`, `assisted_access_session` (tipo `CONSENTED` ou `EMERGENCY`; na emergência, referência ao incidente no lugar do consentimento) | P3.17 |
 | core `V10_4` | core | `support.status_component`, `status_incident`, `status_update`, `maintenance_window` | P3.18 |
+| core `V10_5` | core | período de consulta somente leitura pós-contrato no ciclo de vida do tenant (início, fim, usuários), antes da carência (ADR-0025) | P3.16 |
+| core `V11` | core | instância dedicada no catálogo (modo de isolamento e ambiente, ADR-0024); configuração do app do cliente por tenant (identificador do app, contas de loja, versão publicada, ADR-0026) | ED-04, ED-39 |
 | `V1_5` | platform | `parameter_versions` (vigência com EXCLUDE, quem propõe ≠ quem aprova), `parameter_acceptances`, `regulatory_profiles`, `holidays` | P0.19 |
 | `V1_6` | platform | `personal_data_access_log`; cota de busca por documento | P0.11 |
 | `V1_7` | platform | `user_preferences` (modo e padrão de tema do usuário) | P1.18 |
@@ -241,11 +293,29 @@ Duas histórias: **core** (`public`, uma vez por banco) e **tenant** (uma por sc
 | `V3_6` | registry | R2: `customer_types`, `property_profiles`, endereço, `block_faces`, rascunhos | P1.3 |
 | `V4_6` | billing | partição de `bills`/`bill_items`; auditoria por lote; CHECK de total com tributo | P2.3, P2.5 |
 | `V4_7` | `sigsan-fiscal` | NFAg-e e NFS-e avulsa: leiaute, contingência, inutilização | P2.6, P3.6 |
+| `V4_8` | billing | ajustes de conta: versão da conta retificada, operação, motivo (catálogo), anotação, aprovação, vínculo com o protocolo quando houver | P2.20 |
+| `V15_1` | reporting | definições, execuções e agendamentos de relatório; views de relatório por domínio | P3.22 |
 | `V5_3` / `V5_4` | metering | tarefas e importação de leitura / partição de `meter_readings`, chave de idempotência | P2.7 / P2.3 |
 | `V6_3` | collection | partição de `payments`; `pix_inbox` | P3.2 |
 | `V8_2` | portal | vínculo da conta do consumidor (`sub` do realm `ziipsan-portal`) com a matrícula: método de comprovação, data, revogação; hash do código de vinculação por imóvel; tentativas de vinculação | P3.20 |
 | `V14_1`, `V14_2` | importação de legado | lotes, staging, conciliação; histórico de 120 meses | P1.2, P2.10 |
 | `V14_3` | importação de legado | lotes de XML autorizados anteriores ao go-live, resultado da validação (assinatura, protocolo, emitente, duplicidade) e origem do documento | P2.19 |
+
+**Faixas dos módulos novos (v2.4).** A trilha de editais começa depois da P3.12; suas migrations de tenant usam a
+sequência global a partir de `V100`, com o módulo no nome. A faixa abaixo identifica o módulo (prefixo do nome do
+arquivo, como `V1nn__accounting_chart_of_accounts.sql`, e catálogo de módulos) e só vale como número de versão se
+alguma tabela precisar entrar antes da P3.12. `V4_8` e `V15_1` entram como faixa se a P2.20 e a P3.22 forem
+concluídas antes da P3.12; senão, pela sequência global. Os metadados do Superset ficam em banco próprio, fora do
+Flyway do produto; as roles e views de BI por tenant (ADR-0027) entram pela faixa `reporting`.
+
+| Faixa | Módulo | Conteúdo | Entregas |
+|---|---|---|---|
+| `V15_x` | `reporting` (relatórios e BI) | definições e agendamentos de relatório, views por domínio, roles de BI por tenant e mapeamento role → tenant, catálogo de indicadores, metas e fechamentos | P3.22; ED-46 a ED-49 |
+| `V16_x` | `accounting` (contabilidade) | plano de contas, rubricas, regras evento → lançamento, lançamentos, fechamento congelado, exportação diária | ED-32, ED-61 (rubricas) |
+| `V17_x` | `active_debt` (dívida ativa) | notificação, inscrição, livro, CDA, parcelamento da dívida ativa, saldo mensal | ED-31 |
+| `V18_x` | `omnichannel` | canais, conversas, mensagens, filas, transbordo, sessões do bot, consentimentos por canal, senhas e painel de chamada | ED-40 a ED-43 |
+| `V19_x` | `quality` (qualidade e laboratório; amplia `V2_1`, `V2_9`) | catálogo normativo versionado, plano de amostragem, cadeia de custódia, boletins, conformidade, laboratório e calibração (17025), exportação SISAGUA | ED-50, ED-51 |
+| `V20_x` | `erp` (`inventory`, `purchasing`, `fleet`, `hr`, `budget`) | estoque e movimentações, compras, veículos e abastecimento, equipes e lotação, dotações | ED-58 a ED-61 |
 
 `current_tenant_id()` como SQL STABLE (17:M10) não é migration: a função é de `sigsan_owner` e nasce no init de
 segurança (`infra/postgres/init/sql/security.sql`); o migrador não pode redefini-la, por desenho. Nos bancos existentes,
@@ -267,8 +337,8 @@ neste plano com `sigsan` (`commercial/sigsan-fiscal`, `sigsan_worker`, `sigsan.f
 ### P0 — Plataforma operável · 13/10–27/11/2026
 
 Objetivo: ambiente fora do Drive, código renomeado para `ziipsan`, artefato implantável com versão gerada, marca e
-temas, altos e médios de segurança, parâmetros do tenant e, se a hospedagem for decidida a tempo, homologação e
-produção com PITR e R1.
+temas, altos e médios de segurança, parâmetros do tenant e, com a hospedagem decidida (ADR-0011, AWS `sa-east-1`),
+homologação e produção com PITR e R1; kit de habilitação iniciado.
 
 | # | Tarefa | Origem | Tam. | Dep. | Aceite |
 |---|---|---|---|---|---|
@@ -298,11 +368,11 @@ produção com PITR e R1.
 | P0.23 | Carga inicial | 17:O4, ADR-0012 | M | P0.8 | k6 ou Gatling noturno, 20 mil ligações sintéticas; p95 contra o RNF; regressão > 15% no p95 falha (RNF-70) |
 | P0.24 | Modelagem de ameaças (STRIDE) | 17 §7 | P | P0.14 | API, BFF, worker, webhook e importador com controle ou tarefa |
 | P0.25 | Dívidas da execução; SINIR em modo assistido | diário §18, ADR-0004 | P | — | sem `ObjectMapper` do Jackson 2 em collection; `SinirIntegrationService` removido ou desligado sem caminho de chamada; `grantConsent` sem versão manual |
-| P0.26 | Decisão de hospedagem | ADR-0011 | P | — | ADR-0011 aceito: provedor, região brasileira, banco, cofre, custo |
-| P0.27 | Homologação e produção com IaC | 17:X1, 17:O2 | G | P0.26 | sem segredo no state; deploy pelo pipeline; produção com aprovação manual; rollback exercitado |
-| P0.28 | HA, backup e PITR; R1 (cofre e chaves) | 17:X2, R1 | G | P0.26 | PITR com RPO ≤ 15 min e RTO ≤ 4 h medidos; core `V6`; `TenantKeyProviderContract` verde no cofre; rotação; backup da KEK |
+| P0.26 | Decisão de hospedagem e tabela de custo | ADR-0011, ED-03 | P | — | decisão cumprida em 12/10/2026 (ADR-0011 aceito: AWS `sa-east-1` gerenciada); falta: tabela de custo mensal para a capacidade da ARQUITETURA-ALVO §6, para o piloto e para o dimensionamento mínimo dos primeiros tenants; versões de PostGIS, `pg_trgm`, `unaccent` e `pg_partman` conferidas no RDS for PostgreSQL 17; relatórios de certificação (ISO 9001, 27001, 27017, SOC 1, SOC 3) com escopo em `sa-east-1` baixados do AWS Artifact para o kit (P0.44) |
+| P0.27 | Homologação e produção com IaC na AWS `sa-east-1` | 17:X1, 17:O2, ADR-0011, ADR-0024, ED-03, ED-04 | G | P0.26 | sem segredo no state; deploy pelo pipeline; produção com aprovação manual; rollback exercitado; IaC parametrizada de modo que uma instância dedicada ou o ambiente de demonstração (P3.23) sejam mais um ambiente; detecção de ameaças, inspeção de vulnerabilidades e registro de configuração do provedor ativos (TR-091, TR-092, TR-096) |
+| P0.28 | HA, backup e PITR; R1 (KMS e chaves) | 17:X2, R1, ADR-0011 | G | P0.26 | RDS PostgreSQL 17 Multi-AZ com réplica de leitura; PITR com RPO ≤ 15 min e RTO ≤ 4 h medidos; cópia de snapshots em outra conta na mesma região, com política de expiração; nenhum backup nem réplica fora de `sa-east-1`; core `V6`; `TenantKeyProviderContract` verde sobre o KMS; rotação; forma de atender ao backup da KEK registrada; contexto de tenant local à transação e PgBouncer em modo transaction |
 | P0.29 | Keycloak de produção | 17:O3 | M | P0.27 | `start --optimized`, TLS, `sslRequired=all`, 2 réplicas |
-| P0.30 | Escolha do piloto | ADR-0001 | P | — | termo de intenção, acesso ao legado, acordo de tratamento de dados e critério de divergência do go-live |
+| P0.30 | Escolha do piloto | ADR-0001, ADR-0023 | P | — | termo de intenção, acesso ao legado, acordo de tratamento de dados e critério de divergência do go-live; critério de editais (ADR-0023, item 3): prestadora de água pública em Santa Catarina, contratação por dispensa (Lei 14.133, art. 75, II) ou CPSI (LC 182/2021) e cláusula de emissão de atestado após os ciclos em produção, com ligações e e-Sfinge registrados; escolha fora desse critério só com justificativa no diário |
 | P0.31 | Comunicação aos clientes-alvo | G0 (v1) | P | — | até 23/10/2026: o que entra em cada fase e o que segue no legado |
 | P0.32 | Esqueleto fiscal | ADR-0003 | M | — | `commercial/sigsan-fiscal`; vetores do C# passam no Java; sem `production-allowed` não há `tpAmb=1` |
 | P0.34 | Pacote de marca | ADR-0016 | M | P0.33, P0.5 | `branding/ziipsan` validado por schema no CI (SVG com `script` recusado); `BrandProvider`; plugin do Vite; `GET /api/v1/public/brand`; `check-brand-literals.sh` no `ci.sh` falha com literal de marca fora do pacote |
@@ -315,9 +385,11 @@ produção com PITR e R1.
 | P0.41 | Changelog do cliente | ADR-0021 | P | P0.3 | esquema de `content/release-notes/<version>.yaml` validado; commit marcado como segurança, legislação ou parâmetro regulatório sem item bloqueia a release (teste do CI) |
 | P0.42 | Registro de implantação e Sobre mínimo | ADR-0021 | P | P0.6, P0.39 | core `V5_1`; o `migrate` grava `platform.deployment`; `GET /api/v1/about` devolve versão, commit, ambiente e data gravada |
 | P0.43 | Papéis de plataforma | ADR-0018, ADR-0007 | P | P0.13, P0.15 | `PLATFORM_OWNER`, `PLATFORM_OPS`, `PLATFORM_SUPPORT` e `PLATFORM_FINANCE` no realm; matriz de permissões de CENTRAL-ZIIP §2 com teste por papel; rota `/api/v1/platform/*` sem `amr` → 403 `mfa-required`; token com `tenant_id` recusado em rota de plataforma |
+| P0.44 | Kit de habilitação, INPI e escrituração, fora do caminho crítico | ADR-0023 item 6, ED-02 | P | P0.26 | empresa licitante definida, com CNAE compatível; contador contratado e escrituração dos exercícios de 2026 e 2027 em curso (balanço de dois exercícios exigido nas licitações de 2028); pedido de registro do programa no INPI protocolado; e-CNPJ; lista de certidões do 18h §2.2 com data de validade e rotina de renovação; relatório de certificações do provedor arquivado; cláusula-padrão de licença das customizações (sem cessão de direitos) redigida |
 
 P0.33 vem logo depois da P0.1: as demais tarefas de código do P0 dependem dela (dependência implícita, não repetida
-na coluna). P0.27–P0.29 só começam depois da P0.26. A regra pura do R3 pode começar no P0, em paralelo.
+na coluna). Com o ADR-0011 aceito em 12/10/2026, a P0.26 fica reduzida à tabela de custo e às conferências, que
+podem correr junto da P0.27; P0.27–P0.29 não esperam mais decisão. A regra pura do R3 pode começar no P0, em paralelo.
 
 **Códigos de problema na P0.33** (decisão do dono do produto, 12/10/2026, §2.4). Lista dos códigos emitidos hoje,
 conferida em `ApiException.java`, `GlobalExceptionHandler.java`, `ProblemResponses.java`, `JwtTenantFilter.java`,
@@ -347,11 +419,11 @@ nasce em inglês, em minúsculas com hífen, e entra no catálogo de erros expli
 ### P1 — Migração e satélite · 30/11/2026–29/01/2027
 
 Objetivo: cadastro do piloto importado e conciliado; R2, R3, console e Central Ziip v0, outbox, marca do tenant,
-ajuda e chamados v0.
+ajuda e chamados v0; roteiros internos de POC e primeiro ensaio registrado.
 
 | # | Tarefa | Origem | Tam. | Dep. | Aceite |
 |---|---|---|---|---|---|
-| P1.1 | Discovery do legado | 17:X5 | M | P0.30 | dicionário, mapeamento campo a campo e volumes aprovados pelo piloto |
+| P1.1 | Discovery do legado | 17:X5, ADR-0028 | M | P0.30 | dicionário, mapeamento campo a campo e volumes aprovados pelo piloto; quantidade de optantes de débito automático e leiaute bancário em uso registrados (se houver optantes, a parte FEBRABAN 150 da ED-27 sobe para o P3) |
 | P1.2 | Importador v0 do cadastro com conciliação | 17:X5 | G | P1.1, P1.4, P0.28 | `V14_1`; reimportação não duplica; totais por setor e rota iguais ao legado; dado real só em produção |
 | P1.3 | R2: cadastro completo | R2 (v1) | G | — | `V3_6`; cliente cadastrado pela tela; rascunho e `validate-step`; CEP; CSV |
 | P1.4 | Matrícula por sequência | 17:M9 | P | — | `V3_5`; dois lotes paralelos sem espera, sem lacuna nem duplicata |
@@ -375,11 +447,12 @@ ajuda e chamados v0.
 | P1.22 | Catálogo de erros explicados | ADR-0020 | P | P1.21 | teste falha se um código `urn:ziipsan:problem:*` não tiver explicação |
 | P1.23 | Chamados v0 e fila na Central | ADR-0020 | G | P1.9, P1.17, P1.20 | core `V9_4`; protocolo `SUP-AAAA-NNNNNN`; conversa, estados e notificações pela outbox; usuário de outro tenant recebe 404; e-mail sem conteúdo nem anexo; formulário orienta a não anexar dado pessoal e marca `contains_personal_data` |
 | P1.24 | Sobre completo e novidades por usuário | ADR-0021 | M | P0.34, P0.41, P0.42 | core `V9_5`; Sobre com marca, versão, documentos com versão vigente e aceita (`platform.document_acceptance`) e licenças; novidades uma vez por versão por usuário, com estado no servidor |
+| P1.25 | Roteiros internos de POC, matriz viva e modelos jurídicos | ADR-0023, ADR-0028, ED-01 | P | — | roteiro da VISAN (81 itens, forma de demonstração de cada um) e do SAMAE (lista crítica com subitens e itens sorteáveis) versionados no repositório, cada item ligado a requisito, ED, tarefa e fase; matriz viva criada a partir de 18d–18h no formato do consolidado 18 §7, conferida no CI; modelos de pedido de esclarecimento e de impugnação para os itens do consolidado 18 §6 (no mínimo TR-286, TR-415, SG-398 e TR-494); licença de uso comercial do ODA File Converter conferida; primeiro ensaio (fim do P1) registrado no diário, sem meta |
 
 ### P2 — Ciclo de faturamento · 01/02–26/03/2027
 
-Objetivo: ciclo completo em homologação com NFAg-e, dentro das metas de carga; cobrança por contrato e área do
-tenant prontas antes do primeiro contrato.
+Objetivo: ciclo completo em homologação com NFAg-e, dentro das metas de carga, com retificação e manutenção de conta;
+cobrança por contrato e área do tenant prontas antes do primeiro contrato.
 
 | # | Tarefa | Origem | Tam. | Dep. | Aceite |
 |---|---|---|---|---|---|
@@ -397,13 +470,17 @@ tenant prontas antes do primeiro contrato.
 | P2.12 | Cobrança do SaaS por contrato, antes do primeiro contrato | ADR-0019 | G | P1.6, P1.17 | core `V10_1`; contrato com aditivos, empenhos, reajuste (só proposta até o apostilamento), faturas e pagamentos conciliados; alertas do item 7; restrição manual por uma pessoa com MFA, step-up e justificativa, executada por `PLATFORM_FINANCE` ou `PLATFORM_OWNER`, com motivo inadimplência contratual ligado a fatura vencida e ao aviso prévio registrados (sem eles, recusada); teste prova que nenhum caminho de código bloqueia tenant sozinho |
 | P2.13 | NFS-e da venda pelo motor portado | ADR-0019, ADR-0003 | M | P1.8, P2.12 | contexto fiscal da plataforma definido; fatura gera NFS-e na produção restrita |
 | P2.14 | Área do tenant: contrato com o Ziip | ADR-0022 | M | P2.12, P2.13 | tenant vê faturas e pagamentos do próprio contrato e baixa a fatura paga e a NFS-e em PDF e XML; outro tenant → 404; XML idêntico ao autorizado (hash conferido); acesso auditado |
-| P2.15 | SLA de suporte por contrato e CSAT | ADR-0020 | M | P1.23, P2.12 | core `V10_2`; política referenciada no contrato; prazo bate com casos de feriado municipal e pausa; alerta a 80% e no estouro; relatório mensal de FRT, MTTR, SLA e CSAT na Central |
+| P2.15 | SLA de suporte por contrato e CSAT; severidades do nível Setor Público | ADR-0020, ADR-0025, ED-05 | M | P1.23, P2.12 | core `V10_2`; política referenciada no contrato; prazo bate com casos de feriado municipal e pausa; alerta a 80% e no estouro; relatório mensal de FRT, MTTR, SLA e CSAT na Central; política com cinco severidades (S1–S5) por impacto × criticidade, cada uma com prazo de primeira resposta, prazo de solução, meta de aderência e multa do contrato (casos de Videira, 2/4/6/16/32 h úteis, e do SAMAE, 2/4/16/72/160 h, testados) |
 | P2.16 | Rejeições fiscais no catálogo de erros; novidades filtradas por tenant | ADR-0020, ADR-0021 | P | P1.22, P1.24, P2.6 | todo código de rejeição da NFAg-e (leiaute vigente) e da NFS-e com explicação (teste); novidade cujo `affects` não inclui o tenant não aparece |
 | P2.17 | Marca do tenant e metadados nos PDFs | ADR-0016 | P | P1.19, P2.5 | conta e documentos com nome, logo e rodapé do tenant e metadados do `BrandProvider`; regras de contraste de MARCA-E-TEMAS §3.4 |
 | P2.18 | XML autorizado em armazenamento com retenção imutável | ADR-0003, ADR-0022 | P | P2.6, P0.27 | cópia com bloqueio de retenção e hash na `HashChain`; apagar ou sobrescrever é recusado; leitura confere o SHA-256 |
 | P2.19 | Importador: documentos anteriores ao go-live | ADR-0022, 17:X5 | M | P2.10, P2.18 | `V14_3`; importa os XML autorizados que o piloto entregar (sistema antigo ou emissor usado no intervalo), recusando os de assinatura inválida, sem protocolo de autorização, de outro emitente ou repetidos, com relatório por lote; aceitos vão para o armazenamento imutável da P2.18 com o hash e a origem (`LEGACY_IMPORT`), sem alteração do arquivo; o PDF das contas antigas sai sob demanda dos dados importados pela P2.10, com a indicação de que foi gerado a partir do histórico importado; contagem por competência conferida com o legado |
+| P2.20 | Retificação e manutenção de conta pelo backoffice | ED-21 (18e-E1, 18f-ENT-15) | G | P2.5, P2.6, P1.11 | `V4_8`; operações: cancelar, alterar vencimento, alterar leitura, consumo e serviços, recalcular por mudança de cadastro, retirar água ou esgoto, crédito avulso, "pagamento a confirmar", emitir fora do lote, 2ª via e espelho; motivo de catálogo e anotação obrigatórios, aprovação conforme parâmetro; cada operação gera nova versão da conta sem apagar a anterior, com trilha por campo (valor anterior e posterior, usuário, data); NFAg-e cancelada ou substituída conforme o leiaute, testado na homologação da SEFAZ; repetição com a mesma `Idempotency-Key` não duplica; casos POC-49 e POC-50 da VISAN passam no ensaio (registro pelo protocolo quando a P3.4 existir); portal e relatórios mostram a versão vigente |
 
 ### P3 — Pronto para operar · 29/03–28/05/2027
+
+Objetivo: arrecadação, portal, R7 mínimo, pentest, contrato e operação; relatórios operacionais para o paralelo;
+ambiente de demonstração e primeiro ensaio de POC com meta no aceite.
 
 | # | Tarefa | Origem | Tam. | Dep. | Aceite |
 |---|---|---|---|---|---|
@@ -421,32 +498,34 @@ tenant prontas antes do primeiro contrato.
 | P3.12 | Fim do `outOfOrder` | 17:D1, G10a | P | P1.14 | sequência global a partir de `V100`; CI recusa versão ≤ maior publicada |
 | P3.13 | Plano de paralelo e de corte | ADR-0001 | P | P0.30 | critérios e plano de volta aprovados pelo piloto |
 | P3.14 | Spring Boot na linha com suporte | D4 | M | — | atualizado antes de 31/07/2027 |
-| P3.15 | Central Ziip completa | ADR-0018 | G | P2.11, P3.1, P3.2, P3.11 | abas Arrecadação, Pix, LGPD, Regulatório, Infraestrutura com SLO, Radar e Suporte; falha provocada alerta; kit de evidências com hash na trilha |
-| P3.16 | Ensaio de saída de tenant sintético | ADR-0018, ADR-0015, RNF-42 | M | P1.6, P0.28 | exportação em até 15 dias; carência de 30 dias contada do fim do contrato, com download da exportação e contestação registradas; eliminação agendada só por `PLATFORM_OWNER` com MFA e cancelável durante a carência; execução antes do fim da carência recusada (teste); contestação registrada na carência suspende a execução, e a resposta do Ziip sai em até 15 dias, com alerta na Central antes do vencimento (teste com relógio); ordem judicial registrada suspende a execução enquanto vigorar (teste); crypto-shredding; eliminação concluída e certificado emitido em até 30 dias após o fim da carência ou da resposta à última contestação, o que ocorrer depois, no máximo 75 dias do fim do contrato (60 sem contestação); certificado com hashes, expiração de backups e de cópias imutáveis e a exceção dos chamados |
+| P3.15 | Central Ziip completa | ADR-0018, ADR-0025 | G | P2.11, P3.1, P3.2, P3.11 | abas Arrecadação, Pix, LGPD, Regulatório, Infraestrutura com SLO, Radar e Suporte; falha provocada alerta; kit de evidências com hash na trilha; relatório mensal por contrato de disponibilidade (meta de 99,9% no nível Setor Público) e de aderência por severidade, com o cálculo da multa |
+| P3.16 | Ensaio de saída de tenant sintético | ADR-0018, ADR-0015, RNF-42, ADR-0025 | M | P1.6, P0.28 | exportação em até 15 dias (10 dias úteis no nível Setor Público), em CSV, JSON ou XML, com manifesto, hash e dicionário de dados gerado do schema; no nível Setor Público, período de consulta somente leitura pós-contrato (core `V10_5`) pelo prazo do contrato, até 120 dias, antes da carência, com escrita recusada (teste) e a carência contada do fim da consulta; carência de 30 dias contada do fim do contrato, com download da exportação e contestação registradas; eliminação agendada só por `PLATFORM_OWNER` com MFA e cancelável durante a carência; execução antes do fim da carência recusada (teste); contestação registrada na carência suspende a execução, e a resposta do Ziip sai em até 15 dias, com alerta na Central antes do vencimento (teste com relógio); ordem judicial registrada suspende a execução enquanto vigorar (teste); crypto-shredding; eliminação concluída e certificado emitido em até 30 dias após o fim da carência ou da resposta à última contestação, o que ocorrer depois, no máximo 75 dias do fim do contrato (60 sem contestação); certificado com hashes, expiração de backups e de cópias imutáveis e a exceção dos chamados |
 | P3.17 | Acesso assistido com consentimento e acesso de emergência | ADR-0020 | M | P1.23, P0.43, P3.10 | core `V10_3`; sem consentimento → negado e auditado; revogação encerra a sessão em até 1 min; revelar documento e exportar bloqueados; cada requisição no `audit_log` do tenant com o id do consentimento. Emergência: sem incidente de segurança declarado, sem `PLATFORM_OWNER` ou sem reautenticação com MFA no momento → negado e auditado; qualquer escrita → 403; aviso ao tenant enviado pela outbox em até 24 h (teste com relógio); cada requisição no `audit_log` do tenant e em `audit_event` com o id do incidente, e a sessão no registro do incidente |
 | P3.18 | Página pública de status | ADR-0020, RNF-54 | M | P0.27, P3.11 | core `V10_4`; hospedagem separada da produção; status muda sozinho com a sonda fora; janela de manutenção publicada com 72 h |
 | P3.19 | Retenção, expurgo e exportação de chamados | ADR-0020 | P | P1.23, P2.12 | `purge_at` = fim da vigência do contrato mais 5 anos; ensaio de expurgo com contagem; chamados na exportação de fim de contrato; RIPD do módulo atualizado; manual de atendimento |
 | P3.20 | Portal do consumidor: vínculo, histórico de 120 meses e documentos | ADR-0022 | G | P3.3, P2.6, P2.8, P2.10, P2.18, P2.19 | tenant `V8_2`; vínculo pelo código de vinculação da conta mais o CPF/CNPJ do titular, comparado pelo índice cego; resposta igual para matrícula inexistente, código errado e documento errado; tentativas limitadas por conta, IP e tenant, com bloqueio progressivo, registro e alerta de volume (ADR-0008); uma conta com vários imóveis; troca de titularidade revoga o vínculo e invalida o código; contas e pagamentos de 120 meses numa só lista, com a origem de cada documento (emitido pelo Ziip SAN, importado do sistema anterior ou do emissor do intervalo); conta paga com quitação, DANFAG em PDF e XML original; consumidor só vê matrículas vinculadas (teste com dois titulares e troca de titularidade); XML com hash igual ao gravado; todo download no `personal_data_access_log`; excesso → 429; PDF com marca do tenant e estrutura marcada; axe sem violação `serious` ou `critical` |
 | P3.21 | Marca do tenant no portal e nos e-mails | ADR-0016 | P | P1.19, P3.3, P3.5 | portal e e-mails com nome, logo e cor do tenant; atribuição "operado com" conforme o pacote |
+| P3.22 | Relatórios operacionais nativos: núcleo e cerca de 20 relatórios | ADR-0027, ADR-0025 (RNF-71), ED-45 | G | P0.28, P2.1, P2.5, P2.7, P2.20, P3.1, P3.4 | `V15_1`; núcleo declarativo sobre views, com filtros, ordenação, agrupamento, exportação PDF, XLSX e CSV, agendamento pelo `worker` e permissão por papel; leitura na réplica do RDS (sem ela, no primário com `statement_timeout`); relatórios: arrecadação diária (POC-58), pagamentos não identificados, em duplicidade (POC-59) e por data de remessa, pagamento, crédito e banco (POC-60), situação da importação do retorno, faturamento sucinto e detalhado por categoria e faixa, fechamento do ciclo por grupo, contas emitidas, canceladas e retificadas, leituras retidas e ocorrências de leitura, histograma de consumo por faixa (POC-56), ligações e economias por situação e categoria, valores a receber por tipo de unidade (POC-57), pendências por usuário (POC-65), aptos ao corte e notificações emitidas, serviços por protocolo com tempos (POC-64), tarifa social e isenções, NFAg-e autorizadas, rejeitadas e em contingência; cada relatório com teste de conteúdo sobre massa sintética; gerado em até 2 min na massa da P2.9 (RNF-71); usados no paralelo (GL.2) |
+| P3.23 | Ambiente de demonstração permanente e ensaio de POC do P3 | ADR-0023, ED-01 | M | P0.23, P0.27, P1.25, P2.9 | ambiente separado de homologação e produção, criado pela IaC da P0.27; tenant de demonstração com pelo menos 10 mil unidades fictícias geradas pela massa sintética, sem dado pessoal real (documentos gerados marcados como sintéticos; teste no gerador); recriação do zero por script, com tempo medido; ensaio cronometrado com o prazo de preparo dos editais (5 e 7 dias úteis), resultado por item registrado na matriz viva; **meta do P3:** pelo menos 50 de 162 pontos no roteiro da VISAN e seções 2.4 e 2.5 do SAMAE sem falha; relatório de cobertura (requisito → tarefa → teste → item de roteiro) anexado ao aceite |
 
 ### Go-live piloto · 01/06–30/07/2027
 
 | # | Tarefa | Origem | Tam. | Dep. | Aceite |
 |---|---|---|---|---|---|
 | GL.1 | Carga final do legado | 17:X5 | M | P2.10, P2.19 | conciliação assinada pelo piloto; XML autorizados até o corte importados pela P2.19, com o relatório de recusas aceito pelo piloto |
-| GL.2 | Dois ou três ciclos de faturamento paralelo, conta a conta | ADR-0001 | G | GL.1 | divergência dentro do critério da P0.30, toda explicada; sem emissão fiscal de produção |
+| GL.2 | Dois ou três ciclos de faturamento paralelo, conta a conta | ADR-0001 | G | GL.1, P2.20, P3.22 | divergência dentro do critério da P0.30, toda explicada; sem emissão fiscal de produção; divergências corrigidas pela P2.20 e conferidas pelos relatórios da P3.22 |
 | GL.3 | Restauração da produção | 17:X2 | P | P0.28 | dentro do RTO, antes do corte |
 | GL.4 | Corte do legado | ADR-0001 | P | GL.2, GL.3 | decisão formal; emissão fiscal ligada com aprovação dupla |
 
-### P4 · 02/08–17/12/2027
+### P4 · 02/08–17/12/2027 (tarefas da v2.3) e trilha de editais · a partir de 02/08/2027
 
 | # | Tarefa | Origem | Tam. | Dep. | Aceite |
 |---|---|---|---|---|---|
-| P4.1 | R8: cobrança, sem negativação | R8 (v1) | G | P3.4 | parcelamento com demonstrativo; contestação bloqueia corte |
-| P4.2 | R6: SINISA assistido | R6 (v1), ADR-0004 | M | P2.5 | arquivo oficial; valor manual com justificativa; casos da v1 (água não faturada 3.000 m³; ILI) |
-| P4.3 | BI e prestação de contas em réplica | 17 §5 | M | P0.28 | relatórios fora do primário |
-| P4.4 | App de leitura offline (PWA) | 17:P3 | G | P2.3 | sincronização com chave de idempotência |
-| P4.5 | R5c: Pix Automático | R5 (v1) | M | P3.2 | cobrança recorrente no PSP do piloto |
+| P4.1 | R8: cobrança; negativação e protesto na ED-30 | R8 (v1) | G | P3.4 | parcelamento com demonstrativo; contestação bloqueia corte |
+| P4.2 | R6: SINISA assistido | R6 (v1), ADR-0004 | M | P2.5 | arquivo oficial; valor manual com justificativa; casos da v1 (água não faturada 3.000 m³; ILI); base da ED-48 |
+| P4.3 | BI e prestação de contas em réplica, ampliada pelo ADR-0027 | 17 §5, ADR-0027 | G | P0.28, P3.22 | deixa de ser M: executada pelas ED-46 (catálogo restante de relatórios), ED-47 (Superset) e ED-49 (painéis padrão) da trilha; nenhum relatório nem consulta de BI no primário |
+| P4.4 | App de campo Android (Capacitor): base e leitura offline, redefinida pelo ADR-0026 (substitui o PWA) | 17:P3, ADR-0026, ED-18 | G | P2.3, P2.7 | aceite da ED-18; emissão simultânea (ED-19) e OS de campo (ED-20) em seguida |
+| P4.5 | R5c: Pix Automático | R5 (v1), ADR-0028 | M | P3.2 | cobrança recorrente no PSP do piloto; FEBRABAN 150 legado na ED-27 |
 | P4.6 | Schema compartilhado e banco dedicado | ADR-0005 | G | P1.14, P2.2 | só com demanda; mesmo teste de isolamento |
 | P4.7 | Restauração mensal automatizada | ADR-0012 | P | P0.28 | relatório mensal |
 | P4.8 | Suporte: resposta por e-mail, deflexão, assinatura de status, notas do tenant | ADR-0020 | G | P3.17, P3.18 | resposta por e-mail entra no chamado certo só de remetente verificado e sem anexo não varrido; deflexão cita artigo e transfere para humano; assinatura de status por e-mail |
@@ -454,8 +533,98 @@ tenant prontas antes do primeiro contrato.
 O R6 fica depois do alvo de 30/04/2027 da v1 porque, sem cliente em produção antes de junho de 2027, o primeiro envio
 assistido com dado do Ziip SAN é o do ano-base 2027; até lá o piloto envia pelo processo atual.
 
-**2028, sob demanda:** trilha GRS (D-MTR-1..7, DMR e SINIR assistidos, lista IBAMA, NBR 10004); R9 (incidente, N5, N1,
-N7, GIS); negativação; ISO 27001; instância dedicada; qualidade da água (Portaria 888).
+**2028, sob demanda:** trilha GRS (D-MTR-1..7, DMR e SINIR assistidos, lista IBAMA, NBR 10004); R9 sem o GIS (incidente,
+N5, N1, N7, perdas com entrada real); integração por API com birô de crédito e com a CENPROT; ISO 27001. Saíram desta
+lista para a trilha de editais do P4 (v2.4): GIS web, edição, migração do cadastro técnico e manobras, negativação e
+protesto por arquivo e qualidade da água (ADR-0028); instância dedicada (ADR-0024).
+
+### Trilha de editais (ADR-0023) · a partir de 02/08/2027
+
+Executa as entregas ED-01 a ED-62 do [consolidado 18](levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md) §5,
+na ordem das ondas: **A** (itens que pontuam nas alíneas b a p e r da VISAN ou são críticos no SAMAE nas áreas
+comercial, de campo e de suporte; e-Sfinge para a habilitação), **B** (canais digitais, BI, qualidade e GIS: VISAN q, s
+e t; SAMAE 2.22, 2.24, 2.26, 2.27 e "Item 0") e **C** (aderência total fora das POCs e serviços de implantação). Dentro
+de cada onda, primeiro o que é crítico no SAMAE e pontua na VISAN. Já estão em fases anteriores: ED-02 (P0.44), ED-03
+(P0.26–P0.28), ED-21 (P2.20), ED-45 (P3.22) e as partes de ED-01 (P1.25, P3.23) e de ED-05 (P2.15, P3.15, P3.16). A
+coluna "Tam." traz a escala do plano e, entre parênteses, a estimativa em semanas-pessoa do consolidado 18 §5.
+
+Esforço da trilha: onda A ≈ 106 semanas-pessoa; onda B ≈ 72; onda C ≈ 28; total ≈ 206 (≈ 48 meses-pessoa), contra
+cerca de 20 semanas do P4 com uma pessoa. O ritmo e a data da prontidão de POC dependem da decisão de equipe (§2.4;
+riscos, §6). Ensaio de POC ao fim de cada onda, com meta no aceite: **onda A**, pelo menos 120 de 162 pontos na VISAN e
+nenhuma falha no SAMAE nas seções 2.4 a 2.19, 2.28 e Item 3; **onda B**, a meta final da ED-01.
+
+**Onda A**
+
+| # | Tarefa | Origem | Tam. | Dep. | Aceite |
+|---|---|---|---|---|---|
+| ED-05 | Nível Setor Público: telefone, canal de contingência e plantão | 18h-E7, E9; ADR-0025 | P (0,5) | P2.15, P3.15, P3.16; decisão de equipe | telefone no Brasil e canal de contingência publicados e testados com a ferramenta de chamados fora do ar; escala de plantão para S1 definida; contrato-modelo do nível com as metas do ADR-0025; Item 3 do SAMAE sem falha no ensaio |
+| ED-06 | Controle de acesso de edital | 18h-E5 | G (3) | P0.13, P0.15, P0.43, P1.7 | bloqueio por tentativas e expiração de senha por tenant (POC-05 com 3 tentativas); federação LDAP/AD por organização no Keycloak, testada contra servidor de teste; perfis compostos de permissões criados pelo administrador do tenant (POC-04, POC-07); sessões ativas e trilha visíveis ao ADMIN do tenant; consulta da trilha por usuário (TR-128, SG-062); SAMAE 2.7 sem falha |
+| ED-07 | Monitoramento e alertas para o cliente | 18h-E6 | M (1) | P1.9, P1.17, P2.1, P3.5 | evento de negócio configurado pelo tenant gera alerta ao usuário (teste); painel de uso e desempenho do tenant; falha de lote notifica o responsável do tenant |
+| ED-08 | Compatibilidade técnica de edital | 18h-E12 | P (0,4) | P0.22, P1.12 | matriz E2E com Edge 88, Chrome 100 e Firefox 116; seletor de tamanho de página e "ir para página" sobre keyset (teste); nota técnica sobre gatilhos e linguagem no kit |
+| ED-12 | Cadastro comercial ampliado e catálogos auxiliares | 18d-E1, E2 | M (2) | P1.3, P1.20 | POC-08 a POC-11 passam; RG e filiação cifrados, com finalidade registrada; 22 catálogos da SAMAE 2.8.10 com CRUD genérico; endereço alternativo |
+| ED-13 | Ligações de água e esgoto | 18d-E3 | G (3) | P1.3, P3.4 | ligações 1:1 com o imóvel, com catálogos técnicos; consumo mínimo e situação lidos da ligação no ciclo (teste); alteração por OS no histórico; SAMAE 2.8 sem falha |
+| ED-14 | Hidrometria | 18d-E4 | G (3) | P2.5, P3.4, P1.20 | POC-12 a POC-14 passam (cadastro com lote, modelo, classe e lacre; instalação; retirada com destino disponível e sucata; reinstalação com histórico); alerta de validade gera OS em lote; SAMAE 2.9 sem falha |
+| ED-15 | Ciclo de leitura: complementos e autoleitura | 18d-E5 | M (2) | P2.5, P2.7, P3.3 | roteiro com reordenação; boletim de contingência; regra de condomínio configurável (SAMAE 2.10.10, nas duas modalidades); autoleitura pelo portal com crítica |
+| ED-16 | Recadastramento | 18d-E11 | G (3) | P4.4, P1.3 | lote, coleta no app de campo, aprovação campo a campo e aplicação, com os cinco relatórios |
+| ED-17 | Telemetria e supervisório por REST e arquivo | 18d-E10, 18g-E-AMR, E-SUP; ADR-0028 (j) | M (2) | P1.9, P2.3, P2.7 | API REST e importação de arquivo de leituras AMR (origem `TELEMETRY`) em tabela particionada sem auditoria por linha; alarmes persistidos de grandes consumidores; registro manual de paradas da ETA; nenhum broker (registro no ADR-0010) |
+| ED-18 | App de campo Android, base e leitura offline (é a P4.4) | 18d-E6; ADR-0026 | G (4) | P2.3, P2.7 | ADR de autenticação nos apps aceito antes do primeiro build; projeto Capacitor com build e assinatura Android no CI; APK instalável (TR-621); banco local cifrado; leitura offline de uma rota com sincronização idempotente (reenvio não duplica) e fotos por ocorrência |
+| ED-19 | Emissão simultânea e impressão térmica | 18d-E6, 18e-E6; ADR-0026 | G (6) | P4.4, P2.5, P2.6, P3.2 | conta calculada no aparelho igual à do servidor nos vetores do `TariffEngine` e da cascata de consumo (teste de equivalência); impressão em Zebra série ZQ por Bluetooth com leiaute do editor (ZPL e CPCL), código de barras e QR Pix; comunicados de débito e de excesso; retidas reenviadas e reimpressas; teste de cabeçote e bateria; envio a cada N imóveis configurável; contingência da NFAg-e definida; POC-15, POC-16 e POC-21 passam; SAMAE 2.11 sem falha |
+| ED-20 | OS em campo e acompanhamento de campo | 18f-ENT-05, 18d-E7; ADR-0026 | G (5) | P4.4, ED-36, ED-52 | app de OS offline com fotos, GPS e anexos; trilha GPS do leiturista e da equipe; painel com deslocamento, tempo e paradas no mapa; importação de materiais, funcionários e cadastros de consistência; POC-52 a POC-54 passam; SAMAE 2.18 sem falha |
+| ED-22 | Situações especiais de faturamento, usuário avulso e órgão centralizador | 18e-E2, 18f-ENT-16 | G (4) | P2.5, P1.3, ED-26 | POC-51 passa (não usuário regular com matrícula e fatura); faturas agrupadas e centralizadora com código único; isenção, contrato especial e conta final testados |
+| ED-23 | Revisão de consumo e desconto por vazamento | 18d-E9, 18e-E3 | G (4) | P3.4, P2.20, ED-20, P3.5 | POC-26 passa (duas revisões completas e duas faturas alteradas por vazamento); protocolo com fases, vistoria e laudo no celular, sem papel; SAMAE 2.12 e 2.12.5 sem falha |
+| ED-24 | Controle de fraudes e fiscalização | 18e-E4 | M (1) | ED-36, P2.20 | OS de fiscalização gerada por critério; fraude registrada com tipo, fotos e boletim; relatório de unidades com fraude |
+| ED-25 | Resíduos sólidos na conta | 18e-E15, 18g-E-RES | G (3) | P2.5, ED-22 | componente de resíduos no cálculo, com isenção, fatura desvinculada e carnê mensal ou anual; SG-324 e SG-325 no ensaio; SAMAE 2.13 sem falha |
+| ED-26 | Arrecadação ampliada | 18e-E7 | M (1) | P3.1, P2.1 | documento agrupador com quitação em cascata; fechamento mensal congelado; depósitos identificados e não identificados; VAN configurável |
+| ED-27 | Débito em conta: Pix Automático e FEBRABAN 150 legado | 18e-E8; ADR-0028 (f) | M (2) | P3.1, P4.5 | POC-29 passa: arquivo FEBRABAN 150 (registros B, C, E, F) para autorizações legadas e retorno processado; autorizações novas só por Pix Automático; data de desligamento do legado parametrizada conforme a regra vigente do Banco Central; relatórios de débito em conta. Sobe para o P3 se a P1.1 encontrar optantes no piloto |
+| ED-29 | Cobrança: complementos, corte e religação por nível | 18e-E9, 18f-ENT-04 | G (4) | P3.4, P4.1, ED-36 | POC-32 e POC-33 passam, com níveis de corte (cavalete, ramal, supressão) e religação de água e esgoto; geração de OS de corte fora da janela da Lei 14.015 recusada (teste); prioridade e cota diária; cartas de cobrança e de liberação de esgoto |
+| ED-30 | Negativação e protesto por arquivo | 18e-E10; ADR-0028 (g) | G (3) | P4.1, ED-31 | remessa ao birô e à central de protesto gerada e retorno importado; inclusão sem carta de aviso prévio com entrega registrada é recusada; baixa no prazo legal após a quitação (teste com relógio); relatório de inclusões e exclusões; SAMAE 2.15 sem falha |
+| ED-31 | Dívida ativa (núcleo) | 18e-E11; ADR-0028 (d) | G (4) | P2.20, ED-26, ED-29, ED-32 | POC-34 a POC-36 passam: inscrição individual e periódica, livro, CDA impressa, parcelamento de dívida ativa; saldo mensal congelado; arquivo e petição-modelo para a procuradoria |
+| ED-32 | Eventos contábeis e integração contábil | 18e-E12; ADR-0028 (e) | G (4) | P2.5, P3.1, P1.9, P2.1 | POC-37 a POC-40 e POC-66 a POC-68 passam; lançamentos gerados por fato, com fechamento mensal congelado; exportação diária ao sistema contábil por arquivo e pela ED-62; SAMAE 2.16.18 sem falha |
+| ED-33 | Remessa e-Sfinge assistida | 18e-E13; ADR-0028 (e) | G (3) | ED-31, ED-32 | remessa tributária gerada com as regras de consistência do leiaute vigente do TCE/SC, validada e baixada pelo cliente, com hash, versão do leiaute e retorno registrados; relatório de envio utilizável no atestado; em operação no piloto se ele for autarquia de SC |
+| ED-34 | Catálogo de serviços e serviços faturáveis | 18f-ENT-01, 18e-E5 | G (4) | P0.19, P3.4, P3.6, ED-32 | POC-41 passa (três tipos de serviço com todos os parâmetros) e POC-31 (parcelamento de serviço); tabelas de preço de serviços e materiais com vigência; cobrança lançada no encerramento da OS |
+| ED-35 | Atendimento completo | 18f-ENT-02 | G (3) | P3.4, P3.5, P1.20 | POC-47 e POC-48 passam: protocolo único por canal, visão 360 com faturas, consumos, serviços e análise de água; fila por prazo; SAMAE 2.19 sem falha |
+| ED-36 | OS completa no backoffice | 18f-ENT-03 | G (4) | ED-34, P3.4, P1.9, P2.1 | POC-42 a POC-46 passam (abrir, encerrar com executores e materiais, monitorar, programar e desprogramar, anexos); OS em lote, desdobramento e retrabalho; SAMAE 2.17 sem falha |
+| ED-37 | Empreiteiras terceirizadas | 18f-ENT-06 | M (1) | ED-36 | cadastro de empreiteiras, contratos, penalidades e medição (SG-492 a SG-496) |
+| ED-38 | Portal e autoatendimento ampliados | 18f-ENT-08, 18e-E17 | G (4) | P3.3, P3.20, P1.5, ED-34 | POC-69 passa (faturas pendentes e quitadas, 2ª via, simulação de fatura e de parcelamento, certidão de quitação anual); SAMAE 2.20 com pelo menos 90% no ensaio |
+| ED-41 | Notificações multicanal e fatura por e-mail | 18f-ENT-11; ADR-0028 (l) | G (3) | P1.9, P3.5, P3.9 | POC-20 passa: e-mail com aviso e link autenticado ao portal; PDF anexo só com opt-in registrado do morador, ou por padrão do tenant com aceite formal; SMS, WhatsApp e push com opt-in por canal e finalidade; provedores no DPA |
+| ED-46 | Catálogo completo de relatórios (P4.3) | 18g-E-REL, 18d-E8, 18e-E16; ADR-0027 | G (12) | P3.22 e a fonte de cada relatório | catálogo das seções 19 (VISAN) e 2.28 (SAMAE), com teste por relatório; POC-56 a POC-68 passam; RNF-71 medido; SAMAE 2.28 sem falha |
+| ED-62 | Integração com ERP do cliente (Betha, IPM, Fiorilli) | 18g-E-ERPIND, 18f-ENT-07; ADR-0028 (i) | G (7) | ED-32, ED-36 | conectores por API ou arquivo para contabilidade, estoque e RH, testados contra leiaute publicado ou ambiente do fornecedor; previsão de materiais da OS enviada ao estoque do cliente (SG-476, TR-521); indicadores de ERP disponíveis para o painel estratégico |
+
+**Onda B**
+
+| # | Tarefa | Origem | Tam. | Dep. | Aceite |
+|---|---|---|---|---|---|
+| ED-04 | Instância dedicada e pacote de reversão | 18h-E4; ADR-0024 | G (3) | P0.5, P0.27, P4.6 | core `V11`; instância dedicada criada pela mesma IaC, imagem e pipeline, em conta separada; acesso administrativo do órgão somente leitura, com MFA e auditoria; pacote em contêiner sobe em servidor limpo com os requisitos mínimos publicados, carrega a exportação de um tenant sintético e passa nos testes de fumaça; runbook de migração exercitado; exceção no ADR-0010 registrada |
+| ED-28 | Cartão no parcelamento pela credenciadora do cliente | 18e-E14; ADR-0028 (h) | M (1) | P3.1, P4.1 | parcelamento pago por link ou checkout da credenciadora do tenant, com baixa e conciliação automáticas pelo retorno e pelo extrato; nenhum dado de cartão trafega nem é gravado no produto (teste) |
+| ED-39 | App do cliente Android e iOS nas lojas | 18f-ENT-09; ADR-0026 | G (4) | P4.4, ED-38, P3.21 | core `V11`; POC-55 passa em Android e iOS; app gerado por pipeline com nome, ícone e cores do tenant, publicado nas lojas na conta do prestador e ligado à base do tenant; push sem dado pessoal; acessibilidade do aparelho (SG-782); SAMAE 2.24 sem falha |
+| ED-40 | Totem em modo quiosque e senhas | 18f-ENT-10; ADR-0028 (k) | M (1) | ED-38, ED-35 | portal em modo quiosque no hardware do cliente; senha com prioridade legal, chamada na tela de atendimento e painel em navegador (SG-625, SG-626) |
+| ED-42 | Omnichannel híbrido | 18f-ENT-12; ADR-0028 (c) | G (5) | ED-35, ED-41 | POC-70 e POC-75 passam: WhatsApp oficial, e-mail e chat do portal atendidos na tela do Ziip SAN, com a conversa no protocolo da matrícula; demais conectores conforme a pendência do §2.4; logs com integridade (SG-655 a SG-661); mensagens medidas por tenant; SAMAE 2.22 sem falha |
+| ED-43 | Chatbot e IA por modelo de linguagem de terceiro | 18f-ENT-13; ADR-0028 (c) | G (5) | ED-42, ED-38 | POC-71 a POC-74 e POC-76 passam; o modelo só chama funções do portal, com as permissões do consumidor (teste de recusa de função fora da lista); texto enviado ao modelo sem CPF, CNPJ, nome nem endereço desnecessários (teste); transbordo humano; provedor no DPA e no RIPD, com transferência internacional registrada se houver |
+| ED-47 | BI embarcado com Apache Superset (P4.3) | 18g-E-BI; ADR-0027 | G (5) | P0.28, P3.22 | Superset com marca do produto e SSO do Keycloak, lendo só a réplica; role de banco por tenant; teste de isolamento no CI (consulta livre e `SET` da GUC não leem outro tenant, em schema próprio e compartilhado); auditoria de acesso (SG-1252); exceção no ADR-0010 |
+| ED-48 | Indicadores gerenciais, SINISA e macromedição | 18g-E-IND, E-MACRO | G (7) | P4.2, ED-47 | catálogo SINISA vigente pré-configurado, com painel exportável por período, setor, categoria e tipo de ligação; indicadores parametrizáveis com metas, fechamento e semáforo; macromedição e balanço por setor |
+| ED-49 | Sete painéis padrão (P4.3) | 18g-E-PAIN; ADR-0027 | 7 × M (7) | ED-47, ED-48, ED-62 | POC-77 a POC-81 passam: painéis de arrecadação, atendimento, cobrança, faturamento, medição, operacional e indicadores estratégicos |
+| ED-50 | Qualidade da água operacional | 18g-E-QUAL; ADR-0028 (a) | G (9) | P2.5, P2.8, P3.3, P3.22 | catálogo da Portaria GM/MS 888/2021 revisado por responsável técnico; plano de amostragem, cadeia de custódia, conformidade e fechamento mensal; bloco na conta (Decreto 5.440/2005) e no portal; arquivo SISAGUA assistido; SAMAE 2.26 e relatórios 2.28.117 a 2.28.126 sem falha |
+| ED-51 | Apoio à ISO/IEC 17025 | 18g-E-LIMS17025; ADR-0028 (a) | G (5) | ED-50 | laboratório com escopo, calibração com histórico e bloqueio, Westgard, incerteza e validação por segunda pessoa demonstrados no ensaio; em produção em até 6 meses da implantação de quem exigir |
+| ED-52 | GIS web | 18d-E12; ADR-0028 (b) | G (4) | P0.4, P2.5, P3.4 | visualizador MapLibre com tiles do PostGIS servidos pela `api`; camadas, WMS, pesquisas por coordenada UTM, atributo e endereço; temáticos; importação SHP e GeoPackage; OS no mapa |
+| ED-53 | GIS: edição e integração com o cadastro | 18d-E13; ADR-0028 (b) | G (5) | ED-52, ED-13, ED-36 | editor de feições; ligação desenhada vira ligação no cadastro (teste); permissões por camada; camadas de resíduos e drenagem |
+| ED-54 | Rede lógica, traçado e manobras | 18d-E14; ADR-0028 (b) | G (4) | ED-53, ED-36 | isolamento de trecho pelas válvulas sobre a topologia existente, com consumidores afetados e OS em lote; SAMAE 2.27 sem falha |
+| ED-55 | Migração do cadastro técnico (DWG) e acesso QGIS | 18d-E15, 18h-E8; ADR-0028 (b) | G (4) | P1.9, P0.4, ED-52, P1.25 | DWG 2007+ convertido para DXF pelo ODA File Converter na esteira de implantação e importado com GDAL no `worker`, com diagnóstico topológico e SIRGAS 2000/UTM 22S; QGIS por role individual mapeada ao tenant, `WITH CHECK`, auditoria por gatilho e acesso por rede restrita; teste prova que a role de um tenant não lê nem grava outro; migração de amostra real em até 60 dias; coberto por pentest |
+| ED-01 | Prontidão de POC: kit de campo e ensaio final | 18h-E3; ADR-0023 | M–G (3) | P3.23; ondas A e B | kit de campo (Android, iPhone, Zebra série ZQ, bobinas, 4G) mantido; massa do tenant de demonstração atualizada a cada versão; **meta final:** roteiro da VISAN com pelo menos 146 de 162 pontos e nenhuma falha em item crítico do SAMAE, em dois ensaios consecutivos com o prazo de preparo dos editais (marco M12) |
+
+**Onda C**
+
+| # | Tarefa | Origem | Tam. | Dep. | Aceite |
+|---|---|---|---|---|---|
+| ED-09 | Serviços de implantação padronizados | 18h-E8 | G (4) | P1.2, P2.10, P2.19 | metodologia e plano-modelo de 60 e 90 dias; importador do legado do primeiro cliente de edital (GSAN, se confirmado) com conciliação; exportação e importação de parâmetros aceitos entre homologação e produção; dicionário de dados gerado do schema no CI (XLSX, CSV ou PDF); linhagem da migração; implantação simulada com tenant sintético em até 60 dias |
+| ED-10 | Política comercial e preço por porte | 18h-E10 | P (0,4) | ED-04, P0.26 | planilha de custo e preço por porte comparada com os tetos de referência (VISAN R$ 18.866,65/mês; SAMAE R$ 7.636,74/mês); perfis e homem-hora; garantia de 12 meses e correção de vícios em 48 h; desconto da reversão (ADR-0024); franquia ou repasse de mensagens e do modelo de linguagem |
+| ED-11 | Rede de implantação e treinamento | 18h-E11; ADR-0023 | G (3) | decisão de equipe (§2.4), ED-09 | equipe ou parceiro definido; plano de treinamento de 40 h por módulo; material online; tenant de pré-treinamento com massa sintética; capacitação de TI; documentação de customizações |
+| ED-44 | Telefonia mínima | 18f-ENT-14; ADR-0028 (k) | M (1) | ED-35, ED-43 | chamada recebida abre a ficha pelo número chamador, com registro de acesso; API de consulta para URA de terceiros; listas de discagem geradas pelo produto |
+| ED-56 | Ativos e manutenção de rede | 18g-E-ATIVOS | G (3) | ED-53, ED-32 | cadastro técnico de ativos com vínculo patrimonial exportado à contabilidade; manutenção preventiva e corretiva ligada ao GIS |
+| ED-57 | Beneficiários de programas sociais | 18d-E16 | M (1) | P1.5 | importação de lista de beneficiários com base legal registrada (sem API pública), com conferência e vigência |
+| ED-58 | Almoxarifado e compras | ADR-0028 (i); 18g-E-ALMOX | G (8) | ED-36, ED-12; recorte (§2.4) | no recorte definido: estoque por local, movimentação, custo médio, kits da OS com baixa do estoque, inventário, requisição, cotação e pedido; relatórios de materiais e insumos |
+| ED-59 | Frota | ADR-0028 (i) | M–G (2) | ED-36; recorte | veículos, abastecimento, manutenção e custo por veículo, com consumo na OS |
+| ED-60 | RH no recorte do saneamento | ADR-0028 (i) | G (3) | ED-36; recorte; RIPD e DPA | equipes de campo, lotação e competências; indicadores de RH; dados de empregados incluídos no RIPD e no DPA |
+| ED-61 | Orçamento | ADR-0028 (i) | G (3) | ED-32; recorte | dotações e rubricas ligadas à contabilidade; previsto × realizado; indicadores orçamentários |
 
 **Melhorias contínuas.** Os baixos 17:B1–B11 já estão distribuídos (P0.5, P0.7, P0.13, P0.17, P1.12, P1.15, P2.3);
 baixos de revisões futuras entram nesta lista.
@@ -464,13 +633,22 @@ baixos de revisões futuras entram nesta lista.
 
 ## 5. Caminho crítico e marcos
 
-Caminho crítico: hospedagem (P0.26) → ambientes, PITR e R1 (P0.27, P0.28) → importador com dado real (P1.2) → outbox
-(P1.9) → lote (P2.1) → ciclo (P2.5) → NFAg-e (P2.6) → arrecadação (P3.1, P3.2) → paralelo (GL.2) → corte (GL.4). Ramo
-igualmente crítico: piloto (P0.30) → discovery (P1.1) → importadores → carga final (GL.1). Não há folga: atraso na
-hospedagem ou no piloto desloca o go-live na mesma medida.
+Caminho crítico: ambientes, PITR e R1 na AWS (P0.27, P0.28) → importador com dado real (P1.2) → outbox (P1.9) → lote
+(P2.1) → ciclo (P2.5) → NFAg-e (P2.6) → retificação de conta (P2.20) → arrecadação (P3.1, P3.2) → relatórios
+operacionais (P3.22) → paralelo (GL.2) → corte (GL.4). Ramo igualmente crítico: piloto (P0.30) → discovery (P1.1) →
+importadores → carga final (GL.1). Não há folga: atraso no piloto ou nos ambientes desloca o go-live na mesma medida.
+A hospedagem, decidida em 12/10/2026 (ADR-0011), saiu do caminho.
+
+A versão 2.4 põe no caminho a P2.20 e a P3.22, que o paralelo exige (contas divergentes precisam ser retificadas e
+conferidas por relatório), e acrescenta ao P0–P3 cerca de 13 semanas-pessoa (consolidado 18, §5.2), sobre fases que
+já não tinham folga. Se o P2 ou o P3 atrasar, escorregam primeiro a meta de ensaio da P3.23 (o ensaio continua, sem
+meta no aceite), os itens do nível Setor Público na P3.15 e na P3.16 e as tarefas fora do caminho já previstas no §6;
+P2.20 e P3.22 ficam. A trilha de editais começa depois do go-live e não está no caminho do piloto; o caminho dela é
+decisão de equipe (§2.4) → onda A → ensaio com meta de 120 pontos → onda B → prontidão de POC (M12) → primeira
+licitação (M13), com o atestado do piloto (P0.30 → GL.4) e o kit de habilitação (P0.44) em paralelo.
 
 As tarefas da versão 2.1 não mudam esse caminho, com três ressalvas: a renomeação (P0.33) vem logo depois da P0.1 e
-antes de toda tarefa de código do P0, em paralelo com a decisão de hospedagem; cobrança por contrato, NFS-e da venda e
+antes de toda tarefa de código do P0; cobrança por contrato, NFS-e da venda e
 área do tenant (P2.12–P2.14) precedem a assinatura do contrato do piloto (P3.9); e o histórico com documentos no
 portal (P3.20) depende da NFAg-e (P2.6), da cópia imutável do XML (P2.18), que depende da hospedagem (P0.27), e da
 importação dos documentos anteriores ao go-live (P2.19). As decisões das versões 2.2 e 2.3 não alteram o caminho; a
@@ -479,15 +657,18 @@ troca dos códigos de problema cabe na P0.33, que já toca todos os pontos que o
 | Marco | Data | Critério |
 |---|---|---|
 | M1 | 23/10/2026 | clientes-alvo comunicados |
-| M2 | 30/10/2026 | hospedagem decidida |
-| M3 | 13/11/2026 | piloto escolhido, com acordo de tratamento de dados |
-| M4 | 27/11/2026 | fim do P0: ambientes no ar, PITR testado, R1 |
+| M2 | 12/10/2026 (previsto para 30/10) | hospedagem decidida: cumprido, ADR-0011 aceito |
+| M3 | 13/11/2026 | piloto escolhido, com acordo de tratamento de dados e critério de atestado (ADR-0023) |
+| M4 | 27/11/2026 | fim do P0: ambientes no ar, PITR testado, R1; kit de habilitação iniciado |
 | M5 | 11/12/2026 | R3 em homologação |
-| M6 | 29/01/2027 | fim do P1: cadastro do piloto importado e conciliado |
-| M7 | 26/03/2027 | fim do P2: ciclo e NFAg-e em homologação |
-| M8 | 28/05/2027 | fim do P3: pronto para operar |
+| M6 | 29/01/2027 | fim do P1: cadastro do piloto importado e conciliado; roteiros de POC e primeiro ensaio registrados |
+| M7 | 26/03/2027 | fim do P2: ciclo, NFAg-e e retificação de conta em homologação |
+| M8 | 28/05/2027 | fim do P3: pronto para operar, com relatórios operacionais; ensaio de POC com meta (≥ 50 de 162 na VISAN; SAMAE 2.4 e 2.5 sem falha); proposta de equipe da trilha pronta |
 | M9 | 01/06/2027 | início do paralelo |
 | M10 | 30/07/2027 | go-live: legado desligado |
+| M11 | 02/08/2027 | início da trilha de editais, com a equipe decidida e a data-alvo de M12 registrada |
+| M12 | alvo 30/06/2028, condicionado à equipe de M11 (com uma pessoa, não antes de 2031) | prontidão de POC: ondas A e B concluídas; dois ensaios seguidos com pelo menos 146 de 162 pontos na VISAN e nenhuma falha crítica no SAMAE |
+| M13 | segundo semestre de 2028 | primeira licitação com POC: atestado do piloto emitido, kit de habilitação válido (balanços de 2026 e 2027), M12 cumprido e decisão de disputar registrada (consolidado 18, §7.3); primeiro alvo, edital do tipo SAMAE (um atestado) |
 
 **Prazos legais do prestador.** Até o corte, o piloto cumpre pelo sistema atual: NFAg-e 01/12/2026, a confirmar (Ziip SAN
 no P2, emite após o corte); tarifa social 11/12/2026 (P1, satélite); CBS/IBS 01/01/2027 (P2); boleto híbrido 01/02/2027,
@@ -500,11 +681,20 @@ facultativo (P3); NR 11 em 20/05/2027 e Lei 14.015, em vigor (P3); SINISA anual 
 | Risco | Dono | Mitigação |
 |---|---|---|
 | Capacidade: uma pessoa com IA | Daniel | uma fase aberta por vez; infra congelada; tarefa bloqueada não libera antecipação de funcionalidade; revisão de escopo ao fim de cada fase; P4 cede antes do go-live |
+| Capacidade frente à trilha de editais (v2.4): ≈ 220 semanas-pessoa nas 62 entregas (≈ 51 meses-pessoa), das quais ≈ 13 no P0–P3 e ≈ 206 no P4; só a prontidão de POC (ondas A e B) pede ≈ 178, mais ≈ 8 das tarefas originais do P4. Com uma pessoa, a prontidão chega por volta de 2031; para junho de 2028 são precisos ≈ 4,3 pessoas-equivalentes a partir de agosto de 2027, para dezembro de 2028 ≈ 2,7 (consolidado 18, §8) | Daniel | proposta de equipe pronta no fim do P3 (M8) com a velocidade medida do P0 ao P3, decisão em M11; trilha em ondas A → B → C; onda C (ERP construído, ativos, telefonia, ≈ 28 semanas) confirmada no início do P4 antes de começar; primeiro alvo em editais do tipo SAMAE; estimativas recalibradas a cada aceite de fase; M12 e M13 só ganham data firme depois de M11 |
+| Acréscimos da v2.4 ao P0–P3 (P0.44, P1.25, P2.20, P2.15, P3.15, P3.16, P3.22, P3.23: ≈ 13 semanas) sobre fases sem folga | Daniel | P2.20 e P3.22 são necessidade do piloto e ficam; escorregam primeiro a meta da P3.23 (o ensaio continua) e os itens do nível Setor Público da P3.15 e da P3.16; revisão ao fim do P1 com a velocidade medida |
 | Duplicação do motor fiscal C# × Java; o C# não é referência validada | Daniel | corpus comum nos dois CIs (P1.10) conferido contra o XSD oficial, não só contra o C#; tabela de versões de NT; monitor regulatório único; reavaliar em 2028 qual motor permanece |
 | NFAg-e sem manual e XSD oficiais; obrigatória em 01/12/2026 (a confirmar) e go-live só em jun/2027 | Daniel | o prestador precisa de outro emissor nesse intervalo, o que consta da comunicação de 23/10; builder gerado do XSD, vetores por versão |
 | Arredondamento divergente (half-even × `HALF_DOWN`) e CHECK de `bills` com tributo como retenção | técnico | P1.16 antes do P2 |
-| Hospedagem indefinida | Daniel | data-limite 30/10; imagem e IaC portáveis; sem decisão, P0 fecha sem P0.27–P0.29 e o P1 só usa dado sintético |
-| Piloto indefinido | Daniel | data-limite 13/11; critérios do ADR-0001; importador sobre leiaute genérico e massa sintética |
+| Custo da AWS (≈ US$ 2 mil por mês no dimensionamento inicial) acima do teto de editais pequenos (SAMAE: R$ 7.636,74 por mês) e do preço do piloto | Daniel | tabela de custo na P0.26; dimensionamento mínimo nos primeiros tenants; vários tenants por cluster; preço por porte (ED-10) antes de qualquer proposta |
+| Piloto indefinido ou fora do critério de atestado (público, em SC, dispensa ou CPSI, cláusula de atestado) | Daniel | data-limite 13/11; critérios do ADR-0001 e do ADR-0023 na P0.30; importador sobre leiaute genérico e massa sintética; sem piloto no critério, segundo caminho por cliente privado e nenhuma licitação com POC antes do atestado |
+| Balanço de dois exercícios exigido nas licitações de 2028 | Daniel | P0.44: empresa licitante e contador desde 2026 |
+| Escopo do ERP construído (ADR-0028, item i) além do que os editais pedem (integração e indicadores) | Daniel | recorte "ligado ao saneamento" decidido até 28/05/2027 (§2.4); ED-58 a ED-61 na onda C, depois da prontidão de POC |
+| Severidade 1 em 2 h e monitoramento 24/7 do nível Setor Público sem equipe | Daniel | nenhum contrato no nível Setor Público antes da decisão de equipe (ADR-0025, item 3); plantão definido na ED-05 |
+| Editais de 2028 diferentes dos de 2026 | Daniel | matriz viva com requisito canônico (P1.25); extração e matriz por área em até 3 dias úteis da publicação; decisão de disputar registrada (consolidado 18, §7.3) |
+| Item de edital contrário à lei cobrado na POC | Daniel | o produto segue a lei (ADR-0015, ADR-0023); pedido de esclarecimento ou impugnação protocolado antes da sessão com os modelos da P1.25; na POC, regra legal demonstrada e norma citada |
+| Terceiros novos da trilha: modelo de linguagem (resposta errada, transferência internacional), lojas de aplicativo (revisão e recusa), ODA File Converter (licença), Superset (segunda pilha) e QGIS com escrita direta no banco | técnico | funções fechadas, minimização e transbordo (ED-43); conta do prestador e publicação antecipada (ED-39); licença conferida na P1.25; role por tenant e teste de isolamento (ED-47, ED-55); pentest dos caminhos novos |
+| FEBRABAN 150 necessário no go-live, se o piloto tiver optantes de débito automático | Daniel | verificação na P1.1; nesse caso a parte legada da ED-27 sobe para o P3 |
 | Prazos legais do prestador antes do go-live | Daniel | contrato explicita que as obrigações seguem no legado até o corte; nenhuma data regulatória prometida antes do go-live |
 | Multa acima de 2% aceita pelo tenant (CDC art. 52 §1º) | Daniel | aceite formal com responsável e justificativa; contrato aloca a responsabilidade ao controlador |
 | Limite legal errado no catálogo | Daniel | norma citada e teste por limite; revisão quando a norma muda |
@@ -527,13 +717,14 @@ facultativo (P3); NR 11 em 20/05/2027 e Lei 14.015, em vigor (P3); SINISA anual 
 
 | Fase | Período | Entregas principais | Bloqueios |
 |---|---|---|---|
-| P0 | 13/10–27/11/2026 | dev fora do Drive, renomeação `ziipsan`, CI, Dockerfile, versão pela tag e changelog, PG 17, segurança, BFF, MFA, papéis de plataforma, pacote de marca, temas, parâmetros, 300 schemas, carga inicial; ambientes, PITR, R1 | hospedagem; piloto |
-| P1 | 30/11/2026–29/01/2027 | importador v0, R2, R3, console e Central v0, marca do tenant, preferência de tema, ClamAV, ajuda e chamados v0, Sobre, partição do `audit_log`, outbox, porte fiscal | piloto; R1 |
-| P2 | 01/02–26/03/2027 | lote, R4, R4a, NFAg-e e XML imutável, leitura terceirizada, gráfica, carga, importador v1 e documentos anteriores ao go-live; cobrança por contrato, NFS-e da venda e área do tenant; SLA de suporte; Central de faturamento e fiscal | P1.9, P1.16; SEFAZ |
-| P3 | 29/03–28/05/2027 | R5a, R5b, portal com histórico e documentos, R7 mínimo, NFS-e avulsa, pentest, contrato, operação; Central completa, acesso assistido e de emergência, página de status, ensaio de saída | escopo de G4; PSP |
+| P0 | 13/10–27/11/2026 | dev fora do Drive, renomeação `ziipsan`, CI, Dockerfile, versão pela tag e changelog, PG 17, segurança, BFF, MFA, papéis de plataforma, pacote de marca, temas, parâmetros, 300 schemas, carga inicial; ambientes na AWS `sa-east-1`, PITR, R1; kit de habilitação | piloto (com critério de atestado) |
+| P1 | 30/11/2026–29/01/2027 | importador v0, R2, R3, console e Central v0, marca do tenant, preferência de tema, ClamAV, ajuda e chamados v0, Sobre, partição do `audit_log`, outbox, porte fiscal; roteiros de POC, matriz viva e modelos jurídicos | piloto; R1 |
+| P2 | 01/02–26/03/2027 | lote, R4, R4a, NFAg-e e XML imutável, retificação e manutenção de conta, leitura terceirizada, gráfica, carga, importador v1 e documentos anteriores ao go-live; cobrança por contrato, NFS-e da venda e área do tenant; SLA de suporte com cinco severidades; Central de faturamento e fiscal | P1.9, P1.16; SEFAZ |
+| P3 | 29/03–28/05/2027 | R5a, R5b, portal com histórico e documentos, R7 mínimo, NFS-e avulsa, pentest, contrato, operação; Central completa, acesso assistido e de emergência, página de status, ensaio de saída; relatórios operacionais; ambiente de demonstração e ensaio de POC com meta | escopo de G4; PSP |
 | Go-live | 01/06–30/07/2027 | paralelo e corte | aceite do piloto |
-| P4 | 02/08–17/12/2027 | R8, R6, BI, app offline, R5c, isolamento por porte, suporte por e-mail | demanda |
-| 2028 | — | GRS, R9, ISO 27001, instância dedicada | demanda |
+| P4 | 02/08–17/12/2027 | R8, R6, BI ampliado, app de campo Android, R5c, isolamento por porte, suporte por e-mail | demanda |
+| Trilha de editais | a partir de 02/08/2027; prontidão de POC alvo 30/06/2028, condicionada à equipe | ED-01 a ED-62 em ondas A (comercial, campo e suporte), B (canais, BI, qualidade, GIS, instância dedicada) e C (implantação, ERP construído, aderência total) | decisão de equipe; recorte do ERP; conectores do omnichannel |
+| 2028 | — | primeira licitação com POC (2º semestre); GRS, R9 sem o GIS, ISO 27001 | atestado; prontidão de POC; demanda |
 
 ---
 
@@ -564,3 +755,9 @@ facultativo (P3); NR 11 em 20/05/2027 e Lei 14.015, em vigor (P3); SINISA anual 
 - **Diário.** `docs/DIARIO-DE-BORDO.md` ao fim de cada tarefa: o que foi feito, testes, pendências, commit.
 - **Push automático (ADR-0009).** Fim de etapa com suíte verde → commit e push; vermelho não publica.
 - **Aceite de fase.** Todos os critérios cumpridos e registrados; tarefa que escorregar recebe nova data aqui e no diário.
+  A partir do P1, todo fim de fase tem ensaio interno de POC com resultado registrado; a partir do P3, a meta de ensaio
+  da fase entra no aceite (P3: P3.23; P4: fim das ondas A e B da trilha de editais), conforme o ADR-0023.
+- **Matriz de editais.** A matriz viva (P1.25; consolidado 18, §7) é atualizada ao fim de cada tarefa que toca
+  requisito de edital, a cada ensaio e a cada edital novo; teste que prova requisito leva o ID do requisito. Edital
+  novo segue a regra do consolidado 18, §7.3 (extração, equivalência, matriz por área, conflitos legais, decisão de
+  disputar).

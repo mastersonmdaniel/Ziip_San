@@ -13,6 +13,12 @@
   consumidor por CPF/CNPJ ou e-mail, com senha, sem SMS nem login por celular no go-live, com os cuidados de LGPD do
   documento como identificador e o mapeamento de login por atributo no Keycloak como item técnico do P3; decisão do
   dono do produto.
+- **Ajuste de 12/10/2026 (editais), antes de qualquer implementação:** a fatura passa a poder ser enviada por e-mail
+  (ADR-0028, item l): o padrão é e-mail com aviso e link autenticado ao portal, sem anexo; o anexo PDF é opcional, por
+  opt-in registrado do morador (data, canal, versão do texto, revogável), para e-mail verificado; o tenant pode tornar
+  o anexo o padrão com aceite formal registrado (ADR-0002), e o morador pode recusá-lo. A alternativa "Documentos só
+  por e-mail, sem portal" continua rejeitada: o portal segue sendo o canal com controle de acesso e registro. O app do
+  cliente nas lojas (ADR-0026) usa a mesma conta do realm `ziipsan-portal`; decisão do dono do produto.
 
 ## Contexto
 

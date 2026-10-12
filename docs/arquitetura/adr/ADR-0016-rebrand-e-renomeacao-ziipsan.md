@@ -7,6 +7,10 @@
 - **Ajuste de 12/10/2026 (plano v2.3), antes de qualquer implementação:** item 4 passa a incluir na renomeação os
   códigos de contrato da API em inglês (prefixo `urn:ziipsan:problem:` e códigos de problema, tabela do plano P0.33),
   por decisão do dono do produto; mensagens ao usuário seguem em português.
+- **Ajuste de 12/10/2026 (editais), antes de qualquer implementação:** item 2 passa a incluir o app do cliente
+  publicado nas lojas com o nome, o ícone e as cores do tenant (ADR-0026), como mais um canal da marca do tenant ao
+  lado do portal e dos e-mails; item 6 não muda, porque a marca nas lojas é do tenant, e não de um revendedor; decisão
+  do dono do produto.
 
 ## Contexto
 
