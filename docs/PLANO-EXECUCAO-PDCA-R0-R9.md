@@ -55,7 +55,7 @@ Ação para o Daniel (G0): comunicar isso aos clientes-alvo até 23/10.
 | S1 | Onde fica `DocumentNumber` | mover de `registry/rules` para `shared/sigsan-core` (MTR também precisa) |
 | S2 | CPF no PDF do MTR | máscara, salvo exigência do SINIR |
 | S3 | `waste_transporter.drivers` (JSONB com CPF/CNH) | cifrar na mesma migration do MTR |
-| — | Nome do diário | manter `docs/DIARIO-DE-BORDA.md` e criar `DIARIO_DE_BORDO.md` na raiz apontando para ele (instrução global) |
+| — | Nome do diário | `docs/DIARIO-DE-BORDO.md` (renomeado de `DIARIO-DE-BORDA.md` em 12/10/2026), com `DIARIO_DE_BORDO.md` na raiz apontando para ele (instrução global). Comentários em migrations já aplicadas mantêm o nome antigo, porque alterá-los muda o checksum do Flyway |
 
 ### 2.2 De negócio (bloqueiam fases do roadmap)
 

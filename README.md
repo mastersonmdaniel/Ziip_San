@@ -8,7 +8,7 @@ medição, faturamento, arrecadação, perdas, qualidade da água, GIS, MTR e LG
 - Identidade: Keycloak 26, realm único `sigsan` (login com PKCE no frontend).
 - Frontend: React 18 + TypeScript + Vite (`frontend/`).
 
-Estado, decisões e histórico: [`docs/DIARIO-DE-BORDA.md`](docs/DIARIO-DE-BORDA.md).
+Estado, decisões e histórico: [`docs/DIARIO-DE-BORDO.md`](docs/DIARIO-DE-BORDO.md).
 Ordem de prioridade e plano: [`docs/PLANO-EXECUCAO-PDCA-R0-R9.md`](docs/PLANO-EXECUCAO-PDCA-R0-R9.md).
 
 ## Pré-requisitos

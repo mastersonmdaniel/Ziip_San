@@ -1,4 +1,4 @@
-# Diário de Borda — SIGSAN
+# Diário de Bordo — SIGSAN
 
 Registro vivo do projeto: o que é, como está, o que travou e o que vem agora.
 Última atualização: 12/10/2026
@@ -956,3 +956,10 @@ Feita no branch `e4-mtr` (worktree separada).
    (serviços não usados hoje).
 5. **Leituras do sistema** (hash do MTR, SINIR, PDF) não registram acesso na auditoria — avaliar com o encarregado (DPO).
 6. Decisões jurídicas e regulatórias G1–G9 (plano §2.2) seguem com seus prazos; a tarifa social (R3) depende de G1 e G2.
+
+### 12/10/2026 — Nome do diário
+
+- `docs/DIARIO-DE-BORDA.md` renomeado para `docs/DIARIO-DE-BORDO.md` (histórico preservado com `git mv`). Atualizados o
+  título, o `DIARIO_DE_BORDO.md` da raiz, o `README.md`, o plano (§ decisões) e a análise de fontes abertas.
+- Mantêm o nome antigo, de propósito: os comentários das migrations `V3_1`, `V4_1` e `V5_1` (alterá-los muda o checksum e
+  o Flyway recusa a validação nos bancos já migrados) e os relatórios de `docs/levantamento/`, que são registros datados.

@@ -327,6 +327,6 @@ Eventos de integração recomendados: `property.updated`, `connection.activated`
 
 ### Ziip SAN
 
-- `G:\Meu Drive\PROJETOS\Ziip SAN\sigsan\docs\DIARIO-DE-BORDA.md` — estado atual, stubs conhecidos e próximos passos.
+- `G:\Meu Drive\PROJETOS\Ziip SAN\sigsan\docs\DIARIO-DE-BORDO.md` — estado atual, stubs conhecidos e próximos passos.
 - `G:\Meu Drive\PROJETOS\Ziip SAN\sigsan\frontend\src\services\api.ts` — superfícies de API pretendidas para comercial, operação, GIS, perdas, qualidade, resíduos e LGPD.
 
