@@ -31,6 +31,8 @@ final class ProvisionedTenant {
     static String url;
     static String appUser;
     static String appPassword;
+    static String migratorUser;
+    static String migratorPassword;
     static DataSource appDs;
     static DataSource migratorDs;
 
@@ -47,9 +49,9 @@ final class ProvisionedTenant {
         appUser = env("SIGSAN_IT_DB_USER", "sigsan_app");
         appPassword = env("SIGSAN_IT_DB_PASSWORD", "sigsan_dev_password");
         appDs = new DriverManagerDataSource(url, appUser, appPassword);
-        migratorDs = new DriverManagerDataSource(url,
-                env("SIGSAN_IT_MIGRATOR_USER", "sigsan_migrator"),
-                env("SIGSAN_IT_MIGRATOR_PASSWORD", "sigsan_migrator_password"));
+        migratorUser = env("SIGSAN_IT_MIGRATOR_USER", "sigsan_migrator");
+        migratorPassword = env("SIGSAN_IT_MIGRATOR_PASSWORD", "sigsan_migrator_password");
+        migratorDs = new DriverManagerDataSource(url, migratorUser, migratorPassword);
 
         // 1. Migration de core em banco virgem (cria public.tenant_catalog e public.audit_log).
         new CoreMigrationRunner(migratorDs).run(null);

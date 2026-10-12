@@ -1,13 +1,10 @@
 package br.com.sigsan.platform.config;
 
-import br.com.sigsan.core.tenant.TenantFilter;
 import br.com.sigsan.platform.tenant.MultiTenantConnectionProvider;
 import br.com.sigsan.platform.tenant.TenantSchemaResolver;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -17,21 +14,19 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
+// Sem @EnableJpaAuditing: apontava para um bean "auditorAware" inexistente (a aplicacao nao subiria) e
+// nenhuma entidade usa @CreatedBy/AuditingEntityListener. Quem registra autoria e o trigger de
+// auditoria, a partir da GUC app.current_user.
 @Configuration
-@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableTransactionManagement
 public class PlatformConfig {
 
+    // O tenant da requisicao vem do token (JwtTenantFilter, na cadeia do Spring Security), nao mais de
+    // um cabecalho enviado pelo cliente (achado C3 do PDCA de 12/10/2026).
+    //
+    // DependsOn: as migrations (core e tenants) rodam antes de o JPA subir (DatabaseMigrator).
     @Bean
-    public FilterRegistrationBean<TenantFilter> tenantFilterRegistration(TenantFilter tenantFilter) {
-        FilterRegistrationBean<TenantFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(tenantFilter);
-        registration.addUrlPatterns("/api/*");
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 10);
-        return registration;
-    }
-
-    @Bean
+    @DependsOn("databaseMigrator")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
             DataSource dataSource,
             MultiTenantConnectionProvider tenantConnectionProvider,

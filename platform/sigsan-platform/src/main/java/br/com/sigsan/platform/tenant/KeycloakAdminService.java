@@ -3,6 +3,7 @@ package br.com.sigsan.platform.tenant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
+import org.springframework.beans.factory.ObjectProvider;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
@@ -19,7 +20,20 @@ import java.util.UUID;
 @Slf4j
 public class KeycloakAdminService {
 
-    private final Keycloak keycloak;
+    /**
+     * Cliente admin do Keycloak, opcional: so existe com sigsan.keycloak.admin.enabled=true (ver
+     * KeycloakConfig). Desde 12/10/2026 a identidade usa um realm unico ("sigsan") com o claim tenant_id;
+     * a criacao de um realm por tenant feita aqui e legado e falha explicitamente quando desligada.
+     */
+    private final ObjectProvider<Keycloak> keycloakProvider;
+
+    private Keycloak keycloak() {
+        Keycloak client = keycloakProvider.getIfAvailable();
+        if (client == null) {
+            throw new IllegalStateException("Administracao do Keycloak desligada (sigsan.keycloak.admin.enabled)");
+        }
+        return client;
+    }
     private final String masterRealm = "master";
 
     public void createTenantRealm(UUID tenantId, String schemaName, TenantProvisioningService.TenantProvisioningRequest request) {
@@ -27,7 +41,7 @@ public class KeycloakAdminService {
 
         try {
             // Check if realm already exists
-            if (keycloak.realms().realm(realmName).toRepresentation() != null) {
+            if (keycloak().realms().realm(realmName).toRepresentation() != null) {
                 log.info("Realm {} already exists, updating...", realmName);
                 updateRealm(realmName, request);
                 return;
@@ -63,7 +77,7 @@ public class KeycloakAdminService {
             realm.setOfflineSessionMaxLifespan(5184000); // 60 days
             realm.setAccessTokenLifespanForImplicitFlow(900);
 
-            keycloak.realms().create(realm);
+            keycloak().realms().create(realm);
             log.info("Created realm: {}", realmName);
 
             // Create client for tenant
@@ -107,7 +121,7 @@ public class KeycloakAdminService {
                 createMapper("tenant_schema", "tenant_schema", "String", schemaName)
         ));
 
-        keycloak.realm(realmName).clients().create(client);
+        keycloak().realm(realmName).clients().create(client);
     }
 
     private org.keycloak.representations.idm.ProtocolMapperRepresentation createMapper(String name, String claim, String type, String value) {
@@ -133,7 +147,7 @@ public class KeycloakAdminService {
             role.setName(roleName);
             role.setDescription("SIGSAN " + roleName + " role");
             role.setClientRole(false);
-            keycloak.realm(realmName).roles().create(role);
+            keycloak().realm(realmName).roles().create(role);
         }
     }
 
@@ -154,7 +168,7 @@ public class KeycloakAdminService {
         user.setCredentials(List.of(credential));
 
         try {
-            keycloak.realm(realmName).users().create(user);
+            keycloak().realm(realmName).users().create(user);
             log.info("Created admin user for realm: {}", realmName);
         } catch (Exception e) {
             log.warn("Admin user may already exist in realm: {}", realmName);
@@ -162,15 +176,15 @@ public class KeycloakAdminService {
     }
 
     private void updateRealm(String realmName, TenantProvisioningService.TenantProvisioningRequest request) {
-        RealmRepresentation realm = keycloak.realm(realmName).toRepresentation();
+        RealmRepresentation realm = keycloak().realm(realmName).toRepresentation();
         realm.setDisplayName("SIGSAN - " + request.getDisplayName());
-        keycloak.realm(realmName).update(realm);
+        keycloak().realm(realmName).update(realm);
     }
 
     public void deleteTenantRealm(String schemaName) {
         String realmName = "sigsan-" + schemaName;
         try {
-            keycloak.realm(realmName).remove();
+            keycloak().realm(realmName).remove();
             log.info("Deleted realm: {}", realmName);
         } catch (Exception e) {
             log.warn("Failed to delete realm: {}", realmName, e);
@@ -180,9 +194,9 @@ public class KeycloakAdminService {
     public void disableTenantRealm(String schemaName) {
         String realmName = "sigsan-" + schemaName;
         try {
-            RealmRepresentation realm = keycloak.realm(realmName).toRepresentation();
+            RealmRepresentation realm = keycloak().realm(realmName).toRepresentation();
             realm.setEnabled(false);
-            keycloak.realm(realmName).update(realm);
+            keycloak().realm(realmName).update(realm);
             log.info("Disabled realm: {}", realmName);
         } catch (Exception e) {
             log.warn("Failed to disable realm: {}", realmName, e);
@@ -192,9 +206,9 @@ public class KeycloakAdminService {
     public void enableTenantRealm(String schemaName) {
         String realmName = "sigsan-" + schemaName;
         try {
-            RealmRepresentation realm = keycloak.realm(realmName).toRepresentation();
+            RealmRepresentation realm = keycloak().realm(realmName).toRepresentation();
             realm.setEnabled(true);
-            keycloak.realm(realmName).update(realm);
+            keycloak().realm(realmName).update(realm);
             log.info("Enabled realm: {}", realmName);
         } catch (Exception e) {
             log.warn("Failed to enable realm: {}", realmName, e);

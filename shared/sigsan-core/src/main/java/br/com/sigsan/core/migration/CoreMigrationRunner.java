@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
@@ -21,10 +19,12 @@ import javax.sql.DataSource;
  *
  * A migration roda com a role de migracao, porque DDL exige privilégio que a sigsan_app
  * deliberadamente não tem (NOCREATEDB).
+ *
+ * <p>Não é mais um bean que roda sozinho: na aplicação quem a chama é o DatabaseMigrator (platform),
+ * antes do EntityManagerFactory, com o DataSource de migração. Como ApplicationRunner com injeção por
+ * tipo, ela recebia o DataSource da aplicação (@Primary) e rodaria o DDL como sigsan_app.
  */
 @Slf4j
-@Component
-@Order(1)
 @RequiredArgsConstructor
 public class CoreMigrationRunner implements ApplicationRunner {
 

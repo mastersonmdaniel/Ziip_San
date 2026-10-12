@@ -1,0 +1,8 @@
+# Perfil de produção: nenhum valor padrão de endereço ou segredo; log estruturado (JSON, formato ECS).
+sigsan:
+  db:
+    migrate-on-startup: false
+logging:
+  structured:
+    format:
+      console: ecs
