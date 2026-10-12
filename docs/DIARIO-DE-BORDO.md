@@ -971,3 +971,16 @@ Feita no branch `e4-mtr` (worktree separada).
 - Repositório privado criado e deploy key com escrita cadastrada pelo usuário. Primeiro push autorizado e feito em
   12/10/2026: `main` (30 commits, até `fb2b53d`) rastreando `origin/main`. Pushes seguintes continuam dependendo de
   autorização do usuário.
+
+### 12/10/2026 — Revisão de estrutura para operação SaaS
+
+- Cinco revisões só de leitura (backend e dados, segurança e LGPD, infraestrutura, frontend, plano e produto),
+  consolidadas em `docs/levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md`.
+- Conclusão: a fundação de isolamento e segurança é sólida; falta a camada de serviço operado. Críticos: sem artefato
+  implantável nem ambientes (X1); banco sem HA, backup e PITR (X2); `audit_log` único sem partição com trigger por linha
+  nas tabelas de lote (X3); sem infraestrutura de lote/assíncrono (X4); roadmap sem go-live, sem migração de legado e sem
+  jurídico (X5). Alto de segurança confirmado no código: CPF reconstruível por quem só tem leitura (máscara + busca sem
+  cota, S1).
+- Proposto roadmap revisado P0–P4 com marco de go-live piloto (§7 do relatório) e metas não funcionais (§6). O plano
+  canônico **não** foi alterado: depende das decisões do §8 (hospedagem, adoção do roadmap, piloto, jurídico/DPO, infra
+  não usada, push, ambiente de dev).
