@@ -42,6 +42,13 @@ class TenantProvisioningServiceTest {
     private static final String SCHEMA = "itest_p1_" + RUN_ID;
     private static final String SCHEMA_B = "itest_p2_" + RUN_ID;
 
+    /**
+     * Hash bcrypt real (custo 12) da senha de teste "senha-de-teste-sigsan", gerado com
+     * spring-security-crypto (BCrypt.hashpw), que não está no classpath deste módulo. O provisionamento
+     * recusa qualquer valor que não seja um bcrypt completo.
+     */
+    static final String ADMIN_BCRYPT_HASH = "$2a$12$XQ.OOBGIj7Rx81rNhJ11Wu6ZC5MGgdgkVG5VHomMqrv2kzOSgP5pC";
+
     /** Impede que um DROP CASCADE atinja um schema que não é deste teste. */
     private static void assertTestSchema(String schema) {
         if (!schema.startsWith("itest_")) {
@@ -108,6 +115,11 @@ class TenantProvisioningServiceTest {
     }
 
     private TenantProvisioningService.TenantProvisioningRequest request(UUID tenantId, String schema) {
+        return request(tenantId, schema, ADMIN_BCRYPT_HASH);
+    }
+
+    private TenantProvisioningService.TenantProvisioningRequest request(UUID tenantId, String schema,
+                                                                         String adminPasswordHash) {
         return TenantProvisioningService.TenantProvisioningRequest.builder()
                 .tenantId(tenantId)
                 .schemaName(schema)
@@ -121,7 +133,7 @@ class TenantProvisioningServiceTest {
                 .adminUsername("admin")
                 .adminEmail("admin@teste.com.br")
                 .adminName("Administrador")
-                .adminPasswordHash("hash-bcrypt-aqui")
+                .adminPasswordHash(adminPasswordHash)
                 .build();
     }
 
@@ -422,6 +434,38 @@ class TenantProvisioningServiceTest {
         assertThat(catalogTable)
                 .as("nenhuma tentativa pode derrubar a tabela do catálogo")
                 .isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("hash de senha inválido é recusado antes de criar o schema")
+    void rejectsInvalidPasswordHashWithoutCreatingSchema() {
+        // Ausente, vazio, o valor antigo dos testes, o que o código antigo gravava ao prefixar "$2a$12$"
+        // a um hash completo, sal/hash curto demais e variante de bcrypt inexistente ($2x$).
+        String[] invalidos = {null, "", "hash-bcrypt-aqui", "$2a$12$" + ADMIN_BCRYPT_HASH,
+                ADMIN_BCRYPT_HASH.substring(0, 59), "$2x$12$" + ADMIN_BCRYPT_HASH.substring(7)};
+        for (String invalido : invalidos) {
+            var request = request(UUID.randomUUID(), SCHEMA, invalido);
+            assertThatThrownBy(() -> service().provisionTenant(request))
+                    .as("hash [%s]", invalido)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Hash de senha do administrador invalido");
+            assertThat(schemaExists()).as("nenhum schema criado para hash [%s]", invalido).isFalse();
+        }
+        Integer catalogRows = new JdbcTemplate(migratorDataSource).queryForObject(
+                "SELECT count(*) FROM public.tenant_catalog WHERE schema_name = ?", Integer.class, SCHEMA);
+        assertThat(catalogRows).as("nada registrado no catálogo").isZero();
+    }
+
+    @Test
+    @DisplayName("o hash recebido é gravado sem alteração")
+    void storesPasswordHashUnchanged() {
+        UUID tenantId = UUID.randomUUID();
+        provisionOk(tenantId, SCHEMA);
+
+        int iguais = countAsTenant(tenantId,
+                "SELECT count(*) FROM " + SCHEMA + ".users WHERE username = 'admin' AND password_hash = ?",
+                ADMIN_BCRYPT_HASH);
+        assertThat(iguais).as("o código antigo gravava \"$2a$12$\" + hash").isEqualTo(1);
     }
 
     @Test

@@ -4,6 +4,10 @@
 *.sh   text eol=lf
 *.sql  text eol=lf
 
+# Arquivos bancários de amostra: o layout FEBRABAN exige CRLF e o teste lê os bytes como estão.
+# Com text=auto o git os guardava em LF, e qualquer checkout novo quebrava o Febraban150ReturnTest.
+*.ret  -text
+
 *.png  binary
 *.jpg  binary
 *.pdf  binary

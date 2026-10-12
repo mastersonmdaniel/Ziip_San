@@ -1,5 +1,6 @@
 package br.com.sigsan.grs.mtr.service;
 
+import br.com.sigsan.core.json.Json;
 import br.com.sigsan.core.tenant.TenantContextHolder;
 import br.com.sigsan.grs.mtr.domain.*;
 import br.com.sigsan.grs.mtr.integration.GovBrSignatureService;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.JsonNode;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -79,7 +81,7 @@ public class MtrService {
         mtr.setStatus(WasteMtr.MtrStatus.EMITTED);
         mtr.setIssuedAt(OffsetDateTime.now());
         // Map.toString() gera "{a=b}", que não é JSON e o PostgreSQL recusa numa coluna jsonb.
-        mtr.setProperties(request.properties() != null ? toJson(request.properties()) : "{}");
+        mtr.setProperties(Json.orDefault(request.properties(), "{}"));
         mtr.setHashChain(HashChain.next(null, MtrCanonical.of(mtr)));
 
         return mtrRepository.save(mtr);
@@ -132,7 +134,7 @@ public class MtrService {
         cdf.setMtr(mtr);
         cdf.setDestination(mtr.getDestination());
         cdf.setDestinationMethod(request.destinationMethod());
-        cdf.setProcessDetails(request.processDetails() != null ? toJson(request.processDetails()) : "{}");
+        cdf.setProcessDetails(Json.orDefault(request.processDetails(), "{}"));
         cdf.setTechnicianId(request.technicianId());
         cdf.setTechnicianName(request.technicianName());
         cdf.setTechnicianCrea(request.technicianCrea());
@@ -191,52 +193,49 @@ public class MtrService {
         mtr.setSinirSyncStatus(WasteMtr.SinirSyncStatus.valueOf(result.status().name()));
         mtr.setSinirSyncAt(result.attemptedAt());
         mtr.setSinirProtocol(result.protocol());
-        mtr.setSinirResponse(toJson(Map.of(
+        mtr.setSinirResponse(Json.write(Map.of(
                 "status", result.status().name(),
                 "reason", result.reason() == null ? "" : result.reason())));
     }
 
-    private String toJson(Object value) {
+    /**
+     * Classes de resíduo aceitas pelo destinador: só um array JSON não vazio de códigos em texto,
+     * por exemplo {@code ["A.1.1","B.2.3"]}.
+     *
+     * <p>Falha fechada. A versão anterior devolvia lista vazia quando o campo era nulo, vazio ou
+     * ilegível, e lista vazia significava "aceita qualquer classe": um destinador sem licença
+     * cadastrada recebia resíduo perigoso. Também aceitava CSV ("A.1.1,B.2.3") e números, formatos
+     * que deixam de valer; o cadastro precisa ser corrigido para o array.
+     */
+    static List<String> parseAcceptedClasses(String destinationLabel, String json) {
+        JsonNode node;
         try {
-            return new com.fasterxml.jackson.databind.ObjectMapper().findAndRegisterModules().writeValueAsString(value);
-        } catch (Exception e) {
-            // Um JSON que não se consegue produzir é erro, não "{}": gravar "{}" apagaria o dado.
-            throw new IllegalStateException("Falha ao serializar para JSON", e);
+            node = Json.readTree(json);
+        } catch (IllegalStateException e) {
+            throw noValidClasses(destinationLabel, e);
         }
+        if (!node.isArray() || node.size() == 0) {
+            throw noValidClasses(destinationLabel, null);
+        }
+        List<String> codes = new ArrayList<>();
+        for (JsonNode item : node) {
+            if (!item.isString() || item.asString().isBlank()) {
+                throw noValidClasses(destinationLabel, null);
+            }
+            codes.add(item.asString().trim());
+        }
+        return codes;
     }
 
-    /**
-     * Interpreta o JSON de classes aceitas do destinador como lista de codigos.
-     * Aceita array JSON ["A.1.1","B.2.3"], array simples [1,2] e csv "A.1.1,B.2.3".
-     */
-    private List<String> parseAcceptedClasses(String json) {
-        if (json == null || json.isBlank()) {
-            return List.of();
-        }
-        try {
-            var node = new com.fasterxml.jackson.databind.ObjectMapper()
-                    .findAndRegisterModules()
-                    .readTree(json);
-            List<String> codes = new ArrayList<>();
-            if (node.isArray()) {
-                node.forEach(item -> codes.add(item.asText()));
-            } else if (node.isTextual()) {
-                for (String code : node.asText().split(",")) {
-                    if (!code.isBlank()) {
-                        codes.add(code.trim());
-                    }
-                }
-            }
-            return codes;
-        } catch (Exception e) {
-            log.warn("Failed to parse accepted waste classes: {}", json, e);
-            return List.of();
-        }
+    private static IllegalStateException noValidClasses(String destinationLabel, Exception cause) {
+        return new IllegalStateException("Destinador " + destinationLabel + " sem classes aceitas válidas: "
+                + "cadastre um array JSON de códigos, por exemplo [\"A.1.1\"]", cause);
     }
 
     private void validateCompatibility(WasteClass wasteClass, WasteDestination destination) {
-        List<String> accepted = parseAcceptedClasses(destination.getAcceptedWasteClasses());
-        if (!accepted.isEmpty() && !accepted.contains(wasteClass.getCode())) {
+        List<String> accepted = parseAcceptedClasses(String.valueOf(destination.getId()),
+                destination.getAcceptedWasteClasses());
+        if (!accepted.contains(wasteClass.getCode())) {
             throw new IllegalArgumentException("Destination does not accept waste class: " + wasteClass.getCode());
         }
     }

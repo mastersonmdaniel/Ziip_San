@@ -1,13 +1,14 @@
 package br.com.sigsan.compliance.lgpd.engine;
 
 import br.com.sigsan.compliance.lgpd.domain.DpiaRecord;
+import br.com.sigsan.core.json.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.JsonNode;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -157,20 +158,19 @@ public class DpiaEngine {
         }
         measures.add("Definir prazo de retencao e eliminacao (Art. 15 II, Art. 16)");
         measures.add("Submeter ao encarregado (DPO) para parecer (Art. 41)");
-        return measures.toString();
+        // mitigation_measures é jsonb: List.toString() daria "[a, b]", que não é JSON e o PostgreSQL
+        // recusa. Json.write escapa aspas e vírgulas dentro de cada medida.
+        return Json.write(measures);
     }
 
     /**
-     * Counts entries in a stored list literal. The service persists collections with
-     * {@code List.toString()}, so the stored form is "[a, b]" rather than strict JSON -
-     * an empty collection and an empty/null string both mean "nothing declared".
+     * Diz se a coluna jsonb declara alguma coisa. O serviço grava as coleções com
+     * {@link Json#write}, então o conteúdo é JSON: array ou objeto vazio, {@code null} e ausência
+     * significam "nada declarado". Conteúdo que não é JSON lança exceção em vez de contar como
+     * declarado ou não declarado: os dois palpites mudariam a nota de risco.
      */
-    private boolean hasEntries(String storedList) {
-        if (storedList == null) return false;
-        String trimmed = storedList.trim();
-        if (trimmed.isEmpty()) return false;
-        if (trimmed.equals("[]") || trimmed.equals("{}") || trimmed.equals("null")) return false;
-        return true;
+    private boolean hasEntries(String storedJson) {
+        return countEntries(storedJson) > 0;
     }
 
     private boolean isLargeScale(String dataSubjects) {
@@ -219,16 +219,15 @@ public class DpiaEngine {
         return !lower.matches(".*\\d+\\s*(day|dias|month|meses|mes|year|anos?|hora|hours?).*");
     }
 
-    private int countEntries(String storedList) {
-        if (!hasEntries(storedList)) return 0;
-        String inner = storedList.trim();
-        if (inner.startsWith("[") && inner.endsWith("]")) {
-            inner = inner.substring(1, inner.length() - 1).trim();
-        }
-        if (inner.isEmpty()) return 0;
-        return (int) Arrays.stream(inner.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .count();
+    /**
+     * Número de itens declarados: tamanho do array ou do objeto. A contagem antiga separava o texto
+     * por vírgula, e um item como "clientes, inclusive menores" contava como dois. Um escalar
+     * (texto solto) conta como um item se não estiver em branco.
+     */
+    private int countEntries(String storedJson) {
+        JsonNode node = Json.readTree(storedJson);
+        if (node.isMissingNode() || node.isNull()) return 0;
+        if (node.isContainer()) return node.size();
+        return node.asString("").isBlank() ? 0 : 1;
     }
 }

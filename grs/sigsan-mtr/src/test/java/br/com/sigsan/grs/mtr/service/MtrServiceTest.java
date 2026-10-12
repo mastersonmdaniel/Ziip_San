@@ -25,6 +25,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
 import java.math.BigDecimal;
@@ -80,6 +83,8 @@ class MtrServiceTest {
         transporter.setCnpj("12ABC34501DE35");
         destination = entity(new WasteDestination(), "00000000-0000-0000-0000-000000000003");
         destination.setCnpj("11222333000181");
+        // Falha fechada: sem lista de classes aceitas, nenhum MTR sai para o destinador.
+        destination.setAcceptedWasteClasses("[\"TESTE-001\",\"OUTRA-001\"]");
         wasteClass = entity(new WasteClass(), "00000000-0000-0000-0000-000000000004");
         wasteClass.setCode("TESTE-001");
 
@@ -242,6 +247,35 @@ class MtrServiceTest {
         assertThatThrownBy(() -> service.createMtr(new CreateMtrRequest(UUID.randomUUID(), transporter.getId(),
                 destination.getId(), wasteClass.getId(), BigDecimal.ONE, null, null, null, null, null)))
                 .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Generator not found");
+    }
+
+    @ParameterizedTest(name = "classes aceitas [{0}] -> erro, nenhum MTR")
+    @NullSource
+    @ValueSource(strings = {"", "  ", "[]", "null", "{}", "\"TESTE-001\""})
+    @DisplayName("falha fechada: lista nula, vazia ou que não é array não aceita qualquer classe")
+    void missingAcceptedClassesFailsClosed(String accepted) {
+        destination.setAcceptedWasteClasses(accepted);
+        assertThatThrownBy(this::create).isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("sem classes aceitas válidas")
+                .hasMessageContaining(destination.getId().toString());
+        Mockito.verify(mtrRepo, Mockito.never()).save(any());
+    }
+
+    @ParameterizedTest(name = "classes aceitas [{0}] -> erro")
+    @ValueSource(strings = {"TESTE-001,OUTRA-001", "[TESTE-001]", "[1,2]", "[\"TESTE-001\", 7]", "[\"\"]"})
+    @DisplayName("ilegível, CSV ou array com item que não é texto: erro, formato antigo não vale mais")
+    void unreadableAcceptedClassesFails(String accepted) {
+        destination.setAcceptedWasteClasses(accepted);
+        assertThatThrownBy(this::create).isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("sem classes aceitas válidas");
+        Mockito.verify(mtrRepo, Mockito.never()).save(any());
+    }
+
+    @Test
+    @DisplayName("array JSON de textos com a classe: MTR emitido")
+    void acceptedClassArrayAllowsEmission() {
+        destination.setAcceptedWasteClasses("[\"OUTRA-001\", \"TESTE-001\"]");
+        assertThat(create().getStatus()).isEqualTo(MtrStatus.EMITTED);
     }
 
     @Test

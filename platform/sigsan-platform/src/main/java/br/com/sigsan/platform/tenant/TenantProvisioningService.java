@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +52,14 @@ public class TenantProvisioningService {
             "pg_toast",
             "pg_temp",
             "pg_toast_temp");
+
+    /**
+     * Hash bcrypt completo ({@code $2a$}, {@code $2b$} ou {@code $2y$}, custo com dois digitos, 22
+     * caracteres de sal e 31 de hash). A versao anterior prefixava "$2a$12$" ao valor recebido: um hash
+     * ja completo virava "$2a$12$$2a$12$...", que nenhum verificador aceita, e o admin do tenant
+     * nascia sem conseguir entrar.
+     */
+    private static final Pattern BCRYPT_HASH = Pattern.compile("^\\$2[aby]\\$\\d{2}\\$[./A-Za-z0-9]{53}$");
 
     private final DataSource dataSource;
     private final JdbcTemplate jdbcTemplate;
@@ -83,6 +92,9 @@ public class TenantProvisioningService {
             // lido como erro de infra e tentaria rollback de um schema que nunca foi criado.
             throw e;
         }
+        // Validado antes de qualquer DDL, pelo mesmo motivo: hash invalido descoberto so no seed do
+        // admin deixaria schema, migrations e catalogo feitos para um tenant sem acesso.
+        requireBcryptHash(request.getAdminPasswordHash());
         UUID tenantId = request.getTenantId() != null ? request.getTenantId() : UUID.randomUUID();
 
         // O rollback so pode remover o que ESTA invocacao criou. Reprovisionar um tenant
@@ -413,7 +425,7 @@ public class TenantProvisioningService {
             ps.setString(2, request.getAdminUsername());
             ps.setString(3, request.getAdminEmail());
             ps.setString(4, request.getAdminName());
-            ps.setString(5, "$2a$12$" + request.getAdminPasswordHash());
+            ps.setString(5, request.getAdminPasswordHash());
             ps.executeUpdate();
         }
 
@@ -494,6 +506,14 @@ public class TenantProvisioningService {
         }
 
         return normalized;
+    }
+
+    private static void requireBcryptHash(String hash) {
+        // A mensagem nao repete o valor: mesmo invalido, pode ser uma senha colada no campo errado.
+        if (hash == null || !BCRYPT_HASH.matcher(hash).matches()) {
+            throw new IllegalArgumentException("Hash de senha do administrador invalido: esperado bcrypt "
+                    + "completo ($2a$, $2b$ ou $2y$, custo e 53 caracteres de sal e hash)");
+        }
     }
 
     private void dropSchema(String schemaName) {
