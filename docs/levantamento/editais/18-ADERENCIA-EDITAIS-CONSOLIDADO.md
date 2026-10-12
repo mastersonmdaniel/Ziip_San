@@ -9,7 +9,7 @@ Data: 12/10/2026. Produto Ziip SAN (código interno SIGSAN, renomeado `ziipsan` 
 portal e canais), [18g](18g-aderencia-operacao-qualidade-bi.md) (operação, qualidade da água e BI) e
 [18h](18h-aderencia-nao-funcionais-servicos-habilitacao.md) (não funcionais, serviços, POC e habilitação).
 
-As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4, atualizado pelas v2.5 a v2.10 (abaixo)
+As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4, atualizado pelas v2.5 a v2.11 (abaixo)
 ([PLANO-EXECUCAO-PDCA-R0-R9.md](../../PLANO-EXECUCAO-PDCA-R0-R9.md)) e contra as decisões do dono do produto de
 12/10/2026, registradas nos ADRs [0011](../../arquitetura/adr/ADR-0011-hospedagem-a-decidir.md) (aceito),
 [0023](../../arquitetura/adr/ADR-0023-estrategia-de-editais-e-prova-de-conceito.md),
@@ -76,6 +76,20 @@ de 233,2 (antes 215): com 4 contratados, folga de cerca de 6% até 30/09/2028 (a
 meados de agosto de 2028. Efeitos neste documento: §1, §3.2, §5.1 (ED-13, ED-20, ED-52 a ED-56, ED-63 a ED-67), §5.2,
 §5.3, §5.4, §8.1 e §8.2.
 
+**Atualização de 12/10/2026 (plano v2.11).** O dono do produto resolveu as pendências do GIS (ADR-0029, ADR-0033 e
+ADR-0034, ajustes v2.11). O perfil 3 do ADR-0029 (GIS e dados) é antecipado para dez/2026–jan/2027 e executa o núcleo
+do GIS no P1 a P3, como uma das 4 contratações; com o onboarding, entrega cerca de 16 das 22 semanas-pessoa do núcleo
+até o fim do P3, e o restante (cerca de 6) termina por volta do início de julho de 2027, durante a homologação local,
+cujas datas não mudam. Na trilha, ele chega integrado: capacidade de cerca de 251 semanas-pessoa até 30/09/2028 (antes
+247). Os limiares do gatilho da quinta contratação passam a 95% e 85%. A base da ligação na P2.23 fica confirmada; a
+rede real do piloto (redes, peças e estruturas) entra na homologação local, com ligações e imóveis anonimizados; fora do
+backoffice autenticado, imóveis e ligações só agregados por quadra ou setor com no mínimo 5 imóveis; as normas ABNT são
+compradas no P1; o DGN v8 entra por conversão assistida; e a publicação OGC autenticada por tenant (OGC API – Features e
+WMS) fica na onda B, com o WMS servidor como escopo novo da ED-67 (5 → 6). Onda B de 87,5 para 88,5; trilha de 224,8
+para 225,8; até 2028, de 260,1 para 261,1; prontidão de POC em cerca de 217,8 e trilha completa com as tarefas
+originais do P4 em cerca de 234,2: folga de cerca de 7% até 30/09/2028 e prontidão por volta de meados de agosto de
+2028. Efeitos neste documento: §1, §3.2, §4 (H6), §5.1 (ED-13, ED-55, ED-67), §5.2, §5.4, §8.1 e §8.2.
+
 **Convenções.** Esforço na escala do plano (§4): **P** até 2 dias, **M** até 1 semana, **G** mais de 1 semana, para uma
 pessoa com agentes. Para somar, P vale 0,4 semana, M vale 1 semana e G vale a estimativa da matriz de origem ou, na
 falta dela, 3 semanas; incerteza de ±30%. Um mês-pessoa equivale a 4,33 semanas. Entregas de edital levam o código
@@ -117,7 +131,11 @@ trilha completa, prontidão de POC por volta do fim de julho de 2028 e quinta co
 (§8.1). Na v2.10, o GIS do ADR-0034 eleva o total até 2028 a cerca de 260 semanas-pessoa (35 antes do P4, das quais 22
 do núcleo do GIS sobre o dono sozinho no P1 a P3, e 225 na trilha); com 4 contratados, a folga da trilha completa cai a
 cerca de 6% e a prontidão vai para meados de agosto de 2028; capacidade para o núcleo e gatilho da quinta contratação
-ficam como pendências do dono do produto (plano §2.4; §8.1).
+ficam como pendências do dono do produto (plano §2.4; §8.1). Na v2.11, o dono antecipou o perfil 3 do ADR-0029 (GIS e
+dados) para dez/2026–jan/2027, para o núcleo do GIS, e fixou o gatilho em 95% e 85%: o núcleo fica cerca de 6
+semanas-pessoa aquém no fim do P3 e termina durante a homologação local, sem mudar as datas dela; com o WMS servidor
+(+1), a trilha completa vai a cerca de 234,2 semanas-pessoa contra capacidade de cerca de 251 (folga de cerca de 7%),
+e a prontidão fica por volta de meados de agosto de 2028 (§8.1).
 
 **Habilitação.** O primeiro atestado vem do piloto, que precisa ser público, em Santa Catarina, contratado por
 dispensa ou por CPSI (LC 182/2021) e com cláusula de atestado (critério já incluído na P0.30). Desde o plano v2.7
@@ -266,7 +284,7 @@ Cerca de 1.037 das 1.415 linhas pertencem a seções críticas, e o "Item 1.1.2"
 | 2.22 Omnichannel | falha | falha | ED-42, ED-43 |
 | 2.24 App de autoatendimento nas lojas | falha | falha | ED-39 |
 | 2.26 Qualidade da água | falha | falha | ED-50, ED-51 |
-| 2.27 SIG/GIS (e implantação do GIS, 3.11.10) | falha | parcial desde a v2.10: mapa, camadas, pesquisas, temáticos, vínculo comercial e importação DWG/SHP (núcleo, P1.26 a P3.27); faltam edição web, QGIS, manobras e WFS | ED-52 (P1 a P3), ED-53 a ED-55, ED-63, ED-67 |
+| 2.27 SIG/GIS (e implantação do GIS, 3.11.10) | falha | parcial desde a v2.10: mapa, camadas, pesquisas, temáticos, vínculo comercial e importação DWG/SHP (núcleo, P1.26 a P3.27, concluído por volta do início de julho de 2027 desde a v2.11); faltam edição web, QGIS, manobras e OGC autenticado por tenant (OGC API – Features, WMS e WFS) | ED-52 (P1 a P3), ED-53 a ED-55, ED-63, ED-67 |
 | 2.28 Relatórios gerenciais | falha | parcial (P3.22) | ED-46 |
 | Item 3 Manutenção e suporte (severidades, telefone, 99,9%) | falha | parcial (P2.15 com cinco severidades, ADR-0025) | ED-05 |
 
@@ -304,7 +322,7 @@ Seções essenciais não críticas (contam nos 90%): 2.1, 2.3, 2.6, 2.16 (salvo 
 | H3 | Provedor de nuvem certificado | ISO 9001, 27001, 27017, SOC 1 e SOC 3 do provedor | não exigido | AWS `sa-east-1` gerenciada, implantada no lançamento comercial; relatórios do AWS Artifact no kit a cada proposta | ADR-0011, ADR-0033; P0.26; LC.2–LC.5; ED-03 |
 | H4 | Lote único completo | omnichannel, BI e SIG obrigatórios, sem subcontratação | idem, mais laboratório e CTI | trilha de editais com todos os módulos como componentes do produto (Superset licenciado, LLM por API como suboperador) | ADR-0026 a ADR-0028; ED-42, ED-43, ED-47, ED-50, ED-52 |
 | H5 | Balanço de 2 exercícios | exigido | exigido (empresa nova: último exercício) | empresa licitante definida e escrituração por contador já em 2026; para licitar a partir do 3º trimestre de 2029 (plano v2.8), balanços de 2027 e 2028 | P0.44; ED-02 |
-| H6 | Implantação e equipe presencial | 90 dias, 2 especialistas presenciais, técnico por 30 dias, treinamento presencial de 40 h | 60 dias, especialistas presenciais, 2 técnicos por 30 dias | implantação e treinamento remotos no piloto; equipe de 4 desenvolvedores a partir de agosto de 2027, com a quinta por gatilho de velocidade (ADR-0029, ajuste v2.9); parceiro de implantação presencial em aberto (plano §2.4); metodologia e importadores padronizados | ADR-0023 item 4; ADR-0029; ED-09, ED-11 |
+| H6 | Implantação e equipe presencial | 90 dias, 2 especialistas presenciais, técnico por 30 dias, treinamento presencial de 40 h | 60 dias, especialistas presenciais, 2 técnicos por 30 dias | implantação e treinamento remotos no piloto; equipe de 4 desenvolvedores a partir de agosto de 2027, o de GIS e dados desde dez/2026–jan/2027, com a quinta por gatilho de velocidade (ADR-0029, ajustes v2.9 e v2.11); parceiro de implantação presencial em aberto (plano §2.4); metodologia e importadores padronizados | ADR-0023 item 4; ADR-0029; ED-09, ED-11 |
 | H7 | Registro no INPI e vedação a software livre (ETP) | no ETP | — | registro do programa no INPI; bibliotecas livres não tornam o produto software livre | P0.44; ED-02 |
 | H8 | Hospedagem local e licença instalável | VISAN pode assumir a infraestrutura, com desconto na mensalidade (TR 4.4.12); acesso administrativo da TI (TR 4.15) | licenças instaláveis em qualquer servidor (SG-020); Windows Server 2022+ | instância dedicada gerenciada; pacote em contêiner só como cláusula de reversão, em Linux ou em Windows Server 2022+ com Docker no WSL2, homologado uma vez; acesso da TI do órgão só na instância dedicada | ADR-0024 (ajuste v2.5); ED-04 |
 | H9 | Metas contratuais acima do padrão | 99% em horário comercial; cinco severidades (2 a 32 h); dados em 10 dias úteis; consulta por 120 dias | 99,9%; cinco severidades (2 a 160 h) com multa; monitoramento 24/7 | nível "Setor Público" contratável; o padrão do produto não muda; plantão da S1 com a equipe do ADR-0029, ativo até 31/01/2028 | ADR-0025; ADR-0029; P2.15, P3.16, P3.22; ED-05 |
@@ -356,7 +374,7 @@ cobre.
 | ED | Entrega | Origem | Requisitos cobertos | POC | Fase/onda | Esf. | Dependências | ADR |
 |---|---|---|---|---|---|---|---|---|
 | ED-12 | Cadastro comercial ampliado e catálogos auxiliares: RG e filiação cifrados com finalidade, anexos, faixa de logradouro, unidades por órgão pagador, termo de adesão, catálogos da SAMAE 2.8.10, endereço alternativo | 18d-E1, 18d-E2; 18e §2.19; 18f (destino cadastro) | TR-134, TR-135, TR-141, TR-151, TR-577–TR-580, TR-585, TR-611, TR-777; SG-070, SG-071, SG-078, SG-083, SG-091, SG-095–SG-144 (22 catálogos), SG-554–SG-557, SG-562, SG-591, SG-1004 | V c; S 2.8 crít. | P4 onda A | 2 | P1.3, P1.20 | — |
-| ED-13 | Ligações de água e esgoto como entidade, com catálogos técnicos e atualização pelo atendimento | 18d-E3 | TR-578; SG-098, SG-100, SG-101, SG-106, SG-117, SG-118, SG-124, SG-125, SG-136, SG-555 | V c; S 2.8 crít. | P4 onda A; base da ligação (`service_connections`) na P2.23 desde a v2.10 | 2,5 (+0,5 na P2.23) | P1.3, P3.4, P2.23 | 0034 |
+| ED-13 | Ligações de água e esgoto como entidade, com catálogos técnicos e atualização pelo atendimento | 18d-E3 | TR-578; SG-098, SG-100, SG-101, SG-106, SG-117, SG-118, SG-124, SG-125, SG-136, SG-555 | V c; S 2.8 crít. | P4 onda A; base da ligação (`service_connections`) na P2.23 desde a v2.10, confirmada na v2.11 | 2,5 (+0,5 na P2.23) | P1.3, P3.4, P2.23 | 0034 |
 | ED-14 | Hidrometria: parque, estoque, lacre, instalação, retirada, troca, aferição, validade Inmetro com OS em lote | 18d-E4; 18f §2.15 | TR-156–TR-170, TR-591, TR-592; SG-099, SG-113, SG-114, SG-135, SG-157–SG-172, SG-568, SG-569 | V d; S 2.9 crít. | P4 onda A | 3 | P2.5, P3.4, P1.20 | — |
 | ED-15 | Ciclo de leitura: roteiro com reordenação, sequenciamento, boletim de contingência, regra de condomínio, autoleitura | 18d-E5; 18e-E17 (parte) | TR-172, TR-173, TR-188, TR-190; SG-174, SG-175, SG-185, SG-186, SG-190, SG-192, SG-755 | S 2.10 crít. | P4 onda A | 2 | P2.5, P2.7, P3.3 | — |
 | ED-16 | Recadastramento: lote, coleta no app, aprovação campo a campo, aplicação e cinco relatórios | 18d-E11 | TR-234, TR-684–TR-688; SG-232, SG-910–SG-914 | S 2.11 e 2.28 crít. | P4 onda A | 3 | ED-18, P1.3 | — |
@@ -413,14 +431,14 @@ cobre.
 | ED-52 | Núcleo do GIS (ADR-0034; GIS-01 a GIS-06 e GIS-08): modelo de papel topológico fixo com classes, tipos e catálogo de fábrica extensíveis, histórico e metadados de precisão; topologia persistida e validação contínua; pacotes revisados e "rede na data"; vínculo feição ↔ imóvel ↔ ligação ↔ ramal; tiles vetoriais, simbologia padrão e mapa web de consulta (camadas, WMS, pesquisas, seleção); temáticos, precisão, OS no mapa e relatório de extensão | 18d-E12 | TR-534, TR-1009–TR-1024, TR-1054, TR-1057–TR-1063; SG-491, SG-823–SG-836, SG-842, SG-869–SG-883, SG-888, SG-1365 | S 2.27 crít. | **P1 a P3** (P1.26, P1.27, P2.21 a P2.23, P3.25, P3.27; antes, onda B) | 17,5 | P0.4, P0.19, P1.3, P1.9, P2.5, P3.1, P3.4, P3.22 | 0028 (b), 0034 |
 | ED-53 | GIS: edição web completa (GIS-09): editor de feições, cadastro de unidades operacionais, integração com o cadastro (ligação desenhada vira ligação), permissões por camada e operação, projetos e obras, pacotes de projeto e de as-built, retroalimentação pelas OS | 18d-E13 | TR-154, TR-626, TR-652, TR-1011, TR-1025–TR-1047, TR-1050–TR-1053; SG-148–SG-152, SG-154, SG-837–SG-866 (exceto os da ED-54) | S 2.8 e 2.27 crít. | P4 onda A (antes B; v2.10) | 5 | ED-52, ED-13, ED-36 | 0028 (b), 0034 |
 | ED-54 | Traçados, isolamento e manobras (GIS-11): montante e jusante, setores de manobra, válvulas a fechar, imóveis e clientes sensíveis afetados, aviso pela ED-41, OS em lote, período de desabastecimento, áreas de influência e polígonos de roteamento | 18d-E14 | TR-1036, TR-1055, TR-1056, TR-1064, TR-1065; SG-153, SG-852, SG-859, SG-867, SG-868, SG-887, SG-889 | S 2.27 crít. | P4 onda B | 5 (antes 4) | ED-52, ED-36, ED-41 | 0028 (b), 0034 |
-| ED-55 | Migração do cadastro técnico e acesso QGIS: importador DWG (via DXF pelo ODA File Converter), DXF, SHP e GPKG com staging, perfis e relatório ISO 19157 no núcleo (GIS-07, P3.26); na trilha, QGIS por role individual com escrita só por views `INSTEAD OF` que gravam no pacote, projeto gerado e endpoint próprio (GIS-10), e importação ampliada com DGN, INP, casamento de unidades e implantação em três etapas (GIS-18) | 18d-E15; 18h-E8 (M88) | TR-1066, TR-1067; SG-884–SG-886, SG-1334–SG-1363; ED-080 | S 2.27 e 3.11.10 crít.; implantação VISAN | P3 (P3.26) e P4 onda B | 4 + 5 (antes 4) | P1.9, P1.25, ED-52; P3.8 para o QGIS | 0028 (b), 0010, 0034 |
+| ED-55 | Migração do cadastro técnico e acesso QGIS: importador DWG (via DXF pelo ODA File Converter), DXF, SHP e GPKG com staging, perfis e relatório ISO 19157 no núcleo (GIS-07, P3.26); na trilha, QGIS por role individual com escrita só por views `INSTEAD OF` que gravam no pacote, projeto gerado e endpoint próprio (GIS-10), e importação ampliada com DGN v7, INP do EPANET e do SWMM, casamento de unidades e implantação em três etapas (GIS-18); DGN v8 por conversão assistida na implantação, para DWG ou DXF (v2.11) | 18d-E15; 18h-E8 (M88) | TR-1066, TR-1067; SG-884–SG-886, SG-1334–SG-1363; ED-080 | S 2.27 e 3.11.10 crít.; implantação VISAN | P3 (P3.26) e P4 onda B | 4 + 5 (antes 4) | P1.9, P1.25, ED-52; P3.8 para o QGIS | 0028 (b), 0010, 0034 |
 | ED-56 | Ativos, manutenção de rede e inventário regulatório (GIS-19): cadastro com vínculo patrimonial e códigos MCPSB da NR 16/2026, extensão por subdivisão, conciliação com a contabilidade, manutenção preventiva e corretiva ligada ao GIS, risco e plano de renovação | 18g-E-ATIVOS | TR-155 (parte patrimonial), TR-1010 (parte); SG-1180 | — | P4 onda C | 4 (antes 3) | ED-53, ED-54, ED-32, ED-36 | 0034 |
 | ED-57 | Integrações de cadastro: beneficiários de Bolsa Família e BPC por lista com base legal (sem API pública) | 18d-E16 (parte) | TR-144 | V (avaliável) | P4 onda C | 1 | P1.5 | — |
 | ED-63 | Hidráulica (GIS-12): EPANET (água) e SWMM 5.2 (esgoto e drenagem) gerados da topologia, com demanda do consumo faturado; importação de `.inp` EPANET e SWMM como pacote; mapeamento tipo → elemento por tenant | ADR-0034 (decisão 8); 19e | SG-1339 (parte INP); exportação EPANET em 9 de 12 editais de software (19e) | — | P4 onda B (nova na v2.10) | 4 | ED-52, ED-64 | 0034 |
 | ED-64 | Drenagem no GIS (GIS-13): catálogo, regras de conectividade, declividade e sentido, estado de conservação, foto e inspeção (NR 12/2025 da ANA), sub-bacias para o SWMM, relatório do cadastro de drenagem | ADR-0034 (decisão 1); 18g-E-RES (camadas) | TR-1048 | — | P4 onda B (nova na v2.10) | 3 | ED-52, ED-53 | 0034 |
 | ED-65 | Resíduos sólidos no GIS (GIS-14): contêineres, PEV, ecopontos, lixeiras, pontos de coleta e de descarte irregular, setores e rotas de coleta sobre logradouros com pgRouting, imóvel ligado ao setor para a taxa | ADR-0034 (decisão 1); 18g-E-RES (camadas) | TR-1049; SG-1340 (parte de resíduos) | — | P4 onda B (nova na v2.10) | 3 | ED-52, ED-25 | 0034, 0010 |
 | ED-66 | Campo GIS no app de campo (GIS-15): pacote offline por área, coleta e edição como deltas em pacote revisado, GNSS/RTK externo, fotos e croqui, conflito por atributo | ADR-0034 (decisões 3 e 5); 18d-E13 (acesso móvel) | TR-1011 (parte móvel) | — | P4 onda B (nova na v2.10) | 5 | ED-18, ED-20, ED-53 | 0026, 0030, 0034 |
-| ED-67 | Exportação, devolução da base e OGC (GIS-16, GIS-17): GPKG, SHP, DXF, KML, GeoJSON, CSV e perfis Corsan e Saneago com metadados MGB; devolução da base ao fim do contrato; OGC API – Features (partes 1 a 3) e WFS 2.0 com `Transaction` no pacote | ADR-0034; 19e (F10) | SG-1357, SG-1365 (KML); devolução da base (19e, F10) | S 2.27 crít. (WFS) | P4 onda B (nova na v2.10) | 5 | ED-52 | 0034, 0010 |
+| ED-67 | Exportação, devolução da base e OGC autenticado por tenant (GIS-16, GIS-17): GPKG, SHP, DXF, KML, GeoJSON, CSV e perfis Corsan e Saneago com metadados MGB; devolução da base ao fim do contrato; OGC API – Features (partes 1 a 3), WMS servidor (desde a v2.11) e WFS 2.0 com `Transaction` no pacote, sem acesso anônimo; fora do backoffice autenticado, imóveis e ligações só agregados por quadra ou setor com no mínimo 5 imóveis | ADR-0034; 19e (F10) | SG-1357, SG-1365 (KML); devolução da base (19e, F10); WMS (expresso em 5 de 12 editais, 19e) | S 2.27 crít. (WFS) | P4 onda B (nova na v2.10) | 6 (antes 5; +1 do WMS) | ED-52 | 0034, 0010 |
 
 **ERP (ADR-0028, item i, ajustado na v2.5: "núcleo saneamento + integração")**
 
@@ -441,9 +459,9 @@ a aderência total exige as três.
 |---|---|---|---|---|
 | Antes do P4 | o que o piloto precisa e o que os ADRs puseram no P0 a P3 (o ED-03 passou ao lançamento comercial na v2.7, sem mudar o total; o núcleo do GIS entrou na v2.10) | ED-02 (P0); ED-03 (lançamento, LC.2); ED-01 parte (P1, P3); ED-21 (P2); ED-05 parte (P2, P3); ED-45 (P3); ED-52 (P1 a P3); ED-55 parte (P3); ED-13 parte (P2) | 35,3 (v2.9: 13,3) | fim do P3: VISAN ≥ 50 de 162; SAMAE 2.4 e 2.5 sem falha |
 | A | itens que pontuam nas alíneas b a p e r da VISAN ou são críticos no SAMAE nas áreas comercial, de campo e de suporte; habilitação (e-Sfinge); edição web do GIS (cadastro de unidades da SAMAE 2.8) | ED-05 (resto), 06, 07, 08, 12–20, 22–27, 29–38, 41, 46, 53, 58, 62 | 120,9 (v2.9: 116,4) | VISAN ≥ 120; SAMAE sem falha em 2.4–2.19, 2.28 e Item 3 |
-| B | canais digitais, BI, qualidade e GIS (VISAN q, s, t; SAMAE 2.22, 2.24, 2.26, 2.27 e "Item 0") e itens de proposta | ED-01 (resto), 04, 28, 39, 40, 42, 43, 47–51, 54, 55 (resto), 63–67 | 87,5 (v2.9: 74,5) | VISAN ≥ 146 e nenhuma falha crítica no SAMAE, em dois ensaios seguidos (prontidão de POC) |
+| B | canais digitais, BI, qualidade e GIS (VISAN q, s, t; SAMAE 2.22, 2.24, 2.26, 2.27 e "Item 0") e itens de proposta | ED-01 (resto), 04, 28, 39, 40, 42, 43, 47–51, 54, 55 (resto), 63–67 | 88,5 (v2.10: 87,5; v2.9: 74,5) | VISAN ≥ 146 e nenhuma falha crítica no SAMAE, em dois ensaios seguidos (prontidão de POC) |
 | C | aderência total fora das POCs e serviços de implantação | ED-09, 10, 11, 44, 56, 57, 59 | 16,4 (v2.9: 15,4) | requisitos restantes da matriz viva atendidos ou com pedido de esclarecimento registrado |
-| **Total até 2028** | | **65** | **260,1 (≈ 60 meses-pessoa; v2.9: 219,6)** | |
+| **Total até 2028** | | **65** | **261,1 (≈ 60 meses-pessoa; v2.10: 260,1; v2.9: 219,6)** | |
 | 2029, sob demanda (fora do total) | compras (parte retirada da ED-58), ED-60 (RH) e ED-61 (orçamento) | 2 e parte da ED-58 | 9 | — |
 
 Distribuição das 13,3 semanas antes do P4: P0 1,4 (P0.44 e serviços do provedor, que passaram da P0.27 à LC.2 na
@@ -499,6 +517,18 @@ e P3 17,5, total 35,3. Com optantes, o P3 passa a 19 e a onda A a 119,4.
 | **Trilha do P4** | **206,3** | **224,8** | +18,5 |
 | **Até 2028** | **219,6** | **260,1** | +40,5 |
 
+**Recálculo da v2.11** (semanas-pessoa; ADR-0034, ajuste v2.11): só a ED-67 muda.
+
+| Entrega | v2.10 | v2.11 | Motivo |
+|---|---|---|---|
+| ED-67 | B, 5 | B, 6 | WMS servidor autenticado por tenant, decidido junto da OGC API – Features (antes, só por exceção no ADR-0010) |
+| **Onda B** | **87,5** | **88,5** | +1 |
+| **Trilha do P4** | **224,8** | **225,8** | +1 |
+| **Até 2028** | **260,1** | **261,1** | +1 |
+
+O total antes do P4 (35,3) não muda; o núcleo do GIS (22) passa a ser executado pelo perfil 3 do ADR-0029, antecipado
+para dez/2026–jan/2027 (§8.1).
+
 ### 5.3 De onde veio cada ED
 
 | Matriz | Entrega de origem → ED |
@@ -525,10 +555,13 @@ compras continuando em 2029. Continuam em aberto:
 - **Contingência da NFAg-e** (manual e XSD oficiais): define se a conta de campo sai com a chave fiscal (ADR-0031,
   item 4), antes da ED-19.
 - **DPoP no Keycloak** para ligar o token ao aparelho do app de campo (ADR-0030, item 6), a conferir no início da ED-18.
-- **GIS (v2.10, plano §2.4):** capacidade para o núcleo do GIS antes da homologação local (até 27/11/2026); base da
-  ligação antecipada da ED-13; rede do piloto, sem imóveis, no ambiente local; piso de agregação para publicação
-  externa; compra das normas para a curadoria do catálogo; conversão de DGN v8 (com a licença da ODA); WMS servidor e
-  WCS só por exceção no ADR-0010, quando um edital exigir; `pgrouting`, `pg_jsonschema`, `pgaudit` e SRID 5396 no RDS.
+- **GIS (v2.10; resolvidos na v2.11, plano §2.4):** capacidade para o núcleo (perfil 3 do ADR-0029 antecipado para
+  dez/2026–jan/2027); base da ligação na P2.23 (confirmada); rede do piloto na homologação local (redes, peças e
+  estruturas reais; ligações e imóveis anonimizados, com coordenada deslocada ou agregada por quadra); piso de
+  agregação (5 imóveis por quadra ou setor, classe c); normas compradas no início do P1 (P1.28); DGN v8 por conversão
+  assistida na implantação; WMS servidor na ED-67, autenticado por tenant. Continuam em aberto: a falta de cerca de 6
+  semanas-pessoa no núcleo do GIS no fim do P3 (plano §2.4, até 27/11/2026); WCS só por exceção no ADR-0010, quando
+  um edital exigir; `pgrouting`, `pg_jsonschema`, `pgaudit` e SRID 5396 no RDS.
 
 ---
 
@@ -621,10 +654,10 @@ no CI.
 | Item | Semanas-pessoa | Com uma pessoa e agentes (≈ 44 semanas produtivas por ano) |
 |---|---|---|
 | Acréscimos ao P0–P3 (P0.44, P1.25, P2.20, P2.15, P3.15, P3.16, P3.22, P3.23) | 13,3 | cerca de 50% do P2 e 80% do P3, fases já sem folga |
-| Núcleo do GIS antes do P4 (ADR-0034, v2.10: P1.26, P1.27, P2.21 a P2.23, P3.25 a P3.27) | 22 | cerca de meio ano de uma pessoa sobre o P1 a P3, sem folga; não cabe nas datas atuais sem capacidade adicional (pendência do plano §2.4) |
+| Núcleo do GIS antes do P4 (ADR-0034, v2.10: P1.26, P1.27, P2.21 a P2.23, P3.25 a P3.27) | 22 | cerca de meio ano de uma pessoa sobre o P1 a P3, sem folga; na v2.11, executado pelo perfil 3 do ADR-0029, antecipado para dez/2026–jan/2027: com entrada em janeiro e onboarding, cerca de 16 até 28/05/2027, faltam cerca de 6, concluídas por volta do início de julho de 2027, durante a homologação local |
 | Tarefas originais do P4 que continuam (P4.1, P4.2, P4.5, P4.7, P4.8) | ≈ 8,4 | já ocupavam metade do P4 (ago–dez/2027, cerca de 20 semanas) |
-| Trilha de editais, ondas A e B (prontidão de POC), com a ED-58 e a ED-53 na onda A e o GIS da trilha na onda B | 208,4 (v2.9: 190,9; v2.5: 183,4; v2.4: 177,9) | cerca de 4,7 anos: prontidão depois de 2031 |
-| Trilha completa (ondas A, B e C) | 224,8 (v2.4 a v2.9: 206,3) | cerca de 5,1 anos |
+| Trilha de editais, ondas A e B (prontidão de POC), com a ED-58 e a ED-53 na onda A e o GIS da trilha na onda B | 209,4 (v2.10: 208,4; v2.9: 190,9; v2.5: 183,4; v2.4: 177,9) | cerca de 4,8 anos: prontidão depois de 2031 |
+| Trilha completa (ondas A, B e C) | 225,8 (v2.10: 224,8; v2.4 a v2.9: 206,3) | cerca de 5,1 anos |
 | Fora da trilha: compras, RH e orçamento (2029, sob demanda) | 9 | — |
 
 Para a prontidão de POC (ondas A e B mais as tarefas originais do P4, cerca de 199 semanas-pessoa; na v2.5, 192; na
@@ -678,21 +711,38 @@ tarefas originais do P4. Mesmas premissas.
 | Dono e 3 contratados | ≈ 147 (≈ −32%) | ≈ 195 (≈ −16%) | por volta do início de novembro de 2028 | por volta de meados de dezembro de 2028, com lançamento, atestado e primeira licitação cerca de dois meses e meio depois |
 
 Com a demanda nova, fechar a trilha em 30/09/2028 exige velocidade de pelo menos 94% da planejada sem a quinta pessoa
-(233,2/247) e de 85% com ela (233,2/275). Os limiares do gatilho abaixo (90% e 80%) deixam de garantir a data; a revisão
-(limiares de 95% e 85%, aceitar até cerca de 3 semanas de atraso no lançamento ou retirar GIS-14, GIS-17 e GIS-19, cerca
-de 10 semanas, para 2029) é pendência do dono do produto até o M8 (plano §2.4).
+(233,2/247) e de 85% com ela (233,2/275). Os limiares do gatilho do ajuste v2.9 (90% e 80%) deixaram de garantir a data;
+a revisão foi decidida na v2.11 (abaixo).
+
+**Capacidade com o perfil 3 antecipado (plano v2.11; ADR-0029, ajuste v2.11).** O perfil 3 (GIS e dados) entra em
+dez/2026–jan/2027 para executar o núcleo do GIS no P1 a P3 e é um dos 4 contratados. Antes do P4, com entrada em
+04/01/2027, ele tem cerca de 20 semanas produtivas até 28/05/2027 e entrega cerca de 16 semanas-pessoa, descontadas as
+4 do onboarding, contra 22 do núcleo: faltam cerca de 6 (cerca de 2,5 com entrada em 07/12/2026), concluídas por volta
+do início de julho de 2027, durante a homologação local, que fica nas datas originais. Na trilha, ele chega integrado e
+só três contratados fazem onboarding. A demanda inclui o WMS servidor da ED-67 (+1): cerca de 217,8 semanas-pessoa na
+prontidão de POC e 234,2 na trilha completa com as tarefas originais do P4. Mesmas premissas.
+
+| Equipe a partir de agosto de 2027 | Até 30/06/2028, frente a 217,8 | Até 30/09/2028, frente a 234,2 | Prontidão de POC | Trilha completa |
+|---|---|---|---|---|
+| **Dono e 4 contratados, o perfil 3 desde janeiro de 2027 (decidido na v2.11)** | ≈ 190 (≈ −13%) | ≈ 251 (≈ +7%) | por volta de meados de agosto de 2028 (faixa de julho a setembro) | por volta do início de setembro de 2028, com folga de cerca de 7% |
+| Dono, 4 contratados e a quinta pelo gatilho (entrada até o fim de janeiro de 2028) | ≈ 207 (≈ −5%) | ≈ 279 (≈ +19%) | por volta de meados de julho de 2028 | por volta do início de agosto de 2028 |
+| Dono e 3 contratados (uma vaga de agosto não preenchida; o perfil 3 entre eles) | ≈ 151 (≈ −31%) | ≈ 199 (≈ −15%) | por volta de meados de novembro de 2028 | por volta de meados de dezembro de 2028, com lançamento, atestado e primeira licitação cerca de dois meses e meio depois |
+
+Fechar a trilha em 30/09/2028 exige velocidade de pelo menos 93% da planejada sem a quinta pessoa (234,2/251) e de 84%
+com ela (234,2/279), que os limiares decididos na v2.11 (95% e 85%) cobrem com margem de 1 a 2 pontos.
 
 **Gatilho da quinta contratação.** A velocidade medida é a soma das estimativas do §5 das tarefas da trilha aceitas no
 período (tarefa G em andamento pela fração dos critérios de aceite cumpridos), dividida pela capacidade planejada do
-período com as premissas acima. É apurada em 01/11/2027 sobre 02/08 a 31/10/2027 (cerca de 40 semanas-pessoa
-planejadas) e de novo ao fim de cada onda. A quinta pessoa, com entrada até o fim de janeiro de 2028, acrescenta
-cerca de 28 semanas-pessoa até 30/09/2028 (capacidade de cerca de 275 com velocidade plena).
+período com as premissas acima. É apurada em 01/11/2027 sobre 02/08 a 31/10/2027 (cerca de 44 semanas-pessoa
+planejadas desde a v2.11, com o perfil 3 já integrado; antes, 40) e de novo ao fim de cada onda. A quinta pessoa, com
+entrada até o fim de janeiro de 2028, acrescenta cerca de 28 semanas-pessoa até 30/09/2028 (capacidade de cerca de 279
+com velocidade plena). Limiares da v2.11 (antes, 90% e 80%):
 
 | Velocidade medida (02/08 a 31/10/2027) | Capacidade efetiva até 30/09/2028, sem e com a quinta pessoa | Ação |
 |---|---|---|
-| 90% ou mais | ≈ 222 ou mais, sem a quinta | segue com 4; trilha completa até 30/09/2028 |
-| de 80% a menos de 90% | ≈ 198 a 222 sem a quinta; ≈ 220 a 248 com ela | quinta vaga aberta em 01/11/2027 (perfil 5 do ADR-0029, QA e POC, salvo outra frente apontada pela medição); trilha completa mantida até 30/09/2028 |
-| menos de 80% | menos de ≈ 220, mesmo com a quinta | quinta vaga aberta e M12, M13 e M14 a M16 registrados de novo no plano |
+| 95% ou mais | ≈ 239 ou mais, sem a quinta | segue com 4; trilha completa até 30/09/2028 |
+| de 85% a menos de 95% | ≈ 214 a 239 sem a quinta; ≈ 237 a 265 com ela | quinta vaga aberta em 01/11/2027 (perfil 5 do ADR-0029, QA e POC, salvo outra frente apontada pela medição); trilha completa mantida até 30/09/2028 |
+| menos de 85% | menos de ≈ 237 com a quinta, margem que some a partir de cerca de 84% | quinta vaga aberta e M12, M13 e M14 a M16 registrados de novo no plano |
 
 **Recomendações.**
 
@@ -701,9 +751,10 @@ cerca de 28 semanas-pessoa até 30/09/2028 (capacidade de cerca de 275 com veloc
    o P2 ou o P3 atrasar, escorregam primeiro, nesta ordem: a meta de ensaio do P3 (o ensaio continua, só a meta sai do aceite), os itens do ADR-0025 da P3.15 e da P3.16
    e as tarefas fora do caminho crítico já listadas no plano; P2.20 e P3.22 ficam, porque o paralelo (GL.2) depende
    delas.
-2. **Contratar no prazo.** A equipe foi decidida (ADR-0029, ajuste v2.9): 4 desenvolvedores a partir de agosto de
-   2027. O plano de contratação e o orçamento, com o custo estimado da quinta vaga de contingência, precisam estar
-   aprovados no M8 (28/05/2027), com a seleção em junho e julho, para que os quatro entrem até 31/08/2027. A velocidade
+2. **Contratar no prazo.** A equipe foi decidida (ADR-0029, ajustes v2.9 e v2.11): 4 desenvolvedores, o perfil 3
+   (GIS e dados) desde dez/2026–jan/2027 e os outros três a partir de agosto de 2027. O plano de contratação e o
+   orçamento desses três, com o custo estimado da quinta vaga de contingência, precisam estar aprovados no M8
+   (28/05/2027), com a seleção em junho e julho, para que entrem até 31/08/2027. A velocidade
    medida em 01/11/2027 decide a quinta contratação (gatilho acima); a do P0 ao P3 serve para recalibrar as estimativas.
 3. **Seguir as ondas.** A antes de B antes de C; dentro de cada onda, primeiro o que é crítico no SAMAE e pontua na
    VISAN. A onda C (implantação, frota, ativos, telefonia, Bolsa Família) não pesa na POC e soma cerca de 15 semanas.
@@ -720,9 +771,12 @@ cerca de 28 semanas-pessoa até 30/09/2028 (capacidade de cerca de 275 com veloc
    2029; a meta de 2028 do ADR-0029 deixou de valer. A trilha inteira passa ao caminho até o atestado: atraso além de
    setembro de 2028 move o lançamento, o atestado e a primeira licitação na mesma medida, e a recalibração a cada onda
    (item 5) passa a proteger essa data.
-7. **GIS antes do P4** (plano v2.10). O núcleo do GIS (22 semanas-pessoa) não cabe no P1 a P3 com uma pessoa: decidir a
-   capacidade antes do início do P1 (plano §2.4, até 27/11/2026). Na trilha, revisar o gatilho da quinta contratação até
-   o M8, porque a folga caiu para cerca de 6%.
+7. **GIS antes do P4** (plano v2.10 e v2.11). O núcleo do GIS (22 semanas-pessoa) não cabia no P1 a P3 com uma pessoa;
+   o dono antecipou o perfil 3 do ADR-0029 para dez/2026–jan/2027 (v2.11). Com entrada em janeiro, faltam cerca de 6
+   semanas-pessoa no fim do P3, concluídas durante a homologação local: decidir o tratamento até 27/11/2026 (plano
+   §2.4) e abrir o recrutamento do perfil 3 logo depois de definidos custo e regime (até 30/10/2026), porque cada
+   semana de atraso na entrada aumenta a falta em cerca de 0,9 semana-pessoa. Na trilha, o gatilho foi revisto para 95%
+   e 85%, e a folga fica em cerca de 7%.
 
 ### 8.2 Outros riscos
 
@@ -743,9 +797,10 @@ cerca de 28 semanas-pessoa até 30/09/2028 (capacidade de cerca de 275 com veloc
 | Publicação nas lojas por tenant (ED-39) | Prazos de revisão fora do controle do Ziip; recusa da Apple a app gerado de modelo | Conta de desenvolvedor do prestador; pipeline por tenant; publicar com antecedência à POC (ADR-0026) |
 | Autenticação nos apps incompatível com o BFF de cookie (ADR-0006) | Retrabalho no app e risco de segurança | Decidida no ADR-0030: navegador do sistema com PKCE, token no armazenamento seguro, dispositivo registrado no app de campo (ED-18, ED-39) |
 | QGIS com conexão direta ao banco (ED-55) | Caminho de escrita fora da `api` | Desde a v2.10 (ADR-0034), escrita só por views `INSTEAD OF` que gravam no pacote de edição, com validação e revisão por outra pessoa; endpoint próprio com TLS fora do pooler; role individual, auditoria, acesso por rede restrita, pentest (ADR-0028, b) |
-| Núcleo do GIS sobre o dono sozinho no P1 a P3 (ADR-0034, v2.10) | Homologação local, entrada da equipe, lançamento, atestado e primeira licitação deslocados em até cerca de seis meses | Decisão de capacidade antes do P1 (plano §2.4; recomendada: antecipar o perfil 3 do ADR-0029); núcleo fora do caminho do paralelo; escorregam primeiro os temáticos (P3.27) e a parte não essencial do mapa (P3.25) |
-| Folga da trilha reduzida a cerca de 6% pelo GIS (v2.10) | Lançamento de outubro de 2028 sem margem frente à incerteza de ±30% | Gatilho da quinta contratação revisto até o M8; GIS-14, GIS-17 e GIS-19 como primeiros candidatos a sair da trilha; recalibração a cada onda |
-| Catálogo do GIS com valores sem norma conferida | Peça errada como padrão; perda de confiança da prestadora na POC | Itens marcados como valor de referência a validar, fora do padrão ativo até a curadoria; perfis Corsan e Saneago como referência; compra das normas |
+| Núcleo do GIS pelo perfil 3 antecipado (ADR-0034 e ADR-0029, v2.11): cerca de 16 das 22 semanas-pessoa até o fim do P3 | Temáticos, parte do mapa e do importador concluídos por volta do início de julho de 2027, com cerca de 3 semanas de margem até o aceite da homologação local; seleção lenta aumenta a falta | Tratamento da falta decidido até 27/11/2026 (plano §2.4); custo e regime do perfil 3 até 30/10/2026 e recrutamento logo depois; núcleo fora do caminho do paralelo, com as datas da homologação local mantidas; escorregam primeiro os temáticos (P3.27) e a parte não essencial do mapa (P3.25) |
+| Folga da trilha de cerca de 7% com o GIS e o WMS (v2.11; 6% na v2.10) | Lançamento de outubro de 2028 com margem pequena frente à incerteza de ±30% | Gatilho da quinta contratação com limiares de 95% e 85% (v2.11); GIS-14, GIS-17 e GIS-19 (cerca de 11 semanas) como primeiros candidatos a sair da trilha; recalibração a cada onda |
+| Catálogo do GIS com valores sem norma conferida | Peça errada como padrão; perda de confiança da prestadora na POC | Itens marcados como valor de referência a validar, fora do padrão ativo até a curadoria; perfis Corsan e Saneago como referência; normas compradas no início do P1 (P1.28, v2.11) |
+| Rede real do piloto no ambiente local (ADR-0033, ajuste v2.11) | Reidentificação de imóvel pela ligação ou pelo ramal; infraestrutura do cliente fora do controle dele | Só redes, peças e estruturas reais; ligações, ramais e imóveis anonimizados na origem, com coordenada deslocada ou agregada por quadra e método registrado; autorização no termo de cooperação e acesso restrito; demonstração só com massa sintética |
 | Superset como segunda pilha (ED-47) | Operação, atualização e superfície de ataque a mais; contestação de "autoria própria" | Role por tenant com teste de isolamento; modo síncrono; exceção no ADR-0010; pedido de esclarecimento-modelo (ADR-0027) |
 | Licença do ODA File Converter | Etapa de migração do DWG sem ferramenta | Conferência no P1 (P1.25); alternativa: SDK licenciado da ODA, com custo |
 | Impugnação ou esclarecimento sem efeito | A comissão avalia pelo texto do edital | Demonstrar a regra legal e citar a norma; registrar a recusa para recurso |

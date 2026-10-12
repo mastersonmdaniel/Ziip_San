@@ -40,6 +40,19 @@
   da área separada ou depois do fim do ciclo. Restauração e retenção imutável do XML autorizado são testadas no ambiente
   local só com XML sintéticos assinados com certificado de teste. Fora disso, a exceção do ajuste v2.8 não muda;
   decisão do dono do produto.
+- **Ajuste de 12/10/2026 (GIS, v2.11), antes de qualquer implementação:** **rede do piloto na homologação local**, como
+  regra de leitura do item 5, e não como exceção a ele. Item 5 diz que dado do piloto só entra anonimizado na origem;
+  no cadastro técnico (ADR-0034), o critério passa a ser se a feição se liga a pessoa. (a) **Entram reais** as redes,
+  peças e estruturas do piloto (tubulações, nós, válvulas, hidrantes, PV, elevatórias, reservatórios, ETA, ETE e
+  demais ativos), que não são dado pessoal; por serem informação de infraestrutura do cliente, entram com autorização
+  no termo de cooperação da homologação local (plano P0.30) e com acesso restrito, e não vão para o ambiente de
+  demonstração, que continua só com massa sintética. (b) **Entram sintéticos ou anonimizados na origem** as ligações,
+  os ramais, os cavaletes e os imóveis, cuja posição aponta o imóvel e, por ele, o titular: código substituto no lugar
+  da matrícula, como no restante do cadastro, e coordenada deslocada dentro da quadra, sem coincidir com o lote de
+  origem, ou agregada no centroide da quadra, com o método registrado por camada no lote de importação; lote com camada
+  pessoal sem o método registrado é recusado (plano P0.45, P3.26 e GL.1). (c) O teste de varredura da base local
+  continua valendo sem mudança, e a exceção do ajuste v2.8 (certificado e XML da homologação fiscal) não se amplia.
+  Fica cumprida a pendência "rede do piloto no ambiente local" do plano §2.4; decisão do dono do produto.
 
 ## Contexto
 

@@ -3,7 +3,7 @@
 Data: 12/10/2026. Origem: ADR-0002, ADR-0015, plano `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` §2.3, relatórios
 `docs/levantamento/08`, `10`, `11`, `13`, `14`, `17` e o código. Fases (ADR-0001): P1 tarifa social (R3), P2 ciclo
 (R4), P3 arrecadação, corte e portal (R5a/R5b, R7), P4 cobrança e Pix Automático (R8, R5c) e, na trilha de editais,
-emissão em campo e almoxarifado (ADR-0031, ADR-0032).
+emissão em campo e almoxarifado (ADR-0031, ADR-0032); GIS no P1 a P3 (ADR-0034; plano v2.11).
 
 > **Não é parecer jurídico.** Os limites vêm dos relatórios do projeto, com as ressalvas deles ("NÃO CONFIRMADO", fonte
 > secundária). Limite do sistema é trava mínima, não validação da escolha do cliente.
@@ -204,6 +204,19 @@ versão, motivo e aprovação (ADR-0031, item 6).
 | `inv.negative_regularization_days` | prazo para regularizar item negativo por entrada ou ajuste com justificativa | dias | 5 dias úteis | teto de fábrica a definir na ED-58; só reduz | c | OPE | P4 | novo |
 | `inv.inventory_cycle_days` | intervalo máximo entre inventários do almoxarifado | dias | 90 | teto de fábrica a definir na ED-58; só reduz | c | OPE+FIN | P4 | novo |
 | `inv.costing_method` | método de custeio do material apropriado na OS | enum | custo médio ponderado | métodos suportados pelo produto | b | FIN | P4 | novo |
+
+### GIS e cadastro técnico (ADR-0034; plano v2.11)
+
+Travado (classe a): fora do backoffice autenticado (portal, serviços WMS e OGC públicos ou entregues a terceiros,
+relatórios externos, compartilhamento com prefeitura), imóvel, ligação, ramal e cavalete nunca são publicados por
+ponto, porque a coordenada ligada a matrícula ou titular é dado pessoal (LGPD, art. 5º, I); rede e ativos não são dado
+pessoal e podem ser publicados, com a restrição de infraestrutura crítica de `GIS-CADASTRO-TECNICO.md` §12, item 7.
+Decisão do dono do produto de 12/10/2026 (plano v2.11). Os demais parâmetros `gis.*` (`GIS-CADASTRO-TECNICO.md` §3.10)
+entram neste grupo na P1.26.
+
+| Chave | Descrição | Tipo | Sug. | Limite | Cl. | Apr. | Fase | Código |
+|---|---|---|---|---|---|---|---|---|
+| `gis.public_aggregation_min_units` | mínimo de imóveis por célula de agregação (quadra ou setor) em toda publicação de dado de imóvel ou ligação fora do backoffice autenticado, inclusive temáticos de consumo e inadimplência; célula abaixo do mínimo não é publicada | int | 5 | piso 5, fixado pelo Ziip SAN (decisão do dono do produto, plano v2.11); só amplia | c | DPO | P3 | novo (core `V9_6`, P1.26; aplicado na P3.27 e na ED-67) |
 
 ---
 

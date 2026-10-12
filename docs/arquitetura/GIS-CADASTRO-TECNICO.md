@@ -4,9 +4,12 @@
 - **Produto:** Ziip SAN (código interno SIGSAN, renomeado `ziipsan` na P0.33)
 - **Decisões:** [ADR-0034](adr/ADR-0034-gis-cadastro-tecnico.md) (oito decisões do dono do produto, cartões de 12/10/2026);
   ajustes v2.10 do [ADR-0028](adr/ADR-0028-escopo-funcional-ampliado-pelos-editais.md) (item b) e do
-  [ADR-0010](adr/ADR-0010-infra-nao-usada-congelada.md) (exceções)
-- **Plano:** [PLANO-EXECUCAO-PDCA-R0-R9.md](../PLANO-EXECUCAO-PDCA-R0-R9.md) v2.10 (P1.26, P1.27, P2.21 a P2.23, P3.25 a
-  P3.27; ED-13, ED-52 a ED-56 e ED-63 a ED-67 na trilha de editais)
+  [ADR-0010](adr/ADR-0010-infra-nao-usada-congelada.md) (exceções); ajustes v2.11 do ADR-0034, do
+  [ADR-0029](adr/ADR-0029-capacidade-e-equipe-da-trilha-de-editais.md) (perfil 3 antecipado, gatilho da quinta
+  contratação) e do [ADR-0033](adr/ADR-0033-desenvolvimento-local-e-aws-no-lancamento.md) (rede do piloto na
+  homologação local), que resolvem as pendências P-1 a P-7 e o WMS da P-8 (§14.2)
+- **Plano:** [PLANO-EXECUCAO-PDCA-R0-R9.md](../PLANO-EXECUCAO-PDCA-R0-R9.md) v2.10 e v2.11 (P1.26 a P1.28, P2.21 a
+  P2.23, P3.25 a P3.27; ED-13, ED-52 a ED-56 e ED-63 a ED-67 na trilha de editais)
 - **Base:** levantamentos [19a](../levantamento/gis/19a-gisbase.md) (Gisbase/Hidrogeo e Nova Trento),
   [19b](../levantamento/gis/19b-concorrentes.md) (concorrentes), [19c](../levantamento/gis/19c-normativos-e-padroes.md)
   (normas e padrões), [19d](../levantamento/gis/19d-melhores-praticas-modelo-de-dados.md) (modelo de dados) e
@@ -36,15 +39,16 @@ redes de água, esgoto, drenagem e resíduos sólidos no mesmo banco do comercia
 3. edição por pacotes revisados, ciclo de vida e histórico temporal com consulta "rede na data";
 4. metadado de precisão por feição e meta por tenant, que separa cadastro levantado de cadastro aproximado;
 5. publicação em tiles vetoriais pela `api`, simbologia padrão do produto e mapas temáticos sobre dados comerciais;
-6. importação do cadastro existente (DWG, DXF, SHP, GPKG, depois DGN e INP) e exportação nos formatos de intercâmbio;
+6. importação do cadastro existente (DWG, DXF, SHP e GPKG no núcleo; DGN v7 e INP do EPANET e do SWMM na trilha; DGN
+   v8 por conversão assistida para DWG ou DXF) e exportação nos formatos de intercâmbio;
 7. ligação direta entre feição, ramal, ligação, imóvel, hidrômetro e OS, que sustenta manobras com aviso e OS em lote.
 
 ### 1.2 Escopo
 
 | Bloco | Conteúdo | Quando |
 |---|---|---|
-| Núcleo | modelo e catálogo (água e esgoto completos), topologia, pacotes e histórico, vínculo com o comercial, mapa web de consulta com tiles vetoriais, importador DWG/DXF/SHP/GPKG, temáticos e relatórios de precisão e extensão | P1 a P3, antes da homologação local do piloto (GIS-01 a GIS-08) |
-| Trilha de editais | edição web completa (onda A); QGIS, traçados e manobras, EPANET e SWMM, drenagem, resíduos, campo, exportação, OGC e importação ampliada (onda B); ativos e inventário regulatório (onda C) | P4, ondas A, B e C (GIS-09 a GIS-19) |
+| Núcleo | modelo e catálogo (água e esgoto completos), topologia, pacotes e histórico, vínculo com o comercial, mapa web de consulta com tiles vetoriais, importador DWG/DXF/SHP/GPKG, temáticos e relatórios de precisão e extensão | P1 a P3, antes da homologação local do piloto (GIS-01 a GIS-08), pelo perfil 3 do ADR-0029 (GIS e dados), antecipado para dez/2026–jan/2027 (v2.11); conclusão projetada por volta do início de julho de 2027, durante a homologação local (§13.6) |
+| Trilha de editais | edição web completa (onda A); QGIS, traçados e manobras, EPANET e SWMM, drenagem, resíduos, campo, exportação, OGC autenticado por tenant (OGC API – Features, WMS e WFS) e importação ampliada (onda B); ativos e inventário regulatório (onda C) | P4, ondas A, B e C (GIS-09 a GIS-19) |
 
 Os quatro domínios usam o mesmo modelo, o mesmo catálogo e a mesma topologia. Água e esgoto entram completos no
 núcleo; drenagem e resíduos têm classes e papéis previstos desde o núcleo e recebem catálogo, regras e telas na onda B
@@ -455,7 +459,8 @@ levantado.
 
 ### 3.10 Parâmetros do tenant
 
-Entram no catálogo de parâmetros (ADR-0002, core `V9_6`) e em `PARAMETROS-DO-TENANT.md` na P1.26.
+Entram no catálogo de parâmetros (ADR-0002, core `V9_6`) e em `PARAMETROS-DO-TENANT.md` na P1.26;
+`gis.public_aggregation_min_units`, com o piso decidido na v2.11, já está lá.
 
 | Chave | Descrição | Tipo | Sugestão | Limite | Cl. |
 |---|---|---|---|---|---|
@@ -467,15 +472,17 @@ Entram no catálogo de parâmetros (ADR-0002, core `V9_6`) e em `PARAMETROS-DO-T
 | `gis.accuracy_targets` | meta de exatidão por classe | tabela | ±0,10 m H e ±0,05 m V (decisão 5) | — | b |
 | `gis.basemap_provider` | mapa base padrão | enum | OpenStreetMap | Google e Bing só com licença no contrato | d |
 | `gis.style_profile` | perfil de simbologia | enum | padrão Ziip | override por tipo e estado | b |
-| `gis.public_aggregation_min_units` | mínimo de unidades por célula em publicação externa | int | a definir com o jurídico (pendência §14) | piso de fábrica; só aumenta | c |
+| `gis.public_aggregation_min_units` | mínimo de imóveis por célula (quadra ou setor) em publicação fora do backoffice autenticado (§12, item 3) | int | 5 | piso 5, decidido pelo dono do produto (v2.11); só aumenta | c |
 
 Travado (classe a): revisão por outra pessoa antes de entrar na rede em operação (decisão 3); autor não aprova o
-próprio pacote; feição em operação não é apagada.
+próprio pacote; feição em operação não é apagada; fora do backoffice autenticado, imóvel e ligação nunca publicados por
+ponto, só agregados por quadra ou setor (§12, item 3; v2.11).
 
 ### 3.11 Vínculo com o comercial: ligação
 
 A ligação ainda não é entidade (18d, linha 17; ED-13). O vínculo da decisão 4 (feição ↔ imóvel ↔ ligação ↔ ramal) exige
-uma base mínima antes do P4. A GIS-05 cria em `commercial/sigsan-registry` (`V3_7`) a tabela `service_connections`:
+uma base mínima antes do P4, confirmada pelo dono do produto na v2.11. A GIS-05 cria em `commercial/sigsan-registry`
+(`V3_7`) a tabela `service_connections`:
 ligação de água ou de esgoto (`kind`), 1:1 com o imóvel por tipo enquanto ativa, com situação pelos catálogos de
 situação de água e de esgoto que o cadastro já tem, datas e código. A ED-13 continua na onda A com o restante (catálogos
 técnicos, consumo mínimo e situação lidos da ligação no ciclo, alteração por OS); até lá, o faturamento continua lendo o
@@ -499,7 +506,13 @@ imóvel, sem mudança na P2.5. O hidrômetro continua em `metering` e se liga à
   7675 de 08/2026) gera item novo, e o anterior fica para o legado.
 - **Valores a validar.** Item sem norma conferida entra com `reference_status = REFERENCE_TO_VALIDATE` e aparece em
   relatório próprio. Nenhum item marcado assim é padrão de fábrica ativo antes da validação, que cabe à curadoria do
-  catálogo (GIS-02) com as normas compradas (pendência §14).
+  catálogo (GIS-02) com as normas compradas.
+- **Normas compradas (v2.11).** Compra no início do P1, antes do catálogo (plano P1.28, custo a estimar): NBR 12586 e
+  12587 (cadastro de água e de esgoto), 12218 (rede de distribuição), 9649 (rede coletora), 5647, 7665 e 7675 (tubos de
+  PVC e de ferro fundido dúctil) e 15561 (PE), mais as demais citadas neste §4: 17287, 15750, 15802, 5667-1 a -3,
+  12208, 12209, 12212, 12213, 12214, 12216, 12217, 12244, 7362, 7367, 14486, NBR ISO 21138-1 e -3, 8890, 9648, 10160,
+  17076 e 10004. Edição conferida no ABNT Catálogo antes da compra; arquivos fora do repositório, conforme a licença de
+  uso; norma não comprada deixa os itens dela marcados.
 - **Perfis de prestadora.** Os padrões Corsan/Aegea (Anexo A, rev. 03/2024) e Saneago (IN 00.0229.03 e modelo
   Giswater) entram como perfis de importação e exportação (mapeamento de camadas e atributos, §9.2) e como conjuntos de
   itens ativáveis, não como catálogo paralelo.
@@ -903,12 +916,17 @@ ligados a imóvel e titular), `gis.edit` (criar e editar pacotes), `gis.review` 
 | Serviço | Forma | Entrega |
 |---|---|---|
 | Cliente WMS (SG-827, TR-1014) | fonte raster do MapLibre por URL cadastrada pelo tenant | GIS-06 |
-| OGC API – Features, partes 1 a 3 (Core, CRS, Filtering/CQL2) | na `api`, com autenticação, permissões por camada e o mesmo serviço de leitura dos tiles | GIS-17 |
+| OGC API – Features, partes 1 a 3 (Core, CRS, Filtering/CQL2) | na `api`, autenticada por tenant, com permissões por camada e o mesmo serviço de leitura dos tiles | GIS-17 |
+| WMS 1.3.0 servidor (`GetCapabilities`, `GetMap`, `GetFeatureInfo`) | na `api`, autenticado por tenant, com permissões por camada e o estilo gerado de `gis_style` (§10.2); decidido na v2.11, onda B. Sem servidor de mapas novo (ADR-0010): se a renderização exigir um, só em leitura e com a exceção registrada no ADR-0010 antes da implementação | GIS-17 |
 | WFS 2.0 com Transaction (SG-1357, F10 do 19e) | fachada na `api` sobre o mesmo serviço: `GetCapabilities`, `DescribeFeatureType`, `GetFeature`; `Transaction` grava no pacote do usuário, nunca na rede em operação | GIS-17 |
-| WMS servidor e WCS | não previstos; edital que exigir abre exceção no ADR-0010 (QGIS Server ou GeoServer só em leitura) | pendência §14 |
+| WCS | não previsto; edital que exigir abre exceção no ADR-0010 | pendência §14 (P-8) |
 | OGC API – Features parte 4 (escrita) | depois de aprovada pela OGC (19c §2.4) | — |
 
-Conformidade conferida com o validador da OGC (TEAM Engine) nas partes implementadas.
+Toda publicação OGC é autenticada por tenant (decisão do dono do produto, v2.11): não há acesso anônimo, a credencial
+pertence a um usuário ou a uma integração cadastrada pelo tenant, e uma requisição nunca lê camada de outro tenant. O
+usuário do tenant com `gis.view-personal` vê as camadas pessoais pelas regras do backoffice; credencial entregue a
+terceiro (prefeitura, órgão, consultoria) e qualquer publicação pública recebem rede, ativos e camadas agregadas pela
+regra do §12, item 3. Conformidade conferida com o validador da OGC (TEAM Engine) nas partes implementadas.
 
 ---
 
@@ -941,7 +959,7 @@ remoto do ADR-0030. Entrega GIS-15, depois da ED-18 e da ED-20.
 
 | Etapa | O que faz |
 |---|---|
-| 1. Conversão | DWG (qualquer versão) → DXF pelo ODA File Converter, na etapa assistida da implantação, fora da imagem de produção (ADR-0028, item b; licença conferida na P1.25); hash do original e do convertido no lote. DXF, SHP, GPKG lidos com GDAL; DGN v7 com GDAL; DGN v8 exige conversão prévia (pendência §14); INP do EPANET e do SWMM pelo leitor da GIS-12; CSV de pontos GNSS com metadados de precisão |
+| 1. Conversão | DWG (qualquer versão) → DXF pelo ODA File Converter, na etapa assistida da implantação, fora da imagem de produção (ADR-0028, item b; licença conferida na P1.25); hash do original e do convertido no lote. DXF, SHP, GPKG lidos com GDAL; DGN v7 com GDAL; DGN v8 convertido para DWG ou DXF na etapa assistida da implantação, com ferramenta do cliente (por exemplo, MicroStation) ou da equipe, com hash do original e do convertido no lote (v2.11); INP do EPANET e do SWMM pelo leitor da GIS-12; CSV de pontos GNSS com metadados de precisão. Formatos aceitos pelo importador: DGN v7, DWG, DXF, SHP, GPKG e INP do EPANET e do SWMM, além do CSV de pontos GNSS |
 | 2. Preparação | tudo entra em `gis_import_raw` com lote, camada, `EntityHandle` (DXF), atributos e geometria original, sem tocar no cadastro; blocos do DXF como pontos de inserção com nome, escala, ângulo e atributos (`DXF_INLINE_BLOCKS=FALSE`) |
 | 3. Mapeamento | `gis_cad_layer_map`: camada, bloco ou padrão de texto → classe, tipo e item de catálogo, revisável na tela e salvo por cliente para reuso; extração de rótulos (por exemplo "DN 100 PVC") por associação espacial ao arco mais próximo, com o texto não interpretado guardado |
 | 4. Referência | identificação do SRS de origem; conversão de SAD69 e Córrego Alegre pelas grades do IBGE; coordenada local ajustada por pontos de controle com resíduo registrado; escala 1:1 e metro conferidos |
@@ -1069,10 +1087,13 @@ seleção por polígono com estatísticas, OS no mapa e temáticos (GIS-08). Rot
 2. **Separação.** Camadas técnicas e camadas ligadas a imóvel e titular são separadas na publicação: tile de imóvel ou
    ligação só para quem tem `gis.view-personal`, com atributos mínimos (id e situação), sem nome nem documento; a ficha
    completa passa pelas regras do cadastro (máscara do ADR-0008, registro de leitura da P0.11).
-3. **Publicação externa agregada.** Portal, WMS ou WFS aberto e compartilhamento com prefeitura só sem atributo
-   pessoal; temáticos de consumo e de inadimplência só agregados por quadra ou setor com número mínimo de unidades
-   (`gis.public_aggregation_min_units`, piso a definir com o jurídico, pendência §14). Ponto exato de imóvel isolado
-   reidentifica e não é publicado.
+3. **Publicação fora do backoffice autenticado** (decisão do dono do produto, v2.11). No portal, nos serviços WMS e OGC
+   públicos ou entregues a terceiros, nos relatórios externos e no compartilhamento com prefeitura, dados de imóveis e
+   de ligações (inclusive temáticos de consumo e de inadimplência) só saem agregados por quadra ou por setor, com no
+   mínimo `gis.public_aggregation_min_units` imóveis por célula: piso 5, classe c, só ampliável pelo tenant
+   (PARAMETROS-DO-TENANT, GIS). Célula abaixo do mínimo não é publicada; ponto de imóvel, de ligação, de ramal ou de
+   cavalete nunca é publicado, porque reidentifica. Rede e ativos não são dado pessoal e podem ser publicados, com a
+   ressalva de infraestrutura crítica do item 7, que tem outra base legal.
 4. **Clientes sensíveis.** O marcador de eletrodependente usado na manobra é dado de saúde (dado sensível): guardado
    como marcador mínimo, com base legal registrada, acesso restrito e registrado, nunca em tile nem em exportação
    aberta.
@@ -1081,9 +1102,14 @@ seleção por polígono com estatísticas, OS no mapa e temáticos (GIS-08). Rot
 6. **QGIS e WFS.** Mesmo perfil de acesso e mesma RLS da aplicação (19c §3.6); camada pessoal só na role autorizada.
 7. **Infraestrutura crítica** (Decreto 9.573/2018): adutoras, reservatórios, captações e válvulas de manobra não entram
    em camada aberta; publicação só com controle de acesso.
-8. **Ambiente local até o lançamento** (ADR-0033): cadastro de rede sem camada de imóveis não é dado pessoal, mas é
-   informação de infraestrutura do cliente; entra no ambiente local só com autorização escrita do piloto e restrição de
-   acesso; camada de imóveis só anonimizada na origem, como o restante do cadastro (pendência §14).
+8. **Ambiente local até o lançamento** (ADR-0033, ajuste v2.11, como regra e não como exceção de dado pessoal). Na
+   homologação local entram as redes, peças e estruturas reais do piloto, que são ativos e não dado pessoal, com
+   autorização no termo de cooperação (plano P0.30) e acesso restrito, por serem informação de infraestrutura do
+   cliente. Ligações, ramais, cavaletes e imóveis vêm sintéticos ou anonimizados na origem, com código substituto e
+   coordenada deslocada dentro da quadra, sem coincidir com o lote de origem, ou agregada no centroide da quadra, com o
+   método registrado por camada no lote (plano P0.45 e P3.26); lote com camada pessoal sem o método registrado é
+   recusado. O critério é o do item 1: entra real o que não se liga a pessoa; o que se liga entra com o vínculo desfeito
+   na origem. O ambiente de demonstração continua só com massa sintética.
 9. **Inventário de tratamento.** Cada camada pessoal com finalidade registrada no inventário (levantamento `10`) e no
    RIPD do módulo.
 
@@ -1100,12 +1126,17 @@ seleção por polígono com estatísticas, OS no mapa e temáticos (GIS-08). Rot
 | Núcleo | P3 | GIS-06, GIS-07, GIS-08 | 10 |
 | **Núcleo antes do P4** | | **8 entregas** | **22** |
 | Trilha | onda A | GIS-09 | 5 |
-| Trilha | onda B | GIS-10 a GIS-18 | 30 |
+| Trilha | onda B | GIS-10 a GIS-18 | 31 (30 na v2.10; +1 do WMS servidor na GIS-17, v2.11) |
 | Trilha | onda C | GIS-19 | 4 |
-| **Trilha** | | **11 entregas** | **39** |
-| **Total** | | **19 entregas** | **61** |
+| **Trilha** | | **11 entregas** | **40** |
+| **Total** | | **19 entregas** | **62** |
 
 ### 13.2 Núcleo antes do P4 (P1 a P3)
+
+Executado pelo perfil 3 do ADR-0029 (GIS e dados), antecipado para dez/2026–jan/2027, sob revisão do dono do produto
+(v2.11); capacidade e datas projetadas no §13.6. Se faltar capacidade no P3, escorregam primeiro a GIS-08 e a parte
+não essencial da GIS-06 (cliente WMS, medição); a GIS-07, que carrega a rede real do piloto na homologação local, vem
+antes delas.
 
 | ID | Entrega | Tarefa | Tam. | Dependências | Critérios de aceite | ED |
 |---|---|---|---|---|---|---|
@@ -1115,8 +1146,8 @@ seleção por polígono com estatísticas, OS no mapa e temáticos (GIS-08). Rot
 | GIS-04 | Pacotes de edição, revisão, ciclo de vida, travas e "rede na data" | P2.22 | G (2) | GIS-01, GIS-03 | gravação em feição `IN_SERVICE` fora de pacote aplicado recusada pelo banco, inclusive por SQL direto (teste); autor não aprova o próprio pacote, com 403 na `api` e erro no banco (teste); transições de pacote e de ciclo de vida do §3.7 e do §6.1 testadas; aprovação aplica tudo numa transação e falha desfaz tudo (teste); item com base desatualizada exige rebase (teste); trava por área impede gravação de outro pacote na área (teste); feição `PLANNED` fora de traçado e indicadores (teste); `network-at` por data de negócio e por data de registro corretos em massa com alterações datadas (teste); tela de revisão com antes e depois por feição | ED-52 |
 | GIS-05 | Ligação base e vínculo feição ↔ imóvel ↔ ligação ↔ ramal; ramais automáticos | P2.23 | G (2) | P1.3, GIS-01, GIS-04 | registry `V3_7` com `service_connections` 1:1 com o imóvel por tipo enquanto ativa, sem mudança no ciclo da P2.5 (testes do faturamento verdes); ramal sem ligação e ligação ativa sem ramal viram problema de validação (teste); ramal automático do cavalete ao arco de distribuição mais próximo até `gis.service_line_max_distance_m`, em pacote `AUTO_SERVICE_LINE`, `capture_method = AUTO_SERVICE_LINE`, nada em operação sem revisão (teste); ficha mostra ligação, imóvel, situação e hidrômetro vigente; sem `gis.view-personal`, só identificador e situação (teste LGPD) | ED-52 (1,5), ED-13 (0,5) |
 | GIS-06 | Tiles vetoriais, simbologia padrão e mapa web de consulta | P3.25 | G (4) | GIS-01 a GIS-05, P0.14, P0.36 | rota de tiles com `ST_AsMVT`; tile e cache nunca servidos a outro tenant (teste de isolamento com a chave de cache); invalidação em até 1 min após aprovação de pacote (teste); estilo MapLibre gerado de `gis_style` com o padrão do §10.2 e override do tenant sem código (teste); visualizador com camadas, rótulos, mapas base, cliente WMS, identificação, medição e pesquisas por coordenada UTM, atributo e endereço (E2E sobre SG-824 a SG-836, SG-888 e TR-1012 a TR-1024); axe sem violação séria ou crítica, nos temas claro e escuro; metas do §10.4 medidas e registradas como linha de base e propostas ao RNF | ED-52 |
-| GIS-07 | Importador DWG (via DXF), DXF, SHP e GPKG com staging, mapeamento, perfis, conversão de SRS, limpeza e relatório de qualidade | P3.26 | G (4) | P1.9, P1.20, P1.25, GIS-03, GIS-04 | etapas do §9.1 com hash do DWG e do DXF no lote; arquivo sem SRS recusado ou com escolha registrada; SAD69 e Córrego Alegre convertidos pela grade do IBGE com resíduo dentro do esperado no arquivo de referência (teste); nada no cadastro sem pacote `IMPORT` aprovado (teste); perfis Corsan Anexo A e genérico com amostras sintéticas, e Saneago com amostra a validar; rótulos extraídos com o texto não interpretado guardado; relatório ISO 19157 em PDF no pacote; 50 km sintéticos importados e validados em até 2 h na máquina de referência; reimportação não duplica (teste); camadas de contexto (bairros, quadras, lotes, logradouros) importadas | ED-55 (4) |
-| GIS-08 | Temáticos, precisão, OS no mapa e relatórios do cadastro | P3.27 | G (2) | GIS-06, P2.5, P3.1, P3.4, P3.22 | temático configurável com legenda automática e filtro por categoria; cenários SG-873 a SG-883 e TR-1060 a TR-1063 sobre massa sintética (teste por cenário); temático de precisão com "levantado na meta", "levantado fora da meta" e "aproximado", e relatório por classe e método (decisão 5); OS no mapa com filtros (SG-491, TR-534); seleção por polígono com estatísticas (TR-1059); relatório de extensão por domínio, função, material, DN, década e setor, em qualquer data, com soma igual ao cálculo geodésico (teste); temático de consumo e inadimplência compartilhado só agregado pelo mínimo do parâmetro (teste) | ED-52 |
+| GIS-07 | Importador DWG (via DXF), DXF, SHP e GPKG com staging, mapeamento, perfis, conversão de SRS, limpeza e relatório de qualidade | P3.26 | G (4) | P1.9, P1.20, P1.25, GIS-03, GIS-04 | etapas do §9.1 com hash do DWG e do DXF no lote; arquivo sem SRS recusado ou com escolha registrada; SAD69 e Córrego Alegre convertidos pela grade do IBGE com resíduo dentro do esperado no arquivo de referência (teste); nada no cadastro sem pacote `IMPORT` aprovado (teste); perfis Corsan Anexo A e genérico com amostras sintéticas, e Saneago com amostra a validar; rótulos extraídos com o texto não interpretado guardado; relatório ISO 19157 em PDF no pacote; 50 km sintéticos importados e validados em até 2 h na máquina de referência; reimportação não duplica (teste); camadas de contexto (bairros, quadras, lotes, logradouros) importadas; DGN v8 aceito só depois da conversão assistida para DWG ou DXF, com hash do original e do convertido (v2.11); rede real do piloto (redes, peças e estruturas) importada na homologação local, com ligações, ramais, cavaletes e imóveis só sintéticos ou anonimizados, e lote com camada pessoal sem o método de anonimização registrado recusado (teste; §12, item 8) | ED-55 (4) |
+| GIS-08 | Temáticos, precisão, OS no mapa e relatórios do cadastro | P3.27 | G (2) | GIS-06, P2.5, P3.1, P3.4, P3.22 | temático configurável com legenda automática e filtro por categoria; cenários SG-873 a SG-883 e TR-1060 a TR-1063 sobre massa sintética (teste por cenário); temático de precisão com "levantado na meta", "levantado fora da meta" e "aproximado", e relatório por classe e método (decisão 5); OS no mapa com filtros (SG-491, TR-534); seleção por polígono com estatísticas (TR-1059); relatório de extensão por domínio, função, material, DN, década e setor, em qualquer data, com soma igual ao cálculo geodésico (teste); fora do backoffice autenticado, temático e relatório com imóveis ou ligações só agregados por quadra ou setor com no mínimo `gis.public_aggregation_min_units` imóveis (piso 5), célula de 4 imóveis não publicada e nenhum ponto de imóvel ou ligação (teste) | ED-52 |
 
 ### 13.3 Trilha de editais (P4)
 
@@ -1130,8 +1161,8 @@ seleção por polígono com estatísticas, OS no mapa e temáticos (GIS-08). Rot
 | GIS-14 | Resíduos sólidos | B | G (3) | GIS-02, GIS-06, ED-25 | catálogo do §4.5 carregado; contêineres, PEV, ecopontos, lixeiras, pontos de coleta e de descarte irregular com foto e OS de limpeza; setores de coleta; rotas sobre o grafo de logradouros com pgRouting (sequência, extensão, tempo); imóvel ligado ao setor para a taxa (ED-25); veículo por catálogo até a ED-59; TR-1049; camadas de resíduos da importação (SG-1340, parte) | ED-65 |
 | GIS-15 | Campo GIS no app Capacitor | B | G (5) | ED-18, ED-20, GIS-09 | §8 com teste instrumentado: pacote offline por área, edição como deltas em pacote `FIELD`, reenvio sem duplicar, conflito por atributo na fila; GNSS externo por Bluetooth com tipo de solução e PDOP; as-built recusado sem RTK fixo dentro da meta; altitude convertida no servidor; fotos com posição, azimute e hash varridas; croqui com amarrações; dispositivo registrado e bloqueio remoto (ADR-0030); jornada sem rede em aparelho Android | ED-66 |
 | GIS-16 | Exportação e devolução da base | B | G (2) | GIS-06 | formatos e perfis do §9.3 com teste de leitura em GDAL e QGIS; metadado MGB em toda exportação; exportação com camada pessoal registrada; devolução do §9.4 dentro do prazo no ensaio de saída; SG-1365 por KML | ED-67 (2) |
-| GIS-17 | OGC API – Features e WFS 2.0 | B | G (3) | GIS-04, GIS-06 | partes 1 a 3 da OGC API – Features e WFS 2.0 (consulta e `Transaction` no pacote) na `api`, com permissões por camada; conformidade conferida no TEAM Engine nas partes implementadas; consumo pelo QGIS e por cliente WFS de teste; SG-1357; nenhum componente novo (ADR-0010) | ED-67 (3) |
-| GIS-18 | Importação ampliada e implantação do GIS | B | G (2) | GIS-07, GIS-12 | DGN v7, INP e CSV de pontos GNSS; DGN v8 pela conversão decidida (§14); casamento de unidades por matrícula ou endereço com fila de revisão (SG-1349); conciliação base cadastral × desenho (SG-1356); plano de implantação em três etapas (SG-1334) e roteiro de treinamento (SG-884, SG-885); migração de amostra de rede em até 60 dias no ensaio | ED-55 (2) |
+| GIS-17 | OGC autenticado por tenant: OGC API – Features, WMS e WFS 2.0 | B | G (4; 3 na v2.10, +1 do WMS servidor na v2.11) | GIS-04, GIS-06 | partes 1 a 3 da OGC API – Features, WMS 1.3.0 (`GetCapabilities`, `GetMap`, `GetFeatureInfo`, com o estilo de `gis_style`) e WFS 2.0 (consulta e `Transaction` no pacote) na `api`, sem acesso anônimo, autenticados por tenant e com permissões por camada; requisição de um tenant nunca lê camada de outro (teste); credencial de terceiro e publicação pública só com rede, ativos e camadas agregadas pelo §12, item 3 (teste); conformidade conferida no TEAM Engine nas partes implementadas; consumo pelo QGIS e por clientes WMS e WFS de teste; SG-1357; nenhum componente novo (ADR-0010; se o WMS exigir servidor de mapas, só em leitura e com exceção registrada antes) | ED-67 (4) |
+| GIS-18 | Importação ampliada e implantação do GIS | B | G (2) | GIS-07, GIS-12 | DGN v7, INP do EPANET e do SWMM e CSV de pontos GNSS; DGN v8 pela conversão assistida da implantação (§9.1, v2.11); casamento de unidades por matrícula ou endereço com fila de revisão (SG-1349); conciliação base cadastral × desenho (SG-1356); plano de implantação em três etapas (SG-1334) e roteiro de treinamento (SG-884, SG-885); migração de amostra de rede em até 60 dias no ensaio | ED-55 (2) |
 | GIS-19 | Ativos, manutenção e inventário regulatório | C | G (4) | GIS-09, GIS-11, ED-32, ED-36 | códigos MCPSB por feição e extensão por subdivisão da NR 16/2026; conciliação GIS × patrimônio exportada à ED-32; manutenção preventiva e corretiva ligada à feição; risco por probabilidade × consequência com plano de renovação; bens reversíveis (NR 3/2023); TR-155, TR-1010, SG-1180 | ED-56 |
 
 ### 13.4 Mapa entre entregas GIS e ED
@@ -1148,39 +1179,54 @@ seleção por polígono com estatísticas, OS no mapa e temáticos (GIS-08). Rot
 | ED-64 (nova) | — | GIS-13, drenagem | onda B | 3 |
 | ED-65 (nova) | — | GIS-14, resíduos sólidos | onda B | 3 |
 | ED-66 (nova) | — | GIS-15, campo GIS | onda B | 5 |
-| ED-67 (nova) | — | GIS-16 e GIS-17, exportação, devolução e OGC | onda B | 5 |
+| ED-67 (nova) | — | GIS-16 e GIS-17, exportação, devolução e OGC autenticado por tenant (Features, WMS e WFS) | onda B | 6 (5 na v2.10) |
 
 ### 13.5 Esforço
 
-| Bloco | v2.9 | v2.10 | Diferença |
-|---|---|---|---|
-| Antes do P4 (P0 a P3) | 13,3 | 35,3 | +22 (núcleo do GIS) |
-| Onda A | 116,4 | 120,9 | +5 (ED-53) −0,5 (ED-13) |
-| Onda B | 74,5 | 87,5 | −4 (ED-52) −5 (ED-53) +1 (ED-54) +1 (ED-55) +20 (ED-63 a ED-67) |
-| Onda C | 15,4 | 16,4 | +1 (ED-56) |
-| Trilha do P4 | 206,3 | 224,8 | +18,5 |
-| Até 2028, com o P0 a P3 | 219,6 | 260,1 | +40,5 |
-| Prontidão de POC (ondas A e B e tarefas originais do P4, ≈ 8,4) | ≈ 199 | ≈ 216,8 | +17,5 |
-| Trilha completa e tarefas originais do P4 | ≈ 215 | ≈ 233,2 | +18,5 |
+| Bloco | v2.9 | v2.10 | v2.11 | Diferença (v2.9 → v2.11) |
+|---|---|---|---|---|
+| Antes do P4 (P0 a P3) | 13,3 | 35,3 | 35,3 | +22 (núcleo do GIS) |
+| Onda A | 116,4 | 120,9 | 120,9 | +5 (ED-53) −0,5 (ED-13) |
+| Onda B | 74,5 | 87,5 | 88,5 | −4 (ED-52) −5 (ED-53) +1 (ED-54) +1 (ED-55) +20 (ED-63 a ED-67) +1 (WMS servidor na ED-67, v2.11) |
+| Onda C | 15,4 | 16,4 | 16,4 | +1 (ED-56) |
+| Trilha do P4 | 206,3 | 224,8 | 225,8 | +19,5 |
+| Até 2028, com o P0 a P3 | 219,6 | 260,1 | 261,1 | +41,5 |
+| Prontidão de POC (ondas A e B e tarefas originais do P4, ≈ 8,4) | ≈ 199 | ≈ 216,8 | ≈ 217,8 | +18,5 |
+| Trilha completa e tarefas originais do P4 | ≈ 215 | ≈ 233,2 | ≈ 234,2 | +19,5 |
 
-GIS no total: 61 semanas-pessoa (22 antes do P4 e 39 na trilha), contra 20 das ED-52 a ED-56 na v2.9.
+GIS no total: 62 semanas-pessoa (22 antes do P4 e 40 na trilha), contra 20 das ED-52 a ED-56 na v2.9 e 61 na v2.10.
 
 ### 13.6 Efeito na capacidade
 
-- **Núcleo antes do P4, sobre o dono do produto sozinho.** O P1, o P2 e o P3 já não tinham folga (plano §5 e §6). Com
-  cerca de 44 semanas produtivas por ano, as 22 semanas-pessoa do núcleo equivalem a cerca de 26 semanas de calendário
-  de uma pessoa. Mantidas as datas, não cabem: sem capacidade adicional, a homologação local do piloto (jun–jul/2027)
-  escorrega para cerca de dez/2027–jan/2028, e, como o ADR-0029 condiciona a entrada da equipe à homologação, a
-  trilha, o lançamento (opção A), o atestado e a primeira licitação escorregam na mesma medida. O núcleo não está no
-  caminho do faturamento paralelo, mas disputa a mesma pessoa. A forma de absorver é pendência do dono (§14, P-1).
-- **Trilha com 4 contratados** (ADR-0029, ajuste v2.9; mesmas premissas: dono a 0,7, onboarding de 8 semanas a 50%):
-  capacidade até 30/09/2028 de cerca de 247 semanas-pessoa contra cerca de 233,2: folga de cerca de 6% (antes, 15%),
-  bem dentro da incerteza de ±30%; trilha completa por volta do início de setembro de 2028. Prontidão de POC (≈ 216,8)
-  por volta de meados de agosto de 2028 (faixa de julho a setembro), em vez do fim de julho. Com 5 contratados desde a
-  entrada, cerca de 299 (+28%); com 3, cerca de 195 (−16%), trilha completa por volta de dezembro de 2028.
-- **Gatilho da quinta contratação.** Com a demanda nova, fechar a trilha em 30/09/2028 sem a quinta pessoa exige
-  velocidade de pelo menos 94% da planejada (233,2/247), e com ela, de pelo menos 85% (233,2/275). Os limiares do
-  ADR-0029 (90% e 80%) deixam de garantir a data: pendência do dono (§14, P-2).
+Na v2.10, o núcleo (22 semanas-pessoa, cerca de 26 semanas de calendário de uma pessoa) caía sobre o dono do produto
+sozinho no P1 a P3, fases sem folga, e deslocaria a homologação local para cerca de dez/2027–jan/2028; na trilha, a
+capacidade de cerca de 247 semanas-pessoa até 30/09/2028 dava folga de cerca de 6% e os limiares do gatilho (90% e 80%)
+deixavam de garantir a data. A v2.11 resolve as duas pendências (P-1 e P-2, §14.2). Premissas do ADR-0029: semanas
+produtivas descontados feriados e recesso; dono a 0,7 na trilha; onboarding de 8 semanas a 50% (perda de cerca de 4
+semanas-pessoa por contratado).
+
+- **Núcleo antes do P4, pelo perfil 3 antecipado.** Com entrada em 04/01/2027, o perfil 3 tem cerca de 21 semanas de
+  calendário até 28/05/2027 (fim do P3), cerca de 20 produtivas, e entrega cerca de 16 semanas-pessoa: 2 no P1, 6 no P2
+  e 8 no P3, contra 5, 7 e 10 do núcleo. **Faltam cerca de 6 semanas-pessoa** (cerca de 27% do núcleo); com entrada em
+  07/12/2026, cerca de 2,5. Datas projetadas, na ordem das entregas: GIS-01 e GIS-02 por volta da primeira quinzena de
+  março de 2027 (M6 em 29/01/2027); GIS-03 a GIS-05 por volta do fim de abril (M7 em 26/03/2027); GIS-06 a GIS-08 por
+  volta do início de julho de 2027 (M8 em 28/05/2027), durante a homologação local e cerca de 3 semanas antes do M10,
+  margem menor que a incerteza de ±30% do núcleo (cerca de 6,6). O núcleo não está no caminho do faturamento paralelo:
+  M9 e M10 ficam nas datas originais, e M6 a M8 também, salvo a parte do GIS. O tratamento da falta é pendência do dono
+  (§14.2, P-9). O dono continua com as tarefas não GIS do P1 a P3 e soma a seleção, o pareamento e a revisão do perfil
+  3.
+- **Trilha com 4 contratados, o perfil 3 já integrado.** Só os outros 3 fazem onboarding a partir de 02/08/2027:
+  capacidade de cerca de 251 semanas-pessoa até 30/09/2028 (antes 247) e de cerca de 190 até 30/06/2028 (antes 186).
+  Contra a trilha completa de cerca de 234,2 (com o WMS servidor, +1), folga de cerca de 7%, bem dentro da incerteza de
+  ±30%; trilha completa por volta do início de setembro de 2028; prontidão de POC (cerca de 217,8) por volta de meados
+  de agosto de 2028 (faixa de julho a setembro), cerca de uma semana antes da estimativa da v2.10. Com a quinta pessoa
+  pelo gatilho, cerca de 279 (+19%); com uma das vagas de agosto não preenchida (3 contratados, o perfil 3 entre eles),
+  cerca de 199 (−15%), trilha completa por volta de meados de dezembro de 2028.
+- **Gatilho da quinta contratação (v2.11): limiares de 95% e 85%.** Fechar a trilha em 30/09/2028 exige velocidade de
+  pelo menos 93% da planejada sem a quinta pessoa (234,2/251) e de 84% com ela (234,2/279). A partir de 95%, segue com
+  4; abaixo de 95%, a quinta vaga é aberta em 01/11/2027; abaixo de 85%, a vaga é aberta e M12, M13 e M14 a M16 são
+  registrados de novo. Medição de 02/08 a 31/10/2027, com cerca de 44 semanas-pessoa planejadas, reaplicada ao fim de
+  cada onda.
 
 ---
 
@@ -1190,29 +1236,39 @@ GIS no total: 61 semanas-pessoa (22 antes do P4 e 39 na trilha), contra 20 das E
 
 | Risco | Efeito | Mitigação |
 |---|---|---|
-| Núcleo do GIS (≈ 22 semanas-pessoa) sobre o dono sozinho no P1 a P3, fases sem folga | homologação local, trilha, lançamento e atestado deslocados em até cerca de seis meses | decisão P-1 antes do início do P1; núcleo fora do caminho crítico do paralelo; escorregam primeiro GIS-08 e a parte não essencial da GIS-06 (cliente WMS, medição), nunca a P2.20 e a P3.22 |
-| Folga da trilha cai de cerca de 15% para cerca de 6% | lançamento de outubro de 2028 sem margem frente à incerteza | gatilho recalibrado (P-2); recalibração ao fim de cada onda; ordem A → B → C; GIS-14, GIS-17 e GIS-19 como primeiros candidatos a sair da trilha se a velocidade cair |
+| Núcleo do GIS (≈ 22 semanas-pessoa) pelo perfil 3 antecipado (v2.11): ≈ 16 até 28/05/2027 com o onboarding; faltam ≈ 6 | GIS-06 a GIS-08 concluídas por volta do início de julho de 2027, com cerca de 3 semanas de margem até o M10, menos que a incerteza do núcleo; seleção lenta aumenta a falta (≈ 0,9 semana-pessoa por semana de atraso na entrada) | P-9 até 27/11/2026; custo e regime do perfil 3 até 30/10/2026 e recrutamento aberto em seguida; núcleo fora do caminho crítico do paralelo, com M9 e M10 mantidos; escorregam primeiro GIS-08 e a parte não essencial da GIS-06 (cliente WMS, medição), nunca a P2.20 e a P3.22; critérios de aceite automatizados reduzem o tempo de revisão do dono |
+| Folga da trilha de cerca de 7% (v2.11; 15% na v2.9) | lançamento de outubro de 2028 com margem pequena frente à incerteza | gatilho com limiares de 95% e 85% (P-2, resolvida); recalibração ao fim de cada onda; ordem A → B → C; GIS-14, GIS-17 e GIS-19 (≈ 11 com o WMS) como primeiros candidatos a sair da trilha se a velocidade ficar abaixo de 85% |
 | Regra de negócio em gatilhos (topologia, validação, histórico, pacote) | erro num gatilho afeta web, QGIS, app e importação ao mesmo tempo | teste de banco por gatilho, inclusive por SQL direto; revisão de cada gatilho; pentest do caminho QGIS |
-| Catálogo com valores sem norma conferida | peça errada como padrão de fábrica; perda de confiança da prestadora | marca `REFERENCE_TO_VALIDATE`, item não ativo como padrão antes da validação, curadoria com as normas compradas (P-5), perfis Corsan e Saneago como referência |
+| Catálogo com valores sem norma conferida | peça errada como padrão de fábrica; perda de confiança da prestadora | marca `REFERENCE_TO_VALIDATE`, item não ativo como padrão antes da validação, curadoria com as normas compradas no início do P1 (plano P1.28, v2.11), perfis Corsan e Saneago como referência |
 | Qualidade do legado (DWG sem referência, sem cotas, desenho representativo) | rede aproximada tratada como levantada | `accuracy_status` e temático de precisão; relatório ISO 19157 por lote; amostragem RTK recomendada na implantação |
 | Topologia em lote lenta | importação de municípios grandes fora do prazo de implantação | snap e limpeza em rotina de conjunto no staging; meta de 50 km em 2 h medida na GIS-07 |
 | Tiles privados vazando entre tenants pelo cache | incidente de dado pessoal | chave com tenant, sem CDN pública, teste de isolamento do cache |
 | Extensões no RDS (`pgrouting`, `pg_jsonschema`, `pgaudit`) e SRID 5396 | recurso indisponível no lançamento | conferência documental na P0.26 e prática na LC.1; alternativas: validação PL/pgSQL no lugar do `pg_jsonschema`, log do PostgreSQL no lugar do pgAudit |
 | Troca do modelo atual quebra o EPANET | perda do único fluxo hoje testado | view de compatibilidade (M3), testes do builder refeitos (M4), remoção só depois de M5 |
 | Escrita do QGIS fora da `api` | caminho de alteração sem as regras da aplicação | escrita só por views que gravam no pacote, revisão obrigatória, role sem privilégio, endpoint restrito, auditoria, pentest |
-| Licença do ODA File Converter e DGN v8 | etapa de migração sem ferramenta | conferência na P1.25 (P-6); alternativa: SDK licenciado da ODA, com custo |
+| Licença do ODA File Converter e DGN v8 | etapa de migração sem ferramenta | licença conferida na P1.25; alternativa: SDK licenciado da ODA, com custo; DGN v8 por conversão assistida na implantação, com ferramenta do cliente ou da equipe (P-6, resolvida na v2.11) |
 | Mapa base Google licenciado exigido em edital | custo por visualização acima do teto do SAMAE (R$ 7.636,74/mês com Google Maps) | OpenStreetMap como padrão; Google só com licença e repasse no contrato (ED-10) |
-| Dado de rede do piloto no ambiente local | infraestrutura crítica fora do controle do cliente | autorização escrita, acesso restrito, sem camada de imóveis não anonimizada (P-7) |
+| Rede real do piloto no ambiente local (P-7, resolvida na v2.11) | infraestrutura crítica fora do controle do cliente; reidentificação de imóvel pela ponta do ramal ou do cavalete | autorização no termo de cooperação, acesso restrito; ligações, ramais, cavaletes e imóveis só sintéticos ou anonimizados na origem, com coordenada deslocada dentro da quadra ou agregada por quadra e método registrado por camada; lote sem o método recusado (§12, item 8) |
+| WMS servidor na `api` sem servidor de mapas (v2.11) | renderização mais lenta ou mais cara que o estimado (+1 semana-pessoa) | estimativa conferida no início da onda B; se exigir servidor de mapas, só em leitura e com exceção no ADR-0010 antes da implementação, com a GIS-17 reestimada |
 
 ### 14.2 Pendências para o dono do produto
 
+**Resolvidas pelo dono do produto em 12/10/2026 (cartões, plano v2.11)**
+
+| # | Pendência | Decisão | Onde foi aplicada |
+|---|---|---|---|
+| P-1 | Capacidade para o núcleo do GIS antes da homologação local | opção (b): perfil 3 do ADR-0029 (GIS e dados) antecipado para dez/2026–jan/2027, executa GIS-01 a GIS-08 no P1 a P3 sob revisão do dono; homologação local e lançamento mantidos; equipe da trilha continua com 4, das quais esta é uma. Recalculado no §13.6: faltam cerca de 6 semanas-pessoa (P-9) | ADR-0029 e ADR-0034 (ajustes v2.11); §1.2, §13.2, §13.6; plano §2.4, §4, §5 |
+| P-2 | Gatilho da quinta contratação | opção (a): limiares de 95% (abre a vaga) e 85% (datas registradas de novo), medidos de 02/08 a 31/10/2027 | ADR-0029 (ajuste v2.11); §13.6; plano §2.4, §5 |
+| P-3 | Base da ligação antecipada | confirmada na P2.23 | §3.11; plano P2.23 |
+| P-4 | Piso de agregação para publicação externa | fora do backoffice autenticado, imóveis e ligações só agregados por quadra ou setor com no mínimo 5 imóveis; rede e ativos publicáveis; `gis.public_aggregation_min_units`, classe c, piso 5 | §3.10, §12 (item 3), GIS-08, GIS-17; PARAMETROS-DO-TENANT |
+| P-5 | Compra das normas para a curadoria do catálogo | comprar no início do P1, antes do catálogo (plano P1.28, custo a estimar) | §4.1; plano P1.27, P1.28 |
+| P-6 | Conversão de DGN v8 | conversão assistida na implantação, para DWG ou DXF, com ferramenta do cliente ou da equipe; importador com DGN v7, DWG, DXF, SHP, GPKG e INP do EPANET e do SWMM | §1.1, §9.1, GIS-07, GIS-18 |
+| P-7 | Rede do piloto no ambiente local | entram redes, peças e estruturas reais; ligações, ramais, cavaletes e imóveis sintéticos ou anonimizados, com coordenada deslocada ou agregada por quadra; regra do ADR-0033, não exceção de dado pessoal | ADR-0033 (ajuste v2.11); §12 (item 8), GIS-07; plano P0.30, P0.45, P3.26, GL.1 |
+| P-8 (WMS) | WMS servidor | OGC API – Features e WMS autenticados por tenant na onda B, junto do GIS avançado (+1 semana-pessoa na GIS-17) | §7.2, GIS-17; plano ED-67 |
+
+**Em aberto**
+
 | # | Pendência | Opções | Até | Bloqueia |
 |---|---|---|---|---|
-| P-1 | Capacidade para o núcleo do GIS antes da homologação local | (a) aceitar o deslocamento: P1 a P3 e homologação local cerca de seis meses depois, com efeito em cadeia até a primeira licitação; (b) antecipar a contratação do perfil 3 do ADR-0029 (GIS e dados) para dez/2026–jan/2027, dedicado ao núcleo sob revisão do dono, o que exige ajuste do ADR-0029 (item 1) e custo a partir dessa data; (c) núcleo mínimo antes da homologação (GIS-01 a GIS-04 e GIS-06, ≈ 14) e o restante (GIS-05, GIS-07, GIS-08, ≈ 8) no início da trilha, o que altera a decisão 4. Recomendação: (b), a única que mantém a decisão 4 e as datas | 27/11/2026 (M4), antes do P1 | P1.26, P1.27; M6 a M10 |
-| P-2 | Gatilho da quinta contratação com a trilha de cerca de 233 semanas-pessoa | (a) limiares de 95% e 85% no lugar de 90% e 80%; (b) manter 90% e 80% e aceitar até cerca de 3 semanas de atraso no M14; (c) retirar da trilha GIS-14, GIS-17 e GIS-19 (≈ 10) para 2029, sob demanda | 28/05/2027 (M8) | ADR-0029; M12, M14 |
-| P-3 | Base da ligação antecipada (`service_connections` na P2.23, 0,5 semana da ED-13) | confirmar, ou ligar o ramal só ao imóvel até a onda A, o que deixa a decisão 4 parcial | 27/11/2026 | P2.23 |
-| P-4 | Piso de agregação para publicação externa (`gis.public_aggregation_min_units`) | valor definido com o jurídico | 29/01/2027 | GIS-08 |
-| P-5 | Compra das NBR 12586, 12587, 9649, 17287 e das normas de material para curadoria do catálogo | comprar no P1, ou manter os valores marcados até a primeira implantação | 29/01/2027 | ativação de itens hoje marcados a validar |
-| P-6 | Conversão de DGN v8 | conversão pelo cliente (MicroStation), ferramenta da ODA (licença a conferir na P1.25) ou exigir DGN v7/DXF | 29/01/2027 (P1.25) | GIS-18 |
-| P-7 | Rede do piloto (sem imóveis) no ambiente local para ensaio de importação | autorizar com termo e restrição de acesso, ou só dado sintético até o lançamento | 13/11/2026 (com o termo da P0.30) | GIS-07 com dado real de rede |
-| P-8 | WMS servidor e WCS (F10 do 19e, WMS expresso em 5 de 12 editais) | sob demanda, por exceção no ADR-0010, ou recusar com pedido de esclarecimento | quando um edital exigir | GIS-17 |
+| P-8 (WCS) | WCS (F10 do 19e) | sob demanda, por exceção no ADR-0010, ou recusar com pedido de esclarecimento | quando um edital exigir | — |
+| P-9 | Falta de cerca de 6 semanas-pessoa no núcleo com o perfil 3 a partir de janeiro de 2027 (§13.6) | (a) aceitar a conclusão de GIS-06 a GIS-08 durante a homologação local, por volta do início de julho de 2027, com a decisão 4 do ADR-0034 lida como "antes do aceite da homologação local (M10)"; (b) entrada do perfil 3 até 07/12/2026, com falta de cerca de 2,5 e conclusão por volta de meados de junho de 2027, o que exige seleção em até 8 semanas a partir de meados de outubro de 2026. M9 e M10 mantidos nas duas | 27/11/2026 (M4) | parte do GIS de M6 a M8 |

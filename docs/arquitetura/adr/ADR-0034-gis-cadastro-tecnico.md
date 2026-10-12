@@ -14,6 +14,33 @@
   `19d-melhores-praticas-modelo-de-dados.md`, `19e-requisitos-de-editais-gis.md`;
   `docs/levantamento/editais/18d-aderencia-cadastro-medicao-gis.md` (E12 a E16, decisões 3 e 4);
   `18-ADERENCIA-EDITAIS-CONSOLIDADO.md` (ED-13, ED-52 a ED-56); código de `intelligence/sigsan-gis`
+- **Ajuste de 12/10/2026 (GIS, v2.11), antes de qualquer implementação:** resolvidas as pendências deste ADR (plano
+  §2.4; projeto §14.2). (1) **Capacidade do núcleo** (seção "Efeito no esforço e na capacidade", item 1): o perfil 3 do
+  ADR-0029 (GIS e dados) é antecipado para dez/2026–jan/2027 e executa o núcleo (GIS-01 a GIS-08) no P1 a P3, sob
+  revisão do dono do produto, como uma das 4 contratações da trilha (ADR-0029, ajuste v2.11); homologação local e
+  lançamento mantidos. Com entrada no início de janeiro de 2027 e onboarding de 8 semanas a 50%, ele entrega cerca de 16
+  semanas-pessoa até 28/05/2027 contra 22: faltam cerca de 6 (cerca de 2,5 com entrada em 07/12/2026), e o núcleo
+  termina por volta do início de julho de 2027, durante a homologação local e antes do M10; o tratamento da falta é
+  pendência nova do plano §2.4, e a decisão 4 continua valendo até ela. (2) **Gatilho** (item 3 da mesma seção):
+  limiares de 95% e 85%, que cobrem as velocidades mínimas recalculadas (cerca de 93% sem a quinta pessoa e 84% com
+  ela). (3) **Ligação:** a antecipação da base para a P2.23 (seção "Forma") fica confirmada. (4) **Rede do piloto** na
+  homologação local: redes, peças e estruturas reais; ligações, ramais e imóveis sintéticos ou anonimizados, com
+  coordenada deslocada ou agregada por quadra (ADR-0033, ajuste v2.11). (5) **LGPD no mapa:** fora do backoffice
+  autenticado (portal, WMS e OGC públicos ou entregues a terceiros, relatórios externos), dados de imóveis e ligações só
+  agregados por quadra ou setor com no mínimo 5 imóveis; rede e ativos podem ser publicados; parâmetro
+  `gis.public_aggregation_min_units`, classe c, só ampliável, com piso 5 (`PARAMETROS-DO-TENANT.md`). (6) **Normas:** a
+  tarefa derivada "Compra das normas para curadoria do catálogo" passa a ser a P1.28 do plano, no início do P1, antes do
+  catálogo, com NBR 12586, 12587, 12218, 9649, 5647, 7665, 7675 e 15561 e as demais apontadas no projeto (§4.1), custo
+  a estimar. (7) **DGN v8:** conversão assistida na implantação, para DWG ou DXF, com ferramenta do cliente ou da
+  equipe; o importador aceita DGN v7, DWG, DXF, SHP, GPKG e INP do EPANET e do SWMM. (8) **OGC** (seção "Forma"):
+  OGC API – Features e WMS, autenticados por tenant, na onda B, junto do GIS avançado; o WMS servidor deixa de ser só
+  por exceção, é feito na `api` sem servidor de mapas novo (se a renderização exigir um, só em leitura e com exceção no
+  ADR-0010 antes da implementação) e acrescenta cerca de 1 semana-pessoa à ED-67. A tabela "Efeito no esforço e na
+  capacidade" lê-se com GIS no total de 62 semanas-pessoa (22 no núcleo, 40 na trilha: 5 na onda A, 31 na B, 4 na C),
+  trilha do P4 de 225,8, prontidão de POC de cerca de 217,8 e trilha completa de cerca de 234,2; o item 2 dela, com
+  capacidade de cerca de 251 até 30/09/2028 (o perfil 3 chega à trilha sem onboarding), folga de cerca de 7% e prontidão
+  de POC por volta de meados de agosto de 2028. As tarefas derivadas "Decisão de capacidade para o núcleo do GIS" e
+  "Revisão do gatilho da quinta contratação" ficam cumpridas; decisão do dono do produto.
 
 ## Contexto
 

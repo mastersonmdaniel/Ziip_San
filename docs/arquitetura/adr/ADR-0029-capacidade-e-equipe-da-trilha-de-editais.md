@@ -69,6 +69,31 @@
   rejeitadas as opções de 5 contratações desde a entrada, de adiar a entrada e de contratar menos de 4. **Outros
   efeitos:** "Sem a contratação" (quatro contratações) e "Margem pequena" leem-se com estes valores; a escala de
   plantão da S1 (item 5) é montada entre os quatro; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (GIS, v2.11), antes de qualquer implementação:** resolvidas as pendências de capacidade do
+  núcleo do GIS e do gatilho da quinta contratação abertas pelo ADR-0034 (plano §2.4). **Perfil 3 antecipado.** A
+  contratação do perfil 3 do item 3 (GIS e dados) é antecipada para dez/2026–jan/2027, para executar o núcleo do GIS
+  (GIS-01 a GIS-08, cerca de 22 semanas-pessoa) no P1 a P3, sob revisão do dono do produto; as datas da homologação
+  local e do lançamento não mudam. A equipe da trilha continua com 4 contratações, das quais esta é uma: os perfis 1, 2
+  e 4 entram de 02/08 a 31/08/2027, como no ajuste v2.9. A frase "Nenhuma contratação para a trilha antes do go-live"
+  do item 1 e a alternativa rejeitada "Contratar antes do go-live" passam a ter esta exceção, só para o perfil 3. O
+  onboarding do item 4 vale para ele em janeiro e fevereiro de 2027, com o dono do produto, só no ambiente local, onde
+  a rede real do piloto pode entrar por não ser dado pessoal (ADR-0033, ajuste v2.11); o custo do item 6 e a seleção do
+  item 7 do perfil 3 são decididos antes, com custo e regime até 30/10/2026 e seleção de 6 a 10 semanas a partir daí, e
+  o custo dele corre desde a entrada. **Capacidade antes do P4.** Com entrada em 04/01/2027, o perfil 3 tem cerca de 20
+  semanas produtivas até 28/05/2027 e entrega cerca de 16 semanas-pessoa, descontadas as 4 do onboarding (2 no P1, 6 no
+  P2 e 8 no P3), contra 22 do núcleo: faltam cerca de 6 (cerca de 2,5 com entrada em 07/12/2026), e o núcleo termina
+  por volta do início de julho de 2027, durante a homologação local e antes do M10; o tratamento da falta é pendência
+  do plano §2.4. **Capacidade na trilha.** O perfil 3 chega a 02/08/2027 já integrado, e só três contratados fazem
+  onboarding: com as premissas do Contexto, cerca de 251 semanas-pessoa até 30/09/2028 (antes 247) e cerca de 190 até
+  30/06/2028 (antes 186), contra cerca de 234,2 da trilha completa com as tarefas originais do P4 (com o GIS do
+  ADR-0034 e o WMS servidor decidido na v2.11) e cerca de 217,8 da prontidão de POC: folga de cerca de 7%, trilha
+  completa por volta do início de setembro de 2028 e M12 por volta de meados de agosto de 2028 (faixa de julho a
+  setembro). **Gatilho da quinta contratação.** Os limiares do ajuste v2.9 passam a **95%** (no lugar de 90%: abaixo
+  dele, a quinta vaga é aberta em 01/11/2027) e **85%** (no lugar de 80%: abaixo dele, a vaga é aberta e M12, M13 e M14
+  a M16 são registrados de novo), medidos de 02/08 a 31/10/2027, com cerca de 44 semanas-pessoa planejadas no período
+  (antes 40), e reaplicados ao fim de cada onda. Fechar a trilha em 30/09/2028 exige velocidade de cerca de 93% sem a
+  quinta pessoa (234,2/251) e de 84% com ela (234,2/279), que os novos limiares cobrem. Demais regras do ajuste v2.9
+  mantidas; "Sem a contratação" e "Margem pequena" leem-se com estes valores; decisão do dono do produto.
 
 ## Contexto
 
