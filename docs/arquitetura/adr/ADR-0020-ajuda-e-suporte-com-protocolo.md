@@ -21,6 +21,7 @@
   roadmap; no padrão do produto, os prazos de cada severidade seguem a política de SLA do contrato, sem multa; no
   nível Setor Público, com prazo de solução, aderência e multa (ADR-0025); o plantão da S1 passa a ter equipe pelo
   ADR-0029; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.12):** referências a equipe e capacidade sem efeito (ADR-0029 revogado).
 
 ## Contexto
 

@@ -36,6 +36,10 @@
   ISO 19157, publicada por pacote revisado. Em "O que muda no código", o segundo item lê-se pelo ADR-0034; na tabela de
   tarefas derivadas, as linhas de GIS, QGIS, etapa DWG → DXF e manobras leem-se com as fases do ADR-0034; decisão do
   dono do produto.
+- **Ajuste de 12/10/2026 (v2.12):** referências a equipe e capacidade sem efeito (ADR-0029 revogado).
+- **Ajuste de 12/10/2026 (GIS, v2.12), antes de qualquer implementação:** no item b.1, o GeoServer deixa de estar
+  congelado só para o WMS servidor da onda B (exceção no ADR-0010; ADR-0034, ajuste "GIS, v2.12"); tiles continuam
+  pela `api`, e QGIS Server continua congelado; decisão do dono do produto.
 
 ## Contexto
 

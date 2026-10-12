@@ -53,6 +53,7 @@
   pessoal sem o método registrado é recusado (plano P0.45, P3.26 e GL.1). (c) O teste de varredura da base local
   continua valendo sem mudança, e a exceção do ajuste v2.8 (certificado e XML da homologação fiscal) não se amplia.
   Fica cumprida a pendência "rede do piloto no ambiente local" do plano §2.4; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.12):** referências a equipe e capacidade sem efeito (ADR-0029 revogado).
 
 ## Contexto
 

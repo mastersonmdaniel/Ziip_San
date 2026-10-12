@@ -9,7 +9,7 @@ Data: 12/10/2026. Produto Ziip SAN (código interno SIGSAN, renomeado `ziipsan` 
 portal e canais), [18g](18g-aderencia-operacao-qualidade-bi.md) (operação, qualidade da água e BI) e
 [18h](18h-aderencia-nao-funcionais-servicos-habilitacao.md) (não funcionais, serviços, POC e habilitação).
 
-As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4, atualizado pelas v2.5 a v2.11 (abaixo)
+As matrizes foram feitas contra o plano v2.2. Este documento as lê contra o plano v2.4, atualizado pelas v2.5 a v2.12 (abaixo)
 ([PLANO-EXECUCAO-PDCA-R0-R9.md](../../PLANO-EXECUCAO-PDCA-R0-R9.md)) e contra as decisões do dono do produto de
 12/10/2026, registradas nos ADRs [0011](../../arquitetura/adr/ADR-0011-hospedagem-a-decidir.md) (aceito),
 [0023](../../arquitetura/adr/ADR-0023-estrategia-de-editais-e-prova-de-conceito.md),
@@ -90,6 +90,16 @@ para 225,8; até 2028, de 260,1 para 261,1; prontidão de POC em cerca de 217,8 
 originais do P4 em cerca de 234,2: folga de cerca de 7% até 30/09/2028 e prontidão por volta de meados de agosto de
 2028. Efeitos neste documento: §1, §3.2, §4 (H6), §5.1 (ED-13, ED-55, ED-67), §5.2, §5.4, §8.1 e §8.2.
 
+**Atualização de 12/10/2026 (plano v2.12).** Duas decisões do dono do produto. (1) Gestão de equipe e capacidade sai do
+plano: o ADR-0029 fica revogado, e este documento passa a tratar só do que será feito e de como, com o esforço por
+entrega e por onda como indicação, sem conversão em equipe. Saem as análises de capacidade, as tabelas por número de
+contratados, o gatilho da quinta contratação e os riscos de equipe (§1, §4 H6 e H9, §5.2, §5.4, §7.3, §8.1 e §8.2); a
+ED-11 fica com o plano, o material e o ambiente de treinamento. As datas de fases e marcos são metas de calendário do
+plano, e o núcleo do GIS continua no P1 a P3. As menções a equipe e capacidade nas atualizações anteriores ficam só como
+registro. (2) O WMS servidor da ED-67 passa a ser publicado pelo GeoServer (exceção no ADR-0010; ADR-0034, ajuste "GIS,
+v2.12"), com workspace e acesso ao banco por tenant e simbologia em SLD gerado da fonte única; OGC API – Features e
+WFS continuam na `api`; estimativa mantida (§5.1).
+
 **Convenções.** Esforço na escala do plano (§4): **P** até 2 dias, **M** até 1 semana, **G** mais de 1 semana, para uma
 pessoa com agentes. Para somar, P vale 0,4 semana, M vale 1 semana e G vale a estimativa da matriz de origem ou, na
 falta dela, 3 semanas; incerteza de ±30%. Um mês-pessoa equivale a 4,33 semanas. Entregas de edital levam o código
@@ -117,25 +127,13 @@ aceite de fase a partir do P3. O marco de 30/07/2027 passou a ser a homologaçã
 v2.7, ADR-0033); a primeira produção vem no lançamento comercial. Desde o plano v2.8 (opção A do lançamento), as
 licitações com POC começam no 3º trimestre de 2029.
 
-**Condição.** Recalculado nas v2.5 e v2.6 do plano, o esforço das entregas que ficam na trilha até 2028 é de cerca de
-220 semanas-pessoa (51 meses-pessoa), das quais 13 semanas caem no P0 a P3 e 206 na trilha do P4; compras, RH e
-orçamento (cerca de 9 semanas) passaram para 2029. Só a prontidão de POC (ondas A e B, §5.2, com o almoxarifado na
-onda A desde a v2.6) pede cerca de 191 semanas-pessoa, 199 com as tarefas originais do P4. Com uma pessoa e agentes, a
-prontidão chegaria por volta de 2031. Para junho de 2028 são precisas cerca de 4,6 pessoas-equivalentes a partir de
-agosto de 2027 (2,9 para dezembro de 2028). O
-ADR-0029 decidiu contratar de 4 a 5 desenvolvedores a partir de agosto de 2027, com prontidão em 30/06/2028 e
-licitações no 2º semestre de 2028 (§8). Com a opção A do lançamento (plano v2.8), essa meta passou a licitações a
-partir do 3º trimestre de 2029, com a contratação mantida; a trilha completa até 30/09/2028 pede cerca de 3,8
-pessoas-equivalentes (§8.1). Na v2.9, o dono do produto fixou a equipe em 4 contratações: folga de cerca de 15% na
-trilha completa, prontidão de POC por volta do fim de julho de 2028 e quinta contratação por gatilho de velocidade
-(§8.1). Na v2.10, o GIS do ADR-0034 eleva o total até 2028 a cerca de 260 semanas-pessoa (35 antes do P4, das quais 22
-do núcleo do GIS sobre o dono sozinho no P1 a P3, e 225 na trilha); com 4 contratados, a folga da trilha completa cai a
-cerca de 6% e a prontidão vai para meados de agosto de 2028; capacidade para o núcleo e gatilho da quinta contratação
-ficam como pendências do dono do produto (plano §2.4; §8.1). Na v2.11, o dono antecipou o perfil 3 do ADR-0029 (GIS e
-dados) para dez/2026–jan/2027, para o núcleo do GIS, e fixou o gatilho em 95% e 85%: o núcleo fica cerca de 6
-semanas-pessoa aquém no fim do P3 e termina durante a homologação local, sem mudar as datas dela; com o WMS servidor
-(+1), a trilha completa vai a cerca de 234,2 semanas-pessoa contra capacidade de cerca de 251 (folga de cerca de 7%),
-e a prontidão fica por volta de meados de agosto de 2028 (§8.1).
+**Esforço.** Com o GIS do ADR-0034 e o WMS da ED-67, o esforço estimado até 2028 é de cerca de 261 semanas-pessoa
+(±30%): cerca de 35 antes do P4 (13,3 de acréscimos da v2.4 e 22 do núcleo do GIS, no P1 a P3) e cerca de 226 na
+trilha do P4; compras, RH e orçamento (cerca de 9 semanas) passaram para 2029. A prontidão de POC (ondas A e B e as
+tarefas originais do P4) soma cerca de 217,8 semanas-pessoa, e a trilha completa com as tarefas originais do P4, cerca
+de 234,2 (§5.2, §8.1). As datas são metas de calendário do plano: prontidão de POC por volta de meados de agosto de
+2028, trilha completa até 30/09/2028 e lançamento comercial a partir de outubro de 2028; desde a v2.12, o plano não
+converte esforço em equipe (ADR-0029, revogado).
 
 **Habilitação.** O primeiro atestado vem do piloto, que precisa ser público, em Santa Catarina, contratado por
 dispensa ou por CPSI (LC 182/2021) e com cláusula de atestado (critério já incluído na P0.30). Desde o plano v2.7
@@ -284,7 +282,7 @@ Cerca de 1.037 das 1.415 linhas pertencem a seções críticas, e o "Item 1.1.2"
 | 2.22 Omnichannel | falha | falha | ED-42, ED-43 |
 | 2.24 App de autoatendimento nas lojas | falha | falha | ED-39 |
 | 2.26 Qualidade da água | falha | falha | ED-50, ED-51 |
-| 2.27 SIG/GIS (e implantação do GIS, 3.11.10) | falha | parcial desde a v2.10: mapa, camadas, pesquisas, temáticos, vínculo comercial e importação DWG/SHP (núcleo, P1.26 a P3.27, concluído por volta do início de julho de 2027 desde a v2.11); faltam edição web, QGIS, manobras e OGC autenticado por tenant (OGC API – Features, WMS e WFS) | ED-52 (P1 a P3), ED-53 a ED-55, ED-63, ED-67 |
+| 2.27 SIG/GIS (e implantação do GIS, 3.11.10) | falha | parcial desde a v2.10: mapa, camadas, pesquisas, temáticos, vínculo comercial e importação DWG/SHP (núcleo, P1.26 a P3.27); faltam edição web, QGIS, manobras e OGC autenticado por tenant (OGC API – Features e WFS na `api`, WMS pelo GeoServer desde a v2.12) | ED-52 (P1 a P3), ED-53 a ED-55, ED-63, ED-67 |
 | 2.28 Relatórios gerenciais | falha | parcial (P3.22) | ED-46 |
 | Item 3 Manutenção e suporte (severidades, telefone, 99,9%) | falha | parcial (P2.15 com cinco severidades, ADR-0025) | ED-05 |
 
@@ -322,10 +320,10 @@ Seções essenciais não críticas (contam nos 90%): 2.1, 2.3, 2.6, 2.16 (salvo 
 | H3 | Provedor de nuvem certificado | ISO 9001, 27001, 27017, SOC 1 e SOC 3 do provedor | não exigido | AWS `sa-east-1` gerenciada, implantada no lançamento comercial; relatórios do AWS Artifact no kit a cada proposta | ADR-0011, ADR-0033; P0.26; LC.2–LC.5; ED-03 |
 | H4 | Lote único completo | omnichannel, BI e SIG obrigatórios, sem subcontratação | idem, mais laboratório e CTI | trilha de editais com todos os módulos como componentes do produto (Superset licenciado, LLM por API como suboperador) | ADR-0026 a ADR-0028; ED-42, ED-43, ED-47, ED-50, ED-52 |
 | H5 | Balanço de 2 exercícios | exigido | exigido (empresa nova: último exercício) | empresa licitante definida e escrituração por contador já em 2026; para licitar a partir do 3º trimestre de 2029 (plano v2.8), balanços de 2027 e 2028 | P0.44; ED-02 |
-| H6 | Implantação e equipe presencial | 90 dias, 2 especialistas presenciais, técnico por 30 dias, treinamento presencial de 40 h | 60 dias, especialistas presenciais, 2 técnicos por 30 dias | implantação e treinamento remotos no piloto; equipe de 4 desenvolvedores a partir de agosto de 2027, o de GIS e dados desde dez/2026–jan/2027, com a quinta por gatilho de velocidade (ADR-0029, ajustes v2.9 e v2.11); parceiro de implantação presencial em aberto (plano §2.4); metodologia e importadores padronizados | ADR-0023 item 4; ADR-0029; ED-09, ED-11 |
+| H6 | Implantação e equipe presencial | 90 dias, 2 especialistas presenciais, técnico por 30 dias, treinamento presencial de 40 h | 60 dias, especialistas presenciais, 2 técnicos por 30 dias | implantação e treinamento remotos no piloto; metodologia, importadores, plano e material de treinamento padronizados; a presença exigida no edital é atendida na proposta, fora do plano de produto (plano v2.12) | ADR-0023 item 4; ED-09, ED-11 |
 | H7 | Registro no INPI e vedação a software livre (ETP) | no ETP | — | registro do programa no INPI; bibliotecas livres não tornam o produto software livre | P0.44; ED-02 |
 | H8 | Hospedagem local e licença instalável | VISAN pode assumir a infraestrutura, com desconto na mensalidade (TR 4.4.12); acesso administrativo da TI (TR 4.15) | licenças instaláveis em qualquer servidor (SG-020); Windows Server 2022+ | instância dedicada gerenciada; pacote em contêiner só como cláusula de reversão, em Linux ou em Windows Server 2022+ com Docker no WSL2, homologado uma vez; acesso da TI do órgão só na instância dedicada | ADR-0024 (ajuste v2.5); ED-04 |
-| H9 | Metas contratuais acima do padrão | 99% em horário comercial; cinco severidades (2 a 32 h); dados em 10 dias úteis; consulta por 120 dias | 99,9%; cinco severidades (2 a 160 h) com multa; monitoramento 24/7 | nível "Setor Público" contratável; o padrão do produto não muda; plantão da S1 com a equipe do ADR-0029, ativo até 31/01/2028 | ADR-0025; ADR-0029; P2.15, P3.16, P3.22; ED-05 |
+| H9 | Metas contratuais acima do padrão | 99% em horário comercial; cinco severidades (2 a 32 h); dados em 10 dias úteis; consulta por 120 dias | 99,9%; cinco severidades (2 a 160 h) com multa; monitoramento 24/7 | nível "Setor Público" contratável; o padrão do produto não muda; escala de plantão da S1 montada até 31/01/2028 (ED-05) | ADR-0025; P2.15, P3.16, P3.22; ED-05 |
 | H10 | Preço | teto de R$ 18.866,65/mês e R$ 77.900 de implantação | teto de R$ 7.636,74/mês com hospedagem, BI e Google Maps | tabela de custo da AWS (ADR-0011) e preço por porte; o teto do SAMAE só fecha com vários tenants no mesmo cluster | ED-10 |
 
 Sequência que decorre (plano v2.8, opção A do lançamento): (1) até 13/11/2026, piloto escolhido com o critério de
@@ -367,7 +365,7 @@ cobre.
 | ED-08 | Compatibilidade técnica: navegadores mínimos da VISAN, tamanho de página e salto de página com keyset, argumentação sobre gatilhos e linguagem | 18h-E12 (M27, M28, M33) | TR-055, TR-057–TR-060; SG-012, SG-021, SG-023–SG-026 | V a | P4 onda A | 0,4 | P0.22, P1.12 | — |
 | ED-09 | Serviços de implantação padronizados: metodologia e plano-modelo de 60 e 90 dias, importador por legado (GSAN primeiro, se confirmado), promoção de parâmetros entre ambientes, dicionário de dados gerado do schema, linhagem da migração | 18h-E8, sem o DWG (M30, M78, M79, M81, M83, M84, M87) | TR-007, TR-008, TR-010–TR-018, TR-023, TR-026, TR-027, TR-051; SG-011, SG-1326, SG-1328–SG-1332, SG-1382, SG-1384; ED-029, ED-043, ED-045, ED-048, ED-049, ED-062; ETP-002 | contrato | P4 onda C | 4 | P1.2, P2.10, P2.19 | 0023 |
 | ED-10 | Política comercial: custo e preço por porte, perfis e homem-hora, banco de horas, garantia de 12 meses, correção de vícios em 48 h, customização por parâmetro ou flag, percentual de desconto da reversão | 18h-E10 (M14, M15, M19, M20, M100) | ED-004–ED-007, ED-030, ED-036–ED-040, ED-083; ETP-011, ETP-014; PP-001–PP-024 (exceto PP-019); TR-1075; SG-1190, SG-1283, SG-1367–SG-1374, SG-1395, SG-1396, SG-1399, SG-1400, SG-1407–SG-1415 | proposta | P4 onda C | 0,4 | ED-04; tabela de custo do ADR-0011 | 0024, 0011 |
-| ED-11 | Rede de implantação e treinamento: equipe do ADR-0029 e parceiro presencial a decidir, plano de 40 h, material online, tenant de pré-treinamento, capacitação de TI, documentação de customizações | 18h-E11 (M85, M86, M89–M92) | ED-044, ED-046, ED-053, ED-054; TR-009, TR-019, TR-020, TR-031–TR-037, TR-1072; SG-1280, SG-1314–SG-1325, SG-1327, SG-1333, SG-1381 | contrato | P4 onda C | 3 | equipe do ADR-0029; parceiro de implantação (§2.4 do plano) | 0023, 0029 |
+| ED-11 | Implantação e treinamento: plano de 40 h por módulo, material online, tenant de pré-treinamento, capacitação de TI, documentação de customizações | 18h-E11 (M85, M86, M89–M92) | ED-044, ED-046, ED-053, ED-054; TR-009, TR-019, TR-020, TR-031–TR-037, TR-1072; SG-1280, SG-1314–SG-1325, SG-1327, SG-1333, SG-1381 | contrato | P4 onda C | 3 | ED-09 | 0023 |
 
 **Cadastro, medição e campo**
 
@@ -438,7 +436,7 @@ cobre.
 | ED-64 | Drenagem no GIS (GIS-13): catálogo, regras de conectividade, declividade e sentido, estado de conservação, foto e inspeção (NR 12/2025 da ANA), sub-bacias para o SWMM, relatório do cadastro de drenagem | ADR-0034 (decisão 1); 18g-E-RES (camadas) | TR-1048 | — | P4 onda B (nova na v2.10) | 3 | ED-52, ED-53 | 0034 |
 | ED-65 | Resíduos sólidos no GIS (GIS-14): contêineres, PEV, ecopontos, lixeiras, pontos de coleta e de descarte irregular, setores e rotas de coleta sobre logradouros com pgRouting, imóvel ligado ao setor para a taxa | ADR-0034 (decisão 1); 18g-E-RES (camadas) | TR-1049; SG-1340 (parte de resíduos) | — | P4 onda B (nova na v2.10) | 3 | ED-52, ED-25 | 0034, 0010 |
 | ED-66 | Campo GIS no app de campo (GIS-15): pacote offline por área, coleta e edição como deltas em pacote revisado, GNSS/RTK externo, fotos e croqui, conflito por atributo | ADR-0034 (decisões 3 e 5); 18d-E13 (acesso móvel) | TR-1011 (parte móvel) | — | P4 onda B (nova na v2.10) | 5 | ED-18, ED-20, ED-53 | 0026, 0030, 0034 |
-| ED-67 | Exportação, devolução da base e OGC autenticado por tenant (GIS-16, GIS-17): GPKG, SHP, DXF, KML, GeoJSON, CSV e perfis Corsan e Saneago com metadados MGB; devolução da base ao fim do contrato; OGC API – Features (partes 1 a 3), WMS servidor (desde a v2.11) e WFS 2.0 com `Transaction` no pacote, sem acesso anônimo; fora do backoffice autenticado, imóveis e ligações só agregados por quadra ou setor com no mínimo 5 imóveis | ADR-0034; 19e (F10) | SG-1357, SG-1365 (KML); devolução da base (19e, F10); WMS (expresso em 5 de 12 editais, 19e) | S 2.27 crít. (WFS) | P4 onda B (nova na v2.10) | 6 (antes 5; +1 do WMS) | ED-52 | 0034, 0010 |
+| ED-67 | Exportação, devolução da base e OGC autenticado por tenant (GIS-16, GIS-17): GPKG, SHP, DXF, KML, GeoJSON, CSV e perfis Corsan e Saneago com metadados MGB; devolução da base ao fim do contrato; OGC API – Features (partes 1 a 3) e WFS 2.0 com `Transaction` no pacote, na `api`, e WMS servidor (desde a v2.11) pelo GeoServer (desde a v2.12: só leitura, acessível só pela `api`, um workspace e uma role de banco somente leitura por tenant ou views filtradas pelo tenant da role, simbologia em SLD gerado da fonte única), sem acesso anônimo; fora do backoffice autenticado, imóveis e ligações só agregados por quadra ou setor com no mínimo 5 imóveis | ADR-0034; 19e (F10) | SG-1357, SG-1365 (KML); devolução da base (19e, F10); WMS (expresso em 5 de 12 editais, 19e) | S 2.27 crít. (WFS) | P4 onda B (nova na v2.10) | 6 (antes 5; +1 do WMS; mantido com o GeoServer) | ED-52 | 0034, 0010 |
 
 **ERP (ADR-0028, item i, ajustado na v2.5: "núcleo saneamento + integração")**
 
@@ -526,8 +524,8 @@ e P3 17,5, total 35,3. Com optantes, o P3 passa a 19 e a onda A a 119,4.
 | **Trilha do P4** | **224,8** | **225,8** | +1 |
 | **Até 2028** | **260,1** | **261,1** | +1 |
 
-O total antes do P4 (35,3) não muda; o núcleo do GIS (22) passa a ser executado pelo perfil 3 do ADR-0029, antecipado
-para dez/2026–jan/2027 (§8.1).
+O total antes do P4 (35,3) não muda. Na v2.12, o WMS da ED-67 passa ao GeoServer, sem mudar a estimativa nem os
+totais.
 
 ### 5.3 De onde veio cada ED
 
@@ -555,13 +553,12 @@ compras continuando em 2029. Continuam em aberto:
 - **Contingência da NFAg-e** (manual e XSD oficiais): define se a conta de campo sai com a chave fiscal (ADR-0031,
   item 4), antes da ED-19.
 - **DPoP no Keycloak** para ligar o token ao aparelho do app de campo (ADR-0030, item 6), a conferir no início da ED-18.
-- **GIS (v2.10; resolvidos na v2.11, plano §2.4):** capacidade para o núcleo (perfil 3 do ADR-0029 antecipado para
-  dez/2026–jan/2027); base da ligação na P2.23 (confirmada); rede do piloto na homologação local (redes, peças e
-  estruturas reais; ligações e imóveis anonimizados, com coordenada deslocada ou agregada por quadra); piso de
-  agregação (5 imóveis por quadra ou setor, classe c); normas compradas no início do P1 (P1.28); DGN v8 por conversão
-  assistida na implantação; WMS servidor na ED-67, autenticado por tenant. Continuam em aberto: a falta de cerca de 6
-  semanas-pessoa no núcleo do GIS no fim do P3 (plano §2.4, até 27/11/2026); WCS só por exceção no ADR-0010, quando
-  um edital exigir; `pgrouting`, `pg_jsonschema`, `pgaudit` e SRID 5396 no RDS.
+- **GIS (v2.10; resolvidos na v2.11 e na v2.12, plano §2.4):** base da ligação na P2.23 (confirmada); rede do piloto
+  na homologação local (redes, peças e estruturas reais; ligações e imóveis anonimizados, com coordenada deslocada ou
+  agregada por quadra); piso de agregação (5 imóveis por quadra ou setor, classe c); normas compradas no início do P1
+  (P1.28); DGN v8 por conversão assistida na implantação; WMS servidor na ED-67, autenticado por tenant e publicado pelo
+  GeoServer (v2.12). Continuam em aberto: WCS só por exceção no ADR-0010, quando um edital exigir; `pgrouting`,
+  `pg_jsonschema`, `pgaudit` e SRID 5396 no RDS.
 
 ---
 
@@ -643,140 +640,58 @@ no CI.
 4. **Conflitos legais** conferidos contra o §6; pedido de esclarecimento ou impugnação protocolado no prazo do edital.
 5. **Decisão de disputar (go/no-go)**, registrada no diário antes do prazo de impugnação: habilitação completa (atestados,
    balanço, certidões), resultado do último ensaio contra o roteiro do edital, prazo de implantação contra a
-   metodologia (ED-09), preço contra a tabela de custo (ED-10) e equipe disponível.
+   metodologia (ED-09), preço contra a tabela de custo (ED-10).
 
 ---
 
 ## 8. Riscos
 
-### 8.1 Capacidade
+### 8.1 Esforço e ordem
 
-| Item | Semanas-pessoa | Com uma pessoa e agentes (≈ 44 semanas produtivas por ano) |
-|---|---|---|
-| Acréscimos ao P0–P3 (P0.44, P1.25, P2.20, P2.15, P3.15, P3.16, P3.22, P3.23) | 13,3 | cerca de 50% do P2 e 80% do P3, fases já sem folga |
-| Núcleo do GIS antes do P4 (ADR-0034, v2.10: P1.26, P1.27, P2.21 a P2.23, P3.25 a P3.27) | 22 | cerca de meio ano de uma pessoa sobre o P1 a P3, sem folga; na v2.11, executado pelo perfil 3 do ADR-0029, antecipado para dez/2026–jan/2027: com entrada em janeiro e onboarding, cerca de 16 até 28/05/2027, faltam cerca de 6, concluídas por volta do início de julho de 2027, durante a homologação local |
-| Tarefas originais do P4 que continuam (P4.1, P4.2, P4.5, P4.7, P4.8) | ≈ 8,4 | já ocupavam metade do P4 (ago–dez/2027, cerca de 20 semanas) |
-| Trilha de editais, ondas A e B (prontidão de POC), com a ED-58 e a ED-53 na onda A e o GIS da trilha na onda B | 209,4 (v2.10: 208,4; v2.9: 190,9; v2.5: 183,4; v2.4: 177,9) | cerca de 4,8 anos: prontidão depois de 2031 |
-| Trilha completa (ondas A, B e C) | 225,8 (v2.10: 224,8; v2.4 a v2.9: 206,3) | cerca de 5,1 anos |
-| Fora da trilha: compras, RH e orçamento (2029, sob demanda) | 9 | — |
+| Item | Semanas-pessoa |
+|---|---|
+| Acréscimos ao P0–P3 (P0.44, P1.25, P2.20, P2.15, P3.15, P3.16, P3.22, P3.23) | 13,3 |
+| Núcleo do GIS antes do P4 (ADR-0034: P1.26, P1.27, P2.21 a P2.23, P3.25 a P3.27) | 22 |
+| Tarefas originais do P4 que continuam (P4.1, P4.2, P4.5, P4.7, P4.8) | ≈ 8,4 |
+| Trilha de editais, ondas A e B, com a ED-58 e a ED-53 na onda A e o GIS da trilha na onda B | 209,4 (v2.10: 208,4; v2.9: 190,9; v2.5: 183,4; v2.4: 177,9) |
+| Prontidão de POC: ondas A e B e as tarefas originais do P4 | ≈ 217,8 (v2.10: 216,8; v2.9: 199) |
+| Trilha completa (ondas A, B e C) | 225,8 (v2.10: 224,8; v2.4 a v2.9: 206,3) |
+| Trilha completa e tarefas originais do P4 | ≈ 234,2 (v2.10: 233,2; v2.9: 215) |
+| Fora da trilha: compras, RH e orçamento (2029, sob demanda) | 9 |
 
-Para a prontidão de POC (ondas A e B mais as tarefas originais do P4, cerca de 199 semanas-pessoa; na v2.5, 192; na
-v2.4, 186) a partir de 02/08/2027: em 30/06/2028 são precisas cerca de 4,6 pessoas-equivalentes produtivas (43
-semanas produtivas; na v2.5, 4,5; na v2.4, 4,3); em 31/12/2028, cerca de 2,9 (68 semanas produtivas; na v2.5, 2,8; na
-v2.4, 2,7). As estimativas usam a
-escala do plano (uma pessoa com agentes) e têm incerteza de ±30%; a matriz 18g, sozinha, já estimava de 13 a 16
-meses-pessoa para operação, qualidade e BI.
-
-**Capacidade com a equipe do ADR-0029.** Premissas: dono do produto a cerca de 0,7 pessoa-equivalente na trilha;
-cada contratado com 8 semanas de onboarding a 50% (perda de cerca de 4 semanas-pessoa), entrando até 31/08/2027.
-
-| Equipe a partir de agosto de 2027 | Capacidade até 30/06/2028 (semanas-pessoa) | Frente a 199 | Prontidão de POC |
-|---|---|---|---|
-| Dono e 5 contratados | ≈ 225 | ≈ +13% (v2.5: +17%) | 30/06/2028, com folga menor que a incerteza de ±30% |
-| Dono e 4 contratados | ≈ 186 | ≈ −7% (v2.5: −3%), ≈ 13 semanas-pessoa abaixo | por volta do fim de julho de 2028 (v2.5: meados de julho) |
-| Dono e 2 contratados | ≈ 108 | ≈ −46% (v2.5: −44%) | início do 2º trimestre de 2029 (v2.5: 1º trimestre) |
-| Só o dono, em tempo integral na trilha | ≈ 43 | ≈ −78% | por volta de 2031 |
-
-Com a equipe completa, a onda C (≈ 15 semanas desde a v2.6, que passou a ED-58 à onda A) termina no 3º trimestre de
-2028. Cada mês de atraso na entrada da equipe adia a prontidão em cerca de um mês. A antecipação da ED-58 (§5.4) acrescenta
-cerca de 7,5 semanas-pessoa à prontidão e mantém a necessidade (≈ 4,6 pessoas-equivalentes) dentro da contratação de
-4 a 5 do ADR-0029; com 4 contratados, o déficit passa de cerca de 6 para cerca de 13 semanas-pessoa.
-
-**Capacidade na opção A do lançamento (plano v2.8; ADR-0029, ajuste v2.8).** O lançamento comercial só começa com
-todas as fases concluídas. Para começar em outubro de 2028, as ondas A, B e C e as tarefas originais do P4 (cerca de
-215 semanas-pessoa) precisam terminar até 30/09/2028: cerca de 56 semanas produtivas desde 02/08/2027 e cerca de 3,8
-pessoas-equivalentes, contra 4,6 para a prontidão de POC em junho. Mesmas premissas da tabela anterior.
-
-| Equipe a partir de agosto de 2027 | Capacidade até 30/09/2028 (semanas-pessoa) | Frente a 215 | Trilha completa | Efeito no lançamento |
-|---|---|---|---|---|
-| Dono e 5 contratados | ≈ 299 | ≈ +39% | início do 3º trimestre de 2028 | outubro de 2028, com folga acima da incerteza de ±30% |
-| **Dono e 4 contratados (decidido na v2.9)** | ≈ 247 | ≈ +15% | por volta do fim de agosto de 2028 | outubro de 2028, com folga de cerca de 15%, dentro da incerteza de ±30%, que ela não cobre por inteiro; quinta contratação pelo gatilho abaixo |
-| Dono e 3 contratados | ≈ 195 | ≈ −9% | início de novembro de 2028 | cerca de um mês e meio depois, com atestado e primeira licitação adiados na mesma medida |
-| Dono e 2 contratados | ≈ 143 | ≈ −33% | por volta de abril de 2029 | lançamento em 2029 e primeira licitação em 2030 |
-
-A prontidão de POC deixa de ser o marco que limita a primeira licitação, por ser anterior ao lançamento. O dono do
-produto fixou a equipe em 4 contratações (plano v2.9, §2.4; ADR-0029, ajuste v2.9), sem adiar a entrada: com elas, a
-prontidão fica por volta do fim de julho de 2028 (faixa de junho a agosto, pela incerteza; tabela anterior) e pode
-escorregar até cerca do início de setembro de 2028 sem mover o lançamento.
-
-**Capacidade com o GIS do ADR-0034 (plano v2.10).** O núcleo do GIS (22 semanas-pessoa) cai no P1 a P3, antes da
-entrada da equipe, e não entra nas tabelas acima: fica sobre o dono do produto, com a pendência de capacidade do plano
-§2.4. Na trilha, a demanda sobe para cerca de 216,8 semanas-pessoa na prontidão de POC e 233,2 na trilha completa com as
-tarefas originais do P4. Mesmas premissas.
-
-| Equipe a partir de agosto de 2027 | Até 30/06/2028, frente a 216,8 | Até 30/09/2028, frente a 233,2 | Prontidão de POC | Trilha completa |
-|---|---|---|---|---|
-| Dono e 5 contratados | ≈ 225 (≈ +4%) | ≈ 299 (≈ +28%) | por volta de meados de junho de 2028 | por volta de meados de julho de 2028 |
-| **Dono e 4 contratados (decidido na v2.9)** | ≈ 186 (≈ −14%) | ≈ 247 (≈ +6%) | por volta de meados de agosto de 2028 (faixa de julho a setembro) | por volta do início de setembro de 2028, com folga de cerca de 6% |
-| Dono e 3 contratados | ≈ 147 (≈ −32%) | ≈ 195 (≈ −16%) | por volta do início de novembro de 2028 | por volta de meados de dezembro de 2028, com lançamento, atestado e primeira licitação cerca de dois meses e meio depois |
-
-Com a demanda nova, fechar a trilha em 30/09/2028 exige velocidade de pelo menos 94% da planejada sem a quinta pessoa
-(233,2/247) e de 85% com ela (233,2/275). Os limiares do gatilho do ajuste v2.9 (90% e 80%) deixaram de garantir a data;
-a revisão foi decidida na v2.11 (abaixo).
-
-**Capacidade com o perfil 3 antecipado (plano v2.11; ADR-0029, ajuste v2.11).** O perfil 3 (GIS e dados) entra em
-dez/2026–jan/2027 para executar o núcleo do GIS no P1 a P3 e é um dos 4 contratados. Antes do P4, com entrada em
-04/01/2027, ele tem cerca de 20 semanas produtivas até 28/05/2027 e entrega cerca de 16 semanas-pessoa, descontadas as
-4 do onboarding, contra 22 do núcleo: faltam cerca de 6 (cerca de 2,5 com entrada em 07/12/2026), concluídas por volta
-do início de julho de 2027, durante a homologação local, que fica nas datas originais. Na trilha, ele chega integrado e
-só três contratados fazem onboarding. A demanda inclui o WMS servidor da ED-67 (+1): cerca de 217,8 semanas-pessoa na
-prontidão de POC e 234,2 na trilha completa com as tarefas originais do P4. Mesmas premissas.
-
-| Equipe a partir de agosto de 2027 | Até 30/06/2028, frente a 217,8 | Até 30/09/2028, frente a 234,2 | Prontidão de POC | Trilha completa |
-|---|---|---|---|---|
-| **Dono e 4 contratados, o perfil 3 desde janeiro de 2027 (decidido na v2.11)** | ≈ 190 (≈ −13%) | ≈ 251 (≈ +7%) | por volta de meados de agosto de 2028 (faixa de julho a setembro) | por volta do início de setembro de 2028, com folga de cerca de 7% |
-| Dono, 4 contratados e a quinta pelo gatilho (entrada até o fim de janeiro de 2028) | ≈ 207 (≈ −5%) | ≈ 279 (≈ +19%) | por volta de meados de julho de 2028 | por volta do início de agosto de 2028 |
-| Dono e 3 contratados (uma vaga de agosto não preenchida; o perfil 3 entre eles) | ≈ 151 (≈ −31%) | ≈ 199 (≈ −15%) | por volta de meados de novembro de 2028 | por volta de meados de dezembro de 2028, com lançamento, atestado e primeira licitação cerca de dois meses e meio depois |
-
-Fechar a trilha em 30/09/2028 exige velocidade de pelo menos 93% da planejada sem a quinta pessoa (234,2/251) e de 84%
-com ela (234,2/279), que os limiares decididos na v2.11 (95% e 85%) cobrem com margem de 1 a 2 pontos.
-
-**Gatilho da quinta contratação.** A velocidade medida é a soma das estimativas do §5 das tarefas da trilha aceitas no
-período (tarefa G em andamento pela fração dos critérios de aceite cumpridos), dividida pela capacidade planejada do
-período com as premissas acima. É apurada em 01/11/2027 sobre 02/08 a 31/10/2027 (cerca de 44 semanas-pessoa
-planejadas desde a v2.11, com o perfil 3 já integrado; antes, 40) e de novo ao fim de cada onda. A quinta pessoa, com
-entrada até o fim de janeiro de 2028, acrescenta cerca de 28 semanas-pessoa até 30/09/2028 (capacidade de cerca de 279
-com velocidade plena). Limiares da v2.11 (antes, 90% e 80%):
-
-| Velocidade medida (02/08 a 31/10/2027) | Capacidade efetiva até 30/09/2028, sem e com a quinta pessoa | Ação |
-|---|---|---|
-| 95% ou mais | ≈ 239 ou mais, sem a quinta | segue com 4; trilha completa até 30/09/2028 |
-| de 85% a menos de 95% | ≈ 214 a 239 sem a quinta; ≈ 237 a 265 com ela | quinta vaga aberta em 01/11/2027 (perfil 5 do ADR-0029, QA e POC, salvo outra frente apontada pela medição); trilha completa mantida até 30/09/2028 |
-| menos de 85% | menos de ≈ 237 com a quinta, margem que some a partir de cerca de 84% | quinta vaga aberta e M12, M13 e M14 a M16 registrados de novo no plano |
+Os valores estão na escala do plano e têm incerteza de ±30%; a matriz 18g, sozinha, já estimava de 13 a 16
+meses-pessoa para operação, qualidade e BI. Indicam esforço por entrega e por onda, sem conversão em equipe (plano
+v2.12; as análises de capacidade das versões 2.5 a 2.11 saíram com o ADR-0029, revogado). As datas são metas de
+calendário do plano: núcleo do GIS no P1 a P3, cada parte no marco da sua fase; início da trilha em 02/08/2027;
+prontidão de POC por volta de meados de agosto de 2028; trilha completa até 30/09/2028; lançamento comercial a partir
+de outubro de 2028.
 
 **Recomendações.**
 
 1. **Proteger a homologação local do piloto** (antes, go-live; plano v2.7). As 13,3 semanas acrescidas ao P0–P3 são,
    em grande parte, necessidade do próprio piloto (retificação de conta e relatórios operacionais), não de edital. Se
-   o P2 ou o P3 atrasar, escorregam primeiro, nesta ordem: a meta de ensaio do P3 (o ensaio continua, só a meta sai do aceite), os itens do ADR-0025 da P3.15 e da P3.16
-   e as tarefas fora do caminho crítico já listadas no plano; P2.20 e P3.22 ficam, porque o paralelo (GL.2) depende
-   delas.
-2. **Contratar no prazo.** A equipe foi decidida (ADR-0029, ajustes v2.9 e v2.11): 4 desenvolvedores, o perfil 3
-   (GIS e dados) desde dez/2026–jan/2027 e os outros três a partir de agosto de 2027. O plano de contratação e o
-   orçamento desses três, com o custo estimado da quinta vaga de contingência, precisam estar aprovados no M8
-   (28/05/2027), com a seleção em junho e julho, para que entrem até 31/08/2027. A velocidade
-   medida em 01/11/2027 decide a quinta contratação (gatilho acima); a do P0 ao P3 serve para recalibrar as estimativas.
-3. **Seguir as ondas.** A antes de B antes de C; dentro de cada onda, primeiro o que é crítico no SAMAE e pontua na
-   VISAN. A onda C (implantação, frota, ativos, telefonia, Bolsa Família) não pesa na POC e soma cerca de 15 semanas.
+   o P2 ou o P3 atrasar, escorregam primeiro, nesta ordem: a meta de ensaio do P3 (o ensaio continua, só a meta sai
+   do aceite), os itens do ADR-0025 da P3.15 e da P3.16 e as tarefas fora do caminho crítico já listadas no plano;
+   P2.20 e P3.22 ficam, porque o paralelo (GL.2) depende delas. No núcleo do GIS, a P3.26, que carrega a rede real do
+   piloto, vem antes da P3.27 e da parte não essencial da P3.25 (cliente WMS, medição).
+2. **Seguir as ondas.** A antes de B antes de C; dentro de cada onda, primeiro o que é crítico no SAMAE e pontua na
+   VISAN. A onda C (implantação, frota, ativos, telefonia, Bolsa Família) não pesa na POC e soma cerca de 16 semanas.
    O ERP construído soma 10,5 semanas além da integração (ED-62): o almoxarifado (7,5) na onda A, junto da OS, desde a
    v2.6, e a frota (3) na onda C. Compras, RH e orçamento ficam para 2029.
-4. **Mirar primeiro editais do tipo SAMAE.** Exigem um atestado, que o piloto só pode dar depois do lançamento
+3. **Mirar primeiro editais do tipo SAMAE.** Exigem um atestado, que o piloto só pode dar depois do lançamento
    comercial e da primeira operação real (ADR-0033): entre maio e julho de 2029, pela opção A do plano §2.4 (v2.8).
    Os do tipo VISAN exigem dois atestados, 8.500 ligações e e-Sfinge em operação, o que, com o primeiro atestado em
    meados de 2029, dificilmente se reúne antes de 2030.
-5. **Recalibrar a cada fase.** Comparar o tempo real das tarefas do P0 ao P3 com a escala P/M/G e corrigir as
+4. **Recalibrar a cada fase.** Comparar o tempo real das tarefas do P0 ao P3 com a escala P/M/G e corrigir as
    estimativas deste documento antes de assumir datas de licitação.
-6. **Momento do lançamento escolhido** (plano v2.8). O dono do produto escolheu a opção A do plano §2.4: lançamento
+5. **Momento do lançamento escolhido** (plano v2.8). O dono do produto escolheu a opção A do plano §2.4: lançamento
    depois de toda a trilha, a partir de outubro de 2028, e primeira licitação com POC a partir do 3º trimestre de
-   2029; a meta de 2028 do ADR-0029 deixou de valer. A trilha inteira passa ao caminho até o atestado: atraso além de
-   setembro de 2028 move o lançamento, o atestado e a primeira licitação na mesma medida, e a recalibração a cada onda
-   (item 5) passa a proteger essa data.
-7. **GIS antes do P4** (plano v2.10 e v2.11). O núcleo do GIS (22 semanas-pessoa) não cabia no P1 a P3 com uma pessoa;
-   o dono antecipou o perfil 3 do ADR-0029 para dez/2026–jan/2027 (v2.11). Com entrada em janeiro, faltam cerca de 6
-   semanas-pessoa no fim do P3, concluídas durante a homologação local: decidir o tratamento até 27/11/2026 (plano
-   §2.4) e abrir o recrutamento do perfil 3 logo depois de definidos custo e regime (até 30/10/2026), porque cada
-   semana de atraso na entrada aumenta a falta em cerca de 0,9 semana-pessoa. Na trilha, o gatilho foi revisto para 95%
-   e 85%, e a folga fica em cerca de 7%.
+   2029; a meta de 2028 deixou de valer. A trilha inteira passa ao caminho até o atestado: atraso além de setembro de
+   2028 move o lançamento, o atestado e a primeira licitação na mesma medida, e a recalibração a cada onda (item 4)
+   passa a proteger essa data.
+6. **GIS antes do P4** (plano v2.10 a v2.12). O núcleo do GIS (22 semanas-pessoa) fica no P1 a P3, com modelo e
+   catálogo no M6, topologia, pacotes e vínculo comercial no M7 e mapa web, importador e temáticos no M8. Na trilha,
+   o WMS da ED-67 é publicado pelo GeoServer, com isolamento por tenant (v2.12).
 
 ### 8.2 Outros riscos
 
@@ -784,12 +699,9 @@ com velocidade plena). Limiares da v2.11 (antes, 90% e 80%):
 |---|---|---|
 | Piloto escolhido não ser público, catarinense ou contratado com cláusula de atestado | Sem atestado depois do lançamento; nenhum edital com POC disputável | Critério na P0.30 (até 13/11/2026); cliente privado como alternativa para editais do tipo SAMAE |
 | Atestado só depois do lançamento comercial (ADR-0033) | Com a opção A, escolhida na v2.8, primeira licitação com POC a partir do 3º trimestre de 2029; as de 2028 ficam perdidas | Trilha completa até 30/09/2028 para manter o lançamento em outubro; piloto como cliente inicial em produção logo no lançamento; cláusula de atestado com prazo contado do corte; cliente privado como segundo atestado |
-| Custo fixo da equipe do ADR-0029 por cerca de dois anos antes da primeira licitação (opção A) | Despesa sem receita de editais de agosto de 2027 ao 3º trimestre de 2029; primeira receita de produção do piloto só por volta de fevereiro de 2029 | Equipe fixada em 4 contratações, sem adiar a entrada (plano v2.9), com a quinta só pelo gatilho de velocidade (§8.1); venda sem POC a partir do lançamento |
 | POC em nuvem exigida pelos editais e ambiente de demonstração local até o lançamento | Nenhuma POC de licitação antes do lançamento | Ensaios internos no ambiente local; ambiente de demonstração na nuvem criado pela IaC do lançamento (plano LC.2) antes da primeira POC |
 | Balanço de dois exercícios | Inabilitação nas licitações a partir do 3º trimestre de 2029 sem os balanços de 2027 e 2028 | P0.44: empresa licitante e contador desde já |
 | Editais de 2029 diferentes dos de 2026 | Entregas feitas para o texto antigo; itens novos sem tarefa | Matriz viva com requisito canônico; extração em 3 dias úteis; go/no-go (§7.3) |
-| Severidade 1 em 2 horas e monitoramento 24/7 sem equipe (ADR-0025) | Multas cumulativas de 5% a 10% da fatura por severidade | Equipe do ADR-0029; não assinar o nível Setor Público antes da escala de plantão ativa (até 31/01/2028, ED-05) |
-| Contratação abaixo do previsto ou atrasada (ADR-0029) | Prontidão de POC depois de 30/06/2028; com 3 contratados ou menos, trilha completa depois de setembro de 2028, com lançamento, atestado e primeira licitação adiados na mesma medida (opção A, §8.1) | Plano e orçamento no M8; seleção em junho e julho de 2027; gatilho da quinta contratação com a velocidade medida em 01/11/2027 e ao fim de cada onda (§8.1); contingência por empresa contratada por entrega, com código e direitos do Ziip; datas de M12 e M13 registradas de novo a cada onda |
 | Divergência entre conta impressa em campo e recálculo (ED-19) | Conta errada entregue ao consumidor; retrabalho fiscal | Mesmo módulo de cálculo no servidor e no app, vetores comuns no CI, fila de divergências com retificação (ADR-0031) |
 | Saldo negativo no almoxarifado (ED-58) | Custo médio e inventário distorcidos; perda ou desvio escondidos | Alerta de reposição, relatório diário, regularização com prazo, inventário periódico, alerta na Central (ADR-0032) |
 | Custo da AWS acima do teto do SAMAE (≈ US$ 2 mil/mês contra R$ 7.636,74/mês) | Proposta inexequível ou prejuízo | Vários tenants por cluster; dimensionamento mínimo nos primeiros clientes; tabela de custo (ADR-0011) antes de qualquer proposta |
@@ -797,11 +709,10 @@ com velocidade plena). Limiares da v2.11 (antes, 90% e 80%):
 | Publicação nas lojas por tenant (ED-39) | Prazos de revisão fora do controle do Ziip; recusa da Apple a app gerado de modelo | Conta de desenvolvedor do prestador; pipeline por tenant; publicar com antecedência à POC (ADR-0026) |
 | Autenticação nos apps incompatível com o BFF de cookie (ADR-0006) | Retrabalho no app e risco de segurança | Decidida no ADR-0030: navegador do sistema com PKCE, token no armazenamento seguro, dispositivo registrado no app de campo (ED-18, ED-39) |
 | QGIS com conexão direta ao banco (ED-55) | Caminho de escrita fora da `api` | Desde a v2.10 (ADR-0034), escrita só por views `INSTEAD OF` que gravam no pacote de edição, com validação e revisão por outra pessoa; endpoint próprio com TLS fora do pooler; role individual, auditoria, acesso por rede restrita, pentest (ADR-0028, b) |
-| Núcleo do GIS pelo perfil 3 antecipado (ADR-0034 e ADR-0029, v2.11): cerca de 16 das 22 semanas-pessoa até o fim do P3 | Temáticos, parte do mapa e do importador concluídos por volta do início de julho de 2027, com cerca de 3 semanas de margem até o aceite da homologação local; seleção lenta aumenta a falta | Tratamento da falta decidido até 27/11/2026 (plano §2.4); custo e regime do perfil 3 até 30/10/2026 e recrutamento logo depois; núcleo fora do caminho do paralelo, com as datas da homologação local mantidas; escorregam primeiro os temáticos (P3.27) e a parte não essencial do mapa (P3.25) |
-| Folga da trilha de cerca de 7% com o GIS e o WMS (v2.11; 6% na v2.10) | Lançamento de outubro de 2028 com margem pequena frente à incerteza de ±30% | Gatilho da quinta contratação com limiares de 95% e 85% (v2.11); GIS-14, GIS-17 e GIS-19 (cerca de 11 semanas) como primeiros candidatos a sair da trilha; recalibração a cada onda |
 | Catálogo do GIS com valores sem norma conferida | Peça errada como padrão; perda de confiança da prestadora na POC | Itens marcados como valor de referência a validar, fora do padrão ativo até a curadoria; perfis Corsan e Saneago como referência; normas compradas no início do P1 (P1.28, v2.11) |
 | Rede real do piloto no ambiente local (ADR-0033, ajuste v2.11) | Reidentificação de imóvel pela ligação ou pelo ramal; infraestrutura do cliente fora do controle dele | Só redes, peças e estruturas reais; ligações, ramais e imóveis anonimizados na origem, com coordenada deslocada ou agregada por quadra e método registrado; autorização no termo de cooperação e acesso restrito; demonstração só com massa sintética |
 | Superset como segunda pilha (ED-47) | Operação, atualização e superfície de ataque a mais; contestação de "autoria própria" | Role por tenant com teste de isolamento; modo síncrono; exceção no ADR-0010; pedido de esclarecimento-modelo (ADR-0027) |
+| GeoServer como segunda pilha de mapas (ED-67, v2.12) | Vulnerabilidades próprias; leitura cruzada entre tenants por erro de configuração; simbologia diferente da do mapa web e do projeto QGIS | Só leitura, sem porta publicada, acesso só pela `api`; workspace e role de banco somente leitura por tenant, ou views filtradas pelo tenant da role; configuração gerada pelo produto pela API REST; teste de isolamento no CI; SLD gerado da fonte única de estilos; versão fixada e atualização de segurança (exceção no ADR-0010) |
 | Licença do ODA File Converter | Etapa de migração do DWG sem ferramenta | Conferência no P1 (P1.25); alternativa: SDK licenciado da ODA, com custo |
 | Impugnação ou esclarecimento sem efeito | A comissão avalia pelo texto do edital | Demonstrar a regra legal e citar a norma; registrar a recusa para recurso |
 | Volume do omnichannel e hardware de campo e totem sem responsável definido (18a §6, itens 21 e 31) | Custo variável com a contratada | Hardware a cargo do cliente na proposta; franquia de mensagens precificada (ED-10) |

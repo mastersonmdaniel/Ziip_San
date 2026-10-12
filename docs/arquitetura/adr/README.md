@@ -9,9 +9,10 @@ cada tarefa entra.
 1. Decisão nova, alterada ou revogada vira ADR. Não se decide em conversa, diário ou comentário de código sem ADR
    correspondente.
 2. ADR não se apaga nem se reescreve. Quando a decisão muda, cria-se um ADR novo que o substitui; o antigo passa a
-   "Substituído por ADR-NNNN" e só essa linha de status é editada.
+   "Substituído por ADR-NNNN" e só essa linha de status é editada. Quando a decisão sai do escopo sem substituta, o ADR
+   passa a "Revogado", com data, versão do plano e motivo, e o texto fica como histórico (ADR-0029, v2.12).
 3. Numeração sequencial de quatro dígitos, sem reaproveitar números. Nome do arquivo: `ADR-NNNN-titulo-curto.md`.
-4. Status possíveis: Proposto (pendente de decisão), Aceito, Substituído, Rejeitado.
+4. Status possíveis: Proposto (pendente de decisão), Aceito, Substituído, Revogado, Rejeitado.
 5. Documentos de plano e de levantamento (`docs/PLANO-EXECUCAO-PDCA-R0-R9.md`, `docs/levantamento/`) citam o ADR em vez
    de repetir a decisão. Em caso de divergência, vale o ADR mais recente.
 
@@ -47,12 +48,13 @@ cada tarefa entra.
 | [0026](ADR-0026-apps-hibridos-com-capacitor.md) | Apps híbridos com Capacitor | Aceito | 12/10/2026 |
 | [0027](ADR-0027-bi-hibrido-com-apache-superset.md) | BI híbrido com Apache Superset | Aceito | 12/10/2026 |
 | [0028](ADR-0028-escopo-funcional-ampliado-pelos-editais.md) | Escopo funcional ampliado pelos editais | Aceito | 12/10/2026 |
-| [0029](ADR-0029-capacidade-e-equipe-da-trilha-de-editais.md) | Capacidade e equipe para a trilha de editais | Aceito | 12/10/2026 |
+| [0029](ADR-0029-capacidade-e-equipe-da-trilha-de-editais.md) | Capacidade e equipe para a trilha de editais | Revogado (v2.12): gestão de equipe fora do escopo do plano | 12/10/2026 |
 | [0030](ADR-0030-autenticacao-nos-apps.md) | Autenticação nos apps | Aceito | 12/10/2026 |
 | [0031](ADR-0031-calculo-offline-e-nota-fiscal-na-emissao-em-campo.md) | Cálculo offline e nota fiscal na emissão em campo | Aceito | 12/10/2026 |
 | [0032](ADR-0032-material-da-os-com-alcada-e-baixa-automatica.md) | Material da OS com alçada e baixa automática | Aceito | 12/10/2026 |
 | [0033](ADR-0033-desenvolvimento-local-e-aws-no-lancamento.md) | Desenvolvimento local até o lançamento comercial; AWS no lançamento | Aceito | 12/10/2026 |
 | [0034](ADR-0034-gis-cadastro-tecnico.md) | GIS e cadastro técnico de redes | Aceito | 12/10/2026 |
+| [0035](ADR-0035-planejamento-sem-gestao-de-equipe-e-geoserver.md) | Planejamento sem gestão de equipe; GeoServer para WMS | Aceito | 12/10/2026 |
 
 ## Referências
 
@@ -60,7 +62,8 @@ cada tarefa entra.
 - `docs/levantamento/editais/18a` a `18h` — extrações e matrizes de aderência aos editais VISAN Videira PE 06/2026 e
   SAMAE São Ludgero PE 2/2026 (base dos ADRs 0011, aceito, e 0023 a 0032).
 - `docs/levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md` — consolidado das entregas de edital, com o esforço
-  recalculado no plano v2.5 (base do ADR-0029) e no plano v2.10 (GIS, ADR-0034).
+  recalculado no plano v2.5 (base do ADR-0029, revogado na v2.12) e no plano v2.10 (GIS, ADR-0034); desde a v2.12, só
+  esforço por entrega e por onda, sem análise de capacidade.
 - `docs/levantamento/gis/19a` a `19e` — Gisbase, concorrentes, normas, modelo de dados e editais de GIS (base do
   ADR-0034 e de `docs/arquitetura/GIS-CADASTRO-TECNICO.md`).
 - `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` — plano canônico: decisões (§2), mapa Flyway (§3) e fases P0–P4 (§4).

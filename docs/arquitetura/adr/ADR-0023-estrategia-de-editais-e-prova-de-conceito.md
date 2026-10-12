@@ -34,6 +34,7 @@
   clientes que não exijam POC, com produção só a partir do lançamento; o termo de intenção do piloto (P0.30) informa o
   prazo de produção da opção A; editais do tipo VISAN (dois atestados, 8.500 ligações e e-Sfinge em operação) ficam
   depois do primeiro atestado, em meados de 2029; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.12):** referências a equipe e capacidade sem efeito (ADR-0029 revogado).
 
 ## Contexto
 

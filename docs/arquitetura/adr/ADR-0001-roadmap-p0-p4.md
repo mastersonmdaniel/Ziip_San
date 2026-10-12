@@ -30,6 +30,7 @@
   outubro de 2028, com a primeira produção (corte do legado do piloto) por volta de fevereiro de 2029; as licitações do
   ajuste v2.5 passam do 2º semestre de 2028 para a partir do 3º trimestre de 2029 (ADR-0023, ADR-0029 e ADR-0033,
   ajustes v2.8); decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.12):** referências a equipe e capacidade sem efeito (ADR-0029 revogado).
 
 ## Contexto
 

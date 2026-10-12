@@ -41,6 +41,19 @@
   capacidade de cerca de 251 até 30/09/2028 (o perfil 3 chega à trilha sem onboarding), folga de cerca de 7% e prontidão
   de POC por volta de meados de agosto de 2028. As tarefas derivadas "Decisão de capacidade para o núcleo do GIS" e
   "Revisão do gatilho da quinta contratação" ficam cumpridas; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.12):** referências a equipe e capacidade sem efeito (ADR-0029 revogado). O item (1) do
+  ajuste v2.11, os itens 1 a 3 da seção "Efeito no esforço e na capacidade", a negativa "Capacidade" e as tarefas
+  derivadas de capacidade e gatilho deixam de valer; a tabela da mesma seção fica só como indicação de esforço, e o
+  núcleo continua no P1 a P3, com cada parte no marco da sua fase.
+- **Ajuste de 12/10/2026 (GIS, v2.12), antes de qualquer implementação:** o WMS servidor da onda B (item 8 do ajuste
+  v2.11; seção "Forma", OGC) é publicado pelo **GeoServer**, por exigência de edital, como exceção do ADR-0010: só
+  leitura, sem porta publicada, acessível só pela `api`, que autentica e encaminha ao workspace do tenant da
+  credencial; um workspace por tenant, com role de banco própria do tenant, somente leitura, presa ao schema dele ou a
+  views filtradas pelo tenant da role no schema compartilhado, sem acesso cruzado; simbologia em SLD gerado da mesma
+  fonte única que gera o mapa web e o projeto QGIS (decisão 6). OGC API – Features e WFS 2.0 com `Transaction` no
+  pacote continuam na `api`, e a escrita continua fora do servidor de mapas (decisão 7). A frase "na `api` sem
+  servidor de mapas novo" do item 8 lê-se só para OGC API – Features e WFS; estimativa da ED-67 mantida; decisão do
+  dono do produto.
 
 ## Contexto
 

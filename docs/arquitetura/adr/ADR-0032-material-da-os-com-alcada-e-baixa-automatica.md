@@ -15,6 +15,7 @@
   movimentos (item 6); o tamanho não muda (7,5 semanas-pessoa) e compras continua em 2029, sob demanda (ADR-0028, item
   i, ajuste v2.5); a linha "na onda C, depois da ED-36 e da ED-20" de "O que muda no roadmap" fica substituída por este
   ajuste; efeito na capacidade no ADR-0029 (ajuste v2.6); decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.12):** referências a equipe e capacidade sem efeito (ADR-0029 revogado).
 
 ## Contexto
 

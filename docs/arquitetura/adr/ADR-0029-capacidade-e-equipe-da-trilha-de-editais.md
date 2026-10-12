@@ -1,6 +1,7 @@
 # ADR-0029 — Capacidade e equipe para a trilha de editais
 
-- **Status:** Aceito, 12/10/2026
+- **Status:** Revogado em 12/10/2026 (v2.12): gestão de equipe fora do escopo do plano, por decisão do dono (aceito em
+  12/10/2026; texto abaixo mantido como histórico, sem efeito)
 - **Decisor:** dono do produto
 - **Afeta:** ADR-0023 (item 4: equipe decidida no P4); ADR-0025 (item 3: plantão da severidade 1); ADR-0028 (volume
   da trilha); plano §2.4, §5 (M8, M11, M12, M13), §6 e trilha de editais; consolidado 18 §5.2 e §8

@@ -18,6 +18,7 @@
   disponibilidade e de aderência e o plantão da S1 valem a partir dele, e o ambiente local não tem meta de
   disponibilidade; a escala de plantão continua montada até 31/01/2028 (ADR-0029, item 5) e passa a ser acionada a
   partir da primeira produção; o item 4 refere-se à arquitetura na AWS; decisão do dono do produto.
+- **Ajuste de 12/10/2026 (v2.12):** referências a equipe e capacidade sem efeito (ADR-0029 revogado).
 
 ## Contexto
 

@@ -1056,3 +1056,12 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - Esforço do GIS ≈61 semanas-pessoa (22 antes do P4, 39 na trilha). Total até 2028 passa de ≈220 para ≈260. Risco: o
   núcleo antes do P4 cai sobre o dono sozinho; pendências de capacidade no §2.4 do plano.
 - MCPs Perplexity e Brave com chave inválida nesta sessão; pesquisa feita com WebSearch, WebFetch e markitdown.
+
+### 12/10/2026 — Plano v2.11 e v2.12: decisões do GIS e planejamento sem gestão de equipe
+
+- v2.11: base das ligações de água e esgoto no P2 (P2.23); rede real do piloto (sem imóveis) na homologação local;
+  LGPD no mapa público com agregação por quadra/setor (mínimo 5 imóveis, parâmetro só ampliável); compra das NBR
+  principais no P1; DGN v8 por conversão assistida; OGC API Features + WMS na onda B.
+- v2.12 / **ADR-0035**: por decisão do dono, o plano não trata mais de equipe nem capacidade (ADR-0029 revogado); só o
+  que será feito e como, com esforço por entrega como indicação e datas como metas. WMS da onda B pelo **GeoServer**
+  (exceção registrada no ADR-0010).
