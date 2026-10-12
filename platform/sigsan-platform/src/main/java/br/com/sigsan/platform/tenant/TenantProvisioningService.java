@@ -3,7 +3,6 @@ package br.com.sigsan.platform.tenant;
 import br.com.sigsan.core.json.Json;
 import br.com.sigsan.core.domain.TenantAwareEntity;
 import br.com.sigsan.core.tenant.TenantContextHolder;
-import br.com.sigsan.core.audit.AuditLogRepository;
 import br.com.sigsan.core.audit.AuditLog;
 import br.com.sigsan.core.audit.AuditLogRepository;
 import lombok.AllArgsConstructor;
@@ -11,9 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.flywaydb.core.Flyway;
-import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,12 +54,10 @@ public class TenantProvisioningService {
 
     private final DataSource dataSource;
     private final JdbcTemplate jdbcTemplate;
-    private final FlywayProperties flywayProperties;
     private final AuditLogRepository auditLogRepository;
     private final KeycloakAdminService keycloakAdminService;
 
     private final Map<String, Boolean> schemaInitializedCache = new ConcurrentHashMap<>();
-    private final ObjectMapper objectMapper;
 
     /**
      * DDL de tenant (CREATE SCHEMA, migrations, GRANT) roda com a role de migracao.
@@ -304,13 +299,7 @@ public class TenantProvisioningService {
      * barrado. Por isso a escrita e explicita e transacional.
      */
     private void writeProvisioningAudit(UUID tenantId, String schemaName, String displayName) {
-        String payload;
-        try {
-            payload = objectMapper.writeValueAsString(
-                    Map.of("schemaName", schemaName, "displayName", displayName));
-        } catch (Exception e) {
-            throw new IllegalStateException("Falha ao serializar auditoria", e);
-        }
+        String payload = Json.write(Map.of("schemaName", schemaName, "displayName", displayName));
 
         String sql = """
             INSERT INTO public.audit_log

@@ -1,7 +1,8 @@
 package br.com.sigsan.core.json;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Serialização para colunas {@code jsonb}.
@@ -14,13 +15,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * <p>Esta classe lança exceção se não conseguir serializar. A alternativa comum, devolver
  * {@code "{}"} no {@code catch}, apagaria o dado em silêncio.
+ *
+ * <p>Usa Jackson 3 ({@code tools.jackson}), o padrão do Spring Boot 4: datas {@code java.time} são
+ * suportadas sem módulo extra e saem em ISO-8601 por padrão. Com Jackson 2 isso dependia do módulo
+ * {@code jackson-datatype-jsr310}, que o Boot 3 trazia por transitividade e o Boot 4 não traz mais.
  */
 public final class Json {
 
-    // Datas em ISO-8601 (texto legível e estável), e não como número de segundos desde 1970.
-    private static final ObjectMapper MAPPER = new ObjectMapper()
-            .findAndRegisterModules()
-            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    // FAIL_ON_EMPTY_BEANS ligado explicitamente: o Jackson 3 o desliga por padrão, e um objeto sem
+    // propriedades serializáveis viraria "{}" em silêncio, o mesmo apagamento que esta classe evita.
+    private static final JsonMapper MAPPER = JsonMapper.builder()
+            .enable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+            .build();
 
     private Json() {
     }
@@ -29,7 +35,7 @@ public final class Json {
     public static String write(Object value) {
         try {
             return MAPPER.writeValueAsString(value);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new IllegalStateException("Não foi possível serializar o valor para JSON: "
                     + value.getClass().getName(), e);
         }

@@ -2,14 +2,12 @@ package br.com.sigsan.platform.tenant;
 
 import br.com.sigsan.core.audit.AuditLogRepository;
 import br.com.sigsan.core.migration.CoreMigrationRunner;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -88,10 +86,8 @@ class TenantProvisioningServiceTest {
         return new TenantProvisioningService(
                 appDataSource,
                 jdbc,
-                new FlywayProperties(),
                 Mockito.mock(AuditLogRepository.class),
                 Mockito.mock(KeycloakAdminService.class),
-                new ObjectMapper(),
                 migratorDataSource);
     }
 
@@ -188,10 +184,8 @@ class TenantProvisioningServiceTest {
         return new TenantProvisioningService(
                 appDataSource,
                 new JdbcTemplate(appDataSource),
-                new FlywayProperties(),
                 Mockito.mock(AuditLogRepository.class),
                 keycloakQuebrado,
-                new ObjectMapper(),
                 migratorDataSource);
     }
 

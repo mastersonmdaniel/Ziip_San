@@ -1,11 +1,8 @@
 package br.com.sigsan.app;
 
 import br.com.sigsan.core.audit.AuditLog;
-import br.com.sigsan.core.audit.AuditLogRepository;
 import br.com.sigsan.core.migration.CoreMigrationRunner;
-import br.com.sigsan.platform.tenant.KeycloakAdminService;
 import br.com.sigsan.platform.tenant.TenantProvisioningService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -18,8 +15,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -204,7 +199,6 @@ class FreshInstallTest {
                 .applySetting("hibernate.connection.url", url)
                 .applySetting("hibernate.connection.username", appUser)
                 .applySetting("hibernate.connection.password", appPassword)
-                .applySetting("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
                 .applySetting("hibernate.default_schema", schema)
                 .applySetting("hibernate.hbm2ddl.auto", "validate")
                 .build();

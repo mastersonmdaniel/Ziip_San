@@ -4,9 +4,7 @@ import br.com.sigsan.core.audit.AuditLogRepository;
 import br.com.sigsan.core.migration.CoreMigrationRunner;
 import br.com.sigsan.platform.tenant.KeycloakAdminService;
 import br.com.sigsan.platform.tenant.TenantProvisioningService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mockito.Mockito;
-import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
@@ -60,10 +58,8 @@ final class ProvisionedTenant {
         TenantProvisioningService service = new TenantProvisioningService(
                 appDs,
                 new JdbcTemplate(appDs),
-                new FlywayProperties(),
                 Mockito.mock(AuditLogRepository.class),
                 Mockito.mock(KeycloakAdminService.class),
-                new ObjectMapper(),
                 migratorDs);
 
         var result = service.provisionTenant(TenantProvisioningService.TenantProvisioningRequest.builder()

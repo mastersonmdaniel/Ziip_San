@@ -707,3 +707,23 @@ ser a ordem de prioridade canônica (a seção 12 deste diário será substituí
   `jts-core` com versão única (1.19.0) no POM raiz; compilador com uma configuração só, `--release 21` e `-parameters`;
   `lombok.config` copia `@Qualifier` para o construtor. `dependency:tree`: um só JTS, `snakeyaml` só 2.2.
 - Banco de desenvolvimento religado ao final.
+
+### E2 — Spring Boot 4.1.1 (12/10/2026) ✔
+
+- Spring Boot 3.2.5 → **4.1.1** (o 3.5 está sem suporte OSS desde 30/06/2026). Versões que vêm do BOM: Spring Framework
+  7.0.9, Hibernate **7.4.5**, Flyway **12.4.0** (com `flyway-database-postgresql`), Spring Data 2026.0.1, Lombok 1.18.46,
+  PostgreSQL JDBC 42.7.13, Jackson 3.1.5 (+ Jackson 2.21.5 ainda gerenciado). `keycloak-admin-client` 26.0.12; compiler 3.15.0;
+  surefire/failsafe 3.5.6. Os pins de PostgreSQL, Flyway e Lombok saíram do POM raiz.
+- `spring-boot-starter-web` → `spring-boot-starter-webmvc` (o nome antigo está obsoleto no Boot 4).
+- `TenantProvisioningService` deixou de injetar `FlywayProperties` (não usado; mudou de pacote no Boot 4) e `ObjectMapper`
+  (o Boot 4 não publica mais um `ObjectMapper` do Jackson 2 como bean); a auditoria do provisionamento usa `Json`.
+- **`Json` migrado para Jackson 3** (`tools.jackson`). Os testes pegaram duas mudanças de comportamento que, sem eles,
+  passariam despercebidas: (1) o Boot 4 não traz mais o `jackson-datatype-jsr310` do Jackson 2, e `OffsetDateTime` deixava
+  de serializar; (2) o Jackson 3 **desliga** `FAIL_ON_EMPTY_BEANS` por padrão, e um objeto sem propriedades viraria `{}`
+  em silêncio — religado explicitamente.
+- `hibernate.dialect` removido (o Hibernate 7 detecta e avisava 66 vezes por build).
+- Compilou sem nenhuma alteração nas interfaces de multi-tenant (as implementações *raw* continuam aceitas pelo Hibernate 7).
+- **Dívida registrada:** `MtrService`, `LossesService`, `EpanetSimulationService`, `LabService`, `ScadaIntegrationService` e
+  `LgpdEngineService` ainda criam `ObjectMapper` do Jackson 2 por conta própria; sem o módulo jsr310 no classpath, datas
+  nesses caminhos falham em tempo de execução. Já estavam na E3' (troca por `Json`).
+- Aceite: 793 testes verdes, `FreshInstallTest` validando as 66 entidades com Hibernate 7.4.5, sem aviso de depreciação do Hibernate.

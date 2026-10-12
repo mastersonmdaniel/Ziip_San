@@ -38,7 +38,6 @@ public class PlatformConfig {
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
         Properties jpaProperties = new Properties();
-        jpaProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         // NAO usar "validate" aqui. Com schema por tenant, o Hibernate valida no boot, antes de
         // existir contexto de tenant, contra o schema public, onde as tabelas de negocio nao
         // estao: a aplicacao nao subiria. O mapeamento e validado contra um tenant provisionado
