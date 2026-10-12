@@ -6,6 +6,8 @@
   `Nfse.Application`, `Nfse.Infrastructure` (Sefin, Xml, Security, Adn, Nfe, Persistence) e `tests\Nfse.Tests`.
 - **Destino lido:** `commercial/sigsan-billing`, `shared/sigsan-security`, `docs/levantamento/11`, `14` e `17`,
   `docs/PLANO-EXECUCAO-PDCA-R0-R9.md`, ADR-0002.
+- **Nomes:** módulos, pacotes e propriedades `sigsan` passam a `ziipsan` na renomeação do P0 (ADR-0016, plano P0.33);
+  por exemplo, `commercial/sigsan-fiscal` vira `commercial/ziipsan-fiscal`.
 
 Regra deste documento: o que não está nos fontes nem nos documentos lidos aparece como **a confirmar (NT/manual
 oficial)**.
@@ -108,7 +110,8 @@ que não seja produção, como no C#.
 
 ### 3.3 Outbox e emissão assíncrona
 
-- Não há outbox no código; o plano prevê `V11_1` (outbox, `job_runs`) no R4, e o fiscal usa o mesmo formato.
+- Não há outbox no código; o plano v2 prevê a outbox no core `V8` (P1.9, ADR-0014: uma por banco, no lugar do antigo
+  `V11_x` por tenant) e `job_runs` no core `V10` (P2.1); o fiscal usa a mesma outbox.
 - *Worker* com `FOR UPDATE SKIP LOCKED`, lote por tenant, Resilience4j (retry só para erro transitório; *circuit
   breaker* e *bulkhead* por autorizador e UF, para um tenant não esgotar a cota dos outros).
 - Estados: `RESERVADO → ASSINADO → TRANSMITIDO → AUTORIZADO | REJEITADO | PENDENTE_RECONCILIACAO`, mais `CANCELADO`,
@@ -153,7 +156,10 @@ como documento fiscal sem autorização.
   e DELETE, inclusive para o papel da aplicação); o hash entra na `HashChain`.
 - Cópia em armazenamento com bloqueio de retenção (WORM) após a decisão de hospedagem (ADR-0011); MinIO segue congelado
   (ADR-0010).
-- Prazo de retenção é parâmetro do tenant (G6); o C# cita "5+ anos"; prazo legal **a confirmar**.
+- Prazo de retenção é parâmetro do tenant (G6), com piso de 120 meses para o histórico de faturamento (ADR-0015); o
+  C# cita "5+ anos"; prazo fiscal **a confirmar**.
+- O XML autorizado é servido no portal do consumidor e na área do tenant exatamente como gravado, com conferência do
+  SHA-256; nunca é regerado (ADR-0022).
 
 ## 4. NFAg-e
 

@@ -34,8 +34,15 @@ cada tarefa entra.
 | [0013](ADR-0013-postgresql-17-no-p0.md) | PostgreSQL 17 e PostGIS 3.5 no P0 | Aceito | 12/10/2026 |
 | [0014](ADR-0014-outbox-no-postgresql.md) | Trabalho assíncrono por outbox no PostgreSQL | Aceito | 12/10/2026 |
 | [0015](ADR-0015-limites-legais-dos-parametros.md) | Limites legais dos parâmetros do tenant: classes, multa, corte, tarifa social e retenção | Aceito | 12/10/2026 |
+| [0016](ADR-0016-rebrand-e-renomeacao-ziipsan.md) | Marca do produto em pacote único, marca do tenant e renomeação `sigsan` → `ziipsan` | Aceito | 12/10/2026 |
+| [0017](ADR-0017-temas-claro-escuro-azul-e-verde-agua.md) | Temas claro, escuro e do sistema, com padrões Azul Água e Verde Água | Aceito | 12/10/2026 |
+| [0018](ADR-0018-central-ziip-propria.md) | Central Ziip própria no Ziip SAN, com o console da plataforma | Aceito | 12/10/2026 |
+| [0019](ADR-0019-cobranca-saas-por-contrato.md) | Cobrança do SaaS por contrato e licença controlada | Aceito | 12/10/2026 |
+| [0020](ADR-0020-ajuda-e-suporte-com-protocolo.md) | Ajuda e Suporte com protocolo, SLA por contrato e acesso assistido com consentimento | Aceito | 12/10/2026 |
+| [0021](ADR-0021-sobre-versao-e-changelog.md) | Sobre, versão gerada no build e changelog do cliente versionado | Aceito | 12/10/2026 |
+| [0022](ADR-0022-portais-historico-e-documentos.md) | Histórico e documentos no portal do consumidor e na área do tenant | Aceito | 12/10/2026 |
 
 ## Referências
 
 - `docs/levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md` — revisão de estrutura SaaS (achados X, S, D, O, P, F).
-- `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` — decisões D1–D13 e G1–G9 (§2) e roadmap R1–R9 (§5).
+- `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` — plano canônico: decisões (§2), mapa Flyway (§3) e fases P0–P4 (§4).

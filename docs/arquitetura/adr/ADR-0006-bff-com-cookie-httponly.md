@@ -82,3 +82,9 @@ token Bearer, mas não para cookie.
 | Client `sigsan-web` confidencial no realm, segredo no cofre | P0 |
 | CSP estrita e cabeçalhos de segurança na borda | P0 |
 | Pentest cobrindo sessão, CSRF e fixação de sessão | P3 |
+
+## Refinamento (12/10/2026)
+
+O desenho do P0 fixou a forma de implantação deixada em aberto em "O que muda no código": o BFF roda **dentro do
+processo `api`** (mesmo artefato, sem processo próprio), e a sessão fica **no PostgreSQL** (Spring Session JDBC, core
+`V5`), com expiração e limpeza, sem Redis. Ver `docs/arquitetura/ARQUITETURA-ALVO.md` §1 e plano P0.14.

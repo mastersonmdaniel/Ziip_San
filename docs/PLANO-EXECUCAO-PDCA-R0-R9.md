@@ -1,7 +1,8 @@
 # Plano de execução do Ziip SAN: fases P0–P4 e go-live piloto
 
-**Versão 2, 12/10/2026.** Produto Ziip SAN; nome interno do código, SIGSAN. O nome do arquivo foi mantido por causa dos
-links. Este é o plano canônico; em divergência com um ADR, vale o ADR mais recente.
+**Versão 2.1, 12/10/2026.** Produto Ziip SAN; nome interno do código, SIGSAN, renomeado para `ziipsan` na P0.33. O
+nome do arquivo foi mantido por causa dos links. Este é o plano canônico; em divergência com um ADR, vale o ADR mais
+recente.
 
 **O que mudou em relação à v1**
 
@@ -13,6 +14,9 @@ links. Este é o plano canônico; em divergência com um ADR, vale o ADR mais re
 - `outOfOrder(true)` ganha prazo; depois dele, versões Flyway sempre crescentes (§3).
 - NFAg-e sobre motor fiscal próprio, portado do Ziip Cloud, no lugar do integrador.
 - BFF com cookie, MFA por tenant, máscara configurável, push automático, desenvolvimento fora do Google Drive.
+- Versão 2.1: marca e renomeação `ziipsan`, temas, Central Ziip, cobrança por contrato, ajuda e suporte, Sobre e
+  changelog, histórico e documentos nos portais (ADR-0016 a ADR-0022), com as decisões do dono do produto de
+  12/10/2026 sobre suspensão, eliminação, retenção de chamados e antivírus (§2.2).
 
 **Referências.** Revisão 17: [levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md](levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md);
 ADRs: [arquitetura/adr/README.md](arquitetura/adr/README.md); parâmetros: [arquitetura/PARAMETROS-DO-TENANT.md](arquitetura/PARAMETROS-DO-TENANT.md);
@@ -87,6 +91,28 @@ portões de decisão. As etapas foram executadas no mesmo dia, um commit por eta
 | [0012](arquitetura/adr/ADR-0012-metas-nao-funcionais.md) | Metas não funcionais do §6 da revisão 17 |
 | [0013](arquitetura/adr/ADR-0013-postgresql-17-no-p0.md) | PostgreSQL 17 + PostGIS 3.5 no P0, antes de dado real |
 | [0014](arquitetura/adr/ADR-0014-outbox-no-postgresql.md) | Outbox no PostgreSQL com workers `SKIP LOCKED`, atrás de interface |
+| [0015](arquitetura/adr/ADR-0015-limites-legais-dos-parametros.md) | Classes de parâmetro (a–d); multa padrão 2% com aceite reforçado acima; vedações de corte por inadimplência travadas; piso da tarifa social; pisos de retenção |
+| [0016](arquitetura/adr/ADR-0016-rebrand-e-renomeacao-ziipsan.md) | Pacote de marca único; marca do tenant; renomeação `sigsan` → `ziipsan` no P0, com contexto HKDF congelado |
+| [0017](arquitetura/adr/ADR-0017-temas-claro-escuro-azul-e-verde-agua.md) | Temas claro, escuro e do sistema; padrões Azul Água e Verde Água; preferência no servidor; contraste no CI |
+| [0018](arquitetura/adr/ADR-0018-central-ziip-propria.md) | Central Ziip própria com o console; papéis de plataforma com MFA; sem leitura de dado pessoal de tenant; API de métricas `v1` |
+| [0019](arquitetura/adr/ADR-0019-cobranca-saas-por-contrato.md) | Cobrança do SaaS por contrato; nenhum bloqueio automático; restrição só manual |
+| [0020](arquitetura/adr/ADR-0020-ajuda-e-suporte-com-protocolo.md) | Ajuda e suporte com protocolo e SLA por contrato; ClamAV; acesso assistido com consentimento no lugar da impersonação |
+| [0021](arquitetura/adr/ADR-0021-sobre-versao-e-changelog.md) | SemVer gerado no build; changelog do cliente obrigatório para segurança, legislação e parâmetro regulatório; Sobre |
+| [0022](arquitetura/adr/ADR-0022-portais-historico-e-documentos.md) | Portal do consumidor com 120 meses, conta paga, DANFAG e XML original; área do tenant com faturas e NFS-e do contrato |
+
+**Decisões do dono do produto (cartões de 12/10/2026)**, aplicadas nos ADRs 0018–0020, no ADR-0010 e nos documentos
+de arquitetura:
+
+- Suspensão de tenant sempre manual, com aviso prévio; backoffice em somente leitura; portal do consumidor, Pix,
+  retornos bancários e 2ª via continuam (serviço essencial).
+- Suspensão, bloqueio e eliminação de dados de tenant: uma pessoa com MFA basta, sempre com justificativa e auditoria;
+  a eliminação tem prazo de carência e certificado de descarte. A aprovação dupla continua nos parâmetros do tenant
+  (ADR-0015), no ajuste de conciliação e na liberação da emissão fiscal em produção.
+- Chamados de suporte e anexos retidos pela vigência do contrato mais 5 anos, com minimização, acesso restrito e
+  eliminação no fim do prazo.
+- ClamAV junto do `worker`, com quarentena até a varredura, substituível pelo serviço da hospedagem: exceção do
+  ADR-0010 (anexos de chamados e logos de tenant).
+- Corte por inadimplência: nenhuma configuração do tenant afrouxa (ADR-0015, item 3).
 
 ### 2.3 G1–G9 reclassificadas e padrões do produto
 
@@ -115,6 +141,13 @@ obrigatório aceito.
 | G4 no produto: leiautes (FEBRABAN 150, CNAB 240) e PSPs suportados no go-live | Daniel | 29/01/2027 | P3.1, P3.2 |
 | NFAg-e: obrigatoriedade e data para o perfil do piloto, no DOU; manual e XSD oficiais | Daniel | 27/11/2026 | P2.6 |
 | Arredondamento (half-even no C#, `HALF_DOWN` no billing) e tributo no CHECK de total de `bills` (hoje tratado como retenção) | técnico | 29/01/2027 | P2.4, P2.5 |
+| Valores HSL de Azul Água e Verde Água (MARCA-E-TEMAS §4.2) | Daniel | 27/11/2026 | P0.37 |
+| Duração da carência antes da eliminação de dados de tenant (dentro dos 30 dias do RNF-42) | Daniel | 27/11/2026 | P1.6, P3.16 |
+| Quem executa suspensão, bloqueio e eliminação (hoje só `PLATFORM_OWNER`) | Daniel | 27/11/2026 | P1.6, P2.12 |
+| Exceção de emergência ao consentimento do acesso assistido (o ADR-0020 não admite; a versão anterior da Central admitia) | Daniel | 26/03/2027 | P3.17 |
+| Autenticação do consumidor no portal e comprovação do vínculo com a matrícula (ADR-0022) | Daniel | 26/03/2027 | P3.3, P3.20 |
+| Contas e NFAg-e anteriores ao go-live no portal: importar os XML autorizados pelo emissor usado pelo piloto no intervalo | Daniel | 26/03/2027 | P2.10, GL.1, P3.20 |
+| Idioma dos nomes de tabela e rota novos: o código e o ADR-0018 usam inglês; os ADRs 0020–0022 usam português (`chamado`, `aceite_documento`, `implantacao`, `/api/v1/suporte`) | técnico | 27/11/2026 | P0.42, P1.17, P1.21 |
 
 ---
 
@@ -131,6 +164,15 @@ Duas histórias: **core** (`public`, uma vez por banco) e **tenant** (uma por sc
   diante a versão vem de uma sequência global a partir de `V100`, com o módulo no nome (`V100__dunning_actions.sql`), e o
   CI recusa versão menor ou igual à maior publicada. Reservas não usadas até lá são renumeradas aqui.
 - Expand/contract: coluna só sai na release seguinte à que deixou de usá-la.
+- Subversões do core: para não renumerar reservas, tabelas novas do core entram como subversão da reserva da mesma
+  fase (core `V5_1`, `V9_1`…), que o Flyway ordena entre as inteiras. O prefixo "core" as distingue das versões de
+  tenant de mesmo número (por exemplo, tenant `V9_1`, field), que ficam em outra tabela de histórico.
+- A coluna "Módulo" com `platform` designa o módulo Maven `platform/*-platform` (história de tenant). Os schemas
+  `platform` e `suporte` do banco do core (ADR-0018, ADR-0020) entram pelas versões do core. Só o banco principal, o
+  do catálogo, os usa; nos clusters adicionais (ADR-0005) ficam vazios, salvo decisão diferente na P1.14.
+- Renomeação (P0.33): muda o checksum das migrations existentes, porque os `GRANT` citam as roles; aceito porque não
+  há banco com dado real, e banco e Keycloak de desenvolvimento são recriados. Depois dela, as migrations voltam a ser
+  imutáveis.
 
 **Mapa da v1, corrigido pelo que foi aplicado**
 
@@ -154,13 +196,24 @@ Duas histórias: **core** (`public`, uma vez por banco) e **tenant** (uma por sc
 | core `V3` | core | `parameter_definitions`, `parameter_legal_limits` (catálogo global do produto, só leitura para a aplicação) | P0.19 |
 | core `V4` | core | `tenant_catalog.cluster_id`, `isolation_mode`; revisão do `schema_name UNIQUE` (`core/V1:21`); `tenant_schema_version`; `sigsan_app` só com SELECT | P0.17, P0.21, P1.14 |
 | core `V5` | core | sessões do BFF | P0.14 |
+| core `V5_1` | core | schema `platform`; `platform.implantacao`, gravada pelo `migrate` (ADR-0021) | P0.42 |
 | core `V6` | core | `tenant_key` (DEK por tenant). Era "core `V3`" no R1 da v1: o R1 depende da hospedagem e o core não aceita fora de ordem | P0.28 |
 | core `V7` | core | `audit_log` particionado por mês, PK `(created_at, id)` com UUIDv7, retenção | P1.7 |
 | core `V8` | core | `outbox` com `tenant_id`, RLS e partição diária | P1.9 |
-| core `V9` | core | planos, cotas, módulos e flags por tenant; implantação; impersonação | P1.6 |
+| core `V9` | core | console v0 no schema `platform`: `plan`, `tenant_subscription`, `feature_flag`, `onboarding_step`, `tenant_lifecycle`, `audit_event`. A impersonação sai: o acesso assistido do ADR-0020 vai para o core `V10_3` | P1.6 |
+| core `V9_1` | core | Central v0: `platform.metric_definition`, `metric_point` (partição diária), `metric_daily`, `alert_rule`, `alert_event`, `config_item`; role `ziipsan_central`; funções `platform_stats.*` | P1.17 |
+| core `V9_2` | core | `public.tenant_assets` (logo do tenant, com estado da varredura); função `SECURITY DEFINER` da marca pré-login, restrita às chaves `branding.*` de `tenant_settings` | P1.19 |
+| core `V9_3` | core | schema `suporte`; conteúdo de ajuda: `artigo`, `artigo_versao`, `artigo_avaliacao`, `tour_concluido`, `erro_explicado` | P1.21 |
+| core `V9_4` | core | `suporte.chamado`, `chamado_mensagem`, `chamado_anexo`, `chamado_evento`; sequência do protocolo `SUP-AAAA-NNNNNN` | P1.23 |
+| core `V9_5` | core | `platform.aceite_documento`; `suporte.novidade_vista` | P1.24 |
 | core `V10` | core | `job_runs` e travas por (tenant, ciclo) | P2.1 |
+| core `V10_1` | core | contrato SaaS no schema `platform`: contrato (com a política de SLA), aditivo, empenho, reajuste, fatura, pagamento, referências aos documentos da fatura e da NFS-e | P2.12–P2.14 |
+| core `V10_2` | core | `suporte.sla_politica`, `csat_resposta`; prazos e pausa no chamado | P2.15 |
+| core `V10_3` | core | `suporte.consentimento_acesso`, `sessao_acesso_assistido` | P3.17 |
+| core `V10_4` | core | `suporte.status_componente`, `status_incidente`, `status_atualizacao`, `janela_manutencao` | P3.18 |
 | `V1_5` | platform | `parameter_versions` (vigência com EXCLUDE, quem propõe ≠ quem aprova), `parameter_acceptances`, `regulatory_profiles`, `holidays` | P0.19 |
 | `V1_6` | platform | `personal_data_access_log`; cota de busca por documento | P0.11 |
+| `V1_7` | platform | `user_preferences` (modo e padrão de tema do usuário) | P1.18 |
 | `V3_4` | registry | GIN trigram sobre `unaccent(lower(name))` | P0.22 |
 | `V3_5` | registry | sequência de matrícula por tenant | P1.4 |
 | `V3_6` | registry | R2: `customer_types`, `property_profiles`, endereço, `block_faces`, rascunhos | P1.3 |
@@ -168,6 +221,7 @@ Duas histórias: **core** (`public`, uma vez por banco) e **tenant** (uma por sc
 | `V4_7` | `sigsan-fiscal` | NFAg-e e NFS-e avulsa: leiaute, contingência, inutilização | P2.6, P3.6 |
 | `V5_3` / `V5_4` | metering | tarefas e importação de leitura / partição de `meter_readings`, chave de idempotência | P2.7 / P2.3 |
 | `V6_3` | collection | partição de `payments`; `pix_inbox` | P3.2 |
+| `V8_2` | portal | vínculo da conta do consumidor com a matrícula (método de comprovação, data, revogação) | P3.20 |
 | `V14_1`, `V14_2` | importação de legado | lotes, staging, conciliação; histórico de 120 meses | P1.2, P2.10 |
 
 `current_tenant_id()` como SQL STABLE (17:M10) não é migration: a função é de `sigsan_owner` e nasce no init de
@@ -181,15 +235,22 @@ script de operação como `postgres`.
 Tamanho: **P** até 2 dias, **M** até 1 semana, **G** mais de 1 semana, para uma pessoa com agentes. Toda tarefa termina
 com testes verdes, registro no diário e push.
 
+**Nomes depois da renomeação.** A partir da P0.33, os caminhos, módulos, pacotes, propriedades, roles e realm citados
+neste plano com `sigsan` (`commercial/sigsan-fiscal`, `sigsan_worker`, `sigsan.fiscal.*`, realm `sigsan`) leem-se com
+`ziipsan`. O plano não é reescrito por isso; tarefas novas já usam o nome final (`ziipsan_central`,
+`urn:ziipsan:problema:`). Commits e diário anteriores valem até a tag `pre-rename`.
+
 ### P0 — Plataforma operável · 13/10–27/11/2026
 
-Objetivo: ambiente fora do Drive, artefato implantável, altos e médios de segurança, parâmetros do tenant e, se a
-hospedagem for decidida a tempo, homologação e produção com PITR e R1.
+Objetivo: ambiente fora do Drive, código renomeado para `ziipsan`, artefato implantável com versão gerada, marca e
+temas, altos e médios de segurança, parâmetros do tenant e, se a hospedagem for decidida a tempo, homologação e
+produção com PITR e R1.
 
 | # | Tarefa | Origem | Tam. | Dep. | Aceite |
 |---|---|---|---|---|---|
 | P0.1 | Desenvolvimento em disco local; GitHub como fonte da verdade | ADR-0009, 17:M15 | M | — | build e `ci.sh` verdes num clone fora do Drive, sem robocopy nem PowerShell; `.env` fora do Drive |
 | P0.2 | Push automático ao fim de etapa | ADR-0009 | P | P0.1 | com teste vermelho nada é publicado |
+| P0.33 | Renomeação `sigsan` → `ziipsan` como tarefa única, logo após a P0.1 e antes das demais tarefas de código do P0, na ordem de MARCA-E-TEMAS §5.2 | ADR-0016 | M | P0.1 | tag `pre-rename`, sem branch aberto; `mvn clean verify`, testes do frontend, `ci.sh` e `dev-up.sh` do zero verdes; login ponta a ponta no realm `ziipsan`; teste de vetor fixo de `ziipsan/enc/v1` e `ziipsan/bidx/v1`, congelados daí em diante; busca residual sem `sigsan` fora da lista permitida |
 | P0.3 | CI no GitHub Actions | 17:X1, 17:S6 | M | P0.1 | Java com Postgres de serviço e frontend; `npm audit` alto e gitleaks bloqueiam; `main` protegida |
 | P0.4 | PostgreSQL 17 + PostGIS 3.5 | ADR-0013, 17:X2 | M | — | dev, integração e CI na mesma versão; suíte verde |
 | P0.5 | Dockerfile multi-stage não root; uma imagem para `api`, `worker`, `migrate`; `config.json` do frontend em execução | 17:X1, 17:B7 | M | P0.3 | UID ≠ 0, sem segredo, SBOM, tag fixa; trocar o emissor OIDC não exige novo build |
@@ -210,7 +271,7 @@ hospedagem for decidida a tempo, homologação e produção com PITR e R1.
 | P0.20 | Limites, sugeridos e pisos do §2.3 | ADR-0002 | M | P0.19 | cada limite com norma e teste; multa > 2% só com aceite (ajustar CHECK de `V6_1` e `LegalLimits`); piso de retenção não reduzível |
 | P0.21 | Shard no catálogo; teste com 300 schemas | ADR-0005, 17:D2 | G | P0.4 | core `V4`; tempo de migração, catálogo, vacuum e latência medidos; teto por cluster registrado |
 | P0.22 | Busca e listas | 17:D4, 17:D5 | M | — | `V3_4`; busca "contém" usa o índice; listas com número constante de consultas; keyset nas grandes |
-| P0.23 | Carga inicial | 17:O4, ADR-0012 | M | P0.8 | k6 ou Gatling noturno, 20 mil ligações sintéticas; p95 contra o RNF; regressão > 20% falha |
+| P0.23 | Carga inicial | 17:O4, ADR-0012 | M | P0.8 | k6 ou Gatling noturno, 20 mil ligações sintéticas; p95 contra o RNF; regressão > 15% no p95 falha (RNF-70) |
 | P0.24 | Modelagem de ameaças (STRIDE) | 17 §7 | P | P0.14 | API, BFF, worker, webhook e importador com controle ou tarefa |
 | P0.25 | Dívidas da execução; SINIR em modo assistido | diário §18, ADR-0004 | P | — | sem `ObjectMapper` do Jackson 2 em collection; `SinirIntegrationService` removido ou desligado sem caminho de chamada; `grantConsent` sem versão manual |
 | P0.26 | Decisão de hospedagem | ADR-0011 | P | — | ADR-0011 aceito: provedor, região brasileira, banco, cofre, custo |
@@ -220,12 +281,24 @@ hospedagem for decidida a tempo, homologação e produção com PITR e R1.
 | P0.30 | Escolha do piloto | ADR-0001 | P | — | termo de intenção, acesso ao legado, acordo de tratamento de dados e critério de divergência do go-live |
 | P0.31 | Comunicação aos clientes-alvo | G0 (v1) | P | — | até 23/10/2026: o que entra em cada fase e o que segue no legado |
 | P0.32 | Esqueleto fiscal | ADR-0003 | M | — | `commercial/sigsan-fiscal`; vetores do C# passam no Java; sem `producao-permitida` não há `tpAmb=1` |
+| P0.34 | Pacote de marca | ADR-0016 | M | P0.33, P0.5 | `branding/ziipsan` validado por schema no CI (SVG com `script` recusado); `BrandProvider`; plugin do Vite; `GET /api/v1/public/brand`; `check-brand-literals.sh` no `ci.sh` falha com literal de marca fora do pacote |
+| P0.35 | Tema de login e de e-mail do Keycloak gerado do pacote | ADR-0016 | P | P0.34 | realm com `loginTheme`, `emailTheme` e `displayName` do pacote; trocar `ZIIPSAN_BRAND` muda login e e-mail sem alterar código; o tema entra na imagem de produção da P0.29 |
+| P0.36 | Temas claro, escuro e do sistema | ADR-0017 | M | P0.16 | tokens semânticos; registro com Azul Água e Verde Água; lint recusa cor literal (`Badge.tsx`, `Alert.tsx` migrados); script inline aplica o tema antes da primeira pintura, com hash na CSP conferido pelo CI; contraste WCAG 2.1 AA por padrão × modo (Vitest e Playwright com axe) bloqueia o merge |
+| P0.37 | Valores dos padrões validados com o dono | ADR-0017 | P | P0.36 | valores HSL de Azul Água e Verde Água aprovados pelo dono e registrados em MARCA-E-TEMAS §4.2; teste de contraste verde com eles |
+| P0.38 | Keycloak Organizations para a marca no login | ADR-0016 | P | P0.13 | decisão registrada em MARCA-E-TEMAS §3.3 (subdomínio, e-mail primeiro ou caminho), com prova de conceito |
+| P0.39 | Versão gerada pela tag | ADR-0021 | M | P0.3, P0.5 | `-Drevision` no Maven; mesma versão, commit e data no Vite; `build-info`, `git.properties`, `version.json`; nenhuma versão escrita à mão; dois builds do mesmo commit dão a mesma versão; `Ziip-Versao` e `Ziip-Versao-Minima-Cliente` em toda resposta; SPA antigo mostra aviso de recarga (teste E2E) |
+| P0.40 | Licenças de terceiros pelo SBOM | ADR-0021, RNF-35 | P | P0.5 | `licencas-terceiros.json` gerado do CycloneDX (Maven e npm); licença fora da lista permitida bloqueia o CI |
+| P0.41 | Changelog do cliente | ADR-0021 | P | P0.3 | esquema de `conteudo/novidades/<versao>.yaml` validado; commit marcado como segurança, legislação ou parâmetro regulatório sem item bloqueia a release (teste do CI) |
+| P0.42 | Registro de implantação e Sobre mínimo | ADR-0021 | P | P0.6, P0.39 | core `V5_1`; o `migrate` grava `platform.implantacao`; `GET /api/v1/sobre` devolve versão, commit, ambiente e data gravada |
+| P0.43 | Papéis de plataforma | ADR-0018, ADR-0007 | P | P0.13, P0.15 | `PLATFORM_OWNER`, `PLATFORM_OPS`, `PLATFORM_SUPPORT` e `PLATFORM_FINANCE` no realm; rota `/api/v1/platform/*` sem `amr` → 403 `mfa_obrigatorio`; token com `tenant_id` recusado em rota de plataforma |
 
-P0.27–P0.29 só começam depois da P0.26. A regra pura do R3 pode começar no P0, em paralelo.
+P0.33 vem logo depois da P0.1: as demais tarefas de código do P0 dependem dela (dependência implícita, não repetida
+na coluna). P0.27–P0.29 só começam depois da P0.26. A regra pura do R3 pode começar no P0, em paralelo.
 
 ### P1 — Migração e satélite · 30/11/2026–29/01/2027
 
-Objetivo: cadastro do piloto importado e conciliado; R2, R3, console v0 e outbox.
+Objetivo: cadastro do piloto importado e conciliado; R2, R3, console e Central Ziip v0, outbox, marca do tenant,
+ajuda e chamados v0.
 
 | # | Tarefa | Origem | Tam. | Dep. | Aceite |
 |---|---|---|---|---|---|
@@ -234,7 +307,7 @@ Objetivo: cadastro do piloto importado e conciliado; R2, R3, console v0 e outbox
 | P1.3 | R2: cadastro completo | R2 (v1) | G | — | `V3_6`; cliente cadastrado pela tela; rascunho e `validate-step`; CEP; CSV |
 | P1.4 | Matrícula por sequência | 17:M9 | P | — | `V3_5`; dois lotes paralelos sem espera, sem lacuna nem duplicata |
 | P1.5 | R3: tarifa social satélite + N4 | R3 (v1), G1, G2 | M | P0.20 | `V4_2`; casos da v1 (T-03 → 102,00 e 87,00; CadÚnico de 25 meses inelegível; `GRACE_3M`); benefício abaixo do piso federal recusado; em homologação até 11/12/2026 |
-| P1.6 | Console da plataforma v0 | 17:P1, ADR-0002 | G | P0.13, P0.19, P1.9 | core `V9`; assistente de implantação; produção bloqueada sem parâmetros aceitos; planos, cotas, flags; suspensão; exportação e eliminação com certificado de descarte; impersonação com MFA e auditoria |
+| P1.6 | Console da plataforma v0 | 17:P1, ADR-0002, ADR-0018 | G | P0.13, P0.19, P0.43, P1.9 | core `V9`; assistente de implantação; produção bloqueada sem parâmetros aceitos; planos, cotas, flags; suspensão manual com aviso prévio, por uma pessoa com MFA e justificativa, deixando o backoffice só leitura e o portal, o Pix, os retornos e a 2ª via funcionando (teste); exportação e eliminação com carência e certificado de descarte; toda ação auditada em `platform.audit_event`. A impersonação sai: acesso assistido na P3.17 (ADR-0020) |
 | P1.7 | Partição do `audit_log` | 17:X3, 17:M7 | G | P0.4 | core `V7`; UUIDv7; retenção com piso; consulta por período poda partições |
 | P1.8 | Porte fiscal: NFS-e Nacional, cofre de certificado, numeração | ADR-0003 | G | P0.32, P0.28 | `V4_5`; emissão, cancelamento e substituição na produção restrita; sem número repetido ou perdido |
 | P1.9 | Outbox e `worker` básico | ADR-0014, 17:X4 | G | P0.5 | core `V8`; mensagem na transação do negócio; `SKIP LOCKED` com prazo de posse; role `sigsan_worker`; usado no provisionamento e no console |
@@ -245,10 +318,19 @@ Objetivo: cadastro do piloto importado e conciliado; R2, R3, console v0 e outbox
 | P1.14 | Rollout de migrations por tenant | 17:D1, ADR-0005 | M | P0.6, P0.21 | status por tenant; falha em quarentena sem parar os demais; paralelismo limitado; canário |
 | P1.15 | Baixos de dado pessoal | 17:B5, 17:B6 | P | — | VIEWER não vê excluídos; `consentId` conferido contra o titular |
 | P1.16 | Arredondamento e tributo na conta | FISCAL-PORTE-JAVA | P | P0.32 | regra única registrada em ADR; vetores C# e Java iguais; CHECK de `bills` definido para `V4_6` |
+| P1.17 | Central Ziip v0, junto do console v0 | ADR-0018 | G | P1.6, P1.9, P0.8 | core `V9_1`; coletor de 5 min com trava e watchdog; abas Visão geral, Plataforma, Segurança e Alertas; alerta abre e fecha sem duplicar; `SELECT` de `ziipsan_central` em tabela de tenant falha no teste; cada função `platform_stats.*` com teste de ausência de coluna pessoal; API de métricas `v1` com catálogo e teste de contrato |
+| P1.18 | Preferência de tema no servidor; padrão e restrição do tenant | ADR-0017 | M | P0.36, P1.6 | tenant `V1_7`; `GET/PUT /api/v1/me/preferences`; precedência usuário → tenant → Azul Água no modo do sistema (teste); padrão retirado da lista do tenant cai no padrão dele sem apagar a escolha |
+| P1.19 | Marca do tenant | ADR-0016 | M | P0.34, P1.6, P1.20 | core `V9_2`; chaves `branding.*`; logo PNG/WebP reencodado e varrido (EICAR e arquivo poliglota recusados); `GET /api/v1/public/tenant-brand` pelo subdomínio, com slug desconhecido devolvendo a marca do produto e o mesmo status; regra de contraste da cor aplicada ao salvar |
+| P1.20 | Pipeline de arquivos enviados com ClamAV | ADR-0010 (Exceções), ADR-0020 | M | P1.9 | tipo pelo conteúdo; arquivo em quarentena até a varredura; EICAR bloqueado e com alerta; PDF limpo liberado; idade das assinaturas monitorada; varredor atrás de interface substituível pelo serviço da hospedagem |
+| P1.21 | Ajuda: conteúdo, publicação e ajuda contextual | ADR-0020 | M | P0.3, P0.6 | core `V9_3`; `conteudo/ajuda` validado no CI (cabeçalho, links, rotas, alvos `data-tour` existentes); publicação pelo `migrate` sem nova imagem; busca em português; `useAjudaContextual` e `<Dica>` |
+| P1.22 | Catálogo de erros explicados | ADR-0020 | P | P1.21 | teste falha se um código `urn:ziipsan:problema:*` não tiver explicação |
+| P1.23 | Chamados v0 e fila na Central | ADR-0020 | G | P1.9, P1.17, P1.20 | core `V9_4`; protocolo `SUP-AAAA-NNNNNN`; conversa, estados e notificações pela outbox; usuário de outro tenant recebe 404; e-mail sem conteúdo nem anexo; formulário orienta a não anexar dado pessoal e marca `contem_dado_pessoal` |
+| P1.24 | Sobre completo e novidades por usuário | ADR-0021 | M | P0.34, P0.41, P0.42 | core `V9_5`; Sobre com marca, versão, documentos com versão vigente e aceita (`platform.aceite_documento`) e licenças; novidades uma vez por versão por usuário, com estado no servidor |
 
 ### P2 — Ciclo de faturamento · 01/02–26/03/2027
 
-Objetivo: ciclo completo em homologação com NFAg-e, dentro das metas de carga.
+Objetivo: ciclo completo em homologação com NFAg-e, dentro das metas de carga; cobrança por contrato e área do
+tenant prontas antes do primeiro contrato.
 
 | # | Tarefa | Origem | Tam. | Dep. | Aceite |
 |---|---|---|---|---|---|
@@ -262,6 +344,14 @@ Objetivo: ciclo completo em homologação com NFAg-e, dentro das metas de carga.
 | P2.8 | Arquivo para gráfica | 17:P4 | M | P2.5 | leiaute aprovado com amostra impressa |
 | P2.9 | Carga com 300 mil ligações | 17:O4, ADR-0012 | M | P2.5 | 100 mil contas em < 2 h sem estourar o p95 da API |
 | P2.10 | Importador v1 com 120 meses | 17:X5 | G | P1.2 | `V14_2`; saldo por matrícula igual ao legado |
+| P2.11 | Central: abas Faturamento e Fiscal | ADR-0018 | M | P1.17, P2.1, P2.6 | ciclo atrasado e fila fiscal acima do RNF-08 disparam alerta em homologação |
+| P2.12 | Cobrança do SaaS por contrato, antes do primeiro contrato | ADR-0019 | G | P1.6, P1.17 | core `V10_1`; contrato com aditivos, empenhos, reajuste (só proposta até o apostilamento), faturas e pagamentos conciliados; alertas do item 7; restrição manual por uma pessoa com MFA e justificativa; teste prova que nenhum caminho de código bloqueia tenant sozinho |
+| P2.13 | NFS-e da venda pelo motor portado | ADR-0019, ADR-0003 | M | P1.8, P2.12 | contexto fiscal da plataforma definido; fatura gera NFS-e na produção restrita |
+| P2.14 | Área do tenant: contrato com o Ziip | ADR-0022 | M | P2.12, P2.13 | tenant vê faturas e pagamentos do próprio contrato e baixa a fatura paga e a NFS-e em PDF e XML; outro tenant → 404; XML idêntico ao autorizado (hash conferido); acesso auditado |
+| P2.15 | SLA de suporte por contrato e CSAT | ADR-0020 | M | P1.23, P2.12 | core `V10_2`; política referenciada no contrato; prazo bate com casos de feriado municipal e pausa; alerta a 80% e no estouro; relatório mensal de FRT, MTTR, SLA e CSAT na Central |
+| P2.16 | Rejeições fiscais no catálogo de erros; novidades filtradas por tenant | ADR-0020, ADR-0021 | P | P1.22, P1.24, P2.6 | todo código de rejeição da NFAg-e (leiaute vigente) e da NFS-e com explicação (teste); novidade cujo `afeta` não inclui o tenant não aparece |
+| P2.17 | Marca do tenant e metadados nos PDFs | ADR-0016 | P | P1.19, P2.5 | conta e documentos com nome, logo e rodapé do tenant e metadados do `BrandProvider`; regras de contraste de MARCA-E-TEMAS §3.4 |
+| P2.18 | XML autorizado em armazenamento com retenção imutável | ADR-0003, ADR-0022 | P | P2.6, P0.27 | cópia com bloqueio de retenção e hash na `HashChain`; apagar ou sobrescrever é recusado; leitura confere o SHA-256 |
 
 ### P3 — Pronto para operar · 29/03–28/05/2027
 
@@ -269,18 +359,25 @@ Objetivo: ciclo completo em homologação com NFAg-e, dentro das metas de carga.
 |---|---|---|---|---|---|
 | P3.1 | R5a: retorno e conciliação N3 | R5 (v1), G4 | G | P2.5 | `V6_2`; retorno idempotente (NSA + hash); aprovação dupla |
 | P3.2 | R5b: Pix Cobrança e boleto híbrido | R5 (v1), 17:P4 | G | P3.1 | `V6_3`; webhook assinado; tenant do convênio; 200 em < 2 s após gravar na `pix_inbox` |
-| P3.3 | Portal do cliente: 2ª via, Pix, protocolo | 17:P2 | G | P3.2 | sem acesso ao backoffice; disponibilidade medida contra 99,9% |
+| P3.3 | Portal do cliente: 2ª via, Pix, protocolo | 17:P2 | G | P3.2 | sem acesso ao backoffice; disponibilidade medida contra 99,9%; autenticação do consumidor definida (§2.4); histórico e documentos na P3.20 |
 | P3.4 | R7 mínimo: protocolo NR 11, OS com bloqueio de corte | R7 (v1), G9 | G | P2.5 | `V8_1`, `V9_1`; casos da v1 (aviso em 15/10 → 16/11; 19/11 e 20/11 bloqueados; ADASA; sem prova, religação sem taxa); vedações para todos os motivos; emergência exige justificativa e foto |
 | P3.5 | Notificações com prova de entrega | 17:P4 | M | P1.9 | aviso de corte sem prova bloqueia a OS |
 | P3.6 | NFS-e de serviços avulsos | ADR-0003 | M | P1.8 | serviço da OS gera NFS-e na produção restrita |
 | P3.7 | Homologação fiscal com certificado do piloto | ADR-0003 | M | P2.6 | contingência e restauração do XML autorizado testadas |
-| P3.8 | Pentest: isolamento e cofre | 17 §7 | M | P0.27 | nenhum achado crítico ou alto aberto |
-| P3.9 | Contrato SaaS, DPA, termos, SLA, suboperadores | ADR-0002 | M | — | assinados; Ziip SAN operador, cliente controlador |
+| P3.8 | Pentest: isolamento, cofre, portal do consumidor e acesso assistido | 17 §7, ADR-0022 | M | P0.27 | nenhum achado crítico ou alto aberto; vínculo, enumeração de matrícula e download do portal cobertos |
+| P3.9 | Contrato SaaS, DPA, termos, SLA, suboperadores | ADR-0002, ADR-0019, ADR-0020 | M | P2.12, P2.14, P2.15 | assinados; Ziip SAN operador, cliente controlador; cláusulas de aviso, restrição só manual e saída; política de SLA de suporte; retenção de chamados pela vigência mais 5 anos e a exceção no certificado de descarte previstas no DPA |
 | P3.10 | Resposta a incidente; modelo de RIPD | 17 §7 | P | — | prazos ao controlador e à ANPD; simulação de mesa feita |
 | P3.11 | Operação: runbook, plantão, status, error tracking, burn rate | 17:O1 | M | P0.8, P0.27 | falha provocada dispara alerta; runbook exercitado |
 | P3.12 | Fim do `outOfOrder` | 17:D1, G10a | P | P1.14 | sequência global a partir de `V100`; CI recusa versão ≤ maior publicada |
 | P3.13 | Plano de paralelo e de corte | ADR-0001 | P | P0.30 | critérios e plano de volta aprovados pelo piloto |
 | P3.14 | Spring Boot na linha com suporte | D4 | M | — | atualizado antes de 31/07/2027 |
+| P3.15 | Central Ziip completa | ADR-0018 | G | P2.11, P3.1, P3.2, P3.11 | abas Arrecadação, Pix, LGPD, Regulatório, Infraestrutura com SLO, Radar e Suporte; falha provocada alerta; kit de evidências com hash na trilha |
+| P3.16 | Ensaio de saída de tenant sintético | ADR-0018, ADR-0015, RNF-42 | M | P1.6, P0.28 | exportação em até 15 dias; eliminação agendada por uma pessoa com MFA e cancelável durante a carência; crypto-shredding; certificado com hashes, expiração de backups e de cópias imutáveis e a exceção dos chamados |
+| P3.17 | Acesso assistido com consentimento | ADR-0020 | M | P1.23, P0.43 | core `V10_3`; sem consentimento → negado e auditado; revogação encerra a sessão em até 1 min; revelar documento e exportar bloqueados; cada requisição no `audit_log` do tenant com o id do consentimento |
+| P3.18 | Página pública de status | ADR-0020, RNF-54 | M | P0.27, P3.11 | core `V10_4`; hospedagem separada da produção; status muda sozinho com a sonda fora; janela de manutenção publicada com 72 h |
+| P3.19 | Retenção, expurgo e exportação de chamados | ADR-0020 | P | P1.23, P2.12 | `expurgar_em` = fim da vigência do contrato mais 5 anos; ensaio de expurgo com contagem; chamados na exportação de fim de contrato; RIPD do módulo atualizado; manual de atendimento |
+| P3.20 | Portal do consumidor: histórico de 120 meses e documentos | ADR-0022 | G | P3.3, P2.6, P2.10, P2.18 | tenant `V8_2`; contas e pagamentos de 120 meses; conta paga com quitação, DANFAG em PDF e XML original; consumidor só vê matrículas vinculadas (teste com dois titulares e troca de titularidade); XML com hash igual ao gravado; todo download no `personal_data_access_log`; excesso → 429; PDF com marca do tenant e estrutura marcada; axe sem violação `serious` ou `critical` |
+| P3.21 | Marca do tenant no portal e nos e-mails | ADR-0016 | P | P1.19, P3.3, P3.5 | portal e e-mails com nome, logo e cor do tenant; atribuição "operado com" conforme o pacote |
 
 ### Go-live piloto · 01/06–30/07/2027
 
@@ -302,6 +399,7 @@ Objetivo: ciclo completo em homologação com NFAg-e, dentro das metas de carga.
 | P4.5 | R5c: Pix Automático | R5 (v1) | M | P3.2 | cobrança recorrente no PSP do piloto |
 | P4.6 | Schema compartilhado e banco dedicado | ADR-0005 | G | P1.14, P2.2 | só com demanda; mesmo teste de isolamento |
 | P4.7 | Restauração mensal automatizada | ADR-0012 | P | P0.28 | relatório mensal |
+| P4.8 | Suporte: resposta por e-mail, deflexão, assinatura de status, notas do tenant | ADR-0020 | G | P3.17, P3.18 | resposta por e-mail entra no chamado certo só de remetente verificado e sem anexo não varrido; deflexão cita artigo e transfere para humano; assinatura de status por e-mail |
 
 O R6 fica depois do alvo de 30/04/2027 da v1 porque, sem cliente em produção antes de junho de 2027, o primeiro envio
 assistido com dado do Ziip SAN é o do ano-base 2027; até lá o piloto envia pelo processo atual.
@@ -320,6 +418,11 @@ Caminho crítico: hospedagem (P0.26) → ambientes, PITR e R1 (P0.27, P0.28) →
 (P1.9) → lote (P2.1) → ciclo (P2.5) → NFAg-e (P2.6) → arrecadação (P3.1, P3.2) → paralelo (GL.2) → corte (GL.4). Ramo
 igualmente crítico: piloto (P0.30) → discovery (P1.1) → importadores → carga final (GL.1). Não há folga: atraso na
 hospedagem ou no piloto desloca o go-live na mesma medida.
+
+As tarefas da versão 2.1 não mudam esse caminho, com três ressalvas: a renomeação (P0.33) vem logo depois da P0.1 e
+antes de toda tarefa de código do P0, em paralelo com a decisão de hospedagem; cobrança por contrato, NFS-e da venda e
+área do tenant (P2.12–P2.14) precedem a assinatura do contrato do piloto (P3.9); e o histórico com documentos no
+portal (P3.20) depende da NFAg-e (P2.6) e da cópia imutável do XML (P2.18), que depende da hospedagem (P0.27).
 
 | Marco | Data | Critério |
 |---|---|---|
@@ -357,6 +460,9 @@ facultativo (P3); NR 11 em 20/05/2027 e Lei 14.015, em vigor (P3); SINISA anual 
 | Dado real antes do R1 ou do acordo de tratamento | técnico | `dev-env` recusado em `prod`; importador exige cofre ativo e acordo registrado |
 | Homologação em terceiros (SEFAZ, PSP, banco, gráfica) | Daniel | credenciamento a partir do P1; simuladores |
 | Fim de suporte (Spring Boot 4.1 em 31/07/2027; PostgreSQL 15 em nov/2027) | técnico | P3.14; P0.4 |
+| Escopo da versão 2.1 (marca, temas, Central, cobrança, suporte, portais) sobre a mesma capacidade | Daniel | Central e suporte crescem por fase (v0 no P1); P4 cede antes do go-live; tarefas fora do caminho crítico escorregam primeiro |
+| Renomeação em massa (P0.33) quebra build ou cifra | técnico | tag `pre-rename`; nenhum branch aberto; commit só de `git mv` separado do de conteúdo; teste de vetor fixo da cifra; busca residual no CI |
+| Retenção longa de chamados com dado pessoal (vigência mais 5 anos) | Daniel | minimização no formulário, acesso restrito e registrado, expurgo com contagem, previsão no DPA |
 
 ---
 
@@ -364,19 +470,20 @@ facultativo (P3); NR 11 em 20/05/2027 e Lei 14.015, em vigor (P3); SINISA anual 
 
 | Fase | Período | Entregas principais | Bloqueios |
 |---|---|---|---|
-| P0 | 13/10–27/11/2026 | dev fora do Drive, CI, Dockerfile, PG 17, segurança, BFF, MFA, parâmetros, 300 schemas, carga inicial; ambientes, PITR, R1 | hospedagem; piloto |
-| P1 | 30/11/2026–29/01/2027 | importador v0, R2, R3, console v0, partição do `audit_log`, outbox, porte fiscal | piloto; R1 |
-| P2 | 01/02–26/03/2027 | lote, R4, R4a, NFAg-e, leitura terceirizada, gráfica, carga, importador v1 | P1.9, P1.16; SEFAZ |
-| P3 | 29/03–28/05/2027 | R5a, R5b, portal, R7 mínimo, NFS-e avulsa, pentest, contrato, operação | escopo de G4; PSP |
+| P0 | 13/10–27/11/2026 | dev fora do Drive, renomeação `ziipsan`, CI, Dockerfile, versão pela tag e changelog, PG 17, segurança, BFF, MFA, papéis de plataforma, pacote de marca, temas, parâmetros, 300 schemas, carga inicial; ambientes, PITR, R1 | hospedagem; piloto; valores dos temas |
+| P1 | 30/11/2026–29/01/2027 | importador v0, R2, R3, console e Central v0, marca do tenant, preferência de tema, ClamAV, ajuda e chamados v0, Sobre, partição do `audit_log`, outbox, porte fiscal | piloto; R1 |
+| P2 | 01/02–26/03/2027 | lote, R4, R4a, NFAg-e e XML imutável, leitura terceirizada, gráfica, carga, importador v1; cobrança por contrato, NFS-e da venda e área do tenant; SLA de suporte; Central de faturamento e fiscal | P1.9, P1.16; SEFAZ |
+| P3 | 29/03–28/05/2027 | R5a, R5b, portal com histórico e documentos, R7 mínimo, NFS-e avulsa, pentest, contrato, operação; Central completa, acesso assistido, página de status, ensaio de saída | escopo de G4; PSP; autenticação do consumidor |
 | Go-live | 01/06–30/07/2027 | paralelo e corte | aceite do piloto |
-| P4 | 02/08–17/12/2027 | R8, R6, BI, app offline, R5c, isolamento por porte | demanda |
+| P4 | 02/08–17/12/2027 | R8, R6, BI, app offline, R5c, isolamento por porte, suporte por e-mail | demanda |
 | 2028 | — | GRS, R9, ISO 27001, instância dedicada | demanda |
 
 ---
 
 ## 8. Governança
 
-- **Release.** `main` protegida; PR com CI verde; versão semântica com tag e notas de versão; homologação antes de
+- **Release.** `main` protegida; PR com CI verde; versão semântica gerada da tag (ADR-0021), com notas de versão e item
+  obrigatório no changelog do cliente para segurança, legislação e parâmetro regulatório; homologação antes de
   produção, com aprovação manual; `migrate` antes do rollout; rollback da imagem testado; janela de manutenção avisada
   com a antecedência do SLA.
 - **Ambientes.** Local (sintético), CI (banco efêmero), homologação (sintético ou anonimizado) e produção, a única com

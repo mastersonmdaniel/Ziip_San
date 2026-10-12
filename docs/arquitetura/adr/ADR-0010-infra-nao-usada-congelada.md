@@ -76,3 +76,12 @@ sugere ao leitor uma arquitetura que não existe.
 | Perfil `vault` documentado para o desenvolvimento do R1 | P0 |
 | Mover `infra/kubernetes` e `infra/terraform` para `infra/_arquivado/` com nota | P0 |
 | Retirar do compose os blocos comentados | P0 |
+
+## Exceções
+
+Componente novo só entra pelo item 3 da decisão: caso concreto que o PostgreSQL ou o serviço gerenciado da hospedagem
+não atenda, registrado aqui com o ADR de origem.
+
+| Componente | Caso concreto | Forma | Substituição | Origem |
+|---|---|---|---|---|
+| ClamAV | Arquivos enviados por usuários: anexos de chamados (ADR-0020) e logos de tenant (ADR-0016). O PostgreSQL não faz varredura de malware | Contêiner junto do processo `worker`, sem porta publicada; o arquivo fica em quarentena até a varredura e só então é liberado; infectado permanece bloqueado e gera alerta; atualização de assinaturas monitorada | Serviço equivalente da hospedagem (ADR-0011), atrás da mesma interface de varredura | Decisão do dono do produto, 12/10/2026 |

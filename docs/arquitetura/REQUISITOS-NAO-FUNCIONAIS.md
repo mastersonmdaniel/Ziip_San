@@ -54,7 +54,7 @@ indica quando a meta passa a ser critério de aceite.
 | RNF-31 | Nenhum token acessível a JavaScript: cookie `__Host-`, HttpOnly, Secure, SameSite; refresh com rotação (ADR-0006) | E2E que inspeciona o storage | Playwright | P0 | Não atende: `sessionStorage` (`frontend/src/services/auth/oidc.ts:28`) |
 | RNF-32 | AES-GCM por campo com AAD de tenant; chave por tenant em cofre/KMS, rotação anual, backup da KEK; disco e backups cifrados | Teste e inspeção | Testes, console do provedor | P0 | Parcial: cifra existe; provedor de produção não (`sigsan.crypto.provider`) |
 | RNF-33 | TLS 1.2+ (1.3 preferido), HSTS de 1 ano, TLS até banco e Keycloak, `sslRequired=all` | Varredura | testssl.sh | P0 | Não atende: Keycloak em HTTP; sem `forward-headers-strategy` |
-| RNF-34 | CSP estrita com nonce, `frame-ancestors 'none'` e demais cabeçalhos | Varredura em homologação | OWASP ZAP no CI | P0 | Não atende: sem CSP (S5) |
+| RNF-34 | CSP estrita sem `unsafe-inline` (o SPA é estático; o único script inline, o de tema, entra por hash, ADR-0017), `frame-ancestors 'none'` e demais cabeçalhos | Varredura em homologação | OWASP ZAP no CI | P0 | Não atende: sem CSP (S5) |
 | RNF-35 | CI bloqueia vulnerabilidade alta; imagem não-root com SBOM e assinatura | Pipeline | npm audit, Trivy, Syft, cosign | P0 | Não atende: `maplibre-gl` ^4.7.1 (`frontend/package.json`, S6) |
 | RNF-36 | Pentest externo com foco em isolamento antes do go-live; críticos e altos corrigidos; reteste anual | Relatório | Terceiro | P3 | Não atende |
 | RNF-37 | Credencial de migração só no job `migrate` | Inspeção da configuração | — | P0 | Não atende: `migratorDataSource` sempre criado (`DataSourceConfig.java:29-39`, S2) |
@@ -64,9 +64,9 @@ indica quando a meta passa a ser critério de aceite.
 
 | ID | Meta | Como medir | Ferramenta | Fase | Estado (evidência) |
 |---|---|---|---|---|---|
-| RNF-40 | Retenção por categoria em tabela aprovada pelo jurídico e pelo DPO; expurgo por partição | Relatório mensal de expurgo | Job do worker | P1 (tabela), P2 (expurgo) | Não atende: `audit_log` sem partição (`V1__create_core_schema.sql:43`, X3) |
+| RNF-40 | Retenção por categoria em tabela aprovada pelo jurídico e pelo DPO; expurgo por partição. Chamados de suporte e anexos: vigência do contrato mais 5 anos (ADR-0020) | Relatório mensal de expurgo | Job do worker | P1 (tabela), P2 (expurgo) | Não atende: `audit_log` sem partição (`V1__create_core_schema.sql:43`, X3) |
 | RNF-41 | Registro de acesso a dado pessoal em lista, busca, detalhe, revelação e exportação | Teste por endpoint | Testes de integração | P1 | Parcial: só o `reveal` é registrado |
-| RNF-42 | Fim de contrato: exportação em formato aberto em até 15 dias; eliminação até 30 dias após o prazo de devolução, com certidão | Ensaio com tenant sintético | Console da plataforma | P3 | Não atende (P1) |
+| RNF-42 | Fim de contrato: exportação em formato aberto em até 15 dias; eliminação até 30 dias após o prazo de devolução, depois da carência, com certificado de descarte (ADR-0015) | Ensaio com tenant sintético | Console da plataforma | P3 | Não atende (P1) |
 | RNF-43 | Crypto-shredding: destruir a chave do tenant torna ilegível o dado cifrado, inclusive em backup; backups expiram em até 35 dias | Ensaio | Cofre/KMS | P3 | Não atende: depende do R1 |
 | RNF-44 | Dados de tenant e backups no Brasil; exceções (telemetria sem dado pessoal) registradas no RIPD | Inventário | — | P0 | Não atende: Terraform em `us-east-1` (O2) |
 

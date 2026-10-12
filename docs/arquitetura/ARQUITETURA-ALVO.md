@@ -1,7 +1,8 @@
 # Arquitetura-alvo de produção
 
-Base: revisão 17 (§4 e §5) e ADRs 0003, 0005, 0006, 0007, 0010, 0012, 0013 e 0014. Neutra quanto a provedor enquanto o
-ADR-0011 estiver pendente. Metas em `REQUISITOS-NAO-FUNCIONAIS.md`.
+Base: revisão 17 (§4 e §5) e ADRs 0003, 0005, 0006, 0007, 0010, 0012, 0013, 0014, 0018, 0020 e 0022. Neutra quanto a
+provedor enquanto o ADR-0011 estiver pendente. Metas em `REQUISITOS-NAO-FUNCIONAIS.md`. Os nomes de roles abaixo
+(`sigsan_*`) passam a `ziipsan_*` na renomeação do P0 (plano P0.33).
 
 ## 1. Componentes
 
@@ -11,17 +12,19 @@ Monólito modular: um artefato (imagem única, não-root, assinada) executado em
 |---|---|
 | Borda | DNS, CDN e WAF; TLS 1.3, HSTS, CSP, rate limit por IP; SPA em armazenamento de objetos com assets imutáveis; `/api` e `/bff` para o balanceador |
 | `api` | REST e BFF (ADR-0006) no mesmo processo; 3+ réplicas sem afinidade; sessão do BFF no PostgreSQL; role `sigsan_app` |
-| `worker` | Outbox, lote, retorno bancário, fiscal (ADR-0003), PDFs e notificações; réplicas por fila; role `sigsan_worker` |
+| `worker` | Outbox, lote, retorno bancário, fiscal (ADR-0003), PDFs, notificações e coletor da Central Ziip (ADR-0018); réplicas por fila; role `sigsan_worker` |
+| ClamAV | Varredura dos arquivos enviados (anexos de chamados e logos de tenant), junto do `worker`, com quarentena até a varredura; substituível pelo serviço da hospedagem (exceção do ADR-0010) |
 | `migrate` | Job antes de cada rollout; único detentor da credencial `sigsan_migrator` |
 | Keycloak 26.8 | 2+ réplicas, `start --optimized`, banco próprio; MFA conforme ADR-0007 |
 | PostgreSQL 17 + PostGIS 3.5 | Primário com standby síncrono, PITR e réplica de leitura para relatórios e SINISA (ADR-0013); pooler em modo transaction |
-| Armazenamento de objetos | Prefixo e chave por tenant; retenção imutável para documentos fiscais |
+| Armazenamento de objetos | Prefixo e chave por tenant; retenção imutável para documentos fiscais (XML autorizado servido como gravado, ADR-0022) |
 | Outbox | Tabela no PostgreSQL, workers com `SKIP LOCKED` (ADR-0014) |
 | Cofre/KMS | Segredos de execução, KEK e DEK por tenant (R1) |
-| Observabilidade | OpenTelemetry Collector para métricas, logs e traces; error tracking; página de status |
+| Observabilidade | OpenTelemetry Collector para métricas, logs e traces; error tracking; página de status pública em hospedagem separada da produção (ADR-0020) |
 | CI/CD | GitHub Actions: testes, imagem com SBOM, homologação, produção com aprovação manual e rollback |
 
-Kafka, Redis, MinIO, TimescaleDB e Loki/Tempo/Pyroscope ficam fora até haver caso concreto (ADR-0010).
+Kafka, Redis, MinIO, TimescaleDB e Loki/Tempo/Pyroscope ficam fora até haver caso concreto (ADR-0010). A única
+exceção registrada até aqui é o ClamAV (ADR-0010, seção Exceções).
 
 ```mermaid
 flowchart LR
@@ -75,7 +78,7 @@ flowchart LR
 
 | Porte (ADR-0005) | Ligações | Dados | Lote |
 |---|---|---|---|
-| Pequeno | até 20 mil | Schema compartilhado com `tenant_id` e RLS | Workers compartilhados, 1 partição simultânea |
+| Pequeno | até 20 mil | Schema próprio (padrão do ADR-0005); autarquia muito pequena pode dividir schema com `tenant_id` e RLS, sob demanda (P4.6) | Workers compartilhados, 1 partição simultânea |
 | Médio | 20–200 mil | Schema próprio no cluster compartilhado | Fila e janela de lote próprias |
 | Grande | acima de 200 mil | Cluster dedicado | Workers dedicados |
 
@@ -154,4 +157,4 @@ Valores de partida para o piloto, a validar pela carga de referência (RNF-70):
 | O2 | Terraform em `us-east-1` | Região brasileira após ADR-0011 |
 | O3 | Keycloak `start-dev` | 2+ réplicas com TLS |
 | O4 | Sem metas nem carga | RNF e k6 no CI |
-| P1, P2 | Sem console nem portal | Console v0 (P1), portal (P3) |
+| P1, P2 | Sem console nem portal | Console e Central v0 (P1), Central completa e portal com histórico e documentos (P3) |

@@ -1,6 +1,6 @@
 # Parâmetros do tenant
 
-Data: 12/10/2026. Origem: ADR-0002, ADR-0015, plano `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` §2.2, relatórios
+Data: 12/10/2026. Origem: ADR-0002, ADR-0015, plano `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` §2.3, relatórios
 `docs/levantamento/08`, `10`, `11`, `13`, `14`, `17` e o código. Fases (ADR-0001): P1 tarifa social (R3), P2 ciclo
 (R4), P3 arrecadação, corte e portal (R5a/R5b, R7), P4 cobrança e Pix Automático (R8, R5c).
 
@@ -23,7 +23,8 @@ Abreviações de caminho: `V1` = `shared/sigsan-core/src/main/resources/db/migra
    versões de parâmetro usadas. Hoje só a tarifa faz isso (`bills.tariff_snapshot`, `V4_1:267`;
    `bill_items.tariff_version_id`, `V4_1:298`).
 3. **Aprovação dupla e aceite formal.** Quem propõe não aprova. O aceite registra usuário, nome, cargo, data, hash do
-   conteúdo e a **base normativa citada pelo cliente**. Suporte da plataforma em impersonação não propõe nem aprova.
+   conteúdo e a **base normativa citada pelo cliente**. Suporte da plataforma em acesso assistido (ADR-0020) não
+   propõe nem aprova.
 4. **Sugestão marcada como sugestão**, com a fonte. Aceitá-la exige o mesmo aceite; divergir dela exige justificativa.
 5. **Limite validado conforme a classe** (§2, ADR-0015). Valor fora do limite é recusado; dentro do limite, a escolha
    do prestador ou da agência fica aberta, com validação de tipo e coerência.
@@ -31,7 +32,7 @@ Abreviações de caminho: `V1` = `shared/sigsan-core/src/main/resources/db/migra
 7. **Efeito só futuro.** `valid_from` ≥ data da aprovação. Conta emitida não é recalculada; correção é retificação com
    a versão da competência.
 8. **Simulação antes de ativar** para parâmetros de cálculo (simulador N4 do R3).
-9. **Ausência é erro explícito** (plano §2.2).
+9. **Ausência é erro explícito** (plano §2.3).
 
 ---
 
@@ -132,7 +133,13 @@ Travado (classe a): ajuste de conciliação com aprovação dupla (plano R5).
 ### G6 — Retenção e eliminação
 
 Pisos fixos definidos pelo Ziip SAN (classe c, ADR-0015): o cliente só amplia prazos. Eliminação ao fim do contrato e
-descarte em backups seguem procedimento do Ziip SAN (classe a), com certificado de descarte entregue ao cliente.
+descarte em backups seguem procedimento do Ziip SAN (classe a), com certificado de descarte entregue ao cliente. A
+eliminação é executada por uma pessoa da plataforma com MFA, sem segundo aprovador, sempre com justificativa,
+auditoria e prazo de carência antes da execução (`CENTRAL-ZIIP.md` §6.3; decisão do dono do produto, 12/10/2026).
+
+Chamados de suporte do Ziip ao tenant e seus anexos não são parâmetro do tenant: ficam retidos pela vigência do
+contrato mais 5 anos (ADR-0020) e não entram na eliminação de fim de contrato; o certificado de descarte registra a
+exceção.
 
 | Chave | Descrição | Tipo | Sug. | Limite | Cl. | Apr. | Fase | Código |
 |---|---|---|---|---|---|---|---|---|
@@ -146,7 +153,7 @@ descarte em backups seguem procedimento do Ziip SAN (classe a), com certificado 
 | `ret.negative_listing_max_years` | informação negativa em birô | anos | 5 | teto 5 (CDC art. 43 §1º); só reduz | c | JUR | P4 | novo |
 | `ret.incident_record_years` | registro de incidente de segurança | anos | 5 | piso 5 (Res. CD/ANPD 15/2024 art. 10, `10`); ente público: tabela de temporalidade; só amplia | c | DPO | P1 | novo |
 | `lgpd.dsr_deadline_days` | prazo de resposta ao titular | dias | 15 (privado) | teto 15 (LGPD art. 19 II); ente público: LAI; só reduz | c | DPO | P1 | fixo em `compliance/sigsan-lgpd/src/main/java/br/com/sigsan/compliance/lgpd/engine/DataSubjectRightsEngine.java:31` e `.../service/LgpdEngineService.java:225` |
-| `ret.contract_end` | devolução e eliminação ao fim do contrato SaaS | procedimento | procedimento do Ziip SAN | devolução em formato aberto, eliminação e certificado de descarte entregue ao cliente (DPA; `10` §1.2 item 10) | a | — | P3 | novo (não há offboarding, `10`) |
+| `ret.contract_end` | devolução e eliminação ao fim do contrato SaaS | procedimento | procedimento do Ziip SAN | devolução em formato aberto, carência antes da eliminação, eliminação por uma pessoa com MFA e justificativa, e certificado de descarte entregue ao cliente (DPA; `10` §1.2 item 10) | a | — | P3 | novo (não há offboarding, `10`) |
 | `ret.backup_disposal` | descarte nas cópias de backup do dado já eliminado | procedimento | procedimento do Ziip SAN | prazo de rotação a definir; incluído no certificado de descarte | a | — | P3 | novo |
 
 ### G9 — Corte e religação
@@ -191,7 +198,7 @@ O tenant pode excluir motivo que não seja inadimplência mediante aceite formal
 | `log.audit_retention_months` | trilha de negócio (`audit_log`) | sem | piso: maior prazo de G6 que ela comprova; só amplia | c | novo; `audit_log` sem partição nem expurgo (`V1:43`) |
 | `log.document_search_retention_months` | registro de busca e revelação | sem | piso: `log.access_retention_days`; só amplia | c | novo |
 
-Duração de sessão e de token ficam no realm único `sigsan` e não são parâmetro do tenant.
+Duração de sessão e de token ficam no realm único (`sigsan`; `ziipsan` depois da P0.33) e não são parâmetro do tenant.
 
 ---
 
@@ -240,7 +247,7 @@ jurídico do prestador.
 | Onde | O que tem | Falta |
 |---|---|---|
 | `tenant_catalog.plan`, `.settings` (`V1:28-29`) e `tenant_metadata.settings` (`V1_1:17`) | JSONB livre, gravado no provisionamento e não lido por nenhum código | vigência, schema, aceite; não usar para regra |
-| `tenant_settings` (`V1:107-122`) | chave/valor por tenant | vigência e aprovação; fica para configuração técnica |
+| `tenant_settings` (`V1:107-122`) | chave/valor por tenant | vigência e aprovação; fica para configuração técnica e de apresentação, sem vigência nem aceite: `registry.*`, marca do tenant `branding.*` (ADR-0016, `MARCA-E-TEMAS.md` §3.1) e tema `theme.*` (ADR-0017, §4.4) |
 | `RegistrySettingsService.java:28-31, 58-63` (`commercial/sigsan-registry`, pacote `application`) | `useBlockFace`, `requireReadingSequence`, `requireUserDocument`, `economiesSoftLimit` | operacionais; ficam em `tenant_settings` |
 | `tariff_versions`, `tariff_social_bands`, `tax_withholding_rates` (`V4_1:45-65, 124-140, 147-162`) | vigência com EXCLUDE | aprovação, aceite, validação do piso social |
 | `collection_policies` (`V6_1:193-236`) | vigência, norma-fonte, `fine_cap_justification` | EXCLUDE (só índice único em `valid_from`, `V6_1:236`), aprovação, aceite reforçado da multa acima de 2% |
