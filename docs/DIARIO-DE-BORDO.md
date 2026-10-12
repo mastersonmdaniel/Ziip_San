@@ -963,3 +963,10 @@ Feita no branch `e4-mtr` (worktree separada).
   título, o `DIARIO_DE_BORDO.md` da raiz, o `README.md`, o plano (§ decisões) e a análise de fontes abertas.
 - Mantêm o nome antigo, de propósito: os comentários das migrations `V3_1`, `V4_1` e `V5_1` (alterá-los muda o checksum e
   o Flyway recusa a validação nos bancos já migrados) e os relatórios de `docs/levantamento/`, que são registros datados.
+
+### 12/10/2026 — Acesso ao GitHub
+
+- Gerada chave SSH ed25519 só para este repositório (deploy key), sem passphrase: `~/.ssh/id_ed25519_github_sigsan`
+  (fora do Drive), alias `github-sigsan` no `~/.ssh/config`. Remoto previsto: `git@github-sigsan:<dono>/sigsan.git`.
+- Pendente com o usuário: criar o repositório privado e cadastrar a chave pública como deploy key com escrita. Nenhum push
+  feito; o push continua dependendo de autorização explícita.
