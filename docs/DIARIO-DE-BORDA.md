@@ -922,3 +922,37 @@ Feita no branch `e4-mtr` (worktree separada).
   `X-Tenant-ID` divergente 403, auditoria sem CPF nem nome).
 - **Fora (pendente)**: rascunhos e `validate-step`, `block-faces`, catálogos sem tabela, CEP, exportação CSV, endereço e tipo
   de cliente (filtros `city`/`customerTypeId` = 400), layout de inscrição por tenant, montagem das listas sem N+1.
+
+### E5 e E6 — fechamento e aceite de ponta a ponta (12/10/2026) ✔
+
+- **Aplicação executável** (`platform/sigsan-app`): `SigsanApplication`, dois DataSources, `DatabaseMigrator` antes do JPA,
+  resource server JWT (emissor, audiência `sigsan-api`, validade; `aud` como string única do Keycloak aceito), `JwtTenantFilter`
+  (tenant só do token; cabeçalho divergente = 403), problem+json em tudo, `X-Request-ID`, `GET /api/me`
+  (`{id, username, fullName, email, tenantId, tenantSchema, roles}`), `CryptoConfig` (provider `dev-env` recusado em `prod`;
+  sem provider não sobe), API REST do cadastro (branch `e5-api`), `DevTenantBootstrap` só no perfil `local`.
+- **Frontend**: login PKCE (`oidc-client-ts`), "Revelar documento" exige finalidade de uma lista fechada (vai em `{purpose}`;
+  texto livre levaria dado pessoal à auditoria). ESLint 9 flat com jsx-a11y (0 erros).
+- **Operação**: `scripts/dev-up.sh` (`--reset` recria do zero), `run-app.sh`, `ci.sh`, `kc-dev-user.sh`; `README.md` na raiz;
+  `.env.example` completo (o `.env` local foi gerado com senhas aleatórias e não é versionado).
+- **Banco de desenvolvimento recriado** no modelo novo (`dev-up.sh --reset`): nenhuma role `sigsan*` superusuária,
+  `current_tenant_id()` de `sigsan_owner`, Keycloak 26.8.0 com banco `keycloak` próprio.
+- **Aceite de ponta a ponta, no navegador**: tela de login → Keycloak (`code_challenge_method=S256`) → volta autenticado
+  (`dev.local`) → `GET /api/me` 200 → `POST /api/registry/consumer-units/search` 200 (lista vazia real) → catálogos 200.
+  O tenant de desenvolvimento foi provisionado na subida.
+- **Lacuna achada no aceite (R2)**: o formulário de cliente exige "Tipo de cliente" (catálogo `customer-types` sem tabela no
+  backend: 404) e endereço (o backend ainda não modela endereço do cliente). **Cadastrar cliente pela tela fica bloqueado** até
+  o R2; a API de clientes funciona e é coberta pelo `RegistryApiE2ETest`. Também sem tabela: `property-profiles`.
+- **Contagem final**: **973 testes Java** (core 36, security 28, platform 25, quality 38, losses 24, gis 31, mtr 76, lgpd 15,
+  registry 37, billing 216, metering 200, collection 165, app 82) e **134 testes do frontend**, todos verdes.
+
+### Pendências depois das fundações (E0–E6)
+
+1. **R2 do cadastro**: `customer-types` e `property-profiles` com tabela; endereço do cliente; rascunhos e `validate-step`;
+   `block-faces`; CEP; N+1 nas listas; índice trigram para busca por nome "contém".
+2. **R1 Vault**: `TenantKeyProvider` de produção (hoje só `dev-env`). Nenhum CPF real antes disso.
+3. **Decisões suas**: subir `maplibre-gl` (crítico no `npm audit`) e `react-router` de versão principal; remoto GitHub
+   (autorizar o MCP `github` via `/mcp`; nenhum push foi feito).
+4. **Infra**: `infra/kubernetes` não funcional (aviso no arquivo); portas de Redis/Kafka etc. ainda em 0.0.0.0 no compose
+   (serviços não usados hoje).
+5. **Leituras do sistema** (hash do MTR, SINIR, PDF) não registram acesso na auditoria — avaliar com o encarregado (DPO).
+6. Decisões jurídicas e regulatórias G1–G9 (plano §2.2) seguem com seus prazos; a tarifa social (R3) depende de G1 e G2.

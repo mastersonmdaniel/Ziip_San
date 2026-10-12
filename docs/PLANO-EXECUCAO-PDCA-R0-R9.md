@@ -102,6 +102,10 @@ Os planos parciais usavam `V1_3` para coisas diferentes. Faixas finais:
 
 ## 4. Etapas de execução (ações do PDCA = fundações)
 
+> **Situação em 12/10/2026 (fim do dia): E0 a E6 concluídas**, com 973 testes Java e 134 do frontend verdes e aceite de
+> ponta a ponta no navegador (diário §18). Ficaram para depois: R1 (Vault) e o R2 do cadastro (lacunas listadas no diário).
+
+
 Meta: fundações prontas até **20/11/2026**. Cada etapa termina com build verde no banco virgem, registro no
 diário e commit.
 
