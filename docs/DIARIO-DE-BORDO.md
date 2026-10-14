@@ -1065,3 +1065,17 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - v2.12 / **ADR-0035**: por decisão do dono, o plano não trata mais de equipe nem capacidade (ADR-0029 revogado); só o
   que será feito e como, com esforço por entrega como indicação e datas como metas. WMS da onda B pelo **GeoServer**
   (exceção registrada no ADR-0010).
+
+
+### 14/10/2026 — Plano v2.13: ícones das telas e dos itens, símbolos do mapa e verticais
+
+- Pedido do dono: criar os ícones das telas e dos itens; no futuro, outras verticais (GIS para saúde, para secretaria de
+  segurança pública). Quatro decisões por cartão: ícones de interface em **Lucide mais próprios**; símbolos do mapa em
+  **SVG próprio de fonte única** (sprite MapLibre, QGIS, SLD do GeoServer, PDF); **geração no desenvolvimento** com guia
+  de estilo e aceite do dono por lote; **plataforma genérica com pacotes por vertical**, saneamento primeiro.
+- Registrado em **ADR-0036** (ícones e símbolos) e **ADR-0037** (plataforma e verticais), nos projetos
+  `docs/arquitetura/ICONES-E-SIMBOLOGIA.md` e `PLATAFORMA-E-VERTICAIS.md` e no plano v2.13: P0.46, P0.47, P1.29, P1.30,
+  ajustes em P1.26 (`gis_domain`), GIS-06, ED-64 e ED-65, core `V9_7`, risco de generalização prematura e pendência do
+  nome comercial das verticais (§2.4). ADRs 0016, 0017 e 0034 com linha de ajuste v2.13.
+- Saúde e segurança pública ficam sem escopo, tarefa nem data: exigem ADR e análise jurídica de dados antes de qualquer
+  requisito. Datas e marcos não mudam. Execução do P0 local segue aguardando ordem do dono.

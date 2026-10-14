@@ -5,6 +5,7 @@
 - **Afeta:** ADR-0016 (marca), P0.16 (CSP); detalhes em `docs/arquitetura/MARCA-E-TEMAS.md` §4
 - **Ajuste de 12/10/2026 (plano v2.2), antes de qualquer implementação:** item 7 registra a aprovação dos valores pelo
   dono do produto; ids dos padrões em inglês (plano §8, Idioma).
+- **Ajuste de 14/10/2026 (plano v2.13):** os tokens `icon-*` (ícones de interface) e `map-*` (símbolos de mapa) passam pela mesma verificação de contraste; símbolos de mapa são recoloridos pelos tokens, sem cor própria no SVG (ADR-0036).
 
 ## Contexto
 

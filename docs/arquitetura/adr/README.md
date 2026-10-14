@@ -55,6 +55,8 @@ cada tarefa entra.
 | [0033](ADR-0033-desenvolvimento-local-e-aws-no-lancamento.md) | Desenvolvimento local até o lançamento comercial; AWS no lançamento | Aceito | 12/10/2026 |
 | [0034](ADR-0034-gis-cadastro-tecnico.md) | GIS e cadastro técnico de redes | Aceito | 12/10/2026 |
 | [0035](ADR-0035-planejamento-sem-gestao-de-equipe-e-geoserver.md) | Planejamento sem gestão de equipe; GeoServer para WMS | Aceito | 12/10/2026 |
+| [0036](ADR-0036-icones-e-simbologia-do-mapa.md) | Ícones das telas e dos itens (Lucide e próprios) e símbolos do mapa em SVG de fonte única | Aceito | 14/10/2026 |
+| [0037](ADR-0037-plataforma-com-pacotes-de-vertical.md) | Plataforma Ziip com pacotes de vertical; saneamento primeiro | Aceito | 14/10/2026 |
 
 ## Referências
 
@@ -66,4 +68,5 @@ cada tarefa entra.
   esforço por entrega e por onda, sem análise de capacidade.
 - `docs/levantamento/gis/19a` a `19e` — Gisbase, concorrentes, normas, modelo de dados e editais de GIS (base do
   ADR-0034 e de `docs/arquitetura/GIS-CADASTRO-TECNICO.md`).
+- `docs/arquitetura/ICONES-E-SIMBOLOGIA.md` e `docs/arquitetura/PLATAFORMA-E-VERTICAIS.md` — projeto dos ADRs 0036 e 0037.
 - `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` — plano canônico: decisões (§2), mapa Flyway (§3) e fases P0–P4 (§4).

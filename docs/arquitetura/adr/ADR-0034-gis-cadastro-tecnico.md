@@ -54,6 +54,7 @@
   pacote continuam na `api`, e a escrita continua fora do servidor de mapas (decisão 7). A frase "na `api` sem
   servidor de mapas novo" do item 8 lê-se só para OGC API – Features e WFS; estimativa da ED-67 mantida; decisão do
   dono do produto.
+- **Ajuste de 14/10/2026 (plano v2.13):** (1) a lista fixa de `domain` de `gis_feature_class` é substituída por `gis_domain` (V13_1), carregada pelo pacote de vertical (ADR-0037); os domínios `WATER`, `SEWER`, `STORM`, `WASTE` e `CONTEXT` são os do pacote de saneamento; (2) a simbologia da decisão 6 passa a ter conjunto SVG próprio de fonte única, com símbolos por tipo e estado e aceite do dono por lote (ADR-0036; P1.30, GIS-06, ED-64, ED-65).
 
 ## Contexto
 

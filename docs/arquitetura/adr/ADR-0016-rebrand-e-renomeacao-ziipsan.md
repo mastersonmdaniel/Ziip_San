@@ -11,6 +11,7 @@
   publicado nas lojas com o nome, o ícone e as cores do tenant (ADR-0026), como mais um canal da marca do tenant ao
   lado do portal e dos e-mails; item 6 não muda, porque a marca nas lojas é do tenant, e não de um revendedor; decisão
   do dono do produto.
+- **Ajuste de 14/10/2026 (plano v2.13):** o pacote de marca não contém ícones de interface nem símbolos de mapa; ficam no pacote de vertical e no núcleo (ADR-0036, ADR-0037). O nome da vertical vem do pacote de vertical; o nome comercial das verticais está em aberto (plano §2.4).
 
 ## Contexto
 

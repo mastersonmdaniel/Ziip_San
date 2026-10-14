@@ -9,6 +9,7 @@
   resolvem as pendências P-3 a P-7 e o WMS da P-8 (§14.2); ajustes v2.12: equipe e capacidade fora do plano, com o
   [ADR-0029](adr/ADR-0029-capacidade-e-equipe-da-trilha-de-editais.md) revogado, e WMS servidor pelo GeoServer
   (ADR-0010 e ADR-0034, ajustes "GIS, v2.12"; §7.2)
+- **v2.13:** ícones e símbolos ([ADR-0036](adr/ADR-0036-icones-e-simbologia-do-mapa.md)) e domínio do GIS por referência para outras verticais ([ADR-0037](adr/ADR-0037-plataforma-com-pacotes-de-vertical.md)); P1.30 entrega os símbolos de água e esgoto.
 - **Plano:** [PLANO-EXECUCAO-PDCA-R0-R9.md](../PLANO-EXECUCAO-PDCA-R0-R9.md) v2.10 a v2.12 (P1.26 a P1.28, P2.21 a
   P2.23, P3.25 a P3.27; ED-13, ED-52 a ED-56 e ED-63 a ED-67 na trilha de editais)
 - **Base:** levantamentos [19a](../levantamento/gis/19a-gisbase.md) (Gisbase/Hidrogeo e Nova Trento),
@@ -267,7 +268,7 @@ Validação do JSONB:
 
 | Tabela | Conteúdo |
 |---|---|
-| `gis_feature_class` | `code`, `domain` (`WATER`, `SEWER`, `STORM`, `WASTE`, `CONTEXT`), `topology_role`, `geometry_type`, `is_isolating`, `hydraulic_role` (`EPANET` e `SWMM`), `origin` (`FACTORY`, `TENANT`), `active` |
+| `gis_feature_class` | `code`, `domain` (chave de `gis_domain`, v2.13; no pacote de saneamento: `WATER`, `SEWER`, `STORM`, `WASTE`, `CONTEXT`), `topology_role`, `geometry_type`, `is_isolating`, `hydraulic_role` (`EPANET` e `SWMM`), `origin` (`FACTORY`, `TENANT`), `active` |
 | `gis_feature_type` | `class_id`, `code`, `label`, `attributes_schema`, `schema_version`, `terminal_config` (entrada e saída para dispositivos direcionais), `min_zoom`, `style_key`, `origin`, `factory_code`, `active`, `approval_status` |
 | `gis_material` | `code`, `family`, `standard_ref` (norma e edição), `hazen_williams_c`, `manning_n`, `roughness_mm`, `service_life_years`, `legacy_only`, `origin`, `active` |
 | `gis_catalog_item` | `feature_type_id`, `material_id`, `dn_mm`, `dn2_mm`, `angle_deg`, `pressure_class`, `stiffness_class`, `joint_type`, `internal_diameter_mm`, `external_diameter_mm`, `sdr`, `section_shape`, `geom1`–`geom4`, `manufacturer`, `model`, `standard_ref`, `reference_status` (`STANDARD`, `REFERENCE_TO_VALIDATE`, `TENANT`), `origin`, `factory_code`, `factory_retired_on`, `active` |
@@ -306,6 +307,7 @@ Validação do JSONB:
 
 | Tabela | Conteúdo | Migration |
 |---|---|---|
+| `gis_domain` | domínio da vertical: `key`, `vertical_id`, `label`, `map_color_token`, `sort_order` (ADR-0037, v2.13) | `V13_1` |
 | `gis_layer`, `gis_style`, `gis_basemap`, `gis_wms_source` | camadas publicadas, estilo padrão e do tenant, mapas base e fontes WMS | `V13_6` |
 | `gis_tile_dirty` | tiles a invalidar por camada e zoom | `V13_6` |
 | `gis_import_batch`, `gis_import_raw`, `gis_import_profile`, `gis_cad_layer_map`, `gis_quality_report` | importação (§9) | `V13_7` |
@@ -1050,6 +1052,7 @@ gerado do schema e metadados MGB. Atende ao requisito de devolução da base (F1
 
 ### 10.2 Simbologia (decisão 6)
 
+- **Símbolos (v2.13, ADR-0036):** o `style_key` do tipo aponta para um símbolo SVG do pacote de vertical; o conjunto, a geração do sprite, do QGIS, do SLD e da legenda, e o aceite do dono estão em [ICONES-E-SIMBOLOGIA.md](ICONES-E-SIMBOLOGIA.md). O tenant escolhe símbolo da biblioteca, sem enviar SVG.
 - **Fonte única**: `gis_style` guarda, por tipo e por estado, cor, espessura, padrão de traço, ícone, rotação, rótulo
   e zoom. Dela saem o estilo MapLibre (expressões `match`, seleção por `feature-state` com `promoteId`), o estilo do
   projeto QGIS (QML), o SLD do WMS servido pelo GeoServer (v2.12, §7.2) e a legenda dos PDFs. O tenant sobrescreve por tipo e estado, sem código; o padrão Ziip continua

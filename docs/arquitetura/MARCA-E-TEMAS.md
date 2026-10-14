@@ -190,6 +190,12 @@ o merge.
 
 Retirar um padrão exige migrar os tenants que o têm como padrão.
 
+### 4.8 Ícones e símbolos de mapa (v2.13)
+
+Ícones de interface (Lucide e próprios, cor por `currentColor` e tokens `icon-*`) e símbolos de mapa (SVG de fonte única,
+cor pelos tokens `map-*`) seguem [ICONES-E-SIMBOLOGIA.md](ICONES-E-SIMBOLOGIA.md) e o ADR-0036. Entram na verificação de
+contraste do §4 e na regra de cor literal. Não fazem parte do pacote de marca do §2.
+
 ## 5. Renomeação `sigsan` → `ziipsan`
 
 ### 5.1 Escopo
@@ -277,6 +283,7 @@ caixa fora de `docs/` e do diário; exceções só em `branding/` e numa lista p
 | Valores do §4.2, aprovados em 12/10/2026, no registro; ajuste fino após ver as telas, com contraste verde | P0 | P0.37 |
 | Avaliação de Keycloak Organizations | P0, com a P0.13 | P0.38 |
 | Preferência no servidor; padrão e restrição do tenant | P1 | P1.18 |
+| Guia de estilo e pacote de ícones da interface (ADR-0036) | P0, com a P0.36 | P0.46 |
 | Marca do tenant: chaves, logo, subdomínio, endpoint pré-login, cabeçalho | P1, com a P1.6 | P1.19 |
 | Marca do tenant e metadados nos PDFs | P2 | P2.17 |
 | Marca do tenant no portal e nos e-mails | P3, com a P3.3 e a P3.5 | P3.21 |
