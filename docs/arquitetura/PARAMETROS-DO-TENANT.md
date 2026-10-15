@@ -292,7 +292,7 @@ nas linhas acima.
 |---|---|---|---|---|---|
 | `fee.fine_mode` | `ONE_TIME`; `DAILY_CAPPED` (percentual diário até o teto de `fee.fine_pct`) | `DAILY_CAPPED` | b | 20c §5.2, COB-16 a COB-19; destino de `FineMode.PER_DAY` (ADR-0015) | P2.5 |
 | `fee.charge_moment` | `NEXT_BILL`; `AT_PAYMENT_DOCUMENT` | `NEXT_BILL` | b | 20c §5.2 | P2.5 |
-| `fee.exemptions` | conjunto: `AUTO_DEBIT`, `BANK_DELAY`, `PROVIDER_FAULT`, `COLLECTION_HOLD` | todas ligadas | c (só acrescenta) | 20c §5.2, ARR-18 | P2.5 |
+| `fee.exemptions` | conjunto: `AUTO_DEBIT`, `BANK_DELAY`, `PROVIDER_FAULT`, `COLLECTION_HOLD`, `CHANNEL_OR_ACTION_FLAG` (forma de arrecadação ou ação de cobrança marcada como isenta; 20c COB-17, 15/10/2026) | todas ligadas, exceto `CHANNEL_OR_ACTION_FLAG`, que depende de marcação por forma ou ação | c (só acrescenta) | 20c §5.2, ARR-18 | P2.5 |
 | `bill.carry_over_unpaid` | `OFF`; `ON` | `OFF` | b | 20c §5.2; relação com `fee.no_carry_over` | P2.5 |
 | `pay.partial_settlement_order` | `OLDEST_DUE_FIRST`; `USER_CHOICE`; `REJECT_PARTIAL` | `OLDEST_DUE_FIRST` | b | 20c §5.2 | ED-26 |
 | `dun.notice_fee` | `NONE`; `FIXED` (valor) | `NONE` | b | 20c §5.2, COB-07; TR-398 | P4.1 |
