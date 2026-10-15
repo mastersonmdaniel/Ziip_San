@@ -1095,3 +1095,21 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - Plano v2.14: nova P1.31 (núcleo de OS no P1, `V9_1` antecipada), P2.24 (quitação anual e qualidade da água na conta),
   P3.28 (vazamento e aferição); P1.2, P1.3, P3.3, P3.4, P3.20, ED-13, ED-16, ED-36 ajustadas; 16 parâmetros de bifurcação
   em PARAMETROS-DO-TENANT. Chave do Perplexity gravada no perfil (54 caracteres); falta reabrir o app para o MCP usá-la.
+
+
+### 14/10/2026 — Consolidação dos levantamentos 20b, 20c e 20d; plano v2.15
+
+- Levantamentos 20b (medição e faturamento), 20c (arrecadação, cobrança, parcelamento, negativação e contábil) e 20d
+  (atendimento, OS e segurança) consolidados no planejamento; o 20c foi relido depois da regravação (sete regras
+  confirmadas como fato; parâmetros de parcelamento mantidos).
+- Oito decisões do dono por cartão: efeito da classificação na P3.1 e devolução na nova P3.29; parcelamentos ativos
+  como prestações a vencer (P1.2, P2.10); seleção mínima do aviso na P3.4; cobrança terceirizada na nova ED-68 (onda
+  C); permissões `recurso:ação` na P0.13 e escopo por área na nova P3.30; senha por tenant por autenticador próprio no
+  realm único (ED-06); ouvidoria e interrupção programada na ED-35, com a área afetada na ED-54.
+- **ADR-0040** registra permissões, escopo e senha por tenant. Perguntas dos levantamentos resolvidas pelas diretrizes
+  sem novo cartão (núcleo de OS pela P1.31, usuário avulso como unidade consumidora, parcela bônus verificada na P1.1,
+  NFAg-e da fatura agrupadora e conta de campo não devolvida como parâmetros, protocolo no módulo de atendimento).
+- PARAMETROS-DO-TENANT: 70 chaves de bifurcação novas, 9 linhas ajustadas (chaves repetidas entre 20b, 20c e 20d
+  unificadas) e travas legais novas, inclusive a revalidação do corte na execução, também offline.
+- Plano v2.15: 18 tarefas ajustadas, P2.20 dependente da P1.31, GL.2 dependente da P3.29 e da P3.30; reservas `V1_8` e
+  `V6_5`; dois riscos novos. Datas e marcos sem mudança. Só documentação; commit pelo dono.

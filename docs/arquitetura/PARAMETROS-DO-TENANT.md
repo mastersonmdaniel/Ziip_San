@@ -116,7 +116,7 @@ prazo maior), nunca menor. O piso só é ativado em produção depois de conferi
 | `pay.document_kind_by_debt` | documento por natureza do débito (mensal, acordo, entrada) | mapa | mensal = arrecadação; acordo = boleto (inferência do relatório `11`, achado 4) | livre | d | FIN | P3 | parcial: `document_kind` por convênio (`V6_1:30`) |
 | `pay.agreements` | banco, convênio, layout do campo livre, versões A.09 aceitas, vigência | tabela | sem | estrutura FEBRABAN v08 validada | d | FIN | P3 | `collection_agreements` (`V6_1:23-49`) |
 | `pay.febraban_company_code` | código de 4 posições, segmento 2 | texto | sem | obrigatório no segmento 2 (layout v08) | d | FIN | P3 | sem coluna própria (`V6_1:23-46`) |
-| `pay.classify_tolerance`, `pay.adjust_tolerance`, `pay.duplicate_winner` | tolerâncias e vencedor da duplicidade | R$, enum | sem | livre | d | FIN | P3 | `V6_1:213-215` |
+| `pay.classify_tolerance`, `pay.adjust_tolerance`, `pay.duplicate_winner` | tolerâncias e vencedor da duplicidade | R$, enum | tolerâncias: sem; `pay.duplicate_winner`: `OLDEST_PAYMENT` (opções `OLDEST_PAYMENT`, `NEWEST_PAYMENT`; a quitação mais antiga protege contra acréscimo; 20c §5.2 e ARR-03, v2.15) | livre | d | FIN | P3 | `V6_1:213-215` |
 | `pay.pix_provider` | PSP, chave Pix, referência da credencial no cofre, webhook | objeto | sem | Regulamento Pix (Res. BCB 1/2020); tenant do webhook vem do convênio | d | FIN | P3 | novo |
 | `pay.hybrid_charge` | cobrança híbrida Pix + boleto | bool | desligado | facultativo, a partir de 01/02/2027 (Res. BCB 587/2026) | d | FIN | P3 | novo |
 | `pay.pix_automatic` | habilitado, antecedência da instrução, valor máximo | objeto | desligado | débito em conta com recebedor PJ só por Pix Automático desde 13/10/2025 (Res. CMN 5.251/2025) | d | FIN | P4 | novo |
@@ -128,8 +128,8 @@ Travado (classe a): ajuste de conciliação com aprovação dupla (plano R5).
 | Chave | Descrição | Tipo | Sug. | Limite | Cl. | Apr. | Fase | Código |
 |---|---|---|---|---|---|---|---|---|
 | `fee.fine_pct` | multa de mora, percentual único | % | 2,00, padrão de fábrica (convergência de 10 ERIs, `08` d.2) | até 2,00 com o aceite comum; acima de 2,00 exige norma citada, aprovação dupla, aceite formal registrado e exibe alerta de risco (CDC art. 52 §1º; aplicação a tarifa: G5, pergunta E-02); teto absoluto: a definir (P0) | b | JUR | P2 | `V6_1:202-204`, CHECK `V6_1:222-224` e `FineRule` (`commercial/sigsan-collection/src/main/java/br/com/sigsan/commercial/collection/surcharge/FineRule.java:27-31`) aceitam teto acima de 2% só com texto de justificativa (`fine_cap_justification`), sem aceite; `LateFeePolicy` (billing) sem trava; unificar (ADR-0015) |
-| `fee.interest_mode`, `fee.interest_monthly_pct`, `fee.interest_month_basis_days` | juros simples pro rata die | enum, %, int | `DAILY_RATE_WITH_CAP` com o teto da ERI (SC: 0,033%/dia; padrão mais protetivo, ADR-0038, v2.14); opções `DAILY_RATE_WITH_CAP` (`fee.interest_daily_pct`) e `MONTHLY_PRO_RATA` (1,00% a.m., base 30 ou 30,3) | sem capitalização, travado (o produto só oferece juros simples); teto a confirmar | d | JUR | P2 | `V6_1:205-208` |
-| `fee.correction_*` | modo, índice, meses mínimos, aceita negativa | enum, código | sem (Selic, INPC, IPCA ou índice do reajuste, conforme ERI) | ERI ou contrato | d | JUR | P2 | `V6_1:209-212`; fatores em `surcharge_indexes` (`V6_1:173`) |
+| `fee.interest_mode`, `fee.interest_monthly_pct`, `fee.interest_month_basis_days` | juros simples pro rata die | enum, %, int | `DAILY_RATE_WITH_CAP` com o teto da ERI (SC: 0,033%/dia; padrão mais protetivo, ADR-0038, v2.14); opções `DAILY_RATE_WITH_CAP` (`fee.interest_daily_pct`), `DAILY_RATE` sem teto, `MONTHLY_PRO_RATA` (1,00% a.m., base 30 ou 30,3) e `CALENDAR_MONTH` (20c §5.2, v2.15) | sem capitalização, travado (o produto só oferece juros simples); teto a confirmar | b (20c §5.2, v2.15; era d) | JUR | P2 | `V6_1:205-208` |
+| `fee.correction_*` | modo, índice, meses mínimos, aceita negativa | enum, código | `fee.correction_mode` = `NONE`; opções `NONE`, `BY_INDEX` (Selic, INPC, IPCA ou índice do reajuste, conforme ERI) e `TARIFF` (correção pela tarifa; 20c §5.2, v2.15) | ERI ou contrato | d | JUR | P2 | `V6_1:209-212`; fatores em `surcharge_indexes` (`V6_1:173`) |
 | `fee.grace_business_days`, `fee.due_rolls_to_business_day` | carência e rolagem do vencimento | int, bool | sem | livre | d | JUR | P2 | `V6_1:200-201` |
 | `fee.no_carry_over` | vedar acúmulo de encargos de períodos anteriores | bool | sem | ERI (ARSAE-MG veda) | d | JUR | P2 | novo |
 | `fee.legal_rate_fallback` | taxa legal do CC art. 406 quando nada foi contratado | bool | desligado | Lei 14.905/2024; aplicação a tarifa a confirmar | d | JUR | P2 | novo |
@@ -189,7 +189,7 @@ O tenant pode excluir motivo que não seja inadimplência mediante aceite formal
 | `cut.third_party_debt_blocks` | débito de outro serviço motiva corte | bool | não | ARSESP veda; demais a confirmar (E-09) | d | JUR | P3 | novo |
 | `cut.reasons` | motivos (inadimplência, fraude, risco, pedido, emergência técnica) e quais seguem as vedações de dia e horário | tabela | todos os motivos com as vedações, exceto emergência técnica com justificativa e foto | inadimplência sempre com a regra integral (classe a); excluir outro motivo exige aceite formal com norma citada | b | JUR | P3 | novo |
 | `rec.sla_hours` | religação normal, urgência, indevida | horas | sem | ERI (ex.: ARSESP 48/6/6) | d | OPE | P3 | novo |
-| `rec.urgent_fee`, `rec.requires_settlement` | preço da urgência; exige quitação | R$, bool | sem | ERI | d | OPE+JUR | P3 | novo |
+| `rec.urgent_fee`, `rec.release_condition` | preço da urgência; condição de religação (substitui `rec.requires_settlement`, 20c §5.2, v2.15) | R$, enum | `rec.urgent_fee`: sem; `rec.release_condition`: `MOTIVATING_DEBT_PAID_OR_AGREED` (opções `MOTIVATING_DEBT_PAID_OR_AGREED`, `DOWN_PAYMENT_PAID`, `FULL_SETTLEMENT`) | ERI | d (taxa); b (condição) | OPE+JUR | P3 | novo |
 | `sac.response_days` | prazos de resposta do atendimento | dias | sem | ERI; Decreto 11.034/2022 só como referência (`13`) | d | REG | P3 | novo |
 
 ### Emissão em campo e almoxarifado (ADR-0031, ADR-0032; plano v2.5)
@@ -224,11 +224,12 @@ entram neste grupo na P1.26.
 
 ---
 
-### Bifurcações resolvidas por configuração (ADR-0038, ADR-0039; plano v2.14)
+### Bifurcações resolvidas por configuração (ADR-0038, ADR-0039, ADR-0040; planos v2.14 e v2.15)
 
-Origem: perguntas e parâmetros propostos nos levantamentos `docs/levantamento/gsan/20a` (Q1, Q2, Q5 a Q8) e `20f` (Q3 a
-Q6 e §5). Padrão de fábrica: caminho mais protetivo ao usuário. Os parâmetros de `20b`, `20c` e `20d` entram na
-consolidação desses documentos.
+Origem: perguntas e parâmetros propostos nos levantamentos `docs/levantamento/gsan/20a` (Q1, Q2, Q5 a Q8), `20b`
+(§5.1, Q5 e Q6), `20c` (§5.2), `20d` (§5) e `20f` (Q3 a Q6 e §5). Padrão de fábrica: caminho mais protetivo ao
+usuário. Chave proposta em mais de um levantamento foi unificada numa só, com as duas origens citadas; chave que já
+existia nos grupos G1 a G9 ou nesta seção foi ajustada na própria linha, com a origem citada (plano v2.15).
 
 | Chave | Opções | Padrão de fábrica | Cl. | Origem | Fase |
 |---|---|---|---|---|---|
@@ -238,20 +239,128 @@ consolidação desses documentos.
 | `sewer.out_of_use_on_water_cut` | `AUTOMATIC` (efeito da mesma OS de corte ou supressão); `SERVICE_ORDER_ONLY`; `NONE` | `AUTOMATIC` | b | 20a Q6; GSAN | ED-13 |
 | `service_type.charge_mode` (por tipo de serviço) | `BILL_DEBIT` (débito na próxima conta); `STANDALONE_INVOICE` (NFS-e avulsa, P3.6); `NONE` | por tipo no catálogo de fábrica | d | 20a Q7 | P1.31 |
 | `cut.level_model` | situação de corte com atributo `cut_level` (cavalete, ramal); supressão como situação própria | `cut_level` no evento | d | 20a Q8 | P3.4 |
-| `service_type.internal_approval` (por tipo) | aplicação por quem registra; aprovação por outra pessoa | outra pessoa para o que muda faturamento; direta para contato | b | ADR-0039 item 8 | P1.31 |
+| `service_type.internal_approval` (por tipo) | aplicação por quem registra; aprovação por outra pessoa; atalho do tenant `NONE`, `CONTACT_ONLY`, `ALL_LOW_RISK` (`so.internal_change_auto_apply` do 20d §5, unificada nesta chave, v2.15) | outra pessoa para o que muda faturamento; direta para contato (`CONTACT_ONLY`); titularidade, documento, categoria e economias sempre com análise | b | ADR-0039 item 8; 20d §5 | P1.31 |
 | `rec.undue_cut_compensation` | fórmula ARESC/AGIR (maior entre 2× religação de urgência e 20% da fatura); ARIS (religação em 4 h sem ônus); crédito manual com aprovação | conforme perfil da ERI; sem perfil, a fórmula ARESC/AGIR | b | 20f Q3, LEG-22 | P3.4 |
-| `leak.*` (desconto, prazo, âncora, faturas em 12 meses, esgoto pela média) | perfis ARIS, AGIR, ARESC ou valores próprios | perfil da ERI; sem perfil, o mais favorável ao usuário entre os três | b, desconto c quando a ERI fixar piso | 20f Q4, §5 | P3.28 |
+| `leak.*` (regra e teto do desconto, prazo, âncora, faturas em 12 meses, esgoto pela média) | perfis ARIS, AGIR, ARESC ou valores próprios; `leak.discount_rule`: `AVERAGE_6M`, `PCT_OF_EXCESS`, `MOST_FAVORABLE`; `leak.max_discount_pct_water`, `leak.max_discount_pct_sewer` (20b §5.1, v2.15) | perfil da ERI; sem perfil, o mais favorável ao usuário entre os três (`MOST_FAVORABLE`, desconto máximo de 100%) | b, desconto c quando a ERI fixar piso | 20f Q4, §5; 20b §5.1 | P3.28 |
 | `meter.test_*` (aviso, cobrança só se normal, meses de revisão) | perfis ARIS, AGIR, ARESC ou valores próprios | cobrança só se o hidrômetro estiver normal | b | 20f Q4, §5 | P3.28 |
-| `fee.interest_mode`, `fee.interest_daily_pct` | por dia com teto da ERI; mensal pro rata base 30 ou 30,3 | por dia com teto (SC: 0,033%) | b | 20f Q5, LEG-29 | P2 |
-| `neg.public_entity_allowed`, `neg.protest_enabled` | negativação em birô; protesto por arquivo; ambos; nenhum | nenhum até o aceite do tenant com parecer jurídico | b | 20f Q6, LEG-41 | ED-30 |
+| `fee.interest_mode`, `fee.interest_daily_pct` | por dia com teto da ERI (`DAILY_RATE_WITH_CAP`); por dia sem teto (`DAILY_RATE`); mensal pro rata base 30 ou 30,3 (`MONTHLY_PRO_RATA`); mês cheio (`CALENDAR_MONTH`) (20c §5.2, v2.15) | por dia com teto (SC: 0,033%); mantido na v2.15 diante do `SIMPLE_PER_DAY` sem teto proposto no 20c | b | 20f Q5, LEG-29; 20c §5.2 | P2 |
+| `neg.channels`, `neg.public_entity_allowed` | `NONE`; `BUREAU` (negativação em birô); `PROTEST` (protesto por arquivo); `BOTH`; ente público só com liberação própria (`neg.protest_enabled` absorvida em `neg.channels`, 20c §5.2, v2.15) | `NONE` até o aceite do tenant com parecer jurídico | b | 20f Q6, LEG-41; 20c §5.2 | ED-30 |
 | `quit.statement_channel` | espaço na fatura; documento anexo; portal | espaço na fatura | d | 20f §5, Lei 12.007 | P2.24 |
 | `bill.water_quality_source` | planilha mensal do laboratório; módulo de qualidade (ED-50) | planilha mensal até a ED-50 | d | 20f Q7, Decreto 5.440 | P2.24 |
-| `sac.deadline_counting_rule` | dias corridos; dias úteis | conforme ERI; sem ERI, a contagem mais favorável ao usuário | d | 20f §5 | P3 |
+| `sac.deadline_counting_rule` | `CALENDAR` (dias corridos); `BUSINESS` (dias úteis, com os feriados de `sac.holiday_scope`) (`sac.deadline_day_basis` do 20d §5, unificada, v2.15) | conforme ERI; sem ERI, `CALENDAR`, a contagem mais favorável ao usuário | b (20d §5, v2.15; era d) | 20f §5; 20d ATD-04 | P3.4 |
 | `cut.same_user_other_property_debt` | condiciona ligação e religação a débito do mesmo usuário em outro imóvel: sim; não | não | b | 20f §5, LEG-20 | P3.4 |
+
+**Medição e faturamento (20b §5.1; v2.15).** Inclui as chaves de 20b unificadas com as de 20c.
+
+| Chave | Opções | Padrão de fábrica | Cl. | Origem | Fase |
+|---|---|---|---|---|---|
+| `bill.review_effects` | `SUSPEND_ALL` (cobrança, acréscimos, negativação, corte, débito automático); `SUSPEND_DUNNING_ONLY` | `SUSPEND_ALL`; corte de conta em revisão sempre vedado (travado) | b | 20b §5.1, FAT-35; NR 11 arts. 37–38 | P2.20 |
+| `bill.hold_on_anomaly` | `HOLD_AND_REVIEW`; `ISSUE_AVERAGE_THEN_ADJUST`; `ISSUE_MEASURED_WITH_NOTICE` | `HOLD_AND_REVIEW`, com o teto de `bill.review_max_days` | b | 20b §5.1, FAT-32; ERI | P2.5 |
+| `bill.review_max_days` | dias | prazo da ERI | c (teto da ERI; só reduz) | 20b §5.1, FAT-34 | P2.20 |
+| `bill.auto_review_value_bands` | faixas de valor por categoria | sem faixas | d | 20b §5.1, FAT-31 | P2.5 |
+| `bill.undue_charge_double_refund` | ligado; desligado com norma citada | ligado | b | 20b §5.1; 20c ARR-09; CDC art. 42 p.u. (aplicação a tarifa: G5, E-02) | P3.29 |
+| `bill.rectification_limits_against_user` | quantidade por ano; meses de antiguidade | sem limite próprio, só a prescrição; correção a favor do usuário nunca limitada (travado) | d | 20b §5.1, FAT-50 | P2.20 |
+| `bill.due_change_max_per_year` | inteiro; sem limite | sem limite | d | 20b §5.1, FAT-52; Lei 8.987 art. 7º-A | P2.20 |
+| `bill.due_change_min_days_before_due` | dias | 0 | d | 20b §5.1, FAT-52 | P2.20 |
+| `bill.min_issue_amount`, `bill.below_min_rule` | valor; `CARRY_FORWARD` (máximo de meses); `ISSUE_ANYWAY` | `CARRY_FORWARD`, 3 meses, sem encargo sobre o valor arrastado | d | 20b §5.1, FAT-82; editais TR-298/299 | P2.5 |
+| `bill.validity_months` | meses | sem padrão | d | 20b §5.1 | P2.5 |
+| `bill.mail_extra_days` | dias | sem padrão | d | 20b §5.1 | P2.5 |
+| `bill.second_copy_fee` | valor por canal | 0; canal digital sempre 0 | b | 20b §5.1, FAT-89; `08` R-11 | P3.3 |
+| `bill.delivery_address_fee` | valor | 0 | b | 20b §5.1; editais TR-302 | P2.5 |
+| `bill.advance_billing` | desligado; por pedido do órgão (OS) | desligado | d | 20b §5.1, FAT-85 | ED-22 |
+| `bill.cut_connection_charge` | `NONE`; `AVAILABILITY_FEE` (tarifa de disponibilidade, se a ERI previr; `BASIC_FEE` no 20b); `MIN_TARIFF_PCT` | `NONE` | b | 20b §5.1 (`bill.cut_connection_rule`, unificada); 20c §5.2; NR 13 art. 10 | P2.5 |
+| `bill.inactive_economy_rule` | `NO_CHARGE`; `BASIC_FEE` (se a ERI previr) | `NO_CHARGE` | b | 20b §5.1; NR 13 art. 10 | P2.5 |
+| `tariff.fixed_part_model` | `BASIC_FEE`; `MINIMUM_CONSUMPTION` | `BASIC_FEE`; `MINIMUM_CONSUMPTION` só com `reg.contract_pre_nr13` | c | 20b §5.1; NR 13 arts. 8º–9º | P2.5 |
+| `sewer.no_water_volume_rule` | `CONNECTION_MINIMUM`; `NON_METERED_ESTIMATE`; `FIXED_VOLUME`; `LOWER_OF` | `LOWER_OF` | b | 20b §5.1, FAT-71; ERI | P2.5 |
+| `sewer.alternative_pct_enabled` | ligado; desligado | ligado onde a ERI previr | d | 20b §5.1, FAT-70 | ED-13 |
+| `condominium.apportionment_mode` | `COMMON_AREA_TO_CONDOMINIUM`; `EQUAL_PER_ECONOMY`; `UNMETERED_ONLY`; `NONE` | `COMMON_AREA_TO_CONDOMINIUM` | b | 20b §5.1, FAT-78; Lei 13.312; NR 11 arts. 28–30 | ED-15 |
+| `condominium.max_increment_m3`, `condominium.tolerance_pct` | inteiros | sem padrão | d | 20b §5.1, FAT-78 | ED-15 |
+| `special_situation.max_months` | meses | 12, com reavaliação por OS | b | 20b §5.1, FAT-63 | ED-22 |
+| `quality.noncompliance_compensation` | `CREDIT_PCT_OF_WATER` (%); `NONE` (só se a ERI não previr) | `CREDIT_PCT_OF_WATER`, percentual a informar | b | 20b §5.1, FAT-15; ERI; CDC art. 20 | ED-22 |
+| `infraction.charge_timing` | `AFTER_DECISION`; `ON_ISSUE_SUSPENDED_BY_APPEAL` | `AFTER_DECISION` | b | 20b §5.1, FAT-25 | ED-24 |
+| `infraction.appeal_days`, `infraction.max_retroactive_months` | inteiros | ERI | c (prazo mínimo e teto da ERI) | 20b §5.1, FAT-25 (`inf.appeal_days` no 20c §5.1) | ED-24 |
+| `credit.type_limits` | valor máximo por tipo | sem limite; acima do limite, aprovação dupla | d | 20b §5.1, FAT-11 | P2.5 |
+| `large_user.min_m3`, `large_user.min_economies` | inteiros | sem padrão | d | 20b §5.1, FAT-77; NR 11 | ED-17 |
+| `pay.refund_mode` | `USER_CHOICE`; `CREDIT_NEXT_BILL`; `BANK_TRANSFER` | `USER_CHOICE` | b | 20b §5.1 (`bill.overpayment_refund_mode`, unificada); 20c §5.2, ARR-08; CDC art. 42 | P3.29 |
+| `inst.bonus_installments` | desligado; regra (contas consecutivas em dia, tolerância em dias, prestações perdoadas, janela) | desligado; implementado só se a P1.1 encontrar a regra no piloto | d | 20b FAT-08 (`installment.bonus_*`, unificada); 20c §5.2, COB-36 (mecanismo 2) | P4.1 |
+
+**Arrecadação, cobrança, parcelamento, negativação e contábil (20c §5.2; v2.15).** `pay.duplicate_winner`,
+`fee.correction_mode` e `rec.release_condition` foram ajustadas em G4, G5 e G9; `fee.interest_mode` e `neg.channels`,
+nas linhas acima.
+
+| Chave | Opções | Padrão de fábrica | Cl. | Origem | Fase |
+|---|---|---|---|---|---|
+| `fee.fine_mode` | `ONE_TIME`; `DAILY_CAPPED` (percentual diário até o teto de `fee.fine_pct`) | `DAILY_CAPPED` | b | 20c §5.2, COB-16 a COB-19; destino de `FineMode.PER_DAY` (ADR-0015) | P2.5 |
+| `fee.charge_moment` | `NEXT_BILL`; `AT_PAYMENT_DOCUMENT` | `NEXT_BILL` | b | 20c §5.2 | P2.5 |
+| `fee.exemptions` | conjunto: `AUTO_DEBIT`, `BANK_DELAY`, `PROVIDER_FAULT`, `COLLECTION_HOLD` | todas ligadas | c (só acrescenta) | 20c §5.2, ARR-18 | P2.5 |
+| `bill.carry_over_unpaid` | `OFF`; `ON` | `OFF` | b | 20c §5.2; relação com `fee.no_carry_over` | P2.5 |
+| `pay.partial_settlement_order` | `OLDEST_DUE_FIRST`; `USER_CHOICE`; `REJECT_PARTIAL` | `OLDEST_DUE_FIRST` | b | 20c §5.2 | ED-26 |
+| `dun.notice_fee` | `NONE`; `FIXED` (valor) | `NONE` | b | 20c §5.2, COB-07; TR-398 | P4.1 |
+| `inst.interest_method` | `NONE`; `SIMPLE`; `PRICE` | `NONE` | b | 20c §5.2, COB-30 | P4.1 |
+| `inst.down_payment_rule` | `NONE`; `MIN_PCT`; `MIN_PCT_OR_MIN_TARIFF`; `LAST_BILL` | `NONE` | b | 20c §5.2; TR-360 | P4.1 |
+| `inst.unpaid_down_payment_action` | `KEEP_AND_CHARGE_NEXT_BILL`; `UNDO` | `KEEP_AND_CHARGE_NEXT_BILL` | b | 20c §5.2, COB-33 | P4.1 |
+| `inst.down_payment_grace_days` | inteiro | piso de fábrica a definir | c | 20c §5.2; TR-362 | P4.1 |
+| `inst.cancel_after_overdue` | inteiro (prestações em atraso) | 3 | c (só amplia) | 20c §5.2, COB-34 | P4.1 |
+| `inst.discount_on_cancel` | `KEEP_PROPORTIONAL`; `REVOKE_ALL` | `KEEP_PROPORTIONAL` | b | 20c §5.2, COB-34 | P4.1 |
+| `inst.requires_confirmation` | `SIGNED_TERM`; `DOWN_PAYMENT`; `NONE` | `SIGNED_TERM` | b | 20c §5.2 | P4.1 |
+| `neg.prior_notice_by` | `PROVIDER_AND_BUREAU`; `BUREAU` | `PROVIDER_AND_BUREAU` | c | 20c §5.2; Súmula 359 do STJ [EXT] | ED-30 |
+| `neg.notice_min_days` | inteiro | piso a definir com o jurídico | c | 20c §5.2 | ED-30 |
+| `neg.exclusion_business_days` | inteiro | 5 | c (teto; só reduz) | 20c §5.2, COB-43; Súmula 548 do STJ [EXT] | ED-30 |
+| `neg.excluded_profiles` | conjunto: `LOW_INCOME`, `PUBLIC_BODY`, `PROTECTED_CLASSES` | todos excluídos | c | 20c §5.2; coerente com `neg.public_entity_allowed` | ED-30 |
+| `cert.positive_effect` | `ON`; `OFF` | `ON` | b | 20c §5.2, COB-24 | ED-38 |
+| `unit.transfer_with_previous_debt` | `ALLOW_DEBT_STAYS_WITH_HOLDER`; `BLOCK` | `ALLOW_DEBT_STAYS_WITH_HOLDER` | a se o jurídico confirmar a natureza pessoal do débito [EXT]; senão b | 20c §5.2 | P1.31 |
+| `acc.doubtful_method` | `TARGET_WRITE_OFF`; `AGING_MATRIX`; `EXPECTED_LOSS` | sem padrão: escolha do contador do tenant | d | 20c §5.2; CPC 48 [EXT] | ED-32 |
+
+**Atendimento, OS e segurança (20d §5; v2.15).** `sac.deadline_day_basis` e `so.internal_change_auto_apply` foram
+unificadas em `sac.deadline_counting_rule` e `service_type.internal_approval`; `cut.revalidate_on_execution` é
+trava (abaixo). Política de senha por tenant pelo ADR-0040.
+
+| Chave | Opções | Padrão de fábrica | Cl. | Origem | Fase |
+|---|---|---|---|---|---|
+| `sac.holiday_scope` | `NATIONAL`; `NATIONAL_STATE`; `NATIONAL_STATE_MUNICIPAL` | `NATIONAL` (só no prazo de atendimento; a vedação de corte considera todas as esferas, travada) | b | 20d §5, ATD-04 | P3.4 |
+| `sac.extension_policy` | `NONE`; `ONCE_JUSTIFIED`; `PER_ERI_RULE` | `NONE`; ouvidoria no máximo uma vez, por igual período (Lei 13.460 art. 16) | b | 20d §5, ATD-05 | P3.4 |
+| `sac.duplicate_handling` | `LINK_AS_REITERATION`; `LINK_AS_DUPLICATE` | `LINK_AS_REITERATION`; recusar não é opção | a (não recusar); d (forma) | 20d §5, ATD-06, ATD-07; Lei 13.460 art. 11 | ED-35 |
+| `sac.ombudsman_mode` | `OWN_OMBUDSMAN`; `TITULAR`; `REGULATOR_CHANNEL` | sem | d | 20d §5, ATD-21 | ED-35 |
+| `sac.ombudsman_days` | dias, com uma prorrogação | 30 + 30 | c (só reduz) | 20d §5, ATD-21; Lei 13.460 | ED-35 |
+| `sac.satisfaction_survey` | `POST_CLOSURE`; `PERIODIC`; ambos | ambos, periódica anual | c (mínimo anual) | 20d §5, ATD-23; Lei 13.460 art. 23 | ED-35 |
+| `sac.protocol_receipt_channels` | canais com opt-in | todos os canais com contato informado | b | 20d §5, ATD-01 | P3.4 |
+| `svc.debt_blocks_request` | `NONE`; lista da ERI | `NONE`; o registro do protocolo nunca é bloqueado | b | 20d §5, ATD-08 | ED-34 |
+| `so.retroactive_close_days` | inteiro | 3 | b | 20d §5, OS-12 | ED-36 |
+| `so.customer_order_auto_expire` | `NEVER`; dias | `NEVER` (alerta e decisão registrada) | b | 20d §5, OS-13 | ED-36 |
+| `rec.auto_order_on_payment` | sim; não | sim | b | 20d §5, OS-10; 20c COB-12 | P3.4 |
+| `so.material_charge_policy` | `NEVER`; `PRICE_TABLE_ERI` | `NEVER` | b | 20d §5, OS-20 | ED-36 |
+| `sched.priority_weights` | pesos por critério | do produto; urgência legal sempre no topo | d | 20d §5, OS-14 | ED-36 |
+| `sec.password_min_length` | inteiro | 12, com lista de senhas vazadas | c (só amplia) | 20d §5, SEG-07; ADR-0040 | ED-06 |
+| `sec.password_max_age_days` | `OFF`; dias | `OFF`, ligável por exigência de edital | b | 20d §5, SEG-08; ADR-0040 | ED-06 |
+| `sec.password_history` | inteiro | 5 | c (só amplia) | 20d §5, SEG-08; ADR-0040 | ED-06 |
+| `sec.lockout_attempts` | inteiro | 5 | c (só reduz; POC-05 usa 3) | 20d §5, SEG-09; ADR-0040 | ED-06 |
+| `sec.user_inactivity_days` | dias | 90 | c (só reduz) | 20d §5, SEG-11; ADR-0040 | ED-06 |
+| `sec.single_session` | sim; não | não | d | 20d §5, SEG-15 | ED-06 |
+
+**Perguntas de 20b resolvidas como parâmetro (v2.15).**
+
+| Chave | Opções | Padrão de fábrica | Cl. | Origem | Fase |
+|---|---|---|---|---|---|
+| `fiscal.central_billing_invoice_mode` | `PER_UNIT` (NFAg-e por unidade; fatura agrupadora só como documento de cobrança); `PER_CENTRAL_INVOICE` (NFAg-e única por fatura agrupadora) | `PER_UNIT`; a segunda opção só depois do manual e do XSD da NFAg-e (plano §2.4) | b | 20b Q5, FAT-83 | ED-22 |
+| `bill.field_unreturned_rule` | `DIVERGENCE_QUEUE` (fila de divergências do ADR-0031, com decisão humana); `CANCEL_AND_REBILL` (cancela e refatura no servidor com a leitura disponível); `KEEP_AND_REISSUE` (mantém a pré-faturada e emite 2ª via no servidor) | `DIVERGENCE_QUEUE` | b | 20b Q6; ADR-0031 | ED-19 |
 
 Travados, fora de bifurcação (classe a ou c): vedações de corte por inadimplência da Lei 14.015; piso da tarifa social
 da Lei 14.898 e vedação de perda do benefício por número de cortes; histórico de 120 meses; declaração anual de
 quitação (Lei 12.007); bloco de qualidade da água (Decreto 5.440); aviso de negativação com prova.
+
+Travados acrescentados na v2.15 (20b §5.2, 20c §5.2, 20d §5): concessão e manutenção do benefício social sem
+condição de adimplência e perda só depois de aviso de pelo menos 3 meses na fatura (Lei 14.898); conta com revisão
+aberta ou contestada fora de acréscimo, aviso de corte, corte e negativação (NR 11 arts. 37–38; Lei 14.015);
+mensagens legais sempre impressas, antes das demais; créditos realizados devolvidos ao saldo quando a conta é
+cancelada (CDC art. 42); diferença apurada em retificação sem multa nem juros; nenhuma conta apagada (NR 11 art. 22);
+contestação do usuário aceita até a prescrição; religação sem taxa quando o aviso não foi provado (Lei 13.460 art. 6º
+p.u.); revalidação do corte na execução, inclusive offline (quitação ou parcelamento, contestação, vedações de dia e
+horário, aviso válido, classe protegida), com a OS cancelada se falhar (`cut.revalidate_on_execution`, 20d OS-07);
+juros sem capitalização; abatimento proporcional dos juros na antecipação de prestações (20c COB-37); débito ajuizado
+ou inscrito fora das ações automáticas; exclusão da negativação em até 5 dias úteis e expiração em 5 anos; o
+prestador não recusa pagamento; protocolo nunca recusado por duplicidade nem por débito (Lei 13.460 art. 11); pedido
+sem firma reconhecida nem cópia autenticada (Lei 13.726 art. 3º); usuário nunca removido, só inativado, com trilha
+imutável.
 
 ## 4. Segurança e LGPD por tenant (decididos em 12/10/2026)
 
@@ -266,6 +375,9 @@ quitação (Lei 12.007); bloco de qualidade da água (Decreto 5.440); aviso de n
 | `log.document_search_retention_months` | registro de busca e revelação | sem | piso: `log.access_retention_days`; só amplia | c | novo |
 
 Duração de sessão e de token ficam no realm único (`sigsan`; `ziipsan` depois da P0.33) e não são parâmetro do tenant.
+Política de senha, bloqueio por tentativas e inativação por não uso são parâmetros do tenant (`sec.password_*`,
+`sec.lockout_attempts`, `sec.user_inactivity_days`, na seção de bifurcações), aplicados por autenticador próprio no
+realm único e testados a cada atualização do Keycloak (ADR-0040).
 
 ---
 
@@ -348,3 +460,6 @@ jurídico do prestador.
      da parcela fixa e do esgoto (`social.fixed_part_discount_pct`, `social.sewer_discount`); pisos de
      `ret.social_base_days`, `ret.social_documents_years`, `ret.service_request_years`, `ret.cutoff_proof_years`;
      confirmação do piso de `ret.billing_after_closure_years`; prazo de rotação de backup (`ret.backup_disposal`).
+   - Antes da fase do parâmetro (v2.15): `inst.down_payment_grace_days`; `neg.notice_min_days`, com o jurídico;
+     percentual de `quality.noncompliance_compensation`; classe final de `unit.transfer_with_previous_debt`
+     (natureza pessoal do débito, com o jurídico).
