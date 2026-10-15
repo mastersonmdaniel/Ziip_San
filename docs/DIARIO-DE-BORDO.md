@@ -1079,3 +1079,19 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   nome comercial das verticais (§2.4). ADRs 0016, 0017 e 0034 com linha de ajuste v2.13.
 - Saúde e segurança pública ficam sem escopo, tarefa nem data: exigem ADR e análise jurídica de dados antes de qualquer
   requisito. Datas e marcos não mudam. Execução do P0 local segue aguardando ordem do dono.
+
+
+### 14/10/2026 — Análise do GSAN, normas e mercado; plano v2.14
+
+- Levantamentos novos em `docs/levantamento/gsan/`: 20a (cadastro e ligação, 64 regras e 205 parâmetros do GSAN),
+  20e (lote, relatórios, gerencial e portal), 20f (52 demandas legais com vigência em 14/10/2026 e perfil de SC),
+  20g (pesquisa web: GSAN GPL-3 6.11.5.1 ainda licitado em 2026; IPM, Betha e Fiorilli nos SAMAEs; NR 11, 13, 15 e 16
+  da ANA; ARIS RN 19/2019). 20b, 20c e 20d em conclusão pelos agentes.
+- Achados principais: NR 11 com verificação pelas agências a partir de 20/05/2027; ARIS veda corte por faturas vencidas
+  há mais de 120 dias e exige aviso de 30 dias; juros de 1% a.m. base 30 excedem o teto de SC (0,033%/dia); lacunas de
+  quitação anual, qualidade da água na conta, aviso pós-corte, compensação por corte indevido e vazamento oculto.
+- Diretrizes do dono: **bifurcação normativa vira parâmetro** (ADR-0038; padrão mais protetivo; lei federal que proíbe
+  continua travada, por cartão) e **unidade consumidora como raiz, toda solicitação ou alteração gera OS** (ADR-0039).
+- Plano v2.14: nova P1.31 (núcleo de OS no P1, `V9_1` antecipada), P2.24 (quitação anual e qualidade da água na conta),
+  P3.28 (vazamento e aferição); P1.2, P1.3, P3.3, P3.4, P3.20, ED-13, ED-16, ED-36 ajustadas; 16 parâmetros de bifurcação
+  em PARAMETROS-DO-TENANT. Chave do Perplexity gravada no perfil (54 caracteres); falta reabrir o app para o MCP usá-la.

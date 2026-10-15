@@ -16,6 +16,7 @@
   carência de 30 dias começa no fim da consulta e os prazos de resposta e de eliminação correm a partir dela; contrato
   que vede retenção após o fim mantém o padrão; decisão do dono do produto, alinhado ao RNF-42. As travas dos itens 3 e
   4 seguem valendo diante de cláusula de edital em contrário (ADR-0023, item 5).
+- **Ajuste de 14/10/2026 (plano v2.14), antes de qualquer implementação:** o ADR-0038 acrescenta que toda bifurcação normativa vira parâmetro, com padrão mais protetivo ao usuário; a trava do item 3 (Lei 14.015) foi confirmada pelo dono do produto e vale como regra geral para lei federal que proíbe expressamente.
 
 ## Contexto
 

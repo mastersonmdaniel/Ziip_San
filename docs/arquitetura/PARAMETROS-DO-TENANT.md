@@ -34,6 +34,10 @@ Abreviações de caminho: `V1` = `shared/sigsan-core/src/main/resources/db/migra
    a versão da competência.
 8. **Simulação antes de ativar** para parâmetros de cálculo (simulador N4 do R3).
 9. **Ausência é erro explícito** (plano §2.3).
+10. **Bifurcação vira parâmetro** (ADR-0038). Onde lei, norma de agência ou prática legítima admitem caminhos
+    alternativos, ou normas divergem, todos os caminhos são opções do parâmetro; o padrão de fábrica é o mais protetivo
+    ao usuário; lei federal que proíbe expressamente fica travada (classe a ou c). Cada opção cita a norma de origem e
+    tem teste de aceite.
 
 ---
 
@@ -124,7 +128,7 @@ Travado (classe a): ajuste de conciliação com aprovação dupla (plano R5).
 | Chave | Descrição | Tipo | Sug. | Limite | Cl. | Apr. | Fase | Código |
 |---|---|---|---|---|---|---|---|---|
 | `fee.fine_pct` | multa de mora, percentual único | % | 2,00, padrão de fábrica (convergência de 10 ERIs, `08` d.2) | até 2,00 com o aceite comum; acima de 2,00 exige norma citada, aprovação dupla, aceite formal registrado e exibe alerta de risco (CDC art. 52 §1º; aplicação a tarifa: G5, pergunta E-02); teto absoluto: a definir (P0) | b | JUR | P2 | `V6_1:202-204`, CHECK `V6_1:222-224` e `FineRule` (`commercial/sigsan-collection/src/main/java/br/com/sigsan/commercial/collection/surcharge/FineRule.java:27-31`) aceitam teto acima de 2% só com texto de justificativa (`fine_cap_justification`), sem aceite; `LateFeePolicy` (billing) sem trava; unificar (ADR-0015) |
-| `fee.interest_mode`, `fee.interest_monthly_pct`, `fee.interest_month_basis_days` | juros simples pro rata die | enum, %, int | `SIMPLE_PER_DAY`; 1,00% a.m.; base 30 | sem capitalização, travado (o produto só oferece juros simples); teto a confirmar | d | JUR | P2 | `V6_1:205-208` |
+| `fee.interest_mode`, `fee.interest_monthly_pct`, `fee.interest_month_basis_days` | juros simples pro rata die | enum, %, int | `DAILY_RATE_WITH_CAP` com o teto da ERI (SC: 0,033%/dia; padrão mais protetivo, ADR-0038, v2.14); opções `DAILY_RATE_WITH_CAP` (`fee.interest_daily_pct`) e `MONTHLY_PRO_RATA` (1,00% a.m., base 30 ou 30,3) | sem capitalização, travado (o produto só oferece juros simples); teto a confirmar | d | JUR | P2 | `V6_1:205-208` |
 | `fee.correction_*` | modo, índice, meses mínimos, aceita negativa | enum, código | sem (Selic, INPC, IPCA ou índice do reajuste, conforme ERI) | ERI ou contrato | d | JUR | P2 | `V6_1:209-212`; fatores em `surcharge_indexes` (`V6_1:173`) |
 | `fee.grace_business_days`, `fee.due_rolls_to_business_day` | carência e rolagem do vencimento | int, bool | sem | livre | d | JUR | P2 | `V6_1:200-201` |
 | `fee.no_carry_over` | vedar acúmulo de encargos de períodos anteriores | bool | sem | ERI (ARSAE-MG veda) | d | JUR | P2 | novo |
@@ -219,6 +223,35 @@ entram neste grupo na P1.26.
 | `gis.public_aggregation_min_units` | mínimo de imóveis por célula de agregação (quadra ou setor) em toda publicação de dado de imóvel ou ligação fora do backoffice autenticado, inclusive temáticos de consumo e inadimplência; célula abaixo do mínimo não é publicada | int | 5 | piso 5, fixado pelo Ziip SAN (decisão do dono do produto, plano v2.11); só amplia | c | DPO | P3 | novo (core `V9_6`, P1.26; aplicado na P3.27 e na ED-67) |
 
 ---
+
+### Bifurcações resolvidas por configuração (ADR-0038, ADR-0039; plano v2.14)
+
+Origem: perguntas e parâmetros propostos nos levantamentos `docs/levantamento/gsan/20a` (Q1, Q2, Q5 a Q8) e `20f` (Q3 a
+Q6 e §5). Padrão de fábrica: caminho mais protetivo ao usuário. Os parâmetros de `20b`, `20c` e `20d` entram na
+consolidação desses documentos.
+
+| Chave | Opções | Padrão de fábrica | Cl. | Origem | Fase |
+|---|---|---|---|---|---|
+| `connection.min_consumption_enabled` | consumo mínimo fixado por ligação: desligado; ligado | desligado (NR 13/2025 veda em contratos novos) | b | 20a Q1; GSAN | P2 |
+| `connection.voluntary_suppression_with_debt` | `ALLOW` (mantém o débito em cobrança); `ALLOW_WITH_PERMISSION`; `BLOCK` | `ALLOW` | b | 20a Q2; GSAN `indicadorSupressao` | ED-13 |
+| `registry.main_category_rule` | `MOST_ECONOMIES`; `LOWEST_TARIFF`; `CONFIGURED_ORDER`; `LOWEST_CODE` | `MOST_ECONOMIES`, desempate por `LOWEST_TARIFF` | d | 20a Q5 | P1.3 |
+| `sewer.out_of_use_on_water_cut` | `AUTOMATIC` (efeito da mesma OS de corte ou supressão); `SERVICE_ORDER_ONLY`; `NONE` | `AUTOMATIC` | b | 20a Q6; GSAN | ED-13 |
+| `service_type.charge_mode` (por tipo de serviço) | `BILL_DEBIT` (débito na próxima conta); `STANDALONE_INVOICE` (NFS-e avulsa, P3.6); `NONE` | por tipo no catálogo de fábrica | d | 20a Q7 | P1.31 |
+| `cut.level_model` | situação de corte com atributo `cut_level` (cavalete, ramal); supressão como situação própria | `cut_level` no evento | d | 20a Q8 | P3.4 |
+| `service_type.internal_approval` (por tipo) | aplicação por quem registra; aprovação por outra pessoa | outra pessoa para o que muda faturamento; direta para contato | b | ADR-0039 item 8 | P1.31 |
+| `rec.undue_cut_compensation` | fórmula ARESC/AGIR (maior entre 2× religação de urgência e 20% da fatura); ARIS (religação em 4 h sem ônus); crédito manual com aprovação | conforme perfil da ERI; sem perfil, a fórmula ARESC/AGIR | b | 20f Q3, LEG-22 | P3.4 |
+| `leak.*` (desconto, prazo, âncora, faturas em 12 meses, esgoto pela média) | perfis ARIS, AGIR, ARESC ou valores próprios | perfil da ERI; sem perfil, o mais favorável ao usuário entre os três | b, desconto c quando a ERI fixar piso | 20f Q4, §5 | P3.28 |
+| `meter.test_*` (aviso, cobrança só se normal, meses de revisão) | perfis ARIS, AGIR, ARESC ou valores próprios | cobrança só se o hidrômetro estiver normal | b | 20f Q4, §5 | P3.28 |
+| `fee.interest_mode`, `fee.interest_daily_pct` | por dia com teto da ERI; mensal pro rata base 30 ou 30,3 | por dia com teto (SC: 0,033%) | b | 20f Q5, LEG-29 | P2 |
+| `neg.public_entity_allowed`, `neg.protest_enabled` | negativação em birô; protesto por arquivo; ambos; nenhum | nenhum até o aceite do tenant com parecer jurídico | b | 20f Q6, LEG-41 | ED-30 |
+| `quit.statement_channel` | espaço na fatura; documento anexo; portal | espaço na fatura | d | 20f §5, Lei 12.007 | P2.24 |
+| `bill.water_quality_source` | planilha mensal do laboratório; módulo de qualidade (ED-50) | planilha mensal até a ED-50 | d | 20f Q7, Decreto 5.440 | P2.24 |
+| `sac.deadline_counting_rule` | dias corridos; dias úteis | conforme ERI; sem ERI, a contagem mais favorável ao usuário | d | 20f §5 | P3 |
+| `cut.same_user_other_property_debt` | condiciona ligação e religação a débito do mesmo usuário em outro imóvel: sim; não | não | b | 20f §5, LEG-20 | P3.4 |
+
+Travados, fora de bifurcação (classe a ou c): vedações de corte por inadimplência da Lei 14.015; piso da tarifa social
+da Lei 14.898 e vedação de perda do benefício por número de cortes; histórico de 120 meses; declaração anual de
+quitação (Lei 12.007); bloco de qualidade da água (Decreto 5.440); aviso de negativação com prova.
 
 ## 4. Segurança e LGPD por tenant (decididos em 12/10/2026)
 

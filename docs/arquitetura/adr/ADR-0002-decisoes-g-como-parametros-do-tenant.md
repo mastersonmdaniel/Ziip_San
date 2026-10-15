@@ -4,6 +4,7 @@
 - **Decisor:** dono do produto
 - **Afeta:** `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` §2.2 (G1–G9); revisão 17, achado X5 e §8.4
 - **Detalhamento dos parâmetros:** `docs/arquitetura/PARAMETROS-DO-TENANT.md`
+- **Ajuste de 14/10/2026 (plano v2.14):** caminhos alternativos admitidos por norma ou prática viram opções do mesmo parâmetro, com padrão de fábrica mais protetivo ao usuário (ADR-0038).
 
 ## Contexto
 
