@@ -1113,3 +1113,9 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   unificadas) e travas legais novas, inclusive a revalidação do corte na execução, também offline.
 - Plano v2.15: 18 tarefas ajustadas, P2.20 dependente da P1.31, GL.2 dependente da P3.29 e da P3.30; reservas `V1_8` e
   `V6_5`; dois riscos novos. Datas e marcos sem mudança. Só documentação; commit pelo dono.
+
+### 15/10/2026 — Transferência de titularidade com débito
+
+- Decisão do dono do produto: a transferência de titularidade da unidade consumidora sempre acontece, mesmo com débito;
+  o débito é pessoal, fica com o titular que o contraiu e não acompanha o imóvel nem o novo titular.
+  `unit.transfer_with_previous_debt` passa a classe a (travado), em PARAMETROS-DO-TENANT.

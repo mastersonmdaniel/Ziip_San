@@ -308,7 +308,7 @@ nas linhas acima.
 | `neg.exclusion_business_days` | inteiro | 5 | c (teto; só reduz) | 20c §5.2, COB-43; Súmula 548 do STJ [EXT] | ED-30 |
 | `neg.excluded_profiles` | conjunto: `LOW_INCOME`, `PUBLIC_BODY`, `PROTECTED_CLASSES` | todos excluídos | c | 20c §5.2; coerente com `neg.public_entity_allowed` | ED-30 |
 | `cert.positive_effect` | `ON`; `OFF` | `ON` | b | 20c §5.2, COB-24 | ED-38 |
-| `unit.transfer_with_previous_debt` | `ALLOW_DEBT_STAYS_WITH_HOLDER`; `BLOCK` | `ALLOW_DEBT_STAYS_WITH_HOLDER` | a se o jurídico confirmar a natureza pessoal do débito [EXT]; senão b | 20c §5.2 | P1.31 |
+| `unit.transfer_with_previous_debt` | travado: a transferência de titularidade sempre acontece; o débito anterior é pessoal e fica com o titular que o contraiu, nunca com a unidade nem com o novo titular | `ALLOW_DEBT_STAYS_WITH_HOLDER` | a (decisão do dono do produto, 15/10/2026) | 20c §5.2 | P1.31 |
 | `acc.doubtful_method` | `TARGET_WRITE_OFF`; `AGING_MATRIX`; `EXPECTED_LOSS` | sem padrão: escolha do contador do tenant | d | 20c §5.2; CPC 48 [EXT] | ED-32 |
 
 **Atendimento, OS e segurança (20d §5; v2.15).** `sac.deadline_day_basis` e `so.internal_change_auto_apply` foram
@@ -461,5 +461,4 @@ jurídico do prestador.
      `ret.social_base_days`, `ret.social_documents_years`, `ret.service_request_years`, `ret.cutoff_proof_years`;
      confirmação do piso de `ret.billing_after_closure_years`; prazo de rotação de backup (`ret.backup_disposal`).
    - Antes da fase do parâmetro (v2.15): `inst.down_payment_grace_days`; `neg.notice_min_days`, com o jurídico;
-     percentual de `quality.noncompliance_compensation`; classe final de `unit.transfer_with_previous_debt`
-     (natureza pessoal do débito, com o jurídico).
+     percentual de `quality.noncompliance_compensation`.
