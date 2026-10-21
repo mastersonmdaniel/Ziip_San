@@ -1,6 +1,6 @@
 # Plano de execução do Ziip SAN: fases P0–P4, homologação local do piloto e lançamento comercial
 
-**Versão 2.15, 14/10/2026.** Produto Ziip SAN; nome interno do código, SIGSAN, renomeado para `ziipsan` na P0.33. O
+**Versão 2.16, 21/10/2026.** Produto Ziip SAN; nome interno do código, SIGSAN, renomeado para `ziipsan` na P0.33. O
 nome do arquivo foi mantido por causa dos links. Este é o plano canônico; em divergência com um ADR, vale o ADR mais
 recente.
 
@@ -199,6 +199,14 @@ recente.
   Ajustadas: P0.13, P1.1, P1.2, P2.5, P2.10, P2.20, P3.1, P3.4, P3.22, ED-06, ED-20, ED-22, ED-24, ED-26, ED-30, ED-32,
   ED-35 e ED-54; GL.2 passa a depender da P3.29 e da P3.30, e a ED-06 da P3.30. Reservas `V1_8` e `V6_5`; dois riscos
   novos. Datas das fases e marcos sem mudança. ADR-0040 novo.
+- Versão 2.16, 21/10/2026: confirmações do dono do produto. Os três padrões de fábrica propostos ficam como estão:
+  `bill.field_unreturned_rule = DIVERGENCE_QUEUE`, `fiscal.central_billing_invoice_mode = PER_UNIT` e
+  `sac.deadline_counting_rule = CALENDAR`, este com `BUSINESS` (dias úteis) disponível a cada tenant que o preferir
+  (classe b, com aceite; norma da ERI que fixe a contagem prevalece). A **ED-68** (cobrança por empresa terceirizada)
+  fica parada como **pacote pendente**: sem estimativa, fora dos totais de esforço da trilha e da prontidão de POC, até
+  o dono liberá-la. Diretriz de 21/10/2026: a pesquisa de editais e licitações é suplemento de planejamento, não
+  atendimento de edital; o projeto não está sujeito a prazos, e as datas das fases e dos marcos são só indicação de
+  sequência, sem cobrança de pendência por data. Só documentação.
 
 **Referências.** Revisão 17: [levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md](levantamento/17-REVISAO-ESTRUTURA-SAAS-2026-10-12.md);
 ADRs: [arquitetura/adr/README.md](arquitetura/adr/README.md); parâmetros: [arquitetura/PARAMETROS-DO-TENANT.md](arquitetura/PARAMETROS-DO-TENANT.md);
@@ -518,7 +526,7 @@ obrigatório aceito.
 | Bifurcação normativa (v2.14) | **Configurável**: todos os caminhos admitidos por norma ou prática viram opção do tenant; padrão de fábrica **mais protetivo ao usuário**; **lei federal que proíbe fica travada** (cartão de 14/10/2026) | ADR-0038; PARAMETROS-DO-TENANT |
 | Unidade consumidora e OS (v2.14) | **Unidade consumidora é a raiz**; **toda solicitação ou alteração** de cliente ou unidade, inclusive cadastral, gera **OS** (de campo ou interna), com efeito no encerramento e sem gravação direta; núcleo de OS no P1 | ADR-0039 |
 | Arrecadação e cobrança no P3 (v2.15) | **Efeito da classificação na P3.1** (baixa da conta, débito ou crédito de ajuste, aviso de pagamento em duplicidade, NR 11 art. 37); **devolução e fila de pagamentos não identificados na nova P3.29**, antes da homologação local, porque a GL.2 compara conta a conta; **parcelamentos ativos do piloto** migrados como prestações a vencer, cobradas como débitos a cobrar na conta (P1.2, P2.10), com simular, desfazer, reparcelar e antecipar na P4.1; **seleção mínima do aviso e do documento de cobrança na P3.4** (idade e valor do débito, situação, classes protegidas, aviso com prova de entrega, motivo de não geração por unidade), com a ação de cobrança completa na P4.1 (cartões de 14/10/2026) | P1.1, P1.2, P2.10, P3.1, P3.4, P3.29, GL.2; PARAMETROS-DO-TENANT; levantamento 20c |
-| Cobrança por empresa terceirizada (v2.15) | **Onda C**, como nova ED-68, com remuneração por resultado (cartão de 14/10/2026) | ED-68; levantamento 20c (COB-22) |
+| Cobrança por empresa terceirizada (v2.15) | **Onda C**, como nova ED-68, com remuneração por resultado (cartão de 14/10/2026); **parada como pacote pendente em 21/10/2026**, sem estimativa e fora dos totais | ED-68; levantamento 20c (COB-22) |
 | Permissões e senha por tenant (v2.15) | **Catálogo `recurso:ação` na P0.13**, no P0; **unidade organizacional e escopo por área** (localidade, setor, rota) na nova **P3.30**, antes da homologação local, com a ED-06 ampliando sobre ela; **senha por tenant** (bloqueio por tentativas, expiração, histórico, complexidade) por **autenticador próprio no Keycloak**, num realm só, lendo a política do tenant do usuário, com teste a cada atualização do Keycloak, na ED-06 (cartões de 14/10/2026) | ADR-0040; P0.13, P3.30, ED-06, GL.2; PARAMETROS-DO-TENANT §4 e bifurcações |
 | Ouvidoria e interrupção programada (v2.15) | **Ouvidoria na ED-35**: fila de segunda instância sobre o protocolo, com os prazos da Lei 13.460/2017 (NR 11 art. 52 §2º); **interrupção programada** (NR 11 arts. 39 a 41) na ED-35, onda A, sem mapa: cadastro por área, comunicação à agência e aos usuários e fornecimento de emergência a unidades essenciais; **área afetada** calculada pelo isolamento do GIS na onda B, junto da ED-54 (cartões de 14/10/2026) | ED-35, ED-54; levantamento 20d |
 | Servidor do WMS da onda B (v2.12) | **GeoServer**, por exigência de edital, como componente da onda B (ED-67, GIS-17), registrado nas exceções do ADR-0010: só leitura, sem porta publicada, acessível só pela `api` (autenticação, permissão por camada e encaminhamento ao workspace do tenant da credencial); um workspace por tenant, com role de banco própria do tenant, somente leitura, presa ao schema dele ou a views filtradas pelo tenant da role no schema compartilhado, sem acesso cruzado (teste); simbologia por SLD gerado da fonte única de estilos, a mesma do mapa web e do projeto QGIS; configuração gerada pelo produto pela API REST. OGC API – Features e WFS 2.0 continuam na `api`. Substitui o "WMS na `api`, sem servidor de mapas novo" da v2.11; estimativa da ED-67 mantida em 6 semanas-pessoa | ADR-0010, ADR-0028 e ADR-0034 (ajustes "GIS, v2.12"); ED-67; §6; GIS-CADASTRO-TECNICO §7.2; consolidado 18 §5 |
@@ -931,7 +939,7 @@ compras, RH e orçamento do ERP (ADR-0028, item i, ajuste v2.5).
 
 ### Trilha de editais (ADR-0023) · a partir de 02/08/2027
 
-Executa as entregas ED-01 a ED-68 (ED-63 a ED-67 desde a v2.10; ED-68 desde a v2.15, sem estimativa no consolidado
+Executa as entregas ED-01 a ED-68 (ED-63 a ED-67 desde a v2.10; ED-68 desde a v2.15, sem estimativa no consolidado e parada como pacote pendente desde a v2.16
 18) do [consolidado 18](levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md) §5,
 na ordem das ondas: **A** (itens que pontuam nas alíneas b a p e r da VISAN ou são críticos no SAMAE nas áreas
 comercial, de campo e de suporte; e-Sfinge para a habilitação; almoxarifado da OS, desde a v2.6), **B** (canais digitais, BI, qualidade e GIS: VISAN q, s
@@ -1036,7 +1044,7 @@ onda, com meta no aceite: **onda A**, pelo menos 120 de 162 pontos na VISAN e ne
 | ED-56 | Ativos, manutenção de rede e inventário regulatório (GIS-19) | 18g-E-ATIVOS; ADR-0034; NR 16/2026 da ANA | G (4) | ED-53, ED-54, ED-32, ED-36 | aceite da GIS-19: códigos MCPSB por feição e extensão por subdivisão da NR 16/2026; conciliação GIS × patrimônio exportada à contabilidade; manutenção preventiva e corretiva ligada ao GIS; risco por probabilidade × consequência com plano de renovação; bens reversíveis (NR 3/2023); TR-155, TR-1010, SG-1180 |
 | ED-57 | Beneficiários de programas sociais | 18d-E16 | M (1) | P1.5 | importação de lista de beneficiários com base legal registrada (sem API pública), com conferência e vigência |
 | ED-59 | Frota e equipes de campo | ADR-0028 (i) | G (3) | ED-36 | veículos, abastecimento, manutenção e custo por veículo, com consumo na OS; equipes de campo (composição, veículo, escala) usadas na programação e no custo da OS |
-| ED-68 | Cobrança por empresa terceirizada, com remuneração por resultado (v2.15) | 20c (COB-22, lacuna 14, §5.1); ADR-0038, ADR-0039 | M (a estimar) | P3.1, P4.1, ED-37 | contas selecionadas por critério enviadas à empresa com o mínimo de dados, com contrato de operador (LGPD) registrado antes do primeiro envio; arquivos ou API de ida e de volta; pagamento atribuído à empresa só dentro da janela do contrato e com acordo válido; retirada da conta por pagamento, parcelamento ou fim do prazo; remuneração pelo percentual do contrato, calculada pelo evento de pagamento; relatório de pagamentos e remuneração por empresa; teste da janela, da retirada e da remuneração; migrations pela sequência global com `dunning` no nome |
+| ED-68 | Cobrança por empresa terceirizada, com remuneração por resultado (v2.15) | 20c (COB-22, lacuna 14, §5.1); ADR-0038, ADR-0039 | M (a estimar) | P3.1, P4.1, ED-37 | contas selecionadas por critério enviadas à empresa com o mínimo de dados, com contrato de operador (LGPD) registrado antes do primeiro envio; arquivos ou API de ida e de volta; pagamento atribuído à empresa só dentro da janela do contrato e com acordo válido; retirada da conta por pagamento, parcelamento ou fim do prazo; remuneração pelo percentual do contrato, calculada pelo evento de pagamento; relatório de pagamentos e remuneração por empresa; teste da janela, da retirada e da remuneração; migrations pela sequência global com `dunning` no nome; **pacote pendente (v2.16, 21/10/2026):** parada por decisão do dono, fora dos totais da trilha e da prontidão de POC até ser liberada |
 
 **Fora da trilha (2029, sob demanda; ADR-0028, item i, ajuste v2.5):** compras (requisição de compra, cotação e
 pedido, antes na ED-58, ≈ 3 semanas), ED-60 (RH: lotação, competências e indicadores, ≈ 3) e ED-61 (orçamento:
@@ -1247,7 +1255,7 @@ vigor (P3); SINISA anual (P4); DMR trimestral (2028).
 efeito da classificação de pagamento (P3.1), devolução e pagamentos não identificados (P3.29), seleção mínima do
 aviso de corte e compensação por corte indevido (P3.4), vazamento oculto e aferição (P3.28), unidades e escopo por área
 (P3.30). Trilha: ouvidoria e interrupção programada na ED-35, senha por tenant na ED-06, cobrança terceirizada na ED-68
-(onda C). Parâmetros de bifurcação no catálogo do tenant (ADR-0038).
+(onda C; pacote pendente desde a v2.16). Parâmetros de bifurcação no catálogo do tenant (ADR-0038). **Versão 2.16 (21/10/2026):** padrões de fábrica confirmados (conta de campo não devolvida em fila de divergências, NFAg-e por unidade, prazo de atendimento em dias corridos com dias úteis opcional por tenant); ED-68 parada como pacote pendente, fora dos totais; datas são indicação de sequência, sem prazo vinculante.
 
 ---
 

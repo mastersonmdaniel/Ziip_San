@@ -1119,3 +1119,15 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - Decisão do dono do produto: a transferência de titularidade da unidade consumidora sempre acontece, mesmo com débito;
   o débito é pessoal, fica com o titular que o contraiu e não acompanha o imóvel nem o novo titular.
   `unit.transfer_with_previous_debt` passa a classe a (travado), em PARAMETROS-DO-TENANT.
+
+### 21/10/2026 — Confirmação dos padrões; ED-68 como pacote pendente; plano v2.16
+
+- Perplexity e Brave funcionam após o reinício do app (busca testada).
+- O dono confirmou os três padrões de fábrica: `bill.field_unreturned_rule = DIVERGENCE_QUEUE`,
+  `fiscal.central_billing_invoice_mode = PER_UNIT` e `sac.deadline_counting_rule = CALENDAR`, com `BUSINESS` (dias
+  úteis) disponível a cada tenant que o preferir.
+- ED-68 (cobrança por empresa terceirizada) parada como pacote pendente: sem estimativa (proposta de G (4) semanas-pessoa
+  não aprovada), fora dos totais da trilha e da prontidão de POC.
+- Diretriz: a pesquisa de editais é suplemento de planejamento; o projeto não está sujeito a prazos, e as datas do plano
+  são só indicação de sequência. Registrado em memória; nenhuma data de marco é cobrada como pendência.
+- Plano v2.16 e PARAMETROS-DO-TENANT atualizados. Só documentação.

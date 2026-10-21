@@ -247,7 +247,7 @@ existia nos grupos G1 a G9 ou nesta seção foi ajustada na própria linha, com 
 | `neg.channels`, `neg.public_entity_allowed` | `NONE`; `BUREAU` (negativação em birô); `PROTEST` (protesto por arquivo); `BOTH`; ente público só com liberação própria (`neg.protest_enabled` absorvida em `neg.channels`, 20c §5.2, v2.15) | `NONE` até o aceite do tenant com parecer jurídico | b | 20f Q6, LEG-41; 20c §5.2 | ED-30 |
 | `quit.statement_channel` | espaço na fatura; documento anexo; portal | espaço na fatura | d | 20f §5, Lei 12.007 | P2.24 |
 | `bill.water_quality_source` | planilha mensal do laboratório; módulo de qualidade (ED-50) | planilha mensal até a ED-50 | d | 20f Q7, Decreto 5.440 | P2.24 |
-| `sac.deadline_counting_rule` | `CALENDAR` (dias corridos); `BUSINESS` (dias úteis, com os feriados de `sac.holiday_scope`) (`sac.deadline_day_basis` do 20d §5, unificada, v2.15) | conforme ERI; sem ERI, `CALENDAR`, a contagem mais favorável ao usuário | b (20d §5, v2.15; era d) | 20f §5; 20d ATD-04 | P3.4 |
+| `sac.deadline_counting_rule` | `CALENDAR` (dias corridos); `BUSINESS` (dias úteis, com os feriados de `sac.holiday_scope`) (`sac.deadline_day_basis` do 20d §5, unificada, v2.15) | conforme ERI; sem ERI, `CALENDAR`, a contagem mais favorável ao usuário (padrão confirmado pelo dono em 21/10/2026; cada tenant pode escolher `BUSINESS`) | b (20d §5, v2.15; era d) | 20f §5; 20d ATD-04 | P3.4 |
 | `cut.same_user_other_property_debt` | condiciona ligação e religação a débito do mesmo usuário em outro imóvel: sim; não | não | b | 20f §5, LEG-20 | P3.4 |
 
 **Medição e faturamento (20b §5.1; v2.15).** Inclui as chaves de 20b unificadas com as de 20c.
@@ -341,8 +341,8 @@ trava (abaixo). Política de senha por tenant pelo ADR-0040.
 
 | Chave | Opções | Padrão de fábrica | Cl. | Origem | Fase |
 |---|---|---|---|---|---|
-| `fiscal.central_billing_invoice_mode` | `PER_UNIT` (NFAg-e por unidade; fatura agrupadora só como documento de cobrança); `PER_CENTRAL_INVOICE` (NFAg-e única por fatura agrupadora) | `PER_UNIT`; a segunda opção só depois do manual e do XSD da NFAg-e (plano §2.4) | b | 20b Q5, FAT-83 | ED-22 |
-| `bill.field_unreturned_rule` | `DIVERGENCE_QUEUE` (fila de divergências do ADR-0031, com decisão humana); `CANCEL_AND_REBILL` (cancela e refatura no servidor com a leitura disponível); `KEEP_AND_REISSUE` (mantém a pré-faturada e emite 2ª via no servidor) | `DIVERGENCE_QUEUE` | b | 20b Q6; ADR-0031 | ED-19 |
+| `fiscal.central_billing_invoice_mode` | `PER_UNIT` (NFAg-e por unidade; fatura agrupadora só como documento de cobrança); `PER_CENTRAL_INVOICE` (NFAg-e única por fatura agrupadora) | `PER_UNIT` (confirmado pelo dono em 21/10/2026); a segunda opção só depois do manual e do XSD da NFAg-e (plano §2.4) | b | 20b Q5, FAT-83 | ED-22 |
+| `bill.field_unreturned_rule` | `DIVERGENCE_QUEUE` (fila de divergências do ADR-0031, com decisão humana); `CANCEL_AND_REBILL` (cancela e refatura no servidor com a leitura disponível); `KEEP_AND_REISSUE` (mantém a pré-faturada e emite 2ª via no servidor) | `DIVERGENCE_QUEUE` (confirmado pelo dono em 21/10/2026) | b | 20b Q6; ADR-0031 | ED-19 |
 
 Travados, fora de bifurcação (classe a ou c): vedações de corte por inadimplência da Lei 14.015; piso da tarifa social
 da Lei 14.898 e vedação de perda do benefício por número de cortes; histórico de 120 meses; declaração anual de
