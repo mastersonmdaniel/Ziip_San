@@ -1131,3 +1131,21 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - Diretriz: a pesquisa de editais é suplemento de planejamento; o projeto não está sujeito a prazos, e as datas do plano
   são só indicação de sequência. Registrado em memória; nenhuma data de marco é cobrada como pendência.
 - Plano v2.16 e PARAMETROS-DO-TENANT atualizados. Só documentação.
+
+### 21/10/2026 — Módulo Certificações de qualidade; plano v2.17
+
+- Análise das normas de certificação do setor: ISO 24510, 24511 e 24512 (2024) não são certificáveis; ISO/IEC 17025 é
+  acreditável; normas NSF (60, 61, 372) certificam produto em contato com a água e não se aplicam ao software.
+- Diretriz do dono: novo módulo "Certificações de qualidade", em que o cliente liga e desliga as normas, o sistema
+  atende a todas (não conflitam) e as exigências específicas só valem com a norma ligada. Cartões: catálogo de
+  voluntárias e obrigatórias numa lista só; estrutura no P1 a P3 e normas na trilha; tenant declara o escopo; perdas
+  da NR 15 por dependência; esgoto e água bruta como pacote próprio; textos pagos só para curadoria.
+- Dois agentes levantaram os requisitos: 21a (ISO 9001, 14001, 45001, 55001, ISO/IEC 27001 e 27701; 17 capacidades
+  comuns) e 21b (normas do setor; 18 lacunas L-01 a L-18; 13 de 24 indicadores calculáveis com o plano). Achados:
+  ISO 9001, 14001 e 27701 têm edição nova; CONAMA 503/2021 não se aplica a esgoto sanitário; cadastro de hidrômetros
+  não representa a Portaria Inmetro 155/2022.
+- ADR-0041 e CERTIFICACOES-DE-QUALIDADE gravados; plano v2.17 com P1.32, P2.25, P3.31 e ED-69 a ED-82 (tamanhos a
+  estimar, totais da trilha não recalculados); 16 tarefas ajustadas; parâmetros `cert.*` e `meter.verification_interval_years`;
+  reservas `V9_8` e `V21_x`. Só documentação.
+- Pendentes de decisão do dono, sem trava: pacote de validação do sistema por versão (ISO/IEC 17025); certificação
+  própria do Ziip além da ISO/IEC 27001 prevista.

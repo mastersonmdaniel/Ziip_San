@@ -36,7 +36,7 @@ depende do núcleo; o inverso é recusado pelo teste.
 | `gis.domains` | domínios (`key`, rótulo, cor `map-*`, ordem) para `gis_domain` |
 | `gis.catalog` | arquivo do catálogo de fábrica (migration repetível, `R__`) |
 | `icons` | pasta de ícones de interface e de símbolos de mapa (ADR-0036) |
-| `modules` | módulos de negócio habilitáveis, com rotas, itens de menu, ícone, permissão exigida |
+| `modules` | módulos de negócio habilitáveis, com rotas, itens de menu, ícone, permissão exigida; `certification` (Certificações de qualidade, ADR-0041) tem motor no núcleo e catálogo de fábrica do saneamento no pacote |
 | `parameters` | definições de parâmetros do tenant (classe a, b, c ou d) |
 | `roles`, `permissions` | papéis e permissões do pacote |
 | `help`, `releaseNotes` | conteúdo de ajuda e entrada no changelog |

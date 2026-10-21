@@ -38,6 +38,9 @@ Abreviações de caminho: `V1` = `shared/sigsan-core/src/main/resources/db/migra
     alternativos, ou normas divergem, todos os caminhos são opções do parâmetro; o padrão de fábrica é o mais protetivo
     ao usuário; lei federal que proíbe expressamente fica travada (classe a ou c). Cada opção cita a norma de origem e
     tem teste de aceite.
+11. **Norma voluntária liga e desliga** (ADR-0041). O sistema atende às capacidades comuns das normas de gestão desde o
+    início; a exigência específica de cada norma só vale com a norma ligada pelo tenant, e as normas obrigatórias não
+    se desligam. A lei vence qualquer norma voluntária.
 
 ---
 
@@ -223,6 +226,29 @@ entram neste grupo na P1.26.
 | `gis.public_aggregation_min_units` | mínimo de imóveis por célula de agregação (quadra ou setor) em toda publicação de dado de imóvel ou ligação fora do backoffice autenticado, inclusive temáticos de consumo e inadimplência; célula abaixo do mínimo não é publicada | int | 5 | piso 5, fixado pelo Ziip SAN (decisão do dono do produto, plano v2.11); só amplia | c | DPO | P3 | novo (core `V9_6`, P1.26; aplicado na P3.27 e na ED-67) |
 
 ---
+
+### Certificações de qualidade (ADR-0041; plano v2.17)
+
+Normas ligadas e desligadas pelo tenant. Fontes: levantamentos 21a e 21b. `<norma>` é a chave da norma no catálogo
+(`iso9001`, `iso14001`, `iso45001`, `iso55001`, `iso27001`, `iso27701`, `iso17025`, `iso46001`, `iso24510`, `iso24511`,
+`iso24512` e as de referência). As normas `REGULATORY` não têm `enabled`: são obrigatórias por aplicabilidade.
+
+| Chave | Descrição | Padrão de fábrica | Classe | Tarefa |
+|---|---|---|---|---|
+| `cert.<norma>.enabled` | norma ligada ou desligada | desligada | d | P1.32 |
+| `cert.<norma>.edition` | edição em uso (catálogo versionado; ISO 9001 e 14001: 2015 ou 2026; 27701: 2019 ou 2025) | edição vigente do catálogo | d | P1.32 |
+| `cert.scope_statement` | texto do escopo e do local (tenant, laboratório, instalação), versionado | sem | d | P1.32 |
+| `cert.deactivation_keeps_records` | desligar a norma não apaga registro | verdadeiro | a | P1.32 |
+| `cert.record_retention_years` | retenção de registro do sistema de gestão sem lei específica | maior prazo do G6 que o registro comprova | c | P1.7 |
+| `cert.evidence_pack_personal_data` | pacote de evidência contém dado pessoal | falso | a | ED-75 |
+| `cert.external_auditor_access` | papel temporário de auditor externo, somente leitura, com prazo e registro de cada leitura | desligado | b | ED-75 |
+| `cert.internal_target_vs_legal` | meta interna comparada ao prazo legal | nunca mais frouxa que o prazo legal | c | P3.31 |
+| `cert.risk_scale` | escala e matriz de risco do tenant | matriz 5x5 do produto | d | P3.31 |
+| `cert.audit_cycle` | intervalo do programa de auditoria interna | sem | d | P3.31 |
+| `meter.verification_interval_years` | prazo da verificação subsequente do hidrômetro por regime | 7 (Portaria Inmetro 155/2022) | c (só reduz) | ED-14 |
+
+Regras: a lei vence; se uma norma ativa pedir retenção ou acesso mais restritivo que o limite legal travado, o
+validador avisa e o limite legal prevalece (ADR-0041, item 9).
 
 ### Bifurcações resolvidas por configuração (ADR-0038, ADR-0039, ADR-0040; planos v2.14 e v2.15)
 

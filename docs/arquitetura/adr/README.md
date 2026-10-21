@@ -60,6 +60,7 @@ cada tarefa entra.
 | [0038](ADR-0038-bifurcacao-normativa-vira-parametro.md) | Toda bifurcação normativa vira parâmetro do tenant | Aceito | 14/10/2026 |
 | [0039](ADR-0039-unidade-consumidora-raiz-e-alteracao-por-os.md) | Unidade consumidora como raiz; toda solicitação ou alteração gera OS | Aceito | 14/10/2026 |
 | [0040](ADR-0040-permissoes-escopo-e-senha-por-tenant.md) | Permissões `recurso:ação`, escopo por área e política de senha por tenant no realm único | Aceito | 14/10/2026 |
+| [0041](ADR-0041-modulo-certificacoes-de-qualidade.md) | Módulo Certificações de qualidade: catálogo único de normas, voluntárias ativáveis e obrigatórias não desativáveis | Aceito | 21/10/2026 |
 
 ## Referências
 
