@@ -1149,3 +1149,15 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   reservas `V9_8` e `V21_x`. Só documentação.
 - Pendentes de decisão do dono, sem trava: pacote de validação do sistema por versão (ISO/IEC 17025); certificação
   própria do Ziip além da ISO/IEC 27001 prevista.
+
+### 22/10/2026 — Análise de lacunas e inovações em todo o projeto (22a a 22d)
+
+- Pedido do dono: nova análise em todo o projeto para achar função, detalhamento de cadastro ou item esquecido e
+  inovações, só para aprimorar o que já existe; pesquisa ampla na internet autorizada.
+- Quatro frentes por agentes, com conferência no plano antes de apontar lacuna: 22a cadastro, comercial e relacionamento
+  (40 achados, CAD-65 a CAD-104); 22b operação, campo, rede e inteligência (40, OPE-01 a OPE-40); 22c plataforma,
+  segurança, integração e experiência (42, PLT-01 a PLT-42); 22d gestão, regulatório e inovação de mercado (34,
+  GES-01 a GES-34). Total de 156 achados; nenhum contradiz ADR aceito.
+- Relatórios gravados em docs/levantamento/lacunas/. O plano não foi alterado: as inclusões aguardam decisão do dono.
+- A conferir: prazo do Pix Automático (Res. CMN 5.278/2025, lida em texto pelo 22c, contra a citação do 22d);
+  artigos da NR 11 e NR 13 citados por resumo; achados de cobrança e faturamento do 22a contra 20b, 20c e 20e.
