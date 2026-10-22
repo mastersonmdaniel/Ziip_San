@@ -1168,3 +1168,10 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - Plano v2.18: 12 tarefas novas nas fases (P1.33, P2.26 a P2.29, P3.32 a P3.38), ED-83 a ED-103 na trilha (ED-102 e ED-103 como pacotes pendentes), 127 tarefas ajustadas com o ID de cada achado, ED-78 dependente da ED-85.
 - ADR-0042 (política de IA) e mapa 22-INCORPORACAO-NO-PLANO gravados; ADR-0041 e CERTIFICACOES-DE-QUALIDADE ajustados. Só documentação.
 - Pendências: ADR que altere o ADR-0022 (login gov.br e pagamento sem conta); tamanhos das tarefas novas e totais da trilha; reconferir contra 20b, 20c e 20e os achados de cobrança do 22a; conferir o prazo do Pix Automático (Res. CMN 5.278/2025 contra a citação do 22d).
+
+### 22/10/2026 — Alvos da OS e hierarquia de ativos; plano v2.19
+
+- Pedido do dono: o alvo da OS deve incluir booster, elevatórias e demais itens, pesquisando fontes técnicas.
+- Fontes lidas: manual de controle patrimonial da ARSESP (NT.F-0064-2022, 385 páginas, 29 unidades de propriedade e centenas de unidades de adição e retirada, texto extraído localmente); Resolução ANA 302/2026 (NR 16); minuta de inventário da ANA; taxonomia da ISO 14224; resumos das NBR 12214 e 12208; glossário do SINISA; catálogo de GIS do projeto.
+- Gravado ALVOS-DA-OS-E-HIERARQUIA-DE-ATIVOS (classes de alvo, hierarquia de seis níveis, catálogo por instalação, equipamento, instrumento, edificação e frota). Plano v2.19: P1.27, P1.31, ED-14, ED-36 e ED-56 ajustadas. Só documentação.
+- A confirmar: anexo do MCPSB da ANA (não publicado junto da resolução); NBR 12208:2020 marcada como cancelada no portal normas.com.br.
