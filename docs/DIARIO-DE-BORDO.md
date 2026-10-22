@@ -1161,3 +1161,10 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - Relatórios gravados em docs/levantamento/lacunas/. O plano não foi alterado: as inclusões aguardam decisão do dono.
 - A conferir: prazo do Pix Automático (Res. CMN 5.278/2025, lida em texto pelo 22c, contra a citação do 22d);
   artigos da NR 11 e NR 13 citados por resumo; achados de cobrança e faturamento do 22a contra 20b, 20c e 20e.
+
+### 22/10/2026 — Incorporação dos 156 achados no plano; plano v2.18
+
+- Cartões do dono: todos os achados dos levantamentos 22a a 22d entram no plano; NR do MTE obrigatórias no ADR-0041; módulo de perdas na onda B; ADR de política de IA; API pública com prioridade alta; desastre regional por Multi-AZ e cofre isolado na mesma região.
+- Plano v2.18: 12 tarefas novas nas fases (P1.33, P2.26 a P2.29, P3.32 a P3.38), ED-83 a ED-103 na trilha (ED-102 e ED-103 como pacotes pendentes), 127 tarefas ajustadas com o ID de cada achado, ED-78 dependente da ED-85.
+- ADR-0042 (política de IA) e mapa 22-INCORPORACAO-NO-PLANO gravados; ADR-0041 e CERTIFICACOES-DE-QUALIDADE ajustados. Só documentação.
+- Pendências: ADR que altere o ADR-0022 (login gov.br e pagamento sem conta); tamanhos das tarefas novas e totais da trilha; reconferir contra 20b, 20c e 20e os achados de cobrança do 22a; conferir o prazo do Pix Automático (Res. CMN 5.278/2025 contra a citação do 22d).

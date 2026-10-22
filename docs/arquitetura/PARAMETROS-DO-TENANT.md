@@ -250,6 +250,10 @@ Normas ligadas e desligadas pelo tenant. Fontes: levantamentos 21a e 21b. `<norm
 Regras: a lei vence; se uma norma ativa pedir retenção ou acesso mais restritivo que o limite legal travado, o
 validador avisa e o limite legal prevalece (ADR-0041, item 9).
 
+### Parâmetros previstos pelos levantamentos 22a a 22d (plano v2.18)
+
+Os achados abaixo criam ou ampliam parâmetro do tenant (ADR-0038). Cada chave nasce na tarefa que incorpora o achado, com opções, padrão mais protetivo e classe, conforme o detalhamento do relatório (22a, 22b, 22c ou 22d) e o mapa em `docs/levantamento/lacunas/22-INCORPORACAO-NO-PLANO.md`. Os achados são: CAD-65, CAD-66, CAD-67, CAD-68, CAD-69, CAD-70, CAD-71, CAD-72, CAD-73, CAD-74, CAD-75, CAD-76, CAD-77, CAD-79, CAD-80, CAD-81, CAD-82, CAD-84, CAD-85, CAD-86, CAD-87, CAD-88, CAD-89, CAD-90, CAD-91, CAD-92, CAD-93, CAD-94, CAD-95, CAD-96, CAD-97, CAD-98, CAD-99, CAD-100, CAD-101, CAD-102, CAD-103, CAD-104, OPE-01, OPE-02, OPE-03, OPE-04, OPE-05, OPE-06, OPE-07, OPE-08, OPE-09, OPE-10, OPE-11, OPE-13, OPE-14, OPE-15, OPE-16, OPE-17, OPE-18, OPE-19, OPE-20, OPE-21, OPE-23, OPE-24, OPE-25, OPE-26, OPE-27, OPE-28, OPE-29, OPE-31, OPE-32, OPE-33, OPE-34, OPE-36, OPE-37, OPE-38, OPE-40, PLT-01, PLT-02, PLT-04, PLT-05, PLT-06, PLT-07, PLT-10, PLT-11, PLT-12, PLT-13, PLT-14, PLT-17, PLT-18, PLT-19, PLT-20, PLT-22, PLT-24, PLT-25, PLT-27, PLT-29, PLT-30, PLT-31, PLT-33, PLT-34, PLT-36, PLT-38, PLT-40, PLT-41, PLT-42, GES-01, GES-02, GES-03, GES-04, GES-05, GES-06, GES-07, GES-08, GES-09, GES-10, GES-11, GES-13, GES-14, GES-15, GES-16, GES-17, GES-18, GES-19, GES-20, GES-21, GES-22, GES-24, GES-25, GES-26, GES-27, GES-28, GES-29, GES-30, GES-32, GES-33.
+
 ### Bifurcações resolvidas por configuração (ADR-0038, ADR-0039, ADR-0040; planos v2.14 e v2.15)
 
 Origem: perguntas e parâmetros propostos nos levantamentos `docs/levantamento/gsan/20a` (Q1, Q2, Q5 a Q8), `20b`

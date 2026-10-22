@@ -27,7 +27,7 @@ e que só as exigências específicas dependem de o cliente ligar a norma.
 1. **Novo módulo "Certificações de qualidade"** (nome técnico `certification`), com catálogo único de normas.
    O cliente liga e desliga cada norma; ao ligar, o sistema passa a atender as exigências daquela norma.
 2. **Catálogo único com quatro classes de norma:**
-   - `REGULATORY`: obrigatória por aplicabilidade (NR 8, 9, 11, 13, 15 e 16 da ANA, Portaria GM/MS 888/2021 e
+   - `REGULATORY`: obrigatória por aplicabilidade (NR 8, 9, 11, 13, 15 e 16 da ANA, NR-1, 18, 33 e 35 do MTE (segurança do trabalho; ajuste de 22/10/2026), Portaria GM/MS 888/2021 e
      SISAGUA, CONAMA 357, 430 e 498, Lei 11.445/2007, Leis 14.015, 14.898, 13.460 e 12.007, Decreto 5.440/2005,
      LGPD, Portaria Inmetro 155/2022). **Não desativável.** Aparece na lista marcada como obrigatória e é alimentada
      pelo perfil regulatório (ADR-0038); a aplicabilidade depende do que o tenant tem (por exemplo, a NR 15 depende
