@@ -1175,3 +1175,9 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - Fontes lidas: manual de controle patrimonial da ARSESP (NT.F-0064-2022, 385 páginas, 29 unidades de propriedade e centenas de unidades de adição e retirada, texto extraído localmente); Resolução ANA 302/2026 (NR 16); minuta de inventário da ANA; taxonomia da ISO 14224; resumos das NBR 12214 e 12208; glossário do SINISA; catálogo de GIS do projeto.
 - Gravado ALVOS-DA-OS-E-HIERARQUIA-DE-ATIVOS (classes de alvo, hierarquia de seis níveis, catálogo por instalação, equipamento, instrumento, edificação e frota). Plano v2.19: P1.27, P1.31, ED-14, ED-36 e ED-56 ajustadas. Só documentação.
 - A confirmar: anexo do MCPSB da ANA (não publicado junto da resolução); NBR 12208:2020 marcada como cancelada no portal normas.com.br.
+
+### 22/10/2026 — Conferências do catálogo de alvos; documento recriado
+
+- A pedido do dono, o documento ALVOS-DA-OS-E-HIERARQUIA-DE-ATIVOS foi removido e depois recriado com as correções.
+- Confirmado: anexo do MCPSB da ANA (versão 2026, 363 páginas) lido; mesma estrutura de codificação da ARSESP (CIB, LOC, AC, BCP, BRV, NTS-SDS, UP, UAR, AT1 a AT5), 19 naturezas e subdivisões do serviço e tabela única nacional de vida útil. NBR 12208:2020 vigente (confirmação em 01/2025). ISO 14224 conferida na pré-visualização oficial.
+- Pendências: valores de vida útil por UAR a conferir na tabela original; texto integral das NBR 12214 e 12208 depende da compra da ED-76.

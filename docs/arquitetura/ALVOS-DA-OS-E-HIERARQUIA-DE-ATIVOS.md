@@ -1,6 +1,6 @@
 # Alvos da OS e hierarquia de ativos
 
-Base: achado OPE-15 do levantamento [22b](../levantamento/lacunas/22b-operacao-campo-rede-inteligencia.md), ADR-0039
+Versão revista em 22/10/2026 com a leitura do anexo do MCPSB da ANA (confirmado) e da vigência da NBR 12208. Base: achado OPE-15 do levantamento [22b](../levantamento/lacunas/22b-operacao-campo-rede-inteligencia.md), ADR-0039
 (unidade consumidora como raiz), catálogo do GIS ([GIS-CADASTRO-TECNICO §4](GIS-CADASTRO-TECNICO.md)) e pesquisa em
 fontes técnicas de 22/10/2026 (seção 7). Plano v2.19. Nomes técnicos em inglês; rótulos em português.
 
@@ -20,21 +20,23 @@ O teste de arquitetura da P1.31 não muda: nenhuma escrita em cliente ou unidade
 
 ## 2. Hierarquia proposta
 
-Inspirada na taxonomia de nove níveis da ISO 14224 (que a própria norma diz não ser obrigatória em toda a
-profundidade; a prática colapsa em quatro a seis níveis) e na estrutura de identificação dos bens da ARSESP (NT.F-0064-2022):
+Inspirada na taxonomia de nove níveis da ISO 14224:2016 (tabela 2 da norma, conferida na pré-visualização oficial; a
+norma é do setor de petróleo, gás e petroquímica e serve aqui como analogia técnica, colapsada em seis níveis) e na
+estrutura de identificação dos bens do Manual de Controle Patrimonial da ANA (MCPSB, versão 2026, instituído pela NR
+16/2026), que a ARSESP aprovou em 2022 (NT.F-0064-2022, em vigor desde 01/01/2024):
 
 | Nível | Nome | Exemplos | Correspondência |
 |---|---|---|---|
-| 1 | Município e localidade | município atendido, distrito, bairro | ARSESP `MUN`; ANA, minuta de inventário: "município" |
-| 2 | Sistema | abastecimento de água, esgotamento sanitário, bens de uso geral e controle de qualidade; GRS e drenagem como sistemas opcionais | minuta ANA: "sistema" |
-| 3 | Etapa do serviço | água: manancial, captação, adução, tratamento, distribuição; esgoto: coleta, transporte, tratamento, disposição final | ARSESP `TS-ES` (nove etapas) |
+| 1 | Município e localidade | município atendido, distrito, bairro | MCPSB `LOC` (código do IBGE, 7 dígitos) |
+| 2 | Sistema | abastecimento de água, esgotamento sanitário, bens de uso geral e controle de qualidade; GRS e drenagem como sistemas opcionais | primeiro nível de `NTS` do MCPSB (água, esgoto, administração) |
+| 3 | Natureza e subdivisão do serviço | os 19 códigos do MCPSB: água (manancial, captação, adução, tratamento, reservação, adutoras, redes e ramais, ligações prediais); esgoto (ligações prediais, coleta, transporte, tratamento, disposição final); administração da operação, de obras e central; gestão comercial; gestão ambiental; reserva estratégica | MCPSB `NTS-SDS` (tabela 2); ARSESP `TS-ES` (nove etapas, subconjunto) |
 | 4 | Instalação (unidade operacional) | poço, captação, ETA, UTS, elevatória, booster, reservatório, ETE | ISO 14224 níveis 3 a 5 |
-| 5 | Equipamento (unidade de equipamento) | conjunto motobomba, motor, painel de comando, soprador, comporta | ISO 14224 nível 6; ARSESP `UAR` |
-| 6 | Componente (item mantenível), opcional | selo, mancal, impelidor, rolamento, sensor | ISO 14224 nível 8; é onde a OS de manutenção costuma cair |
+| 5 | Equipamento (unidade de equipamento) | conjunto motobomba, motor, painel de comando, soprador, comporta | ISO 14224 nível 6; MCPSB `UAR` |
+| 6 | Componente (item mantenível), opcional | selo, mancal, rolamento, sensor, motor dentro de um conjunto | ISO 14224 nível 8; a subunidade (nível 7, como o sistema de lubrificação) entra só como agrupamento opcional |
 
-A peça (ISO 14224, nível 9) não é ativo: é material consumido pela OS (almoxarifado, ED-58). A fronteira de cada
+A peça (ISO 14224, nível 9, opcional na própria norma) não é ativo: é material consumido pela OS (almoxarifado, ED-58). A fronteira de cada
 equipamento (o que pertence à bomba: motor, acoplamento, base, partida, instrumentação) é definida por classe, com
-base nos diagramas de fronteira da ISO 14224, para que a mesma pergunta tenha sempre a mesma resposta.
+base na cláusula 8.1 e nos diagramas de fronteira do Anexo A da ISO 14224, que exigem fronteiras sem sobreposição entre classes, para que a mesma pergunta tenha sempre a mesma resposta.
 
 ## 3. Classes de alvo
 
@@ -59,7 +61,8 @@ a sua marca de efeito aplicado.
 ## 4. Catálogo de alvos
 
 Cada linha indica a fonte em colchetes: **G** = catálogo do GIS do projeto (GIS-CADASTRO-TECNICO §4); **A** =
-manual de controle patrimonial da ARSESP, unidade de adição e retirada (UAR); **S** = glossário do SINISA; **N** =
+unidade de adição e retirada (UAR) dos manuais de controle patrimonial da ANA (MCPSB) e da ARSESP, cujas listas de água e
+esgoto conferem entre si; **S** = glossário do SINISA; **N** =
 norma da ABNT (NBR); **I** = ISO 14224. Nomes de código são propostas; o catálogo é do tenant e extensível.
 
 ### 4.1 Rede linear (`GIS_LINEAR`)
@@ -110,19 +113,20 @@ esgoto (`SERVICE_LINE`) [G]; ramal de hidrante [G]; sifão invertido (`INVERTED_
 
 ### 4.4 Equipamentos e instrumentos (`EQUIPMENT`)
 
-Classes agrupadas pela UP do manual da ARSESP, com a UAR citada como tipo.
+Classes agrupadas pelos grupos de bens (unidades patrimoniais, UP) do MCPSB e do manual da ARSESP, com a UAR citada
+como tipo. Os grupos são citados pelo nome: a numeração das UP do MCPSB difere da da ARSESP.
 
 | Classe | Tipos (UAR) |
 |---|---|
-| Bombeamento (UP 05, 29) | bomba centrífuga horizontal, vertical e radial; conjunto motobomba submersível, submersa e monobloco; bomba de deslocamento positivo, peristáltica, helicoidal, de pistão, hidráulica e pneumática; bomba de eixo flexível com motor a combustão; booster móvel; caixa e cabine para conjunto motobomba e booster; motor elétrico; redutor e variador de velocidade; bomba parafuso de Arquimedes; roda d'água |
-| Elétrica (UP 06, 26) | cabine de alimentação primária; transformador; grupo gerador e turbogerador; nobreak; banco de baterias e carregador; inversor de frequência, soft starter e servomotor; centro de controle de motores; painéis de comando de motores, de válvulas, de estação, de serviços auxiliares, de instrumentação e de telemetria; banco de capacitores; disjuntor e chave seccionadora; protetor de surtos; painel e inversor fotovoltaicos; retificador para proteção catódica; rede elétrica em postes; proteção contra descargas atmosféricas |
-| Telecontrole e automação (UP 03) | controlador lógico programável (CLP); unidade remota e estação remota de telemetria; transmissores de nível, pressão, vazão, velocidade e temperatura; indicador e controlador de nível; controlador de VRP; registradores de pressão e de vazão; conversor serial/ethernet; armário de instrumentação |
-| Tratamento (UP 09) | dosador de produtos químicos; clorador e hidroclorador; preparador de polieletrólito; bomba dosadora; aeradores (superficial, submersível e por injeção de ar); soprador de ar; misturador; grade mecanizada; peneira estática e rotativa; removedor de areia; ponte removedora de lodo e raspadores; rosca transportadora; filtro prensa e centrífuga de lodo; secador; adufa e comporta com atuador; analisadores on-line de cloro, pH, oxigênio dissolvido, fluoreto e H2S; medidor de vazão e de nível; detector de gás; lavador de gases; osmose reversa |
-| Controle de perdas e metrologia (UP 30, 10, 12) | hidrômetro; macromedidor; bancada de aferição de hidrômetro; data logger com telemetria; correlacionador de ruído de vazamento; geofone eletrônico e mecânico; detector e localizador de tubo; detector de fraude em ligação e cavalete; maleta de calibração; controlador inteligente |
-| Laboratório (UP 12) | balança, pHmetro, turbidímetro, medidor de cloro e de oxigênio, jar-test, estufa, banho-maria, câmara incubadora, autoamostrador, analisador multiparâmetro, espectrofotômetro e cromatógrafo (ligados à ED-51 e à ISO/IEC 17025: calibração, padrão e incerteza) |
-| Movimentação de carga (UP 14) | ponte rolante, talha elétrica, pórtico móvel, monovia, plataforma elevatória (a NBR 12214 exige sistema de movimentação de equipamentos na elevatória) |
+| Bombeamento (equipamentos de bombeamento; conjuntos motobomba monobloco) | bomba centrífuga horizontal, vertical e radial; conjunto motobomba submersível, submersa e monobloco; bomba de deslocamento positivo, peristáltica, helicoidal, de pistão, hidráulica e pneumática; bomba de eixo flexível com motor a combustão; booster móvel; caixa e cabine para conjunto motobomba e booster; motor elétrico; redutor e variador de velocidade; bomba parafuso de Arquimedes; roda d'água |
+| Elétrica (instalações e equipamentos elétricos; redes elétricas; infraestrutura fotovoltaica) | cabine de alimentação primária; transformador; grupo gerador e turbogerador; nobreak; banco de baterias e carregador; inversor de frequência, soft starter e servomotor; centro de controle de motores; painéis de comando de motores, de válvulas, de estação, de serviços auxiliares, de instrumentação e de telemetria; banco de capacitores; disjuntor e chave seccionadora; protetor de surtos; painel e inversor fotovoltaicos; retificador para proteção catódica; rede elétrica em postes; proteção contra descargas atmosféricas |
+| Telecontrole e automação | controlador lógico programável (CLP); unidade remota e estação remota de telemetria; transmissores de nível, pressão, vazão, velocidade e temperatura; indicador e controlador de nível; controlador de VRP; registradores de pressão e de vazão; conversor serial/ethernet; armário de instrumentação |
+| Tratamento (filtros e outros equipamentos de tratamento) | dosador de produtos químicos; clorador e hidroclorador; preparador de polieletrólito; bomba dosadora; aeradores (superficial, submersível e por injeção de ar); soprador de ar; misturador; grade mecanizada; peneira estática e rotativa; removedor de areia; ponte removedora de lodo e raspadores; rosca transportadora; filtro prensa e centrífuga de lodo; secador; adufa e comporta com atuador; analisadores on-line de cloro, pH, oxigênio dissolvido, fluoreto e H2S; medidor de vazão e de nível; detector de gás; lavador de gases; osmose reversa |
+| Controle de perdas e metrologia | hidrômetro; macromedidor; bancada de aferição de hidrômetro; data logger com telemetria; correlacionador de ruído de vazamento; geofone eletrônico e mecânico; detector e localizador de tubo; detector de fraude em ligação e cavalete; maleta de calibração; controlador inteligente |
+| Laboratório (aferição, medição e testes laboratoriais) | balança, pHmetro, turbidímetro, medidor de cloro e de oxigênio, jar-test, estufa, banho-maria, câmara incubadora, autoamostrador, analisador multiparâmetro, espectrofotômetro e cromatógrafo (ligados à ED-51 e à ISO/IEC 17025: calibração, padrão e incerteza) |
+| Movimentação de carga (serviço de campo e de oficina) | ponte rolante, talha elétrica, pórtico móvel, monovia, plataforma elevatória (a NBR 12214 exige sistema de movimentação de equipamentos na elevatória) |
 
-Equipamentos de oficina e de campo (UP 14: analisadores de vibração, megôhmetros, câmeras de inspeção de esgoto,
+Equipamentos de oficina e de campo (grupo de serviço de campo e de oficina: analisadores de vibração, megôhmetros, câmeras de inspeção de esgoto,
 bicos de desobstrução, máquinas de furar tubos sob pressão, compactadores, perfuradores de solo) entram como ativos
 de apoio, usados pelas equipes; só viram alvo quando recebem manutenção ou calibração.
 
@@ -138,22 +142,29 @@ Caminhão, picape, utilitário, motocicleta, bicicleta de serviço [A]; equipame
 minirretroescavadeira, guindaste, empilhadeira, pá carregadeira, plataforma) [A]; equipamentos acoplados (**caminhão
 limpa-fossa**, combinado vácuo-jato, sewer jet, vac-all, mini-jet, tanque de água, guincho, guindauto, oficina móvel,
 poliguindaste, valetadeira, cesto aéreo) [A]; reboques e semirreboques; embarcação, balsa, lancha, draga [A];
-caçamba, contêiner, tanque e reservatório móvel [A]; drone [A, UP 13]; grupo gerador e motobomba portáteis.
+caçamba, contêiner, tanque e reservatório móvel [A]; drone [A, telecomunicação]; grupo gerador e motobomba portáteis.
 
 ## 5. Atributos do ativo (compatíveis com o inventário regulatório)
 
-O cadastro de ativo guarda, no mínimo: identificador individual (plaqueta, tombamento), município, sistema, etapa do
-serviço, instalação-pai, indicador de bem compartilhado entre sistemas, indicador de bem reversível, classe e tipo (UP
-e UAR), ficha técnica (fabricante, modelo, número de série, ano, potência, capacidade, dimensões), data de entrada em
-operação, estado de conservação, vida útil, localização georreferenciada, documentos (manual, projeto, nota de
-aquisição) e custo histórico. São os campos pedidos pela minuta de inventário da ANA e pelo manual da ARSESP.
+O MCPSB da ANA (versão 2026) fixa a estrutura de codificação de cada bem, e o cadastro de ativo do Ziip SAN a adota:
 
-A NR 16/2026 da ANA (Resolução ANA 302/2026, em vigor desde 31/08/2026) institui o Manual de Contabilidade
-Regulatória (MCRSB) e o Manual de Controle Patrimonial (MCPSB). As entidades reguladoras têm três anos para
-incorporar as diretrizes e os prestadores, até 2032, e a comprovação de adoção exige o plano de contas, os modelos de
-demonstração, o inventário conforme o MCPSB e as vidas úteis do MCPSB. O catálogo de ativos do Ziip SAN guarda, por
-tipo, a correspondência com a classificação do MCPSB (pendente de leitura do anexo, seção 8) e a vida útil por perfil
-de agência (ADR-0038). O indicador de envelhecimento da infraestrutura (IGA1) do manual da ARSESP usa os mesmos dados.
+| Campo | Sigla | Regra do MCPSB | Quem define |
+|---|---|---|---|
+| Código individual do bem | `CIB` | 25 dígitos; só para bem individual, não para bem controlado em massa | prestador |
+| Localização (município) | `LOC` | 7 dígitos, código do IBGE | IBGE |
+| Área constituída | `AC` | 6 dígitos; cadastros imobiliários adjacentes ligados a um endereço principal | prestador |
+| Bem compartilhado | `BCP` | `S` ou `N`; usado em conjunto com outros municípios | prestador |
+| Bem reversível | `BRV` | `S` ou `N` | prestador |
+| Natureza e subdivisão do serviço | `NTS-SDS` | 19 códigos (seção 2, nível 3) | entidade reguladora |
+| Unidade patrimonial | `UP` | 29 grupos de bens; no código de exemplo do manual aparece com 2 dígitos na tabela 4 e 3 dígitos na figura 2 | entidade reguladora |
+| Unidade de adição e retirada | `UAR` | 7 dígitos; atribuídos pela entidade reguladora; espécie não prevista é demandada ao regulador | entidade reguladora |
+| Atributos técnicos | `AT1` a `AT5` | 2 dígitos cada; `00` quando não se aplica | entidade reguladora |
+
+O manual também define o controle por massa ou individual e a unidade de medida de cada UAR, e uma **tabela única nacional de vida útil e taxa de depreciação regulatória** por UAR, de uso obrigatório, com possibilidade de exceção tecnicamente comprovada aceita pela entidade reguladora (Voto 14/2026 da ANA). Os valores que li na tabela, por grupo de bens, foram: estruturas de saneamento 50 anos, canais, galerias e túneis 60, equipamentos de bombeamento 20, poços 20, ligações domiciliares 50, instalações e equipamentos elétricos 15, telecontrole e automação 8, filtros e outros equipamentos de tratamento 10 e hidrômetros 7. A leitura foi automática e esses números devem ser conferidos na tabela original antes de virarem dado do produto.
+
+Além do código, o cadastro guarda a ficha técnica (fabricante, modelo, número de série, ano de fabricação, potência, capacidade, dimensões), a data de entrada em operação, o estado de conservação, a localização georreferenciada, a instalação-pai, os documentos (manual, projeto, nota de aquisição) e o custo histórico, que são os campos pedidos pela minuta de inventário da ANA e pelo manual da ARSESP.
+
+**NR 16/2026 da ANA** (Resolução ANA 302/2026, em vigor desde 31/08/2026): institui o Manual de Contabilidade Regulatória (MCRSB) e o MCPSB. As entidades reguladoras têm até três anos para incorporar as diretrizes, os prestadores até 2032, e a comprovação de adoção exige plano de contas, modelos de demonstração, inventário conforme o MCPSB e as vidas úteis do MCPSB. O catálogo de ativos do Ziip SAN guarda a correspondência de cada tipo com o par UP e UAR do MCPSB e a vida útil por perfil de agência (ADR-0038). O indicador de envelhecimento da infraestrutura (IGA1) do manual da ARSESP usa os mesmos dados.
 
 ## 6. Regras de uso nas OS
 
@@ -164,23 +175,19 @@ de agência (ADR-0038). O indicador de envelhecimento da infraestrutura (IGA1) d
 - Serviço sobre rede abre pacote de edição do GIS quando altera a rede (GIS-CADASTRO-TECNICO §11).
 - Alvo `NETWORK_INCIDENT` liga a OS à ocorrência, que mede a intermitência e o extravasamento (NR 9 da ANA).
 - Prazo por tipo de serviço: `so.deadline_hours_by_type`, nunca mais longo que o da agência.
-
 ## 7. Fontes consultadas em 22/10/2026
 
-- ARSESP, NT.F-0064-2022, Manual de Controle Patrimonial do Setor de Saneamento Básico, versão 2022 (29 unidades de
-  propriedade e unidades de adição e retirada), <http://www.arsesp.sp.gov.br/ConsultasPublicasBiblioteca/NT-F-0064-2022%20Saneamento.pdf>.
-- ANA, Resolução 302/2026 (NR 16/2026), <https://www.gov.br/ana/pt-br/legislacao/resolucoes/resolucoes-regulatorias/2026/302>,
-  e minuta de instrução normativa de inventário (hierarquia de ativos), em participacao-social.ana.gov.br.
-- ISO 14224, taxonomia de nove níveis (resumos públicos; o texto da norma não foi lido).
-- ABNT NBR 12214:2020 e 12208:2020 (elevatórias), por resumos do portal normas.com.br; definição de booster na NBR
-  12208.
+- ANA, Manual de Controle Patrimonial Aplicado ao Setor de Saneamento Básico (MCPSB), versão 2026, anexo da NR 16/2026 (363 páginas, lido), <https://www.gov.br/ana/pt-br/assuntos/saneamento-basico/Normativos-publicados-pela-ANA/mcpsb____pos_pfe_ana.pdf>.
+- ANA, Resolução 302/2026 (NR 16/2026), <https://www.gov.br/ana/pt-br/legislacao/resolucoes/resolucoes-regulatorias/2026/302>; Voto 14/2026 (tabela única de vidas úteis), <https://www.gov.br/ana/pt-br/assuntos/saneamento-basico/Normativos-publicados-pela-ANA/sei_0233547_voto_cb__dlb__14.pdf>; minuta de instrução normativa de inventário (hierarquia de ativos), em participacao-social.ana.gov.br.
+- ARSESP, NT.F-0064-2022, Manual de Controle Patrimonial do Setor de Saneamento Básico, versão 2022 (29 unidades patrimoniais, 385 páginas, lido), <http://www.arsesp.sp.gov.br/ConsultasPublicasBiblioteca/NT-F-0064-2022%20Saneamento.pdf>; a ARSESP aprovou a versão 2 (2025), com classe e tipo de aquisição (Deliberação 1.636/2025), não lida.
+- ISO 14224:2016, pré-visualização oficial (tabela 2, taxonomia de nove níveis; cláusula 8.1, fronteira; Anexo A, diagramas), <https://www.iso.org/standard/64076.html>.
+- ABNT NBR 12208:2020 e NBR 12214:2020 (elevatórias): situação em buscanormas.com.br, normas.com.br e DIN Media (vigentes, confirmadas em 01/2025); definição de booster em trecho da NBR 12208.
 - Ministério das Cidades, glossário de termos técnicos do SINISA (água e gestão municipal).
 - Catálogo do GIS do projeto (GIS-CADASTRO-TECNICO §4).
 
-## 8. Pontos a confirmar
+## 8. Situação das conferências
 
-- O anexo do MCPSB da ANA (hierarquia, classes e vidas úteis) não foi lido: o arquivo publicado com a resolução traz só
-  o texto da norma. A classificação da ARSESP é a mais completa lida; a do MCPSB pode diferir [INFERÊNCIA].
-- A NBR 12208:2020 aparece no portal normas.com.br com a marca de cancelada; confirmar a edição vigente.
-- Os textos da ISO 14224 e das NBR não foram lidos integralmente (pagos).
+- **Anexo do MCPSB da ANA: lido e confirmado.** A estrutura de codificação, as 19 naturezas e subdivisões do serviço e as listas de UAR de água e esgoto coincidem com as do manual da ARSESP; muda a numeração das UP e o MCPSB acrescenta os grupos de infraestrutura fotovoltaica, poços e módulos de armazenamento de líquidos, sólidos e gás. Os números de vida útil da seção 5 vieram de leitura automática e pedem conferência na tabela.
+- **NBR 12208:2020: vigente.** Confirmação publicada em 01/2025 (buscanormas.com.br e normas.com.br) e situação corrente na DIN Media. O aviso de "cancelada" que aparece numa página do normas.com.br contradiz o histórico da própria página e provavelmente trata da edição de 1992 [INFERÊNCIA].
+- **Textos pagos:** a ISO 14224 foi conferida na pré-visualização oficial, que cobre a taxonomia e a fronteira; as NBR 12214 e 12208 foram lidas apenas em resumos e trechos públicos, e o texto integral depende da compra prevista na curadoria (ED-76). A ISO 14224 não é norma de saneamento; a analogia é decisão de projeto.
 - Os códigos de tipo em inglês são propostas, sujeitas ao catálogo do GIS.
