@@ -1,0 +1,2551 @@
+[
+  {
+    "id": "lei-13853-2019",
+    "kind": "LAW",
+    "number": "13.853",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei Geral de Proteção de Dados Pessoais para dispor sobre a proteção de dados pessoais e criar a Autoridade Nacional de Proteção de Dados (conversão da MP 869/2018)",
+    "scope_summary": "Criou a ANPD e reescreveu dispositivos da LGPD sobre tratamento, direitos do titular, poder público, sanções e vigência. Foi parcialmente revogada pela Lei 14.460/2022.",
+    "norm_class": "REGULATORY",
+    "applicability": "Controladores e operadores de dados pessoais sujeitos à LGPD, inclusive prestadores de saneamento públicos e privados.",
+    "jurisdiction": "BR",
+    "status": "PARCIALMENTE_REVOGADA",
+    "status_note": "Sancionada em 8/7/2019 (DOU de 9/7/2019), vigor na publicação. A Lei 14.460/2022 revogou o art. 2º na parte que alterava o art. 55-A da LGPD e dispositivos correlatos; a Lei 15.352/2026 voltou a alterar a LGPD quanto à ANPD (ver mp-1317-2025).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/lei/l13853.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd",
+      "platform"
+    ],
+    "notes": "Correção de escopo: a lista do projeto (arts. 7º VIII, 18, 20, 23, 26, 27) é parcial; a lei altera também os arts. 1º, 3º, 4º, 5º, 11, 29, 41, 52, 55-A a 55-L, 58-A, 58-B e 65 da LGPD e revoga os §§ 1º e 2º do art. 7º. Título completo conforme a ementa oficial."
+  },
+  {
+    "id": "lei-14010-2020",
+    "kind": "LAW",
+    "number": "14.010",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre o Regime Jurídico Emergencial e Transitório das relações jurídicas de Direito Privado (RJET) no período da pandemia de Covid-19",
+    "scope_summary": "Lei de caráter transitório sobre prazos, prescrição e relações privadas durante a pandemia. Seu art. 20 fixou 1º de agosto de 2021 para a aplicação das sanções administrativas da LGPD (arts. 52 a 54).",
+    "norm_class": "REFERENCE",
+    "applicability": "Relações de direito privado no período emergencial (até 30/10/2020 para os dispositivos temporais); a regra do art. 20 vale para todos os agentes de tratamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 10/6/2020, em vigor na publicação. Os efeitos dos dispositivos temporais se exauriram (o texto limita vários deles a 30/10/2020); o art. 20 permanece como fonte da data de 1º/8/2021 para as sanções da LGPD.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l14010.htm",
+    "topics": [
+      "data_protection",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "lgpd"
+    ],
+    "notes": "Confirma o registro do projeto (vigente, efeito exaurido). A inserção do inciso I-A no art. 65 da LGPD está no art. 20 da lei."
+  },
+  {
+    "id": "lei-14460-2022",
+    "kind": "LAW",
+    "number": "14.460",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Transforma a Autoridade Nacional de Proteção de Dados em autarquia de natureza especial e transforma cargos comissionados; altera as Leis 13.709/2018 e 13.844/2019; revoga dispositivos da Lei 13.853/2019 (conversão da MP 1.124/2022)",
+    "scope_summary": "Converteu a ANPD em autarquia especial e ajustou a LGPD e a lei de organização da Presidência. A natureza da ANPD foi novamente alterada pela Lei 15.352/2026.",
+    "norm_class": "REFERENCE",
+    "applicability": "Estrutura institucional da ANPD; efeito indireto sobre controladores, que respondem à autoridade.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 25/10/2022. O art. 3º condiciona os efeitos da transformação à entrada em vigor do decreto de estrutura regimental da ANPD. A Lei 15.352/2026 (conversão da MP 1.317/2025) alterou novamente a LGPD para tratar da Agência Nacional de Proteção de Dados; a extensão dessa alteração sobre a Lei 14.460 não foi conferida.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/lei/l14460.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd"
+    ],
+    "notes": "Confirma o registro do projeto. Conferir o texto compilado da LGPD para o desenho institucional vigente da ANPD."
+  },
+  {
+    "id": "lei-13848-2019",
+    "kind": "LAW",
+    "number": "13.848",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre a gestão, a organização, o processo decisório e o controle social das agências reguladoras e altera diversas leis setoriais",
+    "scope_summary": "Estabelece regras comuns de governança, análise de impacto regulatório, consulta pública e prestação de contas para as agências reguladoras federais, entre elas a ANA.",
+    "norm_class": "REFERENCE",
+    "applicability": "Agências reguladoras federais (art. 2º lista as abrangidas, incluindo a ANA); agências estaduais e municipais não são obrigadas por ela, mas costumam adotar modelo semelhante.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 25/6/2019; entra em vigor 90 dias após a publicação oficial (art. 53). Foi alterada pela Lei 15.352/2026 (constante da ementa desta).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/lei/l13848.htm",
+    "topics": [
+      "reporting",
+      "tariff"
+    ],
+    "modules_affected": [
+      "platform"
+    ],
+    "notes": "A entrada trazia a norma sem estado informado; confirmado como vigente."
+  },
+  {
+    "id": "lei-15141-2025",
+    "kind": "LAW",
+    "number": "15.141",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Cria carreiras e reestrutura remuneração de servidores e empregados do Poder Executivo federal (Carreira de Desenvolvimento Socioeconômico, entre outras); inclui, em seu art. 216, os arts. 8º-A e 8º-B na Lei de Acesso à Informação",
+    "scope_summary": "Lei de carreiras e remuneração do Executivo federal. Interessa ao projeto apenas pelo art. 216, que acrescenta à LAI deveres de transparência para serviços sociais autônomos e para conselhos de fiscalização profissional.",
+    "norm_class": "REFERENCE",
+    "applicability": "Serviços sociais autônomos que recebam recursos públicos federais e conselhos de fiscalização profissional; não alcança prestadores de saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 2/6/2025, em vigor na publicação; os efeitos financeiros dependem da Lei Orçamentária de 2025 (art. 219).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/l15141.htm",
+    "topics": [
+      "information_access"
+    ],
+    "modules_affected": [],
+    "notes": "CORRIGIDO: o título do projeto descreve apenas um artigo; a ementa oficial trata de carreiras e remuneração do Executivo federal. A inclusão dos arts. 8º-A e 8º-B na LAI está no art. 216. Considerada não relevante para o produto, o que se confirma."
+  },
+  {
+    "id": "lei-14620-2023",
+    "kind": "LAW",
+    "number": "14.620",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre o Programa Minha Casa, Minha Vida e altera diversas leis, entre elas a Lei 14.063/2020 (conversão da MP 1.162/2023)",
+    "scope_summary": "Reformula o programa habitacional e altera várias leis de habitação e registro. O art. 36 acrescenta o art. 17-A à lei das assinaturas eletrônicas para instituições de crédito imobiliário.",
+    "norm_class": "REFERENCE",
+    "applicability": "Instituições financeiras de crédito imobiliário (art. 17-A da Lei 14.063); o programa habitacional não se aplica a prestadores de saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 13/7/2023, conversão da MP 1.162/2023. Também altera a Lei 6.766/1979 (parcelamento do solo).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14620.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma que a alteração da Lei 14.063 não afeta saneamento. A lei altera ainda a Lei 6.766/1979, o que pode ter reflexo marginal em cadastro imobiliário."
+  },
+  {
+    "id": "lei-14626-2023",
+    "kind": "LAW",
+    "number": "14.626",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera as Leis 10.048/2000 e 10.205/2001 para prever atendimento prioritário a pessoas com transtorno do espectro autista ou mobilidade reduzida e a doadores de sangue",
+    "scope_summary": "Amplia os beneficiários do atendimento prioritário previsto na Lei 10.048, que obriga repartições e concessionárias de serviços públicos a dar prioridade nos seus atendimentos.",
+    "norm_class": "REGULATORY",
+    "applicability": "Repartições públicas e empresas concessionárias de serviços públicos no atendimento presencial ao público, o que inclui prestadores de saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 19/7/2023 pelo Vice-Presidente no exercício da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14626.htm",
+    "topics": [
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "portal",
+      "registry"
+    ],
+    "notes": "Confirma o registro. Reflexo possível em agendamento e fila de atendimento (identificação de prioridade)."
+  },
+  {
+    "id": "lei-14364-2022",
+    "kind": "LAW",
+    "number": "14.364",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei 10.048/2000 para garantir direitos aos acompanhantes das pessoas com prioridade de atendimento",
+    "scope_summary": "Garante a presença de acompanhante quando imprescindível e determina que acompanhantes sejam atendidos junto com o titular da prioridade.",
+    "norm_class": "REGULATORY",
+    "applicability": "Mesmo universo da Lei 10.048: repartições públicas e concessionárias de serviços públicos no atendimento ao público.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 1º/6/2022, em vigor na publicação (art. 3º).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/lei/l14364.htm",
+    "topics": [
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "portal"
+    ],
+    "notes": "CORRIGIDO: a lei não altera \"parágrafos\" no plural; acrescenta um único parágrafo ao art. 1º da Lei 10.048."
+  },
+  {
+    "id": "lei-13726-2018",
+    "kind": "LAW",
+    "number": "13.726",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Racionaliza atos e procedimentos administrativos dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios e institui o Selo de Desburocratização e Simplificação",
+    "scope_summary": "Veda a exigência de formalidades desnecessárias do cidadão perante a administração (como reconhecimento de firma e autenticação de cópias) e cria selo de simplificação.",
+    "norm_class": "REGULATORY",
+    "applicability": "Administração direta e indireta de todos os entes federativos, o que alcança autarquias de saneamento (SAAE) e, por extensão, o atendimento ao usuário.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 8/10/2018 (DOU de 9/10/2018). Sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13726.htm",
+    "topics": [
+      "consumer_rights",
+      "records"
+    ],
+    "modules_affected": [
+      "registry",
+      "portal"
+    ],
+    "notes": "A entrada informava que a data não fora conferida: confirmada como 8/10/2018."
+  },
+  {
+    "id": "lei-9791-1999",
+    "kind": "LAW",
+    "number": "9.791",
+    "year": "1999",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre a obrigatoriedade de as concessionárias de serviços públicos estabelecerem ao consumidor e ao usuário datas opcionais para o vencimento de seus débitos",
+    "scope_summary": "Acrescenta o art. 7º-A à Lei 8.987/1995: as concessionárias nos Estados e no Distrito Federal devem oferecer ao usuário, dentro do mês de vencimento, no mínimo seis datas opcionais de vencimento.",
+    "norm_class": "REGULATORY",
+    "applicability": "Concessionárias de serviços públicos, de direito público e privado, nos Estados e no Distrito Federal; para autarquias municipais a regra depende do regulamento local.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 24/3/1999 (DOU de 25/3/1999). O parágrafo único do art. 7º-A foi vetado.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/l9791.htm",
+    "topics": [
+      "billing",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "billing",
+      "portal"
+    ],
+    "notes": "Confirma o registro. Texto oficial lido; o número mínimo de datas (seis) consta do art. 7º-A."
+  },
+  {
+    "id": "lei-15471-2026",
+    "kind": "LAW",
+    "number": "15.471",
+    "year": "2026",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui a Estratégia Nacional de Saúde do Complexo Econômico-Industrial da Saúde (Ensceis) e altera as Leis 6.360/1976, 14.133/2021 e 8.080/1990",
+    "scope_summary": "Política de fomento à produção nacional de produtos estratégicos de saúde. Altera o art. 75 da Lei 14.133 (hipóteses de dispensa de licitação) para compras ligadas a esse complexo.",
+    "norm_class": "REFERENCE",
+    "applicability": "Contratações de produtos estratégicos de saúde; não se aplica ao produto nem a prestadores de saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 20/7/2026, em vigor na publicação (art. 39). Há dispositivos vetados.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15471.htm",
+    "topics": [
+      "procurement"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma a data de 20/7/2026. O título do projeto cita só a alteração da Lei 14.133; a ementa trata primeiro da Ensceis."
+  },
+  {
+    "id": "lei-15177-2025",
+    "kind": "LAW",
+    "number": "15.177",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Estabelece reserva mínima de participação de mulheres em conselhos de administração de sociedades empresárias que especifica; altera as Leis 6.404/1976 e 13.303/2016",
+    "scope_summary": "Reserva 30% das vagas titulares dos conselhos de administração a mulheres nas sociedades listadas e inclui, no art. 8º da Lei das Estatais, exigência de divulgação da política de igualdade entre homens e mulheres.",
+    "norm_class": "REFERENCE",
+    "applicability": "Estatais (empresas públicas e sociedades de economia mista) e companhias abertas listadas na lei, como as companhias estaduais de saneamento; não altera funcionalidade do produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 23/7/2025. O inciso X do art. 8º da Lei 13.303/2016 foi acrescentado pelo art. 8º desta lei.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/l15177.htm",
+    "topics": [
+      "reporting"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro. Relevante apenas como contexto de governança dos clientes estatais."
+  },
+  {
+    "id": "lei-10406-2002",
+    "kind": "LAW",
+    "number": "10.406",
+    "year": "2002",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui o Código Civil",
+    "scope_summary": "Código das relações privadas. Para o produto importam os prazos de prescrição (arts. 205 e 206), a mora e os juros, o pagamento e os contratos de adesão.",
+    "norm_class": "REGULATORY",
+    "applicability": "Relações jurídicas de direito privado e, subsidiariamente, contratuais com o usuário; aplica-se a concessionárias e, supletivamente, a autarquias.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Em vigor desde 11/1/2003. A Lei 15.040/2024 revogou o inciso II do § 1º do art. 206 e os arts. 757 a 802 (contrato de seguro), com vigência um ano após sua publicação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/2002/l10406.htm",
+    "topics": [
+      "billing",
+      "payments",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection",
+      "dunning"
+    ],
+    "notes": "Confirma o registro. Observação de jurisprudência (a conferir): a Súmula 412 do STJ submete ao prazo do Código Civil a repetição de indébito de tarifas de água e esgoto."
+  },
+  {
+    "id": "lei-15040-2024",
+    "kind": "LAW",
+    "number": "15.040",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre normas de seguro privado e revoga dispositivos do Código Civil e do Decreto-Lei 73/1966",
+    "scope_summary": "Novo marco legal do contrato de seguro. Interessa ao projeto apenas porque revogou o inciso II do § 1º do art. 206 e os arts. 757 a 802 do Código Civil.",
+    "norm_class": "REFERENCE",
+    "applicability": "Contratos de seguro privado; sem aplicação direta a prestadores de saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 9/12/2024 (DOU de 10/12/2024). Entra em vigor um ano após a publicação oficial (art. 134), isto é, a partir de dezembro de 2025, data já transcorrida.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l15040.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "CORRIGIDO: o título do projeto (\"lei que revogou o art. 206 § 1º II\") descreve só um efeito; a ementa oficial trata de normas de seguro privado. A revogação consta do art. 133."
+  },
+  {
+    "id": "lei-9298-1996",
+    "kind": "LAW",
+    "number": "9.298",
+    "year": "1996",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a redação do § 1º do art. 52 da Lei 8.078/1990 (Código de Defesa do Consumidor)",
+    "scope_summary": "Limita a 2% do valor da prestação a multa de mora nos contratos de consumo.",
+    "norm_class": "REGULATORY",
+    "applicability": "Relações de consumo, inclusive a cobrança de contas de serviços públicos por prestadores sujeitos ao CDC.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 1º/8/1996, em vigor na publicação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/l9298.htm",
+    "topics": [
+      "consumer_rights",
+      "billing"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection",
+      "dunning"
+    ],
+    "notes": "Confirma o registro. O limite de 2% convive com a regulação setorial da multa de mora; prevalece a regra mais protetiva ao usuário."
+  },
+  {
+    "id": "lei-12039-2009",
+    "kind": "LAW",
+    "number": "12.039",
+    "year": "2009",
+    "issuer": "Presidência da República",
+    "title_pt": "Inclui dispositivo na Lei 8.078/1990 para determinar que constem dos documentos de cobrança de dívida o nome, o endereço e o CPF ou CNPJ do fornecedor",
+    "scope_summary": "Acrescenta o art. 42-A ao CDC: a cobrança enviada ao consumidor deve identificar o fornecedor com nome, endereço e inscrição fiscal.",
+    "norm_class": "REGULATORY",
+    "applicability": "Fornecedores de produtos e serviços, incluindo prestadores de saneamento, em qualquer documento de cobrança de dívida.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 1º/10/2009 pelo Vice-Presidente no exercício da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2009/lei/l12039.htm",
+    "topics": [
+      "billing",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "billing",
+      "dunning"
+    ],
+    "notes": "Confirma o registro. Reflexo em modelos de fatura, aviso de débito e notificação de corte."
+  },
+  {
+    "id": "lei-15252-2025",
+    "kind": "LAW",
+    "number": "15.252",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre os direitos da pessoa natural usuária de serviços financeiros",
+    "scope_summary": "Assegura portabilidade salarial automática, débito automático entre instituições, informação e crédito em modalidade especial; delega regulamentação ao Conselho Monetário Nacional e ao Banco Central.",
+    "norm_class": "REFERENCE",
+    "applicability": "Instituições financeiras e autorizadas pelo Banco Central; para o produto, interessa pelo reflexo no débito automático como forma de arrecadação.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 4/11/2025, em vigor na publicação (art. 18). A regulamentação infralegal tem prazo previsto de 180 dias; sua edição não foi verificada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/l15252.htm",
+    "topics": [
+      "payments"
+    ],
+    "modules_affected": [
+      "collection",
+      "integration"
+    ],
+    "notes": "Confirma a data de 4/11/2025. Há vetos parciais."
+  },
+  {
+    "id": "lei-15088-2025",
+    "kind": "LAW",
+    "number": "15.088",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei 12.305/2010 (Política Nacional de Resíduos Sólidos) para proibir a importação de resíduos sólidos e rejeitos, ressalvados os casos que especifica",
+    "scope_summary": "Dá nova redação ao art. 49 da PNRS, vedando a importação de resíduos e rejeitos salvo exceções regulamentadas.",
+    "norm_class": "REFERENCE",
+    "applicability": "Importadores de resíduos; sem aplicação a prestadores de saneamento nem ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 6/1/2025. Regulamentada pelo Decreto 12.451/2025 quanto às exceções.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/l15088.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro; não aplicável ao produto."
+  },
+  {
+    "id": "lei-14260-2021",
+    "kind": "LAW",
+    "number": "14.260",
+    "year": "2021",
+    "issuer": "Presidência da República",
+    "title_pt": "Estabelece incentivos à indústria da reciclagem e cria o Fundo de Apoio para Ações Voltadas à Reciclagem (Favorecicle) e os Fundos de Investimentos para Projetos de Reciclagem (ProRecicle)",
+    "scope_summary": "Institui incentivos fiscais e fundos para a cadeia de reciclagem.",
+    "norm_class": "REFERENCE",
+    "applicability": "Indústria e projetos de reciclagem; sem aplicação ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 8/12/2021; em vigor na publicação e com efeitos a partir de 1º de janeiro do ano seguinte (art. 15). Possui regulamento.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14260.htm",
+    "topics": [
+      "tax"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro; não aplicável ao produto."
+  },
+  {
+    "id": "lei-10165-2000",
+    "kind": "LAW",
+    "number": "10.165",
+    "year": "2000",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei 6.938/1981 (Política Nacional do Meio Ambiente) quanto à Taxa de Controle e Fiscalização Ambiental e ao Cadastro Técnico Federal",
+    "scope_summary": "Reescreve os arts. 17-B e seguintes da PNMA, que tratam do cadastro técnico federal de atividades potencialmente poluidoras e da taxa de fiscalização do Ibama.",
+    "norm_class": "REFERENCE",
+    "applicability": "Pessoas físicas e jurídicas com atividades potencialmente poluidoras ou utilizadoras de recursos ambientais; o enquadramento de unidades de tratamento de esgoto depende da lista vigente.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 27/12/2000. As alterações posteriores à Lei 6.938 não foram percorridas nesta verificação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/l10165.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "quality"
+    ],
+    "notes": "Confirma o registro. O título do projeto é adequado à ementa oficial."
+  },
+  {
+    "id": "lei-10233-2001",
+    "kind": "LAW",
+    "number": "10.233",
+    "year": "2001",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre a reestruturação dos transportes aquaviário e terrestre, cria o Conselho Nacional de Integração de Políticas de Transporte, a ANTT, a ANTAQ e o DNIT",
+    "scope_summary": "Lei de criação da ANTT e da ANTAQ e de organização do setor de transportes. A ANTT é a agência competente no transporte terrestre de produtos perigosos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Setor de transportes; para o produto, interessa apenas a competência da ANTT sobre o transporte de resíduos e produtos perigosos.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 5/6/2001 (texto compilado), com numerosas alterações, entre elas as da Lei 13.848/2019.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10233.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro."
+  },
+  {
+    "id": "lei-6437-1977",
+    "kind": "LAW",
+    "number": "6.437",
+    "year": "1977",
+    "issuer": "Presidência da República",
+    "title_pt": "Configura infrações à legislação sanitária federal, estabelece as sanções respectivas e dá outras providências",
+    "scope_summary": "Define infrações sanitárias e penalidades aplicadas pelas autoridades de vigilância sanitária, citada pela portaria de potabilidade como referência de infrações, conforme o projeto.",
+    "norm_class": "REGULATORY",
+    "applicability": "Pessoas e entidades sujeitas à vigilância sanitária, incluindo prestadores de abastecimento de água na infração às normas de qualidade da água.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 20/8/1977 (texto compilado). Sem revogação geral indicada na versão consultada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/l6437.htm",
+    "topics": [
+      "water_quality",
+      "service_quality"
+    ],
+    "modules_affected": [
+      "quality"
+    ],
+    "notes": "Texto oficial agora lido (o projeto registrava \"não lida\"). Confirmar o enquadramento das infrações do abastecimento caso a caso."
+  },
+  {
+    "id": "lei-8159-1991",
+    "kind": "LAW",
+    "number": "8.159",
+    "year": "1991",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre a política nacional de arquivos públicos e privados e dá outras providências",
+    "scope_summary": "Fixa o dever do poder público de gerir e proteger documentos de arquivo, define arquivos correntes, intermediários e permanentes e cria o Conselho Nacional de Arquivos.",
+    "norm_class": "REGULATORY",
+    "applicability": "Órgãos e entidades do poder público e entidades privadas encarregadas da gestão de serviços públicos (para estes, nos termos da lei).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 8/1/1991. O cabeçalho oficial remete a regulamento por decreto.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/l8159.htm",
+    "topics": [
+      "records"
+    ],
+    "modules_affected": [
+      "registry",
+      "platform"
+    ],
+    "notes": "Confirma o registro. Base para política de retenção e eliminação de documentos do prestador."
+  },
+  {
+    "id": "lei-12862-2013",
+    "kind": "LAW",
+    "number": "12.862",
+    "year": "2013",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei 11.445/2007 com o objetivo de incentivar a economia no consumo de água",
+    "scope_summary": "Acrescenta princípio e diretrizes de fomento à moderação do consumo de água nos arts. 2º, 48 e 49 da Lei do Saneamento.",
+    "norm_class": "REFERENCE",
+    "applicability": "Titulares e prestadores de saneamento; conteúdo incorporado ao texto da Lei 11.445.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 17/9/2013. O texto compilado da Lei 11.445 registra que o inciso XIII do art. 2º chegou a ser revogado pelas MPs 844 e 868/2018, ambas com vigência encerrada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/lei/l12862.htm",
+    "topics": [
+      "tariff",
+      "loss_control"
+    ],
+    "modules_affected": [
+      "billing",
+      "losses"
+    ],
+    "notes": "Confirma o registro. O efeito da lei vive no texto consolidado da Lei 11.445."
+  },
+  {
+    "id": "lei-13308-2016",
+    "kind": "LAW",
+    "number": "13.308",
+    "year": "2016",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei 11.445/2007, determinando a manutenção preventiva das redes de drenagem pluvial",
+    "scope_summary": "Altera o inciso IV do art. 2º, a alínea d do inciso I do art. 3º e o inciso I do § 1º do art. 52 da Lei do Saneamento para incluir limpeza e fiscalização preventiva das redes de drenagem.",
+    "norm_class": "REFERENCE",
+    "applicability": "Titulares e prestadores do serviço de drenagem e manejo de águas pluviais.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 6/7/2016 pelo Vice-Presidente no exercício da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/lei/l13308.htm",
+    "topics": [
+      "service_quality"
+    ],
+    "modules_affected": [
+      "maintenance",
+      "assets"
+    ],
+    "notes": "Confirma o registro."
+  },
+  {
+    "id": "lei-13329-2016",
+    "kind": "LAW",
+    "number": "13.329",
+    "year": "2016",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei 11.445/2007 para criar o Regime Especial de Incentivos para o Desenvolvimento do Saneamento Básico (REISB)",
+    "scope_summary": "Institui crédito de PIS/Pasep e Cofins para prestadores que invistam em saneamento, nos arts. 54-A a 54-C da Lei 11.445. A vigência do regime foi fixada até o ano de 2026.",
+    "norm_class": "REGULATORY",
+    "applicability": "Pessoas jurídicas prestadoras de saneamento, excluídas as optantes pelo Simples Nacional, com investimentos enquadrados e regularidade fiscal.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 1º/8/2016, com produção de efeitos condicionada nos termos do texto. O art. 54-A, parágrafo único, da Lei 11.445 estabelece que o REISB vigora até o ano de 2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/lei/l13329.htm",
+    "topics": [
+      "tax"
+    ],
+    "modules_affected": [
+      "accounting"
+    ],
+    "notes": "Confirma o registro. O prazo do regime (2026) é fato normativo; a apuração dos créditos exige atenção da contabilidade do cliente."
+  },
+  {
+    "id": "lei-15112-2025",
+    "kind": "LAW",
+    "number": "15.112",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei 11.445/2007 para prever a possibilidade de emprego de recursos públicos em serviços de drenagem e manejo de águas urbanas em condições emergenciais",
+    "scope_summary": "Acrescenta o § 13 ao art. 50 da Lei do Saneamento, dispensando as condicionantes do art. 50 para recursos aplicados em drenagem em situações emergenciais.",
+    "norm_class": "REFERENCE",
+    "applicability": "Titulares do serviço de drenagem que recebam recursos federais em situações emergenciais.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 17/3/2025; o § 13 do art. 50 consta do texto compilado da Lei 11.445.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/l15112.htm",
+    "topics": [
+      "public_finance"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro. Quanto a ser a última alteração listada da Lei 11.445, a afirmação do projeto não foi verificada."
+  },
+  {
+    "id": "mp-1393-2026",
+    "kind": "LAW",
+    "number": "1.393",
+    "year": "2026",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei 14.690/2023 para instituir a modalidade emergencial de renegociação de dívidas de pessoas físicas (Desenrola Brasil 3.0), altera a MP 1.373/2026 e a Lei 8.078/1990",
+    "scope_summary": "Cria nova rodada de renegociação de carteiras de dívidas de pessoas físicas, que pode alcançar dívidas com prestadores de serviços públicos. O art. 4º altera o art. 57 do CDC para elevar as multas por condutas na cadeia de combustíveis.",
+    "norm_class": "REGULATORY",
+    "applicability": "Credores que ofertem carteiras ao programa, entre os quais prestadores de serviços públicos e de utilidade pública, com dívidas de pessoas físicas dentro dos critérios de elegibilidade; a alteração do CDC alcança a cadeia de combustíveis.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Medida provisória de 25/9/2026, em vigor na publicação (art. 5º; DOU extra de 25/9/2026). A conversão em lei não consta da página da Presidência na data desta verificação; sujeita ao prazo constitucional de tramitação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/mpv/mpv1393.htm",
+    "topics": [
+      "consumer_rights",
+      "payments"
+    ],
+    "modules_affected": [
+      "collection",
+      "dunning"
+    ],
+    "notes": "CORRIGIDO: o projeto a descreve só como alteração do art. 57 do CDC (multa); a ementa trata sobretudo do Desenrola Brasil 3.0, e o art. 57 do CDC é alterado apenas para combustíveis. O § 1º do dispositivo sobre carteiras exige dívidas inadimplidas entre 720 e 1.645 dias contados de 25/9/2026, valor original inferior a R$ 10.000 e deságio mínimo de 90% sobre o valor de face. Acompanhar a conversão em lei e eventual ato do Ministério da Fazenda."
+  },
+  {
+    "id": "mp-869-2018",
+    "kind": "LAW",
+    "number": "869",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei 13.709/2018 para dispor sobre a proteção de dados pessoais e criar a Autoridade Nacional de Proteção de Dados",
+    "scope_summary": "Medida provisória que criou a ANPD e alterou a LGPD; perdeu a eficácia como medida provisória ao ser convertida em lei.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico normativo; os efeitos vivem na Lei 13.853/2019.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Editada em 27/12/2018 e convertida na Lei 13.853, de 8/7/2019. O estado REVOGADA indica que a medida provisória não vigora como tal, por conversão em lei.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/mpv/mpv869.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd"
+    ],
+    "notes": "Confirma o registro (convertida)."
+  },
+  {
+    "id": "mp-1124-2022",
+    "kind": "LAW",
+    "number": "1.124",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei 13.709/2018, transforma a ANPD em autarquia de natureza especial e transforma cargos em comissão",
+    "scope_summary": "Medida provisória que deu natureza de autarquia especial à ANPD; convertida na Lei 14.460/2022.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico normativo; os efeitos vivem na Lei 14.460/2022.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Editada em 13/6/2022 e convertida na Lei 14.460, de 25/10/2022. O estado REVOGADA indica que não vigora como medida provisória, por conversão em lei.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/mpv/mpv1124.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd"
+    ],
+    "notes": "Confirma o registro (convertida)."
+  },
+  {
+    "id": "mp-1317-2025",
+    "kind": "LAW",
+    "number": "1.317",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei 13.709/2018 para tratar da Agência Nacional de Proteção de Dados, altera a Lei 10.871/2004 para criar a Carreira de Regulação e Fiscalização de Proteção de Dados e transforma cargos",
+    "scope_summary": "Medida provisória que transformou a ANPD em agência reguladora; convertida na Lei 15.352/2026.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico normativo; os efeitos vivem na Lei 15.352/2026.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Editada em 17/9/2025 e convertida na Lei 15.352, de 25/2/2026 (que também revoga a MP 1.319/2025). O estado REVOGADA indica que não vigora como medida provisória, por conversão em lei.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/mpv/mpv1317.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd"
+    ],
+    "notes": "Confirma o registro (convertida). Número da lei de conversão: 15.352/2026, que pode merecer registro próprio na biblioteca."
+  },
+  {
+    "id": "mp-1154-2023",
+    "kind": "LAW",
+    "number": "1.154",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Estabelece a organização básica dos órgãos da Presidência da República e dos Ministérios",
+    "scope_summary": "Medida provisória de reorganização ministerial; seu art. 64 alterou os arts. 9º e 50 da Lei 11.445/2007 (sistema de informações do saneamento articulado ao Sinisa e ao Sinir). Convertida na Lei 14.600/2023.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico normativo; os efeitos vivem na Lei 14.600/2023 e no texto da Lei 11.445.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Editada em 1º/1/2023 e convertida na Lei 14.600, de 19/6/2023. O estado REVOGADA indica que não vigora como medida provisória, por conversão em lei.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/mpv/mpv1154.htm",
+    "topics": [
+      "reporting"
+    ],
+    "modules_affected": [
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o projeto a descreve como MP que alterou a Lei 11.445; a ementa é de organização dos ministérios, e a alteração da Lei 11.445 está no art. 64. Conferir se a Lei 14.600/2023 manteve o texto do art. 64."
+  },
+  {
+    "id": "mp-844-2018",
+    "kind": "LAW",
+    "number": "844",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Atualiza o marco legal do saneamento básico e altera as Leis 9.984/2000, 10.768/2003 e 11.445/2007",
+    "scope_summary": "Medida provisória que atribuiu à ANA a edição de normas de referência do saneamento e reformou pontos da Lei 11.445. Teve a vigência encerrada sem conversão e foi sucedida pela MP 868/2018.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico normativo do marco do saneamento; sem aplicação atual.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Editada em 6/7/2018; a Presidência registra \"vigência encerrada\". O marco foi retomado pela MP 868/2018 e, depois, pela Lei 14.026/2020. O estado REVOGADA indica perda de eficácia por vigência encerrada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/mpv/mpv844.htm",
+    "topics": [
+      "tariff",
+      "service_quality"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro (vigência encerrada)."
+  },
+  {
+    "id": "mp-868-2018",
+    "kind": "LAW",
+    "number": "868",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Atualiza o marco legal do saneamento básico e altera as Leis 9.984/2000, 10.768/2003 e 11.445/2007",
+    "scope_summary": "Reedição da MP 844/2018 com ajustes; teve a vigência encerrada sem conversão. O novo marco veio pela Lei 14.026/2020.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico normativo; sem aplicação atual.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Editada em 27/12/2018 (DOU de 28/12/2018); a Presidência registra \"vigência encerrada\". O estado REVOGADA indica perda de eficácia por vigência encerrada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/mpv/mpv868.htm",
+    "topics": [
+      "tariff",
+      "service_quality"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro (vigência encerrada). O texto compilado da Lei 11.445 ainda exibe marcações de dispositivos inseridos por esta MP, todos com vigência encerrada."
+  },
+  {
+    "id": "lc-166-2019",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "166",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera a Lei Complementar 105/2001 e a Lei 12.414/2011 para dispor sobre os cadastros positivos de crédito e regular a responsabilidade civil dos operadores",
+    "scope_summary": "Torna automática a inclusão no cadastro positivo e disciplina a responsabilidade solidária de gestores, fontes e consulentes.",
+    "norm_class": "REFERENCE",
+    "applicability": "Gestores de bancos de dados de adimplemento, fontes e consulentes; relevante se o prestador compartilhar histórico de pagamentos com birôs.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 8/4/2019, com marcações de vigência no texto oficial. Regulamentada pelo Decreto 9.936/2019.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp166.htm",
+    "topics": [
+      "data_protection",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "lgpd",
+      "collection",
+      "integration"
+    ],
+    "notes": "Confirma o registro. A condição de fonte de informação para prestadores de saneamento deve ser conferida na Lei 12.414 e no Decreto 9.936."
+  },
+  {
+    "id": "decreto-12881-2026",
+    "kind": "DECREE",
+    "number": "12.881",
+    "year": "2026",
+    "issuer": "Presidência da República",
+    "title_pt": "Aprova a Estrutura Regimental e o Quadro Demonstrativo dos Cargos em Comissão e das Funções de Confiança da Agência Nacional de Proteção de Dados",
+    "scope_summary": "Estrutura a ANPD como agência, extingue a autoridade anterior a partir da vigência do decreto e revoga o Decreto 10.474/2020. Altera também a composição do Conselho Gestor do Fundo de Defesa de Direitos Difusos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Estrutura interna da ANPD; sem obrigações diretas a controladores.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 18/3/2026 (DOU extra de 18/3/2026); entra em vigor 21 dias após a publicação (art. 8º), isto é, em 8/4/2026. O art. 6º determina que, a partir da entrada em vigor, a ANPD exerce plenamente suas atribuições como agência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/decreto/d12881.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd"
+    ],
+    "notes": "Confirma o registro; a data de início da vigência (8/4/2026) é cálculo a partir da publicação de 18/3/2026."
+  },
+  {
+    "id": "decreto-10474-2020",
+    "kind": "DECREE",
+    "number": "10.474",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Aprova a Estrutura Regimental e o Quadro Demonstrativo dos Cargos em Comissão e das Funções de Confiança da Autoridade Nacional de Proteção de Dados",
+    "scope_summary": "Estrutura regimental anterior da ANPD, enquanto órgão da Presidência.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico institucional.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Decreto de 26/8/2020. Revogado pelo Decreto 12.881/2026 (art. 7º), com efeito a partir da entrada em vigor deste.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/decreto/d10474.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd"
+    ],
+    "notes": "Confirma o registro."
+  },
+  {
+    "id": "decreto-9936-2019",
+    "kind": "DECREE",
+    "number": "9.936",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta a Lei 12.414/2011, que disciplina a formação e a consulta a bancos de dados com informações de adimplemento para formação de histórico de crédito",
+    "scope_summary": "Detalha o cadastro positivo: fontes, gestores, consentimento, compartilhamento e direitos do cadastrado.",
+    "norm_class": "REFERENCE",
+    "applicability": "Gestores, fontes e consulentes de bancos de dados de adimplemento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 24/7/2019. Sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/decreto/d9936.htm",
+    "topics": [
+      "data_protection",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "lgpd",
+      "integration"
+    ],
+    "notes": "Confirma o registro."
+  },
+  {
+    "id": "decreto-11567-2023",
+    "kind": "DECREE",
+    "number": "11.567",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera o Decreto 11.150/2022, que regulamenta a preservação do mínimo existencial no superendividamento, e dispõe sobre mutirões para repactuação de dívidas",
+    "scope_summary": "Fixa o mínimo existencial em R$ 600,00 por mês para fins do tratamento do superendividamento do consumidor pessoa natural e prevê mutirões de repactuação organizados pela Senacon.",
+    "norm_class": "REGULATORY",
+    "applicability": "Consumidores pessoas naturais em dívidas de consumo, inclusive de serviços públicos, na prevenção e no tratamento do superendividamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 19/6/2023. O texto compilado do Decreto 11.150 mantém o valor de R$ 600,00 no art. 3º.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/decreto/d11567.htm",
+    "topics": [
+      "consumer_rights",
+      "payments"
+    ],
+    "modules_affected": [
+      "collection",
+      "dunning"
+    ],
+    "notes": "Confirma o registro. O limite pode orientar rotinas de renegociação; a aplicação a dívidas de serviços essenciais deve ser lida com a Lei 14.181/2021."
+  },
+  {
+    "id": "decreto-11016-2022",
+    "kind": "DECREE",
+    "number": "11.016",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta o Cadastro Único para Programas Sociais do Governo Federal, instituído pelo art. 6º-F da Lei 8.742/1993",
+    "scope_summary": "Disciplina o CadÚnico, base de identificação das famílias de baixa renda que condiciona o acesso a programas, entre eles a tarifa social de água.",
+    "norm_class": "REGULATORY",
+    "applicability": "Entes federativos e entidades que usem o CadÚnico para seleção de beneficiários, como a tarifa social de saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 29/3/2022, em vigor na publicação; revogou o Decreto 6.135/2007. Sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/decreto/d11016.htm",
+    "topics": [
+      "social_tariff"
+    ],
+    "modules_affected": [
+      "registry",
+      "billing",
+      "integration"
+    ],
+    "notes": "A entrada dizia \"presumivelmente vigente\": confirmado como vigente na versão consultada. O uso do CadÚnico na tarifa social de água segue a lei específica citada pelo projeto (Lei 14.898/2024), fora deste lote."
+  },
+  {
+    "id": "decreto-10046-2019",
+    "kind": "DECREE",
+    "number": "10.046",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre a governança no compartilhamento de dados no âmbito da administração pública federal e institui o Cadastro Base do Cidadão e o Comitê Central de Governança de Dados",
+    "scope_summary": "Define categorias de compartilhamento de dados entre órgãos federais e cria o Cadastro Base do Cidadão. Parte do texto foi alterada e a norma é objeto da ADI 6649.",
+    "norm_class": "REFERENCE",
+    "applicability": "Órgãos e entidades da administração pública federal; sem obrigações diretas a prestadores locais.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 9/10/2019. O texto oficial indica \"Vide ADI 6649\" e registra dispositivos revogados pelo Decreto 11.266/2022.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/decreto/d10046.htm",
+    "topics": [
+      "data_protection",
+      "information_access"
+    ],
+    "modules_affected": [
+      "integration",
+      "lgpd"
+    ],
+    "notes": "Confirma o registro (sem impacto direto). O resultado da ADI 6649 não foi consultado nesta verificação."
+  },
+  {
+    "id": "decreto-7724-2012",
+    "kind": "DECREE",
+    "number": "7.724",
+    "year": "2012",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta a Lei 12.527/2011, que dispõe sobre o acesso a informações previsto na Constituição",
+    "scope_summary": "Regras de transparência ativa, pedidos de acesso, classificação de informações e restrição a dados pessoais no Poder Executivo federal.",
+    "norm_class": "REFERENCE",
+    "applicability": "Poder Executivo federal; estados e municípios, inclusive seus SAAE, regulam a LAI por ato próprio (art. 45 da Lei 12.527).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 16/5/2012. O Decreto 11.527/2023 alterou os arts. 7º, 8º, 11, 11-A, 12, 28, 31, 32, 45, 58, 64-A, 68 e 69.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/decreto/d7724.htm",
+    "topics": [
+      "information_access"
+    ],
+    "modules_affected": [
+      "portal"
+    ],
+    "notes": "Confirma o registro, inclusive a alteração do art. 58 pelo Decreto 11.527/2023."
+  },
+  {
+    "id": "decreto-11527-2023",
+    "kind": "DECREE",
+    "number": "11.527",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Altera o Decreto 7.724/2012, que regulamenta a Lei 12.527/2011",
+    "scope_summary": "Atualiza as regras federais de transparência ativa, pedidos de acesso à informação, classificação e sistema eletrônico de registro de pedidos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Poder Executivo federal.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 16/5/2023.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/decreto/d11527.htm",
+    "topics": [
+      "information_access"
+    ],
+    "modules_affected": [
+      "portal"
+    ],
+    "notes": "Confirma o registro. O decreto altera os arts. 7º, 8º, 11, 11-A, 12, 28, 31, 32, 45, 58, 64-A, 68 e 69 do Decreto 7.724/2012."
+  },
+  {
+    "id": "decreto-6523-2008",
+    "kind": "DECREE",
+    "number": "6.523",
+    "year": "2008",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta a Lei 8.078/1990 para fixar normas gerais sobre o Serviço de Atendimento ao Consumidor (SAC)",
+    "scope_summary": "Regras do SAC (tempo de espera, cancelamento, gravação) para serviços regulados pelo poder público federal; foi substituído por decreto de 2022.",
+    "norm_class": "REFERENCE",
+    "applicability": "Fornecedores de serviços regulados pelo poder público federal (telecomunicações, energia, bancos, entre outros); não alcançava o saneamento, regulado por estados e municípios.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Decreto de 31/7/2008, revogado pelo Decreto 11.034/2022 (indicação do cabeçalho oficial).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/decreto/d6523.htm",
+    "topics": [
+      "consumer_rights",
+      "service_quality"
+    ],
+    "modules_affected": [
+      "portal"
+    ],
+    "notes": "Confirma o registro. O Decreto 11.034/2022 não consta do lote; registrar à parte se for citado."
+  },
+  {
+    "id": "decreto-12069-2024",
+    "kind": "DECREE",
+    "number": "12.069",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre a Estratégia Nacional de Governo Digital e a Rede Nacional de Governo Digital (Rede Gov.br) e institui a Estratégia Nacional de Governo Digital para o período de 2024 a 2027",
+    "scope_summary": "Política de governo digital para toda a federação, com adesão voluntária de estados e municípios à Rede Gov.br.",
+    "norm_class": "REFERENCE",
+    "applicability": "União e entes federativos que aderirem à Rede Gov.br; sem obrigação direta a prestadores.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 21/6/2024. Revogou os arts. 7º e 8º do Decreto 10.332/2020 (indicação do texto deste).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/d12069.htm",
+    "topics": [
+      "reporting"
+    ],
+    "modules_affected": [
+      "portal",
+      "integration"
+    ],
+    "notes": "Confirma o registro. O período 2024 a 2027 é conteúdo da norma, não prazo do projeto."
+  },
+  {
+    "id": "decreto-12198-2024",
+    "kind": "DECREE",
+    "number": "12.198",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui a Estratégia Federal de Governo Digital para o período de 2024 a 2027 e a Infraestrutura Nacional de Dados, no âmbito da administração pública federal direta, autárquica e fundacional",
+    "scope_summary": "Estratégia de governo digital da administração federal; revogou os dispositivos próprios do Decreto 10.332/2020.",
+    "norm_class": "REFERENCE",
+    "applicability": "Administração pública federal direta, autárquica e fundacional; sem aplicação direta ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 24/9/2024 pelo Vice-Presidente no exercício da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/d12198.htm",
+    "topics": [
+      "reporting"
+    ],
+    "modules_affected": [
+      "integration"
+    ],
+    "notes": "Confirma o registro (sem aplicação direta)."
+  },
+  {
+    "id": "decreto-10332-2020",
+    "kind": "DECREE",
+    "number": "10.332",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui a Estratégia de Governo Digital para o período de 2020 a 2022, no âmbito da administração pública federal direta, autárquica e fundacional",
+    "scope_summary": "Estratégia de governo digital de 2020 a 2022. O texto próprio foi revogado pelos Decretos 12.198/2024 e 12.069/2024; restam artigos que alteram outros decretos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico; administração federal.",
+    "jurisdiction": "BR",
+    "status": "PARCIALMENTE_REVOGADA",
+    "status_note": "Decreto de 28/4/2020. Os arts. 1º a 6º-A foram revogados pelo Decreto 12.198/2024 e os arts. 7º e 8º pelo Decreto 12.069/2024; permanecem artigos de alteração de outros decretos.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/decreto/d10332.htm",
+    "topics": [
+      "reporting"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro (superado) e precisa a extensão: a revogação alcança praticamente todo o conteúdo próprio, não só o art. 1º."
+  },
+  {
+    "id": "decreto-10543-2020",
+    "kind": "DECREE",
+    "number": "10.543",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre o uso de assinaturas eletrônicas na administração pública federal e regulamenta o art. 5º da Lei 14.063/2020 quanto ao nível mínimo exigido",
+    "scope_summary": "Define o nível de assinatura eletrônica (simples, avançada ou qualificada) conforme o impacto da interação com órgãos federais. Seu art. 11 foi revogado.",
+    "norm_class": "REFERENCE",
+    "applicability": "Administração pública federal; entes locais definem o nível por ato próprio (art. 5º da Lei 14.063).",
+    "jurisdiction": "BR",
+    "status": "PARCIALMENTE_REVOGADA",
+    "status_note": "Decreto de 13/11/2020, em vigor na publicação. O art. 11 foi revogado pelo Decreto 11.077/2022.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/decreto/d10543.htm",
+    "topics": [
+      "records"
+    ],
+    "modules_affected": [
+      "portal",
+      "platform"
+    ],
+    "notes": "Confirma o registro (parcialmente revogado; sem aplicação direta)."
+  },
+  {
+    "id": "decreto-11077-2022",
+    "kind": "DECREE",
+    "number": "11.077",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Declara a revogação, para os fins do art. 16 da Lei Complementar 95/1998, de decretos normativos",
+    "scope_summary": "Decreto de consolidação que declara revogada uma lista de decretos e dispositivos, entre eles o art. 11 do Decreto 10.543/2020.",
+    "norm_class": "REFERENCE",
+    "applicability": "Efeito formal sobre os decretos listados; sem obrigação a terceiros.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 20/5/2022 (DOU de 23/5/2022); entra em vigor 30 dias após a publicação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/decreto/d11077.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro."
+  },
+  {
+    "id": "decreto-12572-2025",
+    "kind": "DECREE",
+    "number": "12.572",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui a Política Nacional de Segurança da Informação e dispõe sobre a governança da segurança da informação no âmbito da administração pública federal",
+    "scope_summary": "Nova política federal de segurança da informação; substitui o Decreto 9.637/2018.",
+    "norm_class": "REFERENCE",
+    "applicability": "Administração pública federal; serve de referência para prestadores públicos e privados.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 4/8/2025, que revoga o Decreto 9.637/2018.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12572.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "platform",
+      "certification"
+    ],
+    "notes": "Confirma o registro (sem aplicação direta)."
+  },
+  {
+    "id": "decreto-9637-2018",
+    "kind": "DECREE",
+    "number": "9.637",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui a Política Nacional de Segurança da Informação, dispõe sobre a governança da segurança da informação e altera o Decreto 2.295/1997",
+    "scope_summary": "Política de segurança da informação anterior, substituída em 2025.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Decreto de 26/12/2018, revogado pelo Decreto 12.572/2025.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/decreto/d9637.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro."
+  },
+  {
+    "id": "decreto-12573-2025",
+    "kind": "DECREE",
+    "number": "12.573",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui a Estratégia Nacional de Cibersegurança (E-Ciber)",
+    "scope_summary": "Estratégia federal de cibersegurança em eixos temáticos; substitui a estratégia de 2020.",
+    "norm_class": "REFERENCE",
+    "applicability": "Poder público federal, com efeito de referência para o setor e para infraestruturas críticas.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 4/8/2025, que revoga o Decreto 10.222/2020.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12573.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "platform",
+      "certification"
+    ],
+    "notes": "Confirma o registro; a data 4/8/2025 é a da assinatura e publicação."
+  },
+  {
+    "id": "decreto-10222-2020",
+    "kind": "DECREE",
+    "number": "10.222",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Aprova a Estratégia Nacional de Segurança Cibernética (E-Ciber)",
+    "scope_summary": "Estratégia de cibersegurança anterior, substituída em 2025.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Decreto de 5/2/2020, revogado pelo Decreto 12.573/2025.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/decreto/d10222.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro."
+  },
+  {
+    "id": "decreto-11856-2023",
+    "kind": "DECREE",
+    "number": "11.856",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui a Política Nacional de Cibersegurança e o Comitê Nacional de Cibersegurança",
+    "scope_summary": "Fixa a PNCiber e cria o comitê nacional de cibersegurança.",
+    "norm_class": "REFERENCE",
+    "applicability": "Política nacional de orientação; sem obrigações diretas ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 26/12/2023, sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/decreto/d11856.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "platform"
+    ],
+    "notes": "Confirma o registro e a data de 26/12/2023."
+  },
+  {
+    "id": "decreto-9573-2018",
+    "kind": "DECREE",
+    "number": "9.573",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Aprova a Política Nacional de Segurança de Infraestruturas Críticas (PNSIC)",
+    "scope_summary": "Política que organiza a proteção de infraestruturas críticas e atribui coordenação ao Gabinete de Segurança Institucional.",
+    "norm_class": "REFERENCE",
+    "applicability": "Setores críticos definidos na política; sem obrigação direta ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 22/11/2018. Sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/decreto/d9573.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "platform"
+    ],
+    "notes": "Confirma o registro. O texto da PNSIC consultado não cita água; a menção ao setor de águas aparece na Estratégia (Decreto 10.569/2020) e no Plano (Decreto 11.200/2022)."
+  },
+  {
+    "id": "decreto-10569-2020",
+    "kind": "DECREE",
+    "number": "10.569",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Aprova a Estratégia Nacional de Segurança de Infraestruturas Críticas (Ensic)",
+    "scope_summary": "Estratégia derivada da PNSIC; cita as águas entre os setores estratégicos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Setores de infraestrutura crítica, entre eles águas; sem obrigação direta ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 9/12/2020, sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/decreto/d10569.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "platform"
+    ],
+    "notes": "Confirma o registro."
+  },
+  {
+    "id": "decreto-11200-2022",
+    "kind": "DECREE",
+    "number": "11.200",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Aprova o Plano Nacional de Segurança de Infraestruturas Críticas (Plansic)",
+    "scope_summary": "Plano que lista áreas prioritárias de infraestrutura crítica, entre elas barragens e abastecimento urbano de águas.",
+    "norm_class": "REFERENCE",
+    "applicability": "Operadores de infraestruturas críticas, incluindo abastecimento urbano de águas; sem obrigação direta ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 15/9/2022, sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/decreto/d11200.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "platform"
+    ],
+    "notes": "Confirma o registro. O Anexo cita o abastecimento urbano de águas como área prioritária."
+  },
+  {
+    "id": "decreto-7404-2010",
+    "kind": "DECREE",
+    "number": "7.404",
+    "year": "2010",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta a Lei 12.305/2010 (Política Nacional de Resíduos Sólidos) e cria o Comitê Interministerial e o Comitê Orientador para a Implantação dos Sistemas de Logística Reversa",
+    "scope_summary": "Antigo regulamento da PNRS, substituído pelo Decreto 10.936/2022.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico; sem aplicação.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Decreto de 23/12/2010, revogado pelo Decreto 10.936, de 12/1/2022 (art. 91, II).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/decreto/d7404.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro. O Decreto 10.936/2022 não consta do lote."
+  },
+  {
+    "id": "decreto-9177-2017",
+    "kind": "DECREE",
+    "number": "9.177",
+    "year": "2017",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta o art. 33 da Lei 12.305/2010 e complementa os arts. 16 e 17 do Decreto 7.404/2010 (logística reversa)",
+    "scope_summary": "Disciplinava a logística reversa de forma geral; foi substituído pelo Decreto 10.936/2022.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico; sem aplicação.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Decreto de 23/10/2017, revogado pelo Decreto 10.936, de 12/1/2022 (art. 91, III).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2017/decreto/d9177.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro."
+  },
+  {
+    "id": "decreto-5940-2006",
+    "kind": "DECREE",
+    "number": "5.940",
+    "year": "2006",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui a separação dos resíduos recicláveis descartados pelos órgãos e entidades da administração pública federal, na fonte geradora, e sua destinação às associações e cooperativas de catadores",
+    "scope_summary": "Antiga regra de coleta seletiva solidária na administração federal.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico; sem aplicação.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Decreto de 25/10/2006, revogado pelo Decreto 10.936, de 12/1/2022 (art. 91, I).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/decreto/d5940.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro."
+  },
+  {
+    "id": "decreto-11043-2022",
+    "kind": "DECREE",
+    "number": "11.043",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Aprova o Plano Nacional de Resíduos Sólidos (Planares)",
+    "scope_summary": "Plano nacional de resíduos sólidos previsto no art. 15 da Lei 12.305/2010.",
+    "norm_class": "REFERENCE",
+    "applicability": "Poder público e agentes da gestão de resíduos; diretriz de planejamento sem obrigação direta ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 13/4/2022, sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/decreto/d11043.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro e a data de 13/4/2022."
+  },
+  {
+    "id": "decreto-96044-1988",
+    "kind": "DECREE",
+    "number": "96.044",
+    "year": "1988",
+    "issuer": "Presidência da República",
+    "title_pt": "Aprova o Regulamento para o Transporte Rodoviário de Produtos Perigosos",
+    "scope_summary": "Regras de transporte rodoviário de produtos perigosos (veículos, condutores, sinalização, documentos). A regulação atual vem da ANTT, mas o decreto segue citado.",
+    "norm_class": "REGULATORY",
+    "applicability": "Transportadores e expedidores de produtos perigosos por rodovia; alcança o transporte de produtos químicos de tratamento e certos resíduos.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 18/5/1988 (DOU de 19/5/1988). O art. 7º do regulamento foi alterado pelo Decreto 4.097/2002. A Câmara dos Deputados registra \"não consta revogação expressa\".",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/decreto/antigos/d96044.htm",
+    "topics": [
+      "occupational_safety",
+      "other"
+    ],
+    "modules_affected": [
+      "field",
+      "quality"
+    ],
+    "notes": "Texto lido no Planalto (acervo de decretos antigos). A relação com resoluções da ANTT que o atualizam não foi verificada."
+  },
+  {
+    "id": "decreto-10240-2020",
+    "kind": "DECREE",
+    "number": "10.240",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta o inciso VI do art. 33 e o art. 56 da Lei 12.305/2010 e complementa o Decreto 9.177/2017 quanto à logística reversa de produtos eletroeletrônicos de uso doméstico",
+    "scope_summary": "Instituiu o sistema de logística reversa de eletroeletrônicos e componentes de uso doméstico.",
+    "norm_class": "REFERENCE",
+    "applicability": "Fabricantes, importadores, comerciantes e distribuidores de eletroeletrônicos; sem aplicação ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 12/2/2020. O Decreto 10.936/2022 revogou o inciso IV do caput do seu art. 5º. As remissões ao Decreto 9.177 devem ser lidas à luz da revogação deste.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/decreto/d10240.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro; não aplicável ao produto."
+  },
+  {
+    "id": "decreto-10388-2020",
+    "kind": "DECREE",
+    "number": "10.388",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta o § 1º do art. 33 da Lei 12.305/2010 e institui o sistema de logística reversa de medicamentos domiciliares vencidos ou em desuso, de uso humano, e de suas embalagens",
+    "scope_summary": "Logística reversa de medicamentos domiciliares.",
+    "norm_class": "REFERENCE",
+    "applicability": "Cadeia de medicamentos; sem aplicação ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 5/6/2020, sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/decreto/d10388.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro; não aplicável ao produto."
+  },
+  {
+    "id": "decreto-11300-2022",
+    "kind": "DECREE",
+    "number": "11.300",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta o § 2º do art. 32 e o § 1º do art. 33 da Lei 12.305/2010 e institui o sistema de logística reversa de embalagens de vidro",
+    "scope_summary": "Logística reversa de embalagens de vidro.",
+    "norm_class": "REFERENCE",
+    "applicability": "Cadeia de embalagens de vidro; sem aplicação ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 21/12/2022, sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/decreto/d11300.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro; não aplicável ao produto."
+  },
+  {
+    "id": "decreto-11413-2023",
+    "kind": "DECREE",
+    "number": "11.413",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui o Certificado de Crédito de Reciclagem de Logística Reversa, o Certificado de Estruturação e Reciclagem de Embalagens em Geral e o Certificado de Crédito de Massa Futura",
+    "scope_summary": "Cria certificados de comprovação da logística reversa no âmbito do art. 33 da Lei 12.305/2010.",
+    "norm_class": "REFERENCE",
+    "applicability": "Sistemas de logística reversa; sem aplicação ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 13/2/2023. O texto da Presidência indica \"Vide Decreto 12.451/2025\".",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/decreto/d11413.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro; não aplicável ao produto."
+  },
+  {
+    "id": "decreto-12688-2025",
+    "kind": "DECREE",
+    "number": "12.688",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta o § 1º do art. 32 e o § 1º do art. 33 da Lei 12.305/2010 e institui o sistema de logística reversa de embalagens de plástico",
+    "scope_summary": "Logística reversa de embalagens plásticas.",
+    "norm_class": "REFERENCE",
+    "applicability": "Cadeia de embalagens plásticas; sem aplicação ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 21/10/2025, sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12688.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro; não aplicável ao produto."
+  },
+  {
+    "id": "decreto-12451-2025",
+    "kind": "DECREE",
+    "number": "12.451",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta o § 1º do art. 49 da Lei 12.305/2010 para dispor sobre as exceções à proibição de importação de resíduos sólidos",
+    "scope_summary": "Define as exceções admitidas à vedação de importar resíduos sólidos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Importadores de resíduos; sem aplicação ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 6/5/2025, sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12451.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro; não aplicável ao produto."
+  },
+  {
+    "id": "decreto-12082-2024",
+    "kind": "DECREE",
+    "number": "12.082",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui a Estratégia Nacional de Economia Circular",
+    "scope_summary": "Estratégia federal de transição para economia circular.",
+    "norm_class": "REFERENCE",
+    "applicability": "Poder público federal; sem aplicação ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 27/6/2024, sem revogação indicada no texto da Presidência.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/d12082.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro; não aplicável ao produto."
+  },
+  {
+    "id": "lei-9609-1998",
+    "kind": "LAW",
+    "number": "9.609",
+    "year": "1998",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre a proteção da propriedade intelectual de programa de computador, sua comercialização no País, e dá outras providências",
+    "scope_summary": "Protege o programa de computador pelo regime de direitos autorais, regula licença de uso, titularidade, garantia e contratos de comercialização.",
+    "norm_class": "REGULATORY",
+    "applicability": "Titulares e licenciados de software, o que alcança o fornecedor do produto e o contrato de licença com o prestador cliente.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 19/2/1998, sem revogação indicada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/l9609.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "platform",
+      "certification"
+    ],
+    "notes": "Confirma o registro. A entrada dizia \"sem comentário de estado\"; confirmado como vigente."
+  },
+  {
+    "id": "lei-12767-2012",
+    "kind": "LAW",
+    "number": "12.767",
+    "year": "2012",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre a extinção das concessões de serviço público de energia elétrica e a prestação temporária do serviço; altera diversas leis, entre elas a Lei 9.492/1997 (protesto) (conversão da MP 577/2012)",
+    "scope_summary": "Lei do setor elétrico cujo art. 25 acrescentou parágrafo único ao art. 1º da Lei do protesto, incluindo as certidões de dívida ativa dos entes públicos entre os títulos protestáveis.",
+    "norm_class": "REGULATORY",
+    "applicability": "Fazendas públicas e suas autarquias titulares de certidão de dívida ativa, como serviços autárquicos de saneamento que inscrevam usuários em dívida ativa.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 27/12/2012; o art. 25 incluiu a CDA entre os títulos sujeitos a protesto. Os demais artigos tratam do setor elétrico.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12767.htm",
+    "topics": [
+      "payments",
+      "tax"
+    ],
+    "modules_affected": [
+      "collection",
+      "dunning"
+    ],
+    "notes": "CORRIGIDO: a entrada descrevia a norma como \"lei que alterou a Lei do protesto\"; a ementa oficial trata da extinção de concessões de energia elétrica, e a alteração da Lei 9.492 está no art. 25. Jurisprudência a conferir: a constitucionalidade do protesto de CDA foi examinada pelo STF na ADI 5135."
+  },
+  {
+    "id": "lei-12212-2010",
+    "kind": "LAW",
+    "number": "12.212",
+    "year": "2010",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre a Tarifa Social de Energia Elétrica e altera as Leis 9.991/2000, 10.925/2004 e 10.438/2002",
+    "scope_summary": "Tarifa social do setor elétrico para a subclasse residencial baixa renda. Serve de referência comparativa para a tarifa social de água, que segue lei própria.",
+    "norm_class": "REFERENCE",
+    "applicability": "Consumidores residenciais baixa renda de energia elétrica; não se aplica a saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sancionada em 20/1/2010. O art. 1º e outros dispositivos foram alterados pela MP 1.300/2025, convertida na Lei 15.235, de 8/10/2025.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12212.htm",
+    "topics": [
+      "social_tariff"
+    ],
+    "modules_affected": [
+      "billing"
+    ],
+    "notes": "A entrada não informava o estado: confirmada como vigente e alterada em 2025. Observação do projeto mantida: a tarifa social de água segue a Lei 14.898/2024, fora deste lote."
+  },
+  {
+    "id": "lei-9784",
+    "kind": "LAW",
+    "number": "9.784",
+    "year": "1999",
+    "issuer": "Presidência da República",
+    "title_pt": "Regula o processo administrativo no âmbito da Administração Pública Federal",
+    "scope_summary": "Normas básicas do processo administrativo federal: princípios, prazos, motivação, recursos e decadência da revisão de atos. O art. 23, § 3º, da LGPD remete a ela, à LAI e ao habeas data.",
+    "norm_class": "REFERENCE",
+    "applicability": "Administração Federal direta e indireta; a jurisprudência admite aplicação subsidiária a estados e municípios sem lei própria.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei de 29/1/1999. Sem revogação geral indicada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/l9784.htm",
+    "topics": [
+      "information_access",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "portal",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: ano 1999 (a entrada não informava o ano). Jurisprudência a conferir: a Súmula 633 do STJ admite a aplicação subsidiária da lei a estados e municípios na ausência de norma local."
+  },
+  {
+    "id": "lei-7116",
+    "kind": "LAW",
+    "number": "7.116",
+    "year": "1983",
+    "issuer": "Presidência da República",
+    "title_pt": "Assegura validade nacional às Carteiras de Identidade, regula sua expedição e dá outras providências",
+    "scope_summary": "Disciplina a Carteira de Identidade dos órgãos estaduais, com validade nacional. Foi alterada por leis posteriores, entre elas a Lei 14.129/2021 e a Lei 14.534/2023 (inclusão do CPF).",
+    "norm_class": "REFERENCE",
+    "applicability": "Órgãos de identificação dos Estados e do Distrito Federal e portadores do documento; referência para cadastro de documento de usuário.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei de 29/8/1983. Regulamentada pelo Decreto 10.977/2022. As alterações listadas acima constam do texto oficial.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/1980-1988/l7116.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "registry"
+    ],
+    "notes": "CORRIGIDO: ano 1983 (a entrada não informava o ano). A informação do projeto de que a Lei 14.129/2021 a altera foi confirmada."
+  },
+  {
+    "id": "lei-12440-2011",
+    "kind": "LAW",
+    "number": "12.440",
+    "year": "2011",
+    "issuer": "Presidência da República",
+    "title_pt": "Acrescenta o Título VII-A à CLT para instituir a Certidão Negativa de Débitos Trabalhistas e altera a Lei 8.666/1993",
+    "scope_summary": "Cria a CNDT, exigida em licitações como prova de regularidade trabalhista. As alterações à Lei 8.666 perderam objeto com a revogação desta pela Lei 14.133/2021.",
+    "norm_class": "REFERENCE",
+    "applicability": "Licitantes e contratados da administração pública, inclusive prestadores que adquirem o produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei de 7/7/2011. A Lei 8.666/1993 foi revogada pela Lei 14.133/2021 em 30/12/2023 (art. 193, II, conforme a LC 198/2023); a CNDT subsiste na CLT.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12440.htm",
+    "topics": [
+      "procurement"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro. Os arts. 2º e 3º, que alteravam a Lei 8.666, perderam objeto."
+  },
+  {
+    "id": "lei-10357-2001",
+    "kind": "LAW",
+    "number": "10.357",
+    "year": "2001",
+    "issuer": "Presidência da República",
+    "title_pt": "Estabelece normas de controle e fiscalização sobre produtos químicos que possam ser destinados à elaboração ilícita de substâncias entorpecentes ou psicotrópicas",
+    "scope_summary": "Submete a controle da Polícia Federal a fabricação, o comércio e o transporte de produtos químicos listados, mediante licença e registro.",
+    "norm_class": "REFERENCE",
+    "applicability": "Pessoas que manipulam produtos químicos controlados; pode alcançar insumos de tratamento usados por prestadores, conforme a lista vigente.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei de 27/12/2001. O cabeçalho oficial indica regulamento.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10357.htm",
+    "topics": [
+      "occupational_safety",
+      "other"
+    ],
+    "modules_affected": [
+      "quality"
+    ],
+    "notes": "Texto lido no Planalto. A lista de produtos controlados e a incidência sobre insumos de saneamento não foram verificadas."
+  },
+  {
+    "id": "lei-6766-1979",
+    "kind": "LAW",
+    "number": "6.766",
+    "year": "1979",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre o Parcelamento do Solo Urbano e dá outras providências",
+    "scope_summary": "Disciplina loteamento e desmembramento, com exigência de infraestrutura básica, incluindo redes de água e esgoto, nos novos parcelamentos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Parcelamento do solo para fins urbanos; relevante para ligações em novos loteamentos e cadastro de imóveis.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei de 19/12/1979 (texto compilado), com várias alterações, entre elas a da Lei 14.620/2023.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/l6766.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "registry",
+      "gis",
+      "assets"
+    ],
+    "notes": "A entrada não informava o estado: confirmada como vigente."
+  },
+  {
+    "id": "lei-15042-2024",
+    "kind": "LAW",
+    "number": "15.042",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui o Sistema Brasileiro de Comércio de Emissões de Gases de Efeito Estufa (SBCE) e altera as Leis 12.187/2009, 12.651/2012, 6.385/1976 e 6.015/1973",
+    "scope_summary": "Cria o mercado regulado de carbono e as obrigações de relato para operadores acima dos limites fixados.",
+    "norm_class": "REFERENCE",
+    "applicability": "Operadores de atividades com emissões acima dos limites regulados; efeito indireto sobre clientes de grande porte.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei de 11/12/2024, em vigor na publicação (art. 58). O texto oficial registra \"Vide ADI 7795\"; regulamentação infralegal em curso, não verificada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l15042.htm",
+    "topics": [
+      "reporting",
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "A entrada não informava o estado: confirmada como vigente."
+  },
+  {
+    "id": "lei-14058-2020",
+    "kind": "LAW",
+    "number": "14.058",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Estabelece a operacionalização do pagamento do Benefício Emergencial de Preservação do Emprego e da Renda e do benefício emergencial mensal da Lei 14.020/2020 (conversão da MP 959/2020)",
+    "scope_summary": "Lei de pagamento de benefício emergencial na pandemia. Foi citada apenas porque não trata da vigência da LGPD, ao contrário do que se costuma afirmar.",
+    "norm_class": "REFERENCE",
+    "applicability": "Sem aplicação ao produto; efeitos exauridos.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei de 17/9/2020. O texto consultado não menciona a LGPD, o que confirma a observação do projeto; seus efeitos práticos se exauriram.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l14058.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "CORRIGIDO: o título estava ausente na entrada; a ementa oficial refere-se ao Benefício Emergencial de Preservação do Emprego e da Renda."
+  },
+  {
+    "id": "lei-3819-2006-df",
+    "kind": "LAW",
+    "number": "3.819",
+    "year": "2006",
+    "issuer": "Distrito Federal",
+    "title_pt": "Dispõe sobre a emissão de faturas em braile pelos concessionários de serviços públicos do Distrito Federal para consumidores com deficiência visual (descrição de fonte secundária)",
+    "scope_summary": "Obriga concessionários de serviços públicos do DF a emitir faturas em braile para consumidores com deficiência visual, segundo fonte secundária.",
+    "norm_class": "REGULATORY",
+    "applicability": "Concessionários de serviços públicos no Distrito Federal, incluindo a prestadora de água e esgoto, em favor de consumidores com deficiência visual.",
+    "jurisdiction": "DF",
+    "status": "A_CONFIRMAR",
+    "status_note": "Existência atestada por fonte secundária (página de autor da proposição); texto, data e vigência não vistos em fonte oficial. O DF tem outras normas sobre o tema, entre elas a Lei distrital 4.282/2008 (listada nos dados abertos da Câmara Legislativa) e a Lei 6.637/2020, cujos arts. 193 e 194 tratam de informações em braile ou fonte ampliada nas faturas.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "https://chicovigilante.com.br/leis/",
+    "topics": [
+      "consumer_rights",
+      "billing"
+    ],
+    "modules_affected": [
+      "billing",
+      "portal"
+    ],
+    "notes": "Não confirmada em fonte oficial (SINJ-DF não localizou o ato nas consultas feitas). Possível sobreposição ou revogação por lei posterior: conferir no SINJ-DF antes de usar o número e o ano."
+  },
+  {
+    "id": "lei-12498-2006-rs",
+    "kind": "LAW",
+    "number": "12.498",
+    "year": "2006",
+    "issuer": "Rio Grande do Sul",
+    "title_pt": "Assegura aos portadores de deficiência visual o direito de receber os boletos de pagamento de contas de água, energia elétrica e telefonia confeccionados em braile, sem custos adicionais (descrição de fonte secundária)",
+    "scope_summary": "Garante ao usuário com deficiência visual o boleto em braile, mediante solicitação ao prestador.",
+    "norm_class": "REGULATORY",
+    "applicability": "Empresas prestadoras de água, energia elétrica e telefonia no Rio Grande do Sul, em favor de usuários com deficiência visual.",
+    "jurisdiction": "RS",
+    "status": "A_CONFIRMAR",
+    "status_note": "Lei de 23/5/2006, segundo fontes secundárias (guia de legislação estadual e página de parlamentar). A Lei estadual 13.320/2009 (art. 54) repete o direito, o que pede conferência de eventual absorção ou revogação.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "http://acadef.dominiotemporario.com/guia-da-legislacao-estadual/",
+    "topics": [
+      "consumer_rights",
+      "billing"
+    ],
+    "modules_affected": [
+      "billing",
+      "portal"
+    ],
+    "notes": "Não localizada em fonte oficial da Assembleia Legislativa do RS nesta verificação. Atenção: o repositório LegisWeb mostra a Lei 12.499 da mesma data (23/5/2006), de matéria tributária, o que pode indicar confusão de numeração; confirmar o número na Assembleia."
+  },
+  {
+    "id": "lei-17354-2008-mg",
+    "kind": "LAW",
+    "number": "17.354",
+    "year": "2008",
+    "issuer": "Minas Gerais",
+    "title_pt": "Assegura às pessoas com deficiência visual, com transtornos de leitura ou com dificuldades de leitura o direito de receber contas e seus respectivos demonstrativos de consumo nos formatos que especifica",
+    "scope_summary": "Garante, sem custo adicional, a conta em braile, fonte ampliada ou outro formato acessível, mediante cadastro no prestador. A redação original abrangia apenas água, energia e telefonia; a Lei 24.657/2024 estendeu a internet e outros serviços.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadores de água, energia, telefonia fixa e móvel, internet e outros serviços em Minas Gerais, a pedido do usuário.",
+    "jurisdiction": "MG",
+    "status": "VIGENTE",
+    "status_note": "Lei de 17/1/2008 (DOE de 18/1/2008). A Lei 24.657, de 9/1/2024, alterou o art. 1º e a ementa, com efeitos a partir de 9/5/2024.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.almg.gov.br/legislacao-mineira/LEI/17354/2008/",
+    "topics": [
+      "consumer_rights",
+      "billing"
+    ],
+    "modules_affected": [
+      "billing",
+      "portal"
+    ],
+    "notes": "CORRIGIDO: a ementa e o alcance foram ampliados pela Lei 24.657/2024 (inclui transtornos e dificuldades de leitura e outros serviços). A data da lei (17/1/2008) e a vigência foram confirmadas no portal da Assembleia de Minas Gerais."
+  },
+  {
+    "id": "lei-886-2013-rr",
+    "kind": "LAW",
+    "number": "886",
+    "year": "2013",
+    "issuer": "Roraima",
+    "title_pt": "Assegura aos portadores de deficiência visual o direito de receber suas contas de energia elétrica, água e telefonia impressas em braile (descrição de fonte secundária)",
+    "scope_summary": "Obriga as prestadoras de água, energia elétrica e telefonia em Roraima a emitir contas em braile para usuários com deficiência visual.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadoras de água, energia elétrica e telefonia em Roraima, em favor de usuários com deficiência visual.",
+    "jurisdiction": "RR",
+    "status": "A_CONFIRMAR",
+    "status_note": "Lei de 8/1/2013, segundo fonte secundária (repositório de legislação sobre deficiência) e matéria jornalística de 2015 sobre a Caer. Uma peça de divulgação da Assembleia (2024) a cita junto com a Lei 1.796/2023; texto oficial e vigência não vistos.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "https://deficientelegal.com.br/category/leis-estaduais/",
+    "topics": [
+      "consumer_rights",
+      "billing"
+    ],
+    "modules_affected": [
+      "billing",
+      "portal"
+    ],
+    "notes": "Sem página oficial localizada da Assembleia Legislativa de Roraima. Verificar também a Lei 1.796/2023, que trata de certidões civis e contas em braile."
+  },
+  {
+    "id": "lei-12692-2013-joao-pessoa",
+    "kind": "LAW",
+    "number": "12.692",
+    "year": "2013",
+    "issuer": "Município de João Pessoa",
+    "title_pt": "Assegura o direito às pessoas com deficiência visual, com residência fixa no Município de João Pessoa, de receber sem custo adicional as contas de água, energia elétrica e telefonia acompanhadas de demonstrativos em braile",
+    "scope_summary": "Garante a usuários com deficiência visual residentes em João Pessoa a conta acompanhada de demonstrativo em braile, mediante cadastro nas prestadoras.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadoras de água, energia elétrica e telefonia que atendem o Município de João Pessoa (PB).",
+    "jurisdiction": "PB",
+    "status": "A_CONFIRMAR",
+    "status_note": "Lei municipal de 4/12/2013, segundo a página de legislação do Procon da Paraíba e comunicado do Procon municipal de 2018; texto oficial e vigência não vistos.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "https://procon.pb.gov.br/legislacao",
+    "topics": [
+      "consumer_rights",
+      "billing"
+    ],
+    "modules_affected": [
+      "billing",
+      "portal"
+    ],
+    "notes": "Confirmar na base legislativa da Câmara Municipal de João Pessoa. Jurisdição registrada como PB; a norma é municipal."
+  },
+  {
+    "id": "lei-5990-2017-df",
+    "kind": "LAW",
+    "number": "5.990",
+    "year": "2017",
+    "issuer": "Distrito Federal",
+    "title_pt": "Dispõe sobre a interrupção ou a restrição do fornecimento de água a estabelecimento de saúde, instituição educacional ou de internação coletiva de pessoas e usuário residencial de baixa renda beneficiário de tarifa social",
+    "scope_summary": "Exigia 12 meses de inadimplência para o corte de água nesses casos. Foi declarada inconstitucional pelo Tribunal de Justiça do DF e, em recurso extraordinário, pelo Supremo Tribunal Federal.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestador de água do Distrito Federal quanto ao corte a estabelecimentos de saúde, ensino e internação coletiva e a usuários de tarifa social; a norma hoje não deve ser aplicada.",
+    "jurisdiction": "DF",
+    "status": "REVOGADA",
+    "status_note": "Lei de 31/8/2017, promulgada após derrubada de veto. O SINJ-DF registra \"declarado inconstitucional\" pela ADI 0000605-13.2019.8.07.0000 (30/7/2019) e pelo RE 1.314.679-DF (julgamento e publicação de 20/3/2024). O estado REVOGADA indica perda de eficácia por declaração de inconstitucionalidade, não revogação formal.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.sinj.df.gov.br/sinj/Norma/438bee9b34bf4f49b683b25f638a7c99/Lei_5990.html",
+    "topics": [
+      "cut_off",
+      "social_tariff"
+    ],
+    "modules_affected": [
+      "dunning",
+      "billing"
+    ],
+    "notes": "CORRIGIDO: a entrada não informava o estado e o projeto trata a regra como vigente; a lei foi declarada inconstitucional. A Resolução ADASA 14/2011 (art. 122) ainda a cita; conferir a redação vigente da resolução antes de parametrizar o corte."
+  },
+  {
+    "id": "lei-14471-2004-pr",
+    "kind": "LAW",
+    "number": "14.471",
+    "year": "2004",
+    "issuer": "Paraná",
+    "title_pt": "Lei estadual do Paraná sobre suspensão de fornecimento e cobrança de religação pelas prestadoras de serviços de água (descrição de fonte secundária e de regulamento da AGEPAR)",
+    "scope_summary": "Veda a taxa de religação para corte de até 90 dias por inadimplência e impõe limites ao dia e ao modo do corte residencial, segundo reportagens da época e o regulamento da AGEPAR.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadoras de serviços de água e outros serviços essenciais no Paraná, quanto aos consumidores residenciais inadimplentes.",
+    "jurisdiction": "PR",
+    "status": "A_CONFIRMAR",
+    "status_note": "Lei de 2004 (aprovação noticiada em junho e regulamentação prevista para 2/11/2004; data exata não confirmada). O Regulamento Geral dos Serviços da AGEPAR a cita atualmente. A Consolidação das Leis de Defesa do Consumidor do Paraná (Lei 22.130/2024) reproduz regras equivalentes nos arts. 154 a 160; o art. 325 não lista a Lei 14.471 entre as revogadas, o que ainda deve ser conferido.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "https://www.agepar.pr.gov.br/sites/default/arquivos_restritos/files/documento/2019-11/rgs_atualizado_10_07_19.pdf",
+    "topics": [
+      "cut_off",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "dunning",
+      "field"
+    ],
+    "notes": "Texto oficial da lei não localizado no sistema de legislação do Paraná. A URL indicada é o regulamento que a cita, não a lei. A Lei 22.130/2024 (arts. 154 a 160) deve ser lida em conjunto."
+  },
+  {
+    "id": "lei-15251-2010-sc",
+    "kind": "LAW",
+    "number": "15.251",
+    "year": "2010",
+    "issuer": "Santa Catarina",
+    "title_pt": "Veda o ingresso, no Estado de Santa Catarina, de resíduos sólidos com características radioativas e de resíduos orgânicos de frigoríficos e abatedouros que apresentem riscos sanitários; disciplina o MTR e o CDF",
+    "scope_summary": "Proíbe a entrada desses resíduos, exige Manifesto de Transporte de Resíduos e Certificado de Destinação Final e prevê declaração anual de movimentação. É a base legal do sistema MTR do IMA.",
+    "norm_class": "REGULATORY",
+    "applicability": "Geradores, transportadores e destinadores de resíduos em Santa Catarina; atinge prestadores de saneamento que gerem lodo e outros resíduos.",
+    "jurisdiction": "SC",
+    "status": "VIGENTE",
+    "status_note": "Lei de 3/8/2010 (DOE de 4/8/2010), alterada pela Lei 15.442, de 17/1/2011. A Portaria IMA 009/2026 (DOE de 14/1/2026) a invoca como base do Sistema MTR.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://leis.alesc.sc.gov.br/ato-normativo/17299",
+    "topics": [
+      "sewage",
+      "other"
+    ],
+    "modules_affected": [
+      "quality",
+      "field"
+    ],
+    "notes": "CORRIGIDO: a lei não é uma política geral de resíduos; veda o ingresso de certos resíduos no Estado e institui MTR e CDF. A Política Estadual de Resíduos Sólidos de SC é a Lei 13.557/2005, que não consta do lote."
+  },
+  {
+    "id": "lei-3280-2015-videira",
+    "kind": "LAW",
+    "number": "3.280",
+    "year": "2015",
+    "issuer": "Município de Videira",
+    "title_pt": "Lei municipal de Videira (SC) que veda a participação em licitações de empresas doadoras de campanha eleitoral municipal (descrição extraída de editais)",
+    "scope_summary": "Os editais do Município exigem declaração de que a licitante não fez doação a partido ou campanha de candidato a cargo eletivo municipal, com base nesta lei.",
+    "norm_class": "REFERENCE",
+    "applicability": "Licitantes em certames do Município de Videira, entre eles potenciais fornecedores do produto.",
+    "jurisdiction": "SC",
+    "status": "VIGENTE",
+    "status_note": "Lei municipal de 23/9/2015, conforme editais do Município de 2024 e 2026 publicados no PNCP; segue exigida nos editais de 2026. Texto da lei não visto.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "https://pncp.gov.br/pncp-api/v1/orgaos/83039842000184/compras/2026/216/arquivos/1",
+    "topics": [
+      "procurement"
+    ],
+    "modules_affected": [],
+    "notes": "Número e data confirmados apenas pelos editais. Conferir o texto na Câmara Municipal de Videira."
+  },
+  {
+    "id": "lc-123-2006",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "123",
+    "year": "2006",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui o Estatuto Nacional da Microempresa e da Empresa de Pequeno Porte",
+    "scope_summary": "Tratamento diferenciado e simplificado a microempresas e empresas de pequeno porte, incluindo o Simples Nacional e preferências em licitações.",
+    "norm_class": "REFERENCE",
+    "applicability": "Microempresas e empresas de pequeno porte; relevante como regra de participação em licitações dos clientes e como regime tributário de fornecedores.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei Complementar de 14/12/2006, alterada diversas vezes; o texto oficial remete a vigência e produção de efeitos a outras leis (Decreto 8.538/2015, LC 168/2019, LC 214/2025, LC 227/2026, LC 238/2026).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp123.htm",
+    "topics": [
+      "procurement",
+      "tax"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro."
+  },
+  {
+    "id": "lc-182-2021",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "182",
+    "year": "2021",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui o marco legal das startups e do empreendedorismo inovador e altera a Lei 6.404/1976 e a Lei Complementar 123/2006",
+    "scope_summary": "Define startup, cria ambientes de experimentação e disciplina a contratação pública de soluções inovadoras.",
+    "norm_class": "REFERENCE",
+    "applicability": "Startups e entes públicos que contratem soluções inovadoras; base de contratação de fornecedores de tecnologia pela administração.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei Complementar de 1º/6/2021, com marcações de vigência e vetos parciais. Sem revogação geral indicada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp182.htm",
+    "topics": [
+      "procurement"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro. A aplicação ao ADR-0023 e ao atestado do piloto é matéria do projeto, fora da verificação."
+  },
+  {
+    "id": "lc-129-2012-videira",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "129",
+    "year": "2012",
+    "issuer": "Município de Videira",
+    "title_pt": "Dispõe sobre o novo Estatuto dos Servidores Públicos do Município de Videira, excluídos os servidores do magistério municipal",
+    "scope_summary": "Estatuto dos servidores efetivos e comissionados de Videira. Aparece no edital do Município na declaração de impedimentos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Servidores do Município de Videira; interessa ao produto apenas pela vedação de participação de servidores em licitações.",
+    "jurisdiction": "SC",
+    "status": "VIGENTE",
+    "status_note": "Lei complementar municipal de 14/12/2012, conforme repositório de leis municipais e parecer do Tribunal de Contas de SC que a cita. Texto atual e eventuais alterações não conferidos em fonte oficial.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "https://leismunicipais.com.br/estatuto-do-servidor-funcionario-publico-videira-sc",
+    "topics": [
+      "procurement"
+    ],
+    "modules_affected": [],
+    "notes": "CORRIGIDO: o título é Estatuto dos Servidores, e não apenas \"Lei Complementar municipal\". A relação entre este estatuto e o inciso X do art. 245 citado no edital não foi verificada."
+  },
+  {
+    "id": "lc-130-2012-videira",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "130",
+    "year": "2012",
+    "issuer": "Município de Videira",
+    "title_pt": "Lei Complementar municipal de Videira 130/2012 (conteúdo não localizado)",
+    "scope_summary": "Citada no edital de Videira junto com a LC 129/2012; seu conteúdo não foi localizado.",
+    "norm_class": "REFERENCE",
+    "applicability": "Município de Videira; aplicação não verificada.",
+    "jurisdiction": "SC",
+    "status": "A_CONFIRMAR",
+    "status_note": "Norma não localizada em fonte consultada. Inferência, não confirmada: como a LC 129/2012 exclui o magistério e remete a estatuto próprio, a LC 130/2012 pode ser o estatuto do magistério.",
+    "verified": "NOT_CONFIRMED",
+    "url": "",
+    "topics": [
+      "procurement"
+    ],
+    "modules_affected": [],
+    "notes": "Não localizada. Consultar a Câmara Municipal de Videira. Buscas retornaram apenas leis complementares de outros municípios com o mesmo número."
+  },
+  {
+    "id": "decreto-20910-1932",
+    "kind": "DECREE",
+    "number": "20.910",
+    "year": "1932",
+    "issuer": "Presidência da República",
+    "title_pt": "Regula a prescrição quinquenal",
+    "scope_summary": "Fixa em cinco anos o prazo de prescrição das dívidas passivas da União, dos Estados e dos Municípios e de qualquer direito ou ação contra a Fazenda Pública.",
+    "norm_class": "REGULATORY",
+    "applicability": "Pretensões contra a Fazenda Pública; estende-se às autarquias por norma posterior. A cobrança de tarifa por prestador segue regime próprio conforme a natureza do crédito.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 6/1/1932. Texto lido no Planalto; sem indicação de revogação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/decreto/1930-1949/d20910.htm",
+    "topics": [
+      "consumer_rights",
+      "tax"
+    ],
+    "modules_affected": [
+      "collection",
+      "dunning"
+    ],
+    "notes": "A entrada o dava como \"não confirmado\": confirmado em fonte oficial. A aplicação à cobrança de tarifas de água exige análise jurisprudencial (a conferir; a Súmula 412 do STJ trata da repetição de indébito)."
+  },
+  {
+    "id": "decreto-89817-1984",
+    "kind": "DECREE",
+    "number": "89.817",
+    "year": "1984",
+    "issuer": "Presidência da República",
+    "title_pt": "Estabelece as Instruções Reguladoras das Normas Técnicas da Cartografia Nacional",
+    "scope_summary": "Fixa classes de precisão e o Padrão de Exatidão Cartográfica dos documentos cartográficos, referência para a qualidade do cadastro georreferenciado de redes.",
+    "norm_class": "REGULATORY",
+    "applicability": "Produtores de cartografia no território nacional; referência de exatidão para bases cartográficas usadas em cadastro técnico.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 20/6/1984. O Decreto 5.334/2005 alterou o art. 21 e revogou o art. 22.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/decreto/1980-1989/d89817.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "gis",
+      "assets"
+    ],
+    "notes": "A entrada não informava o estado: confirmado como vigente com alterações pontuais."
+  },
+  {
+    "id": "decreto-6666-2008",
+    "kind": "DECREE",
+    "number": "6.666",
+    "year": "2008",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui, no âmbito do Poder Executivo federal, a Infraestrutura Nacional de Dados Espaciais (INDE)",
+    "scope_summary": "Regula o compartilhamento de dados geoespaciais federais. Foi alterado pelo Decreto 12.402/2025, que modificou o art. 1º e revogou parágrafos e incisos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Órgãos do Poder Executivo federal; referência de interoperabilidade geoespacial para quem integra bases públicas.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 27/11/2008. O Decreto 12.402, de 13/3/2025, alterou-o e revogou dispositivos.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/decreto/d6666.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "gis",
+      "integration"
+    ],
+    "notes": "A entrada não informava o estado: vigente com alterações. A grafia oficial atual é \"Infraestrutura\"."
+  },
+  {
+    "id": "decreto-11888-2024",
+    "kind": "DECREE",
+    "number": "11.888",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre a Estratégia Nacional de Disseminação do Building Information Modelling no Brasil (Estratégia BIM BR) e institui o Comitê Gestor da Estratégia BIM BR",
+    "scope_summary": "Política federal de adoção de BIM, com revogação do decreto anterior sobre o tema.",
+    "norm_class": "REFERENCE",
+    "applicability": "Administração pública federal e contratações de obras e projetos que adotem BIM; referência para gestão de ativos de grande porte.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 22/1/2024, em vigor na publicação; revoga o Decreto 9.983/2019.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/d11888.htm",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "assets",
+      "gis"
+    ],
+    "notes": "O projeto o dava como \"a confirmar\": confirmado em fonte oficial. O título do projeto (\"para obras federais\") é restrito; a ementa é mais ampla."
+  },
+  {
+    "id": "decreto-12705-2025",
+    "kind": "DECREE",
+    "number": "12.705",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Estabelece a Taxonomia Sustentável Brasileira (TSB) como instrumento do Plano de Transformação Ecológica do Poder Executivo federal",
+    "scope_summary": "Cria classificação de atividades sustentáveis para orientar financiamento e relato.",
+    "norm_class": "REFERENCE",
+    "applicability": "Poder Executivo federal e agentes financeiros que adotem a taxonomia; interesse indireto para financiamento de saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 31/10/2025, em vigor na publicação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12705.htm",
+    "topics": [
+      "reporting",
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "A entrada não informava o estado: confirmado como vigente."
+  },
+  {
+    "id": "decreto-9929-2019",
+    "kind": "DECREE",
+    "number": "9.929",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre o Sistema Nacional de Informações de Registro Civil (Sirc) e sobre o seu comitê gestor",
+    "scope_summary": "Disciplina o Sirc, que reúne dados de registro civil, entre eles óbitos, e o seu compartilhamento com órgãos públicos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Órgãos públicos usuários do Sirc; o uso por prestadores locais para atualizar o cadastro de usuários falecidos depende de acesso, a verificar.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 22/7/2019; revoga o Decreto 8.270/2014.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/decreto/d9929.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "registry",
+      "integration"
+    ],
+    "notes": "A entrada não informava o estado: confirmado como vigente."
+  },
+  {
+    "id": "decreto-8270-2014",
+    "kind": "DECREE",
+    "number": "8.270",
+    "year": "2014",
+    "issuer": "Presidência da República",
+    "title_pt": "Institui o Sistema Nacional de Informações de Registro Civil (Sirc) e seu comitê gestor",
+    "scope_summary": "Decreto original do Sirc, substituído em 2019.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Decreto de 26/6/2014, revogado pelo Decreto 9.929/2019 (art. 12).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/decreto/d8270.htm",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [],
+    "notes": "Confirma o registro; revogação não constava da entrada."
+  },
+  {
+    "id": "decreto-8727-2016",
+    "kind": "DECREE",
+    "number": "8.727",
+    "year": "2016",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre o uso do nome social e o reconhecimento da identidade de gênero de pessoas travestis e transexuais no âmbito da administração pública federal direta, autárquica e fundacional",
+    "scope_summary": "Garante o uso do nome social em registros e atendimentos da administração federal.",
+    "norm_class": "REFERENCE",
+    "applicability": "Administração pública federal direta, autárquica e fundacional; prestadores locais seguem normas estaduais ou municipais, mas o decreto serve de referência para o cadastro.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 28/4/2016, sem revogação indicada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/decreto/d8727.htm",
+    "topics": [
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "registry",
+      "portal"
+    ],
+    "notes": "A entrada não informava o estado: confirmado como vigente."
+  },
+  {
+    "id": "decreto-5296-2004",
+    "kind": "DECREE",
+    "number": "5.296",
+    "year": "2004",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamenta as Leis 10.048/2000 e 10.098/2000, que tratam do atendimento prioritário e da promoção da acessibilidade das pessoas com deficiência ou mobilidade reduzida",
+    "scope_summary": "Detalha prioridade de atendimento, acessibilidade em edificações e transporte e, no art. 47, a acessibilidade dos portais e sítios eletrônicos da administração pública.",
+    "norm_class": "REGULATORY",
+    "applicability": "Poder público, concessionárias de serviços públicos e edificações; o art. 47 alcança portais da administração pública, o que inclui os de prestadores públicos.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 2/12/2004. Alguns dispositivos foram revogados, entre eles pelo Decreto 10.014/2019, conforme marcações do texto oficial.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/decreto/d5296.htm",
+    "topics": [
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "portal"
+    ],
+    "notes": "A entrada não informava o estado: confirmado como vigente com revogações pontuais."
+  },
+  {
+    "id": "decreto-3926-1988-pr",
+    "kind": "DECREE",
+    "number": "3.926",
+    "year": "1988",
+    "issuer": "Paraná",
+    "title_pt": "Aprova o Regulamento de Serviços prestados pela Companhia de Saneamento do Paraná (Sanepar)",
+    "scope_summary": "Regulamento estadual antigo dos serviços de água e esgoto da Sanepar, substituído pelo Regulamento Geral aprovado pela AGEPAR em 2020.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico; a Sanepar passou ao Regulamento de Serviços Básicos de Saneamento do Paraná.",
+    "jurisdiction": "PR",
+    "status": "REVOGADA",
+    "status_note": "Decreto de 17/10/1988, revogado pelo Decreto estadual 8.182, de 30/7/2021, a partir de quando passou a vigorar a Resolução AGEPAR 3/2020 (comunicado ao mercado da Sanepar, 4/8/2021).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.legislacao.pr.gov.br/legislacao/exibirAto.do?action=iniciarProcesso&codAto=251320&codItemAto=1578445",
+    "topics": [
+      "service_quality",
+      "cut_off"
+    ],
+    "modules_affected": [
+      "billing",
+      "dunning"
+    ],
+    "notes": "Revogação confirmada em fonte oficial (a entrada registrava \"não confirmada\"). A URL oficial é a do decreto revogador."
+  },
+  {
+    "id": "decreto-48225-2022-rj",
+    "kind": "DECREE",
+    "number": "48.225",
+    "year": "2022",
+    "issuer": "Rio de Janeiro",
+    "title_pt": "Aprova o Regulamento dos Serviços de Abastecimento de Água e Esgotamento Sanitário das concessionárias atuantes nos municípios dos Blocos 1, 2, 3 e 4",
+    "scope_summary": "Regulamento estadual dos serviços aplicado pela AGENERSA às concessionárias dos blocos de água e esgoto do Rio de Janeiro, com texto integral disponível no sítio da agência.",
+    "norm_class": "REGULATORY",
+    "applicability": "Concessionárias dos Blocos 1 a 4 do Estado do Rio de Janeiro e seus usuários.",
+    "jurisdiction": "RJ",
+    "status": "VIGENTE",
+    "status_note": "Decreto de 13/10/2022, em vigor na publicação. Projeto de Decreto Legislativo 2/2023 propôs sustar a expressão sobre templos religiosos no art. 69 do regulamento; o resultado não foi verificado.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.rj.gov.br/agenersa/sites/default/files/arquivos_paginas_basicas/Decreto48225.pdf",
+    "topics": [
+      "billing",
+      "cut_off",
+      "service_quality",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "billing",
+      "dunning",
+      "portal",
+      "metering"
+    ],
+    "notes": "Confirma o registro e a data. Fonte: extrato do Diário Oficial publicado pela AGENERSA. O texto integral do regulamento está em arquivo próprio da agência, não lido nesta verificação."
+  },
+  {
+    "id": "decreto-21822-2024-videira",
+    "kind": "DECREE",
+    "number": "21.822",
+    "year": "2024",
+    "issuer": "Município de Videira",
+    "title_pt": "Decreto municipal de Videira (SC) que fixa regras de pagamento nas contratações (descrição extraída de editais)",
+    "scope_summary": "Citado nos editais do Município, junto com a Lei 14.133/2021, como base das condições de pagamento: prazo de 30 dias após o recebimento definitivo e exigência de certidões.",
+    "norm_class": "REFERENCE",
+    "applicability": "Contratados pelo Município de Videira, entre eles potenciais fornecedores do produto.",
+    "jurisdiction": "SC",
+    "status": "VIGENTE",
+    "status_note": "Decreto municipal de 30/4/2024, conforme edital de concorrência do Município; continua citado em editais de 2026. Texto do decreto não visto.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "https://pncp.gov.br/pncp-api/v1/orgaos/83039842000184/compras/2026/216/arquivos/1",
+    "topics": [
+      "procurement",
+      "payments"
+    ],
+    "modules_affected": [],
+    "notes": "CORRIGIDO: data identificada (30/4/2024). A ementa exata não foi localizada; o título acima descreve o uso nos editais."
+  },
+  {
+    "id": "decreto-29-2023-sao-ludgero",
+    "kind": "DECREE",
+    "number": "29",
+    "year": "2023",
+    "issuer": "Município de São Ludgero",
+    "title_pt": "Decreto municipal 29/2023 de São Ludgero (SC) (conteúdo não localizado)",
+    "scope_summary": "Citado no edital como base da aceitação de assinatura eletrônica avançada; o decreto não foi localizado.",
+    "norm_class": "REFERENCE",
+    "applicability": "Município de São Ludgero; aplicação não verificada.",
+    "jurisdiction": "SC",
+    "status": "A_CONFIRMAR",
+    "status_note": "Norma não localizada nas buscas feitas nas bases públicas consultadas.",
+    "verified": "NOT_CONFIRMED",
+    "url": "",
+    "topics": [
+      "procurement",
+      "records"
+    ],
+    "modules_affected": [
+      "portal"
+    ],
+    "notes": "Não localizada. O município usa plataforma digital própria de documentos desde agosto de 2023, o que torna plausível o tema, mas não confirma o decreto. Consultar o portal de legislação de São Ludgero."
+  },
+  {
+    "id": "decreto-46-2023-sao-ludgero",
+    "kind": "DECREE",
+    "number": "46",
+    "year": "2023",
+    "issuer": "Município de São Ludgero",
+    "title_pt": "Decreto municipal 46/2023 de São Ludgero (SC) (conteúdo não localizado)",
+    "scope_summary": "Citado no edital como base das retenções em pagamentos a fornecedores; o decreto não foi localizado.",
+    "norm_class": "REFERENCE",
+    "applicability": "Município de São Ludgero; aplicação não verificada.",
+    "jurisdiction": "SC",
+    "status": "A_CONFIRMAR",
+    "status_note": "Norma não localizada nas buscas feitas nas bases públicas consultadas.",
+    "verified": "NOT_CONFIRMED",
+    "url": "",
+    "topics": [
+      "procurement",
+      "tax"
+    ],
+    "modules_affected": [],
+    "notes": "Não localizada. Consultar o portal de legislação de São Ludgero."
+  },
+  {
+    "id": "mp-1396-2026",
+    "kind": "LAW",
+    "number": "1.396",
+    "year": "2026",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre a autenticação, a identificação e o bloqueio de chamadas telefônicas e mensagens nas redes de telecomunicações e institui base de dados centralizada de recursos de numeração",
+    "scope_summary": "Obriga prestadoras de telecomunicações a autenticar e identificar chamadas e mensagens e cria base centralizada de numeração sob supervisão da Anatel, com identificação da pessoa jurídica que origina a chamada.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadoras de telecomunicações e pessoas jurídicas que originam chamadas e mensagens, como prestadores de saneamento em avisos de cobrança e de corte por telefone ou SMS.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Medida provisória de 9/10/2026, em vigor na publicação (art. 10); o texto da Presidência indica publicação no DOU de 13/10/2026, divergência de data a conferir. Conversão em lei não verificada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/mpv/mpv1396.htm",
+    "topics": [
+      "other",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "dunning",
+      "portal",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o título do projeto (\"regras de SMS\") é impreciso; a ementa trata de autenticação, identificação e bloqueio de chamadas e mensagens e da base de numeração. A divergência de datas entre fontes secundárias decorre da diferença entre a data da MP (9/10/2026) e a do DOU (13/10/2026) indicada no texto oficial."
+  },
+  {
+    "id": "lc-lrf-lei-de-responsabilidade-fiscal",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "101",
+    "year": "2000",
+    "issuer": "Presidência da República",
+    "title_pt": "Estabelece normas de finanças públicas voltadas para a responsabilidade na gestão fiscal e dá outras providências (Lei de Responsabilidade Fiscal)",
+    "scope_summary": "Fixa limites de despesa de pessoal, endividamento e regras de transparência fiscal para todos os entes e suas entidades dependentes.",
+    "norm_class": "REFERENCE",
+    "applicability": "União, estados, Distrito Federal e municípios, inclusive autarquias e empresas estatais dependentes; atinge prestadores públicos de saneamento que dependam do tesouro.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei Complementar 101, de 4/5/2000. O texto oficial indica \"Vide ADI 2238\"; sem revogação geral.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp101.htm",
+    "topics": [
+      "public_finance",
+      "reporting"
+    ],
+    "modules_affected": [
+      "accounting"
+    ],
+    "notes": "CORRIGIDO: número 101 e ano 2000 (a entrada não os informava)."
+  },
+  {
+    "id": "lc-lei-kandir",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "87",
+    "year": "1996",
+    "issuer": "Presidência da República",
+    "title_pt": "Dispõe sobre o imposto dos Estados e do Distrito Federal sobre operações relativas à circulação de mercadorias e sobre prestações de serviços de transporte interestadual e intermunicipal e de comunicação (Lei Kandir)",
+    "scope_summary": "Norma geral do ICMS. Está em transição pela reforma tributária, conforme remissões do texto oficial à LC 214/2025.",
+    "norm_class": "REFERENCE",
+    "applicability": "Contribuintes do ICMS; interesse indireto para clientes que revendem produtos ou serviços tributados.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei Complementar 87, de 13/9/1996, com marcações \"Vide Lei Complementar 214/2025\" em vigência e produção de efeitos. A alteração por LC 227/2026, citada pelo projeto, não foi verificada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp87.htm",
+    "topics": [
+      "tax"
+    ],
+    "modules_affected": [
+      "accounting"
+    ],
+    "notes": "CORRIGIDO: número 87 e ano 1996 (a entrada não os informava)."
+  },
+  {
+    "id": "lei-habeas-data",
+    "kind": "LAW",
+    "number": "9.507",
+    "year": "1997",
+    "issuer": "Presidência da República",
+    "title_pt": "Regula o direito de acesso a informações e disciplina o rito processual do habeas data",
+    "scope_summary": "Disciplina o habeas data, remédio constitucional para conhecer e retificar informações pessoais em registros públicos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Titulares de dados e entidades que mantenham registros de caráter público; remissão do art. 23, § 3º, da LGPD.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Lei 9.507, de 12/11/1997, com veto parcial. Sem revogação indicada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.planalto.gov.br/ccivil_03/leis/l9507.htm",
+    "topics": [
+      "data_protection",
+      "information_access"
+    ],
+    "modules_affected": [
+      "lgpd"
+    ],
+    "notes": "CORRIGIDO: número 9.507 e ano 1997 (a entrada não os informava)."
+  }
+]

@@ -1181,3 +1181,12 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - A pedido do dono, o documento ALVOS-DA-OS-E-HIERARQUIA-DE-ATIVOS foi removido e depois recriado com as correções.
 - Confirmado: anexo do MCPSB da ANA (versão 2026, 363 páginas) lido; mesma estrutura de codificação da ARSESP (CIB, LOC, AC, BCP, BRV, NTS-SDS, UP, UAR, AT1 a AT5), 19 naturezas e subdivisões do serviço e tabela única nacional de vida útil. NBR 12208:2020 vigente (confirmação em 01/2025). ISO 14224 conferida na pré-visualização oficial.
 - Pendências: valores de vida útil por UAR a conferir na tabela original; texto integral das NBR 12214 e 12208 depende da compra da ED-76.
+
+### 22/10/2026 — Biblioteca de normas e legislação; plano v2.20
+
+- Pedido do dono: carregar todas as normas e a legislação do setor numa área específica, acrescentando o que faltasse no projeto.
+- Quatro levantamentos em paralelo (inventário do projeto, legislação federal e do setor, normas técnicas, agências reguladoras) e quatro lotes de verificação das normas que só o projeto citava.
+- Catálogo consolidado em docs/normas: 1.676 normas; 1.298 em fonte oficial, 373 em fonte secundária, 5 sem confirmação; 114 para revisão; 12 com vigência futura. Leitura por 15 áreas em docs/normas/catalogo.
+- Achados: NFAg-e obrigatória a partir de 01/12/2026; Decreto 13.135/2026 (SAC) em 02/11/2026; Res. BCB 587/2026 (cobrança híbrida) em 01/02/2027 e 565/2026 (débito automático) em 01/07/2027; CONAMA 430/2011 em revogação aprovada e sem publicação; normas de agências com regras que conflitam com a Lei 14.015/2020 (corte às sextas) e a Lei 14.898/2024 (tarifa social); 71 revogadas, 90 substituídas e várias citações do projeto com número, emissor ou escopo errados.
+- Plano v2.20: nova P1.34 (área Normas e legislação), ajustes em ED-76, P3.15 e P1.32; ADR-0041 com o item 15. Lista de correções a aplicar nos documentos em docs/normas/correcoes-aos-documentos.md (não aplicadas). Só documentação.
+- Pendências: aplicar as correções aos documentos; revisar os itens a confirmar (docs/normas/pendencias-consolidadas.md); contraparte jurídica sobre normas de agências que conflitam com lei federal e sobre as leis estaduais de corte (ADI 7.725/TO) e a Lei Distrital 5.990/2017.

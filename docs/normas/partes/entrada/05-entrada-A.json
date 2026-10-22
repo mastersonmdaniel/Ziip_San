@@ -1,0 +1,1575 @@
+[
+  {
+    "id": "lei-13853-2019",
+    "kind": "LAW",
+    "number": "13.853",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei de conversão da MP 869/2018 (criação da ANPD)",
+    "scope_summary": "Criou a ANPD e alterou dispositivos da LGPD (art. 7º VIII, 18, 20, 23, 26, 27).",
+    "status_in_project": "Vigente; 08/07/2019 (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-14010-2020",
+    "kind": "LAW",
+    "number": "14.010",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei do Regime Jurídico Emergencial e Transitório (art. 20: sanções da LGPD)",
+    "scope_summary": "Seu art. 20 inseriu o art. 65, I-A, da LGPD, adiando as sanções para 01/08/2021.",
+    "status_in_project": "Vigente, efeito exaurido; 10/06/2020 (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-14460-2022",
+    "kind": "LAW",
+    "number": "14.460",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei de conversão da MP 1.124/2022 (ANPD como autarquia)",
+    "scope_summary": "Transformou a ANPD em autarquia de natureza especial e revogou o art. 55-B da LGPD.",
+    "status_in_project": "Vigente; 25/10/2022 (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-13848-2019",
+    "kind": "LAW",
+    "number": "13.848",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei das agências reguladoras",
+    "scope_summary": "Citada porque a Lei 15.352/2026 enquadrou a ANPD nesse regime de agência reguladora.",
+    "status_in_project": "Citada, sem estado informado (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-15141-2025",
+    "kind": "LAW",
+    "number": "15.141",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que incluiu os arts. 8-A e 8-B na LAI",
+    "scope_summary": "Alteração da Lei 12.527/2011 sem efeito para o produto.",
+    "status_in_project": "Vigente (relatórios 10 e 13); considerada não relevante.",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md",
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-14620-2023",
+    "kind": "LAW",
+    "number": "14.620",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que incluiu o art. 17-A na Lei 14.063/2020",
+    "scope_summary": "Alteração relativa a instituições financeiras de crédito imobiliário.",
+    "status_in_project": "Vigente; não afeta saneamento (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-14626-2023",
+    "kind": "LAW",
+    "number": "14.626",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que ampliou os beneficiários do atendimento prioritário",
+    "scope_summary": "Alterou o art. 1º da Lei 10.048/2000 (TEA, obesos, doadores de sangue).",
+    "status_in_project": "Vigente (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-14364-2022",
+    "kind": "LAW",
+    "number": "14.364",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que alterou parágrafos da Lei 10.048/2000",
+    "scope_summary": "Alterou parágrafos da Lei do atendimento prioritário.",
+    "status_in_project": "Vigente (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-13726-2018",
+    "kind": "LAW",
+    "number": "13.726",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei da racionalização de atos e procedimentos administrativos",
+    "scope_summary": "Dispensa reconhecimento de firma e autenticação de cópia, relevante para solicitações de ligação e alteração cadastral.",
+    "status_in_project": "Vigente; data exata não conferida no relatório 13.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md",
+      "arquitetura/PARAMETROS-DO-TENANT.md",
+      "levantamento/gsan/20d-gsan-regras-atendimento-os-e-seguranca.md"
+    ],
+    "notes": "Aplica-se a União, Estados, DF e Municípios. Usada no parâmetro de pedido sem firma reconhecida (PARAMETROS-DO-TENANT)."
+  },
+  {
+    "id": "lei-9791-1999",
+    "kind": "LAW",
+    "number": "9.791",
+    "year": "1999",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que incluiu o art. 7º-A na Lei 8.987/1995",
+    "scope_summary": "Obriga a oferta de datas opcionais de vencimento ao usuário de serviços públicos concedidos.",
+    "status_in_project": "Vigente (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-15471-2026",
+    "kind": "LAW",
+    "number": "15.471",
+    "year": "2026",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que alterou a Lei 14.133/2021 em dispensas de licitação de saúde",
+    "scope_summary": "Alteração pontual da Lei de Licitações, sem efeito para o produto.",
+    "status_in_project": "Vigente; 20/07/2026 (relatório 20f).",
+    "cited_in": [
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md",
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Texto não lido."
+  },
+  {
+    "id": "lei-15177-2025",
+    "kind": "LAW",
+    "number": "15.177",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que incluiu o inciso X no art. 8º da Lei 13.303/2016",
+    "scope_summary": "Alteração de transparência de estatais.",
+    "status_in_project": "Vigente (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-10406-2002",
+    "kind": "LAW",
+    "number": "10.406",
+    "year": "2002",
+    "issuer": "Presidência da República",
+    "title_pt": "Código Civil",
+    "scope_summary": "Fonte de prazos de prescrição (arts. 189, 205 e 206) e dos juros legais (arts. 389, 395 e 406, na redação da Lei 14.905/2024).",
+    "status_in_project": "Vigente; art. 206 §1º II revogado pela Lei 15.040/2024 (irrelevante).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md",
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-15040-2024",
+    "kind": "LAW",
+    "number": "15.040",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que revogou o art. 206 §1º II do Código Civil",
+    "scope_summary": "Alteração de prazo prescricional sem efeito para o produto.",
+    "status_in_project": "Vigente (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-9298-1996",
+    "kind": "LAW",
+    "number": "9.298",
+    "year": "1996",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que limitou a multa de mora do CDC a 2%",
+    "scope_summary": "Deu nova redação ao art. 52 §1º do CDC: multa de mora não superior a 2%.",
+    "status_in_project": "Vigente; 01/08/1996 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Base do teto de 2% de multa tratado como trava legal."
+  },
+  {
+    "id": "lei-12039-2009",
+    "kind": "LAW",
+    "number": "12.039",
+    "year": "2009",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que incluiu o art. 42-A no CDC",
+    "scope_summary": "Exige o CPF ou CNPJ do fornecedor nos documentos de cobrança de dívidas.",
+    "status_in_project": "Vigente (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-15252-2025",
+    "kind": "LAW",
+    "number": "15.252",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei dos direitos da pessoa natural usuária de serviços financeiros",
+    "scope_summary": "Citada pelas Res. BCB 565 e CMN 5.299 sobre débito automático.",
+    "status_in_project": "Vigente; 04/11/2025.",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Texto não lido (só citada nas resoluções); confiança baixa para o conteúdo."
+  },
+  {
+    "id": "lei-15088-2025",
+    "kind": "LAW",
+    "number": "15.088",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que proíbe a importação de resíduos e rejeitos",
+    "scope_summary": "Art. 49 da PNRS: proíbe importar resíduos e rejeitos, com exceções por regulamento.",
+    "status_in_project": "Vigente; considerada não aplicável ao produto (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Exceções regulamentadas pelo Decreto 12.451/2025."
+  },
+  {
+    "id": "lei-14260-2021",
+    "kind": "LAW",
+    "number": "14.260",
+    "year": "2021",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei de incentivo à reciclagem",
+    "scope_summary": "Incentivo à reciclagem de resíduos.",
+    "status_in_project": "Vigente; considerada não aplicável ao produto (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-10165-2000",
+    "kind": "LAW",
+    "number": "10.165",
+    "year": "2000",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que alterou a Política Nacional do Meio Ambiente",
+    "scope_summary": "Deu a redação do art. 17-C da Lei 6.938/1981 (TCFA).",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-10233-2001",
+    "kind": "LAW",
+    "number": "10.233",
+    "year": "2001",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei de criação da ANTT e da ANTAQ",
+    "scope_summary": "Seu art. 22, VII, atribui à ANTT a regulação do transporte de produtos perigosos.",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-6437-1977",
+    "kind": "LAW",
+    "number": "6.437",
+    "year": "1977",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei das infrações à legislação sanitária",
+    "scope_summary": "Base das penalidades da Portaria GM/MS 888/2021 (art. 46), junto com o CDC.",
+    "status_in_project": "Vigente (citada pela 888; não lida).",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-8159-1991",
+    "kind": "LAW",
+    "number": "8.159",
+    "year": "1991",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei da política nacional de arquivos públicos e privados",
+    "scope_summary": "O art. 7º §1º torna públicos os documentos de entidades privadas encarregadas da gestão de serviços públicos; base da retenção e eliminação de documentos.",
+    "status_in_project": "Vigente (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-12862-2013",
+    "kind": "LAW",
+    "number": "12.862",
+    "year": "2013",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que alterou a Lei 11.445/2007",
+    "scope_summary": "Uma das alterações listadas da Lei 11.445.",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-13308-2016",
+    "kind": "LAW",
+    "number": "13.308",
+    "year": "2016",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que alterou a Lei 11.445/2007",
+    "scope_summary": "Uma das alterações listadas da Lei 11.445.",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md",
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-13329-2016",
+    "kind": "LAW",
+    "number": "13.329",
+    "year": "2016",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que alterou a Lei 11.445/2007",
+    "scope_summary": "Uma das alterações listadas da Lei 11.445.",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md",
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-15112-2025",
+    "kind": "LAW",
+    "number": "15.112",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que alterou a Lei 11.445/2007 (art. 50 §13, drenagem)",
+    "scope_summary": "Última alteração listada da Lei 11.445; só acrescenta o art. 50 §13.",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md",
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mp-1393-2026",
+    "kind": "LAW",
+    "number": "1.393",
+    "year": "2026",
+    "issuer": "Presidência da República",
+    "title_pt": "Medida Provisória que alterou o art. 57 do CDC (multa)",
+    "scope_summary": "Alteração do CDC em matéria de multa; sem efeito nos requisitos de software.",
+    "status_in_project": "Status de conversão não confirmado (relatório 13).",
+    "cited_in": [
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md",
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Só consta no texto compilado do CDC."
+  },
+  {
+    "id": "mp-869-2018",
+    "kind": "LAW",
+    "number": "869",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Medida Provisória de criação da ANPD",
+    "scope_summary": "Convertida na Lei 13.853/2019.",
+    "status_in_project": "Convertida.",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mp-1124-2022",
+    "kind": "LAW",
+    "number": "1.124",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Medida Provisória que transformou a ANPD em autarquia",
+    "scope_summary": "Convertida na Lei 14.460/2022.",
+    "status_in_project": "Convertida.",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mp-1317-2025",
+    "kind": "LAW",
+    "number": "1.317",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Medida Provisória que transformou a ANPD em agência reguladora",
+    "scope_summary": "Convertida na Lei 15.352/2026.",
+    "status_in_project": "Convertida.",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mp-1154-2023",
+    "kind": "LAW",
+    "number": "1.154",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Medida Provisória que alterou a Lei 11.445/2007",
+    "scope_summary": "Alteração da Lei 11.445, convertida na Lei 14.600/2023.",
+    "status_in_project": "Convertida (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mp-844-2018",
+    "kind": "LAW",
+    "number": "844",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Medida Provisória que alterou o marco do saneamento (vigência encerrada)",
+    "scope_summary": "Citada na lista de alterações da Lei 11.445.",
+    "status_in_project": "Vigência encerrada (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mp-868-2018",
+    "kind": "LAW",
+    "number": "868",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Medida Provisória que alterou o marco do saneamento (vigência encerrada)",
+    "scope_summary": "Citada na lista de alterações da Lei 11.445.",
+    "status_in_project": "Vigência encerrada (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lc-166-2019",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "166",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei Complementar que alterou o Cadastro Positivo",
+    "scope_summary": "Torna o cadastro aberto sem autorização prévia (opt-out), com comunicação em 30 dias e correção em 10 dias.",
+    "status_in_project": "Vigente; 08/04/2019 (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md",
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-12881-2026",
+    "kind": "DECREE",
+    "number": "12.881",
+    "year": "2026",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da estrutura regimental da ANPD",
+    "scope_summary": "Estrutura da ANPD; revoga o Decreto 10.474/2020.",
+    "status_in_project": "Vigente; 18/03/2026; vigor 21 dias após a publicação (cálculo do relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-10474-2020",
+    "kind": "DECREE",
+    "number": "10.474",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da estrutura regimental anterior da ANPD",
+    "scope_summary": "Estrutura da ANPD, substituída em 2026.",
+    "status_in_project": "Revogado pelo Decreto 12.881/2026.",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-9936-2019",
+    "kind": "DECREE",
+    "number": "9.936",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto que regulamenta o Cadastro Positivo",
+    "scope_summary": "Define o conjunto de dados financeiros e de pagamentos e o leiaute de envio entre fonte e gestor.",
+    "status_in_project": "Vigente; 24/07/2019 (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md",
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Alterações posteriores não verificadas."
+  },
+  {
+    "id": "decreto-11567-2023",
+    "kind": "DECREE",
+    "number": "11.567",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto que alterou o mínimo existencial (R$ 600)",
+    "scope_summary": "Altera o Decreto 11.150/2022 e fixa o valor de R$ 600.",
+    "status_in_project": "Vigente; 19/06/2023.",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/lacunas/22a-cadastro-comercial-relacionamento.md"
+    ],
+    "notes": "STF concluiu julgamento em abril/2026 sobre revisão anual pelo CMN (fonte secundária)."
+  },
+  {
+    "id": "decreto-11016-2022",
+    "kind": "DECREE",
+    "number": "11.016",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto do Cadastro Único",
+    "scope_summary": "Art. 13: dados de identificação das famílias são sigilosos; cessão a terceiros na forma de ato do ministro; base da cautela no uso do CadÚnico para a tarifa social.",
+    "status_in_project": "Presumivelmente vigente; 29/03/2022.",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md",
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Texto compilado do Planalto pode estar desatualizado."
+  },
+  {
+    "id": "decreto-10046-2019",
+    "kind": "DECREE",
+    "number": "10.046",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da governança de compartilhamento de dados na administração federal",
+    "scope_summary": "Citado pelo Decreto 11.016; sob controle de constitucionalidade (ADI 6649).",
+    "status_in_project": "Sem impacto para o produto hoje (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md",
+      "levantamento/lacunas/22a-cadastro-comercial-relacionamento.md"
+    ],
+    "notes": "Situação atual da ADI 6649 não lida."
+  },
+  {
+    "id": "decreto-7724-2012",
+    "kind": "DECREE",
+    "number": "7.724",
+    "year": "2012",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto que regulamenta a LAI no Poder Executivo federal",
+    "scope_summary": "Aplica-se apenas à União; estados e municípios têm norma própria.",
+    "status_in_project": "Vigente; 16/05/2012; art. 58 alterado pelo Decreto 11.527/2023.",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-11527-2023",
+    "kind": "DECREE",
+    "number": "11.527",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto que alterou o art. 58 do Decreto 7.724/2012",
+    "scope_summary": "Alteração do regulamento federal da LAI.",
+    "status_in_project": "Vigente (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-6523-2008",
+    "kind": "DECREE",
+    "number": "6.523",
+    "year": "2008",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto do SAC revogado",
+    "scope_summary": "Regulamento anterior do SAC.",
+    "status_in_project": "Revogado pelo Decreto 11.034/2022.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-12069-2024",
+    "kind": "DECREE",
+    "number": "12.069",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Estratégia Nacional de Governo Digital 2024-2027 e Rede Gov.br",
+    "scope_summary": "Vale para todos os entes, observado o art. 2º da Lei 14.129.",
+    "status_in_project": "Vigente; 21/06/2024.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-12198-2024",
+    "kind": "DECREE",
+    "number": "12.198",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Estratégia Federal de Governo Digital 2024-2027",
+    "scope_summary": "Só administração federal; sucede o Decreto 10.332/2020.",
+    "status_in_project": "Vigente; 24/09/2024; sem aplicação direta.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-10332-2020",
+    "kind": "DECREE",
+    "number": "10.332",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Estratégia de Governo Digital 2020-2022",
+    "scope_summary": "Estratégia federal de governo digital.",
+    "status_in_project": "Superado; art. 1º revogado pelo Decreto 12.198/2024.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-10543-2020",
+    "kind": "DECREE",
+    "number": "10.543",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto das assinaturas eletrônicas na administração federal",
+    "scope_summary": "Disciplina o uso de assinaturas na administração federal.",
+    "status_in_project": "Parcialmente vigente; parte revogada pelo Decreto 11.077/2022; sem aplicação direta.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md",
+      "levantamento/lacunas/22a-cadastro-comercial-relacionamento.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-11077-2022",
+    "kind": "DECREE",
+    "number": "11.077",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto que revogou parte do Decreto 10.543/2020",
+    "scope_summary": "Revoga parte das regras de assinatura na administração federal.",
+    "status_in_project": "Vigente (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-12572-2025",
+    "kind": "DECREE",
+    "number": "12.572",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Política Nacional de Segurança da Informação",
+    "scope_summary": "Só administração pública federal; revogou o Decreto 9.637/2018.",
+    "status_in_project": "Vigente; 04/08/2025; sem aplicação direta.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-9637-2018",
+    "kind": "DECREE",
+    "number": "9.637",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da política de segurança da informação anterior",
+    "scope_summary": "Substituído pelo Decreto 12.572/2025.",
+    "status_in_project": "Revogado.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-12573-2025",
+    "kind": "DECREE",
+    "number": "12.573",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Estratégia Nacional de Cibersegurança (E-Ciber)",
+    "scope_summary": "Estratégia nacional; Plano Nacional de Cibersegurança a ser publicado (art. 11). Revogou o Decreto 10.222/2020.",
+    "status_in_project": "Vigente; 04/08/2025.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-10222-2020",
+    "kind": "DECREE",
+    "number": "10.222",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da estratégia de cibersegurança anterior",
+    "scope_summary": "Substituído pelo Decreto 12.573/2025.",
+    "status_in_project": "Revogado.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-11856-2023",
+    "kind": "DECREE",
+    "number": "11.856",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Política Nacional de Cibersegurança e do Comitê Nacional de Cibersegurança",
+    "scope_summary": "Política nacional de cibersegurança.",
+    "status_in_project": "Vigente; 26/12/2023.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-9573-2018",
+    "kind": "DECREE",
+    "number": "9.573",
+    "year": "2018",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Política Nacional de Segurança de Infraestruturas Críticas (PNSIC)",
+    "scope_summary": "Orienta os demais entes sem obrigá-los (art. 3º p.u.).",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md",
+      "levantamento/gis/19c-normativos-e-padroes.md",
+      "arquitetura/GIS-CADASTRO-TECNICO.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-10569-2020",
+    "kind": "DECREE",
+    "number": "10.569",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Estratégia Nacional de Segurança de Infraestruturas Críticas (ENSIC)",
+    "scope_summary": "Estratégia nacional de infraestruturas críticas.",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md",
+      "levantamento/lacunas/22b-operacao-campo-rede-inteligencia.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-11200-2022",
+    "kind": "DECREE",
+    "number": "11.200",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto do Plano Nacional de Segurança de Infraestruturas Críticas (PLANSIC)",
+    "scope_summary": "Inclui o setor Abastecimento Urbano de Águas.",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-7404-2010",
+    "kind": "DECREE",
+    "number": "7.404",
+    "year": "2010",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto antigo da regulamentação da PNRS",
+    "scope_summary": "Era a base legal da Portaria MMA 280/2020.",
+    "status_in_project": "Revogado pelo Decreto 10.936/2022.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md"
+    ],
+    "notes": "A revogação gera a dúvida sobre a base legal da Portaria MMA 280/2020."
+  },
+  {
+    "id": "decreto-9177-2017",
+    "kind": "DECREE",
+    "number": "9.177",
+    "year": "2017",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da logística reversa anterior",
+    "scope_summary": "Revogado pelo Decreto 10.936/2022.",
+    "status_in_project": "Revogado.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-5940-2006",
+    "kind": "DECREE",
+    "number": "5.940",
+    "year": "2006",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da coleta seletiva solidária",
+    "scope_summary": "Revogado pelo Decreto 10.936/2022.",
+    "status_in_project": "Revogado.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-11043-2022",
+    "kind": "DECREE",
+    "number": "11.043",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto do Plano Nacional de Resíduos Sólidos (Planares)",
+    "scope_summary": "Horizonte de 20 anos, revisão a cada 4 anos.",
+    "status_in_project": "Vigente; 13/04/2022.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Metas lidas em fonte secundária; anexo não lido."
+  },
+  {
+    "id": "decreto-96044-1988",
+    "kind": "DECREE",
+    "number": "96.044",
+    "year": "1988",
+    "issuer": "Presidência da República",
+    "title_pt": "Regulamento do transporte rodoviário de produtos perigosos",
+    "scope_summary": "Base histórica do transporte de resíduos perigosos; a competência regulatória hoje é da ANTT.",
+    "status_in_project": "Sem revogação localizada.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Texto não lido."
+  },
+  {
+    "id": "decreto-10240-2020",
+    "kind": "DECREE",
+    "number": "10.240",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da logística reversa de produtos eletroeletrônicos",
+    "scope_summary": "Logística reversa; considerada não aplicável ao produto.",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-10388-2020",
+    "kind": "DECREE",
+    "number": "10.388",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da logística reversa de medicamentos",
+    "scope_summary": "Logística reversa; considerada não aplicável ao produto.",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-11300-2022",
+    "kind": "DECREE",
+    "number": "11.300",
+    "year": "2022",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da logística reversa de vidro",
+    "scope_summary": "Logística reversa; considerada não aplicável ao produto.",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-11413-2023",
+    "kind": "DECREE",
+    "number": "11.413",
+    "year": "2023",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto dos certificados de crédito de reciclagem",
+    "scope_summary": "Logística reversa; considerada não aplicável ao produto.",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-12688-2025",
+    "kind": "DECREE",
+    "number": "12.688",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da logística reversa de embalagens plásticas",
+    "scope_summary": "Logística reversa; considerada não aplicável ao produto.",
+    "status_in_project": "Vigente.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-12451-2025",
+    "kind": "DECREE",
+    "number": "12.451",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto das exceções à proibição de importação de resíduos",
+    "scope_summary": "Regulamenta exceções do art. 49 da PNRS.",
+    "status_in_project": "Vigente; não aplicável ao produto.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-12082-2024",
+    "kind": "DECREE",
+    "number": "12.082",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Estratégia Nacional de Economia Circular",
+    "scope_summary": "Economia circular.",
+    "status_in_project": "Vigente; não aplicável ao produto.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-9609-1998",
+    "kind": "LAW",
+    "number": "9.609",
+    "year": "1998",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei do Software (proteção da propriedade intelectual de programa de computador)",
+    "scope_summary": "Citada em edital (justificativa do TR de Videira) e na resposta à vedação de software livre: o uso de bibliotecas livres não torna o programa software livre; sustenta o registro no INPI (P0.44).",
+    "status_in_project": "Vigente; citada sem comentário de estado (18, 18a).",
+    "cited_in": [
+      "levantamento/editais/18b-videira-edital-etp-precos.md",
+      "levantamento/editais/18a-videira-termo-de-referencia.md",
+      "levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-12767-2012",
+    "kind": "LAW",
+    "number": "12.767",
+    "year": "2012",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei que alterou a Lei do protesto (inclusão da CDA)",
+    "scope_summary": "Incluiu a CDA entre os títulos protestáveis na Lei 9.492/1997.",
+    "status_in_project": "Vigente (citada em 18e).",
+    "cited_in": [
+      "levantamento/editais/18e-aderencia-faturamento-arrecadacao-cobranca.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-12212-2010",
+    "kind": "LAW",
+    "number": "12.212",
+    "year": "2010",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei da tarifa social de energia elétrica",
+    "scope_summary": "Citada pelo relatório 03 do GSAN como base de tarifa social de energia; o produto não migra os critérios do GSAN.",
+    "status_in_project": "Citada como referência externa [EXT]; estado não informado.",
+    "cited_in": [
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md",
+      "levantamento/03-gsan-arrecadacao-cobranca-batch.md"
+    ],
+    "notes": "A tarifa social de água segue a Lei 14.898/2024."
+  },
+  {
+    "id": "lei-9784",
+    "kind": "LAW",
+    "number": "9.784",
+    "year": "",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei do processo administrativo federal",
+    "scope_summary": "Citada com a LAI e o habeas data como remissão do art. 23 §3º da LGPD para titulares de órgão público.",
+    "status_in_project": "citação incompleta (ano não informado no projeto)",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Número citado sem ano em 10-regulatorio-lgpd-privacidade.md."
+  },
+  {
+    "id": "lei-7116",
+    "kind": "LAW",
+    "number": "7.116",
+    "year": "",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei da carteira de identidade (citada como alterada pela Lei 14.129/2021)",
+    "scope_summary": "Citada apenas na lista de leis alteradas pela Lei 14.129/2021.",
+    "status_in_project": "citação incompleta (ano não informado no projeto)",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Citada em lista, sem comentário."
+  },
+  {
+    "id": "lei-12440-2011",
+    "kind": "LAW",
+    "number": "12.440",
+    "year": "2011",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei da Certidão Negativa de Débitos Trabalhistas (CNDT)",
+    "scope_summary": "Exigência de habilitação em edital (CNDT).",
+    "status_in_project": "Citada como documento de habilitação do SIGCOS PE (18c).",
+    "cited_in": [
+      "levantamento/editais/18c-sigcos-pe-2-2026.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-10357-2001",
+    "kind": "LAW",
+    "number": "10.357",
+    "year": "2001",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei do controle de produtos químicos",
+    "scope_summary": "Controle de produtos químicos pela Polícia Federal; referência da operação de tratamento (cloro e outros insumos).",
+    "status_in_project": "Citada como referência [O19] no 22b; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22b-operacao-campo-rede-inteligencia.md"
+    ],
+    "notes": "A Portaria 240/2019 da PF aparece como revogada, citada só como referência de procedimento."
+  },
+  {
+    "id": "lei-6766-1979",
+    "kind": "LAW",
+    "number": "6.766",
+    "year": "1979",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei do parcelamento do solo urbano",
+    "scope_summary": "Referência do cadastro de imóveis e loteamentos (22a).",
+    "status_in_project": "Citada como fonte [L6766] no 22a; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22a-cadastro-comercial-relacionamento.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-15042-2024",
+    "kind": "LAW",
+    "number": "15.042",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei do Sistema Brasileiro de Comércio de Emissões (SBCE)",
+    "scope_summary": "Citada na lista de ESG do 22d junto com a Taxonomia Sustentável Brasileira.",
+    "status_in_project": "Citada; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-14058-2020",
+    "kind": "LAW",
+    "number": "14.058",
+    "year": "2020",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei 14.058/2020",
+    "scope_summary": "Citada apenas para registrar que, ao contrário do que se costuma dizer, não menciona a LGPD.",
+    "status_in_project": "citação incompleta (título não informado)",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Relatório 10: a lei que se costuma citar para a vigência da LGPD não a menciona."
+  },
+  {
+    "id": "lei-3819-2006-df",
+    "kind": "LAW",
+    "number": "3.819",
+    "year": "2006",
+    "issuer": "Distrito Federal",
+    "title_pt": "Lei distrital da conta em braile",
+    "scope_summary": "Lei do DF sobre conta de água em braile.",
+    "status_in_project": "não confirmada: texto e vigência não verificados (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Confiança baixa; sem URL oficial lida. Não foi encontrada lei federal equivalente (não confirmado que não exista)."
+  },
+  {
+    "id": "lei-12498-2006-rs",
+    "kind": "LAW",
+    "number": "12.498",
+    "year": "2006",
+    "issuer": "Rio Grande do Sul",
+    "title_pt": "Lei estadual da conta em braile",
+    "scope_summary": "Lei do RS sobre conta de água em braile.",
+    "status_in_project": "não confirmada: texto e vigência não verificados (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Confiança baixa; sem URL oficial lida."
+  },
+  {
+    "id": "lei-17354-2008-mg",
+    "kind": "LAW",
+    "number": "17.354",
+    "year": "2008",
+    "issuer": "Minas Gerais",
+    "title_pt": "Lei estadual da conta em braile",
+    "scope_summary": "Lei de MG sobre conta de água em braile.",
+    "status_in_project": "não confirmada: texto e vigência não verificados (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Confiança baixa; sem URL oficial lida."
+  },
+  {
+    "id": "lei-886-2013-rr",
+    "kind": "LAW",
+    "number": "886",
+    "year": "2013",
+    "issuer": "Roraima",
+    "title_pt": "Lei estadual da conta em braile",
+    "scope_summary": "Lei de RR sobre conta de água em braile.",
+    "status_in_project": "não confirmada: texto e vigência não verificados (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Confiança baixa; sem URL oficial lida."
+  },
+  {
+    "id": "lei-12692-2013-joao-pessoa",
+    "kind": "LAW",
+    "number": "12.692",
+    "year": "2013",
+    "issuer": "Município de João Pessoa",
+    "title_pt": "Lei municipal da conta em braile (João Pessoa)",
+    "scope_summary": "Lei de João Pessoa sobre conta de água em braile.",
+    "status_in_project": "não confirmada: texto e vigência não verificados (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Confiança baixa; sem URL oficial lida."
+  },
+  {
+    "id": "lei-5990-2017-df",
+    "kind": "LAW",
+    "number": "5.990",
+    "year": "2017",
+    "issuer": "Distrito Federal",
+    "title_pt": "Lei distrital sobre corte por inadimplência",
+    "scope_summary": "No DF, para saúde, educação, internação e baixa renda com tarifa social, o corte só ocorre após 12 meses de inadimplência.",
+    "status_in_project": "Citada pelo relatório 08 (agência ADASA); estado não informado.",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-14471-2004-pr",
+    "kind": "LAW",
+    "number": "14.471",
+    "year": "2004",
+    "issuer": "Paraná",
+    "title_pt": "Lei estadual do Paraná sobre religação",
+    "scope_summary": "Sem cobrança por religação por inadimplência, salvo se pedida após 90 dias do corte (regulamento AGEPAR).",
+    "status_in_project": "Citada pelo relatório 08 na seção da AGEPAR; estado deduzido do contexto.",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "A Lei Estadual 14.471/2004 aparece no quadro da AGEPAR (PR)."
+  },
+  {
+    "id": "lei-15251-2010-sc",
+    "kind": "LAW",
+    "number": "15.251",
+    "year": "2010",
+    "issuer": "Santa Catarina",
+    "title_pt": "Lei estadual de Santa Catarina sobre resíduos (base da Portaria IMA 009/2026)",
+    "scope_summary": "Lei estadual que fundamenta o sistema de MTR do IMA em SC.",
+    "status_in_project": "Citada como base legal da Portaria IMA 009/2026 (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lei-3280-2015-videira",
+    "kind": "LAW",
+    "number": "3.280",
+    "year": "2015",
+    "issuer": "Município de Videira",
+    "title_pt": "Lei municipal de Videira",
+    "scope_summary": "Citada na Declaração Conjunta de habilitação do TR de Videira (TR-1101), sobre a vedação de doação a partido ou campanha no Município de Videira.",
+    "status_in_project": "Citada no edital; estado não informado.",
+    "cited_in": [
+      "levantamento/editais/18a-videira-termo-de-referencia.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lc-123-2006",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "123",
+    "year": "2006",
+    "issuer": "Presidência da República",
+    "title_pt": "Estatuto da Microempresa e da Empresa de Pequeno Porte",
+    "scope_summary": "Regras de participação de ME/EPP em licitações (cotas exclusivas, empate ficto, regularização fiscal tardia) citadas em editais.",
+    "status_in_project": "Vigente; citada em 18a, 18b e 18c.",
+    "cited_in": [
+      "levantamento/editais/18b-videira-edital-etp-precos.md",
+      "levantamento/editais/18a-videira-termo-de-referencia.md",
+      "levantamento/editais/18c-sigcos-pe-2-2026.md"
+    ],
+    "notes": "Arts. 47 a 49 citados."
+  },
+  {
+    "id": "lc-182-2021",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "182",
+    "year": "2021",
+    "issuer": "Presidência da República",
+    "title_pt": "Marco Legal das Startups e do Empreendedorismo Inovador",
+    "scope_summary": "Autoriza o Contrato Público de Solução Inovadora (CPSI), via considerada para o primeiro atestado do piloto público em SC.",
+    "status_in_project": "Vigente; citada no ADR-0023 e no plano (atestado do piloto).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "arquitetura/adr/ADR-0023-estrategia-de-editais-e-prova-de-conceito.md",
+      "levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lc-129-2012-videira",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "129",
+    "year": "2012",
+    "issuer": "Município de Videira",
+    "title_pt": "Lei Complementar municipal de Videira",
+    "scope_summary": "Citada na Declaração Negativa de Impedimentos do TR de Videira (inciso X do art. 245), Anexo III, junto com a LC municipal 130/2012.",
+    "status_in_project": "Citada em edital; estado não informado.",
+    "cited_in": [
+      "levantamento/editais/18a-videira-termo-de-referencia.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "lc-130-2012-videira",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "130",
+    "year": "2012",
+    "issuer": "Município de Videira",
+    "title_pt": "Lei Complementar municipal de Videira",
+    "scope_summary": "Citada na Declaração Negativa de Impedimentos do TR de Videira (inciso X do art. 245), Anexo III, junto com a LC municipal 130/2012.",
+    "status_in_project": "Citada em edital; estado não informado.",
+    "cited_in": [
+      "levantamento/editais/18a-videira-termo-de-referencia.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-20910-1932",
+    "kind": "DECREE",
+    "number": "20.910",
+    "year": "1932",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da prescrição de dívidas da Fazenda Pública",
+    "scope_summary": "Prazo de 5 anos de prescrição quando o devedor é a Fazenda Pública; citado para prazos de cobrança por tipo de devedor.",
+    "status_in_project": "Citado por fonte secundária; não confirmado (relatórios 11 e 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md",
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-89817-1984",
+    "kind": "DECREE",
+    "number": "89.817",
+    "year": "1984",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto das normas cartográficas nacionais (Padrão de Exatidão Cartográfica)",
+    "scope_summary": "Define o PEC usado como critério de exatidão posicional de dados de rede e cadastro importados.",
+    "status_in_project": "Citado no 19c; estado não informado.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Complementado por ET-CQDG (DSG, 2016) e ET-ADGV (PEC-PCD)."
+  },
+  {
+    "id": "decreto-6666-2008",
+    "kind": "DECREE",
+    "number": "6.666",
+    "year": "2008",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Infraestrutura Nacional de Dados Espaciais (INDE)",
+    "scope_summary": "Institui a INDE; exigência de metadados CONCAR só para publicação na INDE.",
+    "status_in_project": "Citado no 19c; estado não informado.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-11888-2024",
+    "kind": "DECREE",
+    "number": "11.888",
+    "year": "2024",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Estratégia BIM BR para obras federais",
+    "scope_summary": "Obrigação de BIM depende desta estratégia para obras federais.",
+    "status_in_project": "Citado como \"a confirmar\" no 19c.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Aplicação a confirmar."
+  },
+  {
+    "id": "decreto-12705-2025",
+    "kind": "DECREE",
+    "number": "12.705",
+    "year": "2025",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto da Taxonomia Sustentável Brasileira",
+    "scope_summary": "Citado na lista de ESG do 22d.",
+    "status_in_project": "Citado; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-9929-2019",
+    "kind": "DECREE",
+    "number": "9.929",
+    "year": "2019",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto do Sistema Nacional de Informações de Registro Civil (SIRC)",
+    "scope_summary": "Art. 7º citado como base de consulta a dados de registro civil (óbito) no 22c.",
+    "status_in_project": "Citado como fonte [A] no 22c; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-8270-2014",
+    "kind": "DECREE",
+    "number": "8.270",
+    "year": "2014",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto que instituiu o Sirc",
+    "scope_summary": "Citado como referência de registro civil no 22a.",
+    "status_in_project": "Citado no 22a; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22a-cadastro-comercial-relacionamento.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-8727-2016",
+    "kind": "DECREE",
+    "number": "8.727",
+    "year": "2016",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto do uso do nome social",
+    "scope_summary": "Base do campo de nome social no cadastro de clientes (22a).",
+    "status_in_project": "Citado no 22a; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22a-cadastro-comercial-relacionamento.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-5296-2004",
+    "kind": "DECREE",
+    "number": "5.296",
+    "year": "2004",
+    "issuer": "Presidência da República",
+    "title_pt": "Decreto de acessibilidade (regulamenta as Leis 10.048 e 10.098)",
+    "scope_summary": "Exige ao menos um telefone adaptado no atendimento; a LBI exige prioridade.",
+    "status_in_project": "Citado no 22a; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22a-cadastro-comercial-relacionamento.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-3926-1988-pr",
+    "kind": "DECREE",
+    "number": "3.926",
+    "year": "1988",
+    "issuer": "Paraná",
+    "title_pt": "Decreto estadual do Paraná sobre serviços de saneamento",
+    "scope_summary": "A vigência da Res. AGEPAR 3/2020 está condicionada à revogação deste decreto estadual.",
+    "status_in_project": "Citado; revogação não confirmada (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-48225-2022-rj",
+    "kind": "DECREE",
+    "number": "48.225",
+    "year": "2022",
+    "issuer": "Rio de Janeiro",
+    "title_pt": "Decreto do Rio de Janeiro do regulamento de serviços de água e esgoto",
+    "scope_summary": "Regulamento estadual aplicado pela AGENERSA, com a IN AGENERSA 103/2023.",
+    "status_in_project": "Vigente (relatório 08); 13/10/2022.",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Confiança média."
+  },
+  {
+    "id": "decreto-21822-2024-videira",
+    "kind": "DECREE",
+    "number": "21.822",
+    "year": "2024",
+    "issuer": "Município de Videira",
+    "title_pt": "Decreto municipal de Videira sobre pagamento",
+    "scope_summary": "Base legal do pagamento no TR de Videira.",
+    "status_in_project": "Citado no TR de Videira (18a).",
+    "cited_in": [
+      "levantamento/editais/18a-videira-termo-de-referencia.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-29-2023-sao-ludgero",
+    "kind": "DECREE",
+    "number": "29",
+    "year": "2023",
+    "issuer": "Município de São Ludgero",
+    "title_pt": "Decreto municipal que aceita assinatura eletrônica avançada",
+    "scope_summary": "Aceita assinatura eletrônica avançada no edital de São Ludgero.",
+    "status_in_project": "Citado em 18c (edital 8.2.3).",
+    "cited_in": [
+      "levantamento/editais/18c-sigcos-pe-2-2026.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "decreto-46-2023-sao-ludgero",
+    "kind": "DECREE",
+    "number": "46",
+    "year": "2023",
+    "issuer": "Município de São Ludgero",
+    "title_pt": "Decreto municipal sobre retenção em pagamentos a fornecedores",
+    "scope_summary": "Os órgãos municipais, ao pagar fornecedor, seguem as retenções do decreto (SG-1394, TR 7.2.16.4).",
+    "status_in_project": "Citado em 18c.",
+    "cited_in": [
+      "levantamento/editais/18c-sigcos-pe-2-2026.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mp-1396-2026",
+    "kind": "LAW",
+    "number": "1.396",
+    "year": "2026",
+    "issuer": "Presidência da República",
+    "title_pt": "Medida Provisória 1.396/2026 (regras de SMS, ligada à Anatel)",
+    "scope_summary": "Citada no 22c junto da regra da Anatel sobre SMS; relevante a canais de aviso por SMS.",
+    "status_in_project": "citação incompleta: título e conteúdo não confirmados; datas divergem entre fontes secundárias.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Ler o texto da MP no Planalto e a regulamentação da Anatel (22c)."
+  },
+  {
+    "id": "lc-lrf-lei-de-responsabilidade-fiscal",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "",
+    "year": "",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei de Responsabilidade Fiscal (LRF)",
+    "scope_summary": "Citada no edital de Videira entre os objetivos (LGPD, LRF, BI) e no 22d como risco regulatório alto para entes públicos que operem crédito.",
+    "status_in_project": "citação incompleta (número e ano não informados no projeto).",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md",
+      "levantamento/editais/18b-videira-edital-etp-precos.md"
+    ],
+    "notes": "Citada pelo nome, sem número."
+  },
+  {
+    "id": "lc-lei-kandir",
+    "kind": "COMPLEMENTARY_LAW",
+    "number": "",
+    "year": "",
+    "issuer": "Presidência da República",
+    "title_pt": "Lei Kandir (lei complementar do ICMS)",
+    "scope_summary": "Citada porque a LC 227/2026 a altera.",
+    "status_in_project": "citação incompleta (número e ano não informados no projeto).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Citada pelo nome, sem número."
+  },
+  {
+    "id": "lei-habeas-data",
+    "kind": "LAW",
+    "number": "",
+    "year": "",
+    "issuer": "Presidência da República",
+    "title_pt": "Habeas Data (lei do rito)",
+    "scope_summary": "O art. 23 §3º da LGPD remete, para titular de órgão público, à LAI, ao Habeas Data e à Lei 9.784.",
+    "status_in_project": "citação incompleta (número e ano não informados no projeto).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Citado pelo nome, sem número."
+  }
+]

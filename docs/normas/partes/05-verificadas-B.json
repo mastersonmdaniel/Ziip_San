@@ -1,0 +1,2328 @@
+[
+  {
+    "id": "ana-res-114-2021",
+    "kind": "ANA_RESOLUTION",
+    "number": "114",
+    "year": "2021",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Resolução ANA nº 114, de 30 de dezembro de 2021 (altera o item 7.5 da Norma de Referência nº 1/2021)",
+    "scope_summary": "Reescreveu apenas o item 7.5 da Norma de Referência nº 1/ANA/2021 (cobrança do manejo de resíduos sólidos urbanos), levando para 28/02/2022 o prazo para o titular ou a estrutura de prestação regionalizada informar à ANA e à entidade reguladora o instrumento de cobrança adotado ou seu cronograma; o prazo original da Res. ANA 79/2021 era 31/12/2021.",
+    "norm_class": "REGULATORY",
+    "applicability": "Titulares, estruturas de prestação regionalizada e entidades reguladoras do serviço de manejo de resíduos sólidos urbanos. Sem efeito direto sobre água e esgoto; o efeito prático do prazo está exaurido, mas a NR 1 que ele altera segue em vigor.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Resolução de 30/12/2021 editada ad referendum da Diretoria Colegiada, publicada no DOU de 31/12/2021 (Seção 1, p. 432), em vigor na publicação. Não consta revogação na página oficial da ANA nem na Res. ANA 297/2026 (revogação expressa de 54 atos exauridos), na qual não figura. A NR 1 foi aprovada pela Res. ANA 79, de 14/06/2021, e esta é a única alteração listada pela ANA; a comprovação de adoção da NR 1 segue a IN ANA 1/2023, alterada pelas INs 2/2023 e 2/2025.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/ana/pt-br/legislacao/resolucoes/resolucoes-regulatorias/2021/114",
+    "topics": [
+      "tariff",
+      "billing",
+      "reporting"
+    ],
+    "modules_affected": [
+      "billing"
+    ],
+    "notes": "CORRIGIDO: o resumo do projeto ('alterou a NR 1/2021 (cobrança do manejo de resíduos)') é impreciso quanto ao alcance; a Res. 114 mexe somente no item 7.5 (prazo de comunicação do instrumento de cobrança). A data 30/12/2021 do projeto está correta (a nota técnica de dispensa de AIR menciona 29/12, mas a resolução e o DOU indicam 30/12 e 31/12). Relevância para o Ziip SAN limitada ao tenant que também cobre resíduos sólidos urbanos na fatura de água; o texto da NR 1 é a referência normativa de fundo."
+  },
+  {
+    "id": "ana-res-227-2024",
+    "kind": "ANA_RESOLUTION",
+    "number": "227",
+    "year": "2024",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Resolução ANA nº 227, de 10 de dezembro de 2024 (Agenda Regulatória 2025-2026)",
+    "scope_summary": "Aprovou os temas da Agenda Regulatória da ANA para 2025-2026, em dois anexos: temas a concluir até dezembro de 2026 e temas iniciados no período com conclusão posterior. Foi substituída pela revisão ordinária aprovada na Res. ANA 277/2025, que a revogou.",
+    "norm_class": "REFERENCE",
+    "applicability": "Instrumento de planejamento da própria ANA, sem obrigação direta para prestadores. Serve de indicador das normas de referência de saneamento esperadas (reúso de efluente tratado, estrutura tarifária, instrumentos negociais, perdas), que afetam parametrização de tarifa, perdas e contratos.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Em vigor desde 01/01/2025 (DOU de 12/12/2024, Seção 1, p. 99). Revogada expressamente pelo art. 2º da Resolução ANA 277, de 19/12/2025 (aprovada na 948ª reunião da Diretoria Colegiada; DOU de 23/12/2025), com vigência a partir de 01/01/2026. A revisão reduziu o Anexo I de 25 para 19 temas e elevou o Anexo II de 10 para 13.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/ana/pt-br/legislacao/resolucoes/resolucoes-regulatorias/2024/227",
+    "topics": [
+      "tariff",
+      "sewage",
+      "loss_control",
+      "reporting"
+    ],
+    "modules_affected": [
+      "billing",
+      "losses",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: o projeto trata a 227 como agenda corrente com conteúdo 'não confirmado'; ela está revogada desde 01/01/2026 e a agenda vigente é a da Res. ANA 277/2025 (página oficial: https://www.gov.br/ana/pt-br/legislacao/resolucoes/resolucoes-regulatorias/2025/277). Os anexos da 227 e da 277 são publicados como imagem, mas o Anexo I da revisão ordinária (PDF no portal da ANA) e a minuta submetida à consulta confirmam, em fonte oficial, o tema 9.2 (norma de referência para reúso de efluente de esgoto sanitário tratado, previsão 2º/2026, mantido) e o tema de norma de referência para padronização de instrumentos negociais de água e esgoto (prorrogado para 1º/2026); logo a indicação deixa de depender de fonte secundária. Normas de referência já editadas, segundo a listagem da ANA: NR 11/2024 (condições gerais), NR 13/2025 (estrutura tarifária e tarifa social, Res. 271/2025), NR 14/2025 (indicadores de resíduos), NR 15/2025 (perdas) e NR 16/2026 (contabilidade regulatória). Não localizada, na listagem consultada, NR de reúso já publicada."
+  },
+  {
+    "id": "portaria-ms-2914-2011",
+    "kind": "MS_ORDINANCE",
+    "number": "2.914",
+    "year": "2011",
+    "issuer": "Ministério da Saúde (MS)",
+    "title_pt": "Portaria MS nº 2.914, de 12 de dezembro de 2011 (potabilidade da água para consumo humano)",
+    "scope_summary": "Fixou os procedimentos de controle e vigilância da qualidade da água para consumo humano e o padrão de potabilidade, substituindo a Portaria 518/2004. Revogada por consolidação em 2017; seu conteúdo passou ao Anexo XX da Portaria de Consolidação GM/MS 5/2017, hoje na redação da Portaria GM/MS 888/2021.",
+    "norm_class": "REFERENCE",
+    "applicability": "Apenas referência histórica. Prestadores de sistemas de abastecimento seguem hoje o Anexo XX da PRC 5/2017 na redação da Portaria GM/MS 888/2021 (com ajustes da Portaria GM/MS 2.472/2021); o módulo de qualidade da água não deve citar a 2.914 como fundamento vigente.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Publicada no DOU de 14/12/2011 (Seção 1, p. 39). Revogada, por consolidação, pelo art. 864, inciso CXXXIII, da Portaria de Consolidação GM/MS nº 5, de 28/09/2017 (DOU de 03/10/2017; art. 865: vigor na publicação), cujo Anexo XX incorporou o conteúdo sem alterar parâmetros. O Anexo XX foi depois reescrito pela Portaria GM/MS 888, de 04/05/2021 (DOU de 07/05/2021, republicada em 24/05/2021 e retificada no DOU de 14/06/2021) e ajustado pela Portaria GM/MS 2.472, de 28/09/2021.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-da-pessoa-com-deficiencia/legislacao/portaria-de-consolidacao-no-05-de-28-de-setembro-de-2017.pdf/view",
+    "topics": [
+      "water_quality"
+    ],
+    "modules_affected": [
+      "quality"
+    ],
+    "notes": "CORRIGIDO: (1) o dispositivo formal de revogação é o art. 864, CXXXIII, da PRC 5/2017 (conferido no texto oficial publicado pelo Ministério da Saúde), e não a Portaria 888/2021; (2) a Portaria 888/2021 não revogou a 2.914: seu art. 2º dá nova redação ao Anexo XX da PRC 5/2017; (3) a expressão 'vigorou entre 2015 e 2021' está incorreta: a 2.914 vigorou como ato autônomo de 14/12/2011 até a consolidação de 2017 e, depois, só como Anexo XX. A página do VigiÁgua no gov.br/saude confirma que a norma vigente é o Anexo XX da PRC 5/2017 atualizado pelas Portarias GM/MS 888/2021 e 2.472/2021. Citação recomendada no produto: 'Anexo XX da PRC 5/2017, na redação da Portaria GM/MS 888/2021'. Publicação de 888 em https://bvsms.saude.gov.br/bvs/saudelegis/gm/2021/prt0888_24_05_2021_rep.html."
+  },
+  {
+    "id": "prc-5-2017-anexo-xxi",
+    "kind": "MS_ORDINANCE",
+    "number": "Anexo XXI",
+    "year": "2017",
+    "issuer": "Ministério da Saúde (MS)",
+    "title_pt": "Anexo XXI da Portaria de Consolidação GM/MS nº 5, de 28 de setembro de 2017 (normas e padrões sobre fluoretação da água dos sistemas públicos de abastecimento)",
+    "scope_summary": "Reproduz, por consolidação, a Portaria MS 635/1975: definições, requisitos mínimos dos sistemas que fluoretam a água, concentração recomendada de fluoreto (mínimo, máximo e ótimo) conforme a média das temperaturas máximas diárias, compostos de flúor permitidos, métodos de análise e técnicas de dosagem. O art. 36, §1º, do Anexo XX remete a ele os valores recomendados, sem poder exceder o VMP de 1,5 mg/L.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadores de sistemas públicos de abastecimento que adicionam flúor à água. No produto, alimenta o módulo de qualidade da água: cadastro de dosagem e produto químico, faixas de fluoreto por localidade e alerta de desconformidade, parametrizáveis por tenant.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Em vigor desde a PRC 5/2017 (vigor na publicação; DOU de 03/10/2017, Suplemento). Origem: Portaria MS/GM 635, de 26/12/1975, revogada por consolidação (art. 864, CXXXIV, da PRC 5). A Portaria GM/MS 888/2021 mantém a remissão ao Anexo XXI no art. 36, §1º. Nenhum ato posterior que altere ou revogue o Anexo XXI foi localizado em fontes oficiais até 22/10/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-da-pessoa-com-deficiencia/legislacao/portaria-de-consolidacao-no-05-de-28-de-setembro-de-2017.pdf/view",
+    "topics": [
+      "water_quality",
+      "service_quality"
+    ],
+    "modules_affected": [
+      "quality",
+      "field"
+    ],
+    "notes": "CORRIGIDO: a citação 'sem número' do projeto passa a ser identificada como Anexo XXI da Portaria de Consolidação GM/MS nº 5/2017, e o conteúdo, antes 'não lido', foi conferido no texto oficial (o anexo tem os Anexos 1 a 3 internos: quadros de limites e compostos, métodos e técnicas, fórmula da concentração recomendada). O resumo do projeto ('valores recomendados') é correto, porém incompleto: o anexo também fixa requisitos mínimos do sistema (art. 3º, entre eles abastecimento contínuo) e técnicas de dosagem. O limite legal máximo de 1,5 mg/L está no Anexo 9 do Anexo XX, não no XXI; o Guia do Ministério da Saúde de 2024 esclarece que não há contradição entre ambos. O mesmo guia (consulta pública 2024) reconhece que as faixas do Anexo XXI reproduzem a referência de 1975 e deveriam ser atualizadas; sem ato de atualização localizado. Contexto de 2026, em fonte secundária (ABES): escassez de ácido fluossilícico e possível interrupção temporária da fluoretação; nenhum ato do Ministério da Saúde alterando o anexo foi encontrado."
+  },
+  {
+    "id": "conama-380-2006",
+    "kind": "CONAMA",
+    "number": "380",
+    "year": "2006",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA nº 380, de 31 de outubro de 2006 (retifica a Resolução CONAMA nº 375/2006, lodo de esgoto)",
+    "scope_summary": "Retificou o Anexo I da Res. CONAMA 375/2006 (uso agrícola de lodo de esgoto e derivados), dando nova redação ao item sobre processos de redução da atratividade de vetores e seus critérios. Foi revogada, juntamente com a 375, pela Res. CONAMA 498/2020.",
+    "norm_class": "REGULATORY",
+    "applicability": "Histórica. Operadores de ETE que destinam lodo ao solo seguem hoje a Res. CONAMA 498/2020 (biossólido). No produto, referência para rastreio de lodo apenas por histórico de contratos antigos.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Publicada no DOU de 07/11/2006 (nº 213, p. 59). Revogada pelo art. 36 da Resolução CONAMA 498, de 19/08/2020 (DOU de 21/08/2020, Seção 1, p. 265-269; vigor na publicação), que define critérios para produção e aplicação de biossólido em solos.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://conama.mma.gov.br/index.php?option=com_sisconama&task=documento.download&id=22347",
+    "topics": [
+      "sewage",
+      "other"
+    ],
+    "modules_affected": [
+      "quality",
+      "grs"
+    ],
+    "notes": "Registro do projeto confirmado (revogada pela 498/2020, art. 36). A página do ato 498 no SINCONAMA (https://conama.mma.gov.br/index.php?option=com_sisconama&view=atonormativo&id=726) grafa 'Resolução 380/2009' por erro material; a 380 é de 31/10/2006, como confirma o texto do art. 36 no PDF oficial da 498 (arquivo id=797). Uma proposta de alteração da 375 (processo 02000.211850/2017-13) consta como arquivada no SINCONAMA, o que é coerente com a substituição pela 498."
+  },
+  {
+    "id": "conama-313-2002",
+    "kind": "CONAMA",
+    "number": "313",
+    "year": "2002",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA nº 313, de 29 de outubro de 2002 (Inventário Nacional de Resíduos Sólidos Industriais)",
+    "scope_summary": "Institui o Inventário Nacional de Resíduos Sólidos Industriais. O art. 2º, I, inclui no conceito de resíduo sólido industrial os lodos de sistemas de tratamento de água e os gerados em instalações de controle de poluição; obriga os setores listados a informar o órgão estadual, impõe registro mensal de geração e destinação pelas indústrias e prevê programas estaduais e plano nacional.",
+    "norm_class": "REGULATORY",
+    "applicability": "Indústrias geradoras de resíduos, órgãos estaduais de meio ambiente e IBAMA. Para prestadores de água, interessa pela inclusão dos lodos de ETA no conceito; no produto, sustenta o registro de geração e destinação de lodo e a integração com o MTR/SINIR.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Editada em 29/10/2002 e publicada no DOU de 22/11/2002 (nº 226, Seção 1, p. 85-91); revogou a Res. CONAMA 6/1988. Nenhum ato revogador ou alterador localizado no texto oficial do CONAMA nem em pesquisa até 22/10/2026; as resoluções de 2026 localizadas (512 a 517) tratam de outros temas. A Portaria MMA 280/2020 (art. 16) institui o Inventário Nacional de Resíduos Sólidos 'baseado' nesta resolução; a Portaria 280 teve revisão submetida a consulta pública em 2025 (a minuta a revoga), sem nova portaria localizada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://conama.mma.gov.br/?option=com_sisconama&task=arquivo.download&id=331",
+    "topics": [
+      "reporting",
+      "other"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration",
+      "quality"
+    ],
+    "notes": "O projeto classificava a fonte como secundária (espelho) com confiança média; o texto foi conferido no PDF do próprio CONAMA, e a afirmação sobre lodos de sistemas de tratamento de água (art. 2º, I) está correta. Ressalva: a ausência de ato revogador decorre de busca, não de lista oficial de revogações; a data 29/10/2002 do projeto é a da resolução (publicação em 22/11/2002). O caráter de 'inventário' hoje é operado pelo SINIR/MTR (Portaria MMA 280/2020), o que pode levar a futura revisão desta resolução."
+  },
+  {
+    "id": "conama-307-2002",
+    "kind": "CONAMA",
+    "number": "307",
+    "year": "2002",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA nº 307, de 5 de julho de 2002 (gestão dos resíduos da construção civil)",
+    "scope_summary": "Estabelece diretrizes, critérios e procedimentos para a gestão dos resíduos da construção civil: classificação em classes A a D, prioridade à não geração e à reciclagem, planos municipais de gestão, planos de gerenciamento pelos grandes geradores e destinação por classe.",
+    "norm_class": "REGULATORY",
+    "applicability": "Geradores de resíduos de obras e demolições, inclusive obras de rede, ligações e reposição de pavimento de prestadores de saneamento, transportadores, municípios e áreas de destinação. No produto, apoia o registro de resíduos de obras e manutenção (módulos de campo, manutenção e MTR).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOU de 17/07/2002 (nº 136, p. 95-96), em vigor desde 02/01/2003 (art. 14). Alterada pelas Resoluções 348/2004 (art. 3º, IV), 431/2011 (art. 3º, II e III), 448/2012 (arts. 2º, 4º, 5º, 6º, 8º, 9º, 10 e 11) e 469/2015 (art. 3º, II, e §§ 1º e 2º). Os arts. 7º, 12 e 13 foram revogados pela Res. 448/2012 (art. 3º). Nenhuma alteração posterior localizada até 22/10/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://conama.mma.gov.br/?option=com_sisconama&task=arquivo.download&id=305",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "grs",
+      "field",
+      "maintenance",
+      "assets"
+    ],
+    "notes": "Registro do projeto confirmado (data 05/07/2002; última alteração pela 469/2015; alterações 348/2004, 431/2011, 448/2012 e 469/2015) conforme as correlações da compilação oficial do CONAMA. Ressalva: o status é VIGENTE com três artigos revogados (7º, 12 e 13), o que a rigor é revogação parcial; deve-se aplicar a redação consolidada, não o texto original. Tramita na CTQA em 2026 proposta separada sobre critérios para regulamentação municipal de grandes geradores de resíduos sólidos (processo 02000.010129/2025-18), ainda sem ato publicado e sem alterar a 307 até onde se verificou."
+  },
+  {
+    "id": "conama-348-2004",
+    "kind": "CONAMA",
+    "number": "348",
+    "year": "2004",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA nº 348, de 16 de agosto de 2004 (altera a Resolução CONAMA nº 307/2002, amianto)",
+    "scope_summary": "Deu nova redação ao inciso IV do art. 3º da Res. 307/2002 para incluir, entre os resíduos perigosos da construção (Classe D), as telhas e demais materiais que contenham amianto ou outros produtos nocivos à saúde.",
+    "norm_class": "REGULATORY",
+    "applicability": "Geradores e transportadores de resíduos de obras e demolições, em especial prestadores com redes e reservatórios de fibrocimento (tubos e caixas com amianto). No produto, sinaliza a classe do resíduo no registro de obra e no MTR.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOU de 17/08/2004 (nº 158, Seção 1, p. 70), em vigor na publicação. Consta como alteração da Res. 307 na compilação oficial do CONAMA. Nenhuma alteração ou revogação posterior do inciso IV localizada até 22/10/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://conama.mma.gov.br/?option=com_sisconama&task=arquivo.download&id=440",
+    "topics": [
+      "occupational_safety",
+      "other"
+    ],
+    "modules_affected": [
+      "grs",
+      "field",
+      "maintenance",
+      "assets"
+    ],
+    "notes": "Registro do projeto confirmado ('alterou a 307'); o alcance preciso é só o inciso IV do art. 3º (amianto na Classe D). A compilação oficial da Res. 307 exibe também uma redação anterior do inciso IV com nota atribuída à 431/2011, apesar de a 431 alterar apenas os incisos II e III; prevalece a redação da 348, sem alteração posterior localizada."
+  },
+  {
+    "id": "conama-431-2011",
+    "kind": "CONAMA",
+    "number": "431",
+    "year": "2011",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA nº 431, de 24 de maio de 2011 (altera o art. 3º da Resolução CONAMA nº 307/2002, gesso)",
+    "scope_summary": "Reclassificou o gesso na Res. 307/2002: passou à Classe B (recicláveis para outras destinações) e a Classe C ficou como a dos resíduos sem tecnologia ou aplicação economicamente viável de reciclagem ou recuperação. Alterou os incisos II e III do art. 3º.",
+    "norm_class": "REGULATORY",
+    "applicability": "Geradores e destinatários de resíduos de obras; relevância ao produto limitada à classificação de resíduos no registro de obras de saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOU de 25/05/2011 (nº 99, p. 123), em vigor na publicação. O inciso II do art. 3º foi novamente reescrito pela Res. 469/2015, que manteve o gesso na Classe B e acrescentou as embalagens vazias de tintas imobiliárias; permanece a redação do inciso III dada pela 431. Nenhuma revogação localizada até 22/10/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://conama.mma.gov.br/?option=com_sisconama&task=arquivo.download&id=630",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "grs",
+      "field",
+      "maintenance"
+    ],
+    "notes": "Registro do projeto confirmado ('alterou a 307'). Ressalva: ao aplicar a classificação, usar o inciso II na redação da 469/2015 (que sucedeu a da 431) e o inciso III da 431."
+  },
+  {
+    "id": "conama-448-2012",
+    "kind": "CONAMA",
+    "number": "448",
+    "year": "2012",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA nº 448, de 18 de janeiro de 2012 (altera artigos da Resolução CONAMA nº 307/2002)",
+    "scope_summary": "Adequou a Res. 307/2002 à Lei 12.305/2010 (PNRS): reescreveu os arts. 2º, 4º, 5º, 6º, 8º, 9º, 10 e 11 (hierarquia de gestão, planos municipais de gestão de resíduos da construção civil, planos de gerenciamento dos grandes geradores, destinação por classe) e revogou os arts. 7º, 12 e 13 da 307.",
+    "norm_class": "REGULATORY",
+    "applicability": "Municípios, grandes geradores de resíduos de obras, transportadores e destinatários. No produto, base para o plano de gerenciamento e o registro de destinação de resíduos de obras de saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOU nº 14, de 19/01/2012, em vigor na publicação (art. 2º). O art. 3º revoga os arts. 7º, 12 e 13 da Res. 307. Nenhuma alteração ou revogação posterior localizada até 22/10/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://conama.mma.gov.br/?option=com_sisconama&task=arquivo.download&id=652",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "grs",
+      "field",
+      "maintenance"
+    ],
+    "notes": "Registro do projeto confirmado ('alterou a 307'). Detalhe a acrescentar ao projeto: a 448 também revogou os arts. 7º, 12 e 13 da 307, o que o relatório 12 não menciona. Os prazos de 12 meses para planos municipais constam do art. 11 reescrito; verificar a situação local de cada município."
+  },
+  {
+    "id": "conama-469-2015",
+    "kind": "CONAMA",
+    "number": "469",
+    "year": "2015",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA nº 469, de 29 de julho de 2015 (altera o art. 3º da Resolução CONAMA nº 307/2002)",
+    "scope_summary": "Reescreveu o inciso II do art. 3º da Res. 307/2002, incluindo as embalagens vazias de tintas imobiliárias (apenas com filme seco) na Classe B, e acrescentou dois parágrafos: definição dessas embalagens e sujeição das embalagens de tintas usadas na construção à logística reversa da Lei 12.305/2010.",
+    "norm_class": "REGULATORY",
+    "applicability": "Geradores de resíduos de obras e cadeia de logística reversa de tintas; relevância ao produto limitada à classificação de resíduos de obras e manutenção.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOU nº 144, de 30/07/2015 (Seção 1, p. 109-110), em vigor na publicação. É a última alteração da Res. 307 constante da compilação oficial do CONAMA; nenhuma alteração posterior localizada até 22/10/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://conama.mma.gov.br/?option=com_sisconama&task=arquivo.download&id=688",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "grs",
+      "field",
+      "maintenance"
+    ],
+    "notes": "Registro do projeto confirmado ('última alteração da 307'), com a ressalva de que a conclusão se apoia nas correlações da compilação oficial e em busca em fontes abertas, e não em lista oficial de atos posteriores."
+  },
+  {
+    "id": "conama-358-2005",
+    "kind": "CONAMA",
+    "number": "358",
+    "year": "2005",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA nº 358, de 29 de abril de 2005 (tratamento e disposição final dos resíduos dos serviços de saúde)",
+    "scope_summary": "Aplica-se aos serviços de atendimento à saúde humana ou animal e correlatos: exige licenciamento dos sistemas de tratamento e disposição final, segregação na fonte, tratamento por grupo de resíduo (anexo I) e critérios mínimos de disposição final (anexo II), além de condições para lançamento de efluentes desses estabelecimentos.",
+    "norm_class": "REGULATORY",
+    "applicability": "Estabelecimentos de saúde, operadores de tratamento e destinação de resíduos de serviços de saúde e órgãos ambientais. Relevância indireta ao Ziip SAN: eventual tratamento de grandes geradores hospitalares na cobrança e no MTR; fora do núcleo de água e esgoto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOU nº 84, de 04/05/2005 (Seção 1, p. 63-65) e retificada no DOU nº 117, de 21/07/2005 (p. 61); em vigor na publicação (art. 31). Revogou a Res. CONAMA 283/2001 e as disposições da Res. 5/1993 sobre resíduos de serviços de saúde. Nenhum ato revogador ou alterador localizado na compilação oficial nem em pesquisa até 22/10/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://conama.mma.gov.br/?option=com_sisconama&task=arquivo.download&id=453",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "Registro do projeto confirmado (data 29/04/2005). Ressalva: a ausência de alterações decorre da compilação oficial e de busca, não de lista oficial de atos posteriores; as alterações 370/2006, 397/2008, 410/2009 e 430/2011 que aparecem em listagens de terceiros próximas à 358 se referem à Res. 357/2005. O gerenciamento interno dos estabelecimentos segue regra sanitária da Anvisa, fora do escopo deste registro."
+  },
+  {
+    "id": "conama-516-2026",
+    "kind": "CONAMA",
+    "number": "516",
+    "year": "2026",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA nº 516, de 8 de julho de 2026 (restrição de substâncias perigosas em equipamentos eletroeletrônicos, a chamada RoHS brasileira)",
+    "scope_summary": "Veda fabricar, importar, distribuir e comercializar equipamentos eletroeletrônicos (inclusive fios, cabos e peças de reposição) com teor, por material homogêneo, acima do limite de dez substâncias (0,1% para nove delas e 0,01% para cádmio), com prazos escalonados por substância; cria cadastro nacional obrigatório com autodeclaração de conformidade e obrigações de rastreabilidade e documentação.",
+    "norm_class": "REGULATORY",
+    "applicability": "Fabricantes, importadores, distribuidores e comerciantes de eletroeletrônicos, inclusive instrumentos de monitoramento e controle. O Ziip SAN, como software (SaaS), não é abrangido; só teria efeito se a empresa fabricasse, importasse ou revendesse hardware, ou ao homologar dispositivos de terceiros (coletores, leitores, medidores eletrônicos).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOU de 10/07/2026 (Edição 128-A, Seção 1, Extra A, p. 6), em vigor na publicação (art. 31). O SINCONAMA registra o ato como vigente (processo 02000.002604/2025-82). Prazos de adequação por substância, segundo resumos da FIEMG, Mayer Brown, Felsberg e TÜV: PBB e PBDE imediato; mercúrio 180 dias; cádmio, cromo hexavalente e chumbo 3 anos; ftalatos 4 anos. O MMA deve publicar em até 180 dias a lista inicial de isenções, e o cadastro nacional depende de sistema a ser disponibilizado. Nenhum ato revogador ou alterador localizado.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://conama.mma.gov.br/?option=com_sisconama&task=arquivo.download&id=861",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "certification",
+      "assets"
+    ],
+    "notes": "O projeto citava a resolução sem estado; confirma-se que existe, com a data de 8/07/2026 e publicação em 10/07/2026. A qualificação do relatório 12 ('não aplicável ao produto') está correta para o software, mas a norma alcança hardware: se algum tenant ou parceiro fornecer equipamentos eletrônicos de leitura ou campo, a obrigação de cadastro e conformidade é do fabricante ou importador, não do Ziip SAN. Conferir o art. 4º, §1º, no texto oficial para os prazos exatos, pois a contagem acima vem de resumos de terceiros."
+  },
+  {
+    "id": "conama-nova-resolucao-lancamento-efluentes",
+    "kind": "CONAMA",
+    "number": "",
+    "year": "2026",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Nova resolução CONAMA de lançamento de efluentes (altera a 357/2005 e revoga a 430/2011)",
+    "scope_summary": "Texto aprovado em plenário que atualiza as condições, parâmetros e padrões de lançamento de efluentes em corpos receptores: altera parcialmente e complementa a Res. 357/2005, revoga integralmente a 430/2011, fixa limites de nitrogênio amoniacal e fósforo total para efluente sanitário conforme o porte do sistema de tratamento e dá diretrizes às águas pluviais urbanas como fonte de poluição difusa.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadores de esgotamento sanitário (ETEs), geradores de efluentes e órgãos ambientais. No produto, afeta parâmetros de automonitoramento e condições de lançamento do módulo de qualidade e de esgoto; recomenda-se parametrizar por condicionante da licença, e não pelo texto da resolução, até a publicação.",
+    "jurisdiction": "BR",
+    "status": "A_CONFIRMAR",
+    "status_note": "Aprovada pelo Plenário na 151ª Reunião Ordinária de 02/09/2026 (processo CONAMA 02000.001228/2024-28), segundo comunicado do MMA de 11/09/2026. Sem número e sem publicação no DOU localizados até 22/10/2026 (fontes secundárias de 19/10/2026 registram o mesmo). Só produz efeitos após a publicação; até lá seguem em vigor as Resoluções 357/2005 e 430/2011. A minuta da CTAJ, anterior às emendas de plenário, revogava integralmente a 430 e dispositivos da 357 (art. 2º, XXXVIII, arts. 24 a 37, 39, 43, 44 e 46) e entrava em vigor na publicação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/mma/pt-br/noticias-defeso-eleitoral/conama-aprova-normas-sobre-reuso-de-agua-aquicultura-e-lancamento-de-efluentes",
+    "topics": [
+      "sewage",
+      "water_quality",
+      "reporting"
+    ],
+    "modules_affected": [
+      "quality",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o projeto indica '151ª reunião ordinária (01-02/09/2026)'. Pelo MMA, houve duas plenárias: em 01/09 a 64ª extraordinária (reúso, conjunta com o CNRH) e em 02/09 a 151ª ordinária, na qual foram aprovadas as regras de aquicultura e de efluentes; a norma de efluentes foi aprovada em 02/09/2026. A página do processo no SINCONAMA lista quatro pedidos de vista (MOVER, MCID, ANAMMA e Espírito Santo) e não registra o resultado; a aprovação 'com emendas de plenário' vem de fonte secundária (garemp). Valores de nitrogênio e fósforo, portes, prazos de adequação e numeração não confirmados; não usar a minuta pré-emendas para implementar. A Res. CONAMA 517/2026 (aquicultura, aprovada na mesma reunião) já teria saído em 14/10/2026 (fonte secundária), enquanto esta continuava pendente. Página do processo: https://conama.mma.gov.br/index.php?option=com_sisconama&view=processo&id=2677."
+  },
+  {
+    "id": "conama-cnrh-resolucao-conjunta-reuso",
+    "kind": "CONAMA",
+    "number": "",
+    "year": "2026",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA) e Conselho Nacional de Recursos Hídricos (CNRH)",
+    "title_pt": "Resolução conjunta CNRH/CONAMA de reúso direto não potável de efluente sanitário tratado",
+    "scope_summary": "Resolução conjunta aprovada que estabelece modalidades, diretrizes, critérios gerais e parâmetros mínimos de qualidade para o reúso direto não potável de água de efluente sanitário tratado em ETEs de sistemas públicos de esgotamento, para usos como limpeza urbana, irrigação e processos industriais, com atribuição de responsabilidades e regime de adequação dos sistemas existentes.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadores de esgotamento sanitário que operem ou pretendam operar ETEs com produção de água de reúso, produtores, distribuidores e usuários da água de reúso e órgãos ambientais e de recursos hídricos. No produto, impacta cadastro de ETE, modalidades de reúso, monitoramento de qualidade e rastreio de fornecimento e uso da água de reúso.",
+    "jurisdiction": "BR",
+    "status": "A_CONFIRMAR",
+    "status_note": "Aprovada em 01/09/2026 na 64ª Reunião Extraordinária do CONAMA, em sessão conjunta com a 61ª Reunião Extraordinária do CNRH (processos CONAMA 02000.015200/2025-59 e CNRH 59000.022609/2025-49). O texto completo e os anexos técnicos serão disponibilizados no DOU após revisão jurídica; sem número e sem publicação localizados até 22/10/2026. A minuta designa o ato como Resolução Conjunta CNRH/CONAMA nº 1, com número e data em branco.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/mdr/pt-br/noticias-midr/aprovada-resolucao-sobre-reuso-de-agua-no-brasil",
+    "topics": [
+      "sewage",
+      "water_quality",
+      "other"
+    ],
+    "modules_affected": [
+      "quality",
+      "integration",
+      "assets"
+    ],
+    "notes": "Dados do projeto confirmados (aprovação em 01/09/2026; 64ª extraordinária do CONAMA e 61ª do CNRH; a publicação no DOU é anunciada pelo MIDR), com a ressalva de que a aprovação não equivale a vigência. Em fontes secundárias: prazo de transição de 36 meses para sistemas existentes (ampliado de 18) e manutenção dos parâmetros de E. coli e das frequências mínimas de monitoramento, tudo a confirmar no texto final. A minuta exige que a água venha de sistemas que atendam às condições de lançamento da licença/outorga e aos padrões da Res. CONAMA 430/2011 'ou ato que a substitua', o que liga esta norma à nova resolução de efluentes; a minuta de entrada previa revogar as Res. CNRH 54/2005 e 121/2010, não confirmado no texto final. Distinta da norma de referência de reúso da ANA (tema 9.2 da Agenda Regulatória), que ainda não foi localizada como publicada."
+  },
+  {
+    "id": "conama-proposta-fiscalizacao-residuos",
+    "kind": "CONAMA",
+    "number": "",
+    "year": "2026",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Proposta de Resolução CONAMA sobre fiscalização e gerenciamento integrado de resíduos sólidos",
+    "scope_summary": "Proposta que uniformiza procedimentos de fiscalização e promoção da gestão e do gerenciamento integrado de resíduos sólidos, inclusive logística reversa: fiscalização integrada entre os entes, licenciamento condicionado ao cumprimento da logística reversa, fiscalização do MTR e das unidades de destinação final (incluindo encerramento de lixões), relatório nacional bianual, SINIR como plataforma principal e canais de denúncia.",
+    "norm_class": "REFERENCE",
+    "applicability": "Órgãos fiscalizadores, geradores de resíduos e sistemas de logística reversa, se aprovada. No produto, pode afetar a rastreabilidade de resíduos (MTR, CDF e SINIR) no módulo de resíduos e a integração com o SINIR; acompanhar sem implementar com base na minuta.",
+    "jurisdiction": "BR",
+    "status": "EM_REVISAO",
+    "status_note": "Processo CONAMA 02000.001476/2026-31 (origem DSISNAMA/MMA), situação ativa. Consulta Pública nº 12/2026 (Brasil Participativo), de 21/05 a 06/07/2026. Tramitação: CIPAM (13/05/2026), CTQA (16/06/2026), GT de Gestão de Resíduos (11/08, 28/08 e 11/09/2026), minuta aprovada na CTQA em 29/09/2026 e na CTAJ em 19/10/2026 (com parecer sobre regime de urgência). Pendente deliberação do Plenário; sem número e sem publicação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://conama.mma.gov.br/index.php?option=com_sisconama&view=processo&id=2706",
+    "topics": [
+      "other",
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration",
+      "platform"
+    ],
+    "notes": "Dados do projeto confirmados (consulta pública de 21/05 a 06/07/2026) e atualizados: a proposta já passou por CTQA e CTAJ. Minuta lida em parte: texto participativo da consulta e Nota Técnica 496/2026-MMA, que descrevem os pontos acima (por exemplo, canais de denúncia em até três anos da publicação, no texto da consulta); a redação pode ter mudado no GT, na CTQA e na CTAJ, e a versão aprovada não foi lida. Como proposta, é norma de referência não vinculante até a publicação."
+  },
+  {
+    "id": "inmetro-portaria-657-2025",
+    "kind": "INMETRO",
+    "number": "657",
+    "year": "2025",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 657/2025 - Substituição da verificação inicial pela declaração de conformidade para instrumentos de medição regulamentados",
+    "scope_summary": "Determinava que, a partir de 01/01/2026, a verificação inicial de instrumentos novos listados no Anexo I (inclusive medidores para água potável fria e água quente, RTM da Portaria 155/2022) fosse substituída por declaração de conformidade do detentor da aprovação de modelo, mantidas a verificação periódica e a após reparo. Seus efeitos estão suspensos pela Portaria 713/2025.",
+    "norm_class": "REGULATORY",
+    "applicability": "Fabricantes e importadores de instrumentos de medição regulamentados, incluindo hidrômetros; prestadores de água e esgoto como compradores e instaladores. Efeito atual no produto: nenhum, pois a norma está suspensa; vale o regime anterior de verificação inicial.",
+    "jurisdiction": "BR",
+    "status": "EM_REVISAO",
+    "status_note": "Assinada em 08/10/2025 e publicada no DOU de 13/10/2025; entrava em vigor na publicação, com a substituição valendo a partir de 01/01/2026. SUSPENSA: a Portaria Inmetro 713, de 30/10/2025 (DOU 31/10/2025), suspendeu os efeitos da 657. A base de legislação do Inmetro consultada em 22/10/2026 ainda mostra a 657 como 'Suspenso' e não lista revogação nem reativação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "http://www.inmetro.gov.br/legislacao/detalhe.asp?seq_classe=1&seq_ato=3111",
+    "topics": [
+      "metering",
+      "other"
+    ],
+    "modules_affected": [
+      "metering",
+      "assets",
+      "maintenance",
+      "certification"
+    ],
+    "notes": "CORRIGIDO: situação. O projeto trata a 657 como norma publicada e aplicável a partir de 2026; ela está com efeitos suspensos pela 713/2025 desde 31/10/2025 e, portanto, nunca produziu o efeito de substituir a verificação inicial. Sites e blogs de terceiros que afirmam que a 657 vale desde 01/01/2026 estão desatualizados ou errados (inclusive um datado de 13/10/2026). RESSALVA DE FONTE RESOLVIDA: a inclusão dos medidores de água foi confirmada no PDF oficial do Inmetro (Anexo I, Tabela 1: 'Medidores para consumo de água potável fria e água quente', Portaria 155/2022); deixa de ser fonte secundária. O art. 3º remete a pedidos de autorização à Portaria 295/2021. Recomenda-se tratar como 'regime em suspensão: acompanhar'; não construir funcionalidade que dependa da declaração de conformidade em substituição à verificação inicial sem nova norma. Vigência são fatos, não prazos de projeto."
+  },
+  {
+    "id": "inmetro-portaria-713-2025",
+    "kind": "INMETRO",
+    "number": "713",
+    "year": "2025",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 713/2025 - Suspende os efeitos da Portaria 657/2025",
+    "scope_summary": "Suspende, sem prazo definido, os efeitos da Portaria 657/2025 e determina que, durante a suspensão, continuem valendo a verificação inicial na forma da regulamentação vigente e a declaração de conformidade conforme as Portarias 293/2021, 295/2021 e 78/2022.",
+    "norm_class": "REGULATORY",
+    "applicability": "Fabricantes, importadores e órgãos da Rede Brasileira de Metrologia Legal; para o prestador de água e esgoto, mantém o regime anterior de verificação inicial de hidrômetros (efeito indireto no ciclo de aquisição e cadastro de medidores).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 30/10/2025 e publicada no DOU de 31/10/2025 (Seção 1, p. 27); entrou em vigor na publicação. Na base do Inmetro (consulta em 22/10/2026) consta 'Em vigor' e como alteradora da 657, que consta como 'Suspenso'. Não localizei ato posterior que a revogue ou levante a suspensão.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "http://www.inmetro.gov.br/legislacao/detalhe.asp?seq_classe=1&seq_ato=3112",
+    "topics": [
+      "metering",
+      "other"
+    ],
+    "modules_affected": [
+      "metering",
+      "assets",
+      "maintenance",
+      "certification"
+    ],
+    "notes": "CORRIGIDO: o projeto descreve a 713 como 'citada com a 657 sobre a transição da verificação de medidores' e sem ressalva. O ato apenas suspende a 657 (não prevê transição); é o dado mais importante da cadeia 657/713. O relatório 21b deve passar a registrar a 657 como suspensa. Texto oficial do DOU de 31/10/2025 (pesquisa.in.gov.br) e PDF no sistema de legislação do Inmetro conferidos."
+  },
+  {
+    "id": "inmetro-portaria-293-2021",
+    "kind": "INMETRO",
+    "number": "293",
+    "year": "2021",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 293/2021 - Regulamento Técnico Metrológico consolidado sobre autorização para declaração de conformidade em substituição à verificação inicial",
+    "scope_summary": "Permite que importadores e fabricantes de instrumentos de medição obtenham autorização do Inmetro para emitir declaração de conformidade no lugar da verificação inicial, com requisitos de laboratório, qualidade e calibração. Desde 2023 não se aplica aos instrumentos abarcados pela Portaria 78/2022, entre eles os medidores de água.",
+    "norm_class": "REGULATORY",
+    "applicability": "Fabricantes e importadores de instrumentos de medição regulamentados que não estejam no escopo da Portaria 78/2022. Para medidores de água vale a 78/2022, não a 293. Efeito no produto: nenhum direto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 08/07/2021, vigor a partir de 18/07/2021 (data de vigor conforme texto reproduzido em fonte secundária; a base do Inmetro confirma a assinatura e a situação). Revogou a Portaria 336/2019. Alterada pela Portaria Inmetro 621, de 22/12/2023, que (i) excluiu do escopo os instrumentos da Portaria 78/2022, (ii) ajustou os subitens 2.3 e 2.4.9, (iii) incluiu o 2.4.10 e (iv) revogou o art. 4º (validade até 31/12/2023). A base do Inmetro a marca como 'Revisto'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "http://www.inmetro.gov.br/legislacao/detalhe.asp?seq_classe=1&seq_ato=2796",
+    "topics": [
+      "metering",
+      "other"
+    ],
+    "modules_affected": [
+      "metering",
+      "assets",
+      "certification"
+    ],
+    "notes": "CORRIGIDO: a descrição do projeto ('permanecem aplicáveis ao lado da 657/2025') está imprecisa. A 293 é anterior à 657, foi alterada em 2023 e não alcança medidores de água (cobertos pela 78/2022); a 657 está suspensa. 'Órgão deduzido do contexto': confirmado, é o Inmetro (Portaria INMETRO/ME). O número de vigor (18/07/2021) vem de texto reproduzido por LegisWeb; o restante vem da base oficial do Inmetro."
+  },
+  {
+    "id": "inmetro-portaria-295-2021",
+    "kind": "INMETRO",
+    "number": "295",
+    "year": "2021",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 295/2021 - Aprimora as medidas adotadas para redução dos efeitos da pandemia de Covid-19 no controle metrológico legal",
+    "scope_summary": "Ato do período da pandemia: encerra a prorrogação da validade dos certificados de verificação, autoriza os órgãos da RBMLQ-I a concentrar recursos e permite que fabricantes e importadores peçam autorização para declarar conformidade em lugar da verificação inicial quando o órgão não puder atuar (art. 3º).",
+    "norm_class": "REGULATORY",
+    "applicability": "Órgãos da RBMLQ-I, fabricantes e importadores de instrumentos de medição. Não trata de condições de verificação de hidrômetros nem de software de prestador de água e esgoto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 08/07/2021; vigor em 02/08/2021 (art. 5º). Revogou as Portarias 101/2020 e 114/2020. Alterada pela Portaria Inmetro 418, de 01/10/2021, e pela Portaria 620, de 22/12/2023 (§ 2º do art. 3º). A base do Inmetro a marca como 'Revisto'. Procedimento NIT-Dicol-012 (autorização de empresas para declaração de conformidade com base na 295/2021) com efetivação em 11/09/2026 indica que o art. 3º segue sendo aplicado.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "http://www.inmetro.gov.br/legislacao/detalhe.asp?seq_classe=1&seq_ato=2803",
+    "topics": [
+      "metering",
+      "other"
+    ],
+    "modules_affected": [
+      "certification"
+    ],
+    "notes": "CORRIGIDO: o projeto descreve a 295 como 'condições de verificação inicial e declaração de conformidade que permanecem aplicáveis ao lado da 657/2025'. A ementa oficial é de medidas contra os efeitos da Covid-19 no controle metrológico legal; só o art. 3º trata de declaração de conformidade, como alternativa quando a RBMLQ-I não pode atuar. A 657 (art. 3º) remete a ela para o pedido de autorização. Não confundir com a Portaria Inmetro 295/2018 (RTM de medidores de água, já revogada pela 155/2022). Alcance atual do art. 3º após a 620/2023: não li o texto consolidado; tratar como A_CONFIRMAR se o projeto precisar do detalhe."
+  },
+  {
+    "id": "inmetro-portaria-78-2022",
+    "kind": "INMETRO",
+    "number": "78",
+    "year": "2022",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 78/2022 - Regulamento Técnico Metrológico consolidado: empresas autorizadas a executar ensaios de verificação inicial e após reparo e a declarar conformidade",
+    "scope_summary": "Fixa as condições para empresas serem autorizadas, sob supervisão do Inmetro, a executar os ensaios de verificação inicial (detentores de aprovação de modelo) e após reparo (reparadores) de medidores de água, de energia elétrica e de gás domiciliar, e a emitir declaração de conformidade; a verificação inicial também alcança esfigmomanômetros e cronotacógrafos.",
+    "norm_class": "REGULATORY",
+    "applicability": "Fabricantes, importadores e reparadores de hidrômetros (e de medidores de energia e gás). Para o prestador de água e esgoto, define quem pode declarar a conformidade de hidrômetro novo ou reparado; impacto indireto em cadastro de medidores e ativos.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 23/03/2022; publicada no DOU de 28/03/2022 (Seção 1, p. 54 a 56); vigor em 01/06/2022 (texto reproduzido em fonte secundária). Revogou as Portarias 400/2013, 368/2015, 131/2016 e 85/2017. A base do Inmetro a marca como 'Revisto'; na lista de correlatas não identifiquei portaria alteradora específica.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "http://www.inmetro.gov.br/legislacao/detalhe.asp?seq_classe=1&seq_ato=2947",
+    "topics": [
+      "metering",
+      "other"
+    ],
+    "modules_affected": [
+      "metering",
+      "assets",
+      "maintenance",
+      "certification"
+    ],
+    "notes": "É a norma que efetivamente cobre medidores de água na declaração de conformidade (art. 1º, § 1º, I e § 2º, I); a 293/2021 foi excluída desse escopo pela 621/2023. Permanece aplicável enquanto a 657/2025 estiver suspensa (a 713/2025 a cita expressamente). O projeto estava correto ao dizer que permanece aplicável, mas atribuía o mesmo papel às 293 e 295. Órgão deduzido do contexto: confirmado (Inmetro)."
+  },
+  {
+    "id": "inmetro-dimel-portaria-338-2022",
+    "kind": "INMETRO",
+    "number": "338",
+    "year": "2022",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro) - Diretoria de Metrologia Legal (Dimel)",
+    "title_pt": "Portaria Inmetro/Dimel 338/2022 - Aprovação de modelo da família WSH de medidores de volume de água, tipo mecânico, classe de exatidão 2, marca SAGA",
+    "scope_summary": "Portaria de aprovação de modelo (PAM) de uma família de hidrômetros mecânicos da marca SAGA, com base no RTM da Portaria 155/2022; serve de exemplo de como o Inmetro formaliza a aprovação de um hidrômetro.",
+    "norm_class": "REFERENCE",
+    "applicability": "Fabricante requerente (Saga Medição Ltda.) e quem comercializa ou instala os modelos aprovados. Para o produto, é apenas exemplo de dado de cadastro de hidrômetro (marca, família, classe); sem obrigação direta para o software.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 07/12/2022. Alterada pela Portaria Dimel 511, de 07/11/2023; teve item incluído pela Portaria Dimel 444, de 16/08/2024; alterada pela Portaria Dimel 442, de 14/07/2026 (todas 'Em vigor' na base do Inmetro). A base marca a 338 como 'Revisto'. Inclusão dos modelos WSH2-25 e WSH2-63 e alteração da Tabela 1 (características metrológicas) consta de portaria posterior em cópia secundária.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "http://www.inmetro.gov.br/legislacao/detalhe.asp?seq_classe=2&seq_ato=7868",
+    "topics": [
+      "metering"
+    ],
+    "modules_affected": [
+      "metering",
+      "assets"
+    ],
+    "notes": "Confirmado: número, data, família WSH, tipo mecânico, classe 2, marca SAGA (RTM 155/2022). Como a portaria foi alterada três vezes, o texto vigente deve ser lido na página PAM do Inmetro (PAM007868), não só na portaria original. O projeto estava correto ao tratá-la como exemplo. Data de publicação no DOU não verificada."
+  },
+  {
+    "id": "inmetro-dimel-portaria-64-2023",
+    "kind": "INMETRO",
+    "number": "64",
+    "year": "2023",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro) - Diretoria de Metrologia Legal (Dimel)",
+    "title_pt": "Portaria Inmetro/Dimel 64/2023 - Aprovação de modelo da família VK de medidores de volume de água, tipo mecânico, classe de exatidão 2, marca BAYLAN",
+    "scope_summary": "Portaria de aprovação de modelo (PAM) da família VK de hidrômetros mecânicos da marca BAYLAN, com base no RTM da Portaria 155/2022; segundo exemplo de aprovação de modelo de hidrômetro.",
+    "norm_class": "REFERENCE",
+    "applicability": "Fabricante requerente e quem comercializa ou instala os modelos aprovados. Para o produto, é exemplo de dado de cadastro de hidrômetro; sem obrigação direta para o software.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 06/04/2023 e publicada no DOU de 14/04/2023 (data do DOU conforme fonte secundária LegisWeb). Alterada pelas Portarias Dimel 177, de 18/03/2026, e 221, de 14/05/2026 (ambas 'Em vigor' na base do Inmetro). A base marca a 64 como 'Revisto'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "http://www.inmetro.gov.br/legislacao/detalhe.asp?seq_classe=2&seq_ato=7939",
+    "topics": [
+      "metering"
+    ],
+    "modules_affected": [
+      "metering",
+      "assets"
+    ],
+    "notes": "Confirmado: número, data (06/04/2023), família VK, tipo mecânico, marca BAYLAN, classe de exatidão 2 na base oficial. Como foi alterada duas vezes em 2026, o texto vigente deve ser lido na página PAM do Inmetro (PAM007939). Sem ressalva do projeto; a ressalva acima é nova."
+  },
+  {
+    "id": "inmetro-portaria-102-2022",
+    "kind": "INMETRO",
+    "number": "102",
+    "year": "2022",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 102/2022 - Regulamento Técnico da Qualidade e Requisitos de Avaliação da Conformidade para Equipamentos para Consumo de Água (consolidado)",
+    "scope_summary": "Certificação compulsória de equipamentos de consumo de água (bebedouros, purificadores, filtros): segurança elétrica, desempenho de melhoria da qualidade da água, extraíveis e consumo de energia. Alterada em 2026 para ampliar o escopo, exigir ensaio de extraíveis de todos os equipamentos e criar faixas de eficiência energética na ENCE.",
+    "norm_class": "REFERENCE",
+    "applicability": "Fabricantes e importadores de bebedouros e purificadores. Não afeta o prestador de água e esgoto nem o padrão de potabilidade (Portaria GM/MS 888/2021); relevância apenas de contexto para qualidade da água no ponto de uso.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 22/03/2022 e publicada no DOU de 25/03/2022 (Seção 1, p. 73 a 87). Alterada pela Portaria Inmetro 188, de 18/03/2026 (publicação no DOU de 01/04/2026, Seção 1, p. 80, conforme extrato reproduzido; retificação no DOU de 11/09/2026, p. 70), em vigor desde a publicação, que fixou até 31/12/2027 o prazo limite de adequação de fabricantes e importadores (art. 14-A). A base do Inmetro a marca como 'Revisto'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "http://www.inmetro.gov.br/legislacao/detalhe.asp?seq_classe=1&seq_ato=2936",
+    "topics": [
+      "water_quality",
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "CORRIGIDO: o projeto diz 'vigente' e atribui à consulta pública a ENCE 'a partir de 01/01/2027'. A consulta virou a Portaria 188/2026, que adotou como prazo limite 31/12/2027 (a minuta da consulta previa 31/12/2026). A faixa de pH de 6 a 9,5 aparece como critério da água fornecida no ensaio de extraíveis do equipamento (Anexo C do RTQ, item 5.1), e não como padrão de potabilidade, o que confirma a ressalva do projeto. Para o software do prestador de água e esgoto, sem impacto funcional."
+  },
+  {
+    "id": "inmetro-consulta-publica-21-2025",
+    "kind": "INMETRO",
+    "number": "21",
+    "year": "2025",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Consulta Pública Inmetro nº 21/2025 - Proposta de alteração da Portaria Inmetro 102/2022 (Equipamentos para Consumo de Água)",
+    "scope_summary": "Colheu críticas e sugestões, por 60 dias, sobre minuta que alterava a Portaria 102/2022: ensaio de extraíveis (água entre pH 6 e 9,5) para todos os equipamentos, convergência com normas IEC/ABNT e faixas de eficiência energética A a E na ENCE para equipamentos que refrigeram a água. Não trata de revisão da potabilidade.",
+    "norm_class": "REFERENCE",
+    "applicability": "Fabricantes, importadores, laboratórios e consumidores de bebedouros e purificadores. Sem efeito sobre prestadores de água e esgoto ou sobre o produto.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "ENCERRADA E SUPERADA (é uma consulta, não uma norma revogada): datada de 19/08/2025 e publicada no DOU de 22/08/2025 (Seção 1, p. 29 a 32); prazo de 60 dias, encerrado em 22/10/2025 no Participa + Brasil. O resultado foi a Portaria Inmetro 188, de 18/03/2026, que altera a Portaria 102/2022 e cita expressamente a Consulta Pública 21.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/participamaisbrasil/equipamentos-para-consumo-de-agua-1",
+    "topics": [
+      "water_quality",
+      "other"
+    ],
+    "modules_affected": [],
+    "notes": "CORRIGIDO: o projeto diz 'aberta em 19/08/2025' e a trata como em andamento. A consulta é datada de 19/08/2025, foi publicada em 22/08/2025 (a página do Participa + Brasil registra a abertura em 22/08/2025 e, no campo de publicação, 19/08/2025; adotei a data do DOU citada na Portaria 188/2026), fechou em 22/10/2025 e já foi convertida na Portaria 188/2026. O status REVOGADA foi usado no sentido de 'superada por ato definitivo', por não haver valor mais adequado; não é revogação formal. Confirmada a ressalva do projeto: a síntese inicial de busca estava errada, pois a consulta não revisa potabilidade."
+  },
+  {
+    "id": "bcb-res-467-2025",
+    "kind": "BCB",
+    "number": "467",
+    "year": "2025",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB nº 467, de 30 de abril de 2025 - Altera a Resolução BCB nº 443/2024 (arranjo de pagamento do boleto)",
+    "scope_summary": "Define a governança da convenção do arranjo do boleto: votos das associações em proporção ao volume anual de boletos (base inicial em 2024), teto de 50% por associação, exclusão de associação com membro acima de 90% do volume, e prazo de 150 dias (antes 90) para submeter a convenção ao BCB.",
+    "norm_class": "REGULATORY",
+    "applicability": "Instituições participantes do arranjo do boleto e suas associações representativas. Sem obrigação direta para o prestador de água e esgoto ou para o software; contexto do arranjo de cobrança por boleto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 30/04/2025 (sessão da Diretoria Colegiada; voto 44/2025-BCB) e publicada no DOU de 06/05/2025, Seção 1, p. 129; vigor na data da publicação. Não revogada nem alterada (versão 1 no portal do BCB). Altera a Resolução BCB 443/2024, que por sua vez foi alterada pelas Resoluções BCB 467/2025, 515/2025 e 596/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20BCB&numero=467",
+    "topics": [
+      "payments",
+      "billing"
+    ],
+    "modules_affected": [
+      "collection",
+      "integration"
+    ],
+    "notes": "Ementa e conteúdo conferidos na API do portal de normativos do BCB (bcb.gov.br). A descrição do projeto ('Alterou a Res. BCB 443/2024') está correta, mas incompleta: a alteração é só de governança da convenção do boleto (art. 20, §§ 3º e 4º; art. 21, §§ 1º a 7º), sem efeito sobre emissão ou conteúdo do boleto de cobrança."
+  },
+  {
+    "id": "bcb-res-515-2025",
+    "kind": "BCB",
+    "number": "515",
+    "year": "2025",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB nº 515, de 21 de outubro de 2025 - Altera a Resolução BCB nº 443/2024 (arranjo de pagamento do boleto)",
+    "scope_summary": "Cria regras para o boleto de cobrança dinâmico: o BCB poderá definir, conforme o ativo financeiro vinculado, a conversão do boleto comum em dinâmico; prevê troca eletrônica e padronizada de dados entre registradoras e liquidação, e oferta isonômica e não discriminatória de serviços baseados nos dados dos usuários finais (art. 24-A).",
+    "norm_class": "REGULATORY",
+    "applicability": "Instituições participantes do arranjo do boleto (emissoras, registradoras, escrituradoras, liquidantes). Para o prestador de água e esgoto, efeito indireto: eventual evolução do boleto de cobrança, sem obrigação direta.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 21/10/2025 (voto 143/2025-BCB) e publicada no DOU de 23/10/2025, Seção 1, p. 132; vigor na data da publicação. Não revogada (versão 1 no portal do BCB). Parte do conjunto que altera a Resolução BCB 443/2024.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20BCB&numero=515",
+    "topics": [
+      "payments",
+      "billing"
+    ],
+    "modules_affected": [
+      "collection",
+      "integration"
+    ],
+    "notes": "Conferido na API do portal de normativos do BCB. A descrição do projeto ('Alterou a Res. BCB 443/2024') está correta; o conteúdo é a disciplina do boleto dinâmico e da integração com ativos financeiros (arts. 5º, 12, 12-A, 13, 20 e 24-A da 443). Vale lembrar que o boleto de cobrança de água e esgoto não precisa ser dinâmico; a resolução não impõe essa conversão ao emissor."
+  },
+  {
+    "id": "bcb-res-596-2026",
+    "kind": "BCB",
+    "number": "596",
+    "year": "2026",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB nº 596, de 30 de setembro de 2026 - Altera a Resolução BCB nº 443/2024 para vedar transações destinadas a loterias de aposta de quota fixa",
+    "scope_summary": "Inclui o art. 16-A na Resolução BCB 443/2024: as instituições do arranjo do boleto devem impedir processar, liquidar e viabilizar transações destinadas a loterias de aposta de quota fixa, desde a publicação da Medida Provisória 1.394, de 25/09/2026.",
+    "norm_class": "REGULATORY",
+    "applicability": "Instituições participantes do arranjo do boleto. Sem efeito direto sobre o prestador de água e esgoto nem sobre o produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 30/09/2026 (voto 113/2026-BCB) e publicada no DOU de 02/10/2026, Seção 1, p. 114; vigor na data da publicação, com a obrigação contada desde a publicação da MP 1.394/2026 (25/09/2026). Não revogada (versão 1 no portal do BCB).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20BCB&numero=596",
+    "topics": [
+      "payments",
+      "other"
+    ],
+    "modules_affected": [
+      "collection"
+    ],
+    "notes": "Descrição do projeto ('Alterou a Res. BCB 443/2024 (loterias)') confirmada. Ressalva: a resolução se apoia no art. 14 da Medida Provisória 1.394/2026, cuja existência foi vista só em fonte secundária (Agência Senado e site de atos do Executivo; não conferi no Planalto) e que, por ser medida provisória, precisa ser convertida em lei em até 120 dias; acompanhar a perda de eficácia ou conversão, que pode afetar a base da resolução."
+  },
+  {
+    "id": "bcb-res-597-2026",
+    "kind": "BCB",
+    "number": "597",
+    "year": "2026",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB nº 597, de 30 de setembro de 2026 - Altera o Regulamento do Pix (Resolução BCB nº 1/2020) para vedar transações destinadas a loterias de aposta de quota fixa",
+    "scope_summary": "Altera o art. 32 do Regulamento anexo à Resolução BCB 1/2020 (Pix), acrescentando a obrigação de os participantes impedirem o processamento, a liquidação e a viabilização de transações para loterias de aposta de quota fixa, ressalvados encerramento de operações e restituição a apostadores (art. 14 da MP 1.394/2026). O texto também reproduz os incisos IX e X do art. 32 sobre monitoramento no Pix Automático e divulgação do Mecanismo Especial de Devolução.",
+    "norm_class": "REGULATORY",
+    "applicability": "Participantes do arranjo Pix (instituições financeiras e de pagamento). Para o prestador de água e esgoto, sem obrigação direta; contexto do Regulamento do Pix usado na cobrança.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 30/09/2026 (voto 114/2026-BCB) e publicada no DOU de 02/10/2026, Seção 1, p. 114; vigor na data da publicação. Não revogada (versão 1). Na lista de atualizações da Resolução BCB 1 no portal do BCB, a 597 aparece como a última com efeito a partir da publicação, depois da 587/2026, que tem ainda efeitos futuros em 01/02/2027 e 01/07/2027.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20BCB&numero=597",
+    "topics": [
+      "payments"
+    ],
+    "modules_affected": [
+      "collection",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o projeto descreve a 597 apenas como 'última alteração do Regulamento do Pix lida pelo relatório 11', sem conteúdo. O conteúdo é a vedação a transações de loterias de quota fixa (incluindo o inciso XI do art. 32). A afirmação de 'última alteração' é válida só na data da leitura: a Resolução BCB 587/2026 ainda tem efeitos futuros e podem surgir novas alterações. Mesma ressalva da 596 quanto à dependência da MP 1.394/2026."
+  },
+  {
+    "id": "bcb-res-505-2025",
+    "kind": "BCB",
+    "number": "505",
+    "year": "2025",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB nº 505, de 25 de setembro de 2025 - Altera a Resolução BCB nº 51/2020 (autorização e cancelamento de autorização de débitos em conta)",
+    "scope_summary": "Inclui o art. 2º-A na Resolução BCB 51/2020: quando o recebedor do débito é pessoa jurídica ou entidade não autorizada pelo BCB, a autorização e o cancelamento de débito em conta passam a seguir exclusivamente a regulamentação do Pix Automático (exceto quando a instituição depositária é também a destinatária). Contratos e autorizações vigentes deveriam ser adequados até 01/01/2026 (prazo posteriormente alterado).",
+    "norm_class": "REGULATORY",
+    "applicability": "Instituições depositárias e destinatárias de débitos em conta e usuários recebedores pessoa jurídica. Para o prestador de água e esgoto que cobra por débito automático, o débito em conta com autorização de cliente passa a se apoiar no Pix Automático; impacto em cobrança e conciliação.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 25/09/2025 (voto 120/2025-BCB), publicada no DOU de 29/09/2025, Seção 1, p. 114; vigor em 13/10/2025. Não revogada. O § 2º do art. 2º-A foi reescrito pela Resolução BCB 544, de 24/12/2025 (DOU 26/12/2025): adequação até 01/01/2026, exceto contratos e autorizações de pagamentos de tributos, de convênios de prestação de serviços públicos e de planos de saúde, com adequação até 01/01/2027. A própria Resolução BCB 51 foi ainda alterada pelas Resoluções BCB 552/2026 (escopo) e 565/2026 (efeitos a partir de 01/07/2027).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20BCB&numero=505",
+    "topics": [
+      "payments",
+      "billing"
+    ],
+    "modules_affected": [
+      "collection",
+      "billing",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: (1) o prazo 'adequação de contratos até 01/01/2026' está superado pela Resolução BCB 544/2025, que o manteve para os casos gerais e estendeu para 01/01/2027 os contratos e autorizações de tributos, convênios de prestação de serviços públicos e planos de saúde; a cobrança de água e esgoto por débito automático provavelmente se enquadra em 'serviços públicos', mas o enquadramento exato exige análise jurídica (não confirmado). (2) A ementa oficial é de débito em conta (Res. 51/2020), e a 505 não cria o Pix Automático nem trata de 'débito automático' em sentido amplo; ela apenas remete ao regime do Pix Automático. (3) O texto da 505 não cita a Resolução CMN 5.251/2025; sua base é a Resolução CMN 4.282/2013, art. 13; a ligação com a CMN 5.251 vem do projeto e deve ser verificada no lote do CMN."
+  },
+  {
+    "id": "bcb-res-406-2024",
+    "kind": "BCB",
+    "number": "406",
+    "year": "2024",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB nº 406, de 2 de agosto de 2024 - Compartilhamento do serviço de iniciação de transação de pagamento sem redirecionamento no Open Finance",
+    "scope_summary": "Disciplina a jornada sem redirecionamento (vinculação de conta e transação de pagamento) no Open Finance. A implementação é obrigatória, para todas as detentoras de conta participantes obrigatórias do Pix, em testes em produção desde 06/02/2026 e para o público em geral desde 22/04/2026.",
+    "norm_class": "REGULATORY",
+    "applicability": "Instituições detentoras de conta, instituições iniciadoras de transação de pagamento e a governança do Open Finance. Para o prestador de água e esgoto, só indireto, caso o produto ofereça pagamento via iniciador de pagamento (Pix por Open Finance).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 02/08/2024 e publicada no DOU de 05/08/2024, Seção 1, p. 211; vigor na publicação. Primeira etapa obrigatória a partir de 14/11/2024 para conglomerados que concentram 99% das transações. Alterada pela Resolução BCB 541/2025 (art. 6º, II). Não revogada (versão 2 no portal do BCB).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20BCB&numero=406",
+    "topics": [
+      "payments"
+    ],
+    "modules_affected": [
+      "collection",
+      "portal",
+      "integration"
+    ],
+    "notes": "Confirmada em fonte oficial a afirmação do projeto: jornada sem redirecionamento obrigatória para as detentoras de conta a partir de 22/04/2026 (art. 6º, II, 'b', com a redação da Resolução BCB 541/2025). A data original do art. 6º, II era 02/01/2026; foi substituída por 06/02/2026 (testes em produção) e 22/04/2026 (público em geral). O projeto citava fonte secundária; agora há fonte oficial."
+  },
+  {
+    "id": "bcb-res-541-2025",
+    "kind": "BCB",
+    "number": "541",
+    "year": "2025",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB nº 541, de 18 de dezembro de 2025 - Altera a Resolução BCB nº 406/2024 (Open Finance, iniciação de pagamento sem redirecionamento)",
+    "scope_summary": "Altera apenas o art. 6º, II, da Resolução BCB 406/2024, substituindo o prazo único de 02/01/2026 por duas datas para as detentoras de conta participantes obrigatórias do Pix: 06/02/2026 (testes em produção) e 22/04/2026 (público em geral).",
+    "norm_class": "REGULATORY",
+    "applicability": "Instituições detentoras de conta participantes obrigatórias do Pix e iniciadoras de transação de pagamento no Open Finance. Para o prestador de água e esgoto, só indireto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 18/12/2025 (voto 192/2025-BCB) e publicada no DOU de 22/12/2025, Seção 1, p. 450; vigor na publicação. Não revogada (versão 1 no portal do BCB). As datas de 06/02/2026 e 22/04/2026 já passaram na data desta verificação (22/10/2026).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20BCB&numero=541",
+    "topics": [
+      "payments"
+    ],
+    "modules_affected": [
+      "collection",
+      "portal",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o projeto diz que a 541 'complementa' a 406. Ela é uma alteração pontual (ementa: 'Altera a Resolução BCB nº 406'), que só reescreve o cronograma do art. 6º, II; não acrescenta regras de Open Finance além do cronograma. Fundamenta-se também no art. 9º-A da Lei 4.728/1965, citado no preâmbulo."
+  },
+  {
+    "id": "bcb-in-743-2026",
+    "kind": "BCB",
+    "number": "743",
+    "year": "2026",
+    "issuer": "Banco Central do Brasil (BCB) - Departamento de Competição e de Estrutura do Mercado Financeiro (Decem)",
+    "title_pt": "Instrução Normativa BCB nº 743, de 11 de junho de 2026 (altera a IN BCB 513/2024: Pix Automático, agendamento e liquidação da ordem de pagamento)",
+    "scope_summary": "Ajusta a IN BCB 513/2024 (procedimentos do Pix Automático, Pix Agendado e Pix Cobrança) em dois pontos: amplia as hipóteses de rejeição da ordem de pagamento do Pix Automático e veda o preenchimento do campo idConciliacaoRecebedor da mensagem pacs.008 quando a instrução é gerada por iniciador de pagamento. Também revoga oito INs BCB cujos efeitos se exauriram, entre elas a IN 633/2025.",
+    "norm_class": "REGULATORY",
+    "applicability": "Participantes do Pix (instituições detentoras de conta, recebedoras e iniciadoras de pagamento) que operam o Pix Automático. Para o Ziip SAN, afeta o prestador de saneamento apenas de forma indireta, pelo comportamento do PSP/banco recebedor e pelo conteúdo da conciliação; impacta o desenho do módulo de arrecadação via Pix Automático.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 11/06/2026; publicada no DOU de 12/06/2026, Seção 1, p. 121/122; em vigor na data da publicação (art. 3º). Altera os arts. 6º, § 1º, V, e 7º, § 18, da IN BCB 513/2024 e revoga as INs BCB 43/2020, 58/2020, 71/2021, 87/2021, 372/2023, 373/2023, 422/2023 e 633/2025. Registro oficial sem atualizações posteriores e sem marca de revogação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Instru%C3%A7%C3%A3o%20Normativa%20BCB&numero=743",
+    "topics": [
+      "payments",
+      "billing",
+      "reporting"
+    ],
+    "modules_affected": [
+      "collection",
+      "billing",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: a norma não 'detalha' agendamento e liquidação do zero; é uma IN de alteração pontual da IN BCB 513/2024 (ementa oficial fala em 'ajustar dispositivos relacionados ao agendamento e à liquidação da ordem de pagamento') e, no mesmo ato, faz revogações de limpeza (IN 633/2025 e outras sete). A data 11/06/2026 é a da assinatura; a publicação é de 12/06/2026. O texto da IN 513/2024 consolidada deve ser lido antes da P4.5, conforme a ressalva do projeto. A IN faz parte do Regulamento do Pix e o próprio texto indica natureza contratual, sem AIR."
+  },
+  {
+    "id": "bcb-in-777-2026",
+    "kind": "BCB",
+    "number": "777",
+    "year": "2026",
+    "issuer": "Banco Central do Brasil (BCB) - Departamento de Competição e de Estrutura do Mercado Financeiro (Decem)",
+    "title_pt": "Instrução Normativa BCB nº 777, de 18 de setembro de 2026 (divulga a versão 2.2 do Manual de Fluxos do Processo de Efetivação do Pix)",
+    "scope_summary": "Divulga a versão 2.2 do Manual de Fluxos do Processo de Efetivação do Pix, parte integrante do Regulamento do Pix, e revoga a IN BCB 631/2025, que divulgava a versão 2.1. O manual descreve os fluxos de geração e efetivação da ordem de pagamento (QR Code, chave, Pix Cobrança, Pix Agendado, iniciação).",
+    "norm_class": "REGULATORY",
+    "applicability": "Participantes do Pix. Para o Ziip SAN, é referência técnica para a integração de cobrança por Pix (QR dinâmico, Pix Cobrança com vencimento) e a conciliação; exige conferir o delta entre as versões 2.1 e 2.2 antes da vigência.",
+    "jurisdiction": "BR",
+    "status": "VIGENCIA_FUTURA",
+    "status_note": "Assinada em 18/09/2026; publicada no DOU de 21/09/2026, Seção 1, p. 196. Entra em vigor em 01/02/2027 (art. 3º), não na publicação. A revogação da IN BCB 631/2025 (art. 2º) integra o mesmo ato e, pelo art. 3º, produz efeito na mesma data; até lá a versão 2.1 permanece em uso. Registro oficial sem atualizações e sem marca de revogação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Instru%C3%A7%C3%A3o%20Normativa%20BCB&numero=777",
+    "topics": [
+      "payments",
+      "billing",
+      "reporting"
+    ],
+    "modules_affected": [
+      "collection",
+      "billing",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o projeto registrava 'Vigente'; na data de hoje (22/10/2026) a norma ainda não produz efeitos, pois o vigor é 01/02/2027. As datas são fatos normativos, não prazos de projeto. O manual em si está no PDF indicado no art. 1º, parágrafo único (bcb.gov.br/content/estabilidadefinanceira/pix/Regulamento_Pix/III_ManualdeFluxosdoProcessodeEfetivacaodoPix.pdf); o histórico de revisão da v2.2 não foi analisado ponto a ponto neste lote."
+  },
+  {
+    "id": "bcb-in-746",
+    "kind": "BCB",
+    "number": "746",
+    "year": "2026",
+    "issuer": "Banco Central do Brasil (BCB) - Departamento de Competição e de Estrutura do Mercado Financeiro (Decem)",
+    "title_pt": "Instrução Normativa BCB nº 746, de 16 de junho de 2026 (altera a IN BCB 512/2024: limites de valor das transações Pix)",
+    "scope_summary": "Altera a IN BCB 512/2024 (limites de valor no Pix) e revoga os dispositivos que fixavam o teto de R$ 500,00 por transação para Pix por aproximação e para iniciação sem redirecionamento (arts. 16-A e 16-C e art. 10, § 2º, VI). Também ajusta a gestão de limites, incluindo pedidos de aumento e de redução do limite diário do Pix Automático.",
+    "norm_class": "REGULATORY",
+    "applicability": "Participantes provedores de conta transacional do Pix. Efeito indireto no Ziip SAN: nenhum teto fixo de R$ 500 para pagamento por aproximação; os limites passam a ser os gerais do art. 3º e os definidos por cada instituição e cliente, o que importa para quem recebe contas de água por Pix em maquininhas/NFC.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 16/06/2026; publicada no DOU de 17/06/2026, Seção 1, p. 457; em vigor desde 01/10/2026 (art. 3º). Altera o art. 10, § 2º, IV e V, e o art. 12, caput, da IN BCB 512/2024 e revoga o art. 10, § 2º, VI, e os arts. 16-A e 16-C. Registro oficial sem atualizações posteriores e sem marca de revogação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Instru%C3%A7%C3%A3o%20Normativa%20BCB&numero=746",
+    "topics": [
+      "payments",
+      "billing"
+    ],
+    "modules_affected": [
+      "collection",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: ano 2026 (a entrada não informava o ano); o número 746 corresponde à IN BCB nº 746, de 16/06/2026. Verificado em fonte oficial (antes constava só fonte secundária). O texto da própria IN 746 apenas revoga dispositivos; o conteúdo do teto de R$ 500 consta do art. 16-A da IN 512/2024 (incluído pela IN BCB 629/2025, vigente desde 01/12/2025), confirmado na versão consolidada da IN 512 no site do BCB. Portanto, 'retirou o teto de R$ 500 em 01/10/2026' está correto, mas o efeito é a revogação do teto fixo, não a fixação de novo valor; os limites do art. 3º e o limite noturno continuam aplicáveis. A IN 746 cobre também a iniciação sem redirecionamento (Res. BCB 406/2024), não só o contactless."
+  },
+  {
+    "id": "bcb-circ-3656-2013",
+    "kind": "BCB",
+    "number": "3.656",
+    "year": "2013",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Circular nº 3.656, de 2 de abril de 2013 (altera a Circular 3.598/2012: boleto de pagamento)",
+    "scope_summary": "Circular de alteração da Circular 3.598/2012, que instituiu o boleto de pagamento: mexeu em espécies, emissão, apresentação e na sistemática de liquidação das transferências de fundos associadas ao boleto. Hoje é só referência histórica.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórica. Regime de boleto aplicável ao Ziip SAN é o da Resolução BCB 443/2024 (arranjo de pagamento do boleto), em vigor desde 03/02/2025.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Publicada no DOU de 03/04/2013. Revogada integralmente pelo art. 25, II, da Resolução BCB nº 443, de 12/12/2024 (DOU 16/12/2024), com vigência da revogação a partir de 03/02/2025 (art. 26). O mesmo art. 25 revogou também a Circular 3.598/2012 e a 3.956/2019.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Circular&numero=3656",
+    "topics": [
+      "billing",
+      "payments"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection"
+    ],
+    "notes": "Confirmação do registro do projeto: revogação pelo art. 25 da Res. BCB 443/2024 a partir de 03/02/2025 (verificada no texto oficial). Ressalva: a Circular 3.656/2013 não 'regulava o boleto' por inteiro; era norma que alterava a Circular 3.598/2012 (esta, sim, a norma-base do boleto, também revogada). Citar a 3.598/2012 como base ao descrever o histórico."
+  },
+  {
+    "id": "bcb-circ-3956-2019",
+    "kind": "BCB",
+    "number": "3.956",
+    "year": "2019",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Circular nº 3.956, de 1º de agosto de 2019 (altera a Circular 3.598/2012: boleto de pagamento)",
+    "scope_summary": "Circular de alteração da Circular 3.598/2012, que instituiu o boleto de pagamento e suas espécies; reformulou dispositivos sobre emissão, apresentação e liquidação, incluindo novos incisos e artigos. Hoje é só referência histórica.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórica. O boleto passou a ser regido pela Resolução BCB 443/2024 desde 03/02/2025.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Publicada no DOU de 05/08/2019 (Voto 148/2019-BCB). Revogada integralmente pelo art. 25, III, da Resolução BCB nº 443, de 12/12/2024, a partir de 03/02/2025.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Circular&numero=3956",
+    "topics": [
+      "billing",
+      "payments"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection"
+    ],
+    "notes": "Confirmação do registro do projeto: revogação pelo art. 25 da Res. BCB 443/2024 a partir de 03/02/2025 (verificada). Ressalva: a Circular 3.956/2019 também é norma de alteração da Circular 3.598/2012, não norma autônoma do boleto."
+  },
+  {
+    "id": "bcb-circ-4022-2020",
+    "kind": "BCB",
+    "number": "4.022",
+    "year": "2020",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Circular nº 4.022, de 3 de junho de 2020 (autorização e cancelamento de autorização de débitos em conta de pagamento pré-paga)",
+    "scope_summary": "Fixava os procedimentos para autorizar e cancelar autorização de débitos em conta de pagamento pré-paga (instituição depositária e destinatária, finalidade específica, prazo). Era a contrapartida, para contas pré-pagas, da Res. CMN 4.790/2020, que trata de contas de depósitos e conta-salário.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórica. Não se aplica a débito automático em conta de depósitos (essa matéria era da Res. CMN 4.790/2020). Hoje o tema de contas de pagamento pré-pagas está na Res. BCB 51/2020.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Publicada no DOU de 05/06/2020 (Voto 153/2020-BCB). Alterada pela Res. BCB 26/2020 (art. 16). Revogada integralmente pela Resolução BCB nº 51, de 16/12/2020, a partir de 01/03/2021.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Circular&numero=4022",
+    "topics": [
+      "payments",
+      "billing",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "collection",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o projeto deixava o estado 'não informado'; a circular está REVOGADA desde 01/03/2021 pela Res. BCB 51/2020. Também corrigido o objeto: trata de contas de pagamento pré-pagas, não de débito automático em contas bancárias em geral. A citação desta circular pelo Manual do Débito Automático da FEBRABAN, junto com a Res. CMN 4.790/2020, é de manual desatualizado quanto a esta circular; o regime atual é Res. CMN 4.790/2020 (contas de depósitos e conta-salário) e Res. BCB 51/2020 (contas pré-pagas), ambos com mudanças a partir de 01/07/2027 (Res. CMN 5.299/2026 e Res. BCB 565/2026)."
+  },
+  {
+    "id": "cmn-res-5251-2025",
+    "kind": "CMN",
+    "number": "5.251",
+    "year": "2025",
+    "issuer": "Conselho Monetário Nacional (CMN)",
+    "title_pt": "Resolução CMN nº 5.251, de 25 de setembro de 2025 (altera a Resolução 4.790/2020: autorização e cancelamento de débitos em conta)",
+    "scope_summary": "Altera a Res. CMN 4.790/2020 para que, quando o recebedor do débito for pessoa jurídica ou entidade não autorizada pelo BCB, a autorização e o cancelamento do débito em conta de depósitos e conta-salário sigam exclusivamente as regras do Pix Automático (novo art. 2º-A). Exclui os casos em que a instituição depositária é também a destinatária dos recursos.",
+    "norm_class": "REGULATORY",
+    "applicability": "Instituições depositárias e destinatárias; por reflexo, prestadores de saneamento (recebedores PJ) que usam débito automático em conta, que migram para Pix Automático. Impacta o módulo de arrecadação e o cadastro de autorizações de débito dos clientes.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sessão de 25/09/2025; publicada no DOU de 29/09/2025, Seção 1, p. 36 (Voto 58/2025-CMN); em vigor em 13/10/2025. O prazo de adequação do § 2º do art. 2º-A (01/01/2026) foi alterado pela Res. CMN 5.278/2025: permanece 01/01/2026, exceto para tributos, convênios de serviços públicos e planos de saúde, que passam a 01/01/2027. A Res. CMN 4.790/2020 será revogada em 01/07/2027 pela Res. CMN 5.299/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20CMN&numero=5251",
+    "topics": [
+      "payments",
+      "billing"
+    ],
+    "modules_affected": [
+      "collection",
+      "billing",
+      "integration",
+      "portal"
+    ],
+    "notes": "CORRIGIDO: o projeto registra adequação 'até 01/01/2026' sem ressalva; para convênios de serviços públicos (caso do saneamento) o prazo vigente é 01/01/2027, conforme a Res. CMN 5.278/2025. O art. 2º-A vale para recebedor 'pessoa jurídica ou entidade não autorizada a funcionar pelo BCB', não apenas PJ; também alterou o art. 1º da 4.790. A Res. BCB 505/2025 é a norma paralela para contas de pagamento pré-pagas (art. 2º-A da Res. BCB 51/2020), segundo o registro oficial da Res. BCB 51."
+  },
+  {
+    "id": "cmn-res-5278-2025",
+    "kind": "CMN",
+    "number": "5.278",
+    "year": "2025",
+    "issuer": "Conselho Monetário Nacional (CMN)",
+    "title_pt": "Resolução CMN nº 5.278, de 24 de dezembro de 2025 (altera a Resolução 4.790/2020: prazo de adequação ao Pix Automático)",
+    "scope_summary": "Altera o § 2º do art. 2º-A da Res. CMN 4.790/2020: mantém 01/01/2026 como prazo para adequar contratos e autorizações de débito ao Pix Automático e estende a 01/01/2027 o prazo para pagamentos de tributos, convênios de prestação de serviços públicos e planos de saúde. Passa a valer também para autorizações novas.",
+    "norm_class": "REGULATORY",
+    "applicability": "Instituições depositárias e destinatárias; prestadores de saneamento com convênios de débito em conta (serviço público) têm até 01/01/2027 para migrar ao Pix Automático. Define o cronograma de adoção do Pix Automático como meio de cobrança recorrente no Ziip SAN.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sessão extraordinária de 24/12/2025; publicada no DOU de 26/12/2025, Seção 1, p. 48 (Voto 92/2025-CMN); em vigor na data da publicação. A Res. CMN 4.790/2020, que ela altera, será revogada em 01/07/2027 pela Res. CMN 5.299/2026. Registro oficial sem atualizações e sem marca de revogação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20CMN&numero=5278",
+    "topics": [
+      "payments",
+      "billing"
+    ],
+    "modules_affected": [
+      "collection",
+      "billing",
+      "integration",
+      "portal"
+    ],
+    "notes": "CORRIGIDO: a ementa oficial é de alteração da Res. CMN 4.790/2020, não 'Pix Automático em serviço público' em sentido amplo; o efeito é só a prorrogação do prazo de adequação (§ 2º do art. 2º-A) para convênios de serviços públicos, tributos e planos de saúde. A divergência entre 22c e 22d sobre a fonte do prazo de 01/01/2027 se resolve assim: a Res. CMN 5.278/2025 cobre contas de depósitos e conta-salário, e a Res. BCB 544/2025 (24/12/2025, DOU 26/12/2025) traz a mesma prorrogação para contas de pagamento pré-pagas (§ 2º do art. 2º-A da Res. BCB 51/2020). Ambas estão corretas, cada uma para um tipo de conta; citar as duas. Voto que a fundamenta: 92/2025-CMN."
+  },
+  {
+    "id": "cmn-res-5299-2026",
+    "kind": "CMN",
+    "number": "5.299",
+    "year": "2026",
+    "issuer": "Conselho Monetário Nacional (CMN)",
+    "title_pt": "Resolução CMN nº 5.299, de 4 de maio de 2026 (diretrizes para a regulamentação dos direitos do usuário pessoa natural de serviços financeiros - Lei 15.252/2025)",
+    "scope_summary": "Estabelece princípios que o BCB deve seguir ao regulamentar os direitos da pessoa natural previstos na Lei 15.252/2025: portabilidade salarial, crédito com juros reduzidos, débito automático e direito à informação. Revoga as Resoluções CMN 4.790/2020 e 5.058/2022 a partir de 01/07/2027.",
+    "norm_class": "REGULATORY",
+    "applicability": "Instituições autorizadas pelo BCB, por meio da regulamentação do BCB. Para o Ziip SAN, o efeito é indireto: o regime detalhado de débito automático é o da Res. BCB 565/2026 (a partir de 01/07/2027), o que muda o fluxo de autorização/cancelamento de débito dos clientes do prestador.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sessão de 23/04/2026; assinada em 04/05/2026 e publicada no DOU extra de 04/05/2026, Seção 1, p. 4 (Voto 21/2026-CMN). Os arts. 1º a 5º e 7º, II, vigoram desde a publicação. A revogação das Res. CMN 4.790/2020 e 5.058/2022 (art. 6º) tem vigência futura: 01/07/2027 (art. 7º, I). Registro oficial sem atualizações e sem marca de revogação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20CMN&numero=5299",
+    "topics": [
+      "payments",
+      "billing",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "collection",
+      "billing",
+      "portal",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: a Res. CMN 5.299/2026 não 'institui o novo regime de débito automático'; é norma de diretrizes (art. 4º traz os princípios do débito automático) e só a revogação da Res. CMN 4.790 é diferida. O regime operacional vem da Res. BCB 565/2026 (04/05/2026; altera a Res. BCB 51/2020 a partir de 01/07/2027, com nova redação de ementa, arts. 1º a 9º e 12 e inclusões nos arts. 4º, 5º, 12, 13-A e 14-A). A Res. CMN 4.790/2020 não está revogada hoje: segue em vigor até 30/06/2027. Status 'futura' do projeto vale apenas para o art. 6º. Relacionadas do mesmo pacote: Res. BCB 564, 566 e 567/2026 (crédito de juros reduzidos, portabilidade salarial e informação)."
+  },
+  {
+    "id": "cmn-res-5171-2024",
+    "kind": "CMN",
+    "number": "5.171",
+    "year": "2024",
+    "issuer": "Conselho Monetário Nacional (CMN)",
+    "title_pt": "Resolução CMN nº 5.171, de 29 de agosto de 2024 (metodologia de cálculo e forma de aplicação da taxa legal - art. 406 do Código Civil)",
+    "scope_summary": "Define como o BCB calcula e divulga mensalmente a taxa legal de juros do art. 406 do Código Civil, a partir dos fatores da taxa Selic e do IPCA-15 do mês anterior, e como ela se aplica (proporcionalização por dias, reajuste sobre valor atualizado).",
+    "norm_class": "REGULATORY",
+    "applicability": "Qualquer relação em que a lei civil mande aplicar a taxa legal (juros de mora sem taxa convencionada, atualização de débitos). Para o Ziip SAN, é referência para o cálculo de encargos de mora e de atualização de contas em atraso quando não houver taxa contratual ou tarifária específica.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Sessão de 22/08/2024; publicada no DOU de 30/08/2024, Seção 1, p. 259/260 (Voto 65/2024-CMN); em vigor na data da publicação (art. 9º); a taxa de 30 e 31/08/2024 foi a divulgada para agosto de 2024 (art. 8º, parágrafo único). Sem normas vinculadas, atualizações ou marca de revogação no registro oficial.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20CMN&numero=5171",
+    "topics": [
+      "billing",
+      "other"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection",
+      "dunning"
+    ],
+    "notes": "CORRIGIDO: a taxa legal não é 'Selic menos IPCA' em diferença simples; o texto da resolução a obtém a partir do Fator Selic e do Fator IPCA do mês anterior ao de referência (este calculado com o IPCA-15, não o IPCA cheio), expressa em taxa mensal com seis casas decimais. A resolução se fundamenta no art. 406, § 2º, do Código Civil; a relação com a Lei 14.905/2024 (que deu a atual redação ao art. 406) não consta do corpo da resolução, mas é compatível com o contexto. O BCB divulga a taxa mensalmente (art. 8º)."
+  },
+  {
+    "id": "cmn-voto-92-2025",
+    "kind": "CMN",
+    "number": "92",
+    "year": "2025",
+    "issuer": "Conselho Monetário Nacional (CMN) / Banco Central do Brasil",
+    "title_pt": "Voto CMN 92/2025 (Voto 92/2025-CMN, fundamento da Resolução CMN 5.278/2025)",
+    "scope_summary": "Voto de submissão ao CMN que fundamentou a Resolução CMN 5.278, de 24/12/2025, que prorrogou para 01/01/2027 o prazo de adequação ao Pix Automático de tributos, convênios de serviços públicos e planos de saúde. O texto do voto em si não foi obtido.",
+    "norm_class": "REFERENCE",
+    "applicability": "Documento de fundamentação, sem força normativa própria. Útil como fonte de motivação da prorrogação; a regra aplicável ao Ziip SAN está na Res. CMN 5.278/2025.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "A identificação do voto vem do campo 'Voto' do registro oficial da Res. CMN 5.278/2025 (24/12/2025, DOU 26/12/2025), que indica '92/2025-CMN'. Como documento de fundamentação, não tem vigência própria; segue o ato que fundamenta, em vigor.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20CMN&numero=5278",
+    "topics": [
+      "payments",
+      "billing"
+    ],
+    "modules_affected": [
+      "collection",
+      "billing",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o projeto o apresentava como voto de 'regra de Pix Automático para serviços públicos' sem identificar a resolução; o registro oficial o vincula à Res. CMN 5.278/2025 (alteração do § 2º do art. 2º-A da Res. CMN 4.790/2020). Ressalva: a verificação confirma a vinculação voto-resolução pelo registro oficial do BCB, mas o PDF do voto não foi localizado nem lido (campo 'Documentos' vazio na API do BCB); o conteúdo descrito decorre da resolução. Não citar o voto como fonte primária da regra; citar a Res. CMN 5.278/2025."
+  },
+  {
+    "id": "anpd-res-23-2024",
+    "kind": "ANPD",
+    "number": "23",
+    "year": "2024",
+    "issuer": "Agência Nacional de Proteção de Dados (ANPD; Autoridade até a transformação em agência), Conselho Diretor",
+    "title_pt": "Resolução CD/ANPD nº 23, de 9 de dezembro de 2024 - Aprova a Agenda Regulatória para o biênio 2025-2026",
+    "scope_summary": "Define a lista de iniciativas regulatórias que a ANPD pretende normatizar em 2025-2026 e as ordena em quatro fases de prioridade; prevê também que as ações educativas sigam esses temas. Não cria obrigações diretas para agentes de tratamento.",
+    "norm_class": "REFERENCE",
+    "applicability": "Ato de planejamento da ANPD. Para o produto serve de sinal de quais regras da LGPD serão detalhadas (direitos dos titulares, relatório de impacto, compartilhamento pelo Poder Público, biometria, segurança, IA, anonimização, dados de saúde), sem efeito obrigacional imediato.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 09/12/2024 e publicada no DOU em 11/12/2024; entra em vigor na publicação (art. 4º). O Anexo foi alterado pela Resolução CD/ANPD nº 31, de 22/12/2025. Fases: 1 = itens remanescentes da agenda 2023-2024; 2 = início em até 1 ano; 3 = até 1 ano e 6 meses; 4 = até 2 anos. Vigência é fato normativo, não prazo de projeto.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd/resolucao-no-23-de-9-de-dezembro-de-2024",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd",
+      "platform"
+    ],
+    "notes": "CORRIGIDO (escopo): número, ano e data estão corretos e o ato é de fato uma agenda regulatória, mas ele aprova apenas a Agenda 2025-2026. O Mapa de Temas Prioritários 2026-2027 é outro ato (Res. 30/2025) e a alteração da agenda é a Res. 31/2025; a frase do projeto, que junta tudo, é imprecisa. A página oficial indica 'alterado pela Resolução CD/ANPD nº 31/2025'. Ressalva: a ANPD abriu consulta para a próxima agenda (2027-2028; notícia secundária de 01/09/2026 cita prazo de 16/10/2026 e aprovação até 01/02/2027, com base na Portaria ANPD nº 16/2026), o que sinaliza nova agenda. O texto da Res. 23 foi conferido na cópia oficial em gov.br/anpd; o DOU (in.gov.br) bloqueia leitura automatizada."
+  },
+  {
+    "id": "anpd-res-30-2025",
+    "kind": "ANPD",
+    "number": "30",
+    "year": "2025",
+    "issuer": "Agência Nacional de Proteção de Dados (ANPD; Autoridade até a transformação em agência), Conselho Diretor",
+    "title_pt": "Resolução CD/ANPD nº 30, de 23 de dezembro de 2025 - Aprova o Mapa de Temas Prioritários para o biênio 2026-2027",
+    "scope_summary": "Fixa os temas que orientam a fiscalização da ANPD em 2026-2027: direitos dos titulares (com atividades sobre biometria, saúde, dados financeiros e uso secundário para publicidade direcionada), crianças e adolescentes no ambiente digital, tratamento pelo Poder Público e inteligência artificial. O ciclo de monitoramento é bianual.",
+    "norm_class": "REFERENCE",
+    "applicability": "Planejamento interno de fiscalização da ANPD; indica onde haverá mais atenção. Relevante ao produto e ao cliente (prestador de água e esgoto) sobretudo no eixo Poder Público (20 atividades previstas) e no de direitos dos titulares (dados biométricos, de saúde e financeiros; publicidade direcionada).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 23/12/2025 e publicada no DOU de 24/12/2025 (Seção 1, nº 245); entra em vigor na publicação (art. 4º). Cobre o biênio 2026-2027; o mapa de 2028-2029 e o relatório do ciclo devem ir ao Conselho Diretor até 30/11/2027 (art. 3º). A base legal cita LGPD art. 55-J, XIII, Lei 15.211/2025 (ECA Digital) e Decreto 12.622/2025.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.in.gov.br/web/dou/-/resolucao-cd/anpd-n-30-de-23-de-dezembro-de-2025-677947163",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: a Res. 30/2025 NÃO é agenda regulatória; é o Mapa de Temas Prioritários (fiscalização) 2026-2027. Número, ano e data (23/12/2025) conferem. O projeto escreveu que ela 'integra o conjunto da agenda regulatória 2025-2026'; quem altera a agenda é a Res. 31/2025. O texto do DOU foi lido em cópia da biblioteca digital do MJ (bibliotecadigital.mj.gov.br, arquivo RES_ANPD_2025_31.pdf, que na verdade contém a Res. 30). Consta no anexo: tema 1 com 25 atividades gerais, 10 sobre dados biométricos, de saúde ou financeiros e 5 sobre uso secundário para publicidade direcionada; segundo a notícia oficial, o cronograma pode ser ajustado conforme a regulamentação da Lei 15.211/2025. Fontes secundárias divergem na contagem de atividades; vale o anexo. Notícia oficial: https://www.gov.br/anpd/pt-br/assuntos/noticias/anpd-publica-mapa-de-temas-prioritarios-para-o-bienio-2026-2027-e-atualiza-agenda-regulatoria-2025-2026"
+  },
+  {
+    "id": "anpd-res-31-2025",
+    "kind": "ANPD",
+    "number": "31",
+    "year": "2025",
+    "issuer": "Agência Nacional de Proteção de Dados (ANPD; Autoridade até a transformação em agência), Conselho Diretor",
+    "title_pt": "Resolução CD/ANPD nº 31, de 22 de dezembro de 2025 - Altera a Agenda Regulatória para o biênio 2025-2026",
+    "scope_summary": "Substitui o Anexo da Agenda Regulatória 2025-2026 (19 iniciativas em fases 1 a 4), incluindo os temas do ECA Digital (aferição de idade, escopo e deveres dos fornecedores de TI, revisão das Res. 1/2021 e 4/2023) e a revisão do processo normativo da ANPD; retira o tema autônomo de dados de crianças e adolescentes.",
+    "norm_class": "REFERENCE",
+    "applicability": "Planejamento regulatório da ANPD; sinaliza regras futuras (direitos dos titulares, RIPD, compartilhamento pelo Poder Público, dados biométricos, segurança, IA, anonimização, agregadores de dados, dados de saúde, consentimento, proteção ao crédito). Sem obrigação direta para o produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 22/12/2025; entra em vigor na publicação (art. 2º), divulgada pela ANPD em 24/12/2025. Altera o Anexo da Res. CD/ANPD nº 23/2024. Base: LGPD art. 55-J, XIII, e Lei 13.848/2019 arts. 7º e 21. Motivada pela Lei 15.211/2025 (ECA Digital) e pela transformação da ANPD em agência reguladora (Lei 15.352/2026, segundo a ANPD).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.in.gov.br/web/dou/-/resolucao-cd/anpd-n-31-de-22-de-dezembro-de-2025-677950080",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd",
+      "platform"
+    ],
+    "notes": "Número, ano, data e natureza conferem (é de fato uma alteração da agenda). Ressalva ao texto do projeto: ela não faz parte de um 'conjunto' com o mapa de temas; é ato próprio que altera a Res. 23/2024, e o mapa é a Res. 30/2025. Conteúdo lido na versão oficial em espanhol hospedada em gov.br/anpd (alteracao-da-agenda-regulatoria-2025-2026-em-lingua-espanhola.pdf) e na notícia oficial da ANPD; o texto em português no DOU não pôde ser aberto (in.gov.br bloqueia leitura automatizada). Desdobramentos oficiais: CP 01/2026 (revisão da Res. 1/2021) e CP 03/2026 (revisão da Res. 4/2023), ambas em curso em out/2026."
+  },
+  {
+    "id": "anpd-enunciado-1-2023",
+    "kind": "ANPD",
+    "number": "1",
+    "year": "2023",
+    "issuer": "Agência Nacional de Proteção de Dados (ANPD; Autoridade até a transformação em agência), Conselho Diretor",
+    "title_pt": "Enunciado CD/ANPD nº 1, de 22 de maio de 2023 - Tratamento de dados pessoais de crianças e adolescentes",
+    "scope_summary": "Firma a interpretação da ANPD de que dados de crianças e adolescentes podem ser tratados com qualquer hipótese legal dos arts. 7º ou 11 da LGPD, desde que o melhor interesse do menor seja observado e prevaleça no caso concreto (art. 14).",
+    "norm_class": "REGULATORY",
+    "applicability": "Controladores e operadores que tratem dados de menores (ex.: dependentes em cadastro, tarifa social, titulares menores). Afasta a leitura de que só o consentimento dos pais serviria; exige registrar a avaliação do melhor interesse.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Aprovado em 22/05/2023 e publicado no DOU em 24/05/2023 (data conforme registro da biblioteca digital do MJ; alguns textos secundários dão 25/05). Nenhuma revogação encontrada; ainda é citado em 2026. Convive com a Lei 15.211/2025 (ECA Digital), que traz deveres adicionais, e com a agenda da ANPD, que trata o tema por iniciativas específicas.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.in.gov.br/en/web/dou/-/enunciado-cd/anpd-n-1-de-22-de-maio-de-2023-485306934",
+    "topics": [
+      "data_protection",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "registry",
+      "lgpd",
+      "portal"
+    ],
+    "notes": "Dado do projeto (22/05/2023, vigente) confere e o resumo do projeto está correto. Verificação: listagem oficial em gov.br/anpd (regulamentações) com link do DOU, registro na biblioteca digital do MJ (Enunciado_ANPD_2023_1) e comentários secundários; o texto no DOU não pôde ser aberto (in.gov.br bloqueia leitura automatizada). A página da ANPD não traz ementa. Ressalva: enunciado é interpretação da autoridade, não regulamento com sanção própria; o legítimo interesse não se aplica a dados sensíveis, e o teste de ponderação deve ser documentado."
+  },
+  {
+    "id": "anpd-consulta-publica-1-2026",
+    "kind": "ANPD",
+    "number": "1",
+    "year": "2026",
+    "issuer": "Agência Nacional de Proteção de Dados (ANPD; Autoridade até a transformação em agência), Conselho Diretor",
+    "title_pt": "Consulta Pública ANPD nº 01/2026 - Minuta de Resolução que altera o Regulamento do Processo de Fiscalização e do Processo Administrativo Sancionador (Res. CD/ANPD nº 1/2021)",
+    "scope_summary": "Consulta sobre a revisão do regulamento de fiscalização e do processo sancionador da Res. 1/2021, para incluir as novas atribuições (ECA Digital, deveres de provedores de aplicações), a mudança para agência reguladora e regras de medidas cautelares, termo de ajustamento, amicus curiae e sigilo de documentos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Minuta em consulta; sem efeito vinculante. Se aprovada, mudará o rito de fiscalização e sanção aplicável a agentes de tratamento (incluindo clientes prestadores de água e esgoto) e o uso do SEI nas comunicações com a ANPD.",
+    "jurisdiction": "BR",
+    "status": "EM_REVISAO",
+    "status_note": "Consulta aberta em 09/09/2026 e com contribuições até 26/10/2026, na plataforma Brasil Participativo (situação 'em andamento' na página oficial consultada em 22/10/2026). Audiência pública virtual realizada em 24/09/2026. Depois, a Superintendência de Regulação consolida e envia ao Conselho Diretor; a Res. 1/2021 segue vigente até eventual resolução alteradora.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://brasilparticipativo.presidencia.gov.br/processes/regulamento-de-fiscalizacao",
+    "topics": [
+      "data_protection",
+      "reporting"
+    ],
+    "modules_affected": [
+      "lgpd",
+      "platform"
+    ],
+    "notes": "Confirmado em fonte oficial: a página de consultas da ANPD numera como 'CP 01/2026'. O projeto indicava 'nota da ANPD, confiança média'; agora há fonte oficial (notícia de 09/09/2026 em gov.br/anpd, página de consultas e processo no Brasil Participativo, que traz minuta, AIR e voto do relator). Datas do projeto (09/09 a 26/10/2026) conferem. Existem ainda CP 02/2026 (processo regulatório da ANPD; 06/10 a 23/11/2026) e CP 03/2026 (alteração do Regulamento de Dosimetria, Res. 4/2023; 15/10 a 30/11/2026), que não devem ser confundidas. O prazo termina em poucos dias: depois de 26/10/2026 a situação no projeto deve virar 'encerrada, aguardando aprovação'."
+  },
+  {
+    "id": "anpd-guia-agentes-tratamento-v2",
+    "kind": "ANPD",
+    "number": "2.0",
+    "year": "2022",
+    "issuer": "Agência Nacional de Proteção de Dados (ANPD; Autoridade até a transformação em agência), Conselho Diretor",
+    "title_pt": "Guia Orientativo para Definições dos Agentes de Tratamento de Dados Pessoais e do Encarregado (versão 2.0, abril de 2022)",
+    "scope_summary": "Orientação não vinculante sobre quem é controlador, operador e encarregado, regimes de responsabilidade e casos práticos; a versão 2.0 ajusta o texto à Res. CD/ANPD nº 2/2022 (pequeno porte) e esclarece atribuições do encarregado.",
+    "norm_class": "REFERENCE",
+    "applicability": "Base para definir os papéis do prestador de água e esgoto (controlador) e da Ziip (operador) no contrato e no registro de operações; não impõe obrigação por si.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Versão 2.0 publicada em abril/2022 (versão 1.0 em maio/2021; arquivo no gov.br criado em 27/04/2022). O guia se declara sujeito a atualização a critério da ANPD; nenhuma versão posterior localizada. A parte sobre o encarregado deve ser lida com a Res. CD/ANPD nº 18, de 16/07/2024, e o guia posterior sobre a atuação do encarregado.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/Segunda_Versao_do_Guia_de_Agentes_de_Tratamento_retificada.pdf/@@display-file/file",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd",
+      "platform"
+    ],
+    "notes": "Título oficial é 'Guia Orientativo para Definições dos Agentes de Tratamento de Dados Pessoais e do Encarregado' (o projeto abreviou). Ano, versão e natureza não vinculante conferem; capa e introdução foram lidas no PDF oficial. Ressalva: o tema do encarregado foi complementado depois pela Res. 18/2024 (regulamento) e pelo guia 'Atuação do Encarregado pelo Tratamento de Dados Pessoais' (dez/2024; data conferida só em fonte secundária); em conflito, prevalece o regulamento. O arquivo retificado foi modificado em 23/01/2025 na página do gov.br, sem mudar a versão."
+  },
+  {
+    "id": "anpd-guia-poder-publico-v2",
+    "kind": "ANPD",
+    "number": "2.0",
+    "year": "2023",
+    "issuer": "Agência Nacional de Proteção de Dados (ANPD; Autoridade até a transformação em agência), Conselho Diretor",
+    "title_pt": "Guia Orientativo: Tratamento de dados pessoais pelo Poder Público (versão 2.0, junho de 2023)",
+    "scope_summary": "Orientação não vinculante sobre bases legais usadas pelo poder público (consentimento, legítimo interesse, obrigação legal, políticas públicas), princípios, compartilhamento e divulgação de dados pessoais.",
+    "norm_class": "REFERENCE",
+    "applicability": "Prestadores de água e esgoto que sejam órgãos ou entidades do poder público (autarquias, SAAE, secretarias municipais) e fornecedores a eles. Orienta compartilhamento (formalização, finalidade, base legal, duração) e divulgação em transparência; não impõe obrigação por si.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Versão 1.0 de janeiro/2022; versão 2.0 em junho/2023 (digital e impressa, 200 exemplares). A página no gov.br foi publicada em 22/11/2024 e modificada em 23/01/2025, sem informar nova versão. O compartilhamento de dados pelo Poder Público está na agenda regulatória (item 3 do Anexo da Res. 31/2025) e passou por consulta (CP 01/2025, 28/10 a 12/12/2025); regulamento futuro pode superar trechos do guia.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia_orientativo_tratamento_de_dados_pessoais_pelo_poder_publico",
+    "topics": [
+      "data_protection"
+    ],
+    "modules_affected": [
+      "lgpd",
+      "integration",
+      "portal",
+      "registry"
+    ],
+    "notes": "Título e versão conferem; a capa do PDF oficial diz 'versão 2.0 | jun / 2023'. Não é norma. Ressalva: a data de 22/11/2024 do gov.br é a da publicação da página, não da versão do guia. Temas que tocam o produto: compartilhamento com outros órgãos e divulgação de dados (capítulos 'Compartilhamento de dados pessoais pelo Poder Público' e 'Divulgação de dados pessoais'). Conferir a coerência com o Guia de Transparência ANPD-CGU quando for finalizado."
+  },
+  {
+    "id": "anpd-cgu-guia-transparencia",
+    "kind": "ANPD",
+    "number": "",
+    "year": "2026",
+    "issuer": "Agência Nacional de Proteção de Dados (ANPD) e Controladoria-Geral da União (CGU), em parceria (Acordo de Cooperação Técnica)",
+    "title_pt": "Guia de Transparência e Proteção de Dados Pessoais (ANPD e CGU) - minuta em consulta pública",
+    "scope_summary": "Guia conjunto, em elaboração, para compatibilizar a Lei de Acesso à Informação (Lei 12.527/2011) com a LGPD em pedidos de acesso e na transparência ativa e passiva envolvendo dados pessoais.",
+    "norm_class": "REFERENCE",
+    "applicability": "Órgãos e entidades públicas que respondem a pedidos de acesso à informação e divulgam dados com informação pessoal (inclui prestadores de água e esgoto públicos). Orientação, não norma, e ainda minuta.",
+    "jurisdiction": "BR",
+    "status": "EM_REVISAO",
+    "status_note": "Consulta pública da minuta no Brasil Participativo de 09/06 a 24/07/2026 (prazo inicial menor, prorrogado, conforme fonte secundária). Encerrada. A Nota Técnica conjunta nº 5/2026 (assinada em 21/08/2026) consolida 171 contribuições de 62 usuários e foi aprovada por ANPD e CGU como subsídio ao aperfeiçoamento do guia. Versão final não localizada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://brasilparticipativo.presidencia.gov.br/processes/guiadadospessoais",
+    "topics": [
+      "data_protection",
+      "reporting"
+    ],
+    "modules_affected": [
+      "lgpd",
+      "portal"
+    ],
+    "notes": "CORRIGIDO (situação): o projeto diz 'consulta pública aberta em junho/2026'; ela já está ENCERRADA (24/07/2026) e na fase de consolidação. Não há número oficial: a página de consultas da ANPD a lista na seção de parcerias, sem numeração (não confundir com CP 01 a 03/2026). O título 'Guia de Transparência e Proteção de Dados Pessoais' é o oficial. A nota técnica está em gov.br/anpd (consultas-publicas/nota-tecnica-conjunta-cgu-anpd-no-5-2026.pdf). Não adotar como regra até a publicação da versão final; checar nova publicação antes de usar."
+  },
+  {
+    "id": "svrs-nfag-e-modelo-75",
+    "kind": "TAX_AUTHORITY",
+    "number": "75",
+    "year": "2026",
+    "issuer": "Receita Federal e Comitê Gestor do IBS (CGIBS), com documentação técnica do ENCAT e ambiente nacional na SEFAZ Virtual RS (SVRS)",
+    "title_pt": "Nota Fiscal de Água e Saneamento Eletrônica (NFAg), modelo 75",
+    "scope_summary": "Documento fiscal eletrônico que passa a representar a fatura de abastecimento de água e esgotamento sanitário, com grupos de IBS e CBS no leiaute e autorização pelo ambiente nacional da SVRS. A emissão é obrigatória para os fatos geradores a partir de 01/12/2026.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadores de abastecimento de água e esgotamento sanitário que emitem fatura, independentemente da natureza jurídica. O faturamento do produto precisa gerar, assinar, transmitir e armazenar a NFAg e o DANFAG.",
+    "jurisdiction": "BR",
+    "status": "VIGENCIA_FUTURA",
+    "status_note": "Documento instituído pelo art. 114 do Decreto 12.955/2026 (regulamento da CBS, de 29/04/2026) e pelo regulamento do IBS (Resolução CGIBS 6/2026). Obrigatoriedade a partir dos fatos geradores de 01/12/2026 (Ato Conjunto RFB/CGIBS 4/2026, de 30/07/2026, art. 1º, XVI), portanto ainda não exigível em 22/10/2026; optantes do Simples Nacional têm data própria de 01/01/2027 no cronograma da Receita. Ambiente de produção da SVRS liberado desde 16/12/2025 para empresas do piloto; primeira NFAg autorizada em produção em nov/2025. NT 2026.004 RTC aprovada pelo Ato Técnico Conjunto RFB/CGIBS 8/2026 (29/09/2026), com homologação até 26/10/2026 e produção em 16/11/2026 (aviso do ENCAT de 15/10/2026).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://dfe-portal.svrs.rs.gov.br/Nfag",
+    "topics": [
+      "billing",
+      "tax",
+      "reporting"
+    ],
+    "modules_affected": [
+      "billing",
+      "accounting",
+      "integration",
+      "portal"
+    ],
+    "notes": "CORRIGIDO: a entrada não indicava ato instituidor nem ano. Não há Ajuste SINIEF que institua o modelo 75 (as listas de 2025 e 2026 do CONFAZ não trazem esse ato); a base é o Decreto 12.955/2026, art. 114, e o regulamento do IBS. O art. 114 do regulamento do IBS foi confirmado apenas por fonte secundária. A data de 01/12/2026 está confirmada pela Receita Federal (cronograma atualizado em 16/10/2026) e pelo texto do Ato Conjunto 4/2026. O portal da SVRS ainda diz que o manual está em forma de minuta, aguardando ato conjunto normativo para a versão definitiva; o Anexo II (DANFAG) v1.02 é de 25/08/2026. O Ato Conjunto RFB/CGIBS 1/2025 (22/12/2025) também é citado pela NT 11/2026 como base para a criação do documento. O Decreto 12.955/2026 foi parcialmente revogado pelo Decreto 13.133/2026 (alcance não verificado). Manter a recomendação de validar com tributarista as questões ainda abertas (conceito de estabelecimento, órgãos públicos, substituição de faturas)."
+  },
+  {
+    "id": "cgnfse-nfse-padrao-nacional",
+    "kind": "TAX_AUTHORITY",
+    "number": "",
+    "year": "",
+    "issuer": "Comitê Gestor da NFS-e Nacional (CGNFS-e), Receita Federal e CGIBS; municípios aderentes",
+    "title_pt": "NFS-e Padrão Nacional (com grupos de IBS e CBS)",
+    "scope_summary": "Nota fiscal de serviços eletrônica de leiaute nacional, emitida no Emissor Nacional ou em sistema municipal com compartilhamento ao Ambiente de Dados Nacional (ADN), com grupos de IBS e CBS exigidos em etapas conforme o tipo de serviço.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadores sujeitos ao ISS e municípios. Para o produto, vale para serviços do prestador que não se enquadram na NFAg (por exemplo, serviços de ligação ou outros serviços avulsos, a confirmar com tributarista) e como referência de leiaute e integração.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Municípios e DF obrigados desde 01/01/2026 a autorizar a emissão no ambiente nacional ou compartilhar os documentos com o ADN (LC 214/2025, art. 62, § 1º). Destaque de IBS e CBS escalonado pelo Ato Conjunto RFB/CGIBS 4/2026 (art. 1º, III): 01/10/2026 para serviços da lista da LC 116 em geral (etapa já vigente), 01/12/2026 para plataformas, subitens 1.03, 1.05, 1.09 e 16.01, bens imateriais, locações, condomínios e demais fornecimentos, e 01/01/2027 para optantes do Simples Nacional. Até 31/12/2026 a ausência dos grupos IBSCBS não gera rejeição pelo sistema nacional, mas caracteriza desconformidade (orientação do CGNFS-e).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/nfse/pt-br/noticias/cgnfs-e-orienta-sobre-os-prazos-para%20destaque-de-ibs-cbs-nas-notas-fiscais-de-servico",
+    "topics": [
+      "billing",
+      "tax",
+      "reporting"
+    ],
+    "modules_affected": [
+      "billing",
+      "accounting",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: a entrada tinha a confiança como 'fontes secundárias' e o ato como '4/2026' sem emissor; o ato é o Ato Conjunto RFB/CGIBS nº 4, de 30/07/2026 (Receita e CGIBS), e o padrão está confirmado em fontes oficiais (gov.br/nfse e gov.br/receitafederal). A NFS-e figura entre os documentos recepcionados e instituídos pelo art. 113, III, do regulamento da CBS (Decreto 12.955/2026). O Ato Técnico Conjunto RFB/CGIBS 1/2026 (31/07/2026) ratificou as NTs CGNFS-e 008 (v1.02) e 009 (v1.0), que tratam da escrituração e do modelo conceitual do IBS e da CBS. A Resolução CGSN 191/2026, que obriga ME e EPP do Simples Nacional ao Emissor Nacional a partir de 01/11/2026, foi vista apenas em fonte secundária. A divergência local do DF citada no relatório 11 não foi analisada neste lote; a página da Secretaria de Economia do DF informa a descontinuação da NFS-e para movimentação de bens em 01/10/2026."
+  },
+  {
+    "id": "encat-nt-2025-002",
+    "kind": "TAX_AUTHORITY",
+    "number": "2025.002",
+    "year": "2025",
+    "issuer": "ENCAT (Coordenação Técnica da NF-e), com aprovação por Ato Técnico Conjunto RFB/CGIBS",
+    "title_pt": "Nota Técnica 2025.002 - RTC (adequações da NF-e e da NFC-e à Reforma Tributária do Consumo: IBS, CBS e IS)",
+    "scope_summary": "Define campos, grupos e regras de validação de IBS, CBS e Imposto Seletivo nos leiautes da NF-e (modelo 55) e da NFC-e (modelo 65), com evolução por versões.",
+    "norm_class": "REGULATORY",
+    "applicability": "Emitentes de NF-e e NFC-e e desenvolvedores de emissores. Para o produto, vale para vendas de bens com NF-e e como referência de estrutura dos grupos IBSCBS reutilizados pelo leiaute da NFAg.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Nota técnica evolutiva. Versões oficiais vistas: v1.10 (publicada em jun/jul 2025), v1.30 (pacote de schemas de 07/10/2025), v1.40 (schema do evento 211110 publicado em 23/07/2026), v1.51 (29/07/2026, aprovada pelo Ato Técnico Conjunto RFB/CGIBS 1/2026) e v1.52 (01/10/2026, aprovada pelo Ato Técnico Conjunto RFB/CGIBS 8/2026). A implantação da v1.52 foi adiada pelo ENCAT para 26/10/2026 em homologação e 16/11/2026 em produção.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://dfe-portal.svrs.rs.gov.br/Nfe/Documentos",
+    "topics": [
+      "tax",
+      "billing",
+      "reporting"
+    ],
+    "modules_affected": [
+      "billing",
+      "accounting",
+      "integration"
+    ],
+    "notes": "A data de 20/05/2026 atribuída pelo projeto à v1.40 não foi localizada em fonte oficial; o portal da SVRS mostra o schema do evento da v1.40 em 23/07/2026. A v1.52 foi de fato publicada em 01/10/2026, mas ainda não está em produção (16/11/2026). A informação de que substitui a NT 2024.002 veio de fonte secundária. Datas de implantação mudam com frequência; conferir o portal antes de fixar cronograma de integração."
+  },
+  {
+    "id": "confaz-ajuste-sinief-49-2025",
+    "kind": "TAX_AUTHORITY",
+    "number": "49",
+    "year": "2025",
+    "issuer": "Conselho Nacional de Política Fazendária (CONFAZ) e Receita Federal do Brasil",
+    "title_pt": "Ajuste SINIEF 49/2025 (emissão de documentos fiscais em operações e prestações específicas: NF-e com finalidade de nota de débito ou de crédito)",
+    "scope_summary": "Fixa procedimentos de emissão de NF-e, com finalidade de nota de débito ou de crédito, em quatro situações: venda para entrega futura com pagamento antecipado, perda de estoque, redução de valores ou quantidades quando não cabe cancelar a NF-e de saída, e retorno por recusa total ou parcial ou por não localização do destinatário.",
+    "norm_class": "REGULATORY",
+    "applicability": "Contribuintes que emitem NF-e (modelo 55) nessas operações. Relevância limitada ao produto: não trata da NFAg nem de IBS e CBS em si, e o fornecimento de água não é fato gerador de ICMS; só alcança vendas de bens com NF-e.",
+    "jurisdiction": "BR",
+    "status": "VIGENCIA_FUTURA",
+    "status_note": "Celebrado em 05/12/2025 (199ª Reunião Ordinária, Vitória/ES) e publicado no DOU de 09/12/2025. Em vigor desde a publicação, com efeitos a partir de 03/08/2026 (cláusula sexta, redação do Ajuste 15/2026). A obrigatoriedade de seguir o ajuste foi fixada para 01/01/2027 pelo Ajuste SINIEF 27/2026 (cláusula quinta-A). Alterado pelos Ajustes 8, 15, 20, 27 e 34 de 2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.confaz.fazenda.gov.br/legislacao/ajustes/2025/AJ049_25",
+    "topics": [
+      "tax",
+      "billing"
+    ],
+    "modules_affected": [
+      "billing",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: a ementa do projeto ('NF-e com IBS e CBS') está imprecisa. A ementa oficial é 'dispõe sobre a emissão de documentos fiscais nas operações e prestações que especifica'; o ato trata de notas de débito e de crédito da NF-e, com campos finNFe, tpNFDebito e tpNFCredito, no contexto da adaptação da NF-e à reforma tributária. O texto de 49/2025 foi alterado em 2026 também pelos Ajustes 15 (efeitos a partir de 03/08/2026) e 34 (reformulação da cláusula quinta, DOU de 14/09/2026). Fonte consultada para fatos posteriores: texto consolidado da legislação do Estado de Mato Grosso (secundária) e notícias; os atos individuais constam do portal do CONFAZ. O adiamento para 2027 vale para o ICMS; o cronograma de IBS e CBS segue o de cada documento no Ato Conjunto RFB/CGIBS 4/2026 (informação de fonte secundária)."
+  },
+  {
+    "id": "confaz-ajuste-sinief-8-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "8",
+    "year": "2026",
+    "issuer": "Conselho Nacional de Política Fazendária (CONFAZ) e Receita Federal do Brasil",
+    "title_pt": "Ajuste SINIEF 8/2026 (altera o Ajuste SINIEF 49/2025: retorno por recusa na entrega)",
+    "scope_summary": "Reescreve a cláusula quinta do Ajuste SINIEF 49/2025: passa a prever os códigos 03 (recusa total ou não localização) e 06 (recusa parcial) em tpNFCredito, o referenciamento da NF-e original por refNFe ou por DFeReferenciado, a identificação do destinatário e a revogação do § 1º da cláusula.",
+    "norm_class": "REGULATORY",
+    "applicability": "Contribuintes que emitem NF-e de entrada para devolução por recusa de entrega. Relevância baixa ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Celebrado em 06/04/2026 (422ª Reunião Extraordinária) e publicado no DOU de 09/04/2026 (Despacho 18/2026), com efeitos a partir de 04/05/2026. A cláusula quinta foi novamente reformulada pelo Ajuste SINIEF 34/2026 (DOU de 14/09/2026). A obrigatoriedade geral do Ajuste 49/2025 só começa em 01/01/2027 (Ajuste 27/2026).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.confaz.fazenda.gov.br/legislacao/ajustes/2026/AJ008_26",
+    "topics": [
+      "tax",
+      "billing"
+    ],
+    "modules_affected": [
+      "billing",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: a entrada descreve o ajuste como 'NF-e com IBS e CBS'; o objeto é a alteração do procedimento de retorno por recusa total ou parcial no Ajuste 49/2025, sem tratar de IBS e CBS. Parte dos dispositivos foi superada pela nova redação dada pelo Ajuste 34/2026."
+  },
+  {
+    "id": "confaz-ajuste-sinief-20-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "20",
+    "year": "2026",
+    "issuer": "Conselho Nacional de Política Fazendária (CONFAZ) e Receita Federal do Brasil",
+    "title_pt": "Ajuste SINIEF 20/2026 (altera o Ajuste SINIEF 49/2025: perda de estoque e redução de valores)",
+    "scope_summary": "Ajusta a cláusula terceira do Ajuste 49/2025 para prever o destaque do ICMS, quando houver, na NF-e de perda de estoque, e acrescenta à cláusula quarta a exigência de informar o destinatário da NF-e de saída original na NF-e de redução de valores ou quantidades.",
+    "norm_class": "REGULATORY",
+    "applicability": "Contribuintes que emitem NF-e nas hipóteses de perda de estoque e de redução de valores ou quantidades. Relevância baixa ao produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Celebrado em 03/07/2026 (201ª Reunião Ordinária, Macapá/AP) e publicado no DOU de 09/07/2026 (Despacho 30/2026), com efeitos a partir de 03/08/2026. A obrigatoriedade de seguir o Ajuste 49/2025 começa em 01/01/2027 (Ajuste 27/2026).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.confaz.fazenda.gov.br/legislacao/ajustes/2026/AJ020_26",
+    "topics": [
+      "tax",
+      "billing"
+    ],
+    "modules_affected": [
+      "billing",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o assunto não é 'NF-e com IBS e CBS'; é a alteração pontual do Ajuste 49/2025 (ICMS na perda de estoque e identificação do destinatário na redução de valores). Os detalhes do texto foram lidos em fontes que reproduzem o DOU e o texto de legislação estadual; o portal do CONFAZ confirma número, ementa e data."
+  },
+  {
+    "id": "confaz-ajuste-sinief-27-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "27",
+    "year": "2026",
+    "issuer": "Conselho Nacional de Política Fazendária (CONFAZ) e Receita Federal do Brasil",
+    "title_pt": "Ajuste SINIEF 27/2026 (altera o Ajuste SINIEF 49/2025: obrigatoriedade a partir de 01/01/2027)",
+    "scope_summary": "Acrescenta a cláusula quinta-A ao Ajuste SINIEF 49/2025, fixando 01/01/2027 como data em que os contribuintes ficam obrigados a seguir o ajuste.",
+    "norm_class": "REGULATORY",
+    "applicability": "Contribuintes de ICMS que emitem NF-e nas quatro hipóteses do Ajuste 49/2025. Relevância baixa ao produto; define o marco temporal de todo o conjunto 49/2025.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Celebrado em 12/08/2026 (430ª Reunião Extraordinária) e publicado no DOU de 14/08/2026 (Despacho CONFAZ 36/2026); em vigor na publicação. O efeito prático é adiar para 01/01/2027 a obrigatoriedade que antes se contava a partir de 03/08/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.confaz.fazenda.gov.br/legislacao/ajustes/2026/AJ027_26",
+    "topics": [
+      "tax",
+      "billing"
+    ],
+    "modules_affected": [
+      "billing",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o assunto não é 'NF-e com IBS e CBS'; é um ato de prorrogação do prazo de obrigatoriedade do Ajuste 49/2025. A prorrogação se aplica ao ICMS; o cronograma de IBS e CBS segue o Ato Conjunto RFB/CGIBS 4/2026 (afirmação de fonte secundária)."
+  },
+  {
+    "id": "rfb-in-2145-2023",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.145",
+    "year": "2023",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB)",
+    "title_pt": "Instrução Normativa RFB 2.145/2023 (retenção de tributos nos pagamentos por entes públicos; altera a IN RFB 1.234/2012)",
+    "scope_summary": "Altera a IN RFB 1.234/2012 e cria o art. 2º-A, que obriga órgãos da administração direta de estados, DF e municípios, com suas autarquias e fundações, a reter na fonte o imposto de renda nos pagamentos a pessoas jurídicas por bens e serviços, com recolhimento ao ente retentor.",
+    "norm_class": "REGULATORY",
+    "applicability": "Entes públicos pagadores e seus fornecedores. Para o produto, afeta o prestador público de saneamento (autarquia ou órgão municipal) ao pagar fornecedores e a tributação de recebimentos de pessoas jurídicas de direito público pagadoras de tarifa.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 26/06/2023, publicada no DOU de 27/06/2023, em vigor na publicação. O art. 2º-A foi complementado pela IN RFB 2.239/2024. A IN RFB 1.234/2012 também foi alterada depois (IN RFB 2.257/2025, aluguel de imóvel de FII).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.in.gov.br/en/web/dou/-/instrucao-normativa-rfb-n-2.145-de-26-de-junho-de-2023-492262614",
+    "topics": [
+      "tax",
+      "payments"
+    ],
+    "modules_affected": [
+      "accounting",
+      "collection"
+    ],
+    "notes": "CORRIGIDO: a entrada descreve só 'alterou a IN 1.234/2012'. O conteúdo relevante é a criação do art. 2º-A (retenção ampla de IR por estados, DF e municípios), decorrente do Tema 1.130 do STF. O projeto atribuiu o art. 2º-A à IN 2.239/2024, mas ele foi criado por esta instrução. Também reformulou o art. 1º, a ementa e revogou os incisos I a VI do caput do art. 2º da IN 1.234/2012. A IN 1.234 é de 11/01/2012 segundo o texto da própria IN 2.145 (algumas páginas citam 25/01/2012)."
+  },
+  {
+    "id": "rfb-in-2239-2024",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.239",
+    "year": "2024",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB)",
+    "title_pt": "Instrução Normativa RFB 2.239/2024 (altera a IN RFB 1.234/2012: fundações estaduais e municipais na retenção de IR)",
+    "scope_summary": "Altera o art. 2º-A da IN RFB 1.234/2012 e acrescenta os §§ 4º e 5º: a retenção ampla de IR por fundações públicas estaduais e municipais vale só para as de natureza autárquica ou com mais da metade das receitas vindas do ente mantenedor; as demais seguem o RIR/2018 e repassam os valores à União.",
+    "norm_class": "REGULATORY",
+    "applicability": "Entes públicos estaduais e municipais, suas autarquias e fundações, e fornecedores que recebem desses entes.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 09/12/2024, publicada no DOU de 10/12/2024, em vigor na publicação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.in.gov.br/en/web/dou/-/instrucao-normativa-rfb-n-2.239-de-9-de-dezembro-de-2024-600520110",
+    "topics": [
+      "tax",
+      "payments"
+    ],
+    "modules_affected": [
+      "accounting",
+      "collection"
+    ],
+    "notes": "CORRIGIDO: o art. 2º-A foi criado pela IN RFB 2.145/2023; a IN 2.239/2024 alterou a redação do caput desse artigo e acrescentou os §§ 4º e 5º, tratando de fundações. O texto foi lido na reprodução do LegisWeb (com remissão ao DOU); o link do DOU veio de nota de escritório de advocacia e não foi aberto diretamente."
+  },
+  {
+    "id": "rfb-nt-011-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "011",
+    "year": "2026",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB), SPED",
+    "title_pt": "Nota Técnica 11/2026 - Descontinuidade da EFD-Contribuições (orientações aos contribuintes de PIS e Cofins)",
+    "scope_summary": "Informa que a EFD-Contribuições deixa de ser usada para apurar novos fatos geradores de PIS e Cofins a partir de janeiro de 2027, mas permanece para guarda, consulta e retificação por, no mínimo, 5 anos e para gestão dos saldos credores até 31/12/2026. Em 2026 não há mudança de leiaute para escriturar IBS, CBS e IS destacados, e as operações dos novos documentos eletrônicos (inclusive NFAg) entram nos registros existentes.",
+    "norm_class": "REGULATORY",
+    "applicability": "Contribuintes de PIS e Cofins que escrituram a EFD-Contribuições, inclusive prestadores de saneamento de direito privado. Afeta o encerramento fiscal de 2026 e a preservação de créditos.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada pela RFB em 03/02/2026 e atualizada em 20/02/2026 (arquivo no portal gov.br/sped com modificação em 27/05/2026). Aplicação sobre fatos geradores de 2026 e 2027 em diante. A EFD-Contribuições não será adaptada para novos documentos enquanto vigorar a orientação geral da nota.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/sped/pt-br/assuntos/escrituracoes-digitais/efd-contribuicoes/documentos-tecnicos/nota-tecnica-11-2026-descontinuidade-da-efd-contribuicoes-orientacoes-para-os-contribuintes",
+    "topics": [
+      "tax",
+      "reporting"
+    ],
+    "modules_affected": [
+      "accounting",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: data de publicação é 03/02/2026 (a entrada dizia 04/02/2026); a nota foi atualizada em 20/02/2026. A fonte agora é oficial (portal SPED da RFB e gov.br/sped). O resumo do projeto está correto no ponto do encerramento em 2027 e da guarda por 5 anos, com a ressalva de que a guarda cobre também o direito de consultar e retificar e serve à gestão de saldos credores. A NT 12/2026 trata da LC 224/2025 e não deve ser confundida com esta."
+  },
+  {
+    "id": "rfb-in-2181-2024",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.181",
+    "year": "2024",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB)",
+    "title_pt": "Instrução Normativa RFB 2.181/2024 (altera a IN RFB 2.043/2021, EFD-Reinf: substituição da Dirf)",
+    "scope_summary": "Altera o art. 3º, § 1º, da IN RFB 2.043/2021 (EFD-Reinf) para fixar que a Dirf é substituída, quanto aos fatos ocorridos a partir de 01/01/2025, por eventos da EFD-Reinf (série R-4000) e do eSocial (S-1210 e S-2501).",
+    "norm_class": "REGULATORY",
+    "applicability": "Fontes pagadoras que retêm IR e outras retenções, inclusive o prestador de saneamento e entes públicos. Define onde as retenções do ano de 2025 em diante são informadas.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 13/03/2024, publicada no DOU de 15/03/2024, em vigor na publicação. A Dirf deixou de existir para fatos de 2025 em diante; a última Dirf referiu-se ao ano-calendário 2024.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=136650",
+    "topics": [
+      "tax",
+      "reporting"
+    ],
+    "modules_affected": [
+      "accounting",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: a data oficial de assinatura é 13/03/2024 (publicação em 15/03/2024); o ato não 'extingue' a Dirf por si só, pois altera a IN 2.043/2021 e adia a substituição para fatos a partir de 2025, antes prevista para 2024. A listagem dos eventos R-4000, S-1210 e S-2501 vem de fontes secundárias; o texto oficial consultado mostra a alteração do § 1º do art. 3º."
+  },
+  {
+    "id": "rfb-in-2229-2024",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.229",
+    "year": "2024",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB)",
+    "title_pt": "Instrução Normativa RFB 2.229/2024 (CNPJ alfanumérico; altera a IN RFB 2.119/2022)",
+    "scope_summary": "Altera a IN RFB 2.119/2022 para adotar o CNPJ alfanumérico de 14 posições (Anexo XV), a ser atribuído a novas inscrições a partir de julho de 2026; os CNPJ numéricos já existentes continuam válidos.",
+    "norm_class": "REGULATORY",
+    "applicability": "Todo sistema que armazena, valida, exibe ou transmite CNPJ (cadastro de usuários e fornecedores, faturamento, documentos fiscais, integrações bancárias).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 15/10/2024; entra em vigor 10 dias após a publicação (a Receita informa 25/10/2024). Sistemas da RFB entraram em produção em 27/07/2026 e o primeiro CNPJ alfanumérico foi implementado em 31/07/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=141102",
+    "topics": [
+      "tax",
+      "reporting"
+    ],
+    "modules_affected": [
+      "registry",
+      "billing",
+      "integration",
+      "collection"
+    ],
+    "notes": "Fonte oficial confirmada (normas da Receita e página do CNPJ Alfanumérico no gov.br); a entrada indicava fonte secundária. Há retificação publicada no sistema de normas (idAto 141222) sobre a descrição do cálculo do dígito verificador, a conferir ao implementar a validação. O vínculo com o layout FEBRABAN de arrecadação v08 não foi verificado neste lote."
+  },
+  {
+    "id": "rfb-in-2119-2022",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.119",
+    "year": "2022",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB)",
+    "title_pt": "Instrução Normativa RFB 2.119/2022 (Cadastro Nacional da Pessoa Jurídica - CNPJ)",
+    "scope_summary": "Disciplina o CNPJ no âmbito da RFB: inscrição, alteração, suspensão, baixa, situação cadastral e informações de beneficiário final. Substituiu a IN RFB 1.863/2018.",
+    "norm_class": "REGULATORY",
+    "applicability": "Cadastro de pessoas jurídicas usuárias, fornecedores e do próprio prestador; validação de situação cadastral e do formato do CNPJ.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 06/12/2022. Alterada pela IN RFB 2.229/2024 (formato alfanumérico, Anexo XV), IN RFB 2.290/2025 (beneficiário final e suspensão) e IN RFB 2.333/2026 (30/06/2026: Anexos VI e VIII sobre motivos de suspensão por inconsistência cadastral e revogação do art. 57). Listagens de legislação mostram ainda as INs RFB 2.340/2026 e 2.345/2026 como atos relacionados, não examinados.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/cnpj/legislacao-cnpj",
+    "topics": [
+      "tax",
+      "other"
+    ],
+    "modules_affected": [
+      "registry",
+      "integration"
+    ],
+    "notes": "Sem erro na entrada. Ressalva: a página oficial da legislação do CNPJ não lista as alterações recentes; a vigência e as alterações de 2025 e 2026 foram conferidas em compilação da ANTT e em nota da Receita sobre a IN 2.333/2026. Convém consultar a versão consolidada em normas.receita.fazenda.gov.br ao implementar regras de suspensão e situação cadastral."
+  },
+  {
+    "id": "stn-mf-portaria-2520-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.520",
+    "year": "2026",
+    "issuer": "Secretaria do Tesouro Nacional (STN), Ministério da Fazenda",
+    "title_pt": "Portaria STN/MF 2.520/2026 (Plano de Contas Aplicado ao Setor Público - PCASP 2027)",
+    "scope_summary": "Aprova o PCASP a ser adotado obrigatoriamente pela Federação no exercício de 2027 e o PCASP Estendido 2027, de adoção facultativa. Os entes só podem detalhar contas nos níveis posteriores aos do plano.",
+    "norm_class": "REGULATORY",
+    "applicability": "Entes e entidades que adotam a contabilidade pública, como a administração direta, autarquias, fundações e empresas estatais dependentes. Estatais não dependentes em geral seguem normas societárias (a confirmar com contador). Afeta o plano de contas contábil do módulo de contabilidade do prestador público.",
+    "jurisdiction": "BR",
+    "status": "VIGENCIA_FUTURA",
+    "status_note": "Assinada em 21/08/2026 e em vigor na publicação, mas com efeitos aplicados a partir do exercício financeiro de 2027 (art. 4º). A partir de 01/01/2027 revoga os efeitos da Portaria STN/MF 1.952/2025 (PCASP 2026).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/tesouronacional/pt-br/contabilidade-e-custos/federacao/plano-de-contas-aplicado-ao-setor-publico-pcasp-1",
+    "topics": [
+      "reporting",
+      "other"
+    ],
+    "modules_affected": [
+      "accounting"
+    ],
+    "notes": "O estado 'não informado' no projeto foi resolvido: a portaria existe e está publicada no site do Tesouro Nacional. O texto foi lido na cópia anexada em página do FNDE. Tribunais de contas estaduais já publicaram planos próprios alinhados à portaria (exemplo: TCE-MG, PCASP 2027 v13.0), o que é relevante para o tenant público conforme o estado. A aplicabilidade a empresas estatais é interpretação não verificada em fonte oficial."
+  },
+  {
+    "id": "stj-tema-1315",
+    "kind": "COURT",
+    "number": "1.315",
+    "year": "2026",
+    "issuer": "Superior Tribunal de Justiça (STJ), Segunda Seção",
+    "title_pt": "Tema repetitivo 1.315 do STJ (validade da notificação eletrônica prévia sobre abertura de cadastro, art. 43, §2º, do CDC)",
+    "scope_summary": "Fixou que a comunicação eletrônica ao consumidor sobre a abertura de cadastro, ficha ou registro de dados pessoais e de consumo (art. 43, §2º, do CDC) é válida desde que se comprovem o envio e a efetiva entrega ao destinatário, no e-mail ou telefone por ele informado. Segundo a notícia oficial do STJ, a relatora indicou que não se exige prova de leitura, em paralelo ao que a Súmula 404 dispensa para o aviso de recebimento da carta.",
+    "norm_class": "REFERENCE",
+    "applicability": "Prestadores que comunicam ao consumidor a abertura de cadastro ou a negativação por e-mail ou mensagem de celular: o canal eletrônico é admitido, mas o produto deve guardar prova de envio e de entrega efetiva (não só de envio). Recurso repetitivo, de observância obrigatória pelos tribunais (art. 927, III, do CPC).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Questão submetida a julgamento no rito dos repetitivos (afetação em 21/03/2025). Julgado pela Segunda Seção em 05/03/2026, relatora Min. Nancy Andrighi; acórdão publicado em 12/03/2026; situação na página oficial do Tema: trânsito em julgado (embargos de declaração nos paradigmas em maio e junho de 2026; trânsito dos paradigmas REsp 2.171.177, 2.175.268 e 2.171.003, todos do TJRS, entre agosto e setembro de 2026). Não houve revisão posterior localizada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://processo.stj.jus.br/repetitivos/temas_repetitivos/pesquisa.jsp?novaConsulta=true&tipo_pesquisa=T&cod_tema_inicial=1315&cod_tema_final=1315",
+    "topics": [
+      "consumer_rights",
+      "cut_off",
+      "billing",
+      "data_protection"
+    ],
+    "modules_affected": [
+      "dunning",
+      "collection",
+      "portal",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: a data de 11/03/2026 do projeto é a da notícia do STJ; o acórdão foi publicado em 12/03/2026 e o julgamento ocorreu em 05/03/2026. A tese oficial agora consta da página do Tema (o projeto registrava que o texto formal não fora lido): validade da notificação eletrônica com prova de envio e de entrega efetiva. O Tema trata do art. 43, §2º, do CDC; a página oficial não menciona expressamente a Súmula 359 nem a negativação, mas o mesmo dispositivo fundamenta o aviso prévio à inscrição (Súmulas 359 e 404), e os paradigmas são ações de dano moral do TJRS. Antes de fixar o canal no produto, ler o acórdão (inteiro teor) para confirmar o alcance sobre a negativação. A tensão com o REsp 2.070.073 (Terceira Turma, 2023) fica resolvida em favor do canal eletrônico com prova de envio e entrega; o Informativo 837/2024 (Quarta Turma) já seguia essa linha. Há referência cruzada à Controvérsia 616/STJ. Fonte: página de precedentes qualificados do STJ e notícia do STJ de 11/03/2026."
+  },
+  {
+    "id": "stj-resp-2070073",
+    "kind": "COURT",
+    "number": "2.070.073",
+    "year": "2023",
+    "issuer": "Superior Tribunal de Justiça (STJ), Terceira Turma",
+    "title_pt": "REsp 2.070.073/RS (notificação prévia à negativação exclusivamente por e-mail)",
+    "scope_summary": "A Terceira Turma entendeu que a notificação prévia à inscrição em cadastro de inadimplentes (art. 43, §2º, do CDC) exige correspondência enviada ao endereço do consumidor, sendo insuficiente a comunicação feita só por e-mail. Não arbitrou dano moral porque o acórdão de origem não permitia saber se havia outras inscrições regulares em nome do autor.",
+    "norm_class": "REFERENCE",
+    "applicability": "Precedente de turma, não vinculante e de fase anterior da jurisprudência. Serve apenas como histórico; não deve orientar a escolha do canal de notificação, que segue o Tema 1.315.",
+    "jurisdiction": "BR",
+    "status": "PARCIALMENTE_REVOGADA",
+    "status_note": "Julgado em 13/06/2023 (data extraída de fontes secundárias que reproduzem o inteiro teor; a notícia oficial não informa a data), Terceira Turma, relatora Min. Nancy Andrighi, unanimidade, recurso do consumidor provido; inteiro teor no DJe de 16/06/2023; notícia oficial do STJ de 22/09/2023; origem TJRS. Não houve revogação formal: a tese foi superada pelo entendimento da Quarta Turma (REsp 2.063.145/RS, julgado em 14/03/2024, Informativo 808; REsp 2.158.450/RS, Informativo 837) e, definitivamente, pelo Tema 1.315 (Segunda Seção, 2026).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.stj.jus.br/sites/portalp/Paginas/Comunicacao/Noticias/2023/22092023-Notificacao-exclusiva-por-e-mail-nao-autoriza-inscricao-em-cadastro-de-inadimplentes.aspx",
+    "topics": [
+      "consumer_rights",
+      "cut_off",
+      "billing"
+    ],
+    "modules_affected": [
+      "dunning",
+      "collection",
+      "portal"
+    ],
+    "notes": "CORRIGIDO: UF do processo é RS (o projeto não a indicava); a decisão é da Terceira Turma, relatora Min. Nancy Andrighi, mesma relatora e mesma linha do REsp 2.056.285/RS (julgado em 25/04/2023, Informativo 773, que vedou e-mail e mensagem de celular como canais exclusivos). A notícia oficial confirma a tese e o fundamento (interpretação restritiva do que limita direitos do consumidor; Súmulas 359 e 404), mas não traz data de julgamento nem DJe; a data de 13/06/2023 e o DJe de 16/06/2023 vêm de resumos secundários do inteiro teor. Fontes secundárias também indicam que a própria Terceira Turma passou depois a aceitar a notificação eletrônica com prova de envio e entrega (REsp 2.069.520 e 2.092.539, não verificados em fonte oficial). Posição vigente: Tema 1.315 (2026)."
+  },
+  {
+    "id": "stj-informativo-837-2024",
+    "kind": "COURT",
+    "number": "837",
+    "year": "2024",
+    "issuer": "Superior Tribunal de Justiça (STJ)",
+    "title_pt": "Informativo de Jurisprudência 837/2024 do STJ (inclui REsp 2.158.450/RS sobre notificação prévia à inscrição por carta ou e-mail)",
+    "scope_summary": "Edição de 17/12/2024 do Informativo, que noticia o REsp 2.158.450/RS (Quarta Turma): é válida a comunicação escrita enviada por carta ou por e-mail para avisar o consumidor da inscrição em cadastro de inadimplentes, desde que os dados do consumidor tenham sido fornecidos pelo credor ao órgão mantenedor do cadastro.",
+    "norm_class": "REFERENCE",
+    "applicability": "Boletim de divulgação de julgados, sem força vinculante própria. Indica que o e-mail é meio idôneo de aviso prévio à negativação quando o credor repassou os dados ao órgão do cadastro; consistente com o Tema 1.315.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Edição de 17 de dezembro de 2024. Julgado noticiado: REsp 2.158.450/RS, Quarta Turma, relator Min. João Otávio de Noronha, julgado em 10/12/2024, por maioria. Alinhado ao REsp 2.063.145/RS (Quarta Turma, 14/03/2024, Informativo 808) e ao Tema 1.315 (2026).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://processo.stj.jus.br/jurisprudencia/externo/informativo/?acao=pesquisarumaedicao&livre=@cod='0837'",
+    "topics": [
+      "consumer_rights",
+      "cut_off",
+      "billing"
+    ],
+    "modules_affected": [
+      "dunning",
+      "collection",
+      "portal",
+      "integration"
+    ],
+    "notes": "Conteúdo agora confirmado em fonte oficial (o projeto o tinha como não confirmado). O Informativo é uma edição com vários julgados; o assunto da notificação prévia é o item sobre o REsp 2.158.450/RS, e a ementa do destaque menciona as Súmulas 359 e 404 (a carta dispensa aviso de recebimento). O Informativo não estava em tensão com o Tema 1.315, e sim com o REsp 2.070.073/RS (Terceira Turma, 2023); a tensão foi dissolvida pelo Tema 1.315. Citar o julgado (REsp 2.158.450/RS) e não apenas o número do Informativo."
+  },
+  {
+    "id": "stj-resp-1532514",
+    "kind": "COURT",
+    "number": "1.532.514",
+    "year": "2017",
+    "issuer": "Superior Tribunal de Justiça (STJ), Primeira Seção",
+    "title_pt": "REsp 1.532.514/SP (repetitivo, Tema 932: prazo da repetição de indébito de tarifa de água e esgoto)",
+    "scope_summary": "Paradigma do Tema 932: a ação de repetição de indébito de tarifas de água e esgoto cobradas indevidamente prescreve em 20 anos (art. 177 do CC/1916) ou em 10 anos (art. 205 do CC/2002), conforme a regra de transição do art. 2.028 do CC/2002. Afastou a tese do prazo trienal defendida pela concessionária.",
+    "norm_class": "REFERENCE",
+    "applicability": "Prestadores de água e esgoto: define até quando o usuário pode pedir devolução de valores cobrados indevidamente; fundamenta política de retenção do histórico de cobrança (a retenção em si é inferência do projeto, não objeto da decisão). Repetitivo vinculante.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Afetado em 08/06/2015; julgado pela Primeira Seção em 10/05/2017, relator Min. Og Fernandes, unanimidade; acórdão publicado em 17/05/2017; trânsito em julgado em 24/09/2019. A página oficial do Tema informa que a tese não foi alterada e registra também um EREsp 1.532.514/SP (resultado não verificado).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://processo.stj.jus.br/repetitivos/temas_repetitivos/pesquisa.jsp?novaConsulta=true&tipo_pesquisa=T&cod_tema_inicial=932&cod_tema_final=932",
+    "topics": [
+      "billing",
+      "tariff",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection",
+      "accounting",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: ano 2017 (julgamento 10/05/2017), relator Min. Og Fernandes (notícia oficial do STJ de 25/05/2017) e número do Tema: 932. O campo de admissibilidade da página do Tema exibe o nome do Min. Raul Araújo no bloco do REsp, mas isso não é o relator do mérito (a notícia oficial indica Og Fernandes). O prazo de 10/20 anos vale para repetição de indébito. Trata-se de complemento do Tema 154 (Súmula 412, REsp 1.113.403/RJ), que apenas manda aplicar o prazo do Código Civil. A fonte original do projeto era notícia do STJ de 2017; agora confirmado na página oficial de precedentes qualificados."
+  },
+  {
+    "id": "stj-resp-1113403",
+    "kind": "COURT",
+    "number": "1.113.403",
+    "year": "2009",
+    "issuer": "Superior Tribunal de Justiça (STJ), Primeira Seção",
+    "title_pt": "REsp 1.113.403/RJ (repetitivo, Temas 154 e 155: origem da Súmula 412)",
+    "scope_summary": "Paradigma dos Temas 154 e 155: a ação de repetição de indébito de tarifas de água e esgoto sujeita-se ao prazo prescricional do Código Civil, e não ao prazo quinquenal do art. 27 do CDC. Deu origem à Súmula 412.",
+    "norm_class": "REFERENCE",
+    "applicability": "Prestadores de água e esgoto: prazo para o usuário reaver cobranças indevidas segue o Código Civil (detalhado depois pelo Tema 932). Repetitivo vinculante.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Afetado em 25/05/2009; julgado em 09/09/2009 pela Primeira Seção, relator Min. Teori Albino Zavascki; acórdão publicado em 15/09/2009; embargos de declaração publicados em 18/12/2009; trânsito em julgado em 03/03/2010. A Súmula 412 foi aprovada pela Primeira Seção em 25/11/2009 (DJe 16/12/2009) e continua em vigor.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://processo.stj.jus.br/repetitivos/temas_repetitivos/pesquisa.jsp?novaConsulta=true&tipo_pesquisa=T&cod_tema_inicial=154&cod_tema_final=155",
+    "topics": [
+      "billing",
+      "tariff",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection",
+      "accounting",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: o julgamento do REsp foi em 09/09/2009 (DJe 15/09/2009), não em 25/11/2009; esta última data é a da aprovação da Súmula 412. Origem do caso: TJRJ, onde a tarifa progressiva foi tida por legítima e aplicada a prescrição quinquenal do art. 27 do CDC. Os Temas 154 e 155 têm conteúdo idêntico na página oficial. Um segundo processo (REsp 1.308.859/RJ) foi afetado e depois desafetado em 2012."
+  },
+  {
+    "id": "stj-resp-1117903",
+    "kind": "COURT",
+    "number": "1.117.903",
+    "year": "2009",
+    "issuer": "Superior Tribunal de Justiça (STJ), Primeira Seção",
+    "title_pt": "REsp 1.117.903/RS (repetitivo, Temas 251 a 254: natureza de tarifa e prescrição da cobrança de água e esgoto)",
+    "scope_summary": "Processo de referência dos Temas 251 a 254: a remuneração dos serviços de água e esgoto prestados por concessionária é tarifa ou preço público, de natureza não tributária, e não taxa. A pretensão de cobrança do prestador prescreve em 10 anos, ou em 20 anos quando o vencimento já superava 10 anos na entrada em vigor do Código Civil de 2002.",
+    "norm_class": "REFERENCE",
+    "applicability": "Prestadores de água e esgoto: define a natureza da cobrança (tarifa, regime de direito privado/preço público) e o prazo de que o prestador dispõe para cobrar (pretensão executiva). Repetitivo vinculante.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Afetado em 15/10/2009; julgado em 09/12/2009 pela Primeira Seção, relator Min. Luiz Fux; acórdão publicado em 01/02/2010; trânsito em julgado em 08/03/2010. Temas 251 e 253 tratam da natureza tarifa/preço público; Temas 252 e 254, do prazo prescricional da pretensão executiva.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://processo.stj.jus.br/repetitivos/temas_repetitivos/pesquisa.jsp?novaConsulta=true&tipo_pesquisa=T&cod_tema_inicial=251&cod_tema_final=254",
+    "topics": [
+      "billing",
+      "tariff",
+      "tax",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection",
+      "accounting",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: data de julgamento confirmada (09/12/2009, DJe 01/02/2010; o projeto indicava apenas 2009-2010) e números de tema confirmados (251 a 254, todos com o REsp 1.117.903/RS como processo de referência). Ressalva de escopo: o prazo de 10/20 anos desses temas refere-se à pretensão de cobrança da tarifa pelo prestador, e não à repetição de indébito pelo usuário, que é objeto da Súmula 412 e dos Temas 154 e 155 (REsp 1.113.403/RJ) e 932 (REsp 1.532.514/SP). A pendência do relatório 14 sobre qual prazo aplicar deve separar essas duas pretensões. Os Temas 251 e 252 trazem nota de suspensão dos demais recursos sobre o assunto. A página oficial não rotula o REsp como 'paradigma'; a identificação decorre de ele ser o único processo listado em cada tema."
+  },
+  {
+    "id": "stj-tema-932",
+    "kind": "COURT",
+    "number": "932",
+    "year": "2017",
+    "issuer": "Superior Tribunal de Justiça (STJ), Primeira Seção",
+    "title_pt": "Tema repetitivo 932 do STJ (prazo prescricional da repetição de indébito de tarifas de água e esgoto)",
+    "scope_summary": "Tema do prazo para o usuário pedir a devolução de tarifas de água e esgoto cobradas indevidamente: 20 anos pelo CC/1916 ou 10 anos pelo CC/2002, aplicada a regra de transição do art. 2.028. É tema sobre repetição de indébito (pretensão do consumidor), não sobre prescrição da cobrança do prestador.",
+    "norm_class": "REFERENCE",
+    "applicability": "Prestadores de água e esgoto: prazo máximo para atender pedidos de restituição e referência para retenção do histórico de cobrança. Repetitivo vinculante.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Afetado em 08/06/2015 (REsp 1.532.514/SP); julgado em 10/05/2017 pela Primeira Seção; acórdão publicado em 17/05/2017; trânsito em julgado em 24/09/2019; sem alteração da tese. Relator do mérito: Min. Og Fernandes (notícia oficial do STJ).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://processo.stj.jus.br/repetitivos/temas_repetitivos/pesquisa.jsp?novaConsulta=true&tipo_pesquisa=T&cod_tema_inicial=932&cod_tema_final=932",
+    "topics": [
+      "billing",
+      "tariff",
+      "consumer_rights"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection",
+      "accounting",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: o projeto descrevia o Tema 932 como regra de 'prescrição da cobrança'; trata-se de repetição de indébito. Relação entre os números, agora esclarecida: Tema 154 (e 155, idênticos) = Súmula 412, REsp 1.113.403/RJ, prazo do Código Civil sem fixar quantos anos; Tema 932 = REsp 1.532.514/SP, que especifica 20/10 anos com transição do art. 2.028 (a página do Tema 932 remete aos Temas 154 e 155); Temas 251 a 254 = REsp 1.117.903/RS (natureza de tarifa e prazo da cobrança pelo prestador). O Tema 932 corresponde de fato ao assunto descrito pelo projeto (água e esgoto), mas não deve ser confundido com o Tema 1.315, que trata de notificação eletrônica."
+  },
+  {
+    "id": "stj-tema-735",
+    "kind": "COURT",
+    "number": "735",
+    "year": "2014",
+    "issuer": "Superior Tribunal de Justiça (STJ), Segunda Seção",
+    "title_pt": "Tema repetitivo 735 do STJ (exclusão do registro de inadimplência após o pagamento; origem da Súmula 548)",
+    "scope_summary": "Quitada a dívida, cabe ao credor, e não ao consumidor, requerer a exclusão do registro desabonador em cadastro de proteção ao crédito, no prazo de 5 dias úteis contados do primeiro dia útil seguinte à disponibilização integral do valor necessário à quitação.",
+    "norm_class": "REFERENCE",
+    "applicability": "Prestadores que negativam usuários inadimplentes: ao receber o pagamento integral e efetivo, o sistema deve solicitar a baixa do registro em até 5 dias úteis; vincula a rotina de baixa de negativação.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Afetado em 14/03/2014; julgado em 10/09/2014 pela Segunda Seção, relator Min. Luis Felipe Salomão; acórdão publicado em 24/09/2014; trânsito em julgado em 04/11/2014. Paradigma: REsp 1.424.792/BA (TJBA, destacado de ofício pelo relator). Originou a Súmula 548, aprovada pela Segunda Seção em 14/10/2015 (DJe 19/10/2015).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://processo.stj.jus.br/repetitivos/temas_repetitivos/pesquisa.jsp?novaConsulta=true&tipo_pesquisa=T&cod_tema_inicial=735&cod_tema_final=735",
+    "topics": [
+      "consumer_rights",
+      "cut_off",
+      "billing"
+    ],
+    "modules_affected": [
+      "dunning",
+      "collection",
+      "integration"
+    ],
+    "notes": "Associação com a Súmula 548 confirmada: a página oficial do Tema lista a Súmula 548 como súmula originada. A citação do projeto estava incompleta e a confiança baixa/média pode subir para alta. A Súmula 548 diz que incumbe ao credor a exclusão do registro da dívida em nome do devedor no cadastro de inadimplentes no prazo de cinco dias úteis, a partir do integral e efetivo pagamento do débito (enunciado conferido no repositório oficial de súmulas do STJ)."
+  },
+  {
+    "id": "stj-eresp-1413542",
+    "kind": "COURT",
+    "number": "1.413.542",
+    "year": "2020",
+    "issuer": "Superior Tribunal de Justiça (STJ), Corte Especial",
+    "title_pt": "EREsp 1.413.542/RS (devolução em dobro do art. 42, parágrafo único, do CDC)",
+    "scope_summary": "Embargos de divergência julgados em conjunto com o EAREsp 600.663/RS e correlatos: a repetição em dobro do art. 42, parágrafo único, do CDC cabe quando a cobrança indevida contraria a boa-fé objetiva, sem exigir dolo, culpa ou má-fé do fornecedor.",
+    "norm_class": "REFERENCE",
+    "applicability": "Prestadores de água e esgoto e demais fornecedores: devolução em dobro de cobranças indevidas independe de má-fé, salvo engano justificável. Em contratos de serviço público não há modulação temporal; a modulação (só cobranças posteriores a 30/03/2021) vale para contratos privados. Acórdão da Corte Especial, não é repetitivo.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Julgado pela Corte Especial em 21/10/2020, relatora originária Min. Maria Thereza de Assis Moura, relator para acórdão Min. Herman Benjamin; acórdãos publicados no DJe de 30/03/2021 (dados do EREsp em si extraídos de citações secundárias em decisões do TJRS; a tese e a data conjunta confirmadas nos inteiros teores oficiais dos EAREsp 600.663 e 676.608, que o citam como correlato). A página oficial do Tema repetitivo 929 (Corte Especial, hipóteses da repetição em dobro) indica mérito julgado e acórdão ainda não publicado; pode refinar a matéria.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "",
+    "topics": [
+      "consumer_rights",
+      "billing",
+      "payments"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection",
+      "portal"
+    ],
+    "notes": "Não localizado o inteiro teor próprio do EREsp 1.413.542/RS (o portal SCON bloqueia consulta automatizada e a busca por registro falhou); por isso SECONDARY_SOURCE. Os inteiros teores oficiais dos EAREsp 600.663 e 676.608 citam o EREsp 1.413.542/RS (relatoria Maria Thereza de Assis Moura) como processo correlato julgado na mesma pauta. Na prática o paradigma citado pela jurisprudência é o EAREsp 600.663/RS (e o EAREsp 664.888/RS, também do mesmo julgamento). Resolução da divergência do projeto sobre a modulação: pelo item de modulação do acórdão, a modulação é parcial e restrita a 'indébitos de natureza contratual não pública' cobrados após a publicação (30/03/2021); em serviços públicos, como água e esgoto, a dobra independe de má-fé sem esse marco temporal (leitura do acórdão; comentário doutrinário converge). Os casos concretos desse conjunto são de telefonia, não de saneamento; a aplicação a água e esgoto decorre da tese geral e do fato de a Primeira Seção já admitir a culpa como suficiente nos serviços públicos."
+  },
+  {
+    "id": "stj-earesp-676608",
+    "kind": "COURT",
+    "number": "676.608",
+    "year": "2020",
+    "issuer": "Superior Tribunal de Justiça (STJ), Corte Especial",
+    "title_pt": "EAREsp 676.608/RS (devolução em dobro do CDC e prazo decenal da repetição de indébito)",
+    "scope_summary": "Em cobrança indevida de serviços de telefonia, a Corte Especial fixou que a devolução em dobro do art. 42, parágrafo único, do CDC não depende de má-fé, bastando conduta contrária à boa-fé objetiva, e que a repetição de indébito prescreve em 10 anos (art. 205 do CC, por analogia à Súmula 412), com modulação parcial dos efeitos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Fornecedores em geral, inclusive de serviços públicos: parâmetro para devolução em dobro e para o prazo decenal de repetição de indébito. Acórdão da Corte Especial, não repetitivo.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Julgado em 21/10/2020 (após adiamentos e pedidos de vista desde 2016), Corte Especial, relator Min. Og Fernandes, por maioria; vencidas as Ministras Maria Thereza de Assis Moura e Nancy Andrighi quanto ao fundamento e à modulação, e parcialmente vencido o Min. Raul Araújo quanto ao prazo prescricional; acórdão publicado no DJe de 30/03/2021. Caso de origem: TJRS, telefonia fixa (Oi S.A.).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://processo.stj.jus.br/SCON/GetInteiroTeorDoAcordao?num_registro=201500497769&dt_publicacao=30/03/2021",
+    "topics": [
+      "consumer_rights",
+      "billing",
+      "payments"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection",
+      "portal"
+    ],
+    "notes": "CORRIGIDO: o relator é o Min. Og Fernandes (o relator para acórdão Herman Benjamin atua no EAREsp 600.663/RS, que firmou a redação da tese), e o caso é de telefonia fixa, não de saneamento. Além da dobra, o acórdão fixa prazo decenal para a repetição, citando o REsp 1.113.403/RJ (água e esgoto) como base. Modulação parcial: apenas para indébitos contratuais não públicos cobrados após a publicação do acórdão; para serviços públicos, a leitura do inteiro teor é de que a dobra independe de má-fé sem modulação temporal. A notícia do STJ de 29/10/2020 trata do mesmo julgamento. Conferir o Tema 929 (a página oficial indica mérito julgado e acórdão pendente de publicação)."
+  },
+  {
+    "id": "stj-earesp-600663",
+    "kind": "COURT",
+    "number": "600.663",
+    "year": "2020",
+    "issuer": "Superior Tribunal de Justiça (STJ), Corte Especial",
+    "title_pt": "EAREsp 600.663/RS (devolução em dobro do CDC)",
+    "scope_summary": "Embargos de divergência entre a Primeira e a Segunda Seção sobre o art. 42, parágrafo único, do CDC: a repetição em dobro é cabível quando a cobrança indevida contraria a boa-fé objetiva, independentemente da natureza dolosa ou culposa da conduta. O acórdão modulou os efeitos apenas para contratos privados.",
+    "norm_class": "REFERENCE",
+    "applicability": "Fornecedores em geral, inclusive concessionárias de serviço público: fundamenta a política de devolução em dobro de cobranças indevidas sem exigir prova de má-fé. Acórdão da Corte Especial, não repetitivo.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Julgado em 21/10/2020 pela Corte Especial, por maioria; relatora originária Min. Maria Thereza de Assis Moura, relator para acórdão Min. Herman Benjamin; acórdão publicado no DJe de 30/03/2021. Os embargos haviam sido opostos em 2015 e o julgamento teve várias pausas por pedidos de vista (Noronha, Herman Benjamin, Salomão). Caso de origem: telefonia (Oi S.A.), TJRS.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://processo.stj.jus.br/SCON/GetInteiroTeorDoAcordao?num_registro=201402707973&dt_publicacao=30/03/2021",
+    "topics": [
+      "consumer_rights",
+      "billing",
+      "payments"
+    ],
+    "modules_affected": [
+      "billing",
+      "collection",
+      "portal"
+    ],
+    "notes": "CORRIGIDO: o caso concreto é de telefonia, não de água e esgoto. Tese oficial (em resumo): cabimento da dobra quando a cobrança indevida for contrária à boa-fé objetiva, sem investigar o elemento volitivo. Modulação, conforme o acórdão: o entendimento aplica-se aos indébitos de natureza contratual não pública cobrados após a data da publicação do acórdão; para serviços públicos não há esse marco, o que resolve a divergência registrada no projeto. O EAREsp é o julgamento-guia citado nas decisões posteriores (reafirmado no EAREsp 1.501.756/SC, Informativo 803, 2024). Tema repetitivo 929 (art. 42, parágrafo único): a página oficial indica mérito julgado e acórdão ainda não publicado; reavaliar quando houver tese publicada."
+  },
+  {
+    "id": "stf-tema-1130",
+    "kind": "COURT",
+    "number": "1.130",
+    "year": "2021",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "Tema 1.130 da repercussão geral do STF (titularidade do IRRF sobre pagamentos de entes subnacionais a fornecedores)",
+    "scope_summary": "O STF fixou que o imposto de renda retido na fonte sobre pagamentos feitos por municípios, estados e DF (e por suas autarquias e fundações) a pessoas físicas ou jurídicas que fornecem bens ou serviços pertence ao próprio ente pagador, e não à União.",
+    "norm_class": "REFERENCE",
+    "applicability": "Entes titulares e autarquias/fundações que contratam fornecedores (inclusive SAAE e autarquias de saneamento): retêm o IRRF e o apropriam como receita própria. No produto, afeta a retenção e a contabilização do IRRF nos pagamentos a fornecedores do tenant e nos recebimentos do contrato de software quando o tenant é ente público.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Leading case RE 1.293.453/RS, relator Min. Alexandre de Moraes. Repercussão geral reconhecida em 19/03/2021 (plenário virtual). Mérito julgado por unanimidade em sessão virtual encerrada em 08/10/2021 (data do Informativo STF 1033 e da notícia oficial; atos da Receita Federal citam 11/10/2021). Trânsito em julgado certificado em 16/02/2022. Ano 2021 = ano do julgamento de mérito.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.stf.jus.br/jurisprudenciaRepercussao/tema.asp?num=1130",
+    "topics": [
+      "tax",
+      "payments"
+    ],
+    "modules_affected": [
+      "accounting",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o art. 2º-A citado pelo projeto pertence à IN RFB 1.234/2012 (incluído pela IN RFB 2.145/2023 e com redação dada pela IN RFB 2.239, de 09/12/2024, DOU 10/12/2024); não é artigo da IN RFB 2.239/2024. A IN 2.239/2024 restringe as fundações abrangidas às de natureza autárquica ou com mais da metade da receita vinda do ente mantenedor. Ressalva: a Receita Federal (Solução de Consulta Cosit 108, trecho obtido em busca, não lido na íntegra) entende que o julgado não se estende a pagamentos de empresas estatais (sociedades de economia mista e empresas públicas); logo, a regra vale para administração direta, autarquias e fundações, não para companhias estaduais ou municipais de saneamento constituídas como empresa. Tese e relator conferidos no portal do STF; texto da tese conferido no Informativo STF 1033."
+  },
+  {
+    "id": "stf-sv-19",
+    "kind": "COURT",
+    "number": "19",
+    "year": "2009",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "Súmula Vinculante 19 do STF (taxa de coleta, remoção e tratamento ou destinação de lixo ou resíduos de imóveis)",
+    "scope_summary": "Declara compatível com o art. 145, II, da Constituição a taxa cobrada exclusivamente pelos serviços de coleta, remoção e tratamento ou destinação de lixo ou resíduos provenientes de imóveis; o precedente (Tema 146) exclui da taxa a limpeza de logradouros e bens públicos e admite usar elementos da base de cálculo de imposto, sem identidade integral.",
+    "norm_class": "REFERENCE",
+    "applicability": "Municípios e prestadores que cobram o manejo de resíduos sólidos na fatura como taxa (tributo). Efeito vinculante sobre Judiciário e administração pública. No produto, orienta a modelagem da cobrança de resíduos: taxa por serviço específico e divisível de resíduos de imóveis; a súmula não trata de tarifa.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Aprovada em sessão plenária de 29/10/2009 (PSV 40); publicada no DJe nº 210, de 10/11/2009, e no DOU de 10/11/2009. Precedente representativo: RE 576.321 QO-RG, relator Min. Ricardo Lewandowski, julgado em 04/12/2008 (Tema 146); tese do Tema 146 aprovada em 09/12/2015. Na consulta de 22/10/2026 a página oficial do STF mantém o enunciado sem registro de cancelamento ou revisão. Ano 2009 = aprovação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=26&sumula=1248",
+    "topics": [
+      "billing",
+      "tax",
+      "tariff"
+    ],
+    "modules_affected": [
+      "billing",
+      "grs"
+    ],
+    "notes": "Resposta à pergunta em aberto do relatório 12: sim, a SV 19 segue sendo o limite constitucional vigente para taxas de resíduos domiciliares; não foi localizada proposta de revisão ou cancelamento no portal do STF. Ressalva: o enunciado cobre apenas a taxa pelos serviços de resíduos de imóveis; a cobrança por taxa de conservação e limpeza de logradouros e bens públicos é inconstitucional segundo a tese do Tema 146, e o regime de tarifa (preço público) deve ser analisado à luz da Lei 11.445/2007 com a redação da Lei 14.026/2020, não verificada nesta rodada. A data de aprovação foi confirmada na compilação oficial de súmulas vinculantes do STF (PDF) obtida em busca, pois a página de pesquisa do portal não a exibe."
+  },
+  {
+    "id": "stf-adi-5135",
+    "kind": "COURT",
+    "number": "5135",
+    "year": "2016",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 5135 (protesto de Certidão de Dívida Ativa; art. 1º, parágrafo único, da Lei 9.492/1997)",
+    "scope_summary": "O STF julgou improcedente a ação da Confederação Nacional da Indústria e declarou legítimo o protesto de CDA pela Fazenda Pública, por não ser sanção política nem restringir de forma desproporcional direitos dos contribuintes.",
+    "norm_class": "REFERENCE",
+    "applicability": "Fazendas Públicas (União, estados, DF, municípios, autarquias e fundações) que protestam CDA. No produto, só sustenta o protesto de créditos que sejam efetivamente inscritos em dívida ativa; não decide sobre protesto de créditos de tarifa de concessionárias ou empresas.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Ação ajuizada pela CNI em junho de 2014 (notícia do STF de 17/06/2014). Relator: Min. Luís Roberto Barroso. Julgamento iniciado em 03/11/2016 e concluído em 09/11/2016: improcedente, por maioria (vencidos os Ministros Edson Fachin, Marco Aurélio e Ricardo Lewandowski, conforme a ata transcrita em fonte secundária). Ano 2016 = julgamento; ajuizamento em 2014.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://noticias.stf.jus.br/postsnoticias/protesto-de-certidoes-de-divida-ativa-e-constitucional-decide-stf/",
+    "topics": [
+      "cut_off",
+      "billing",
+      "other"
+    ],
+    "modules_affected": [
+      "dunning",
+      "collection"
+    ],
+    "notes": "CORRIGIDO: o número correto é ADI 5135; a grafia 'ADI 513' em outro trecho do projeto é erro de digitação. O dispositivo (parágrafo único do art. 1º da Lei 9.492/1997) foi acrescentado pelo art. 25 da Lei 12.767/2012, e não consta do texto original da Lei 9.492. A tese fixada diz que o protesto de CDA é mecanismo constitucional e legítimo. Ressalva: a aplicação a créditos de água e esgoto depende de o prestador poder inscrevê-los em dívida ativa (por exemplo, autarquia com crédito inscrevível); esse ponto não foi verificado e deve ser confirmado com o jurídico antes de virar regra do produto. Votação por maioria e nomes dos vencidos conferidos em fonte secundária (ata transcrita em artigo); resultado e tese conferidos em notícia oficial do STF."
+  },
+  {
+    "id": "stf-adi-4058",
+    "kind": "COURT",
+    "number": "4.058",
+    "year": "2018",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 4.058 (prorrogação de concessões sem licitação; art. 42, § 1º, da Lei 8.987/1995, na redação do art. 58 da Lei 11.445/2007)",
+    "scope_summary": "Ação da PGR contra a redação dada pela Lei 11.445/2007 ao art. 42, § 1º, da Lei de Concessões, que permitia prorrogar concessões de saneamento vencidas sem licitação; o STF deu interpretação conforme à Constituição, que exige licitação para legitimar a concessão.",
+    "norm_class": "REFERENCE",
+    "applicability": "Titulares e prestadores com concessões de saneamento anteriores à Lei 8.987/1995 ou vencidas: a continuidade do serviço por novo contrato depende de licitação. Efeito sobre a gestão de contratos e de ativos reversíveis no produto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Ajuizada pela Procuradoria-Geral da República em 2008 (notícia do STF de 27/03/2008). Relator: Min. Alexandre de Moraes. Julgada em 19/12/2018: conhecida em parte e, na parte conhecida, parcialmente procedente, por unanimidade, para dar interpretação conforme ao art. 42, § 1º, da Lei 8.987/1995, na redação do art. 58 da Lei 11.445/2007. Acórdão no DJe-030, divulgado em 13/02/2019 e publicado em 14/02/2019 (dado de compilação secundária). Ano 2018 = julgamento.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.stf.jus.br/noticias/verNoticiaDetalhe.asp?idConteudo=399132&ori=1",
+    "topics": [
+      "procurement",
+      "other"
+    ],
+    "modules_affected": [
+      "assets",
+      "platform"
+    ],
+    "notes": "Objeto confirmado: a ação não ataca a Lei 11.445/2007 como um todo, apenas o dispositivo da Lei 8.987/1995 alterado pelo art. 58 daquela lei; trata-se de decisão sobre contratação, sem efeito direto sobre tarifa ou faturamento. O texto exato da parte dispositiva (alcance da interpretação conforme) não foi lido no acórdão; o resumo segue a notícia oficial. A data da publicação do acórdão vem de fonte secundária (compilação de julgados)."
+  },
+  {
+    "id": "stf-adi-6492",
+    "kind": "COURT",
+    "number": "6.492",
+    "year": "2021",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 6.492 (PDT contra dispositivos da Lei 14.026/2020, novo marco legal do saneamento)",
+    "scope_summary": "Ação do PDT contra diversos artigos da Lei 14.026/2020 (que alterou as Leis 11.445/2007, 9.984/2000, 10.768/2003 e 11.107/2005). O STF julgou os pedidos improcedentes e declarou constitucional o novo marco.",
+    "norm_class": "REFERENCE",
+    "applicability": "Todos os prestadores e titulares de água e esgoto: confirma a validade das normas de referência da ANA, da regionalização, da concessão como modelo de delegação (com vedação ao novo contrato de programa) e das condicionantes para transferências federais.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Ajuizada pelo PDT em 2020; liminar indeferida pelo relator em 03/08/2020. Relator: Min. Luiz Fux. Julgamento conjunto com as ADIs 6536, 6583 e 6882, concluído em 02/12/2021 (Plenário): improcedentes, por maioria; parcialmente vencidos os Ministros Edson Fachin, Rosa Weber e Ricardo Lewandowski. Acórdão publicado no DJe de 25/05/2022 (dado de fonte secundária). Trânsito em julgado não verificado. Ano 2021 = julgamento.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.stf.jus.br/noticias/verNoticiaDetalhe.asp?idConteudo=477666&ori=1",
+    "topics": [
+      "tariff",
+      "service_quality",
+      "procurement",
+      "reporting"
+    ],
+    "modules_affected": [
+      "billing",
+      "quality",
+      "losses",
+      "accounting",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: a ação não é contra a Lei 11.445/2007 original; o objeto é a Lei 14.026/2020, que alterou a 11.445 entre outras (a decisão liminar cita, por exemplo, o art. 3º, o art. 5º, o art. 7º e o art. 11 da Lei 14.026, com os dispositivos da 11.445 que eles inserem ou alteram). Resultado: nenhum dispositivo foi declarado inconstitucional; a ementa oficial fala em constitucionalidade do novo marco, com ressalvas apenas nos votos parcialmente vencidos. Pontos centrais: autonomia municipal preservada, art. 50 da Lei 11.445 (conformidade regulatória para transferências voluntárias) válido, vedação do contrato de programa proporcional, metas de 99% (água) e 90% (esgoto). Nota: a notícia oficial do STF grafa 'ADI 6356' no corpo do texto por erro de digitação; o número correto é 6536. Ressalva de leitura: a ementa/acórdão completo não foi lido; o resumo segue o Informativo STF 1040 e as notícias oficiais."
+  },
+  {
+    "id": "stf-adi-6536",
+    "kind": "COURT",
+    "number": "6.536",
+    "year": "2021",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 6.536 (PCdoB, PSOL, PSB e PT contra a Lei 14.026/2020, novo marco legal do saneamento)",
+    "scope_summary": "Ação de quatro partidos contra o novo marco do saneamento, com foco nas competências da ANA para editar normas de referência (regulação tarifária, padronização de instrumentos contratuais, contabilidade regulatória). Julgada improcedente.",
+    "norm_class": "REFERENCE",
+    "applicability": "Prestadores e titulares de água e esgoto: confirma a validade das normas de referência da ANA e do novo desenho setorial; as normas de referência que vierem a ser editadas pela ANA permanecem exigíveis.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Ajuizada em agosto de 2020 (a data de 11/08/2020 vem de fonte secundária); distribuída por prevenção ao Min. Luiz Fux, que adotou o rito do art. 12 da Lei 9.868/1999. Julgamento conjunto com as ADIs 6492, 6583 e 6882, concluído em 02/12/2021: improcedente, por maioria (parcialmente vencidos Fachin, Rosa Weber e Lewandowski). Acórdão publicado em 25/05/2022 (fonte secundária). Trânsito em julgado não verificado. Ano 2021 = julgamento.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.stf.jus.br/noticias/verNoticiaDetalhe.asp?idConteudo=477666&ori=1",
+    "topics": [
+      "tariff",
+      "reporting",
+      "procurement"
+    ],
+    "modules_affected": [
+      "billing",
+      "accounting",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: o objeto é a Lei 14.026/2020 e não a Lei 11.445/2007 original; o resultado não é 'não confirmado': foi julgada improcedente (constitucionalidade do novo marco) em 02/12/2021. Os autores são PCdoB, PSOL, PSB e PT. A página oficial do STF grafa 6356 no texto por erro de digitação."
+  },
+  {
+    "id": "stf-adi-6583",
+    "kind": "COURT",
+    "number": "6.583",
+    "year": "2021",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 6.583 (Assemae contra a Lei 14.026/2020, novo marco legal do saneamento)",
+    "scope_summary": "Ação da associação nacional dos serviços municipais de saneamento (Assemae), que defendia a titularidade municipal, a gestão pública e a possibilidade de consórcios e convênios, contra a concessão como único modelo e contra as normas de referência da ANA. Julgada improcedente.",
+    "norm_class": "REFERENCE",
+    "applicability": "Serviços municipais de saneamento (SAAE, departamentos e autarquias): o STF manteve a titularidade municipal, mas validou as normas de referência da ANA, a regionalização e a vedação a novos contratos de programa. Relevante para tenants municipais.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Ajuizada pela Assemae em 15/10/2020 (informada em ConJur e em estudo acadêmico, fontes secundárias; STF confirma a autoria). Relator: Min. Luiz Fux. Julgamento conjunto concluído em 02/12/2021: improcedente, por maioria (parcialmente vencidos Fachin, Rosa Weber e Lewandowski). Acórdão publicado em 25/05/2022 (fonte secundária). Trânsito em julgado não verificado. Ano 2021 = julgamento.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.stf.jus.br/noticias/verNoticiaDetalhe.asp?idConteudo=477666&ori=1",
+    "topics": [
+      "tariff",
+      "procurement",
+      "service_quality"
+    ],
+    "modules_affected": [
+      "billing",
+      "quality",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: o objeto é a Lei 14.026/2020 (arts. 2º, 3º, 5º, 7º, 9º, 11, 13 e 15, entre outros, segundo a petição noticiada) e não a Lei 11.445/2007 original; resultado: improcedente, validade do novo marco declarada. As descrições de arts. e argumentos da inicial vêm de fonte secundária (ConJur, 13/11/2020)."
+  },
+  {
+    "id": "stf-adi-6882",
+    "kind": "COURT",
+    "number": "6.882",
+    "year": "2021",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 6.882 (Aesbe contra a Lei 14.026/2020, novo marco legal do saneamento)",
+    "scope_summary": "Ação da associação das empresas estaduais de saneamento (Aesbe) contra o fim da gestão associada por consórcio ou convênio e do contrato de programa, que levaria à concessão como único modelo de delegação. Julgada improcedente.",
+    "norm_class": "REFERENCE",
+    "applicability": "Companhias estaduais de saneamento e titulares: confirma a vedação a novos contratos de programa e o modelo de concessão licitada; afeta a contratualização e o enquadramento regulatório dos tenants estaduais.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Ajuizada em 2021 (ConJur de 09/07/2021 registra a distribuição por prevenção ao Min. Luiz Fux; fonte secundária). Relator: Min. Luiz Fux. Julgamento conjunto concluído em 02/12/2021: improcedente, por maioria (parcialmente vencidos Fachin, Rosa Weber e Lewandowski). Acórdão publicado em 25/05/2022 (fonte secundária). Trânsito em julgado não verificado. Ano 2021 = julgamento (ajuizamento também em 2021).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.stf.jus.br/noticias/verNoticiaDetalhe.asp?idConteudo=477666&ori=1",
+    "topics": [
+      "procurement",
+      "tariff",
+      "service_quality"
+    ],
+    "modules_affected": [
+      "assets",
+      "billing",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: o objeto é a Lei 14.026/2020 e não a Lei 11.445/2007 original; resultado: improcedente (constitucionalidade do novo marco). Observação: a lei 14.026/2020 tem outros questionamentos no STF além destas quatro ADIs; esta ficha cobre apenas o julgamento conjunto de 02/12/2021."
+  },
+  {
+    "id": "stf-adpf-1005",
+    "kind": "COURT",
+    "number": "1005",
+    "year": "2026",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADPF 1005 (mínimo existencial no superendividamento; Decretos 11.150/2022 e 11.567/2023)",
+    "scope_summary": "Ação da Conamp contra o decreto que regulamentou a Lei do Superendividamento (Lei 14.181/2021) e fixou o mínimo existencial. O STF manteve o parâmetro numérico (R$ 600), mas exigiu estudos técnicos anuais do CMN e declarou inconstitucional a exclusão do consignado do cálculo.",
+    "norm_class": "REFERENCE",
+    "applicability": "Credores e prestadores de serviços essenciais em renegociação de dívidas de consumo de pessoa natural superendividada, inclusive contas de água e esgoto. No produto, a renegociação e a cobrança devem tratar o mínimo existencial como parâmetro configurável, não fixo no código.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Ajuizada pela Associação Nacional dos Membros do Ministério Público (Conamp), com notícia de distribuição de 30/08/2022. Relator: Min. André Mendonça. Julgamento conjunto com as ADPFs 1006 e 1097, concluído em 23/04/2026 em sessão plenária (Informativo STF 1214). Acórdão não lido; publicação não verificada. Ano 2026 = conclusão do julgamento; ajuizamento em 2022.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.stf.jus.br/textos/verTexto.asp?servico=jurisprudenciaPesquisaGeral&pagina=casos_notorios_2026",
+    "topics": [
+      "consumer_rights",
+      "cut_off",
+      "billing",
+      "payments"
+    ],
+    "modules_affected": [
+      "dunning",
+      "collection",
+      "billing"
+    ],
+    "notes": "CORRIGIDO: a descrição do projeto ('revisão anual do valor pelo CMN') é imprecisa. Pelas notícias oficiais do STF (22 e 23/04/2026) e pela página de julgamentos relevantes de 2026: (i) constitucional fixar o mínimo existencial por decreto, desde que reavaliado periodicamente; o valor de R$ 600 foi mantido; (ii) por unanimidade, interpretação conforme ao art. 3º, § 3º, do Decreto 11.150/2022 para que o CMN faça anualmente os estudos técnicos (análise de impacto e avaliação de resultado regulatório) que embasem decisão pública e motivada sobre atualizar ou manter o valor, com apelo para que CMN e Executivo reavaliem as hipóteses de exclusão; (iii) por maioria (6 a 4), inconstitucional excluir o crédito consignado do cálculo (alínea 'h' do inciso I do parágrafo único do art. 4º do decreto, segundo fonte secundária); divergiram nesse ponto Cármen Lúcia, Fux, Dino e Zanin. O resultado '6 a 4' refere-se apenas ao consignado."
+  },
+  {
+    "id": "stf-adpf-1006",
+    "kind": "COURT",
+    "number": "1006",
+    "year": "2026",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADPF 1006 (mínimo existencial no superendividamento; Decretos 11.150/2022 e 11.567/2023)",
+    "scope_summary": "Ação da Anadep, julgada em conjunto com a ADPF 1005: mínimo existencial de R$ 600 mantido por decreto, sob reavaliação técnica anual do CMN, e exclusão do consignado do cálculo declarada inconstitucional.",
+    "norm_class": "REFERENCE",
+    "applicability": "Credores e prestadores de serviços essenciais em renegociação de dívidas de consumo de pessoa natural superendividada; no produto, mínimo existencial configurável e inclusão do consignado no cálculo de comprometimento, quando o produto calcular esse indicador.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Ajuizada pela Associação Nacional das Defensoras e Defensores Públicos (Anadep); distribuída ao Min. André Mendonça (notícia oficial de 30/08/2022). Julgamento conjunto com as ADPFs 1005 e 1097, concluído em 23/04/2026. Acórdão não lido; publicação não verificada. Ano 2026 = conclusão do julgamento; ajuizamento em 2022.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.stf.jus.br/textos/verTexto.asp?servico=jurisprudenciaPesquisaGeral&pagina=casos_notorios_2026",
+    "topics": [
+      "consumer_rights",
+      "cut_off",
+      "billing",
+      "payments"
+    ],
+    "modules_affected": [
+      "dunning",
+      "collection",
+      "billing"
+    ],
+    "notes": "CORRIGIDO: a entrada dizia apenas 'julgada com a ADPF 1005'; confirmado que as três ações foram julgadas em conjunto e concluídas em 23/04/2026, relator Min. André Mendonça, com o resultado descrito na ficha da ADPF 1005 (valor mantido com estudos anuais do CMN; consignado não pode ser excluído do cálculo, por maioria de 6 a 4)."
+  },
+  {
+    "id": "stf-adpf-1097",
+    "kind": "COURT",
+    "number": "1097",
+    "year": "2026",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADPF 1097 (mínimo existencial no superendividamento; Decreto 11.567/2023, R$ 600)",
+    "scope_summary": "Ação da Anadep contra o Decreto 11.567/2023, que fixou o mínimo existencial em R$ 600; julgada com as ADPFs 1005 e 1006, com o mesmo resultado (valor mantido sob estudos técnicos anuais do CMN e consignado incluído no cálculo).",
+    "norm_class": "REFERENCE",
+    "applicability": "Credores e prestadores de serviços essenciais em renegociação de dívidas de consumo de pessoa natural superendividada; no produto, mínimo existencial configurável.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Ajuizada pela Anadep; distribuída por prevenção ao Min. André Mendonça (notícia oficial de 20/11/2023). Julgamento conjunto com as ADPFs 1005 e 1006, concluído em 23/04/2026. Acórdão não lido; publicação não verificada. Ano 2026 = conclusão do julgamento; ajuizamento em 2023.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.stf.jus.br/textos/verTexto.asp?servico=jurisprudenciaPesquisaGeral&pagina=casos_notorios_2026",
+    "topics": [
+      "consumer_rights",
+      "cut_off",
+      "billing",
+      "payments"
+    ],
+    "modules_affected": [
+      "dunning",
+      "collection",
+      "billing"
+    ],
+    "notes": "CORRIGIDO: o alvo específico desta ação é o Decreto 11.567/2023 (que elevou o valor do mínimo existencial para R$ 600, alterando o Decreto 11.150/2022, em que era 25% do salário mínimo). Resultado conjunto: ver ficha da ADPF 1005."
+  },
+  {
+    "id": "stf-adi-6649",
+    "kind": "COURT",
+    "number": "6649",
+    "year": "2022",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 6649 (Decreto 10.046/2019, governança do compartilhamento de dados na administração pública federal; julgada com a ADPF 695)",
+    "scope_summary": "Ação do Conselho Federal da OAB contra o decreto que criou o Cadastro Base do Cidadão e o Comitê Central de Governança de Dados. O STF julgou parcialmente procedente, com interpretação conforme: o compartilhamento é possível, mas com finalidade legítima, mínimo necessário, transparência e observância da LGPD.",
+    "norm_class": "REFERENCE",
+    "applicability": "Órgãos e entidades da administração pública federal que compartilham dados pessoais. No produto, afeta integrações com bases federais (por exemplo, cadastros usados para tarifa social) e serve de parâmetro de finalidade e minimização para o tratamento de dados do tenant.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Ação ajuizada em 2020 (a Câmara dos Deputados registra 'ADI 6.649/2020'; notícia do STF de 25/01/2021). Relator: Min. Gilmar Mendes. Julgamento conjunto com a ADPF 695 (PSB), concluído em 15/09/2022, por maioria; parcialmente vencidos os Ministros André Mendonça, Nunes Marques e Edson Fachin. Resultado: parcialmente procedentes, com interpretação conforme ao Decreto 10.046/2019 e declaração, com efeito pro futuro, de inconstitucionalidade do art. 22 (estrutura do Comitê Central), que foi preservada por 60 dias contados da ata do julgamento. Ano 2022 = julgamento; ajuizamento em 2020.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.stf.jus.br/noticias/verNoticiaDetalhe.asp?idConteudo=494227",
+    "topics": [
+      "data_protection",
+      "other"
+    ],
+    "modules_affected": [
+      "lgpd",
+      "integration"
+    ],
+    "notes": "Situação atual (resposta ao 'não lida' do relatório 10): julgada, não pendente. O Decreto 10.046/2019 não consta como revogado; foi alterado depois do julgamento pelo Decreto 11.266/2022 e pelo Decreto 11.574/2023 (consulta ao Planalto e à base da Câmara). Ressalva: o decreto vincula apenas a administração pública federal; para prestadores de saneamento municipais, estaduais ou privados, o valor da decisão é de referência (parâmetros de LGPD no compartilhamento público). A parte dispositiva foi conferida no Informativo STF 1068 e na notícia oficial; o acórdão integral não foi lido."
+  },
+  {
+    "id": "tcu-acordao-2099-2025",
+    "kind": "COURT",
+    "number": "2099",
+    "year": "2025",
+    "issuer": "Tribunal de Contas da União (TCU)",
+    "title_pt": "Acórdão TCU 2099/2025 - Plenário (levantamento sobre acessibilidade digital no setor público federal)",
+    "scope_summary": "Levantamento do TCU (TC 008.257/2024-8) que mapeou a adoção de boas práticas de acessibilidade digital em 288 organizações federais; constatou baixa maturidade, autorizou a divulgação dos resultados e encaminhou os dados brutos a órgãos de política pública, sem impor obrigações a particulares.",
+    "norm_class": "REFERENCE",
+    "applicability": "Órgãos e entidades do setor público federal. Para o produto, é fonte de boas práticas e de critérios de aferição (WCAG e eMAG), não obrigação direta sobre prestadores municipais, estaduais ou privados de saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Processo TC 008.257/2024-8; relator Min. Antonio Anastasia; julgado na sessão plenária de 10/09/2025. Fiscalização autorizada pelo Acórdão 498/2024-Plenário. Dispositivo: encaminha dados brutos a órgãos de política (Secretaria de Governo Digital, CNJ, CNMP, SEST), autoriza a divulgação dos resultados e arquiva os autos. Processo arquivado, sem determinações de conduta.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://portal.tcu.gov.br/tecnologia-da-informacao/diagnostico-de-acessibilidade-digital",
+    "topics": [
+      "reporting",
+      "consumer_rights",
+      "other"
+    ],
+    "modules_affected": [
+      "portal",
+      "platform"
+    ],
+    "notes": "O projeto o cita corretamente como acórdão do TCU sobre acessibilidade digital, mas é um levantamento diagnóstico: a fonte jurídica do requisito de acessibilidade é a Lei Brasileira de Inclusão (Lei 13.146/2015) e o eMAG, e o acórdão referencia WCAG como padrão internacional (apenas 31% das organizações avaliadas seguiam essas diretrizes). O acórdão não cria obrigação para o tenant. Conteúdo conferido no portal do TCU e em transcrição do acórdão obtida por busca; o acórdão completo no sistema de pesquisa do TCU não foi aberto."
+  },
+  {
+    "id": "nfse-nt-007-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "007",
+    "year": "2026",
+    "issuer": "Secretaria Executiva do Comitê Gestor da NFS-e (SE/CGNFS-e)",
+    "title_pt": "Nota Técnica SE/CGNFS-e nº 007/2026, versão 1.0 (adequações da NFS-e padrão nacional: PIS/Cofins, novos fatos geradores e campo indZFMALC)",
+    "scope_summary": "Atualiza o leiaute da NFS-e padrão nacional (Anexos VI v1.03.00 e VII v1.01.00). Define arredondamento bancário (half-even) com tolerância de R$ 0,01 para os valores de PIS e Cofins, esclarece que vPis e vCofins devem trazer apenas valores devidos e não retidos, cria o campo indZFMALC para CBS com alíquota zero e trata de novos fatos geradores, numeração e apuração do ISSQN na NFS-e Via.",
+    "norm_class": "REGULATORY",
+    "applicability": "Municípios, provedores e emissores que usam a NFS-e padrão nacional. Para o produto, orienta o motor fiscal quando emite NFS-e com PIS e Cofins informados.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada em 07/02/2026. As regras de PIS e Cofins ficaram disponíveis em produção e produção restrita a partir de 09/02/2026; XSD de produção publicado em 12/02/2026 e arquivos da produção restrita em 13/02/2026. A regulamentação do cálculo e da escrituração de IBS e CBS na NFS-e está nas NTs CGNFS-e 008 (v1.02) e 009 (v1.0), ratificadas pelo Ato Técnico Conjunto RFB/CGIBS 1/2026 (31/07/2026), cujo art. 3º não lista a NT 007.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/nfse/pt-br/biblioteca/documentacao-tecnica/rtc/nt-007-se-cgnfse-v1-0.pdf",
+    "topics": [
+      "tax",
+      "billing"
+    ],
+    "modules_affected": [
+      "billing",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o projeto descreve a NT 007 como regra de cálculo de IBS e CBS e de arredondamento half-even; o texto oficial aplica o arredondamento half-even e a tolerância de R$ 0,01 apenas a PIS e Cofins (vPis e vCofins). O emissor é a SE/CGNFS-e, não a Receita Federal. O arredondamento de IBS e CBS 'por documento e tributo' continua a confirmar nos anexos da NT 004, nas NTs 008 e 009 e no manual da NFS-e; ajustar as referências no ADR-0003 e no FISCAL-PORTE-JAVA. A leitura integral dos anexos de leiaute não foi feita."
+  }
+]

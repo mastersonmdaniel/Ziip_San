@@ -76,6 +76,8 @@ e que só as exigências específicas dependem de o cliente ligar a norma.
     de Carga Poluidora, biossólido, reúso) é pacote próprio (ED-80); a ampliação da ISO 17025 e o cadastro de
     hidrômetros pelo regulamento metrológico entram como ajuste da ED-51 e da ED-14.
 
+15. **Área "Normas e legislação".** O módulo tem uma área de consulta com a biblioteca de normas do setor (leis, decretos, normas de referência da ANA, normas de agências reguladoras, NBR, ISO e padrões técnicos), carregada do catálogo consolidado em `docs/normas` (ajuste de 22/10/2026, tarefa P1.34). A biblioteca guarda só metadados e resumos em palavras próprias, com selo de verificação e de vigência.
+
 ## Consequências
 
 ### Positivas

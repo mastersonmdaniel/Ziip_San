@@ -1,0 +1,1848 @@
+[
+  {
+    "id": "cnen-pr-3-01-012-2020",
+    "kind": "OTHER",
+    "number": "3.01/012",
+    "year": "2020",
+    "issuer": "Comissão Nacional de Energia Nuclear (CNEN)",
+    "title_pt": "CNEN, Posição Regulatória 3.01/012:2020 (radioatividade na água)",
+    "scope_summary": "Citada no art. 37 §3º da Portaria 888 sobre radioatividade.",
+    "status_in_project": "Vigente (presumido); texto não lido.",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Confiança média."
+  },
+  {
+    "id": "mma-portaria-280-2020",
+    "kind": "OTHER",
+    "number": "280",
+    "year": "2020",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria MMA 280/2020 (MTR Nacional e Inventário Nacional de Resíduos)",
+    "scope_summary": "Institui o Manifesto de Transporte de Resíduos (MTR) nacional, o CDF e o Inventário no SINIR; obrigatória desde 01/01/2021 (art. 19); base do módulo MTR.",
+    "status_in_project": "Vigente (tratada como vigente pelo SINIR); 29/06/2020 (DOU 30/06/2020). Revisão em consulta pública de 23/01 a 22/02/2025 (1.154 contribuições), sem portaria revogadora localizada.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md",
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md"
+    ],
+    "notes": "Regulamenta arts. 56 e 76 do Decreto 7.404/2010, revogado pelo Decreto 10.936/2022: dúvida sobre a base legal. MTR/CDF só têm valor legal se emitidos no SINIR ou em sistema estadual."
+  },
+  {
+    "id": "mma-portaria-gm-1376-2025",
+    "kind": "OTHER",
+    "number": "1.376",
+    "year": "2025",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria GM/MMA 1.376/2025 (prorrogação de prazos de 2025)",
+    "scope_summary": "Prorrogação excepcional de prazos do Inventário e das informações ao SINIR em 2025.",
+    "status_in_project": "Esgotada (efeito de 2025); 25/04/2025.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mma-portaria-412-2019",
+    "kind": "OTHER",
+    "number": "412",
+    "year": "2019",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria MMA 412/2019 (informação anual ao SINIR)",
+    "scope_summary": "Informação anual de UF e municípios ao SINIR (prazo de 30/04 a partir de 2020).",
+    "status_in_project": "Vigente; 25/06/2019; cita o Decreto 7.404, hoje art. 79 do Decreto 10.936.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mma-portaria-219-2020",
+    "kind": "OTHER",
+    "number": "219",
+    "year": "2020",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria MMA 219/2020 (informação anual ao SINIR)",
+    "scope_summary": "Complementa a Portaria 412/2019.",
+    "status_in_project": "Vigente; 29/04/2020.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mma-portaria-gm-1102-2024",
+    "kind": "OTHER",
+    "number": "1.102",
+    "year": "2024",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria GM/MMA 1.102/2024 (logística reversa)",
+    "scope_summary": "Conjunto da logística reversa; aplicabilidade ao tenant baixa.",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mma-portaria-gm-1117-2024",
+    "kind": "OTHER",
+    "number": "1.117",
+    "year": "2024",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria GM/MMA 1.117/2024 (logística reversa)",
+    "scope_summary": "Conjunto da logística reversa; aplicabilidade ao tenant baixa.",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mma-portaria-gm-1560-2026",
+    "kind": "OTHER",
+    "number": "1.560",
+    "year": "2026",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria GM/MMA 1.560/2026 (logística reversa)",
+    "scope_summary": "Conjunto da logística reversa; aplicabilidade ao tenant baixa.",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mma-portaria-gm-1561-2026",
+    "kind": "OTHER",
+    "number": "1.561",
+    "year": "2026",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria GM/MMA 1.561/2026 (logística reversa)",
+    "scope_summary": "Conjunto da logística reversa; aplicabilidade ao tenant baixa.",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mma-portaria-gm-1778-2026",
+    "kind": "OTHER",
+    "number": "1.778",
+    "year": "2026",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria GM/MMA 1.778/2026 (Sisrev-BR)",
+    "scope_summary": "Cria o Sisrev-BR no SINIR; relatórios anuais até 30/07; aceita CDFs do MTR Nacional como lastro.",
+    "status_in_project": "Vigente; 16/09/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mma-comunicado-mtr-dgr-001-2025",
+    "kind": "OTHER",
+    "number": "001",
+    "year": "2025",
+    "issuer": "Ministério do Meio Ambiente (MMA), DGR",
+    "title_pt": "Comunicado MTR DGR/MMA 001/2025",
+    "scope_summary": "Comunicado sobre o MTR nacional.",
+    "status_in_project": "Citado no 12; estado não informado.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Conteúdo não detalhado no projeto."
+  },
+  {
+    "id": "mma-comunicado-mtr-dgr-002-2025",
+    "kind": "OTHER",
+    "number": "002",
+    "year": "2025",
+    "issuer": "Ministério do Meio Ambiente (MMA), DGR",
+    "title_pt": "Comunicado MTR DGR/MMA 002/2025 (cadastro desatualizado causa bloqueio)",
+    "scope_summary": "O MMA avisa que cadastro desatualizado das unidades causa bloqueio no MTR.",
+    "status_in_project": "Citado no 12 (dez/2024 segundo o relatório).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "portaria-mtr-313-2026",
+    "kind": "OTHER",
+    "number": "313",
+    "year": "2026",
+    "issuer": "Não identificado (citada como \"Portaria MTR\")",
+    "title_pt": "Portaria MTR nº 313, de 06 de maio de 2026",
+    "scope_summary": "Resultado de busca sobre possível nova portaria do MTR; existência e conteúdo não confirmados.",
+    "status_in_project": "citação incompleta: não confirmada.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "O relatório 13 diz não ter confirmado existência nem conteúdo."
+  },
+  {
+    "id": "mdr-portaria-3242-2022",
+    "kind": "OTHER",
+    "number": "3.242",
+    "year": "2022",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria MDR 3.242/2022 (Cadastro Territorial Multifinalitário)",
+    "scope_summary": "Diretrizes do cadastro territorial multifinalitário: parcela, cadastros temáticos e vínculo à RRCM; saneamento é cadastro temático.",
+    "status_in_project": "Vigente; revogou a Portaria MCidades 511/2009 (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mcidades-portaria-511-2009",
+    "kind": "OTHER",
+    "number": "511",
+    "year": "2009",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria MCidades 511/2009 (cadastro territorial)",
+    "scope_summary": "Diretrizes anteriores do cadastro territorial multifinalitário.",
+    "status_in_project": "Revogada pela Portaria MDR 3.242/2022.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "portaria-slti-3-2007",
+    "kind": "OTHER",
+    "number": "3",
+    "year": "2007",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria SLTI 3/2007 (eMAG)",
+    "scope_summary": "Institucionaliza o Modelo de Acessibilidade em Governo Eletrônico (eMAG) no SISP; obrigatória para sítios do governo federal.",
+    "status_in_project": "Vigente; 07/05/2007; sem atualização encontrada (relatório 13); sem aplicação direta a SAAE municipal.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "portaria-interministerial-4-2024",
+    "kind": "OTHER",
+    "number": "4",
+    "year": "2024",
+    "issuer": "Ministério do Meio Ambiente (MMA)",
+    "title_pt": "Portaria Interministerial 4/2024 (cria o CNSIC)",
+    "scope_summary": "Criou o Comitê Nacional de Segurança de Infraestruturas Críticas (CNSIC), em 21/11/2024.",
+    "status_in_project": "Vigente (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "cnsic-res-20-2026",
+    "kind": "OTHER",
+    "number": "20",
+    "year": "2026",
+    "issuer": "Comitê Nacional de Segurança de Infraestruturas Críticas (CNSIC)",
+    "title_pt": "Resolução CNSIC 20/2026 (instâncias de acionamento da segurança pública)",
+    "scope_summary": "Diretrizes das instâncias de acionamento da segurança pública para infraestruturas críticas.",
+    "status_in_project": "Vigente; 31/08/2026 (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Obrigações dos operadores só de fonte secundária (confiança média a baixa)."
+  },
+  {
+    "id": "cnsic-res-21-2026",
+    "kind": "OTHER",
+    "number": "21",
+    "year": "2026",
+    "issuer": "Comitê Nacional de Segurança de Infraestruturas Críticas (CNSIC)",
+    "title_pt": "Resolução CNSIC 21/2026 (conteúdo mínimo dos planos setoriais)",
+    "scope_summary": "Conteúdo mínimo dos planos setoriais de segurança de infraestruturas críticas.",
+    "status_in_project": "Vigente; 04/09/2026 (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Obrigações dos operadores só de fonte secundária."
+  },
+  {
+    "id": "pf-portaria-240-2019",
+    "kind": "OTHER",
+    "number": "240",
+    "year": "2019",
+    "issuer": "Polícia Federal / Ministério da Justiça e Segurança Pública",
+    "title_pt": "Portaria 240/2019 (produtos químicos controlados pela Polícia Federal)",
+    "scope_summary": "Antiga lista de produtos químicos controlados (o ácido sulfúrico constava dela).",
+    "status_in_project": "Revogada, citada como referência de procedimento (22b).",
+    "cited_in": [
+      "levantamento/lacunas/22b-operacao-campo-rede-inteligencia.md"
+    ],
+    "notes": "Órgão deduzido do contexto."
+  },
+  {
+    "id": "mjsp-portaria-204-2022",
+    "kind": "OTHER",
+    "number": "204",
+    "year": "2022",
+    "issuer": "Ministério da Justiça e Segurança Pública (MJSP)",
+    "title_pt": "Portaria MJSP 204/2022 (produtos químicos controlados)",
+    "scope_summary": "Lista vigente de produtos químicos controlados pela Polícia Federal; verificar se algum insumo de ETA consta.",
+    "status_in_project": "Vigente segundo o 22b.",
+    "cited_in": [
+      "levantamento/lacunas/22b-operacao-campo-rede-inteligencia.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mjsp-portaria-223-2022",
+    "kind": "OTHER",
+    "number": "223",
+    "year": "2022",
+    "issuer": "Ministério da Justiça e Segurança Pública (MJSP)",
+    "title_pt": "Portaria MJSP 223/2022 (produtos químicos controlados)",
+    "scope_summary": "Complementa a Portaria MJSP 204/2022.",
+    "status_in_project": "Vigente segundo o 22b.",
+    "cited_in": [
+      "levantamento/lacunas/22b-operacao-campo-rede-inteligencia.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "tcesc-in-ntc-20-2015",
+    "kind": "OTHER",
+    "number": "20",
+    "year": "2015",
+    "issuer": "Tribunal de Contas do Estado de Santa Catarina (TCE/SC)",
+    "title_pt": "Instrução Normativa N.TC-20/2015 (TCE/SC)",
+    "scope_summary": "Base da remessa de dados ao TCE/SC citada no módulo e-Sfinge.",
+    "status_in_project": "Citada no 20f; estado não informado.",
+    "cited_in": [
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "tcesc-in-ntc-28-2021",
+    "kind": "OTHER",
+    "number": "28",
+    "year": "2021",
+    "issuer": "Tribunal de Contas do Estado de Santa Catarina (TCE/SC)",
+    "title_pt": "Instrução Normativa N.TC-28/2021 (e-Sfinge)",
+    "scope_summary": "Regulamenta o e-Sfinge: módulos contábil, orçamentário, tributário, atos jurídicos e de pessoal; remessa bimestral; auto de infração por atraso ou erro.",
+    "status_in_project": "Vigente; alterada pelas IN N.TC-35/2024 e TC-39/2025 (relatórios 20f e 22d).",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "A data da IN varia entre fontes (04/03 ou 08/03/2021)."
+  },
+  {
+    "id": "tcesc-in-ntc-35-2024",
+    "kind": "OTHER",
+    "number": "35",
+    "year": "2024",
+    "issuer": "Tribunal de Contas do Estado de Santa Catarina (TCE/SC)",
+    "title_pt": "Instrução Normativa N.TC-35/2024 (altera a IN N.TC-28/2021)",
+    "scope_summary": "Altera a IN N.TC-28/2021 do e-Sfinge.",
+    "status_in_project": "Vigente (20f).",
+    "cited_in": [
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md",
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "tcesc-in-ntc-39-2025",
+    "kind": "OTHER",
+    "number": "39",
+    "year": "2025",
+    "issuer": "Tribunal de Contas do Estado de Santa Catarina (TCE/SC)",
+    "title_pt": "Instrução Normativa N.TC-39/2025 (altera a IN N.TC-28/2021)",
+    "scope_summary": "Altera a IN N.TC-28/2021 do e-Sfinge.",
+    "status_in_project": "Vigente (22d).",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "tcesc-portaria-ntc-646-2025",
+    "kind": "OTHER",
+    "number": "646",
+    "year": "2025",
+    "issuer": "Tribunal de Contas do Estado de Santa Catarina (TCE/SC)",
+    "title_pt": "Portaria N.TC-646/2025 (dados a remeter ao e-Sfinge)",
+    "scope_summary": "Define os dados a remeter ao TCE/SC.",
+    "status_in_project": "Vigente (20f).",
+    "cited_in": [
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "tcesc-res-ntc-289-2025",
+    "kind": "OTHER",
+    "number": "289",
+    "year": "2025",
+    "issuer": "Tribunal de Contas do Estado de Santa Catarina (TCE/SC)",
+    "title_pt": "Resolução N.TC-289/2025 (auto de infração eletrônico)",
+    "scope_summary": "Institui o auto de infração eletrônico (AI-e), aplicado a partir de outubro de 2026; a multa recai sobre o CPF do dirigente.",
+    "status_in_project": "Vigente; em aplicação a partir de outubro/2026 (20f).",
+    "cited_in": [
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Valores de multa não localizados (sites com 403)."
+  },
+  {
+    "id": "conarq-res-40-2014",
+    "kind": "OTHER",
+    "number": "40",
+    "year": "2014",
+    "issuer": "Conselho Nacional de Arquivos (CONARQ)",
+    "title_pt": "Resolução CONARQ 40/2014 (eliminação de documentos)",
+    "scope_summary": "Procedimentos de eliminação de documentos dos órgãos e entidades integrantes do SINAR; alterada.",
+    "status_in_project": "Vigente (relatório 13); texto consolidado não lido.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Confiança média."
+  },
+  {
+    "id": "conarq-res-51-2023",
+    "kind": "OTHER",
+    "number": "51",
+    "year": "2023",
+    "issuer": "Conselho Nacional de Arquivos (CONARQ)",
+    "title_pt": "Resolução CONARQ 51/2023 (RDC-Arq v2)",
+    "scope_summary": "Diretrizes do repositório arquivístico digital confiável (RDC-Arq), versão 2.",
+    "status_in_project": "Vigente (relatório 13); texto consolidado não lido.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Confiança média."
+  },
+  {
+    "id": "conarq-res-15",
+    "kind": "OTHER",
+    "number": "15",
+    "year": "",
+    "issuer": "Conselho Nacional de Arquivos (CONARQ)",
+    "title_pt": "Resolução CONARQ 15 (tabela de temporalidade)",
+    "scope_summary": "Citada (art. 10 §2º) para a retenção de documentos por entes públicos, no lugar do prazo de 5 anos de incidentes.",
+    "status_in_project": "citação incompleta (ano não informado no projeto).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Citada uma vez no relatório 10."
+  },
+  {
+    "id": "ibge-rpr-1-2005",
+    "kind": "OTHER",
+    "number": "1",
+    "year": "2005",
+    "issuer": "Instituto Brasileiro de Geografia e Estatística (IBGE), Presidência",
+    "title_pt": "Resolução do Presidente do IBGE R.PR 1/2005 (SIRGAS2000)",
+    "scope_summary": "Adota o SIRGAS2000 como referencial geodésico oficial; no produto, SRID 4674.",
+    "status_in_project": "Vigente (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md",
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md",
+      "arquitetura/adr/ADR-0028-escopo-funcional-ampliado-pelos-editais.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ibge-rpr-1-2015",
+    "kind": "OTHER",
+    "number": "1",
+    "year": "2015",
+    "issuer": "Instituto Brasileiro de Geografia e Estatística (IBGE), Presidência",
+    "title_pt": "Resolução do Presidente do IBGE R.PR 1/2015 (fim da transição para o SIRGAS2000)",
+    "scope_summary": "Marca o fim da transição para o SIRGAS2000; proíbe SAD69 e Córrego Alegre sem conversão.",
+    "status_in_project": "Vigente (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "seges-me-in-77-2022",
+    "kind": "OTHER",
+    "number": "77",
+    "year": "2022",
+    "issuer": "Secretaria de Gestão (SEGES), Ministério da Economia",
+    "title_pt": "Instrução Normativa SEGES/ME 77/2022",
+    "scope_summary": "O art. 7º §3º prorroga prazos de liquidação em contratos; citada na cláusula de pagamento do edital de São Ludgero.",
+    "status_in_project": "Citada em edital (18c); estado não informado.",
+    "cited_in": [
+      "levantamento/editais/18c-sigcos-pe-2-2026.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "dnit-es-030-2004",
+    "kind": "OTHER",
+    "number": "030",
+    "year": "2004",
+    "issuer": "Departamento Nacional de Infraestrutura de Transportes (DNIT)",
+    "title_pt": "DNIT 030/2004-ES (especificação de serviço de bueiros)",
+    "scope_summary": "Referência de bueiro tubular ou celular no catálogo de drenagem.",
+    "status_in_project": "Citada como referência no 19c e no GIS-CADASTRO-TECNICO; estado não informado.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md",
+      "arquitetura/GIS-CADASTRO-TECNICO.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "saneago-in-00-0229-03",
+    "kind": "OTHER",
+    "number": "00.0229.03",
+    "year": "",
+    "issuer": "Saneago (norma interna de prestadora, GO)",
+    "title_pt": "Instrução Normativa Saneago IN 00.0229.03 (cadastro técnico)",
+    "scope_summary": "Padrão de cadastro técnico da Saneago, tratado como perfil de importação e exportação do GIS.",
+    "status_in_project": "Citada como padrão de prestadora (19b e GIS-CADASTRO-TECNICO).",
+    "cited_in": [
+      "arquitetura/GIS-CADASTRO-TECNICO.md",
+      "levantamento/gis/19b-concorrentes.md"
+    ],
+    "notes": "Norma interna de prestadora, não norma pública."
+  },
+  {
+    "id": "aneel-ren-1000-2021",
+    "kind": "OTHER",
+    "number": "1.000",
+    "year": "2021",
+    "issuer": "Agência Nacional de Energia Elétrica (ANEEL)",
+    "title_pt": "Resolução Normativa ANEEL 1.000/2021 (relacionamento com o consumidor de energia)",
+    "scope_summary": "Referência externa citada no levantamento de cadastro comercial (22a).",
+    "status_in_project": "Citada como fonte [REN1000] no 22a; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22a-cadastro-comercial-relacionamento.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mds-informe-57-2024",
+    "kind": "OTHER",
+    "number": "57",
+    "year": "2024",
+    "issuer": "Ministério do Desenvolvimento e Assistência Social (Cadastro Único)",
+    "title_pt": "Informe nº 57/2024 do Cadastro Único",
+    "scope_summary": "Segundo a ANA, o Cadastro Único não repassa dados pessoais direto a prestadoras de direito privado; para prestador de direito público a cessão pode ser direta.",
+    "status_in_project": "Não confirmado: citado pela página de perguntas da ANA e não lido (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md",
+      "levantamento/lacunas/22a-cadastro-comercial-relacionamento.md"
+    ],
+    "notes": "Confiança baixa."
+  },
+  {
+    "id": "mc-portaria-810-2022",
+    "kind": "OTHER",
+    "number": "810",
+    "year": "2022",
+    "issuer": "Ministério da Cidadania",
+    "title_pt": "Portaria MC 810/2022 (acesso a dados do Cadastro Único)",
+    "scope_summary": "Citada com o Informe 57/2024 sobre cessão de dados do CadÚnico a prestadores.",
+    "status_in_project": "Não confirmado: citada pela página da ANA e não lida (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Confiança baixa."
+  },
+  {
+    "id": "abnt-nbr-12212",
+    "kind": "ABNT_NBR",
+    "number": "12212",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 12212 — Projeto de poço tubular para captação de água subterrânea",
+    "scope_summary": "Projeto de poço tubular; feição \"poço\" com profundidade e vazão outorgada.",
+    "status_in_project": "Citada sem edição; edição vigente a confirmar (provável 2017, segundo o 19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md",
+      "arquitetura/GIS-CADASTRO-TECNICO.md"
+    ],
+    "notes": "Citação incompleta quanto à edição."
+  },
+  {
+    "id": "abnt-nbr-12266",
+    "kind": "ABNT_NBR",
+    "number": "12266",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 12266 — Projeto e execução de valas para assentamento de tubulação de água, esgoto ou drenagem",
+    "scope_summary": "Profundidade e envoltória de valas no as-built.",
+    "status_in_project": "citação incompleta: edição a confirmar (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Edição não informada."
+  },
+  {
+    "id": "abnt-nbr-8890",
+    "kind": "ABNT_NBR",
+    "number": "8890",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 8890 — Tubo de concreto de seção circular para águas pluviais e esgotos sanitários",
+    "scope_summary": "Tubos de concreto (classes para esgoto, simples e armado) no catálogo de materiais.",
+    "status_in_project": "citação incompleta: edição a confirmar (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md",
+      "arquitetura/GIS-CADASTRO-TECNICO.md"
+    ],
+    "notes": "Edição não informada."
+  },
+  {
+    "id": "abnt-nbr-10647",
+    "kind": "ABNT_NBR",
+    "number": "10647",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 10647 — Desenho técnico: norma geral",
+    "scope_summary": "Regras gerais de desenho, só para pranchas exportadas.",
+    "status_in_project": "citação incompleta (edição não informada); citada pela Corsan (2024) via 19c.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Há indício de consolidação nas NBR 16752 e 16861 (2020), a confirmar."
+  },
+  {
+    "id": "abnt-nbr-8402",
+    "kind": "ABNT_NBR",
+    "number": "8402",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 8402 — Desenho técnico (caligrafia)",
+    "scope_summary": "Regras gerais de desenho, só para pranchas exportadas.",
+    "status_in_project": "citação incompleta (edição não informada); citada pela Corsan (2024) via 19c.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Citada em lista sem título."
+  },
+  {
+    "id": "abnt-nbr-8403",
+    "kind": "ABNT_NBR",
+    "number": "8403",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 8403 — Desenho técnico (linhas)",
+    "scope_summary": "Regras gerais de desenho.",
+    "status_in_project": "citação incompleta (edição não informada).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Citada em lista sem título."
+  },
+  {
+    "id": "abnt-nbr-8196",
+    "kind": "ABNT_NBR",
+    "number": "8196",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 8196 — Desenho técnico (escalas)",
+    "scope_summary": "Regras gerais de desenho.",
+    "status_in_project": "citação incompleta (edição não informada).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Citada em lista sem título."
+  },
+  {
+    "id": "abnt-nbr-10068",
+    "kind": "ABNT_NBR",
+    "number": "10068",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 10068 — Desenho técnico (folha de desenho)",
+    "scope_summary": "Regras gerais de desenho.",
+    "status_in_project": "citação incompleta (edição não informada).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Citada em lista sem título."
+  },
+  {
+    "id": "abnt-nbr-13142",
+    "kind": "ABNT_NBR",
+    "number": "13142",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 13142 — Desenho técnico (dobramento de cópia)",
+    "scope_summary": "Regras gerais de desenho.",
+    "status_in_project": "citação incompleta (edição não informada).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Citada em lista sem título."
+  },
+  {
+    "id": "abnt-nbr-16861-2020",
+    "kind": "ABNT_NBR",
+    "number": "16861",
+    "year": "2020",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 16861:2020 — Desenho técnico",
+    "scope_summary": "Indício de consolidação das normas de desenho técnico.",
+    "status_in_project": "Citada como indício, a confirmar (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Título não informado pelo projeto."
+  },
+  {
+    "id": "abnt-nbr-14645-2",
+    "kind": "ABNT_NBR",
+    "number": "14645-2",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 14645-2 — As built para edificações: parte 2 (cancelada)",
+    "scope_summary": "Cancelada pela NBR 17047.",
+    "status_in_project": "Cancelada (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "abnt-nbr-14645-3",
+    "kind": "ABNT_NBR",
+    "number": "14645-3",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 14645-3 — Elaboração do como construído (as built) para edificações: parte 3, locação topográfica e controle dimensional da obra",
+    "scope_summary": "Citada como cancelada em 09/2022, com substituta a confirmar.",
+    "status_in_project": "Cancelada em 09/2022; substituta a confirmar (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "abnt-nbr-17225-2025",
+    "kind": "ABNT_NBR",
+    "number": "17225",
+    "year": "2025",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 17225:2025 — Tradução da WCAG 2.2 (acessibilidade para conteúdo web)",
+    "scope_summary": "Tradução da WCAG 2.2; acrescenta alvo mínimo de 24 por 24 pixels, autenticação acessível e foco não encoberto.",
+    "status_in_project": "Citada no 22c.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Relação com o eMAG 3.1 e a LBI art. 63 no 13 e 22c."
+  },
+  {
+    "id": "abnt-nbr-10004-2024",
+    "kind": "ABNT_NBR",
+    "number": "10004",
+    "year": "2024",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 10004 — Resíduos sólidos: classificação (série 10004-1:2024 e 10004-2:2024)",
+    "scope_summary": "Classifica resíduos; a edição de 2004 (classes I, IIA e IIB) foi substituída pela série 2024, publicada em 27/11/2024; o modelo WasteClass do código estava errado.",
+    "status_in_project": "Em transição: em SP a CETESB mantém a edição 2004 até 31/12/2026 e adota a 2024 a partir de 01/01/2027 (DD 078/2025/I/C).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md",
+      "arquitetura/GIS-CADASTRO-TECNICO.md"
+    ],
+    "notes": "O conteúdo das classes novas é não confirmado (fontes secundárias divergem: duas classes ou não). Norma privada referenciada por atos legais (IN IBAMA 24/2024). Edições citadas: 10004:2004, 10004-1:2024, 10004-2:2024."
+  },
+  {
+    "id": "abnt-nbr-16043-2021",
+    "kind": "ABNT_NBR",
+    "number": "16043 (partes 1 a 4)",
+    "year": "2021",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 16043 — Medidores para água potável fria e água quente (partes 1 a 4)",
+    "scope_summary": "Família de requisitos técnicos e metrológicos (parte 1), ensaios (2), requisitos não metrológicos (3) e instalação (4); referência de medidores.",
+    "status_in_project": "Edição 02/2021 por revendedor (21b); referência ativável, não obrigatória.",
+    "cited_in": [
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md",
+      "arquitetura/CERTIFICACOES-DE-QUALIDADE.md"
+    ],
+    "notes": "Citada também como 16043-1 e 16043-4."
+  },
+  {
+    "id": "abnt-nbr-8194",
+    "kind": "ABNT_NBR",
+    "number": "8194",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 8194 — Medidores de água: padronização do número de série, conexões e dimensões",
+    "scope_summary": "Complementa a NBR 16043.",
+    "status_in_project": "citação incompleta (edição não informada).",
+    "cited_in": [
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md"
+    ],
+    "notes": "Título conforme descrição do 21b."
+  },
+  {
+    "id": "abnt-nbr-5426",
+    "kind": "ABNT_NBR",
+    "number": "5426",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 5426 — Planos de amostragem e procedimentos na inspeção por atributos",
+    "scope_summary": "Plano de amostragem por atributos usado no recebimento de lote.",
+    "status_in_project": "citação incompleta (edição não informada).",
+    "cited_in": [
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md"
+    ],
+    "notes": "Título conforme descrição do 21b."
+  },
+  {
+    "id": "abnt-nbr-15784",
+    "kind": "ABNT_NBR",
+    "number": "15784",
+    "year": "",
+    "issuer": "Associação Brasileira de Normas Técnicas (ABNT)",
+    "title_pt": "NBR 15.784 (produtos químicos usados no tratamento de água)",
+    "scope_summary": "Citada no requisito SG-10 da Portaria 888 sobre rastreio de produtos químicos de tratamento (LARS/CBRS) e materiais em contato.",
+    "status_in_project": "citação incompleta (edição e título não informados no projeto).",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Citada uma vez no relatório 09, com a grafia \"NBR 15.784\"."
+  },
+  {
+    "id": "iso-55000",
+    "kind": "ISO",
+    "number": "55000",
+    "year": "",
+    "issuer": "Organização Internacional de Normalização (ISO)",
+    "title_pt": "ISO 55000 — Gestão de ativos: visão geral, princípios e terminologia",
+    "scope_summary": "Citada com a ISO 55001 na gestão de ativos do GIS.",
+    "status_in_project": "citação incompleta (edição não informada).",
+    "cited_in": [
+      "arquitetura/GIS-CADASTRO-TECNICO.md",
+      "levantamento/gis/19d-melhores-praticas-modelo-de-dados.md"
+    ],
+    "notes": "Citada como \"ISO 55000/55001\"."
+  },
+  {
+    "id": "iso-19125",
+    "kind": "ISO",
+    "number": "19125",
+    "year": "",
+    "issuer": "Organização Internacional de Normalização (ISO)",
+    "title_pt": "ISO 19125 — Simple Features (OGC Simple Features)",
+    "scope_summary": "Geometria vetorial simples; validar geometria na importação.",
+    "status_in_project": "citação incompleta (edição não informada); obrigatória tecnicamente (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Citada com \"OGC Simple Features\"."
+  },
+  {
+    "id": "iso-19128",
+    "kind": "ISO",
+    "number": "19128",
+    "year": "",
+    "issuer": "Organização Internacional de Normalização (ISO)",
+    "title_pt": "ISO 19128 — Web Map Service (WMS 1.3.0)",
+    "scope_summary": "Mapas por WMS; cliente WMS pedido em editais.",
+    "status_in_project": "citação incompleta (edição não informada); obrigatória em editais (19c).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/gis/19c-normativos-e-padroes.md",
+      "arquitetura/adr/ADR-0010-infra-nao-usada-congelada.md"
+    ],
+    "notes": "Citada como \"WMS 1.3.0 (ISO 19128)\"."
+  },
+  {
+    "id": "iso-19142",
+    "kind": "ISO",
+    "number": "19142",
+    "year": "",
+    "issuer": "Organização Internacional de Normalização (ISO)",
+    "title_pt": "ISO 19142 — Web Feature Service (WFS 2.0, com WFS-T)",
+    "scope_summary": "Feições e transação; edital pede edição via WFS, com auditoria e RLS.",
+    "status_in_project": "citação incompleta (edição não informada); obrigatória em editais (19c).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/gis/19c-normativos-e-padroes.md",
+      "arquitetura/adr/ADR-0034-gis-cadastro-tecnico.md"
+    ],
+    "notes": "Citada como \"WFS 2.0 (ISO 19142)\"."
+  },
+  {
+    "id": "iso-19177-1-2026",
+    "kind": "ISO",
+    "number": "19177-1",
+    "year": "2026",
+    "issuer": "Organização Internacional de Normalização (ISO)",
+    "title_pt": "ISO 19177-1:2026 — OGC API Tiles 1.0",
+    "scope_summary": "Tiles vetoriais servidos ao MapLibre.",
+    "status_in_project": "Recomendada (19c). OGC API Tiles 1.0 é de 2022.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Mesma norma citada como \"OGC API – Tiles 1.0 (2022; ISO 19177-1:2026)\"."
+  },
+  {
+    "id": "iso-iec-40500-2025",
+    "kind": "ISO",
+    "number": "40500",
+    "year": "2025",
+    "issuer": "ISO e Comissão Eletrotécnica Internacional (IEC)",
+    "title_pt": "ISO/IEC 40500:2025 — WCAG 2.2 como norma ISO",
+    "scope_summary": "Adoção das diretrizes WCAG como norma ISO, citada junto da WCAG 2.2.",
+    "status_in_project": "Citada no 22c; estado não comentado.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Mesmo conteúdo da W3C WCAG 2.2."
+  },
+  {
+    "id": "iso-iec-42001",
+    "kind": "ISO",
+    "number": "42001",
+    "year": "",
+    "issuer": "ISO e Comissão Eletrotécnica Internacional (IEC)",
+    "title_pt": "ISO/IEC 42001 — Sistema de gestão de inteligência artificial",
+    "scope_summary": "Referência da política de IA do produto.",
+    "status_in_project": "citação incompleta (edição não informada); citada como fonte no 22c.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "w3c-wcag-2-2",
+    "kind": "OTHER",
+    "number": "2.2",
+    "year": "2023",
+    "issuer": "World Wide Web Consortium (W3C)",
+    "title_pt": "WCAG 2.2 — Diretrizes de acessibilidade para conteúdo web",
+    "scope_summary": "Critério de acessibilidade do portal e do frontend (nível AA): alvo mínimo de 24 por 24 pixels (2.5.8), autenticação acessível (3.3.8), foco não encoberto (2.4.11).",
+    "status_in_project": "Referência técnica adotada no plano (PLT-31); o art. 63 da LBI remete a \"melhores práticas e diretrizes internacionais\".",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Não é norma brasileira (relatório 13). O projeto cita WCAG 2.0, 2.1 AA (RNF-60, P0.36) e 2.2. A NBR 17225:2025 é a tradução da 2.2."
+  },
+  {
+    "id": "emag-3-1",
+    "kind": "OTHER",
+    "number": "3.1",
+    "year": "2014",
+    "issuer": "Governo Federal (SISP), Secretaria de Governo Digital",
+    "title_pt": "eMAG 3.1 — Modelo de Acessibilidade em Governo Eletrônico",
+    "scope_summary": "Modelo de acessibilidade obrigatório para sítios do governo federal; base na WCAG 2.0.",
+    "status_in_project": "Vigente; abril/2014; sem atualização encontrada; sem aplicação direta a SAAE municipal (relatório 13). O TCU o chama de desatualizado (Acórdão 2099/2025).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md",
+      "arquitetura/adr/ADR-0022-portais-historico-e-documentos.md",
+      "arquitetura/REQUISITOS-NAO-FUNCIONAIS.md"
+    ],
+    "notes": "Institucionalizado pela Portaria SLTI 3/2007."
+  },
+  {
+    "id": "eping",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "Governo Federal (e-PING)",
+    "title_pt": "ePING — Padrões de Interoperabilidade de Governo Eletrônico",
+    "scope_summary": "Diretrizes de interoperabilidade; edital de Videira exige APIs REST em JSON compatíveis (TR-028).",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Exigência de edital (18a); estado não comentado.",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md",
+      "levantamento/editais/18a-videira-termo-de-referencia.md"
+    ],
+    "notes": "Citada sem versão."
+  },
+  {
+    "id": "icp-brasil",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "Instituto Nacional de Tecnologia da Informação (ITI)",
+    "title_pt": "Infraestrutura de Chaves Públicas Brasileira (ICP-Brasil)",
+    "scope_summary": "Assinatura qualificada; o produto distingue assinatura gov.br (avançada) de ICP-Brasil (qualificada).",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Vigente (relatório 13); regida pela MP 2.200-2/2001.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md",
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md"
+    ],
+    "notes": "O GovBrSignatureService confundia as duas assinaturas."
+  },
+  {
+    "id": "iti-doc-icp-15-03",
+    "kind": "OTHER",
+    "number": "15.03",
+    "year": "",
+    "issuer": "Instituto Nacional de Tecnologia da Informação (ITI)",
+    "title_pt": "DOC-ICP-15.03 (assinatura em PAdES com política AD-RB)",
+    "scope_summary": "Assinatura em nuvem por PSC credenciado em PAdES com política AD-RB ou superior.",
+    "status_in_project": "Citada no 22c (fonte F04).",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Citada com a IN ITI 33/2025."
+  },
+  {
+    "id": "iti-in-33-2025",
+    "kind": "OTHER",
+    "number": "33",
+    "year": "2025",
+    "issuer": "Instituto Nacional de Tecnologia da Informação (ITI)",
+    "title_pt": "Instrução Normativa ITI 33/2025",
+    "scope_summary": "Citada com a DOC-ICP-15.03 sobre assinatura em nuvem e carimbo do tempo.",
+    "status_in_project": "Citada no 22c; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Título não registrado no projeto."
+  },
+  {
+    "id": "pci-dss",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "PCI Security Standards Council",
+    "title_pt": "PCI DSS — Padrão de segurança de dados da indústria de cartões",
+    "scope_summary": "O produto nunca recebe nem armazena dado de cartão, o que mantém o escopo PCI DSS mínimo (ADR-0028).",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Referência de escopo; estado não comentado.",
+    "cited_in": [
+      "arquitetura/adr/ADR-0028-escopo-funcional-ampliado-pelos-editais.md",
+      "levantamento/editais/18a-videira-termo-de-referencia.md",
+      "levantamento/editais/18h-aderencia-nao-funcionais-servicos-habilitacao.md"
+    ],
+    "notes": "Citação sem versão."
+  },
+  {
+    "id": "owasp-asvs-5-0",
+    "kind": "OTHER",
+    "number": "5.0",
+    "year": "2025",
+    "issuer": "OWASP",
+    "title_pt": "OWASP Application Security Verification Standard (ASVS) 5.0",
+    "scope_summary": "Critério de aceite da baseline de segurança de produto (PLT-08); 345 requisitos em três níveis.",
+    "status_in_project": "Proposto como critério de aceite (22c); versão de 05/2025.",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md",
+      "levantamento/lacunas/22-INCORPORACAO-NO-PLANO.md"
+    ],
+    "notes": "O plano cita o OWASP só pelo ZAP; o ASVS entra com o ajuste v2.18."
+  },
+  {
+    "id": "owasp-api-security-top-10",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "OWASP",
+    "title_pt": "OWASP API Security Top 10",
+    "scope_summary": "Critério de teste das credenciais de integração (BOLA, propriedade de objeto, consumo irrestrito, fluxos sensíveis, inventário).",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Proposto como critério de aceite (22c, PLT-08).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md",
+      "levantamento/lacunas/22-INCORPORACAO-NO-PLANO.md"
+    ],
+    "notes": "Versão não informada."
+  },
+  {
+    "id": "owasp-llm-top-10-2025",
+    "kind": "OTHER",
+    "number": "",
+    "year": "2025",
+    "issuer": "OWASP",
+    "title_pt": "OWASP Top 10 para aplicações com LLM (2025)",
+    "scope_summary": "Critério de aceite da baseline de segurança para recursos de IA.",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Proposto como critério de aceite (22c, PLT-08).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md",
+      "levantamento/lacunas/22-INCORPORACAO-NO-PLANO.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "nist-sp-800-63b-4",
+    "kind": "OTHER",
+    "number": "800-63B-4",
+    "year": "",
+    "issuer": "National Institute of Standards and Technology (NIST)",
+    "title_pt": "NIST SP 800-63B-4 — Diretrizes de identidade digital: autenticação",
+    "scope_summary": "Referência da política de senha e MFA (PLT-30).",
+    "status_in_project": "Citada no plano (v2.18).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md",
+      "levantamento/lacunas/22-INCORPORACAO-NO-PLANO.md"
+    ],
+    "notes": "Citada também como \"NIST 800-63\"."
+  },
+  {
+    "id": "iec-62443",
+    "kind": "OTHER",
+    "number": "62443",
+    "year": "",
+    "issuer": "ISO e Comissão Eletrotécnica Internacional (IEC)",
+    "title_pt": "IEC 62443 — Segurança de sistemas de automação e controle industrial",
+    "scope_summary": "Modelo de zonas e conduítes citado para a telemetria de campo.",
+    "status_in_project": "Citada no 22b como referência de mercado.",
+    "cited_in": [
+      "levantamento/lacunas/22b-operacao-campo-rede-inteligencia.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "en-13757",
+    "kind": "OTHER",
+    "number": "13757",
+    "year": "",
+    "issuer": "Comitê Europeu de Normalização (CEN)",
+    "title_pt": "EN 13757 — Sistemas de comunicação para medidores (M-Bus e wireless M-Bus)",
+    "scope_summary": "Interfaces de medidores: wireless M-Bus (EN 13757-4/OMS) e M-Bus com fio (EN 13757-2/3).",
+    "status_in_project": "Citada no 22b como interface de mercado.",
+    "cited_in": [
+      "levantamento/lacunas/22b-operacao-campo-rede-inteligencia.md"
+    ],
+    "notes": "Citada em partes 2, 3 e 4."
+  },
+  {
+    "id": "ietf-rfc-8252",
+    "kind": "OTHER",
+    "number": "8252",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 8252 (OAuth 2.0 para apps nativos)",
+    "scope_summary": "Especificação técnica referida pelo projeto (OAuth 2.0 para apps nativos).",
+    "status_in_project": "Citada em ADR-0030; estado não comentado.",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "arquitetura/adr/ADR-0030-autenticacao-nos-apps.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ietf-rfc-7636",
+    "kind": "OTHER",
+    "number": "7636",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 7636 (PKCE)",
+    "scope_summary": "Especificação técnica referida pelo projeto (PKCE).",
+    "status_in_project": "Citada em ADR-0030; estado não comentado.",
+    "cited_in": [
+      "arquitetura/adr/ADR-0030-autenticacao-nos-apps.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ietf-rfc-9700",
+    "kind": "OTHER",
+    "number": "9700",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 9700 (boas práticas de segurança do OAuth 2.0)",
+    "scope_summary": "Especificação técnica referida pelo projeto (boas práticas de segurança do OAuth 2.0).",
+    "status_in_project": "Citada em ADR-0030 e 22c; estado não comentado.",
+    "cited_in": [
+      "arquitetura/adr/ADR-0030-autenticacao-nos-apps.md",
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ietf-rfc-9449",
+    "kind": "OTHER",
+    "number": "9449",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 9449 (DPoP (token ligado à chave do aparelho))",
+    "scope_summary": "Especificação técnica referida pelo projeto (DPoP (token ligado à chave do aparelho)).",
+    "status_in_project": "Citada em ADR-0030; estado não comentado.",
+    "cited_in": [
+      "arquitetura/adr/ADR-0030-autenticacao-nos-apps.md",
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ietf-rfc-9457",
+    "kind": "OTHER",
+    "number": "9457",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 9457 (Problem Details para APIs HTTP (obsoleta a RFC 7807))",
+    "scope_summary": "Especificação técnica referida pelo projeto (Problem Details para APIs HTTP (obsoleta a RFC 7807)).",
+    "status_in_project": "Citada em 22c; estado não comentado.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ietf-rfc-7807",
+    "kind": "OTHER",
+    "number": "7807",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 7807 (Problem Details (obsoletada pela RFC 9457))",
+    "scope_summary": "Especificação técnica referida pelo projeto (Problem Details (obsoletada pela RFC 9457)).",
+    "status_in_project": "Citada em 22c; estado não comentado.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ietf-rfc-8594",
+    "kind": "OTHER",
+    "number": "8594",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 8594 (cabeçalho Sunset)",
+    "scope_summary": "Especificação técnica referida pelo projeto (cabeçalho Sunset).",
+    "status_in_project": "Citada em 22c; estado não comentado.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ietf-rfc-9745",
+    "kind": "OTHER",
+    "number": "9745",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 9745 (cabeçalho Deprecation)",
+    "scope_summary": "Especificação técnica referida pelo projeto (cabeçalho Deprecation).",
+    "status_in_project": "Citada em 22c; estado não comentado.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ietf-rfc-9116",
+    "kind": "OTHER",
+    "number": "9116",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 9116 (security.txt)",
+    "scope_summary": "Especificação técnica referida pelo projeto (security.txt).",
+    "status_in_project": "Citada em 22c; estado não comentado.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ietf-rfc-5869",
+    "kind": "OTHER",
+    "number": "5869",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 5869 (HKDF)",
+    "scope_summary": "Especificação técnica referida pelo projeto (HKDF).",
+    "status_in_project": "Citada em DIARIO-DE-BORDO; estado não comentado.",
+    "cited_in": [
+      "DIARIO-DE-BORDO.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ietf-rfc-3161",
+    "kind": "OTHER",
+    "number": "3161",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 3161 (carimbo do tempo)",
+    "scope_summary": "Especificação técnica referida pelo projeto (carimbo do tempo).",
+    "status_in_project": "Citada em 22c; estado não comentado.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ietf-rfc-7946",
+    "kind": "OTHER",
+    "number": "7946",
+    "year": "",
+    "issuer": "Internet Engineering Task Force (IETF)",
+    "title_pt": "RFC 7946 (GeoJSON)",
+    "scope_summary": "Especificação técnica referida pelo projeto (GeoJSON).",
+    "status_in_project": "Citada em 19c; estado não comentado.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md",
+      "arquitetura/GIS-CADASTRO-TECNICO.md"
+    ],
+    "notes": "Padrão técnico da IETF; incluído por ser citado com número."
+  },
+  {
+    "id": "ogc-api-features",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "Open Geospatial Consortium (OGC)",
+    "title_pt": "OGC API – Features (partes 1 a 3; parte 4 CRUD)",
+    "scope_summary": "API REST de feições; adotar partes 1 a 3 (Core, CRS, Filtering/CQL2) na API pública; parte 4 só depois de aprovada.",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Recomendada (19c); aprovação da parte 4 não confirmada.",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/gis/19c-normativos-e-padroes.md",
+      "arquitetura/adr/ADR-0034-gis-cadastro-tecnico.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ogc-geopackage-1-4",
+    "kind": "OTHER",
+    "number": "1.4.0",
+    "year": "2024",
+    "issuer": "Open Geospatial Consortium (OGC)",
+    "title_pt": "OGC GeoPackage 1.4.0",
+    "scope_summary": "Formato padrão de exportação e coleta offline.",
+    "status_in_project": "Recomendada (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md",
+      "arquitetura/adr/ADR-0028-escopo-funcional-ampliado-pelos-editais.md",
+      "arquitetura/GIS-CADASTRO-TECNICO.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ogc-wmts-1-0",
+    "kind": "OTHER",
+    "number": "1.0",
+    "year": "",
+    "issuer": "Open Geospatial Consortium (OGC)",
+    "title_pt": "OGC WMTS 1.0 (tiles de mapa)",
+    "scope_summary": "Mapas em tiles e publicação opcional.",
+    "status_in_project": "Obrigatória em editais (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ogc-citygml-3-0",
+    "kind": "OTHER",
+    "number": "3.0",
+    "year": "2021",
+    "issuer": "Open Geospatial Consortium (OGC)",
+    "title_pt": "OGC CityGML 3.0",
+    "scope_summary": "Modelo urbano 3D; só referência conceitual.",
+    "status_in_project": "Recomendada (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "A Utility Network ADE não é norma OGC."
+  },
+  {
+    "id": "ogc-infragml-landinfra-1-0",
+    "kind": "OTHER",
+    "number": "1.0",
+    "year": "2016",
+    "issuer": "Open Geospatial Consortium (OGC)",
+    "title_pt": "OGC LandInfra/InfraGML 1.0",
+    "scope_summary": "Intercâmbio de as-built e infraestrutura civil.",
+    "status_in_project": "Recomendada (19c); OGC MUDDI com aprovação a confirmar.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ogc-muddi",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "Open Geospatial Consortium (OGC)",
+    "title_pt": "OGC MUDDI (integração de dados de subsolo)",
+    "scope_summary": "Referência para integração de dados de subsolo.",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Aprovação a confirmar (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "inspire-utility-services-d2-8-iii-6",
+    "kind": "OTHER",
+    "number": "3.0",
+    "year": "",
+    "issuer": "União Europeia (INSPIRE)",
+    "title_pt": "INSPIRE Utility and Governmental Services (D2.8.III.6, v3.0)",
+    "scope_summary": "Modelo europeu de redes: tipologia de rede, nó e acessório.",
+    "status_in_project": "Referência (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "dsg-et-cqdg-2016",
+    "kind": "OTHER",
+    "number": "",
+    "year": "2016",
+    "issuer": "Diretoria de Serviço Geográfico (DSG)",
+    "title_pt": "ET-CQDG — Especificação técnica de controle de qualidade de dados geoespaciais (DSG, 2016)",
+    "scope_summary": "Com o Decreto 89.817/1984 e a ET-ADGV, define exatidão posicional por classe e escala.",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Citada no 19c; EP da classe A a confirmar no texto.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "dsg-et-adgv-pec-pcd",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "Diretoria de Serviço Geográfico (DSG)",
+    "title_pt": "ET-ADGV (PEC-PCD) — Especificação técnica de aquisição de dados geoespaciais vetoriais",
+    "scope_summary": "Padrão de exatidão cartográfica para produtos digitais (PEC-PCD classes A a D).",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Citada no 19c; valores a confirmar.",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ibge-perfil-mgb-2-0",
+    "kind": "OTHER",
+    "number": "2.0",
+    "year": "",
+    "issuer": "IBGE e Diretoria de Serviço Geográfico (DSG)",
+    "title_pt": "Perfil de Metadados Geoespaciais do Brasil (MGB) 2.0",
+    "scope_summary": "Perfil baseado na ISO 19115-1; exportar metadados por conjunto de dados.",
+    "status_in_project": "Recomendado (obrigatório para publicação na INDE) (19c).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md",
+      "arquitetura/GIS-CADASTRO-TECNICO.md",
+      "levantamento/editais/18-ADERENCIA-EDITAIS-CONSOLIDADO.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "febraban-layout-debito-automatico-padrao-150",
+    "kind": "OTHER",
+    "number": "150",
+    "year": "",
+    "issuer": "FEBRABAN",
+    "title_pt": "Padrão FEBRABAN 150 (débito automático)",
+    "scope_summary": "Layout de arquivo de débito automático (registros B, C, E e F) herdado do GSAN; o relatório 11 diz que precisa ser revisto frente à Res. CMN 5.251 e BCB 505.",
+    "status_in_project": "Legado do GSAN. O relatório 11 manda rever o seu uso como padrão após a Res. CMN 5.251 e a Res. BCB 505 (vigor 13/10/2025); o novo regime de débito automático começa em 01/07/2027. No plano, é condicional ao piloto (P3.24).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md",
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "O relatório 03 tratava o FEBRABAN 150 como padrão a copiar."
+  },
+  {
+    "id": "febraban-cnab-240-v11",
+    "kind": "OTHER",
+    "number": "240 V11.0",
+    "year": "2026",
+    "issuer": "FEBRABAN",
+    "title_pt": "Padrão FEBRABAN CNAB 240 posições, versão 11.0",
+    "scope_summary": "Pagamentos, cobrança, extrato de conciliação, débito em conta e split payment.",
+    "status_in_project": "Vigente em versão preliminar (11/09/2026), com novas versões em cerca de 3 semanas (relatório 11).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md"
+    ],
+    "notes": "Acompanhar a V11 final."
+  },
+  {
+    "id": "febraban-cnab-400",
+    "kind": "OTHER",
+    "number": "400",
+    "year": "",
+    "issuer": "FEBRABAN",
+    "title_pt": "CNAB 400",
+    "scope_summary": "Layout de cobrança que o relatório 11 considera proprietário de cada banco.",
+    "status_in_project": "não confirmado como padrão FEBRABAN (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "arquitetura/PARAMETROS-DO-TENANT.md",
+      "levantamento/03-gsan-arrecadacao-cobranca-batch.md"
+    ],
+    "notes": "Nenhum documento FEBRABAN de CNAB 400 consta na página oficial de layouts."
+  },
+  {
+    "id": "febraban-cnab-444",
+    "kind": "OTHER",
+    "number": "444",
+    "year": "",
+    "issuer": "FEBRABAN",
+    "title_pt": "CNAB 444",
+    "scope_summary": "O relatório 03 afirmava \"layout unificado FEBRABAN\".",
+    "status_in_project": "não confirmado: não foi achado como padrão FEBRABAN (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/03-gsan-arrecadacao-cobranca-batch.md",
+      "levantamento/00-CONSOLIDADO-enriquecimento-sigsan.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "febraban-layout-arrecadacao-codigo-barras-v08",
+    "kind": "OTHER",
+    "number": "versão 08",
+    "year": "2026",
+    "issuer": "FEBRABAN",
+    "title_pt": "FEBRABAN — Layout de arrecadação/recebimento com código de barras, versão 08",
+    "scope_summary": "Retorno de arrecadação com segmento 2 (saneamento) e CNPJ alfanumérico.",
+    "status_in_project": "Vigente desde 01/06/2026 (publicado em 11/05/2026) (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem novas codificações do segmento 6."
+  },
+  {
+    "id": "febraban-arrecadacao-arquivos-parciais-v03",
+    "kind": "OTHER",
+    "number": "versão 03",
+    "year": "2020",
+    "issuer": "FEBRABAN",
+    "title_pt": "FEBRABAN — Arrecadação: transmissão de arquivos parciais ao longo do dia, versão 03",
+    "scope_summary": "Transmissão de arquivos parciais de arrecadação.",
+    "status_in_project": "Vigente desde 01/11/2020 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "febraban-manual-debito-automatico-v09",
+    "kind": "OTHER",
+    "number": "versão 09",
+    "year": "2026",
+    "issuer": "FEBRABAN",
+    "title_pt": "FEBRABAN — Manual do Débito Automático, versão 09",
+    "scope_summary": "Manual do débito automático; cita a Res. CMN 4.790/2020 e a Circular 4.022/2020.",
+    "status_in_project": "Vigente, mas ver a Res. CMN 5.251/2025; 11/03/2026 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "febraban-fator-vencimento-boleto",
+    "kind": "OTHER",
+    "number": "",
+    "year": "2025",
+    "issuer": "FEBRABAN",
+    "title_pt": "FEBRABAN — Fator de vencimento do boleto (reinício em 1000 em 22/02/2025)",
+    "scope_summary": "O fator de vencimento reiniciou em 1000 em 22/02/2025, só no boleto de cobrança e não na conta de consumo (código 8).",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Vigente a partir de vencimentos de 22/02/2025.",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md"
+    ],
+    "notes": "Documento primário da FEBRABAN não confirmado; terceiros citam o comunicado FB-009/2023, que não foi localizado."
+  },
+  {
+    "id": "febraban-npc-convencao-cobranca",
+    "kind": "OTHER",
+    "number": "",
+    "year": "2021",
+    "issuer": "FEBRABAN e bancos (autorregulação)",
+    "title_pt": "Nova Plataforma de Cobrança (NPC) e Convenção da Cobrança (05/02/2021)",
+    "scope_summary": "Registro de boletos em base centralizada; operação desde jul/2017 e fase final em nov/2018.",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Em vigor (relatório 11); datas por faixa de valor de confiança média.",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md",
+      "levantamento/03-gsan-arrecadacao-cobranca-batch.md"
+    ],
+    "notes": "Fontes secundárias para as datas por faixa."
+  },
+  {
+    "id": "cpc-48-ifrs-9",
+    "kind": "OTHER",
+    "number": "48",
+    "year": "",
+    "issuer": "Comitê de Pronunciamentos Contábeis (CPC)",
+    "title_pt": "CPC 48 — Instrumentos financeiros (IFRS 9)",
+    "scope_summary": "Concessionárias regidas pelo CPC 48 calculam perda esperada por matriz de provisão; o produto oferece os dois modos (meta de baixa e matriz de aging).",
+    "status_in_project": "Citado como [EXT] no relatório 03 e no PARAMETROS-DO-TENANT.",
+    "cited_in": [
+      "arquitetura/PARAMETROS-DO-TENANT.md",
+      "levantamento/03-gsan-arrecadacao-cobranca-batch.md",
+      "levantamento/gsan/20c-gsan-regras-arrecadacao-e-cobranca.md"
+    ],
+    "notes": "Não confundir com o Código de Processo Civil."
+  },
+  {
+    "id": "cfc-nbc-tsp",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "Conselho Federal de Contabilidade (CFC)",
+    "title_pt": "NBC TSP — Normas Brasileiras de Contabilidade aplicadas ao Setor Público",
+    "scope_summary": "Prestadores públicos usam PCASP e NBC TSP na contabilidade.",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Citadas no 22d.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem número de norma específica."
+  },
+  {
+    "id": "stn-pcasp",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "Secretaria do Tesouro Nacional (STN)",
+    "title_pt": "PCASP — Plano de Contas Aplicado ao Setor Público",
+    "scope_summary": "O Tesouro publica o PCASP anualmente; 2027 pela Portaria STN/MF 2.520/2026.",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Citado no 22d.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Ver a Portaria STN/MF 2.520/2026."
+  },
+  {
+    "id": "ansi-nsf-61",
+    "kind": "OTHER",
+    "number": "61",
+    "year": "",
+    "issuer": "ANSI e NSF International",
+    "title_pt": "ANSI/NSF 61 — Componentes de sistemas de água potável: efeitos à saúde",
+    "scope_summary": "Citada na Portaria 888 como alternativa a OCP/Inmetro para materiais em contato com a água.",
+    "status_in_project": "Citada no relatório 09; estado não comentado.",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "abes-pnqs",
+    "kind": "OTHER",
+    "number": "",
+    "year": "2026",
+    "issuer": "Associação Brasileira de Engenharia Sanitária e Ambiental (ABES)",
+    "title_pt": "PNQS — Prêmio Nacional da Qualidade em Saneamento",
+    "scope_summary": "Perfil de exportação de evidências (modelo MEGSA ESG), sem módulo próprio.",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Ciclo 2026 com inscrições em 2026 nas categorias IGS, PEOS e PGA (21b).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md",
+      "arquitetura/adr/ADR-0041-modulo-certificacoes-de-qualidade.md"
+    ],
+    "notes": "Não é norma nem certificação."
+  },
+  {
+    "id": "aicpa-soc-isae-3402",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "AICPA / IAASB",
+    "title_pt": "SOC 1 (ISAE 3402) e SOC 3",
+    "scope_summary": "Relatórios de controle exigidos por edital ao provedor de nuvem (TR-073, TR-078).",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Exigência eliminatória de edital (18a e ADR-0011).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "arquitetura/adr/ADR-0011-hospedagem-a-decidir.md",
+      "levantamento/editais/18b-videira-edital-etp-precos.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "pl-2338-2023",
+    "kind": "OTHER",
+    "number": "2.338",
+    "year": "2023",
+    "issuer": "Congresso Nacional (Câmara dos Deputados)",
+    "title_pt": "Projeto de Lei 2.338/2023 (marco legal da inteligência artificial)",
+    "scope_summary": "Projeto em tramitação; o texto original classifica como alto risco a avaliação de acesso a serviços essenciais e de crédito; acompanhado pelo ADR-0042, e mudança normativa reabre o ADR.",
+    "status_in_project": "Não vigente: aguarda parecer do relator na Comissão Especial da Câmara (22d).",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md",
+      "arquitetura/adr/ADR-0042-politica-de-ia-e-decisoes-automatizadas.md",
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Projeto de lei, não norma em vigor. Grafias \"PL 2338/2023\" e \"PL 2.338/2023\"."
+  },
+  {
+    "id": "pl-4752-2025",
+    "kind": "OTHER",
+    "number": "4.752",
+    "year": "2025",
+    "issuer": "Congresso Nacional (Senado Federal)",
+    "title_pt": "Projeto de Lei 4.752/2025 (Marco Legal da Cibersegurança)",
+    "scope_summary": "Projeto em tramitação na CCT do Senado; relevante para o plano de segurança do produto.",
+    "status_in_project": "Não vigente: projeto apresentado em 24/09/2025; última movimentação lida em 04/09/2026 (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Projeto de lei, não norma em vigor."
+  },
+  {
+    "id": "pl-6365-2025",
+    "kind": "OTHER",
+    "number": "6365",
+    "year": "2025",
+    "issuer": "Congresso Nacional (Senado Federal)",
+    "title_pt": "Projeto de Lei 6365/2025 (alteração do marco do saneamento)",
+    "scope_summary": "Projeto em tramitação que poderia alterar a Lei 11.445; não é lei.",
+    "status_in_project": "Não vigente: em tramitação no Senado (situação em abril/2026; fonte secundária, confiança baixa).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Projeto de lei, não norma em vigor."
+  },
+  {
+    "id": "arsesp-nt-f-0083-2020",
+    "kind": "OTHER",
+    "number": "NT.F-0083",
+    "year": "2020",
+    "issuer": "Agência Reguladora de Serviços Públicos do Estado de São Paulo (ARSESP)",
+    "title_pt": "Nota Técnica ARSESP NT.F-0083/2020 (receitas complementares, acessórias e projetos associados)",
+    "scope_summary": "Distingue receitas complementares, acessórias e projetos associados no regime tarifário.",
+    "status_in_project": "Citada no 22d (URL da ARSESP); estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "arsesp-nt-f-0064-2022",
+    "kind": "OTHER",
+    "number": "NT.F-0064",
+    "year": "2022",
+    "issuer": "Agência Reguladora de Serviços Públicos do Estado de São Paulo (ARSESP)",
+    "title_pt": "Nota Técnica ARSESP NT.F-0064-2022 (manual de controle patrimonial)",
+    "scope_summary": "Manual de controle patrimonial com 385 páginas e 29 unidades de propriedade; base da hierarquia de ativos do GIS e da OS; aprovado em 2022, em vigor desde 01/01/2024.",
+    "status_in_project": "Em vigor desde 01/01/2024 (ALVOS-DA-OS-E-HIERARQUIA-DE-ATIVOS).",
+    "cited_in": [
+      "arquitetura/ALVOS-DA-OS-E-HIERARQUIA-DE-ATIVOS.md",
+      "DIARIO-DE-BORDO.md"
+    ],
+    "notes": "Texto extraído localmente (DIARIO-DE-BORDO)."
+  },
+  {
+    "id": "ana-voto-14-2026",
+    "kind": "OTHER",
+    "number": "14",
+    "year": "2026",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Voto 14/2026 da ANA (exceção de vida útil e depreciação regulatória)",
+    "scope_summary": "Admite exceção tecnicamente comprovada aceita pela entidade reguladora à vida útil e à taxa de depreciação regulatória por UAR (MCPSB).",
+    "status_in_project": "Citado em ALVOS-DA-OS-E-HIERARQUIA-DE-ATIVOS; estado não informado.",
+    "cited_in": [
+      "arquitetura/ALVOS-DA-OS-E-HIERARQUIA-DE-ATIVOS.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ana-cp-3-2026",
+    "kind": "OTHER",
+    "number": "3",
+    "year": "2026",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Consulta Pública ANA 03/2026 (minuta de NR sobre revisão tarifária)",
+    "scope_summary": "Minuta de norma de referência sobre revisão tarifária: receita requerida, custos eficientes, investimentos prudentes, remuneração do capital e eventos extraordinários; fatores Q, P e U.",
+    "status_in_project": "Em consulta (contribuições até 02/10/2026); norma não aprovada (22d).",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ana-cp-4-2026",
+    "kind": "OTHER",
+    "number": "4",
+    "year": "2026",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Consulta Pública ANA 04/2026 (agenda regulatória)",
+    "scope_summary": "Consulta em que a resiliência climática é o tema mais citado para a agenda regulatória da ANA.",
+    "status_in_project": "Citada no 22d; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "cnciber-res-11",
+    "kind": "OTHER",
+    "number": "11",
+    "year": "",
+    "issuer": "Comitê Nacional de Cibersegurança (CNCiber)",
+    "title_pt": "Resolução CNCiber 11 (guia de planos setoriais de cibersegurança)",
+    "scope_summary": "Guia em elaboração no CNCiber para os planos setoriais citado pelo relatório 13.",
+    "status_in_project": "citação incompleta (ano não informado; guia em elaboração).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Citada uma vez, como \"Res. 11/CNCiber\"."
+  },
+  {
+    "id": "samae-slu-portaria-19-2024",
+    "kind": "OTHER",
+    "number": "19",
+    "year": "2024",
+    "issuer": "SAMAE de São Ludgero (SC)",
+    "title_pt": "Portaria SAMAE SLU 19/2024",
+    "scope_summary": "Norma interna de compras citada no edital de São Ludgero (PE 2/2026).",
+    "status_in_project": "Citada em edital (18c); estado não informado.",
+    "cited_in": [
+      "levantamento/editais/18c-sigcos-pe-2-2026.md"
+    ],
+    "notes": "Norma municipal de autarquia; título não registrado."
+  },
+  {
+    "id": "constituicao-federal",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "Assembleia Nacional Constituinte",
+    "title_pt": "Constituição da República Federativa do Brasil",
+    "scope_summary": "Citada nos editais de Videira pelo art. 150, VI, \"a\" (imunidade tributária recíproca) e pelo art. 175 (serviço público prestado diretamente).",
+    "status_in_project": "Vigente; citação incompleta quanto ao ano (o projeto não o informa).",
+    "cited_in": [
+      "levantamento/editais/18a-videira-termo-de-referencia.md"
+    ],
+    "notes": "Citada sem ano nos editais de Videira."
+  },
+  {
+    "id": "codigo-penal",
+    "kind": "OTHER",
+    "number": "",
+    "year": "",
+    "issuer": "Presidência da República",
+    "title_pt": "Código Penal (art. 154-A, invasão de dispositivo informático)",
+    "scope_summary": "Citado em conexão com as Leis 12.737/2012 e 14.155/2021.",
+    "status_in_project": "citação incompleta (número e ano não informados no projeto).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Citado pelo nome, sem número."
+  },
+  {
+    "id": "ersar-regulamento-1160-2026",
+    "kind": "OTHER",
+    "number": "1160",
+    "year": "2026",
+    "issuer": "Entidade Reguladora dos Serviços de Águas e Resíduos (ERSAR), Portugal",
+    "title_pt": "Regulamento ERSAR 1160/2026 (Portugal)",
+    "scope_summary": "Fonte estrangeira citada como referência de tarifa de contingência e isenção de unidades essenciais (GES-07).",
+    "status_in_project": "Citado como referência (R) no 22d.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Norma estrangeira, sem aplicação direta; o 22a cita também um projeto de regulamento de relações comerciais da ERSAR."
+  }
+]

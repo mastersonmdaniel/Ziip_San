@@ -1,0 +1,1339 @@
+[
+  {
+    "id": "ana-in-1-2023",
+    "kind": "AGENCY_NORM",
+    "number": "1",
+    "year": "2023",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Instrução Normativa ANA nº 1, de 17 de maio de 2023 (comprovação da adoção da Norma de Referência nº 1/ANA/2021)",
+    "scope_summary": "Define os requisitos e os procedimentos pelos quais a ANA verifica se titulares e entidades reguladoras adotaram a Norma de Referência nº 1/2021, sobre cobrança pelo manejo de resíduos sólidos urbanos. Os requisitos são instrumento de cobrança, sustentabilidade econômico-financeira e definição da entidade reguladora infranacional.",
+    "norm_class": "REGULATORY",
+    "applicability": "Titulares do serviço e entidades reguladoras infranacionais (ERIs) de manejo de resíduos sólidos urbanos; a comprovação condiciona o acesso a recursos federais (Lei 11.445/2007, art. 50).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 17/05/2023, publicada no DOU em 19/05/2023 e em vigor desde 20/05/2023. A página da ANA registra alteração pelas INs ANA 2/2023 (art. 7º) e 2/2025 (arts. 2º, 6º e 8º).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/ana/pt-br/assuntos/regulacao-e-fiscalizacao/normativos-e-resolucoes/instrucoes-normativas/instrucoes-normativas-1/in-2023-01.pdf/view",
+    "topics": [
+      "billing",
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs",
+      "billing"
+    ],
+    "notes": "CORRIGIDO: o ato não se limita a fixar prazos; trata de requisitos e procedimentos de comprovação, com prazos anuais no art. 8º e remissão, no art. 7º, aos prazos da Resolução ANA 134/2022. Relação com saneamento: eixo de resíduos sólidos urbanos (componente do saneamento básico), não alcança água e esgoto; útil ao módulo de resíduos e à cobrança de taxa ou tarifa de SMRSU."
+  },
+  {
+    "id": "ana-in-1-2024",
+    "kind": "AGENCY_NORM",
+    "number": "1",
+    "year": "2024",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Instrução Normativa ANA nº 1, de 22 de maio de 2024 (procedimentos para adoção das metodologias de indenização da Norma de Referência nº 3)",
+    "scope_summary": "Estabelece os procedimentos para que as entidades reguladoras apliquem as metodologias de indenização de investimentos não amortizados da NR ANA 3 em contratos de água e esgoto, com inventário de bens reversíveis e valoração por custo histórico corrigido, valor novo de reposição ou valor justo.",
+    "norm_class": "REGULATORY",
+    "applicability": "Entidades reguladoras infranacionais e prestadores de abastecimento de água e esgotamento sanitário em contratos de concessão ou programa, em casos de extinção contratual.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 22/05/2024, publicada no DOU em 24/05/2024 e em vigor na data da publicação (art. 3º). O art. 2º atribui à Superintendência de Regulação de Saneamento Básico a avaliação de revisões. Nenhuma alteração localizada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/ana/pt-br/assuntos/regulacao-e-fiscalizacao/normativos-e-resolucoes/instrucoes-normativas/instrucoes-normativas-1/in-1-22-05-2024_ref-nr-3_2023.pdf",
+    "topics": [
+      "tariff",
+      "reporting"
+    ],
+    "modules_affected": [
+      "assets",
+      "accounting"
+    ],
+    "notes": "Ressalva: a NR 3 foi aprovada pela Resolução ANA 161/2023 (as fontes divergem entre 2 e 3 de agosto de 2023 para a data do ato); o guia do sistema SASB da ANA a chama de 'NR 3/2024', denominação que não deve ser usada. Relevante ao inventário de bens reversíveis e à base patrimonial do módulo de ativos."
+  },
+  {
+    "id": "ana-in-2-2023",
+    "kind": "AGENCY_NORM",
+    "number": "2",
+    "year": "2023",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Instrução Normativa ANA nº 2, de 7 de agosto de 2023 (altera o art. 7º da IN ANA 1/2023)",
+    "scope_summary": "Dá nova redação ao art. 7º da IN ANA 1/2023: o recebimento das informações segue os prazos da Resolução ANA 134/2022 e, só em 2023, o prazo excepcional foi 20 de setembro de 2023.",
+    "norm_class": "REFERENCE",
+    "applicability": "Mesmo público da IN ANA 1/2023 (titulares e entidades reguladoras de resíduos sólidos urbanos).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 07/08/2023, publicada no DOU em 21/08/2023 e em vigor na publicação. O parágrafo único (prazo excepcional de 2023) já exauriu seus efeitos; a regra do caput permanece.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/ana/pt-br/assuntos/saneamento-basico/conformidade-com-normas-de-referencia-ana/instrucao-normativa-n-2-de-7-de-agosto-de-2023",
+    "topics": [
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "CORRIGIDO: o ato altera apenas o art. 7º da IN 1/2023, não os prazos da IN de forma geral. Relação com saneamento: indireta, apenas resíduos sólidos urbanos."
+  },
+  {
+    "id": "ana-in-2-2025",
+    "kind": "AGENCY_NORM",
+    "number": "2",
+    "year": "2025",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Instrução Normativa ANA nº 2, de 20 de maio de 2025 (altera a IN ANA 1/2023)",
+    "scope_summary": "Altera os arts. 2º, 6º e 8º da IN ANA 1/2023: o envio das informações de comprovação passa a ser feito pelo titular até 2025, os dados de custo e receita do serviço são detalhados e a definição da ERI tem prazo anual até 20 de agosto.",
+    "norm_class": "REFERENCE",
+    "applicability": "Titulares do serviço e entidades reguladoras de manejo de resíduos sólidos urbanos.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 20/05/2025 pelo Superintendente de Regulação de Saneamento Básico substituto (1005ª Reunião Administrativa da Diretoria) e em vigor na data da publicação. A página de normativos da ANA a lista como alteradora da IN 1/2023.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/ana/pt-br/assuntos/saneamento-basico/Normativos-publicados-pela-ANA",
+    "topics": [
+      "billing",
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs",
+      "billing"
+    ],
+    "notes": "CORRIGIDO: o ato altera três artigos (2º, 6º e 8º), não apenas prazos. A existência, a data e a ementa foram confirmadas na página oficial da ANA; o detalhamento dos dispositivos foi lido em reprodução da Lex Editora, a conferir no DOU antes de uso formal."
+  },
+  {
+    "id": "aris-rn-4-2012",
+    "kind": "AGENCY_NORM",
+    "number": "004",
+    "year": "2012",
+    "issuer": "Agência Reguladora Intermunicipal de Saneamento (ARIS, SC)",
+    "title_pt": "Resolução ARIS nº 04/2012 (procedimentos de consultas e reclamações dos usuários)",
+    "scope_summary": "Disciplina como a Ouvidoria da ARIS recebe e processa pedidos de informação e reclamações de usuários dos serviços de água, esgoto, resíduos, limpeza urbana e drenagem, com protocolo, prazos de resposta, conciliação e recurso.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadores de serviços e usuários nos municípios regulados pela ARIS (SC).",
+    "jurisdiction": "SC",
+    "status": "A_CONFIRMAR",
+    "status_note": "Texto localizado em cópia hospedada por operadora, com cabeçalho 'maio de 2012' e data de assinatura 21/06/2012. A própria ARIS a cita como legislação aplicável em relatórios de fiscalização de 2024 (RTF-CC 04/2024 e 06/2024), mas o portal de legislação da ARIS não permitiu confirmar se está em vigor, consolidada ou revogada.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "https://www.aris.sc.gov.br/legislacao/14",
+    "topics": [
+      "customer_service"
+    ],
+    "modules_affected": [
+      "portal",
+      "registry"
+    ],
+    "notes": "CORRIGIDO: a denominação é 'Resolução ARIS nº 04/2012', não 'Resolução Normativa'; a série de Resoluções Normativas só aparece depois (por exemplo RN 41/2024, sobre participação do usuário, que pode sobrepor parte do tema). Data oficial de publicação e eventual revogação ficam a confirmar com a ARIS."
+  },
+  {
+    "id": "sc-fatma-portaria-162-2015",
+    "kind": "AGENCY_NORM",
+    "number": "162",
+    "year": "2015",
+    "issuer": "Fundação do Meio Ambiente de Santa Catarina (FATMA, extinta)",
+    "title_pt": "Portaria FATMA nº 162/2015 (complementar sobre o Sistema MTR em SC)",
+    "scope_summary": "Ato complementar da FATMA sobre o uso do Sistema MTR em Santa Catarina, citado pelas demais portarias como parte do conjunto que complementa a Portaria 242/2014. A ementa individual não foi conferida.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: usuários do Sistema MTR em SC até 14/01/2026.",
+    "jurisdiction": "SC",
+    "status": "REVOGADA",
+    "status_note": "Revogada pela Portaria IMA 009/2026 (art. 17), publicada no DOE nº 22675 de 14/01/2026; o portal do IMA registra o status 'Revogada'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://consultas.ima.sc.gov.br/portarias/visualizar/4202",
+    "topics": [
+      "waste"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "A revogação foi confirmada pelo texto da Portaria IMA 009/2026; a página individual da Portaria 162/2015 no portal do IMA não foi localizada, por isso o título e a ementa exatos ficam a conferir. Sem ressalva adicional."
+  },
+  {
+    "id": "sc-fatma-portaria-194-2016",
+    "kind": "AGENCY_NORM",
+    "number": "194",
+    "year": "2016",
+    "issuer": "Fundação do Meio Ambiente de Santa Catarina (FATMA, extinta)",
+    "title_pt": "Portaria FATMA nº 194/2016 (complementar sobre o Sistema MTR em SC)",
+    "scope_summary": "Ato complementar da FATMA de 2016 sobre o Sistema MTR em Santa Catarina, citado pelas Portarias 206/2016, 207/2016 e IMA 21/2019. A ementa individual não foi conferida.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: usuários do Sistema MTR em SC até 14/01/2026.",
+    "jurisdiction": "SC",
+    "status": "REVOGADA",
+    "status_note": "Revogada pela Portaria IMA 009/2026 (art. 17), publicada no DOE nº 22675 de 14/01/2026; o portal do IMA registra o status 'Revogada'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://consultas.ima.sc.gov.br/portarias/visualizar/4202",
+    "topics": [
+      "waste"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "A revogação foi confirmada pelo texto da Portaria IMA 009/2026; a página individual da Portaria 194/2016 no portal do IMA não foi localizada, por isso o título e a ementa exatos ficam a conferir."
+  },
+  {
+    "id": "sc-fatma-portaria-206-2016",
+    "kind": "AGENCY_NORM",
+    "number": "206",
+    "year": "2016",
+    "issuer": "Fundação do Meio Ambiente de Santa Catarina (FATMA, extinta)",
+    "title_pt": "Portaria FATMA nº 206/2016 (emissão do Certificado de Destinação Final - CDF pelo Sistema MTR)",
+    "scope_summary": "Tornou obrigatória a emissão do Certificado de Destinação Final de resíduos e rejeitos por meio do Sistema MTR de Santa Catarina.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: destinadores de resíduos e rejeitos em SC até 14/01/2026.",
+    "jurisdiction": "SC",
+    "status": "REVOGADA",
+    "status_note": "Portaria de 03/08/2016, publicada no DOE nº 20360 de 12/08/2016. Revogada pela Portaria IMA 009/2026 (art. 17), publicada no DOE nº 22675 de 14/01/2026; o portal do IMA registra o status 'Revogada'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://consultas.ima.sc.gov.br/portarias/visualizar/1641",
+    "topics": [
+      "waste"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "CORRIGIDO: o objeto é o CDF (certificado de destinação final), e não a norma geral do MTR. A Portaria IMA 009/2026 mantém o CDF (art. 10), emitido exclusivamente pelo Sistema MTR do IMA."
+  },
+  {
+    "id": "sc-fatma-portaria-242-2014",
+    "kind": "AGENCY_NORM",
+    "number": "242",
+    "year": "2014",
+    "issuer": "Fundação do Meio Ambiente de Santa Catarina (FATMA, extinta)",
+    "title_pt": "Portaria FATMA nº 242/2014 (obrigatoriedade do Sistema de Controle de Movimentação de Resíduos e Rejeitos - MTR em SC)",
+    "scope_summary": "Tornou obrigatório em Santa Catarina o Sistema MTR para documentar a movimentação de resíduos e rejeitos, com base na Lei estadual 15.251/2010, e deu prazo de 180 dias aos geradores industriais para adotá-lo.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: geradores, transportadores e destinadores de resíduos em SC até 14/01/2026.",
+    "jurisdiction": "SC",
+    "status": "REVOGADA",
+    "status_note": "Portaria de 01/12/2014, publicada no DOE nº 19968 de 18/12/2014. Revogada pela Portaria IMA 009/2026 (art. 17), publicada no DOE nº 22675 de 14/01/2026; o portal do IMA registra o status 'Revogada'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://consultas.ima.sc.gov.br/portarias/visualizar/1115",
+    "topics": [
+      "waste"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "Registro mantido por rastreabilidade histórica. Sucessora direta: Portaria IMA 009/2026."
+  },
+  {
+    "id": "sc-fatma-portaria-272-2015",
+    "kind": "AGENCY_NORM",
+    "number": "272",
+    "year": "2015",
+    "issuer": "Fundação do Meio Ambiente de Santa Catarina (FATMA, extinta)",
+    "title_pt": "Portaria FATMA nº 272/2015 (complementar sobre o Sistema MTR em SC)",
+    "scope_summary": "Ato complementar da FATMA sobre o Sistema MTR em Santa Catarina, citado nas portarias seguintes como integrante do conjunto básico do sistema. A ementa individual não foi conferida.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: usuários do Sistema MTR em SC até 14/01/2026.",
+    "jurisdiction": "SC",
+    "status": "REVOGADA",
+    "status_note": "Revogada pela Portaria IMA 009/2026 (art. 17), publicada no DOE nº 22675 de 14/01/2026; o portal do IMA registra o status 'Revogada'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://consultas.ima.sc.gov.br/portarias/visualizar/4202",
+    "topics": [
+      "waste"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "A revogação foi confirmada pelo texto da Portaria IMA 009/2026; a página individual da Portaria 272/2015 no portal do IMA não foi localizada, por isso o título e a ementa exatos ficam a conferir."
+  },
+  {
+    "id": "sc-ima-portaria-009-2026",
+    "kind": "AGENCY_NORM",
+    "number": "009",
+    "year": "2026",
+    "issuer": "Instituto do Meio Ambiente de Santa Catarina (IMA)",
+    "title_pt": "Portaria IMA nº 009/2026 (condições de utilização do Sistema de Controle de Movimentação de Resíduos e Rejeitos - Sistema MTR)",
+    "scope_summary": "Consolida as regras do Sistema MTR do IMA: MTR obrigatório no transporte externo de resíduos e rejeitos, CDF, DMR trimestral, PGRS eletrônico para geradores sujeitos a licenciamento estadual e integração com os MTR de outros estados e com o SINIR. Revoga sete portarias anteriores.",
+    "norm_class": "REGULATORY",
+    "applicability": "Geradores, transportadores, armazenadores temporários e destinadores de resíduos e rejeitos em SC, o que inclui lodos e resíduos de estações de tratamento de água e esgoto.",
+    "jurisdiction": "SC",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOE nº 22675 em 14/01/2026 e em vigor na data da publicação (art. 18); o portal do IMA a registra como 'Vigente'. Revoga as Portarias FATMA 242/2014, 162/2015, 272/2015, 194/2016 e 206/2016 e as Portarias IMA 21/2019 e 232/2021.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://consultas.ima.sc.gov.br/portarias/visualizar/4202",
+    "topics": [
+      "waste",
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration"
+    ],
+    "notes": "Ressalva sobre o MTR interestadual (art. 6º): quando o estado de destino tem sistema próprio, emite-se nos dois sistemas, sem registro no SINIR; quando não tem, emite-se simultaneamente no IMA e no SINIR. A afirmação do projeto de que SP e SC exigem 'MTR duplo' deve ser lida com essa distinção. O art. 14 afirma que o MTR não dispensa a legislação do transporte de produtos perigosos."
+  },
+  {
+    "id": "sc-ima-portaria-21-2019",
+    "kind": "AGENCY_NORM",
+    "number": "21",
+    "year": "2019",
+    "issuer": "Instituto do Meio Ambiente de Santa Catarina (IMA)",
+    "title_pt": "Portaria IMA nº 21/2019 (condições de utilização do Sistema MTR em SC)",
+    "scope_summary": "Fixou as condições de uso do Sistema MTR em Santa Catarina, com DMR semestral e CDF, e substituiu a Portaria FATMA 324/2015.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: usuários do Sistema MTR em SC até 14/01/2026.",
+    "jurisdiction": "SC",
+    "status": "REVOGADA",
+    "status_note": "Portaria de 25/01/2019, publicada no DOE nº 20943 de 28/01/2019. Revogada pela Portaria IMA 009/2026 (art. 17), publicada no DOE nº 22675 de 14/01/2026; o portal do IMA registra o status 'Revogada'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://consultas.ima.sc.gov.br/portarias/visualizar/2289",
+    "topics": [
+      "waste"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "Revogou e substituiu a Portaria FATMA 324/2015, que o projeto não cita. A DMR passou de semestral (esta portaria) para trimestral (Portaria IMA 009/2026, art. 7º)."
+  },
+  {
+    "id": "sc-ima-portaria-232-2021",
+    "kind": "AGENCY_NORM",
+    "number": "232",
+    "year": "2021",
+    "issuer": "Instituto do Meio Ambiente de Santa Catarina (IMA)",
+    "title_pt": "Portaria IMA nº 232/2021 (Plano de Gerenciamento de Resíduos Sólidos eletrônico - PGRS-e e Declaração de Movimentação de Resíduos Sólidos Urbanos - DMRSU)",
+    "scope_summary": "Criou o PGRS eletrônico, integrado ao Sistema MTR do IMA, e a declaração mensal de movimentação de resíduos sólidos urbanos exigida de prefeituras e de aterros.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: empreendimentos em licenciamento estadual, prefeituras e aterros em SC até 14/01/2026.",
+    "jurisdiction": "SC",
+    "status": "REVOGADA",
+    "status_note": "Portaria de 17/12/2021, publicada no DOE nº 21671 de 20/12/2021; DMRSU obrigatória a partir de 01/01/2022. Revogada pela Portaria IMA 009/2026 (art. 17), publicada no DOE nº 22675 de 14/01/2026; o portal do IMA registra o status 'Revogada'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://consultas.ima.sc.gov.br/portarias/visualizar/2988",
+    "topics": [
+      "waste",
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "CORRIGIDO: a portaria trata do PGRS-e e da DMRSU, e não de 'norma anterior do MTR' em sentido geral. A Portaria IMA 009/2026 mantém a elaboração do PGRS pelo Sistema MTR (art. 13); verificar se a DMRSU mensal foi mantida, pois o texto de 009/2026 lido não a menciona nos trechos obtidos."
+  },
+  {
+    "id": "agenersa-rf-222-2024",
+    "kind": "OTHER",
+    "number": "222",
+    "year": "2024",
+    "issuer": "Agência Reguladora de Energia e Saneamento Básico do Estado do Rio de Janeiro (AGENERSA)",
+    "title_pt": "AGENERSA, RF 222/2024 (provável Relatório de Fiscalização; documento não localizado)",
+    "scope_summary": "Referência citada como fonte no levantamento de GIS (19c). Na terminologia da AGENERSA, 'RF' designa Relatório de Fiscalização, ato de fiscalização sobre concessionária e não norma jurídica.",
+    "norm_class": "REFERENCE",
+    "applicability": "Sem natureza normativa; no máximo, evidência de fiscalização sobre uma concessionária fluminense.",
+    "jurisdiction": "RJ",
+    "status": "A_CONFIRMAR",
+    "status_note": "Nenhum documento com esse número foi localizado nas páginas públicas da AGENERSA. A IN AGENERSA 128/2024 (01/10/2024) define o RF como relatório elaborado ao fim de ação de fiscalização.",
+    "verified": "NOT_CONFIRMED",
+    "url": "https://www.rj.gov.br/agenersa/normas",
+    "topics": [
+      "other"
+    ],
+    "modules_affected": [
+      "gis"
+    ],
+    "notes": "CORRIGIDO: o item não parece ser norma, mas relatório de fiscalização. Recomenda-se retirá-lo da biblioteca de normas ou reclassificá-lo como documento de referência, sem status de vigência. Citação do projeto permanece incompleta (título e natureza do ato não informados) e deve ser refeita a partir do 19c."
+  },
+  {
+    "id": "ares-pcj-res-363-2020",
+    "kind": "AGENCY_NORM",
+    "number": "363",
+    "year": "2020",
+    "issuer": "Agência Reguladora dos Serviços de Saneamento das Bacias dos Rios Piracicaba, Capivari e Jundiaí (ARES-PCJ)",
+    "title_pt": "Resolução ARES-PCJ nº 363, de 26 de novembro de 2020 (Regulamento de Prestação dos Serviços de Abastecimento de Água e Esgotamento Sanitário e Atendimento aos Usuários do Município de Jumirim)",
+    "scope_summary": "Aprova o regulamento de serviços e de atendimento ao usuário de Jumirim (SP). O art. 149, I, exige notificação com prazo não inferior a 30 dias corridos antes de suspender o fornecimento de água por inadimplência.",
+    "norm_class": "REGULATORY",
+    "applicability": "Serviço de água e esgoto de Jumirim (SP) e seus usuários; serve como exemplo de regulamento municipal sob a ARES-PCJ.",
+    "jurisdiction": "SP",
+    "status": "VIGENTE",
+    "status_note": "Aprovada pela Diretoria Executiva da ARES-PCJ em 26/11/2020. A página de resoluções da ARES-PCJ lista duas resoluções posteriores que alteram o Anexo A (arts. 18, 124, 137 e 140); não foi localizada revogação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.arespcj.com.br/conteudo/resolucoes-ares-pcj",
+    "topics": [
+      "customer_service",
+      "billing"
+    ],
+    "modules_affected": [
+      "dunning",
+      "billing",
+      "portal",
+      "registry"
+    ],
+    "notes": "CORRIGIDO: a resolução não é norma geral sobre aviso de suspensão; é o regulamento de serviços do município de Jumirim, cujo art. 149, I, contém o aviso de 30 dias. O texto foi lido na cópia publicada pelo município e a regra de 30 dias foi confirmada. A confiança 'baixa' do projeto fica superada para este ponto."
+  },
+  {
+    "id": "ares-pcj-res-610-2025",
+    "kind": "AGENCY_NORM",
+    "number": "610",
+    "year": "2025",
+    "issuer": "Agência Reguladora dos Serviços de Saneamento das Bacias dos Rios Piracicaba, Capivari e Jundiaí (ARES-PCJ)",
+    "title_pt": "Resolução ARES-PCJ nº 610, de 18 de fevereiro de 2025 (Regulamento de Prestação dos Serviços de Sertãozinho e do Distrito de Cruz das Posses)",
+    "scope_summary": "Aprova o regulamento de serviços e de atendimento aos usuários do SAEMAS em Sertãozinho (SP), com regras de corte, religação e consumo mínimo por economia.",
+    "norm_class": "REGULATORY",
+    "applicability": "SAEMAS e usuários de água e esgoto de Sertãozinho e do Distrito de Cruz das Posses (SP); exemplo de regulamento municipal sob a ARES-PCJ.",
+    "jurisdiction": "SP",
+    "status": "VIGENTE",
+    "status_note": "Aprovada em 18/02/2025. Alterada pela Resolução ARES-PCJ 702, de 15/05/2026 (art. 10, revisão de contas e prazo de inclusão na categoria Residencial Social).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.arespcj.com.br/public/media/arquivos/1740156375-resoluo_n_610_2025_-_regulamento_-_saemas_sertozinho.pdf",
+    "topics": [
+      "customer_service",
+      "billing"
+    ],
+    "modules_affected": [
+      "dunning",
+      "billing",
+      "registry",
+      "portal"
+    ],
+    "notes": "Conferidos no texto: cortes de segunda a quinta-feira, das 08h às 14h; religação todos os dias até 18h; consumo mínimo de 15 m³ por economia; prazo de 4 meses contados da notificação (trecho localizado, a ler no contexto). A alteração de 2026 deve ser considerada ao tomar o regulamento como exemplo."
+  },
+  {
+    "id": "aris-mg-res-30-2022",
+    "kind": "AGENCY_NORM",
+    "number": "030",
+    "year": "2022",
+    "issuer": "Agência Reguladora Intermunicipal de Saneamento de Minas Gerais (ARIS-MG; denominada ARIS-ZM em cópias da época)",
+    "title_pt": "Resolução ARIS nº 030/2022 (condições gerais de prestação dos serviços de abastecimento de água e esgotamento sanitário)",
+    "scope_summary": "Estabeleceu as condições gerais de prestação e utilização dos serviços de água e esgoto nos municípios regulados pela agência mineira. Foi revogada pela Resolução ARIS-MG 185/2025.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: prestadores e usuários nos municípios regulados pela ARIS em MG até a entrada em vigor da Resolução 185/2025.",
+    "jurisdiction": "MG",
+    "status": "REVOGADA",
+    "status_note": "Revogada pelo art. 170 da Resolução ARIS-MG 185, de 20/08/2025 (Viçosa-MG), que passou a vigorar na data da publicação e se apoia na Norma de Referência ANA 11/2024 (Resolução ANA 230/2024).",
+    "verified": "SECONDARY_SOURCE",
+    "url": "https://saaemariana.mg.gov.br/wp-content/uploads/2025/10/Resolucao_ARIS_MG_n_185_2025_Condicoes_Gerais_SAE.pdf",
+    "topics": [
+      "customer_service",
+      "billing"
+    ],
+    "modules_affected": [
+      "registry",
+      "billing",
+      "dunning",
+      "portal"
+    ],
+    "notes": "A revogação foi lida em cópia da Resolução 185/2025 publicada por autarquia municipal; páginas municipais antigas ainda exibem a 030/2022 como 'em vigor'. A Resolução 185/2025 é a norma a incorporar no lugar desta."
+  },
+  {
+    "id": "mg-copam-cerh-dn-conjunta-1-2008",
+    "kind": "AGENCY_NORM",
+    "number": "1",
+    "year": "2008",
+    "issuer": "COPAM e Conselho Estadual de Recursos Hídricos de Minas Gerais (CERH-MG)",
+    "title_pt": "Deliberação Normativa Conjunta COPAM/CERH-MG nº 1, de 5 de maio de 2008 (classificação dos corpos de água, enquadramento e condições e padrões de lançamento de efluentes)",
+    "scope_summary": "Foi a norma mineira de classificação dos corpos de água e de padrões de lançamento de efluentes, inclusive de estações de tratamento de esgoto, até ser revogada em 2022.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: lançamento de efluentes em corpos de água de MG até 01/12/2022.",
+    "jurisdiction": "MG",
+    "status": "REVOGADA",
+    "status_note": "Publicada em 13/05/2008. Revogada integralmente pelo art. 52 da DN Conjunta COPAM/CERH-MG 8/2022, publicada em 02/12/2022 e em vigor nessa data.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "http://www.siam.mg.gov.br/sla/download.pdf?idNorma=56521",
+    "topics": [
+      "effluent",
+      "water_resources"
+    ],
+    "modules_affected": [
+      "quality"
+    ],
+    "notes": "CORRIGIDO: o projeto registra substituição 'em parte' e revogação não confirmada; a DN 8/2022 revoga a DN 1/2008 por inteiro (art. 52), conforme o texto reproduzido e comunicados da FAEMG e do MPMG. O dispositivo foi lido em reprodução, e o texto oficial está no SIAM (link da DN 8/2022)."
+  },
+  {
+    "id": "mg-copam-dn-232-2019",
+    "kind": "AGENCY_NORM",
+    "number": "232",
+    "year": "2019",
+    "issuer": "Conselho Estadual de Política Ambiental de Minas Gerais (COPAM)",
+    "title_pt": "Deliberação Normativa COPAM nº 232, de 27 de fevereiro de 2019 (Sistema Estadual de Manifesto de Transporte de Resíduos - MTR-MG)",
+    "scope_summary": "Institui o Sistema MTR-MG e disciplina o controle da movimentação de resíduos e rejeitos em Minas Gerais, com MTR, CDF e DMR, inclusive para resíduos de serviços públicos de saneamento e lodo de sistemas de esgoto coletado por limpa-fossa (MTR-Romaneio, art. 12).",
+    "norm_class": "REGULATORY",
+    "applicability": "Geradores, transportadores, armazenadores temporários e destinadores de resíduos e rejeitos que operam em MG, com ou sem sede no estado, incluindo prestadores de saneamento.",
+    "jurisdiction": "MG",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 27/02/2019 e publicada em 09/03/2019. Obrigatória desde 09/10/2019 e, para resíduos da construção civil, desde 04/12/2020. Revogou as DNs COPAM 90/2005, 117/2008 e 136/2009. A DN 242/2021 revogou o art. 16 da DN 171/2011 por causa da DMR. Citada como vigente pela DN COPAM 252/2024.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://mtr.meioambiente.mg.gov.br/documentos/232.pdf",
+    "topics": [
+      "waste",
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration",
+      "field"
+    ],
+    "notes": "Ressalva: o texto original atribui a operação à Feam; a página atual do Sistema MTR-MG indica manutenção pela SEMAD. O manual de web service citado pelo projeto (14/02/2025) não foi localizado. Não foi encontrada alteração direta da DN 232."
+  },
+  {
+    "id": "mg-dn-conjunta-8-2022",
+    "kind": "AGENCY_NORM",
+    "number": "8",
+    "year": "2022",
+    "issuer": "COPAM e CERH-MG",
+    "title_pt": "Deliberação Normativa Conjunta COPAM/CERH-MG nº 8, de 21 de novembro de 2022 (classificação dos corpos de água, enquadramento e condições e padrões de lançamento de efluentes)",
+    "scope_summary": "Define as classes dos corpos de água estaduais e as condições e padrões de lançamento de efluentes, com regras específicas para sistemas de tratamento de esgotos sanitários (art. 36). Revoga a DN Conjunta 1/2008.",
+    "norm_class": "REGULATORY",
+    "applicability": "Fontes poluidoras que lançam efluentes em corpos de água de MG, incluindo estações de tratamento de esgoto de prestadores de saneamento.",
+    "jurisdiction": "MG",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 21/11/2022, publicada no Diário do Executivo de MG em 02/12/2022 e em vigor na publicação (art. 53). Nenhuma alteração posterior foi verificada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "http://www.siam.mg.gov.br/sla/download.pdf?idNorma=56521",
+    "topics": [
+      "effluent",
+      "environmental_licensing",
+      "water_resources"
+    ],
+    "modules_affected": [
+      "quality"
+    ],
+    "notes": "CORRIGIDO: a norma não substitui a DN 1/2008 apenas em parte; revoga-a integralmente. Valores numéricos do art. 36 (por exemplo DBO, nitrogênio amoniacal e sólidos em suspensão) foram vistos em trechos reproduzidos e devem ser reconferidos no texto do SIAM antes de virarem parâmetro do produto."
+  },
+  {
+    "id": "rj-conema-res-79-2018",
+    "kind": "AGENCY_NORM",
+    "number": "79",
+    "year": "2018",
+    "issuer": "Conselho Estadual do Meio Ambiente do Rio de Janeiro (CONEMA)",
+    "title_pt": "Resolução CONEMA nº 79, de 7 de março de 2018 (aprova a NOP-INEA-35, Norma Operacional do Sistema online de Manifesto de Transporte de Resíduos - Sistema MTR)",
+    "scope_summary": "Aprova a norma operacional do MTR online do INEA, que exige declarar no sistema todo transporte de resíduos sólidos no Rio de Janeiro e revoga a DZ-1310.R-7, de 2004.",
+    "norm_class": "REGULATORY",
+    "applicability": "Geradores, transportadores, armazenadores temporários e destinadores de qualquer resíduo sólido no estado do Rio de Janeiro, salvo as exceções da NOP.",
+    "jurisdiction": "RJ",
+    "status": "VIGENTE",
+    "status_note": "Resolução de 07/03/2018, publicada no DOERJ em 13/03/2018, com 180 dias para atender os itens 6.1.5, 6.2.4, 6.2.5 e 6.4.4. A NOP-INEA-35 está na revisão 0. O INEA continua a citá-la como norma do Sistema MTR; nenhuma revisão posterior foi localizada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://mtr.inea.rj.gov.br/documentos/RESOLUCAO_CONEMA_79.pdf",
+    "topics": [
+      "waste",
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration"
+    ],
+    "notes": "O texto da resolução e da NOP foi lido em sites oficiais do INEA, o que supera a observação de 'texto não lido' do projeto. A ausência de revisões é confiança média."
+  },
+  {
+    "id": "sp-cetesb-dd-024-2022",
+    "kind": "AGENCY_NORM",
+    "number": "024",
+    "year": "2022",
+    "issuer": "Companhia Ambiental do Estado de São Paulo (CETESB)",
+    "title_pt": "Decisão de Diretoria CETESB nº 024/2022/P, de 15 de março de 2022 (aferição das informações prestadas no Sistema SIGOR MTR)",
+    "scope_summary": "Dispõe sobre as ações de verificação, pela CETESB, das informações que as empresas declaram no módulo MTR do SIGOR.",
+    "norm_class": "REGULATORY",
+    "applicability": "Geradores, transportadores e destinadores usuários do SIGOR MTR em São Paulo.",
+    "jurisdiction": "SP",
+    "status": "VIGENTE",
+    "status_note": "Decisão de 15/03/2022, listada no inventário de Decisões de Diretoria da CETESB e citada pelo manual do SIGOR MTR de 30/03/2026. Não foi verificado se as DDs de 2025 sobre CADRI (020/2025/C e 077/2025/C) afetam o procedimento.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://cetesb.sp.gov.br/decisoes-de-diretoria/",
+    "topics": [
+      "waste",
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration"
+    ],
+    "notes": "Texto integral não lido; ementa e data confirmadas no portal da CETESB."
+  },
+  {
+    "id": "sp-cetesb-dd-078-2025",
+    "kind": "AGENCY_NORM",
+    "number": "078",
+    "year": "2025",
+    "issuer": "Companhia Ambiental do Estado de São Paulo (CETESB)",
+    "title_pt": "Decisão de Diretoria CETESB nº 078/2025/I/C, de 17 de novembro de 2025 (período de transição para a NBR 10004:2024)",
+    "scope_summary": "Mantém a NBR 10004 de 2004 para classificar resíduos até 31/12/2026, salvo se DD específica adotar a versão de 2024 antes, e adota a versão de 2024 a partir de 01/01/2027.",
+    "norm_class": "REGULATORY",
+    "applicability": "Classificação de resíduos em processos conduzidos pela CETESB (licenciamento, CADRI e inventários), o que alcança lodos e resíduos de estações de tratamento de água e esgoto em SP.",
+    "jurisdiction": "SP",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOE-SP em 05/12/2025 (Caderno Executivo) e em vigor na data da publicação (art. 3º). O critério da NBR 10004:2024 passa a valer em 01/01/2027 (art. 2º).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://doe.sp.gov.br/executivo/secretaria-de-meio-ambiente-infraestrutura-e-logistica/decisao-de-diretoria-n-078-2025-i-c-de-17-de-novembro-de-2025-202512041133161991509040",
+    "topics": [
+      "waste"
+    ],
+    "modules_affected": [
+      "grs",
+      "quality"
+    ],
+    "notes": "O texto integral foi lido no DOE-SP, o que supera a limitação de HTTP 403 e de leitura parcial registrada no projeto. Fonte secundária indica norma de transição equivalente no RS (Portaria FEPAM 606/2026), ainda não verificada em fonte oficial. A IN IBAMA 24/2024 adota a NBR 10004:2004 'ou sua sucedânea'."
+  },
+  {
+    "id": "sp-cetesb-dd-130-2022",
+    "kind": "AGENCY_NORM",
+    "number": "130",
+    "year": "2022",
+    "issuer": "Companhia Ambiental do Estado de São Paulo (CETESB)",
+    "title_pt": "Decisão de Diretoria CETESB nº 130/2022/P, de 15 de dezembro de 2022 (Termo de Referência para o Plano de Gerenciamento de Resíduos Sólidos - PGRS)",
+    "scope_summary": "Aprova o termo de referência que padroniza estrutura, conteúdo mínimo e forma eletrônica de apresentação do PGRS no licenciamento ambiental paulista, via módulo PGRS do SIGOR.",
+    "norm_class": "REGULATORY",
+    "applicability": "Empreendimentos e atividades licenciados pela CETESB que devem apresentar PGRS, incluindo estações de tratamento de água e esgoto.",
+    "jurisdiction": "SP",
+    "status": "VIGENTE",
+    "status_note": "Decisão de 15/12/2022, publicada no DOE-SP em 17/12/2022. Entra em vigor 30 dias após a disponibilização do módulo PGRS no SIGOR (art. 14). Consta do inventário de DDs da CETESB e é referida em orientação técnica de 2025.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://cetesb.sp.gov.br/decisoes-de-diretoria/",
+    "topics": [
+      "waste",
+      "environmental_licensing"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "Dispensa o PGRS para microempresas e empresas de pequeno porte que gerem apenas resíduos equiparados aos domiciliares até 200 litros por dia. A data exata de disponibilização do módulo PGRS, que define a vigência, não foi confirmada."
+  },
+  {
+    "id": "sp-sima-res-27-2021",
+    "kind": "AGENCY_NORM",
+    "number": "27",
+    "year": "2021",
+    "issuer": "Secretaria de Meio Ambiente, Infraestrutura e Logística de São Paulo (SIMA, hoje SEMIL)",
+    "title_pt": "Resolução SIMA nº 27, de 22 de março de 2021 (Manifesto de Transporte de Resíduos - MTR do SIGOR)",
+    "scope_summary": "Institui o módulo MTR do Sistema Estadual de Gerenciamento Online de Resíduos Sólidos (SIGOR), define seus usuários e prevê a integração com o MTR nacional e com o SINIR.",
+    "norm_class": "REGULATORY",
+    "applicability": "Geradores sujeitos a PGRS, transportadores e responsáveis por áreas de destinação de resíduos em São Paulo, e geradores de outros estados que destinem resíduos a SP.",
+    "jurisdiction": "SP",
+    "status": "VIGENTE",
+    "status_note": "Resolução de 22/03/2021, publicada em 23/03/2021 e em vigor na publicação. O portal da SEMIL registra a situação 'Vigente'. O manual do SIGOR MTR de 30/03/2026 a cita como norma instituidora.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://semil.sp.gov.br/legislacao/2022/07/resolucao-sima-027-21/",
+    "topics": [
+      "waste",
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: o SIGOR já existia desde o Decreto estadual 60.520/2014; a Resolução SIMA 27/2021 instituiu o módulo MTR dentro dele. As DDs da CETESB (024/2022/P, 078/2025/I/C, 130/2022/P) foram verificadas à parte."
+  },
+  {
+    "id": "sp-ss-res-65-2016",
+    "kind": "AGENCY_NORM",
+    "number": "65",
+    "year": "2016",
+    "issuer": "Secretaria de Estado da Saúde de São Paulo (SES-SP)",
+    "title_pt": "Resolução SS-65, de 2 de agosto de 2016 (altera o art. 6º da Resolução SS-65/2005; inserção de dados no SISAGUA)",
+    "scope_summary": "Obriga o responsável por sistema ou solução alternativa coletiva de abastecimento de água a inserir cadastro, plano de amostragem e dados de controle da qualidade da água diretamente no SISAGUA, em datas fixas.",
+    "norm_class": "REGULATORY",
+    "applicability": "Responsáveis por sistemas de abastecimento e soluções alternativas coletivas de água para consumo humano no estado de São Paulo.",
+    "jurisdiction": "SP",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOE-SP em 03/08/2016, com vigor 90 dias após a publicação. Prazos: cadastro e plano até 10 de janeiro; dados do mês anterior e parâmetros semestrais até o dia 10 de cada mês. A prefeitura de São Paulo a aplicava em 2023 e a BVS a cita em ato de 2024.",
+    "verified": "SECONDARY_SOURCE",
+    "url": "https://prefeitura.sp.gov.br/web/saude/w/vigilancia_em_saude/saude_ambiental/353071",
+    "topics": [
+      "public_health",
+      "reporting"
+    ],
+    "modules_affected": [
+      "quality",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: a resolução de 2016 não é norma autônoma, apenas dá nova redação ao art. 6º da Resolução SS-65/2005 (Proagua). A vigência não foi confirmada em portal da SES-SP; as fontes são municipais e a reprodução do texto, por isso a confiança é média."
+  },
+  {
+    "id": "rs-consema-res-128-2006",
+    "kind": "AGENCY_NORM",
+    "number": "128",
+    "year": "2006",
+    "issuer": "CONSEMA-RS",
+    "title_pt": "Resolução CONSEMA nº 128, de 24 de novembro de 2006 (padrões de emissão de efluentes líquidos para águas superficiais)",
+    "scope_summary": "Fixou padrões de emissão de efluentes líquidos lançados em águas superficiais do RS, com limites por faixa de vazão e para nitrogênio amoniacal.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: fontes geradoras de efluentes no RS até 2017.",
+    "jurisdiction": "RS",
+    "status": "REVOGADA",
+    "status_note": "Revogada pela Resolução CONSEMA 355/2017 (art. 20), publicada no DOE-RS em 19/07/2017; a lista de resoluções da SEMA-RS a marca como revogada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://sema.rs.gov.br/resolucoes",
+    "topics": [
+      "effluent"
+    ],
+    "modules_affected": [
+      "quality"
+    ],
+    "notes": "Sem ressalva adicional; a Resolução 286/2014 e a 317/2016 a alteravam e complementavam."
+  },
+  {
+    "id": "rs-consema-res-286-2014",
+    "kind": "AGENCY_NORM",
+    "number": "286",
+    "year": "2014",
+    "issuer": "CONSEMA-RS",
+    "title_pt": "Resolução CONSEMA nº 286/2014 (altera o padrão de nitrogênio total Kjeldahl da Resolução 128/2006)",
+    "scope_summary": "Alterou o padrão de emissão de nitrogênio total Kjeldahl (NTK) para vazões acima de 1.000 m³/dia previsto na Resolução CONSEMA 128/2006.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: lançadores com vazão superior a 1.000 m³/dia no RS até 2017.",
+    "jurisdiction": "RS",
+    "status": "REVOGADA",
+    "status_note": "Revogada pela Resolução CONSEMA 355/2017 (art. 20), publicada no DOE-RS em 19/07/2017; a lista de resoluções da SEMA-RS a marca como revogada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://sema.rs.gov.br/resolucoes",
+    "topics": [
+      "effluent"
+    ],
+    "modules_affected": [
+      "quality"
+    ],
+    "notes": "CORRIGIDO: não é 'norma anterior de padrões de emissão' em sentido amplo, mas alteração pontual do parâmetro NTK na Resolução 128/2006."
+  },
+  {
+    "id": "rs-consema-res-317-2016",
+    "kind": "AGENCY_NORM",
+    "number": "317",
+    "year": "2016",
+    "issuer": "CONSEMA-RS",
+    "title_pt": "Resolução CONSEMA nº 317, de 18 de julho de 2016 (condições especiais para lançamento de efluentes tratados de sistemas públicos de esgotamento sanitário)",
+    "scope_summary": "Afastou a aplicação do art. 7º da Resolução 128/2006 aos sistemas públicos de esgotamento sanitário e permitiu o lançamento com vazão superior à do corpo receptor, mediante parecer que demonstre redução de cargas poluidoras.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: sistemas públicos de esgotamento sanitário no RS entre 2016 e 2017.",
+    "jurisdiction": "RS",
+    "status": "REVOGADA",
+    "status_note": "Publicada no DOE-RS em 25/07/2016. Revogada pela Resolução CONSEMA 355/2017 (art. 20), publicada no DOE-RS em 19/07/2017; a lista de resoluções da SEMA-RS a marca como revogada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.sema.rs.gov.br/upload/arquivos/201612/02153538-317-2016-lancamento-de-efluentes-tratados-por-sistema-de-esgotos.pdf",
+    "topics": [
+      "effluent",
+      "environmental_licensing"
+    ],
+    "modules_affected": [
+      "quality"
+    ],
+    "notes": "CORRIGIDO: a ementa é específica de esgotamento sanitário público, o que aumenta a relação com o setor em relação à descrição genérica do projeto."
+  },
+  {
+    "id": "rs-consema-res-355-2017",
+    "kind": "AGENCY_NORM",
+    "number": "355",
+    "year": "2017",
+    "issuer": "Conselho Estadual do Meio Ambiente do Rio Grande do Sul (CONSEMA-RS)",
+    "title_pt": "Resolução CONSEMA nº 355, de 13 de julho de 2017 (critérios e padrões de emissão de efluentes líquidos)",
+    "scope_summary": "Fixa critérios e padrões de emissão de efluentes líquidos lançados em águas superficiais do RS; o art. 17, II, estabelece padrões por faixa de vazão para efluentes sanitários, base para licenciar estações de tratamento de esgoto.",
+    "norm_class": "REGULATORY",
+    "applicability": "Todas as atividades que lançam efluentes líquidos em águas superficiais no RS, incluindo estações de tratamento de esgoto públicas, excluídos o lançamento no mar e a infiltração no solo.",
+    "jurisdiction": "RS",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 13/07/2017 e publicada no DOE-RS em 19/07/2017, com vigor na publicação (art. 20). A lista da SEMA-RS não indica revogação nem alteração na parte lida (resoluções até 2026).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://sema.rs.gov.br/resolucoes",
+    "topics": [
+      "effluent",
+      "environmental_licensing"
+    ],
+    "modules_affected": [
+      "quality"
+    ],
+    "notes": "Revogou as Resoluções 128/2006, 286/2014 e 317/2016 (art. 20). O art. 19 permite a licenciados pedir atualização da licença com base nos novos critérios. Leitura da lista da SEMA-RS foi parcial (cerca de metade do conteúdo), de modo que a ausência de alterações é confiança média."
+  },
+  {
+    "id": "rs-fepam-portaria-12-2020",
+    "kind": "AGENCY_NORM",
+    "number": "12",
+    "year": "2020",
+    "issuer": "FEPAM",
+    "title_pt": "Portaria FEPAM nº 12, de 21 de janeiro de 2020 (altera a Portaria FEPAM 87/2018 - MTR Online)",
+    "scope_summary": "Alterou a Portaria FEPAM 87/2018 sobre o Sistema MTR Online, entre outros pontos regulando a baixa do MTR pelo destinador e a validade máxima de 60 dias.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: usuários do MTR Online no RS até 12/01/2026.",
+    "jurisdiction": "RS",
+    "status": "REVOGADA",
+    "status_note": "Publicada no DOE-RS em 23/01/2020. Revogada pela Portaria FEPAM 576/2026 (art. 24), assinada em 08/01/2026 e publicada em 12/01/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.fepam.rs.gov.br/upload/arquivos/202406/04142819-portaria-fepam-n-87-2018-mtr-compilada-alteracao-portaria-432-2024.pdf",
+    "topics": [
+      "waste"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: não é 'norma anterior' autônoma do MTR; é portaria de alteração da Portaria 87/2018."
+  },
+  {
+    "id": "rs-fepam-portaria-432-2024",
+    "kind": "AGENCY_NORM",
+    "number": "432",
+    "year": "2024",
+    "issuer": "FEPAM",
+    "title_pt": "Portaria FEPAM nº 432/2024 (altera a Portaria FEPAM 87/2018 - MTR Online e revoga a Portaria 413/2024)",
+    "scope_summary": "Alterou a Portaria FEPAM 87/2018 sobre o MTR Online e revogou a Portaria FEPAM 413/2024.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: usuários do MTR Online no RS até 12/01/2026.",
+    "jurisdiction": "RS",
+    "status": "REVOGADA",
+    "status_note": "Publicada em maio de 2024; as fontes divergem quanto à data (comunicado estadual de 08/05/2024 e compilação da FEPAM indicando o DOE de 31/05/2024). Revogada pela Portaria FEPAM 576/2026 (art. 24), assinada em 08/01/2026 e publicada em 12/01/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.fepam.rs.gov.br/upload/arquivos/202406/04142819-portaria-fepam-n-87-2018-mtr-compilada-alteracao-portaria-432-2024.pdf",
+    "topics": [
+      "waste"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration"
+    ],
+    "notes": "CORRIGIDO: é portaria de alteração da 87/2018 (e revogadora da 413/2024), não norma autônoma. A data exata de assinatura não foi conferida."
+  },
+  {
+    "id": "rs-fepam-portaria-576-2026",
+    "kind": "AGENCY_NORM",
+    "number": "576",
+    "year": "2026",
+    "issuer": "Fundação Estadual de Proteção Ambiental Henrique Luiz Roessler (FEPAM)",
+    "title_pt": "Portaria FEPAM nº 576/2026 (obrigatoriedade de utilização do Sistema MTR Online no RS)",
+    "scope_summary": "Regulamenta o uso obrigatório do MTR Online no transporte terrestre de resíduos no RS, torna obrigatório o CDF emitido pelo destinador em até 90 dias, impõe DMR trimestral e revoga as Portarias 87/2018, 12/2020 e 432/2024.",
+    "norm_class": "REGULATORY",
+    "applicability": "Geradores, armazenadores temporários, transportadores e destinadores de resíduos sólidos no RS, o que alcança lodos e resíduos de saneamento.",
+    "jurisdiction": "RS",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 08/01/2026, publicada no DOE-RS em 12/01/2026 e em vigor na publicação (art. 25). A página de MTR da FEPAM a indica como a norma que rege o sistema.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://fepam.rs.gov.br/upload/arquivos/202601/12092955-2026-portaria-fepam-n-576-2026-sistema-mtr-online.pdf",
+    "topics": [
+      "waste",
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration"
+    ],
+    "notes": "O projeto registrou a data 08/01/2026 como vigência; é a data de assinatura, e a vigência começa em 12/01/2026. O texto foi lido no site oficial da FEPAM, o que supera a observação de leitura em espelho."
+  },
+  {
+    "id": "rs-fepam-portaria-87-2018",
+    "kind": "AGENCY_NORM",
+    "number": "87",
+    "year": "2018",
+    "issuer": "FEPAM",
+    "title_pt": "Portaria FEPAM nº 87, de 29 de outubro de 2018 (aprova o Sistema MTR Online e a obrigatoriedade de seu uso no RS)",
+    "scope_summary": "Aprovou o Sistema de Manifesto de Transporte de Resíduos (MTR Online) e tornou obrigatório seu uso no transporte terrestre de resíduos no Rio Grande do Sul, com declaração trimestral da movimentação.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: geradores, transportadores e destinadores no RS até 12/01/2026.",
+    "jurisdiction": "RS",
+    "status": "REVOGADA",
+    "status_note": "Publicada no DOE-RS em 30/10/2018; revogou a Portaria FEPAM 33/2018. Alterada pelas Portarias FEPAM 12/2020 e 432/2024. Revogada pela Portaria FEPAM 576/2026 (art. 24), assinada em 08/01/2026 e publicada em 12/01/2026.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.fepam.rs.gov.br/upload/arquivos/202406/04142819-portaria-fepam-n-87-2018-mtr-compilada-alteracao-portaria-432-2024.pdf",
+    "topics": [
+      "waste"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration"
+    ],
+    "notes": "Sem ressalva adicional. A página de MTR da FEPAM já indica a Portaria 576/2026 como norma vigente."
+  },
+  {
+    "id": "adasa-res-20-2016",
+    "kind": "AGENCY_NORM",
+    "number": "20",
+    "year": "2016",
+    "issuer": "Agência Reguladora de Águas, Energia e Saneamento Básico do Distrito Federal (ADASA)",
+    "title_pt": "Resolução ADASA nº 20, de 7 de novembro de 2016 (estado de restrição de uso dos recursos hídricos e regime de racionamento nos sistemas Descoberto e Santa Maria)",
+    "scope_summary": "Declarou restrição de uso dos recursos hídricos e instituiu o regime de racionamento do abastecimento de água nos sistemas Descoberto e Santa Maria; o art. 6º garante água a hospitais, hemocentros, centros de diálise e estabelecimentos de internação coletiva.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: CAESB e usuários atendidos pelos sistemas Descoberto e Santa Maria durante o racionamento de 2016 a 2018.",
+    "jurisdiction": "DF",
+    "status": "REVOGADA",
+    "status_note": "Publicada no DODF nº 210 de 08/11/2016. Revogada pela Resolução ADASA 13, de 06/06/2018, que também revoga a Resolução 21/2017.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.sinj.df.gov.br/sinj/Norma/98e3e3d7930c4186950e85233021f155/Resolu_o_20_07_11_2016.html",
+    "topics": [
+      "water_resources",
+      "customer_service"
+    ],
+    "modules_affected": [
+      "portal",
+      "field"
+    ],
+    "notes": "CORRIGIDO: a Resolução 20/2016 trata de racionamento, e não de isenção tarifária; o tratamento diferenciado de unidades essenciais aparece no art. 6º (garantia de abastecimento). A isenção da tarifa de contingência para unidades essenciais está na Resolução ADASA 17/2016 (07/10/2016), cuja situação não foi verificada. A lacuna R-23/GES-07 deve ser reapontada a esse ato."
+  },
+  {
+    "id": "adasa-res-59-2025",
+    "kind": "AGENCY_NORM",
+    "number": "59",
+    "year": "2025",
+    "issuer": "Agência Reguladora de Águas, Energia e Saneamento Básico do Distrito Federal (ADASA)",
+    "title_pt": "Resolução ADASA nº 59, de 12 de novembro de 2025 (indicadores operacionais da prestação dos serviços de água e esgoto no Distrito Federal)",
+    "scope_summary": "Estabelece os indicadores operacionais de abastecimento de água e esgotamento sanitário no DF, em adoção à Norma de Referência ANA 9/2024, com indicadores de nível I (perdas, qualidade da água e do esgoto, intermitência) e regras de verificação das metas.",
+    "norm_class": "REGULATORY",
+    "applicability": "Prestadores dos serviços de água e esgoto no Distrito Federal (CAESB) e a ADASA como avaliadora.",
+    "jurisdiction": "DF",
+    "status": "VIGENTE",
+    "status_note": "Resolução de 12/11/2025, publicada no DODF e disponível no SINJ-DF; notícia oficial da ADASA de 13/11/2025. Nenhuma alteração localizada. As metas de perdas seguem a Portaria MCID 788/2024.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.sinj.df.gov.br/sinj/Norma/e147e49a828b43f2a9aa8c41a0ad59b4/Resolu_o_59_12_11_2025.html",
+    "topics": [
+      "reporting",
+      "water_resources"
+    ],
+    "modules_affected": [
+      "losses",
+      "quality",
+      "metering",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: foi localizada fonte oficial (SINJ-DF e comunicado da ADASA); o projeto a registrava com base em fonte secundária. A página do SINJ marca o texto com asterisco de republicação. A NR ANA 9/2024 é a norma de referência que a fundamenta."
+  },
+  {
+    "id": "antt-res-5232-2016",
+    "kind": "AGENCY_NORM",
+    "number": "5.232",
+    "year": "2016",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT nº 5.232, de 14 de dezembro de 2016 (Instruções Complementares ao Regulamento Terrestre do Transporte de Produtos Perigosos)",
+    "scope_summary": "Aprovou as Instruções Complementares ao regulamento do transporte terrestre de produtos perigosos, com classificação, embalagem, documentação e sinalização.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: transporte rodoviário e ferroviário de produtos perigosos até 30/06/2021.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Revogada expressamente pela Resolução ANTT 5.947/2021 (rol de revogações), que entrou em vigor em 01/07/2021. O ANTTlegis marca o ato como revogado.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://anttlegis.antt.gov.br/action/ActionDatalegis.php?acao=abrirTextoAto&link=S&tipo=RES&numeroAto=00005232&seqAto=000&valorAno=2016&orgao=DG/ANTT/MTPA&codTipo=&desItem=&desItemFim=&cod_modulo=161&cod_menu=5408",
+    "topics": [
+      "hazardous_transport"
+    ],
+    "modules_affected": [
+      "field",
+      "grs"
+    ],
+    "notes": "CORRIGIDO: a resolução aprova as Instruções Complementares, e não o 'regulamento' em si; o regulamento era a Resolução 3.665/2011 e depois a 5.848/2019. A revogação foi confirmada no texto oficial, o que supera a confiança média do resumo de busca."
+  },
+  {
+    "id": "antt-res-5848-2019",
+    "kind": "AGENCY_NORM",
+    "number": "5.848",
+    "year": "2019",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT nº 5.848, de 25 de junho de 2019 (atualiza o Regulamento para o Transporte Rodoviário de Produtos Perigosos)",
+    "scope_summary": "Atualizou o regulamento do transporte rodoviário de produtos perigosos, com vigor 180 dias após a publicação, e foi depois consolidada na Resolução 5.947/2021.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: transporte rodoviário de produtos perigosos até 30/06/2021.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Publicada no DOU em 26/06/2019. Revogada pela Resolução ANTT 5.947/2021 (vigor em 01/07/2021).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://anttlegis.antt.gov.br/action/TematicaAction.php?acao=abrirVinculos&cotematica=18342557&cod_menu=8438&cod_modulo=161",
+    "topics": [
+      "hazardous_transport"
+    ],
+    "modules_affected": [
+      "field",
+      "grs"
+    ],
+    "notes": "Ressalva: a descrição 'revogada com a 5.232/2016' é correta quanto ao ato revogador; a 5.848/2019 é o regulamento, e a 5.232/2016 as instruções complementares."
+  },
+  {
+    "id": "antt-res-5947-2021",
+    "kind": "AGENCY_NORM",
+    "number": "5.947",
+    "year": "2021",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT nº 5.947, de 1º de junho de 2021 (atualiza o Regulamento para o Transporte Rodoviário de Produtos Perigosos e aprova suas Instruções Complementares)",
+    "scope_summary": "Consolidou em um só ato o regulamento (5.848/2019) e as instruções complementares (5.232/2016) do transporte rodoviário de produtos perigosos, sem mudança técnica de fundo.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: transporte rodoviário de produtos perigosos de 01/07/2021 a 31/05/2023.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Em vigor desde 01/07/2021. Revogada pela Resolução ANTT 5.998/2022 (art. 47), que entrou em vigor em 01/06/2023; a ANTT informa que a 5.947 foi aplicável até 31/05/2023.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://anttlegis.antt.gov.br/action/ActionDatalegis.php?acao=abrirTextoAto&link=S&tipo=RES&numeroAto=00005947&seqAto=000&valorAno=2021&orgao=DG/ANTT/MI&cod_modulo=161&cod_menu=7796",
+    "topics": [
+      "hazardous_transport"
+    ],
+    "modules_affected": [
+      "field",
+      "grs"
+    ],
+    "notes": "Sem ressalva adicional ao projeto. Revogou as Resoluções 5.232/2016 e 5.848/2019, entre outras."
+  },
+  {
+    "id": "antt-res-5998-2022",
+    "kind": "AGENCY_NORM",
+    "number": "5.998",
+    "year": "2022",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT nº 5.998, de 3 de novembro de 2022 (Regulamento para o Transporte Rodoviário de Produtos Perigosos e Instruções Complementares)",
+    "scope_summary": "Atualiza o regulamento do transporte rodoviário de produtos perigosos e aprova suas instruções complementares: classificação, embalagem, documentação, sinalização, veículos e infrações.",
+    "norm_class": "REGULATORY",
+    "applicability": "Transportadores e expedidores de produtos perigosos em vias públicas, o que alcança produtos químicos de tratamento de água e esgoto (como cloro e hipoclorito) e resíduos perigosos de prestadores de saneamento.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOU em 04/11/2022 e em vigor desde 01/06/2023. O ANTTlegis a classifica como 'Vigente com Alterações', listando as Resoluções 6.016/2023 e 6.056/2024. Revogou a Resolução 5.947/2021.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://anttlegis.antt.gov.br/action/ActionDatalegis.php?acao=abrirTextoAto&link=S&tipo=RES&numeroAto=00005998&seqAto=000&valorAno=2022&orgao=DG/ANTT/MI&cod_modulo=161&cod_menu=5408",
+    "topics": [
+      "hazardous_transport",
+      "waste"
+    ],
+    "modules_affected": [
+      "field",
+      "grs",
+      "assets"
+    ],
+    "notes": "Confirmado: o ANTTlegis lista apenas duas alterações (6.016/2023 e 6.056/2024). A observação do projeto sobre atualização da página da ANTT em 09/07/2026 não foi conferida. Um índice secundário (ABTLP) lista a Resolução ANTT 6.067/2025, de 17/07/2025, sem indicar relação com a 5.998; não consta como alteradora no ANTTlegis."
+  },
+  {
+    "id": "antt-res-6016-2023",
+    "kind": "AGENCY_NORM",
+    "number": "6.016",
+    "year": "2023",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT nº 6.016/2023 (altera a Resolução ANTT 5.998/2022)",
+    "scope_summary": "Alterou dispositivos da Resolução ANTT 5.998/2022 (arts. 29, 40, 42, 43 e 45) antes do início de sua vigência.",
+    "norm_class": "REFERENCE",
+    "applicability": "Transportadores de produtos perigosos; conteúdo já consolidado no texto da Resolução 5.998/2022.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "A ANTT informa publicação em 15/05/2023; fonte secundária (ABTLP) indica ato de 11/05/2023. Alterou a 5.998 antes de 01/06/2023, data de vigência da norma base.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/antt/pt-br/assuntos/cargas/produtos-perigosos",
+    "topics": [
+      "hazardous_transport"
+    ],
+    "modules_affected": [
+      "field",
+      "grs"
+    ],
+    "notes": "CORRIGIDO: 15/05/2023 é a data de publicação, não a do ato; a data de assinatura (11/05/2023) vem de fonte secundária e fica a confirmar no DOU."
+  },
+  {
+    "id": "antt-res-6056-2024",
+    "kind": "AGENCY_NORM",
+    "number": "6.056",
+    "year": "2024",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT nº 6.056, de 28 de novembro de 2024 (altera a Resolução ANTT 5.998/2022)",
+    "scope_summary": "Alterou o regulamento do transporte rodoviário de produtos perigosos, por exemplo quanto à sinalização, à inspeção veicular de granel (CITV) e a infrações, e excluiu dois dispositivos da 5.998/2022.",
+    "norm_class": "REFERENCE",
+    "applicability": "Transportadores de produtos perigosos; conteúdo já consolidado no texto da Resolução 5.998/2022.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 28/11/2024 e publicada em 29/11/2024; entra em vigor 90 dias após a publicação (art. 3º).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://anttlegis.antt.gov.br/action/ActionDatalegis.php?acao=abrirTextoAto&tipo=RES&numeroAto=00006056&seqAto=000&valorAno=2024&orgao=DG/ANTT/MT&codTipo&desItem&desItemFim&cod_menu=5408&cod_modulo=161&pesquisa=true",
+    "topics": [
+      "hazardous_transport"
+    ],
+    "modules_affected": [
+      "field",
+      "grs"
+    ],
+    "notes": "O projeto registrou apenas 29/11/2024 sem a regra de vigência diferida de 90 dias; este prazo é fato normativo (art. 3º)."
+  },
+  {
+    "id": "anvisa-rdc-222-2018",
+    "kind": "AGENCY_NORM",
+    "number": "222",
+    "year": "2018",
+    "issuer": "Agência Nacional de Vigilância Sanitária (ANVISA)",
+    "title_pt": "RDC ANVISA nº 222, de 28 de março de 2018 (Boas Práticas de Gerenciamento dos Resíduos de Serviços de Saúde)",
+    "scope_summary": "Regulamenta as boas práticas de gerenciamento dos resíduos de serviços de saúde e exige o PGRSS de serviços geradores, públicos e privados.",
+    "norm_class": "REFERENCE",
+    "applicability": "Geradores de resíduos de serviços de saúde. Aplica-se a prestadores de saneamento apenas se mantiverem serviço de saúde próprio (por exemplo ambulatório ou laboratório clínico).",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada no DOU em 29/03/2018, com vigor 180 dias após a publicação; revogou a RDC 306/2004 e o item 7 do Anexo 2 da RDC 305/2002. A ANVISA a mantém como referência em perguntas e respostas. Nenhuma alteração localizada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.in.gov.br/web/guest/materia/-/asset_publisher/Kujrw0TZC2Mb/content/id/8436198/do1-2018-03-29-resolucao-rdc-n-222-de-28-de-marco-de-2018-8436194",
+    "topics": [
+      "waste",
+      "public_health"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "Relação com saneamento fraca. A pergunta aberta do projeto (alcance a laboratório de análise de água) não tem resposta direta no texto: a norma se refere a serviços de saúde e ao atendimento à saúde humana ou animal, sem mencionar laboratório de qualidade de água. Consultar a vigilância sanitária local. O texto foi lido no DOU, o que supera a cópia usada pelo projeto."
+  },
+  {
+    "id": "anvisa-rdc-306-2004",
+    "kind": "AGENCY_NORM",
+    "number": "306",
+    "year": "2004",
+    "issuer": "Agência Nacional de Vigilância Sanitária (ANVISA)",
+    "title_pt": "RDC ANVISA nº 306, de 7 de dezembro de 2004 (regulamento técnico para o gerenciamento de resíduos de serviços de saúde)",
+    "scope_summary": "Foi o regulamento técnico anterior do gerenciamento de resíduos de serviços de saúde, substituído pela RDC 222/2018.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: geradores de resíduos de serviços de saúde até a entrada em vigor da RDC 222/2018.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Revogada pelo art. 92 da RDC 222/2018; permaneceu em vigor por 180 dias após a publicação da nova norma (até setembro de 2018).",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.in.gov.br/web/guest/materia/-/asset_publisher/Kujrw0TZC2Mb/content/id/8436198/do1-2018-03-29-resolucao-rdc-n-222-de-28-de-marco-de-2018-8436194",
+    "topics": [
+      "waste",
+      "public_health"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "Relação com saneamento fraca. A revogação foi confirmada no DOU e nas perguntas e respostas da ANVISA."
+  },
+  {
+    "id": "cvm-res-244-2026",
+    "kind": "AGENCY_NORM",
+    "number": "244",
+    "year": "2026",
+    "issuer": "Comissão de Valores Mobiliários (CVM)",
+    "title_pt": "Resolução CVM nº 244, de 29 de maio de 2026 (altera a Resolução CVM 193/2023 sobre informações financeiras relacionadas à sustentabilidade)",
+    "scope_summary": "Revoga a obrigatoriedade futura do relatório de informações financeiras de sustentabilidade pelo padrão ISSB/CBPS para companhias abertas, adota o modelo 'pratique ou explique' e exige publicação por no mínimo três exercícios de quem optar por divulgar.",
+    "norm_class": "REFERENCE",
+    "applicability": "Companhias abertas, fundos e securitizadoras. Relaciona-se ao setor de saneamento somente quanto a prestadores listados em bolsa.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Publicada em 29/05/2026, em vigor na data da publicação e aplicável a exercícios sociais iniciados a partir de 01/01/2026. A exigência de justificar a opção por não arquivar o relatório vale a partir de 01/01/2027. O Ofício-Circular CVM/SNC/SEP 2/2026, de 27/08/2026, esclarece sua aplicação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://conteudo.cvm.gov.br/legislacao/resolucoes/anexos/200/resol244.htm",
+    "topics": [
+      "reporting",
+      "other"
+    ],
+    "modules_affected": [
+      "accounting"
+    ],
+    "notes": "Relação com o setor fraca: tema de mercado de capitais, sem obrigação para prestadores em geral. CORRIGIDO (precisão): a resolução altera a Resolução CVM 193/2023 e retira a obrigatoriedade que esta previa para exercícios a partir de 2026, mantendo regime voluntário no modelo 'pratique ou explique'; não havia obrigação em vigor a ser tornada voluntária."
+  },
+  {
+    "id": "ibama-in-1-2013",
+    "kind": "AGENCY_NORM",
+    "number": "01",
+    "year": "2013",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA nº 1, de 25 de janeiro de 2013 (Cadastro Nacional de Operadores de Resíduos Perigosos - CNORP)",
+    "scope_summary": "Regulamenta o CNORP, integrado ao CTF/APP e ao CTF/AIDA, com inscrição de geradores e operadores de resíduos perigosos, responsável técnico e prestação anual de informações.",
+    "norm_class": "REGULATORY",
+    "applicability": "Pessoas jurídicas que geram ou operam resíduos perigosos, inclusive prestadores de saneamento que gerem resíduos perigosos.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 25/01/2013 e em vigor na publicação (art. 15). A página do IBAMA sobre o CNORP a cita como regulamentação atual; o IBAMA extrai os dados dos instrumentos já existentes e não mantém sistema próprio para o CNORP. Nenhuma revogação localizada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.ibama.gov.br/component/legislacao/?view=legislacao&legislacao=129371",
+    "topics": [
+      "waste",
+      "reporting"
+    ],
+    "modules_affected": [
+      "grs",
+      "platform"
+    ],
+    "notes": "Ressalva: as remissões internas à IN IBAMA 6/2013 e à IN 10/2013 estão superadas, pois ambas foram revogadas (INs 13/2021 e 12/2021). A página de detalhe do IBAMA retornou 403, e a vigência foi inferida de fonte oficial secundária ao ato; confiança média."
+  },
+  {
+    "id": "ibama-in-12-2021",
+    "kind": "AGENCY_NORM",
+    "number": "12",
+    "year": "2021",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA nº 12, de 20 de agosto de 2021 (inscrição no Cadastro Técnico Federal de Atividades e Instrumentos de Defesa Ambiental - CTF/AIDA)",
+    "scope_summary": "Regulamenta a obrigação de inscrição no CTF/AIDA de pessoas físicas e jurídicas, inclusive a responsabilidade técnica pelo gerenciamento de resíduos sólidos e de resíduos perigosos.",
+    "norm_class": "REGULATORY",
+    "applicability": "Pessoas físicas e jurídicas com atividades e responsabilidades técnicas do Anexo I e II, entre elas o responsável técnico pelo PGRS dos geradores obrigados.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 20/08/2021, publicada no DOU em 23/08/2021 e em vigor desde 01/09/2021; revogou a IN IBAMA 10/2013. Alterada pela IN IBAMA 21/2024 (17/10/2024), que eliminou a declaração de porte econômico de pessoas jurídicas.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/ibama/pt-br/servicos/cadastros/ctf/ctf-aida/IN_12_2021_AIDA.pdf",
+    "topics": [
+      "waste",
+      "reporting",
+      "environmental_licensing"
+    ],
+    "modules_affected": [
+      "grs",
+      "platform"
+    ],
+    "notes": "CORRIGIDO: a norma regula todo o CTF/AIDA; a responsabilidade técnica pelo PGRS é apenas uma das hipóteses (art. 14). A inscrição é não onerosa e tem validade de dois anos, segundo guia do IBAMA."
+  },
+  {
+    "id": "ibama-in-13-2012",
+    "kind": "AGENCY_NORM",
+    "number": "13",
+    "year": "2012",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA nº 13, de 18 de dezembro de 2012 (Lista Brasileira de Resíduos Sólidos)",
+    "scope_summary": "Publica a Lista Brasileira de Resíduos Sólidos, com códigos de seis dígitos, usada pelo CTF/APP, pelo CTF/AIDA, pelo CNORP e por sistemas do IBAMA, e prevê atualização sempre que necessário.",
+    "norm_class": "REGULATORY",
+    "applicability": "Declarações de resíduos ao IBAMA e classificação por código em sistemas de manifesto e inventário; base do catálogo de resíduos do módulo MTR.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 18/12/2012, publicada no DOU em 20/12/2012 e em vigor na publicação (art. 5º). O IBAMA mantém a lista e a planilha em seu portal; nenhuma revogação ou atualização localizada.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.ibama.gov.br/component/legislacao/?view=legislacao&legislacao=128945",
+    "topics": [
+      "waste"
+    ],
+    "modules_affected": [
+      "grs",
+      "integration"
+    ],
+    "notes": "A ausência de atualização é confiança média; a página de detalhe do IBAMA retornou 403 na consulta direta, e o conteúdo foi obtido por resultado de busca do mesmo domínio. A IN dispõe que as informações prestadas ao IBAMA são disponibilizadas ao SINIR e ao SINIMA."
+  },
+  {
+    "id": "ibama-in-13-2021",
+    "kind": "AGENCY_NORM",
+    "number": "13",
+    "year": "2021",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA nº 13, de 23 de agosto de 2021 (inscrição no Cadastro Técnico Federal de Atividades Potencialmente Poluidoras e Utilizadoras de Recursos Ambientais - CTF/APP)",
+    "scope_summary": "Regulamenta a obrigação de inscrição no CTF/APP, o enquadramento por atividade (Anexo I), a emissão do Certificado de Regularidade e os impeditivos (Anexo II).",
+    "norm_class": "REGULATORY",
+    "applicability": "Pessoas físicas e jurídicas que exerçam atividades potencialmente poluidoras ou utilizadoras de recursos ambientais, entre elas prestadores de saneamento cujas atividades constem do Anexo I.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 23/08/2021, publicada no DOU em 24/08/2021 (retificada em 13/09/2021) e em vigor desde 01/09/2021. Alterada pelas INs IBAMA 6/2022, 8/2023, 23/2024 e 23/2025. Revogou as INs 6/2013, 11/2018, 17/2018 e 9/2020.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.ibama.gov.br/component/legislacao/?view=legislacao&legislacao=138775",
+    "topics": [
+      "environmental_licensing",
+      "reporting"
+    ],
+    "modules_affected": [
+      "platform",
+      "grs"
+    ],
+    "notes": "Conferido no texto consolidado: o Certificado de Regularidade tem validade de três meses (art. 46, § 2º). O projeto cita as quatro alterações corretamente."
+  },
+  {
+    "id": "ibama-in-23-2024",
+    "kind": "AGENCY_NORM",
+    "number": "23",
+    "year": "2024",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA nº 23, de 14 de novembro de 2024 (altera o Anexo I da IN IBAMA 13/2021)",
+    "scope_summary": "Altera o Anexo I da IN IBAMA 13/2021, excluindo e incluindo descrições de silvicultura nas categorias de enquadramento do CTF/APP.",
+    "norm_class": "REFERENCE",
+    "applicability": "Enquadramento no CTF/APP; mudança restrita a descrições de silvicultura, sem efeito direto para água e esgoto.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 14/11/2024, publicada em 19/11/2024 e em vigor na data da publicação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.ibama.gov.br/component/legislacao/?view=legislacao&force=1&legislacao=139440",
+    "topics": [
+      "environmental_licensing"
+    ],
+    "modules_affected": [
+      "platform"
+    ],
+    "notes": "CORRIGIDO: a data 14/11/2024 é a de assinatura; a publicação ocorreu em 19/11/2024. Relação com saneamento fraca."
+  },
+  {
+    "id": "ibama-in-23-2025",
+    "kind": "AGENCY_NORM",
+    "number": "23",
+    "year": "2025",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA nº 23, de 23 de dezembro de 2025 (altera a IN IBAMA 13/2021)",
+    "scope_summary": "Altera a IN IBAMA 13/2021 em definições, no Certificado de Regularidade, na alteração de dados cadastrais e nos Anexos I e II, incluindo os impeditivos de emissão do certificado.",
+    "norm_class": "REFERENCE",
+    "applicability": "Inscritos no CTF/APP; conteúdo já refletido no texto consolidado da IN 13/2021 publicado pelo IBAMA em 2026.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 23/12/2025 e publicada no DOU em 26/12/2025; retificada no DOU de 27/01/2026. O art. 4º original fixa vigor 60 dias após a publicação, e a retificação acrescenta parágrafo único segundo o qual o Anexo I entra em vigor até um ano após a publicação.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.gov.br/ibama/pt-br/servicos/cadastros/ctf/ctf-app/ctf-app/20260129_Retificacao_e_IN_23_2025.pdf",
+    "topics": [
+      "environmental_licensing",
+      "reporting"
+    ],
+    "modules_affected": [
+      "platform"
+    ],
+    "notes": "Ressalva: o parágrafo único do art. 4º é ambíguo quanto à data exata de vigor do Anexo I; confirmar com o IBAMA antes de assumir data. O projeto registrou 23/12/2025 como se fosse a publicação; é a data de assinatura."
+  },
+  {
+    "id": "ibama-in-24-2024",
+    "kind": "AGENCY_NORM",
+    "number": "24",
+    "year": "2024",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA nº 24, de 4 de dezembro de 2024 (procedimentos de controle ambiental da importação de resíduos)",
+    "scope_summary": "Regulamenta o controle ambiental da importação de resíduos: proíbe a importação de resíduos perigosos, rejeitos e resíduos domiciliares e admite resíduos controlados apenas para reciclagem, com licenciamento e laudos.",
+    "norm_class": "REFERENCE",
+    "applicability": "Importadores de resíduos. Relação com saneamento fraca; interessa ao produto apenas pela referência à NBR 10004:2004 'ou sua sucedânea'.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 04/12/2024, publicada no DOU em 06/12/2024 e em vigor desde 01/01/2025. Revogou a IN IBAMA 12/2013. O portal do IBAMA informa a situação 'Em vigor'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.ibama.gov.br/component/legislacao/?view=legislacao&legislacao=139443",
+    "topics": [
+      "waste",
+      "other"
+    ],
+    "modules_affected": [
+      "grs"
+    ],
+    "notes": "CORRIGIDO: o ato não é apenas 'ato legal que referencia a NBR 10004'; seu objeto é a importação de resíduos, e a NBR 10004:2004 'ou sua sucedânea' aparece no § 1º do art. 1º como metodologia de classificação."
+  },
+  {
+    "id": "ibama-in-6-2013",
+    "kind": "AGENCY_NORM",
+    "number": "6",
+    "year": "2013",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA nº 6, de 15 de março de 2013 (Cadastro Técnico Federal de Atividades Potencialmente Poluidoras - CTF/APP)",
+    "scope_summary": "Foi a norma anterior do CTF/APP, alterada em 2018 pela IN 11 e revogada em 2021 pela IN 13.",
+    "norm_class": "REFERENCE",
+    "applicability": "Histórico: inscritos no CTF/APP até 31/08/2021.",
+    "jurisdiction": "BR",
+    "status": "REVOGADA",
+    "status_note": "Publicada no DOU em 11/04/2013. Revogada pelo art. 60, I, da IN IBAMA 13/2021, que entrou em vigor em 01/09/2021.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.ibama.gov.br/component/legislacao/?view=legislacao&legislacao=138775",
+    "topics": [
+      "environmental_licensing"
+    ],
+    "modules_affected": [
+      "platform"
+    ],
+    "notes": "A revogação consta do texto da IN 13/2021. Relação com saneamento apenas histórica."
+  },
+  {
+    "id": "ibama-in-6-2022",
+    "kind": "AGENCY_NORM",
+    "number": "6",
+    "year": "2022",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA nº 6, de 27 de janeiro de 2022 (altera a IN IBAMA 13/2021 e consolida o Regulamento de Enquadramento do CTF/APP)",
+    "scope_summary": "Consolida na IN 13/2021 o Regulamento de Enquadramento de pessoas físicas e jurídicas no CTF/APP, acrescentando-lhe o Anexo III.",
+    "norm_class": "REFERENCE",
+    "applicability": "Inscritos no CTF/APP; conteúdo incorporado ao texto consolidado da IN 13/2021.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 27/01/2022 e em vigor desde 03/03/2022. Uma portaria do IBAMA registra erroneamente a data 27/02/2022.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.ibama.gov.br/component/legislacao/?view=legislacao&legislacao=138869",
+    "topics": [
+      "environmental_licensing"
+    ],
+    "modules_affected": [
+      "platform"
+    ],
+    "notes": "Ressalva: o ato consolida o regulamento de enquadramento no Anexo III; a descrição do projeto ('alterou a IN 13/2021') é correta, mas omite esse conteúdo. Relação com saneamento indireta."
+  },
+  {
+    "id": "ibama-in-8-2023",
+    "kind": "AGENCY_NORM",
+    "number": "8",
+    "year": "2023",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA nº 8, de 14 de março de 2023 (altera a IN IBAMA 13/2021)",
+    "scope_summary": "Altera a IN IBAMA 13/2021 sobre o CTF/APP; o conteúdo específico das mudanças não foi lido.",
+    "norm_class": "REFERENCE",
+    "applicability": "Inscritos no CTF/APP; conteúdo incorporado ao texto consolidado da IN 13/2021.",
+    "jurisdiction": "BR",
+    "status": "VIGENTE",
+    "status_note": "Assinada em 14/03/2023, publicada em 15/03/2023; o portal do IBAMA informa a situação 'Em vigor'.",
+    "verified": "OFFICIAL_SOURCE",
+    "url": "https://www.ibama.gov.br/component/legislacao/?view=legislacao&force=1&legislacao=139372",
+    "topics": [
+      "environmental_licensing"
+    ],
+    "modules_affected": [
+      "platform"
+    ],
+    "notes": "Ementa e datas confirmadas; o detalhamento dos dispositivos alterados não foi lido. Relação com saneamento indireta."
+  }
+]

@@ -1,0 +1,1287 @@
+[
+  {
+    "id": "ana-res-114-2021",
+    "kind": "ANA_RESOLUTION",
+    "number": "114",
+    "year": "2021",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Resolução ANA 114/2021: alteração da NR 1",
+    "scope_summary": "Alterou a NR 1/2021 (cobrança do manejo de resíduos).",
+    "status_in_project": "Vigente; 30/12/2021 (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ana-res-227-2024",
+    "kind": "ANA_RESOLUTION",
+    "number": "227",
+    "year": "2024",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Resolução ANA 227/2024: Agenda Regulatória 2025-2026",
+    "scope_summary": "Agenda regulatória da ANA; há, em fonte secundária, indicação de trabalho em reúso e em nova NR de instrumentos negociais.",
+    "status_in_project": "Citada no relatório 08; conteúdo da agenda não confirmado.",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Indicação em fonte secundária: não confirmado."
+  },
+  {
+    "id": "portaria-ms-2914-2011",
+    "kind": "MS_ORDINANCE",
+    "number": "2.914",
+    "year": "2011",
+    "issuer": "Ministério da Saúde (MS)",
+    "title_pt": "Portaria MS nº 2.914/2011 (padrão de potabilidade anterior)",
+    "scope_summary": "Vigorou entre 2015 e 2021; passou ao Anexo XX da PRC 5/2017 em 2017 e foi reescrita pela Portaria 888/2021.",
+    "status_in_project": "Superada; dispositivo formal de revogação não confirmado.",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Confiança média."
+  },
+  {
+    "id": "prc-5-2017-anexo-xxi",
+    "kind": "MS_ORDINANCE",
+    "number": "",
+    "year": "2017",
+    "issuer": "Ministério da Saúde (MS)",
+    "title_pt": "Anexo XXI da PRC 5/2017 (fluoretação da água)",
+    "scope_summary": "Valores recomendados de fluoreto, referidos no art. 36 §1º da Portaria 888.",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Vigente (presumido); conteúdo não lido.",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Confiança média."
+  },
+  {
+    "id": "conama-380-2006",
+    "kind": "CONAMA",
+    "number": "380",
+    "year": "2006",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA 380/2006 (lodo de esgoto)",
+    "scope_summary": "Retificava a Res. 375/2006.",
+    "status_in_project": "Revogada pela Res. CONAMA 498/2020 (art. 36).",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md",
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "conama-313-2002",
+    "kind": "CONAMA",
+    "number": "313",
+    "year": "2002",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA 313/2002 (Inventário Nacional de Resíduos Sólidos Industriais)",
+    "scope_summary": "O art. 2º I inclui no conceito os lodos de sistemas de tratamento de água; base do Inventário usado pela Portaria MMA 280/2020 (art. 16).",
+    "status_in_project": "Vigente; 29/10/2002; nenhum ato revogador localizado.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Fonte secundária (espelho); confiança média."
+  },
+  {
+    "id": "conama-307-2002",
+    "kind": "CONAMA",
+    "number": "307",
+    "year": "2002",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA 307/2002 (resíduos da construção civil)",
+    "scope_summary": "Gestão de resíduos da construção civil (RCC).",
+    "status_in_project": "Vigente; 05/07/2002; última alteração pela 469/2015.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Alterada pelas Res. 348/2004, 431/2011, 448/2012 e 469/2015."
+  },
+  {
+    "id": "conama-348-2004",
+    "kind": "CONAMA",
+    "number": "348",
+    "year": "2004",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA 348/2004",
+    "scope_summary": "Alterou a Res. CONAMA 307/2002.",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "conama-431-2011",
+    "kind": "CONAMA",
+    "number": "431",
+    "year": "2011",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA 431/2011",
+    "scope_summary": "Alterou a Res. CONAMA 307/2002.",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "conama-448-2012",
+    "kind": "CONAMA",
+    "number": "448",
+    "year": "2012",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA 448/2012",
+    "scope_summary": "Alterou a Res. CONAMA 307/2002.",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "conama-469-2015",
+    "kind": "CONAMA",
+    "number": "469",
+    "year": "2015",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA 469/2015",
+    "scope_summary": "Última alteração da Res. CONAMA 307/2002.",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "conama-358-2005",
+    "kind": "CONAMA",
+    "number": "358",
+    "year": "2005",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA 358/2005 (resíduos dos serviços de saúde)",
+    "scope_summary": "Tratamento e disposição final de resíduos de serviços de saúde.",
+    "status_in_project": "Vigente; 29/04/2005.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "conama-516-2026",
+    "kind": "CONAMA",
+    "number": "516",
+    "year": "2026",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Resolução CONAMA 516/2026 (RoHS)",
+    "scope_summary": "Registrada pelo relatório 12 como não aplicável ao produto.",
+    "status_in_project": "Citada; sem estado informado.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "conama-nova-resolucao-lancamento-efluentes",
+    "kind": "CONAMA",
+    "number": "",
+    "year": "2026",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Nova resolução CONAMA de lançamento de efluentes (altera a 357/2005 e revoga a 430/2011)",
+    "scope_summary": "Atualiza matéria orgânica e nutrientes, com limites de nitrogênio amoniacal e fósforo total em efluente sanitário por porte e regras para águas pluviais urbanas.",
+    "status_in_project": "citação incompleta: aprovada na 151ª reunião ordinária (01-02/09/2026), sem número e sem publicação confirmada.",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Número, texto final, vigência e prazos de adequação não confirmados (fonte: notícia do MMA)."
+  },
+  {
+    "id": "conama-cnrh-resolucao-conjunta-reuso",
+    "kind": "CONAMA",
+    "number": "",
+    "year": "2026",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA) e Conselho Nacional de Recursos Hídricos (CNRH)",
+    "title_pt": "Resolução conjunta CNRH/CONAMA de reúso direto não potável de efluente sanitário tratado",
+    "scope_summary": "Disciplina o reúso direto não potável de efluente tratado de ETE de sistemas públicos.",
+    "status_in_project": "citação incompleta: aprovada em 01/09/2026 (64ª extraordinária do CONAMA e 61ª do CNRH), sem número e a ser publicada no DOU.",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md",
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md"
+    ],
+    "notes": "Número, parâmetros mínimos e prazos não confirmados."
+  },
+  {
+    "id": "conama-proposta-fiscalizacao-residuos",
+    "kind": "CONAMA",
+    "number": "",
+    "year": "2026",
+    "issuer": "Conselho Nacional do Meio Ambiente (CONAMA)",
+    "title_pt": "Proposta de Resolução CONAMA sobre fiscalização e gerenciamento integrado de resíduos sólidos",
+    "scope_summary": "Critérios procedimentais para fiscalização e gerenciamento integrado de resíduos; pode afetar a rastreabilidade.",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Em elaboração; consulta pública de 21/05 a 06/07/2026; minuta não lida.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Monitorar."
+  },
+  {
+    "id": "inmetro-portaria-657-2025",
+    "kind": "INMETRO",
+    "number": "657",
+    "year": "2025",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 657/2025 (verificação de medidores)",
+    "scope_summary": "Substituiria a verificação inicial e subsequente de medidores; a inclusão expressa de medidores de água é fonte secundária.",
+    "status_in_project": "Publicada no DOU de 13/10/2025 (relatório 21b).",
+    "cited_in": [
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md"
+    ],
+    "notes": "Inclusão dos medidores de água na 657: fonte secundária."
+  },
+  {
+    "id": "inmetro-portaria-713-2025",
+    "kind": "INMETRO",
+    "number": "713",
+    "year": "2025",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 713/2025",
+    "scope_summary": "Citada com a 657/2025 sobre a transição da verificação de medidores.",
+    "status_in_project": "Publicada no DOU de 31/10/2025 (relatório 21b).",
+    "cited_in": [
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "inmetro-portaria-293-2021",
+    "kind": "INMETRO",
+    "number": "293",
+    "year": "2021",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 293/2021",
+    "scope_summary": "Condições de verificação inicial e declaração de conformidade que permanecem aplicáveis ao lado da 657/2025.",
+    "status_in_project": "Citada em 21b; estado não informado.",
+    "cited_in": [
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md"
+    ],
+    "notes": "Órgão deduzido do contexto."
+  },
+  {
+    "id": "inmetro-portaria-295-2021",
+    "kind": "INMETRO",
+    "number": "295",
+    "year": "2021",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 295/2021",
+    "scope_summary": "Condições de verificação inicial e declaração de conformidade que permanecem aplicáveis ao lado da 657/2025.",
+    "status_in_project": "Citada em 21b; estado não informado.",
+    "cited_in": [
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md"
+    ],
+    "notes": "Órgão deduzido do contexto."
+  },
+  {
+    "id": "inmetro-portaria-78-2022",
+    "kind": "INMETRO",
+    "number": "78",
+    "year": "2022",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 78/2022",
+    "scope_summary": "Condições de verificação inicial e declaração de conformidade que permanecem aplicáveis ao lado da 657/2025.",
+    "status_in_project": "Citada em 21b; estado não informado.",
+    "cited_in": [
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md"
+    ],
+    "notes": "Órgão deduzido do contexto."
+  },
+  {
+    "id": "inmetro-dimel-portaria-338-2022",
+    "kind": "INMETRO",
+    "number": "338",
+    "year": "2022",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro/Dimel 338/2022 (aprovação de modelo, família WSH)",
+    "scope_summary": "Exemplo público de aprovação de modelo de medidor (classe de exatidão 2).",
+    "status_in_project": "Citada como exemplo (21b).",
+    "cited_in": [
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md"
+    ],
+    "notes": "O Inmetro publica as portarias de aprovação de modelo em página própria (PAM)."
+  },
+  {
+    "id": "inmetro-dimel-portaria-64-2023",
+    "kind": "INMETRO",
+    "number": "64",
+    "year": "2023",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro/Dimel 64/2023 (aprovação de modelo)",
+    "scope_summary": "Outro exemplo de aprovação de modelo de medidor.",
+    "status_in_project": "Citada como exemplo (21b).",
+    "cited_in": [
+      "levantamento/certificacoes/21b-normas-do-setor-requisitos-de-software.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "inmetro-portaria-102-2022",
+    "kind": "INMETRO",
+    "number": "102",
+    "year": "2022",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Portaria Inmetro 102/2022 (equipamentos para consumo de água)",
+    "scope_summary": "Requisitos de conformidade de bebedouros e purificadores; a Consulta Pública Inmetro 21/2025 trata dela (faixa de pH 6 a 9,5 e etiqueta ENCE a partir de 01/01/2027).",
+    "status_in_project": "Vigente; consulta pública de 19/08/2025 (relatório 09).",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Não altera o padrão de potabilidade; o prazo de 31/12/2026 da consulta foi corrigido pelo relatório 09."
+  },
+  {
+    "id": "inmetro-consulta-publica-21-2025",
+    "kind": "INMETRO",
+    "number": "21",
+    "year": "2025",
+    "issuer": "Instituto Nacional de Metrologia, Qualidade e Tecnologia (Inmetro)",
+    "title_pt": "Consulta Pública Inmetro nº 21/2025 (equipamentos para consumo de água)",
+    "scope_summary": "Consulta sobre a Portaria Inmetro 102/2022; não é revisão da potabilidade.",
+    "status_in_project": "Aberta em 19/08/2025 (relatório 09).",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "A síntese inicial de busca estava errada, segundo o relatório 09."
+  },
+  {
+    "id": "bcb-res-467-2025",
+    "kind": "BCB",
+    "number": "467",
+    "year": "2025",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB 467/2025",
+    "scope_summary": "Alterou a Res. BCB 443/2024.",
+    "status_in_project": "Vigente; 30/04/2025 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "bcb-res-515-2025",
+    "kind": "BCB",
+    "number": "515",
+    "year": "2025",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB 515/2025",
+    "scope_summary": "Alterou a Res. BCB 443/2024.",
+    "status_in_project": "Vigente; 21/10/2025 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "bcb-res-596-2026",
+    "kind": "BCB",
+    "number": "596",
+    "year": "2026",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB 596/2026",
+    "scope_summary": "Alterou a Res. BCB 443/2024 (loterias).",
+    "status_in_project": "Vigente; 30/09/2026 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "bcb-res-597-2026",
+    "kind": "BCB",
+    "number": "597",
+    "year": "2026",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB 597/2026",
+    "scope_summary": "Última alteração do Regulamento do Pix lida pelo relatório 11.",
+    "status_in_project": "Vigente; 30/09/2026 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "bcb-res-505-2025",
+    "kind": "BCB",
+    "number": "505",
+    "year": "2025",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB 505/2025 (débito automático e Pix Automático)",
+    "scope_summary": "Com a Res. CMN 5.251/2025, alterou as regras de débito: autorização e cancelamento do recebedor PJ seguem o Pix Automático (art. 2º-A).",
+    "status_in_project": "Vigente; vigor 13/10/2025; adequação de contratos até 01/01/2026 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "bcb-res-406-2024",
+    "kind": "BCB",
+    "number": "406",
+    "year": "2024",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB 406/2024 (Open Finance)",
+    "scope_summary": "Jornada sem redirecionamento obrigatória para detentoras de conta desde 22/04/2026.",
+    "status_in_project": "Citada no 22d; conforme fonte secundária.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Fonte secundária."
+  },
+  {
+    "id": "bcb-res-541-2025",
+    "kind": "BCB",
+    "number": "541",
+    "year": "2025",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Resolução BCB 541/2025 (Open Finance)",
+    "scope_summary": "Complementa a Res. BCB 406/2024 sobre Open Finance.",
+    "status_in_project": "Citada no 22d; conforme fonte secundária.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Fonte secundária."
+  },
+  {
+    "id": "bcb-in-743-2026",
+    "kind": "BCB",
+    "number": "743",
+    "year": "2026",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Instrução Normativa BCB 743/2026 (Pix Automático: agendamento e liquidação)",
+    "scope_summary": "Detalha agendamento e liquidação do Pix Automático.",
+    "status_in_project": "Vigente; 11/06/2026 (relatório 20f).",
+    "cited_in": [
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Não constava no relatório 11; ler antes da P4.5."
+  },
+  {
+    "id": "bcb-in-777-2026",
+    "kind": "BCB",
+    "number": "777",
+    "year": "2026",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Instrução Normativa BCB 777/2026 (Manual de Fluxos v2.2 do Pix)",
+    "scope_summary": "Manual de Fluxos do Pix v2.2 com vigor em 01/02/2027.",
+    "status_in_project": "Vigente; 18/09/2026 (DOU 21/09/2026).",
+    "cited_in": [
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Não constava no relatório 11."
+  },
+  {
+    "id": "bcb-in-746",
+    "kind": "BCB",
+    "number": "746",
+    "year": "",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Instrução Normativa BCB 746 (Pix por aproximação)",
+    "scope_summary": "Retirou o teto de R$ 500 do Pix por aproximação em 01/10/2026.",
+    "status_in_project": "citação incompleta (ano não informado); fonte secundária (22d).",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Fonte secundária."
+  },
+  {
+    "id": "bcb-circ-3656-2013",
+    "kind": "BCB",
+    "number": "3.656",
+    "year": "2013",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Circular BCB 3.656/2013 (boleto de pagamento)",
+    "scope_summary": "Regulava o boleto de pagamento.",
+    "status_in_project": "Revogada pelo art. 25 da Res. BCB 443/2024 a partir de 03/02/2025.",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "bcb-circ-3956-2019",
+    "kind": "BCB",
+    "number": "3.956",
+    "year": "2019",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Circular BCB 3.956/2019 (boleto de pagamento)",
+    "scope_summary": "Regulava o boleto de pagamento.",
+    "status_in_project": "Revogada pelo art. 25 da Res. BCB 443/2024 a partir de 03/02/2025.",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "bcb-circ-4022-2020",
+    "kind": "BCB",
+    "number": "4.022",
+    "year": "2020",
+    "issuer": "Banco Central do Brasil (BCB)",
+    "title_pt": "Circular BCB 4.022/2020 (débito automático)",
+    "scope_summary": "Citada pelo Manual do Débito Automático da FEBRABAN com a Res. CMN 4.790/2020.",
+    "status_in_project": "Citada em fonte do 11; estado não informado.",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "cmn-res-5251-2025",
+    "kind": "CMN",
+    "number": "5.251",
+    "year": "2025",
+    "issuer": "Conselho Monetário Nacional (CMN)",
+    "title_pt": "Resolução CMN 5.251/2025 (débito em conta e Pix Automático)",
+    "scope_summary": "Alterou a Res. CMN 4.790/2020: para recebedor PJ, autorização e cancelamento do débito seguem o Pix Automático (art. 2º-A).",
+    "status_in_project": "Vigente; 25/09/2025; vigor 13/10/2025; adequação de contratos até 01/01/2026.",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md",
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "cmn-res-5278-2025",
+    "kind": "CMN",
+    "number": "5.278",
+    "year": "2025",
+    "issuer": "Conselho Monetário Nacional (CMN)",
+    "title_pt": "Resolução CMN 5.278/2025 (Pix Automático em serviço público)",
+    "scope_summary": "Segundo o 22c, convênios de serviço público saem do débito automático interbancário para o Pix Automático em 01/01/2027.",
+    "status_in_project": "Vigente (22c, lida em texto); o 22d cita a Res. BCB 544/2025 para o mesmo prazo.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md",
+      "DIARIO-DE-BORDO.md"
+    ],
+    "notes": "A fonte do prazo diverge entre 22c e 22d."
+  },
+  {
+    "id": "cmn-res-5299-2026",
+    "kind": "CMN",
+    "number": "5.299",
+    "year": "2026",
+    "issuer": "Conselho Monetário Nacional (CMN)",
+    "title_pt": "Resolução CMN 5.299/2026 (novo regime de débito automático)",
+    "scope_summary": "Com a Res. BCB 565/2026, institui o novo regime de débito automático e revoga a Res. CMN 4.790.",
+    "status_in_project": "Futura; 04/05/2026; vigor 01/07/2027 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md",
+      "arquitetura/adr/ADR-0028-escopo-funcional-ampliado-pelos-editais.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "cmn-res-5171-2024",
+    "kind": "CMN",
+    "number": "5.171",
+    "year": "2024",
+    "issuer": "Conselho Monetário Nacional (CMN)",
+    "title_pt": "Resolução CMN 5.171/2024 (metodologia da taxa legal de juros)",
+    "scope_summary": "Define a metodologia da taxa legal (Selic menos IPCA) prevista na Lei 14.905/2024.",
+    "status_in_project": "Vigente; 29/08/2024 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "cmn-voto-92-2025",
+    "kind": "CMN",
+    "number": "92",
+    "year": "2025",
+    "issuer": "Conselho Monetário Nacional (CMN)",
+    "title_pt": "Voto do CMN 92/2025",
+    "scope_summary": "Voto que acompanha a regra de Pix Automático para serviços públicos, citado como fonte no 22d.",
+    "status_in_project": "Citado como fonte; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md",
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Citado só por URL e nome de arquivo."
+  },
+  {
+    "id": "anpd-res-23-2024",
+    "kind": "ANPD",
+    "number": "23",
+    "year": "2024",
+    "issuer": "Autoridade/Agência Nacional de Proteção de Dados (ANPD), Conselho Diretor",
+    "title_pt": "Resolução ANPD 23/2024 (agenda regulatória)",
+    "scope_summary": "Integra o conjunto da agenda regulatória 2025-2026 e do mapa de temas 2026-2027.",
+    "status_in_project": "Vigente; 09/12/2024 (existência confirmada; conteúdo da agenda não lido).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "anpd-res-30-2025",
+    "kind": "ANPD",
+    "number": "30",
+    "year": "2025",
+    "issuer": "Autoridade/Agência Nacional de Proteção de Dados (ANPD), Conselho Diretor",
+    "title_pt": "Resolução ANPD 30/2025 (agenda regulatória)",
+    "scope_summary": "Integra o conjunto da agenda regulatória 2025-2026 e do mapa de temas 2026-2027.",
+    "status_in_project": "Vigente; 23/12/2025 (existência confirmada; conteúdo não lido).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "anpd-res-31-2025",
+    "kind": "ANPD",
+    "number": "31",
+    "year": "2025",
+    "issuer": "Autoridade/Agência Nacional de Proteção de Dados (ANPD), Conselho Diretor",
+    "title_pt": "Resolução ANPD 31/2025 (agenda regulatória)",
+    "scope_summary": "Integra o conjunto da agenda regulatória 2025-2026 e do mapa de temas 2026-2027.",
+    "status_in_project": "Vigente; 22/12/2025 (existência confirmada; conteúdo não lido).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "anpd-enunciado-1-2023",
+    "kind": "ANPD",
+    "number": "1",
+    "year": "2023",
+    "issuer": "Autoridade/Agência Nacional de Proteção de Dados (ANPD), Conselho Diretor",
+    "title_pt": "Enunciado CD/ANPD 1/2023 (crianças e adolescentes)",
+    "scope_summary": "Dados de crianças e adolescentes podem usar as hipóteses do art. 7º ou do art. 11 da LGPD, desde que prevaleça o melhor interesse (art. 14).",
+    "status_in_project": "Vigente; 22/05/2023 (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "anpd-consulta-publica-1-2026",
+    "kind": "ANPD",
+    "number": "1",
+    "year": "2026",
+    "issuer": "Autoridade/Agência Nacional de Proteção de Dados (ANPD), Conselho Diretor",
+    "title_pt": "Consulta Pública ANPD 1/2026 (revisão da fiscalização)",
+    "scope_summary": "Consulta sobre a revisão do regulamento de fiscalização e processo sancionador (Res. 1/2021).",
+    "status_in_project": "Aberta; contribuições de 09/09 a 26/10/2026 (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Fonte: nota da ANPD (confiança média)."
+  },
+  {
+    "id": "anpd-guia-agentes-tratamento-v2",
+    "kind": "ANPD",
+    "number": "2.0",
+    "year": "2022",
+    "issuer": "Autoridade/Agência Nacional de Proteção de Dados (ANPD), Conselho Diretor",
+    "title_pt": "Guia orientativo: agentes de tratamento e encarregado (versão 2.0, 2022)",
+    "scope_summary": "Orientação não vinculante sobre agentes de tratamento e encarregado.",
+    "status_in_project": "Orientação (não é norma); abril/2022 (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Lido só em resumo."
+  },
+  {
+    "id": "anpd-guia-poder-publico-v2",
+    "kind": "ANPD",
+    "number": "2.0",
+    "year": "2023",
+    "issuer": "Autoridade/Agência Nacional de Proteção de Dados (ANPD), Conselho Diretor",
+    "title_pt": "Guia orientativo: tratamento de dados pessoais pelo Poder Público (versão 2.0, 2023)",
+    "scope_summary": "Orientação não vinculante sobre tratamento de dados pelo poder público.",
+    "status_in_project": "Orientação (não é norma); junho/2023 (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md",
+      "levantamento/lacunas/22a-cadastro-comercial-relacionamento.md"
+    ],
+    "notes": "Lido só em resumo."
+  },
+  {
+    "id": "anpd-cgu-guia-transparencia",
+    "kind": "ANPD",
+    "number": "",
+    "year": "2026",
+    "issuer": "Autoridade/Agência Nacional de Proteção de Dados (ANPD), Conselho Diretor e Controladoria-Geral da União (CGU)",
+    "title_pt": "Guia de Transparência e Proteção de Dados Pessoais (ANPD e CGU)",
+    "scope_summary": "Guia em elaboração sobre a conciliação entre transparência e proteção de dados.",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Em elaboração; consulta pública aberta em junho/2026; não é norma (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Citação sem número."
+  },
+  {
+    "id": "svrs-nfag-e-modelo-75",
+    "kind": "TAX_AUTHORITY",
+    "number": "75",
+    "year": "",
+    "issuer": "Receita Federal, SEFAZ e ENCAT (projeto nacional operado pela SVRS)",
+    "title_pt": "Nota Fiscal de Água e Saneamento Eletrônica (NFAg-e), modelo 75",
+    "scope_summary": "Documento fiscal eletrônico do saneamento, com grupos de IBS e CBS no leiaute; obrigatoriedade apontada para 01/12/2026.",
+    "status_in_project": "Em implantação; o portal da SVRS ainda dizia \"minuta\" em 12/10/2026; data de obrigatoriedade a confirmar no DOU.",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "DANFAG v1.02 de 25/08/2026. É a decisão fiscal que mais pesa no P2 (confirmar com tributarista)."
+  },
+  {
+    "id": "cgnfse-nfse-padrao-nacional",
+    "kind": "TAX_AUTHORITY",
+    "number": "",
+    "year": "",
+    "issuer": "Comitê Gestor da NFS-e Nacional (CGNFS-e) e municípios",
+    "title_pt": "NFS-e Padrão Nacional (com campos de IBS e CBS)",
+    "scope_summary": "Nota fiscal de serviços eletrônica do padrão nacional, com campos IBS e CBS; primeira etapa em 01/10/2026 (ato 4/2026).",
+    "status_in_project": "citação incompleta (citada pelo nome, sem número). Em vigor por etapas; divergência local no DF (relatório 11).",
+    "cited_in": [
+      "PLANO-EXECUCAO-PDCA-R0-R9.md",
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "arquitetura/adr/ADR-0022-portais-historico-e-documentos.md"
+    ],
+    "notes": "Fontes secundárias; confiança baixa a média."
+  },
+  {
+    "id": "encat-nt-2025-002",
+    "kind": "TAX_AUTHORITY",
+    "number": "2025.002",
+    "year": "2025",
+    "issuer": "Grupo de Trabalho Nacional da NF-e (ENCAT/Receita)",
+    "title_pt": "Nota Técnica 2025.002 (NF-e e NFC-e com IBS e CBS)",
+    "scope_summary": "Leiaute da NF-e e da NFC-e com IBS e CBS (versão v1.40 de 20/05/2026 e v1.52 de 01/10/2026).",
+    "status_in_project": "Vigente; datas mudam (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Fontes secundárias; confiança baixa a média."
+  },
+  {
+    "id": "confaz-ajuste-sinief-49-2025",
+    "kind": "TAX_AUTHORITY",
+    "number": "49",
+    "year": "2025",
+    "issuer": "Conselho Nacional de Política Fazendária (CONFAZ)",
+    "title_pt": "Ajuste SINIEF 49/2025 (NF-e com IBS e CBS)",
+    "scope_summary": "Ajuste do Sistema Nacional Integrado de Informações Econômico-Fiscais sobre documentos fiscais eletrônicos com IBS e CBS.",
+    "status_in_project": "Vigente segundo fontes secundárias (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Fonte secundária; datas mudam."
+  },
+  {
+    "id": "confaz-ajuste-sinief-8-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "8",
+    "year": "2026",
+    "issuer": "Conselho Nacional de Política Fazendária (CONFAZ)",
+    "title_pt": "Ajuste SINIEF 8/2026 (NF-e com IBS e CBS)",
+    "scope_summary": "Ajuste do Sistema Nacional Integrado de Informações Econômico-Fiscais sobre documentos fiscais eletrônicos com IBS e CBS.",
+    "status_in_project": "Vigente segundo fontes secundárias (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Fonte secundária; datas mudam."
+  },
+  {
+    "id": "confaz-ajuste-sinief-20-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "20",
+    "year": "2026",
+    "issuer": "Conselho Nacional de Política Fazendária (CONFAZ)",
+    "title_pt": "Ajuste SINIEF 20/2026 (NF-e com IBS e CBS)",
+    "scope_summary": "Ajuste do Sistema Nacional Integrado de Informações Econômico-Fiscais sobre documentos fiscais eletrônicos com IBS e CBS.",
+    "status_in_project": "Vigente segundo fontes secundárias (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Fonte secundária; datas mudam."
+  },
+  {
+    "id": "confaz-ajuste-sinief-27-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "27",
+    "year": "2026",
+    "issuer": "Conselho Nacional de Política Fazendária (CONFAZ)",
+    "title_pt": "Ajuste SINIEF 27/2026 (NF-e com IBS e CBS)",
+    "scope_summary": "Ajuste do Sistema Nacional Integrado de Informações Econômico-Fiscais sobre documentos fiscais eletrônicos com IBS e CBS.",
+    "status_in_project": "Vigente segundo fontes secundárias (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Fonte secundária; datas mudam."
+  },
+  {
+    "id": "rfb-in-2145-2023",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.145",
+    "year": "2023",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB)",
+    "title_pt": "Instrução Normativa RFB 2.145/2023",
+    "scope_summary": "Alterou a IN RFB 1.234/2012.",
+    "status_in_project": "Vigente (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "rfb-in-2239-2024",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.239",
+    "year": "2024",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB)",
+    "title_pt": "Instrução Normativa RFB 2.239/2024",
+    "scope_summary": "Alterou a IN RFB 1.234/2012 (art. 2º-A: IR retido por estados e municípios).",
+    "status_in_project": "Vigente (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "rfb-nt-011-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "011",
+    "year": "2026",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB)",
+    "title_pt": "Nota Técnica RFB 011/2026 (EFD-Contribuições)",
+    "scope_summary": "Encerra em 2027 a apuração de novos fatos geradores na EFD-Contribuições; escrituração mantida por 5 anos.",
+    "status_in_project": "Vigente; 04/02/2026 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md",
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Fontes secundárias."
+  },
+  {
+    "id": "rfb-in-2181-2024",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.181",
+    "year": "2024",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB)",
+    "title_pt": "Instrução Normativa RFB 2.181/2024 (DIRF, EFD-Reinf e eSocial)",
+    "scope_summary": "Extingue a DIRF; retenções passam a ser informadas por EFD-Reinf (R-4000) e eSocial a partir dos fatos de 2025.",
+    "status_in_project": "Vigente; 15/03/2024 (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Fonte secundária (confiança média)."
+  },
+  {
+    "id": "rfb-in-2229-2024",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.229",
+    "year": "2024",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB)",
+    "title_pt": "Instrução Normativa RFB 2.229/2024 (CNPJ alfanumérico)",
+    "scope_summary": "Altera a IN 2.119/2022 para o CNPJ alfanumérico, emitido a partir de 31/07/2026; CNPJs numéricos continuam válidos.",
+    "status_in_project": "Vigente (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Fonte secundária (confiança média). O layout FEBRABAN de arrecadação v08 já inclui o CNPJ alfanumérico."
+  },
+  {
+    "id": "rfb-in-2119-2022",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.119",
+    "year": "2022",
+    "issuer": "Secretaria Especial da Receita Federal do Brasil (RFB)",
+    "title_pt": "Instrução Normativa RFB 2.119/2022 (CNPJ)",
+    "scope_summary": "Norma do CNPJ, alterada pela IN RFB 2.229/2024.",
+    "status_in_project": "Vigente (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "stn-mf-portaria-2520-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "2.520",
+    "year": "2026",
+    "issuer": "Secretaria do Tesouro Nacional (STN), Ministério da Fazenda",
+    "title_pt": "Portaria STN/MF 2.520/2026 (PCASP 2027)",
+    "scope_summary": "Define o plano de contas aplicado ao setor público para 2027, relevante à contabilização do prestador público.",
+    "status_in_project": "Citada no 22d; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "stj-tema-1315",
+    "kind": "COURT",
+    "number": "1.315",
+    "year": "2026",
+    "issuer": "Superior Tribunal de Justiça (STJ), Segunda Seção",
+    "title_pt": "Tema repetitivo 1.315 do STJ (notificação eletrônica de abertura de cadastro)",
+    "scope_summary": "A comunicação eletrônica da abertura não solicitada de cadastro (art. 43 §2º do CDC) é válida com prova de envio e entrega efetiva ao e-mail ou telefone do consumidor; não exige prova de leitura.",
+    "status_in_project": "Vigente; publicação em 11/03/2026 (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "O texto formal da tese não consta da página lida; não trata da Súmula 359. Em tensão com o REsp 2.070.073 e o Informativo 837/2024: verificar a jurisprudência antes de fixar o canal."
+  },
+  {
+    "id": "stj-resp-2070073",
+    "kind": "COURT",
+    "number": "2.070.073",
+    "year": "2023",
+    "issuer": "Superior Tribunal de Justiça (STJ), Terceira Turma",
+    "title_pt": "REsp 2.070.073 (notificação prévia à negativação apenas por e-mail)",
+    "scope_summary": "Decidiu que notificação prévia à negativação só por e-mail não bastava.",
+    "status_in_project": "Em disputa (relatório 10); notícia de 22/09/2023.",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Em tensão com o Tema 1.315 e com o Informativo 837/2024 (fonte secundária)."
+  },
+  {
+    "id": "stj-informativo-837-2024",
+    "kind": "COURT",
+    "number": "837",
+    "year": "2024",
+    "issuer": "Superior Tribunal de Justiça (STJ)",
+    "title_pt": "Informativo de Jurisprudência 837/2024 do STJ",
+    "scope_summary": "Citado como em tensão com o REsp 2.070.073 sobre o canal de notificação prévia à negativação.",
+    "status_in_project": "Citado por fonte secundária (relatório 10); conteúdo não confirmado.",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Citado em um único trecho."
+  },
+  {
+    "id": "stj-resp-1532514",
+    "kind": "COURT",
+    "number": "1.532.514",
+    "year": "",
+    "issuer": "Superior Tribunal de Justiça (STJ)",
+    "title_pt": "REsp 1.532.514/SP (repetição de indébito de tarifa de água e esgoto)",
+    "scope_summary": "Fixou que a repetição de indébito de tarifa de água e esgoto segue o prazo do Código Civil (10 anos no CC/2002, 20 anos no CC/1916 com a transição do art. 2.028); sustenta a retenção do histórico de cobrança.",
+    "status_in_project": "Vigente (relatório 10); citado com a Súmula 412.",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Confiança média (notícia do STJ de 2017)."
+  },
+  {
+    "id": "stj-resp-1113403",
+    "kind": "COURT",
+    "number": "1.113.403",
+    "year": "",
+    "issuer": "Superior Tribunal de Justiça (STJ), Primeira Seção",
+    "title_pt": "REsp 1.113.403/RJ (origem da Súmula 412)",
+    "scope_summary": "Precedente que deu origem à Súmula 412 sobre prazo de repetição de indébito de tarifa de água e esgoto.",
+    "status_in_project": "Citado como origem da Súmula 412; julgado em 25/11/2009 (Rel. Min. Teori Zavascki).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "stj-resp-1117903",
+    "kind": "COURT",
+    "number": "1.117.903",
+    "year": "",
+    "issuer": "Superior Tribunal de Justiça (STJ), Primeira Seção",
+    "title_pt": "REsp 1.117.903/RS (natureza e prescrição da tarifa de água e esgoto, repetitivo)",
+    "scope_summary": "Repetitivo (Rel. Min. Luiz Fux) segundo o qual a tarifa de água e esgoto é preço público/tarifa e a prescrição segue o Código Civil (10 anos; 20 anos para vencidos há mais de 10 anos em 11/01/2003).",
+    "status_in_project": "Vigente (relatório 13); julgado em 2009-2010, data exata não confirmada.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md",
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "Número do Tema (251 a 254) não confirmado; fonte secundária (Migalhas). Pendência aberta no relatório 14 sobre o prazo de prescrição aplicável."
+  },
+  {
+    "id": "stj-tema-932",
+    "kind": "COURT",
+    "number": "932",
+    "year": "",
+    "issuer": "Superior Tribunal de Justiça (STJ)",
+    "title_pt": "Tema repetitivo 932 do STJ (prazo de repetição de indébito)",
+    "scope_summary": "Citado no 20f como tema do prazo de repetição de indébito (10 ou 20 anos) para a regra de prescrição da cobrança.",
+    "status_in_project": "Vigente (20f); número do tema do REsp 1.117.903 \"não localizado\".",
+    "cited_in": [
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "A coluna de fonte do 20f aponta para o tema repetitivo 154 do STJ; a relação entre os números não está esclarecida no projeto."
+  },
+  {
+    "id": "stj-tema-735",
+    "kind": "COURT",
+    "number": "735",
+    "year": "",
+    "issuer": "Superior Tribunal de Justiça (STJ)",
+    "title_pt": "Tema 735 do STJ (associado à Súmula 548)",
+    "scope_summary": "Relacionado à baixa do registro de inadimplência após o pagamento (Súmula 548).",
+    "status_in_project": "citação incompleta: associação com a Súmula 548 por fonte secundária.",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Confiança baixa a média no relatório 13."
+  },
+  {
+    "id": "stj-eresp-1413542",
+    "kind": "COURT",
+    "number": "1.413.542",
+    "year": "",
+    "issuer": "Superior Tribunal de Justiça (STJ), Corte Especial",
+    "title_pt": "EREsp 1.413.542/RS (devolução em dobro do art. 42, p.u., do CDC)",
+    "scope_summary": "Paradigma da tese de que a devolução em dobro do CDC independe de má-fé, bastando conduta contrária à boa-fé objetiva.",
+    "status_in_project": "Citado como paradigma da decisão da Corte Especial (DJe 30/03/2021).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "A modulação para serviços públicos tem leitura divergente nas fontes: não confirmado."
+  },
+  {
+    "id": "stj-earesp-676608",
+    "kind": "COURT",
+    "number": "676.608",
+    "year": "",
+    "issuer": "Superior Tribunal de Justiça (STJ), Corte Especial",
+    "title_pt": "EAREsp 676.608/RS (devolução em dobro do CDC)",
+    "scope_summary": "Paradigma da tese da devolução em dobro sem exigir má-fé.",
+    "status_in_project": "Citado como paradigma (DJe 30/03/2021).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Mesma ressalva do EREsp 1.413.542."
+  },
+  {
+    "id": "stj-earesp-600663",
+    "kind": "COURT",
+    "number": "600.663",
+    "year": "",
+    "issuer": "Superior Tribunal de Justiça (STJ), Corte Especial",
+    "title_pt": "EAREsp 600.663/RS (devolução em dobro do CDC)",
+    "scope_summary": "Paradigma da tese da devolução em dobro sem exigir má-fé.",
+    "status_in_project": "Citado como paradigma (DJe 30/03/2021).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Mesma ressalva do EREsp 1.413.542."
+  },
+  {
+    "id": "stf-tema-1130",
+    "kind": "COURT",
+    "number": "1.130",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "Tema 1.130 do STF (IR retido por estados e municípios)",
+    "scope_summary": "Citado na IN RFB 2.239/2024, art. 2º-A, sobre IR retido por estados e municípios em pagamentos a fornecedores.",
+    "status_in_project": "Citado (relatório 11).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "stf-sv-19",
+    "kind": "COURT",
+    "number": "19",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "Súmula Vinculante 19 do STF (taxa de lixo)",
+    "scope_summary": "Limite da cobrança de taxa de lixo; relevante à cobrança de resíduos sólidos urbanos na fatura.",
+    "status_in_project": "Se segue sendo o limite para taxas: não confirmado (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Pergunta em aberto do relatório 12."
+  },
+  {
+    "id": "stf-adi-5135",
+    "kind": "COURT",
+    "number": "5135",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 5135 (constitucionalidade do protesto de CDA)",
+    "scope_summary": "O STF declarou constitucional o protesto de CDA (Lei 9.492, art. 1º, p.u.), base do controle de protesto no produto.",
+    "status_in_project": "Citada no 22d como decisão do STF.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Em outro trecho o número aparece como ADI 513 (grafia a confirmar)."
+  },
+  {
+    "id": "stf-adi-4058",
+    "kind": "COURT",
+    "number": "4.058",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 4.058 (contra dispositivos da Lei 11.445/2007, citada pela Câmara)",
+    "scope_summary": "Ação citada pela Câmara dos Deputados junto ao texto da Lei 11.445.",
+    "status_in_project": "Resultado não confirmado (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "stf-adi-6492",
+    "kind": "COURT",
+    "number": "6.492",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 6.492 (contra dispositivos da Lei 11.445/2007, citada pela Câmara)",
+    "scope_summary": "Ação citada pela Câmara dos Deputados junto ao texto da Lei 11.445.",
+    "status_in_project": "Resultado não confirmado (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "stf-adi-6536",
+    "kind": "COURT",
+    "number": "6.536",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 6.536 (contra dispositivos da Lei 11.445/2007, citada pela Câmara)",
+    "scope_summary": "Ação citada pela Câmara dos Deputados junto ao texto da Lei 11.445.",
+    "status_in_project": "Resultado não confirmado (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "stf-adi-6583",
+    "kind": "COURT",
+    "number": "6.583",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 6.583 (contra dispositivos da Lei 11.445/2007, citada pela Câmara)",
+    "scope_summary": "Ação citada pela Câmara dos Deputados junto ao texto da Lei 11.445.",
+    "status_in_project": "Resultado não confirmado (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "stf-adi-6882",
+    "kind": "COURT",
+    "number": "6.882",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 6.882 (contra dispositivos da Lei 11.445/2007, citada pela Câmara)",
+    "scope_summary": "Ação citada pela Câmara dos Deputados junto ao texto da Lei 11.445.",
+    "status_in_project": "Resultado não confirmado (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "stf-adpf-1005",
+    "kind": "COURT",
+    "number": "1005",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADPF 1005 (mínimo existencial no superendividamento)",
+    "scope_summary": "STF concluiu o julgamento em abril/2026: revisão anual do valor pelo CMN e inclusão do consignado no cálculo (6 a 4).",
+    "status_in_project": "Julgamento concluído em abril/2026 (relatório 11, fonte secundária).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Acórdão não lido."
+  },
+  {
+    "id": "stf-adpf-1006",
+    "kind": "COURT",
+    "number": "1006",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADPF 1006 (mínimo existencial no superendividamento)",
+    "scope_summary": "Julgada com a ADPF 1005.",
+    "status_in_project": "Julgamento concluído em abril/2026 (relatório 11, fonte secundária).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Acórdão não lido."
+  },
+  {
+    "id": "stf-adpf-1097",
+    "kind": "COURT",
+    "number": "1097",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADPF 1097 (mínimo existencial no superendividamento)",
+    "scope_summary": "Julgada com a ADPF 1005.",
+    "status_in_project": "Julgamento concluído em abril/2026 (relatório 11, fonte secundária).",
+    "cited_in": [
+      "levantamento/11-regulatorio-cobranca-bancario-fiscal.md"
+    ],
+    "notes": "Acórdão não lido."
+  },
+  {
+    "id": "stf-adi-6649",
+    "kind": "COURT",
+    "number": "6649",
+    "year": "",
+    "issuer": "Supremo Tribunal Federal (STF)",
+    "title_pt": "ADI 6649 (Decreto 10.046/2019, compartilhamento de dados)",
+    "scope_summary": "Controle de constitucionalidade do decreto de governança de compartilhamento de dados.",
+    "status_in_project": "Situação atual não lida (relatório 10).",
+    "cited_in": [
+      "levantamento/10-regulatorio-lgpd-privacidade.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "tcu-acordao-2099-2025",
+    "kind": "COURT",
+    "number": "2099",
+    "year": "2025",
+    "issuer": "Tribunal de Contas da União (TCU)",
+    "title_pt": "Acórdão TCU 2099/2025 (acessibilidade digital no setor público federal)",
+    "scope_summary": "Jurisprudência de interesse sobre acessibilidade digital, citada como fonte do requisito de acessibilidade.",
+    "status_in_project": "Citado como fonte no 22c; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22c-plataforma-seguranca-integracao-experiencia.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "nfse-nt-007-2026",
+    "kind": "TAX_AUTHORITY",
+    "number": "007",
+    "year": "2026",
+    "issuer": "Padrão Nacional da NFS-e (Receita Federal e CGNFS-e)",
+    "title_pt": "Nota Técnica 007/2026 da NFS-e (cálculo de IBS e CBS)",
+    "scope_summary": "Regra de cálculo de IBS/CBS e de arredondamento (half-even) aplicada à NFS-e no Padrão Nacional, segundo o ADR-0003 e o FISCAL-PORTE-JAVA.",
+    "status_in_project": "Citada no ADR-0003 e no FISCAL-PORTE-JAVA; estado não informado.",
+    "cited_in": [
+      "arquitetura/adr/ADR-0003-motor-fiscal-portado-para-java.md",
+      "arquitetura/FISCAL-PORTE-JAVA.md"
+    ],
+    "notes": "O arredondamento por documento e tributo é \"a confirmar\" na NT ou no manual oficial."
+  }
+]

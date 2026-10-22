@@ -1,0 +1,778 @@
+[
+  {
+    "id": "ana-in-1-2023",
+    "kind": "AGENCY_NORM",
+    "number": "1",
+    "year": "2023",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Instrução Normativa ANA 1/2023 (adoção da NR 1)",
+    "scope_summary": "Fixa prazos de adoção da NR 1/2021 (cobrança de resíduos sólidos).",
+    "status_in_project": "Vigente, alterada pelas INs 2/2023 e 2/2025 (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Citada só na linha da NR 1."
+  },
+  {
+    "id": "ana-in-1-2024",
+    "kind": "AGENCY_NORM",
+    "number": "1",
+    "year": "2024",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Instrução Normativa ANA 1/2024 (complementa a NR 3)",
+    "scope_summary": "Acompanha a NR 3/2023 (indenização de investimentos não amortizados).",
+    "status_in_project": "Vigente (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Citada só na linha da NR 3."
+  },
+  {
+    "id": "ana-in-2-2023",
+    "kind": "AGENCY_NORM",
+    "number": "2",
+    "year": "2023",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Instrução Normativa ANA 2/2023 (altera a IN 1/2023)",
+    "scope_summary": "Altera os prazos da IN ANA 1/2023.",
+    "status_in_project": "Vigente (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Citada só na linha da NR 1."
+  },
+  {
+    "id": "ana-in-2-2025",
+    "kind": "AGENCY_NORM",
+    "number": "2",
+    "year": "2025",
+    "issuer": "Agência Nacional de Águas e Saneamento Básico (ANA)",
+    "title_pt": "Instrução Normativa ANA 2/2025 (altera a IN 1/2023)",
+    "scope_summary": "Altera os prazos da IN ANA 1/2023.",
+    "status_in_project": "Vigente (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Citada só na linha da NR 1."
+  },
+  {
+    "id": "aris-rn-4-2012",
+    "kind": "AGENCY_NORM",
+    "number": "004",
+    "year": "2012",
+    "issuer": "Agência Reguladora Intermunicipal de Saneamento (ARIS, SC)",
+    "title_pt": "Resolução Normativa ARIS 004/2012 (consultas e reclamações)",
+    "scope_summary": "Regula consultas e reclamações.",
+    "status_in_project": "Texto vigente não localizado no site (relatório 20f).",
+    "cited_in": [
+      "levantamento/gsan/20f-demandas-legais-gsan-vs-ziip.md"
+    ],
+    "notes": "O 20f não a encontrou entre as normas consolidadas."
+  },
+  {
+    "id": "sc-fatma-portaria-162-2015",
+    "kind": "AGENCY_NORM",
+    "number": "162",
+    "year": "2015",
+    "issuer": "Fundação do Meio Ambiente de Santa Catarina (FATMA, extinta)",
+    "title_pt": "Portaria FATMA 162/2015",
+    "scope_summary": "Norma anterior do MTR em SC.",
+    "status_in_project": "Revogada pela Portaria IMA 009/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "sc-fatma-portaria-194-2016",
+    "kind": "AGENCY_NORM",
+    "number": "194",
+    "year": "2016",
+    "issuer": "Fundação do Meio Ambiente de Santa Catarina (FATMA, extinta)",
+    "title_pt": "Portaria FATMA 194/2016",
+    "scope_summary": "Norma anterior do MTR em SC.",
+    "status_in_project": "Revogada pela Portaria IMA 009/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "sc-fatma-portaria-206-2016",
+    "kind": "AGENCY_NORM",
+    "number": "206",
+    "year": "2016",
+    "issuer": "Fundação do Meio Ambiente de Santa Catarina (FATMA, extinta)",
+    "title_pt": "Portaria FATMA 206/2016",
+    "scope_summary": "Norma anterior do MTR em SC.",
+    "status_in_project": "Revogada pela Portaria IMA 009/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "sc-fatma-portaria-242-2014",
+    "kind": "AGENCY_NORM",
+    "number": "242",
+    "year": "2014",
+    "issuer": "Fundação do Meio Ambiente de Santa Catarina (FATMA, extinta)",
+    "title_pt": "Portaria FATMA 242/2014",
+    "scope_summary": "Norma anterior do MTR em SC.",
+    "status_in_project": "Revogada pela Portaria IMA 009/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "sc-fatma-portaria-272-2015",
+    "kind": "AGENCY_NORM",
+    "number": "272",
+    "year": "2015",
+    "issuer": "Fundação do Meio Ambiente de Santa Catarina (FATMA, extinta)",
+    "title_pt": "Portaria FATMA 272/2015",
+    "scope_summary": "Norma anterior do MTR em SC.",
+    "status_in_project": "Revogada pela Portaria IMA 009/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "sc-ima-portaria-009-2026",
+    "kind": "AGENCY_NORM",
+    "number": "009",
+    "year": "2026",
+    "issuer": "Instituto do Meio Ambiente de Santa Catarina (IMA)",
+    "title_pt": "Portaria IMA 009/2026 (sistema de MTR do IMA)",
+    "scope_summary": "Regula o MTR do IMA em SC e revoga as Portarias FATMA 242/2014, 162/2015, 272/2015, 194/2016, 206/2016 e IMA 21/2019 e 232/2021; base na Lei estadual 15.251/2010.",
+    "status_in_project": "Vigente; 14/01/2026 (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "SP e SC exigem MTR duplo no interestadual (relatório 14)."
+  },
+  {
+    "id": "sc-ima-portaria-21-2019",
+    "kind": "AGENCY_NORM",
+    "number": "21",
+    "year": "2019",
+    "issuer": "Instituto do Meio Ambiente de Santa Catarina (IMA)",
+    "title_pt": "Portaria IMA 21/2019",
+    "scope_summary": "Norma anterior do MTR em SC.",
+    "status_in_project": "Revogada pela Portaria IMA 009/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "sc-ima-portaria-232-2021",
+    "kind": "AGENCY_NORM",
+    "number": "232",
+    "year": "2021",
+    "issuer": "Instituto do Meio Ambiente de Santa Catarina (IMA)",
+    "title_pt": "Portaria IMA 232/2021",
+    "scope_summary": "Norma anterior do MTR em SC.",
+    "status_in_project": "Revogada pela Portaria IMA 009/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "agenersa-rf-222-2024",
+    "kind": "AGENCY_NORM",
+    "number": "222",
+    "year": "2024",
+    "issuer": "Agência Reguladora de Energia e Saneamento Básico do Estado do Rio de Janeiro (AGENERSA)",
+    "title_pt": "AGENERSA, RF 222/2024",
+    "scope_summary": "Citada como fonte no levantamento de GIS (19c).",
+    "status_in_project": "citação incompleta (título e natureza do ato não informados).",
+    "cited_in": [
+      "levantamento/gis/19c-normativos-e-padroes.md"
+    ],
+    "notes": "Aparece só como referência de URL no 19c."
+  },
+  {
+    "id": "ares-pcj-res-363-2020",
+    "kind": "AGENCY_NORM",
+    "number": "363",
+    "year": "2020",
+    "issuer": "Agência Reguladora dos Serviços de Saneamento das Bacias dos Rios Piracicaba, Capivari e Jundiaí (ARES-PCJ)",
+    "title_pt": "Resolução ARES-PCJ 363/2020 (aviso de 30 dias antes da suspensão)",
+    "scope_summary": "Aviso de 30 dias antes da suspensão do serviço.",
+    "status_in_project": "Não confirmado: citada em resultado de busca e não lida (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Confiança baixa."
+  },
+  {
+    "id": "ares-pcj-res-610-2025",
+    "kind": "AGENCY_NORM",
+    "number": "610",
+    "year": "2025",
+    "issuer": "Agência Reguladora dos Serviços de Saneamento das Bacias dos Rios Piracicaba, Capivari e Jundiaí (ARES-PCJ)",
+    "title_pt": "Resolução ARES-PCJ 610/2025 (regulamento de Sertãozinho)",
+    "scope_summary": "Exemplo municipal: limite de 4 meses de atraso, corte de segunda a quinta das 8h às 14h, religação até 18h, mínimo de 15 m³ por economia.",
+    "status_in_project": "Citada como exemplo (relatório 08).",
+    "cited_in": [
+      "levantamento/08-regulatorio-saneamento-e-tarifas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "aris-mg-res-30-2022",
+    "kind": "AGENCY_NORM",
+    "number": "030",
+    "year": "2022",
+    "issuer": "Agência Reguladora Intermunicipal de Saneamento de Minas Gerais (ARIS-MG)",
+    "title_pt": "Resolução ARIS-MG 030/2022",
+    "scope_summary": "Norma anterior de condições gerais, revogada pela Res. ARIS-MG 185/2025.",
+    "status_in_project": "Revogada (relatório 13).",
+    "cited_in": [
+      "levantamento/13-regulatorio-atendimento-acessibilidade-assinaturas.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "mg-copam-cerh-dn-conjunta-1-2008",
+    "kind": "AGENCY_NORM",
+    "number": "1",
+    "year": "2008",
+    "issuer": "COPAM e Conselho Estadual de Recursos Hídricos de Minas Gerais (CERH-MG)",
+    "title_pt": "Deliberação Normativa Conjunta COPAM/CERH-MG 1/2008",
+    "scope_summary": "Condições e padrões de lançamento de efluentes em MG.",
+    "status_in_project": "A verificar: substituída em parte pela DN 8/2022; revogação exata não confirmada (relatório 09).",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Confiança baixa."
+  },
+  {
+    "id": "mg-copam-dn-232-2019",
+    "kind": "AGENCY_NORM",
+    "number": "232",
+    "year": "2019",
+    "issuer": "Conselho Estadual de Política Ambiental de Minas Gerais (COPAM)",
+    "title_pt": "Deliberação Normativa COPAM 232/2019 (MTR-MG, FEAM/SEMAD)",
+    "scope_summary": "Base do MTR-MG; manual de web service da SEMAD de 14/02/2025.",
+    "status_in_project": "Vigente; 27/02/2019 (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Texto lido por resumo e cópia (confiança média)."
+  },
+  {
+    "id": "mg-dn-conjunta-8-2022",
+    "kind": "AGENCY_NORM",
+    "number": "8",
+    "year": "2022",
+    "issuer": "COPAM e CERH-MG",
+    "title_pt": "Deliberação Normativa Conjunta 8/2022 (condições e padrões de lançamento)",
+    "scope_summary": "Estabelece condições e padrões de lançamento de efluentes, substituindo em parte a DN 1/2008.",
+    "status_in_project": "A verificar; 21/11/2022 (relatório 09).",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Confiança baixa."
+  },
+  {
+    "id": "rj-conema-res-79-2018",
+    "kind": "AGENCY_NORM",
+    "number": "79",
+    "year": "2018",
+    "issuer": "Conselho Estadual do Meio Ambiente do Rio de Janeiro (CONEMA)",
+    "title_pt": "Resolução CONEMA 79/2018 (aprova a NOP-INEA-35, MTR do INEA)",
+    "scope_summary": "Aprova a norma operacional do MTR online do INEA.",
+    "status_in_project": "Vigente; 07/03/2018; revisões posteriores não confirmadas (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Resumo de busca; texto não lido."
+  },
+  {
+    "id": "sp-cetesb-dd-024-2022",
+    "kind": "AGENCY_NORM",
+    "number": "024",
+    "year": "2022",
+    "issuer": "Companhia Ambiental do Estado de São Paulo (CETESB)",
+    "title_pt": "Decisão de Diretoria CETESB 024/2022/P (verificação das informações do MTR)",
+    "scope_summary": "Verificação das informações do MTR.",
+    "status_in_project": "Vigente segundo o manual da CETESB (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Citada pelo manual, não lida."
+  },
+  {
+    "id": "sp-cetesb-dd-078-2025",
+    "kind": "AGENCY_NORM",
+    "number": "078",
+    "year": "2025",
+    "issuer": "Companhia Ambiental do Estado de São Paulo (CETESB)",
+    "title_pt": "Decisão de Diretoria CETESB 078/2025/I/C (transição para a NBR 10004:2024)",
+    "scope_summary": "A CETESB mantém a edição 2004 da NBR 10004 até 31/12/2026 e adota a de 2024 a partir de 01/01/2027.",
+    "status_in_project": "Vigente (relatório 12); HTTP 403 ao baixar, só o trecho da busca foi lido.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Confiança baixa a média."
+  },
+  {
+    "id": "sp-cetesb-dd-130-2022",
+    "kind": "AGENCY_NORM",
+    "number": "130",
+    "year": "2022",
+    "issuer": "Companhia Ambiental do Estado de São Paulo (CETESB)",
+    "title_pt": "Decisão de Diretoria CETESB 130/2022/P (termo de referência de PGRS)",
+    "scope_summary": "Termo de referência do plano de gerenciamento de resíduos sólidos.",
+    "status_in_project": "Vigente segundo o manual da CETESB (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Citada pelo manual, não lida."
+  },
+  {
+    "id": "sp-sima-res-27-2021",
+    "kind": "AGENCY_NORM",
+    "number": "27",
+    "year": "2021",
+    "issuer": "Secretaria de Meio Ambiente, Infraestrutura e Logística de São Paulo (SIMA)",
+    "title_pt": "Resolução SIMA 27/2021 (SIGOR MTR da CETESB)",
+    "scope_summary": "Instituiu o sistema SIGOR MTR, que emite o MTR em São Paulo.",
+    "status_in_project": "Vigente (relatório 12); manual do usuário v1 de 30/03/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Confiança média para as DDs da CETESB, citadas pelo manual."
+  },
+  {
+    "id": "sp-ss-res-65-2016",
+    "kind": "AGENCY_NORM",
+    "number": "65",
+    "year": "2016",
+    "issuer": "Secretaria da Saúde do Estado de São Paulo (SES-SP)",
+    "title_pt": "Resolução SS-65/2016 (dados no SISAGUA)",
+    "scope_summary": "Obriga a inserção de dados no SISAGUA: cadastro e plano até 10/01 e controle do mês anterior até o dia 10 de cada mês.",
+    "status_in_project": "Presumida vigente; 02/08/2016 (relatório 09).",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Fonte secundária; confiança baixa a média."
+  },
+  {
+    "id": "rs-consema-res-128-2006",
+    "kind": "AGENCY_NORM",
+    "number": "128",
+    "year": "2006",
+    "issuer": "CONSEMA-RS",
+    "title_pt": "Resolução CONSEMA-RS 128/2006",
+    "scope_summary": "Norma anterior de padrões de emissão de efluentes.",
+    "status_in_project": "Revogada pela Res. CONSEMA-RS 355/2017.",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "rs-consema-res-286-2014",
+    "kind": "AGENCY_NORM",
+    "number": "286",
+    "year": "2014",
+    "issuer": "CONSEMA-RS",
+    "title_pt": "Resolução CONSEMA-RS 286/2014",
+    "scope_summary": "Norma anterior de padrões de emissão de efluentes.",
+    "status_in_project": "Revogada pela Res. CONSEMA-RS 355/2017.",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "rs-consema-res-317-2016",
+    "kind": "AGENCY_NORM",
+    "number": "317",
+    "year": "2016",
+    "issuer": "CONSEMA-RS",
+    "title_pt": "Resolução CONSEMA-RS 317/2016",
+    "scope_summary": "Norma anterior de padrões de emissão de efluentes.",
+    "status_in_project": "Revogada pela Res. CONSEMA-RS 355/2017.",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "rs-consema-res-355-2017",
+    "kind": "AGENCY_NORM",
+    "number": "355",
+    "year": "2017",
+    "issuer": "Conselho Estadual do Meio Ambiente do Rio Grande do Sul (CONSEMA-RS)",
+    "title_pt": "Resolução CONSEMA-RS 355/2017 (padrões de emissão de efluentes líquidos)",
+    "scope_summary": "Critérios e padrões de emissão; art. 17 II fixa efluente sanitário por faixa de vazão.",
+    "status_in_project": "Presumida vigente; 13/07/2017; alterações posteriores não confirmadas.",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Revogou as Res. 128/2006, 286/2014 e 317/2016."
+  },
+  {
+    "id": "rs-fepam-portaria-12-2020",
+    "kind": "AGENCY_NORM",
+    "number": "12",
+    "year": "2020",
+    "issuer": "FEPAM",
+    "title_pt": "Portaria FEPAM 12/2020",
+    "scope_summary": "Norma anterior do MTR Online do RS.",
+    "status_in_project": "Revogada pela Portaria FEPAM 576/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "rs-fepam-portaria-432-2024",
+    "kind": "AGENCY_NORM",
+    "number": "432",
+    "year": "2024",
+    "issuer": "FEPAM",
+    "title_pt": "Portaria FEPAM 432/2024",
+    "scope_summary": "Norma anterior do MTR Online do RS.",
+    "status_in_project": "Revogada pela Portaria FEPAM 576/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "rs-fepam-portaria-576-2026",
+    "kind": "AGENCY_NORM",
+    "number": "576",
+    "year": "2026",
+    "issuer": "Fundação Estadual de Proteção Ambiental Henrique Luiz Roessler (FEPAM)",
+    "title_pt": "Portaria FEPAM 576/2026 (MTR Online)",
+    "scope_summary": "Regula o MTR Online do RS e revoga as Portarias FEPAM 87/2018, 12/2020 e 432/2024.",
+    "status_in_project": "Vigente; 08/01/2026 (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Texto lido em espelho (confiança média a alta)."
+  },
+  {
+    "id": "rs-fepam-portaria-87-2018",
+    "kind": "AGENCY_NORM",
+    "number": "87",
+    "year": "2018",
+    "issuer": "FEPAM",
+    "title_pt": "Portaria FEPAM 87/2018",
+    "scope_summary": "Norma anterior do MTR Online do RS.",
+    "status_in_project": "Revogada pela Portaria FEPAM 576/2026.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "adasa-res-20-2016",
+    "kind": "AGENCY_NORM",
+    "number": "20",
+    "year": "2016",
+    "issuer": "Agência Reguladora de Águas, Energia e Saneamento Básico do Distrito Federal (ADASA)",
+    "title_pt": "Resolução ADASA 20/2016",
+    "scope_summary": "Citada na lacuna de isenção de unidades essenciais (R-23, GES-07).",
+    "status_in_project": "Citada no 22d; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "adasa-res-59-2025",
+    "kind": "AGENCY_NORM",
+    "number": "59",
+    "year": "2025",
+    "issuer": "Agência Reguladora de Águas, Energia e Saneamento Básico do Distrito Federal (ADASA)",
+    "title_pt": "Resolução ADASA 59/2025 (adoção da NR 9 da ANA no DF)",
+    "scope_summary": "Adota no DF a Norma de Referência 9 da ANA (indicadores operacionais).",
+    "status_in_project": "Presumida vigente; 12/11/2025, fonte secundária (relatório 09).",
+    "cited_in": [
+      "levantamento/09-regulatorio-qualidade-da-agua.md"
+    ],
+    "notes": "Confiança baixa a média."
+  },
+  {
+    "id": "antt-res-5232-2016",
+    "kind": "AGENCY_NORM",
+    "number": "5.232",
+    "year": "2016",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT 5.232/2016",
+    "scope_summary": "Regulamento antigo do transporte de produtos perigosos.",
+    "status_in_project": "Revogada (com a 5.848/2019) pela Res. 5.947/2021 a partir de 01/07/2021.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md"
+    ],
+    "notes": "A cláusula de revogação veio de resumo de busca (confiança média)."
+  },
+  {
+    "id": "antt-res-5848-2019",
+    "kind": "AGENCY_NORM",
+    "number": "5.848",
+    "year": "2019",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT 5.848/2019",
+    "scope_summary": "Revogada com a 5.232/2016 pela 5.947/2021.",
+    "status_in_project": "Revogada.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "antt-res-5947-2021",
+    "kind": "AGENCY_NORM",
+    "number": "5.947",
+    "year": "2021",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT 5.947/2021",
+    "scope_summary": "Regulamento anterior do transporte de produtos perigosos.",
+    "status_in_project": "Revogada pela Res. 5.998/2022 em 01/06/2023.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "antt-res-5998-2022",
+    "kind": "AGENCY_NORM",
+    "number": "5.998",
+    "year": "2022",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT 5.998/2022 (transporte rodoviário de produtos perigosos)",
+    "scope_summary": "Regulamento e instruções complementares do transporte rodoviário de produtos perigosos; relevante ao transporte de resíduos perigosos.",
+    "status_in_project": "Vigente; 03/11/2022 (publicação 04/11/2022), vigor 01/06/2023; alterada pelas 6.016/2023 e 6.056/2024; página da ANTT atualizada em 09/07/2026 sem alteração posterior.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md",
+      "levantamento/15c-avaliacao-chatgpt-cruzamento.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "antt-res-6016-2023",
+    "kind": "AGENCY_NORM",
+    "number": "6.016",
+    "year": "2023",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT 6.016/2023",
+    "scope_summary": "Alterou a Res. ANTT 5.998/2022.",
+    "status_in_project": "Vigente; 15/05/2023.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "antt-res-6056-2024",
+    "kind": "AGENCY_NORM",
+    "number": "6.056",
+    "year": "2024",
+    "issuer": "Agência Nacional de Transportes Terrestres (ANTT)",
+    "title_pt": "Resolução ANTT 6.056/2024",
+    "scope_summary": "Alterou a Res. ANTT 5.998/2022.",
+    "status_in_project": "Vigente; 29/11/2024.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md",
+      "levantamento/14-VALIDACAO-REGULATORIA-CONSOLIDADA.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "anvisa-rdc-222-2018",
+    "kind": "AGENCY_NORM",
+    "number": "222",
+    "year": "2018",
+    "issuer": "Agência Nacional de Vigilância Sanitária (ANVISA)",
+    "title_pt": "RDC ANVISA 222/2018 (boas práticas de gerenciamento de resíduos de serviços de saúde)",
+    "scope_summary": "Boas práticas de gerenciamento de RSS e PGRSS; pergunta aberta se alcança laboratório de análise de água.",
+    "status_in_project": "Vigente; 28/03/2018; substituiu a RDC 306/2004; vigor 180 dias após a publicação; nenhuma alteração localizada.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Texto lido em cópia, não no portal da ANVISA (confiança média)."
+  },
+  {
+    "id": "anvisa-rdc-306-2004",
+    "kind": "AGENCY_NORM",
+    "number": "306",
+    "year": "2004",
+    "issuer": "Agência Nacional de Vigilância Sanitária (ANVISA)",
+    "title_pt": "RDC ANVISA 306/2004 (resíduos de serviços de saúde)",
+    "scope_summary": "Norma anterior de RSS.",
+    "status_in_project": "Substituída pela RDC 222/2018.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "cvm-res-244-2026",
+    "kind": "AGENCY_NORM",
+    "number": "244",
+    "year": "2026",
+    "issuer": "Comissão de Valores Mobiliários (CVM)",
+    "title_pt": "Resolução CVM 244/2026 (divulgação de sustentabilidade)",
+    "scope_summary": "Tornou voluntária a divulgação de informações de sustentabilidade; citada na lista de ESG do 22d.",
+    "status_in_project": "Citada no 22d; estado não informado.",
+    "cited_in": [
+      "levantamento/lacunas/22d-gestao-regulatorio-inovacao-de-mercado.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ibama-in-1-2013",
+    "kind": "AGENCY_NORM",
+    "number": "01",
+    "year": "2013",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA 01/2013 (Cadastro Nacional de Operadores de Resíduos Perigosos)",
+    "scope_summary": "Cadastro Nacional de Operadores de Resíduos Perigosos (CNORP).",
+    "status_in_project": "Vigente (citada pelo IBAMA em 2026); texto não lido.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Confiança média."
+  },
+  {
+    "id": "ibama-in-12-2021",
+    "kind": "AGENCY_NORM",
+    "number": "12",
+    "year": "2021",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA 12/2021 (CTF/AIDA: responsável técnico pelo PGRS)",
+    "scope_summary": "Dados do responsável técnico pelo plano de gerenciamento de resíduos no CTF/AIDA.",
+    "status_in_project": "Vigente; 20/08/2021.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ibama-in-13-2012",
+    "kind": "AGENCY_NORM",
+    "number": "13",
+    "year": "2012",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA 13/2012 (Lista Brasileira de Resíduos Sólidos)",
+    "scope_summary": "Institui a Lista Brasileira de Resíduos Sólidos, base do catálogo de resíduos do módulo MTR; o IBAMA atualiza a lista sempre que necessário.",
+    "status_in_project": "Vigente; 18/12/2012 (DOU 20/12/2012); nenhuma atualização localizada (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "A ausência de atualização é confiança média."
+  },
+  {
+    "id": "ibama-in-13-2021",
+    "kind": "AGENCY_NORM",
+    "number": "13",
+    "year": "2021",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA 13/2021 (inscrição no CTF/APP)",
+    "scope_summary": "Obrigação de inscrição no Cadastro Técnico Federal de Atividades Potencialmente Poluidoras; substituiu a IN 6/2013 e outras; validade de 3 meses (art. 46 §2º).",
+    "status_in_project": "Vigente; 23/08/2021. Alterada pelas INs IBAMA 6/2022, 8/2023, 23/2024 (14/11/2024) e 23/2025 (23/12/2025).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ibama-in-23-2024",
+    "kind": "AGENCY_NORM",
+    "number": "23",
+    "year": "2024",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA 23/2024",
+    "scope_summary": "Alterou a IN IBAMA 13/2021.",
+    "status_in_project": "Vigente; 14/11/2024 (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ibama-in-23-2025",
+    "kind": "AGENCY_NORM",
+    "number": "23",
+    "year": "2025",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA 23/2025",
+    "scope_summary": "Última alteração localizada da IN IBAMA 13/2021.",
+    "status_in_project": "Vigente; 23/12/2025 (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ibama-in-24-2024",
+    "kind": "AGENCY_NORM",
+    "number": "24",
+    "year": "2024",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA 24/2024",
+    "scope_summary": "Ato legal que referencia a NBR 10004.",
+    "status_in_project": "Citada como exemplo; estado não informado.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Citada de passagem no relatório 12."
+  },
+  {
+    "id": "ibama-in-6-2013",
+    "kind": "AGENCY_NORM",
+    "number": "6",
+    "year": "2013",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA 6/2013",
+    "scope_summary": "Norma anterior do CTF/APP.",
+    "status_in_project": "Substituída pela IN IBAMA 13/2021.",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ibama-in-6-2022",
+    "kind": "AGENCY_NORM",
+    "number": "6",
+    "year": "2022",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA 6/2022",
+    "scope_summary": "Alterou a IN IBAMA 13/2021.",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  },
+  {
+    "id": "ibama-in-8-2023",
+    "kind": "AGENCY_NORM",
+    "number": "8",
+    "year": "2023",
+    "issuer": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA)",
+    "title_pt": "Instrução Normativa IBAMA 8/2023",
+    "scope_summary": "Alterou a IN IBAMA 13/2021.",
+    "status_in_project": "Vigente (relatório 12).",
+    "cited_in": [
+      "levantamento/12-regulatorio-residuos-mtr-sinir.md"
+    ],
+    "notes": "Sem ressalva registrada no projeto."
+  }
+]
