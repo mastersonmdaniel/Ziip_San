@@ -64,7 +64,7 @@ Observação: o PDF mantém os textos tachados ao lado dos novos. Uma leitura ap
 - Proposta: valor global, descrição clara da solução, marca/modelo quando aplicável, validade mínima de 90 dias, modelo do Anexo II, preços máximos do edital (Edital 5). Proposta reajustada em 2 horas após convocação (Edital 6.7). Documento complementar em 2 horas (Edital 6.9).
 - Exequibilidade: indício abaixo de 50% do estimado, com diligência (planilha de custos, notas fiscais, contratos similares) (Edital 6.10).
 - Habilitação em até 2 horas (prazo mínimo fixado pelo pregoeiro) após a fase de lances, somente via sistema; pode ser enviada junto com a proposta (Edital 8.1, 8.1.2). Ordem prevista: lances → POC → habilitação (Edital 7.11.2; TR 13.11.2).
-- Assinatura eletrônica avançada aceita (Decreto Municipal 29/2023; Lei 14.063/2020) (Edital 8.2.3).
+- Assinatura eletrônica avançada aceita (Decreto Municipal 29/2023; Lei 14.063/2020) (Edital 8.2.3; verificado em 22/10/2026: o Decreto 29/2023 de São Ludgero foi localizado e lido no DOM/SC, ato 4701594, de 03/04/2023, e confirma a assinatura eletrônica avançada via gov.br no art. 4º, II e parágrafo único; ressalva do § 1º do art. 5º: a assinatura gerada por sistema do próprio município só vale como avançada após avaliação e ratificação do chefe do Executivo).
 
 ### 2.2 Habilitação jurídica, fiscal, trabalhista e declarações (Edital 8.2, p. 11–13)
 

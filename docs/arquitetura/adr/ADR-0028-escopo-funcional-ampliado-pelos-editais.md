@@ -134,9 +134,15 @@ sistema tributário do município; o produto não conduz o processo judicial.
 
 ### f) Débito em conta
 
-**Pix Automático** para novas autorizações (Res. CMN 5.251/2025; plano P4.5) e **FEBRABAN 150** (registros B, C, E e
-F) para as autorizações legadas migradas, com data de desligamento conforme a regra vigente do Banco Central (Res. CMN
-5.299/2026, a conferir).
+**Pix Automático** para novas autorizações (Res. CMN 5.251/2025; plano P4.5; verificado em 22/10/2026: para convênios de
+prestação de serviços públicos, a adequação foi prorrogada para 01/01/2027 pela Res. CMN 5.278/2025, de 24/12/2025,
+que alterou o art. 2º-A, §2º, da Res. CMN 4.790/2020; o enquadramento da água e esgoto nesses convênios exige análise
+jurídica) e **FEBRABAN 150**
+(registros B, C, E e F) para as autorizações legadas migradas, com data de desligamento conforme a regra vigente do
+Banco Central (Res. CMN 5.299/2026, a conferir; verificado em 22/10/2026: a 5.299 é norma de diretrizes e não institui
+o regime operacional, que vem da Res. BCB 565/2026, a partir de 01/07/2027; a Res. CMN 4.790/2020 segue em vigor até
+30/06/2027; são duas regras com datas diferentes: 01/01/2027 encerra a adequação ao Pix Automático dos convênios
+de serviços públicos, e 01/07/2027 é a vigência do novo regime geral do débito automático).
 
 ### g) Negativação e protesto
 

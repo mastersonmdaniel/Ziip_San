@@ -11,6 +11,7 @@ const parts=[
   ['02','partes/02-federal-e-setor.json'],
   ['03','partes/03-tecnicas-abnt-iso.json'],
   ['05A','partes/05-verificadas-A.json'],['05B','partes/05-verificadas-B.json'],['05C','partes/05-verificadas-C.json'],['05D','partes/05-verificadas-D.json'],
+  ['06A','partes/06-reverificadas-A.json'],['06B','partes/06-reverificadas-B.json'],
   ['01','partes/01-citadas-no-projeto.json']
 ];
 const aliases=ex('partes/entrada/aliases.json')?rd('partes/entrada/aliases.json'):{};
@@ -24,6 +25,15 @@ const keyOf=x=>numNorm(x.number)+'|'+yearNorm(x.year||x.edition_year);
 const byKey=new Map();
 const related=(a,b)=>a===b||a.startsWith(b+'-')||b.startsWith(a+'-');
 const curated=new Set(['04','02','03','05A','05B','05C']);
+// partes 06 são reverificações: seus campos preenchidos SUBSTITUEM os anteriores
+function overrideInto(base,add,src){
+  for(const k of ['kind','number','year','edition_year','issuer','title_pt','title_en','scope_summary','norm_class','certifiable','applicability','jurisdiction','status','status_note','verified','url']){
+    if(add[k]!==''&&add[k]!=null)base[k]=add[k];
+  }
+  for(const k of ['topics','modules_affected']) if(add[k]&&add[k].length)base[k]=add[k];
+  if(add.notes)base.notes=[base.notes,add.notes].filter(Boolean).join(' | ');
+  if(!base.sources.includes(src))base.sources.push(src);
+}
 
 function norm(x,src){
   const o={
@@ -54,6 +64,11 @@ for(const [src,f] of parts){
   used.push(f);const arr=rd(f);
   for(const x of arr){
     const o=norm(x,src);
+    if(src.startsWith('06')){
+      if(byId.has(o.id)){overrideInto(byId.get(o.id),o,src);log.reverified=(log.reverified||0)+1;}
+      else console.log('reverificada sem correspondente:',o.id);
+      continue;
+    }
     if(src==='01'){
       let tgt=null;
       if(byId.has(o.id))tgt=byId.get(o.id);
@@ -73,6 +88,8 @@ for(const [src,f] of parts){
 }
 const items=[...byId.values()];
 for(const o of items){
+  // itens que não são norma em vigor (projeto de lei, relatório, minuta, quadro de síntese)
+  if(o.status==='A_CONFIRMAR'&&/^N[ÃA]O [ÉE] NORMA/i.test(o.status_note||''))o.status='NAO_E_NORMA_EM_VIGOR';
   if(!o.verified)o.verified='NOT_CONFIRMED';
   if(o.verified==='NOT_CONFIRMED'||o.status==='A_CONFIRMAR')o.needs_review=true;
   if(!o.status)o.status='A_CONFIRMAR';

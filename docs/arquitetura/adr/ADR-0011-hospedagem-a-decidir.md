@@ -46,7 +46,9 @@ certificações; a VPS do ecossistema Ziip Cloud não serve de comprovação.
    cluster (§6), com caminho para banco dedicado por tenant grande (ADR-0005).
 8. Custo compatível com o preço por ligação dos clientes-alvo.
 9. **Certificações do provedor exigidas em edital** (incluído em 12/10/2026): ISO 9001, ISO/IEC 27001, ISO/IEC 27017,
-   SOC 1 e SOC 3, com escopo que alcance a região usada.
+   SOC 1 e SOC 3, com escopo que alcance a região usada (verificado em 22/10/2026: SOC 1 e SOC 3 não são
+   certificações, e sim relatórios de asseguração emitidos por auditor independente; o SOC 1 trata de controles de
+   relatório financeiro e o SOC 3 pertence à família SOC 2; confirmar com o órgão o que a exigência abrange).
 
 ## Decisão
 

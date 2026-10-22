@@ -14,27 +14,27 @@ Gerada em 2026-10-22. Contém metadados e resumos em palavras próprias; o texto
 ## Totais
 
 - **Normas:** 1676.
-- **Por verificação:** OFFICIAL_SOURCE 1298, SECONDARY_SOURCE 373, NOT_CONFIRMED 5.
-- **Por situação:** VIGENTE 1165, REVOGADA 71, PARCIALMENTE_REVOGADA 23, VIGENCIA_FUTURA 12, A_CONFIRMAR 114, EM_REVISAO 49, SUBSTITUIDA 90, CONFIRMADA 142, CANCELADA 10.
-- **Precisam de revisão:** 114.
+- **Por verificação:** OFFICIAL_SOURCE 1330, SECONDARY_SOURCE 346.
+- **Por situação:** REVOGADA 89, VIGENTE 1232, PARCIALMENTE_REVOGADA 29, VIGENCIA_FUTURA 14, EM_REVISAO 51, A_CONFIRMAR 13, SUBSTITUIDA 90, CONFIRMADA 142, CANCELADA 10, NAO_E_NORMA_EM_VIGOR 6.
+- **Precisam de revisão:** 13.
 
 | Área | Arquivo | Normas | A revisar |
 |---|---|---|---|
-| 01 Legislação federal: leis, leis complementares e decretos | [`01-legislacao-federal-leis-leis-complementares-e-decr.md`](catalogo/01-legislacao-federal-leis-leis-complementares-e-decr.md) | 206 | 8 |
+| 01 Legislação federal: leis, leis complementares e decretos | [`01-legislacao-federal-leis-leis-complementares-e-decr.md`](catalogo/01-legislacao-federal-leis-leis-complementares-e-decr.md) | 207 | 0 |
 | 02 Agência Nacional de Águas e Saneamento Básico (ANA): normas de referência e resoluções | [`02-agencia-nacional-de-aguas-e-saneamento-basico-ana-.md`](catalogo/02-agencia-nacional-de-aguas-e-saneamento-basico-ana-.md) | 48 | 0 |
-| 03 Saúde, meio ambiente, recursos hídricos e política do setor | [`03-saude-meio-ambiente-recursos-hidricos-e-politica-d.md`](catalogo/03-saude-meio-ambiente-recursos-hidricos-e-politica-d.md) | 36 | 3 |
-| 04 Metrologia legal (Inmetro) | [`04-metrologia-legal-inmetro.md`](catalogo/04-metrologia-legal-inmetro.md) | 18 | 1 |
+| 03 Saúde, meio ambiente, recursos hídricos e política do setor | [`03-saude-meio-ambiente-recursos-hidricos-e-politica-d.md`](catalogo/03-saude-meio-ambiente-recursos-hidricos-e-politica-d.md) | 36 | 2 |
+| 04 Metrologia legal (Inmetro) | [`04-metrologia-legal-inmetro.md`](catalogo/04-metrologia-legal-inmetro.md) | 18 | 0 |
 | 05 Segurança e saúde no trabalho (MTE) | [`05-seguranca-e-saude-no-trabalho-mte.md`](catalogo/05-seguranca-e-saude-no-trabalho-mte.md) | 23 | 0 |
-| 06 Dados pessoais, pagamentos e tributos | [`06-dados-pessoais-pagamentos-e-tributos.md`](catalogo/06-dados-pessoais-pagamentos-e-tributos.md) | 92 | 1 |
+| 06 Dados pessoais, pagamentos e tributos | [`06-dados-pessoais-pagamentos-e-tributos.md`](catalogo/06-dados-pessoais-pagamentos-e-tributos.md) | 92 | 0 |
 | 07 Jurisprudência e súmulas | [`07-jurisprudencia-e-sumulas.md`](catalogo/07-jurisprudencia-e-sumulas.md) | 44 | 0 |
-| 08 Entidades reguladoras e normas estaduais: Santa Catarina | [`08-entidades-reguladoras-e-normas-estaduais-santa-cat.md`](catalogo/08-entidades-reguladoras-e-normas-estaduais-santa-cat.md) | 123 | 18 |
-| 09 Entidades reguladoras e normas estaduais: Sudeste | [`09-entidades-reguladoras-e-normas-estaduais-sudeste.md`](catalogo/09-entidades-reguladoras-e-normas-estaduais-sudeste.md) | 227 | 18 |
-| 10 Entidades reguladoras e normas estaduais: Sul (RS e PR) | [`10-entidades-reguladoras-e-normas-estaduais-sul-rs-e-.md`](catalogo/10-entidades-reguladoras-e-normas-estaduais-sul-rs-e-.md) | 50 | 9 |
-| 11 Entidades reguladoras e normas estaduais: Nordeste | [`11-entidades-reguladoras-e-normas-estaduais-nordeste.md`](catalogo/11-entidades-reguladoras-e-normas-estaduais-nordeste.md) | 80 | 19 |
-| 12 Entidades reguladoras e normas estaduais: Norte, Centro-Oeste e outras | [`12-entidades-reguladoras-e-normas-estaduais-norte-cen.md`](catalogo/12-entidades-reguladoras-e-normas-estaduais-norte-cen.md) | 101 | 17 |
-| 13 Normas técnicas da ABNT (NBR) | [`13-normas-tecnicas-da-abnt-nbr.md`](catalogo/13-normas-tecnicas-da-abnt-nbr.md) | 264 | 1 |
+| 08 Entidades reguladoras e normas estaduais: Santa Catarina | [`08-entidades-reguladoras-e-normas-estaduais-santa-cat.md`](catalogo/08-entidades-reguladoras-e-normas-estaduais-santa-cat.md) | 123 | 0 |
+| 09 Entidades reguladoras e normas estaduais: Sudeste | [`09-entidades-reguladoras-e-normas-estaduais-sudeste.md`](catalogo/09-entidades-reguladoras-e-normas-estaduais-sudeste.md) | 226 | 2 |
+| 10 Entidades reguladoras e normas estaduais: Sul (RS e PR) | [`10-entidades-reguladoras-e-normas-estaduais-sul-rs-e-.md`](catalogo/10-entidades-reguladoras-e-normas-estaduais-sul-rs-e-.md) | 50 | 1 |
+| 11 Entidades reguladoras e normas estaduais: Nordeste | [`11-entidades-reguladoras-e-normas-estaduais-nordeste.md`](catalogo/11-entidades-reguladoras-e-normas-estaduais-nordeste.md) | 80 | 2 |
+| 12 Entidades reguladoras e normas estaduais: Norte, Centro-Oeste e outras | [`12-entidades-reguladoras-e-normas-estaduais-norte-cen.md`](catalogo/12-entidades-reguladoras-e-normas-estaduais-norte-cen.md) | 101 | 2 |
+| 13 Normas técnicas da ABNT (NBR) | [`13-normas-tecnicas-da-abnt-nbr.md`](catalogo/13-normas-tecnicas-da-abnt-nbr.md) | 264 | 0 |
 | 14 Normas ISO, ISO/IEC e IEC | [`14-normas-iso-iso-iec-e-iec.md`](catalogo/14-normas-iso-iso-iec-e-iec.md) | 211 | 0 |
-| 15 Padrões técnicos, interoperabilidade e outros | [`15-padroes-tecnicos-interoperabilidade-e-outros.md`](catalogo/15-padroes-tecnicos-interoperabilidade-e-outros.md) | 153 | 19 |
+| 15 Padrões técnicos, interoperabilidade e outros | [`15-padroes-tecnicos-interoperabilidade-e-outros.md`](catalogo/15-padroes-tecnicos-interoperabilidade-e-outros.md) | 153 | 4 |
 
 ## Regras
 

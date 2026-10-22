@@ -36,7 +36,9 @@ e que só as exigências específicas dependem de o cliente ligar a norma.
      24511 e 24512).
    - `REFERENCE`: técnica de referência, ativável como checklist de completude (NBR de rede, cadastro, topografia
      e medidores).
-   - `EXPORT_PROFILE`: perfil de exportação de indicadores (ISO 37120, PNQS), sem entrada ativável própria.
+   - `EXPORT_PROFILE`: perfil de exportação de indicadores (ISO 37120, PNQS), sem entrada ativável própria
+     (verificado em 22/10/2026: o PNQS é prêmio e selos de reconhecimento da ABES, sem formato de exportação definido e
+     não certificável; a classe adequada é `VOLUNTARY`).
 3. **Capacidades comuns sempre disponíveis.** As 17 capacidades comuns existem sem norma ligada, como registros
    livres. Ligar uma norma torna obrigatórios os campos e ciclos que ela exige (por exemplo, causa raiz e verificação
    de eficácia na ocorrência), habilita os registros específicos da norma e o mapa de cláusulas.

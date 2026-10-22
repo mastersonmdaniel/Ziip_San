@@ -585,7 +585,7 @@ Legenda "No GSAN": **S** = coberto (fato), **P** = parcial, **N** = ausente. "Fo
 | Débito automático FEBRABAN 150 | opção (B), ocorrência (C), envio (E), retorno (F) | **S** | `RegistroHelperCodigoB/C/E/F` | autorização formal do cliente (consentimento), reapresentação |
 | CNAB 240 retorno de cobrança | segmentos T/U | **S** | `RegistroHelperCodigo3T/3U` | mapeamento dos códigos de ocorrência por banco |
 | CNAB 400 retorno (carteira registrada) | tipo 7 | **P** | `RegistroFichaCompensacaoTipo7Helper` | **[INF]** só um banco |
-| **CNAB 444 / boleto padrão novo** | layout unificado FEBRABAN **[EXT]** | **N** | — | decidir se vale suportar; muitos bancos já migram |
+| **CNAB 444 / boleto padrão novo** | layout proprietário de administradoras de FIDC, factorings e securitizadoras, não unificado FEBRABAN (verificado em 22/10/2026) **[EXT]** | **N** | — | decidir se vale suportar; muitos bancos já migram |
 | Boleto bancário, ficha de compensação | 44 posições, linha digitável 47, nosso número, carteira | **S** | `util/CodigoBarras.java` | **fator de vencimento com novo ciclo a partir de 22/02/2025 [EXT]** |
 | Boleto registrado / **NPC (CIP) / DDA** | registro online na plataforma de cobrança; DDA; boleto sem registro não é compensado **[EXT]** | **P/N** | `BoletoInfo` (formulário do BB) | **gateway de registro**; nunca passar PII em query string |
 | **PIX** | QR dinâmico (cob/cobv), **boleto híbrido (BolePix)**, baixa por webhook, conciliação por `txid`/`endToEndId` **[EXT]** | **N** | `grep` por "pix" = 0 resultados | módulo novo: PSP adapter, webhook assinado, conciliação, devolução (`DevolucaoSituacao`) |

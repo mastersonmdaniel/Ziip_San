@@ -38,7 +38,7 @@ Normas e serviços públicos
 - N13: Resolução ANA 271/2025 (NR 13) — https://www.gov.br/ana/pt-br/legislacao/resolucoes/resolucoes-regulatorias/2025/271
 - ANA-FAQ: perguntas frequentes da tarifa social — https://www.gov.br/ana/pt-br/assuntos/saneamento-basico/tarifa-social-de-agua-e-esgoto/perguntas-frequentes
 - ANA-CAD: orientações de acesso aos dados do CadÚnico — https://www.gov.br/ana/pt-br/assuntos/saneamento-basico/tarifa-social-de-agua-e-esgoto/acesso-e-gestao-dos-dados-do-cadunico-e-bpc/orientacoes-para-acesso-aos-dados-do-cadunico-1
-- MDS57: Informe do Cadastro Único nº 57/2024 — https://mds.gov.br/webarquivos/MDS/2_Acoes_e_Programas/Cadastro_Unico/Informes/2024/Informe_Cadastro_Unico_N_57.pdf
+- MDS57: Informe do Cadastro Único nº 57, de 29 de outubro de 2024 (Tarifa Social de Água e Esgoto: procedimentos de cessão de dados para operacionalização da tarifa) — https://mds.gov.br/webarquivos/MDS/2_Acoes_e_Programas/Cadastro_Unico/Informes/2024/Informe_Cadastro_Unico_N_57.pdf
 - L11445: Lei 11.445/2007 compilada — https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2007/lei/l11445compilado.htm
 - L14898: Lei 14.898/2024 — https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14898.htm
 - L13460: Lei 13.460/2017 — https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2017/lei/l13460.htm
@@ -52,7 +52,7 @@ Normas e serviços públicos
 - LAI: Lei 12.527/2011 — https://www2.camara.leg.br/legin/fed/lei/2011/lei-12527-18-novembro-2011-611802-normaatualizada-pl.pdf
 - CGU: adesão ao Fala.BR por Estados e Municípios — https://www.gov.br/cgu/pt-br/governo-aberto/noticias/2020/4/cgu-oferece-sistema-eletronico-de-acesso-a-informacao-a-estados-e-municipios
 - L6766: Lei 6.766/1979 compilada — https://www.planalto.gov.br/ccivil_03/leis/l6766compilado.htm
-- REN1000: Resolução Normativa ANEEL 1.000/2021 — https://www.in.gov.br/en/web/dou/-/resolucao-normativa-aneel-n-1.000-de-7-de-dezembro-de-2021-368359651
+- REN1000: Resolução Normativa ANEEL 1.000/2021 (Regras de Prestação do Serviço Público de Distribuição de Energia Elétrica) — https://www.in.gov.br/en/web/dou/-/resolucao-normativa-aneel-n-1.000-de-7-de-dezembro-de-2021-368359651
 - D8727: Decreto 8.727/2016 (nome social) — https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/decreto/d8727.htm
 - D8270: Decreto 8.270/2014 (Sirc) — https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/decreto/d8270.htm
 - D10046: Decreto 10.046/2019 (Cadastro Base do Cidadão) — https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/decreto/d10046.htm
@@ -67,7 +67,7 @@ Normas e serviços públicos
 - DNE: Correios, guia de endereçamento — https://www.correios.com.br/enviar/precisa-de-ajuda/guia-de-enderecamento/guia-de-enderecamento
 - OSM: licença do OpenStreetMap — https://www.openstreetmap.org/copyright
 - BCB587: Resolução BCB 587 (cobrança híbrida) — https://www.bcb.gov.br/api/conteudo/app/normativos/exibenormativo?p1=Resolu%C3%A7%C3%A3o%20BCB&p2=587
-- BCB-PIX: Fórum Pix (Res. CMN 5.251 e BCB 505, Pix Automático) — https://www.bcb.gov.br/content/estabilidadefinanceira/pix/Forum_Pix_Plenaria/20251204-Forum_Pix.pdf
+- BCB-PIX: Fórum Pix (Res. CMN 5.251/2025 e BCB 505/2025, que alteram as Res. CMN 4.790/2020 e BCB 51/2020 sobre autorização e cancelamento de débitos em conta, com remissão ao regime do Pix Automático) — https://www.bcb.gov.br/content/estabilidadefinanceira/pix/Forum_Pix_Plenaria/20251204-Forum_Pix.pdf
 - ANPD-PP: guia de tratamento de dados pelo Poder Público — https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia-poder-publico-anpd-versao-final.pdf/@@download/file
 - CONS-GOV: Consumidor.gov.br, regras de adesão — https://consumidor.gov.br/pages/conteudo/publico/2
 - CORSAN: tarifa social automática e busca ativa — https://www.corsan.com.br/corsan-comunica-240-mil-familias-aptas-a-receber-a-tarifa-social-e-intensifica-busca-ativa-para-ampliar-acesso-ao-beneficio/
@@ -592,7 +592,7 @@ Sem repetir o detalhe, os pontos abaixo estão desenhados com aceite e não prec
 - **Estrutura tarifária.** Consumo mínimo travado para contratos novos (`tariff.fixed_part_model`), parcela fixa e faixas, reajuste com vigência, esgoto sem água (`sewer.no_water_volume_rule`), condomínio (ED-15), situações especiais (ED-22).
 - **Tarifa social.** Piso federal travado, concessão sem exigir adimplência, aviso de perda de 3 meses, cifra de NIS e renda, carência (`social.*`, P1.5).
 - **Faturamento e retificação.** Ciclo com cronograma e referência fechada (P2.5), retificação como OS interna (P2.20), declaração de quitação e bloco de qualidade da água (P2.24), seis datas de vencimento.
-- **Arrecadação.** Retorno idempotente, efeito da classificação, aviso de duplicidade, devolução e fila de não identificados (P3.1, P3.29), Pix híbrido e Pix Automático alinhados à regulação do Banco Central, FEBRABAN v08.
+- **Arrecadação.** Retorno idempotente, efeito da classificação, aviso de duplicidade, devolução e fila de não identificados (P3.1, P3.29), Pix híbrido e Pix Automático alinhados à regulação do Banco Central, FEBRABAN v08 (verificado em 22/10/2026: a edição vigente do padrão de débito automático de 150 posições é a v09, atualizada em 11/03/2026).
 - **Cobrança e corte.** Vedações da Lei 14.015, revalidação na execução inclusive offline, compensação por corte indevido, aviso com prova de entrega, negativação com trava de perfis e prazos (P3.4, ED-30, ED-31, P4.1).
 - **Atendimento.** Protocolo com motor único de prazo, ouvidoria como segunda instância, interrupção programada, relatório do art. 54 da NR 11, omnichannel e assistente com limite de funções (P3.4, ED-35, ED-42, ED-43).
 - **Portal e aplicativo.** Realm próprio, vínculo por código impresso, anti-enumeração, histórico e documentos (ADR-0022, P3.3, P3.20, P3.8), aplicativo híbrido com PKCE (ED-39).

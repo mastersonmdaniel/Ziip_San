@@ -1190,3 +1190,12 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - Achados: NFAg-e obrigatória a partir de 01/12/2026; Decreto 13.135/2026 (SAC) em 02/11/2026; Res. BCB 587/2026 (cobrança híbrida) em 01/02/2027 e 565/2026 (débito automático) em 01/07/2027; CONAMA 430/2011 em revogação aprovada e sem publicação; normas de agências com regras que conflitam com a Lei 14.015/2020 (corte às sextas) e a Lei 14.898/2024 (tarifa social); 71 revogadas, 90 substituídas e várias citações do projeto com número, emissor ou escopo errados.
 - Plano v2.20: nova P1.34 (área Normas e legislação), ajustes em ED-76, P3.15 e P1.32; ADR-0041 com o item 15. Lista de correções a aplicar nos documentos em docs/normas/correcoes-aos-documentos.md (não aplicadas). Só documentação.
 - Pendências: aplicar as correções aos documentos; revisar os itens a confirmar (docs/normas/pendencias-consolidadas.md); contraparte jurídica sobre normas de agências que conflitam com lei federal e sobre as leis estaduais de corte (ADI 7.725/TO) e a Lei Distrital 5.990/2017.
+
+### 22/10/2026 — Pendências da biblioteca de normas; plano v2.21
+
+- Pendências pedidas pelo dono: aplicar as correções aos documentos, revisar os itens a confirmar e tratar as dúvidas jurídicas.
+- Correções: cinco lotes de agentes, com arquivos distintos por lote, corrigiram as citações nos documentos (184 normas apuradas na primeira verificação; relatórios em docs/normas/aplicacao-correcoes). O diário não foi reescrito: a Lei Distrital 5.990/2017, citada acima em 22/10/2026 sem a ressalva, foi declarada inconstitucional (TJDFT 2019; STF, RE 1.314.679, 20/03/2024, segundo o SINJ-DF), e o catálogo a registra assim.
+- Reverificação dos 114 itens a confirmar: 13 continuam pendentes; 6 não são norma em vigor. Catálogo final: 1.676 normas, 1.330 em fonte oficial e 346 em fonte secundária.
+- Contradições resolvidas em fonte oficial: débito automático (01/01/2027 para convênios de serviços públicos, Res. CMN 5.278/2025; 01/07/2027 para o novo regime, Res. BCB 565/2026) e MP 1.393/2026 (alcança dívidas com prestadores de serviços públicos).
+- Roteiro de 15 perguntas para parecer jurídico em docs/normas/questoes-para-parecer-juridico.md (não é parecer). Decisões a rever em docs/normas/decisoes-a-rever.md. Plano v2.21. Só documentação.
+- Pendências do dono: decidir sobre as premissas em decisoes-a-rever.md; obter o parecer jurídico; regenerar o catálogo com scripts/normas/consolidar-catalogo.js quando houver nova verificação.

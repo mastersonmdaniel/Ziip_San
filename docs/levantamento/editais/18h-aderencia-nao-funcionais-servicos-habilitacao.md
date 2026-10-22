@@ -82,7 +82,7 @@ edital pede (por exemplo, M96, M76, M28).
 5. **A habilitação técnica é a barreira imediata**: Videira exige dois atestados com 8.500 ligações e e-Sfinge; o SG,
    um atestado sem quantitativo. O piloto do plano gera, no melhor caso, um atestado no fim de 2027.
 6. **Duas decisões já tomadas pesam diretamente**: a hospedagem (ADR-0011) precisa de um provedor com ISO 9001,
-   27001, 27017, SOC 1 e SOC 3, o que exclui VPS para editais do tipo Videira; e o modelo SaaS puro não responde às
+   27001, 27017, SOC 1 e SOC 3 (verificado em 22/10/2026: SOC 1/ISAE 3402 e SOC 3 são relatórios de asseguração de auditor independente, e não certificações; o SOC 3 pertence à família SOC 2), o que exclui VPS para editais do tipo Videira; e o modelo SaaS puro não responde às
    cláusulas de hospedagem local (TR 4.4.12) e de licença instalável (SG 2.2.3.4).
 
 ---

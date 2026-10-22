@@ -75,8 +75,9 @@ recusado. O catálogo de parâmetros apontou quatro pontos em que essa regra ún
    - 120 meses de histórico de leitura e faturamento (NR 11 art. 22), também quando a ERI não adotou a NR 11;
    - 6 meses de registros de acesso (Marco Civil da Internet, art. 15), independentemente da questão de aplicabilidade;
    - 5 anos de registro de incidente (Res. CD/ANPD 15/2024 art. 10, `10`);
-   - 10 anos de guarda após o encerramento do vínculo, a confirmar (prescrição decenal, REsp 1.117.903, tema não
-     confirmado, `13`);
+   - 10 anos de guarda após o encerramento do vínculo, a confirmar (prescrição decenal, REsp 1.117.903/RS, Temas 251 a
+     254 do STJ, julgado em 09/12/2009; verificado em 22/10/2026: o prazo desses temas é o da pretensão de cobrança pelo
+     prestador, e não o da repetição de indébito, tratada na Súmula 412 e nos Temas 154, 155 e 932; `13`);
    - demais categorias de G6 sem norma no levantamento: piso a definir.
    A eliminação ao fim do contrato e o descarte em backups seguem procedimento do Ziip SAN (classe a), com certificado
    de descarte entregue ao cliente. Carência de **30 dias** contados do fim do contrato, para o cliente baixar a

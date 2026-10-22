@@ -157,7 +157,7 @@ Tamanhos das tarefas novas: "a estimar"; os totais da trilha não foram recalcul
 | GES-27 | C | Média | G | Consumo quase em tempo real e alertas ao consumidor (AMI) | Ajusta: ED-17, ED-39, ED-41 |
 | GES-28 | C | Baixa | M | Metas de consumo, comparação com pares e gamificação | Nova: ED-101 |
 | GES-29 | C | Média | M | Benchmark com o SINISA aberto e, depois, entre tenants | Ajusta: ED-48, ED-49 |
-| GES-30 | C | Média | M | Regulação por incentivo: apuração auditável e simulador de fatores Q, P e U | Ajusta: ED-77, ED-48 |
+| GES-30 | C | Média | M | Regulação por incentivo: apuração auditável e simulador de fatores Q, P e U (verificado em 22/10/2026: a menção a fatores Q, P e U na CP 03/2026 da ANA não foi encontrada nas fontes lidas; ver o 22d, GES-30) | Ajusta: ED-77, ED-48 |
 | GES-31 | C | Baixa | P | Gêmeo digital: integração, não construção | Ajusta: ED-63 |
 | GES-32 | C | Baixa | M | Login gov.br como provedor de identidade opcional no portal | Ajusta: P3.3; Depende de ADR que altera o ADR-0022 (login gov.br) |
 | GES-33 | C | Baixa | P | Open Finance (iniciação) e Pix por aproximação via PSP | Ajusta: P3.2 |

@@ -283,7 +283,7 @@ Nacionais
 - Sabesp SIGNOS/Smallworld: https://www.wateronline.com/doc/ge-energy-provides-smallworld-technology-for-0001
 - Copasa: https://assemae.org.br/noticias/item/download/362_41ff123e4615803fe18c7d955c9c1d8b
 - Corsan/Aegea Anexo A: https://corsan.com.br/upload/arquivos/202411/21152701-2-anexo-a-padroes-para-cadastro-e-gis.pdf
-- Saneago IN cadastro técnico: https://www.saneago.com.br/2016/fornecedores/arquivos/IN00.0229.03.pdf
+- Saneago IN00.0229 cadastro técnico (rev. 04, de 11/03/2024): https://www.saneago.com.br/arquivos/FGQ/normativos/IN00.0229.pdf
 - Saneago + Giswater: https://www.iagua.es/noticias/bgeo-open-gis/saneago-moderniza-gestion-saneamiento-giswater
 - Samae Jaraguá do Sul (CAD → SIG): https://ojs.sites.ufsc.br/index.php/cobrac/article/download/10693/9127/39539
 - Hexagon (EPM): https://hexagon.com/resources/resource-library/powerful-multiutility-geospatial-technology-enhances-and-optimizes-digital-management-of-networks

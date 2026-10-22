@@ -30,9 +30,9 @@ Contagens aproximadas (contadas por varredura dos quadros de cada relatório). O
 | Fato | Origem | Efeito no SIGSAN |
 |---|---|---|
 | **Tarifa Social** (Lei 14.898/2024 + NR 13/2025 da ANA): implantação até **11/12/2026** | `08` | P0 mais urgente. Classificação por CadÚnico/BPC, desconto de 50% até 15 m³ (valores do relatório, a conferir no DOU), aviso de 3 meses antes de retirar o benefício, relatório anual |
-| **NFAg-e (modelo 75) obrigatória em 01/12/2026** (Ato Conjunto RFB/CGIBS nº 4/2026) | `11` | Quatro fontes secundárias concordam na data; o DOU não foi lido e a SVRS ainda a lista como minuta. Confirmar antes de construir |
+| **NFAg-e (modelo 75) obrigatória em 01/12/2026** (Ato Conjunto RFB/CGIBS nº 4/2026) | `11` | Quatro fontes secundárias concordam na data; o DOU não foi lido e a SVRS ainda a lista como minuta. Confirmar antes de construir (verificado em 22/10/2026: data confirmada pela Receita Federal e pelo texto do ato, art. 1º, XVI; documento instituído pelo art. 114 do Decreto 12.955/2026 e pelo regulamento do IBS, sem Ajuste SINIEF) |
 | **Reforma tributária**: água e esgoto ficam na alíquota padrão (sem redução na LC 214); PIS/Cofins terminam em 2027; fatura precisa prever *cashback* de CBS/IBS | `11` | Documento fiscal e cálculo da conta |
-| **Débito automático mudou em 13/10/2025**: para recebedor PJ, autorização e cancelamento seguem o Pix Automático (Res. CMN 5.251 e BCB 505) | `11` | O relatório 03 copiava o FEBRABAN 150 e precisa ser revisto |
+| **Débito automático mudou em 13/10/2025**: para recebedor pessoa jurídica ou entidade não autorizada pelo BCB, autorização e cancelamento seguem o Pix Automático (Res. CMN 5.251, que altera a 4.790; Res. BCB 505, paralela para contas de pagamento pré-pagas) | `11` | O relatório 03 copiava o FEBRABAN 150 e precisa ser revisto (verificado em 22/10/2026: o prazo de adequação de 01/01/2026 passou a 01/01/2027 para tributos, convênios de serviços públicos e planos de saúde, pelas Res. CMN 5.278 e BCB 544/2025; o enquadramento da água e esgoto como serviço público exige análise jurídica) |
 | **Boleto**: Res. BCB 443/2024 revogou as Circulares 3.598, 3.656 e 3.956 em 03/02/2025; fator de vencimento reiniciou em 1000 em 22/02/2025 (só no boleto de cobrança, não na conta de consumo, código 8) | `11` | Código de barras |
 | **Layout FEBRABAN de arrecadação versão 08** vale desde 01/06/2026 (segmento 2 = Saneamento, CNPJ alfanumérico). CNAB 240 V11.0 (11/09/2026) é preliminar | `11` | Parser de retorno |
 | **Corte**: aviso prévio mínimo de 30 dias (Lei 11.445, art. 40 §2º) e **proibido iniciar corte de sexta a domingo, em feriado ou véspera** (Lei 14.015/2020) | `08`, `11`, `13` | O sistema deve **impedir** a ordem de serviço, não só avisar |
@@ -119,7 +119,7 @@ Já venceram: prazos de esporos (05/2022) e dureza (05/2023) da Portaria 888; a 
 
 1. A NFAg-e entra em 01/12/2026 para o prestador de água? Quais contas de água/esgoto exigem documento fiscal, por esfera?
 2. Renda e NIS (tarifa social) são dado sensível na LGPD? O `10` lista 15 perguntas ao jurídico.
-3. Qual é o prazo de prescrição aplicável à cobrança de água e esgoto? (O `13` cita o repetitivo REsp 1.117.903/RS como decenal, com o número do Tema **não confirmado**.)
+3. Qual é o prazo de prescrição aplicável à cobrança de água e esgoto? (O `13` cita o repetitivo REsp 1.117.903/RS como decenal, com o número do Tema **não confirmado** no `13`; verificado em 22/10/2026: Temas 251 a 254, e o prazo desses temas refere-se à pretensão de cobrança da tarifa pelo prestador, não à repetição de indébito pelo usuário, de que tratam a Súmula 412 e os Temas 154, 155 e 932, de modo que a pergunta deve separar as duas pretensões.)
 4. O Web Service do SINIR existe para sistemas de terceiros? Como se credencia?
 5. O Decreto do SAC (11.034/2022) vale para o prestador regulado por agência estadual/municipal? (O `13` conclui que não vale diretamente.)
 6. Quais agências reguladoras os primeiros clientes têm? Isso define o perfil regulatório inicial. Agências **não levantadas**: ARPE, AGEMS, AGER-MT, ARSAE-AL, ARSEP.

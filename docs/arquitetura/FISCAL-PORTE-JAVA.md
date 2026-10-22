@@ -72,7 +72,7 @@ UTF-8 sem BOM (E1229); `dhEmi` em America/Sao_Paulo (E0008); validação de chav
 | Ambiente | Por tenant e por emitente, com trava de plataforma (seção 3.6) |
 | Builder | Classes geradas do XSD oficial e validação por schema antes de assinar, que é o limite 1 do próprio README |
 | Alíquotas e códigos IBS/CBS | Vêm de `tax_rate` com vigência e aceite (R40, ADR-0002), nunca de constante |
-| Arredondamento | O C# usa half-even para NFS-e ("conforme NT 007/2026"); o `TaxWithholding` do billing usa `HALF_DOWN`, herdado do legado sem norma (relatório 08, E-20). A regra precisa ser definida por documento e tributo: **a confirmar (NT/manual oficial)** |
+| Arredondamento | O C# usa half-even para NFS-e ("conforme NT 007/2026"; verificado em 22/10/2026: a NT 007/2026 da SE/CGNFS-e aplica half-even e tolerância de R$ 0,01 apenas a PIS e Cofins, vPis e vCofins, e não a IBS e CBS); o `TaxWithholding` do billing usa `HALF_DOWN`, herdado do legado sem norma (relatório 08, E-20). A regra precisa ser definida por documento e tributo: **a confirmar (NT/manual oficial)**; para IBS e CBS, conferir os anexos da NT 004, as NTs 008 e 009 e o manual da NFS-e |
 
 **Não serve ao Ziip SAN:**
 
@@ -217,7 +217,7 @@ Se o leiaute exigir XML assinado no momento da emissão, a forma volta ao dono d
   pela SEFAZ, DANFAG com QR Code, grupos IBS/CBS, consulta por chave. Anexo II (DANFAG) v1.02 de 25/08/2026; NT
   2026.004 RTC citada.
 - Obrigatória em **01/12/2026** (Ato Conjunto RFB/CGIBS nº 4/2026, quatro fontes secundárias); a SVRS ainda mostrava
-  "minuta" em 12/10/2026. **A confirmar no DOU.**
+  "minuta" em 12/10/2026. **A confirmar no DOU.** (verificado em 22/10/2026: data confirmada pela Receita Federal e pelo texto do ato, art. 1º, XVI; o documento foi instituído pelo art. 114 do Decreto 12.955/2026 e pelo regulamento do IBS, e não há Ajuste SINIEF que o institua.)
 - Substitui a Nota Fiscal/Conta de Água; o destino do modelo 29 (código do SPED Fiscal) **não está confirmado**.
 - Saneamento na alíquota padrão (LC 214); 2026 com IBS 0,1% e CBS 0,9% em teste; 2027 com CBS plena e IBS
   0,05% + 0,05%; *cashback* do CadÚnico na cobrança (R41); fato gerador alterado pela LC 227/2026, texto não lido (R42).

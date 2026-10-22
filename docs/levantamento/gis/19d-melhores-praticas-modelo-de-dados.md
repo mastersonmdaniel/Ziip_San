@@ -281,7 +281,7 @@ Pipeline no `worker` (ADR-0028):
   com cotas de montante e jusante, seção e Manning do catálogo; armazenamento = bacia de detenção; *outfall* = ponto de
   lançamento; sub-bacias = polígonos de contribuição. O SWMM 5.2 trouxe objetos de rua e de boca de lobo (*inlet*),
   o que justifica cadastrar a boca de lobo com tipo e dimensões [27].
-- **Gestão de ativos (ISO 55000/55001).** Probabilidade de falha por idade, material, vida útil, rompimentos (OS de
+- **Gestão de ativos (ISO 55000:2024 e ISO 55001:2024).** Probabilidade de falha por idade, material, vida útil, rompimentos (OS de
   reparo por arco) e estado; consequência pelo traçado de isolamento (ligações e clientes sensíveis), DN e local;
   risco = probabilidade × consequência, com plano de renovação e exportação ao contábil (18d item 27).
 - **Indicadores.** Extensão de rede por domínio, material, faixa de DN, década de instalação e município, calculada

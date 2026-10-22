@@ -1,6 +1,6 @@
 # Correções a aplicar nos documentos do projeto
 
-Gerado em 2026-10-22 a partir das verificações em fonte oficial (`partes/05-verificadas-*.json`). Cada linha é uma norma que o projeto cita com número, ano, título, emissor ou escopo diferente do apurado. **Nenhuma correção foi aplicada aos documentos**: a lista serve para revisão e aplicação por lote, com o dono do produto.
+Gerado em 2026-10-22 a partir das verificações em fonte oficial (`partes/05-verificadas-*.json`). Cada linha é uma norma que o projeto cita com número, ano, título, emissor ou escopo diferente do apurado. **As correções foram aplicadas aos documentos em cinco lotes** (relatórios em `aplicacao-correcoes/lote-1.md` a `lote-5.md`); a lista abaixo é o registro do que foi apurado na primeira verificação. As premissas de decisão afetadas estão em `decisoes-a-rever.md`.
 
 184 normas.
 

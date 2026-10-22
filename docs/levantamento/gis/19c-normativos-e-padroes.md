@@ -37,16 +37,16 @@ Legenda da última coluna: **O** = obrigatório (por lei, regulamento, ou quando
 | NBR 9648:1986; NBR 9649:1986 | Concepção e projeto de redes coletoras de esgoto | Trecho entre singularidades (PV, TL, TIL), cotas de fundo, declividade, profundidade | O (quando exigida) |
 | NBR 14486:2000; NBR 7367:1988 | Redes coletoras em PVC; assentamento de PVC | Material e regras por material | R |
 | NBR 12207:2016; 12208:2020; 12209:2011; 17076:2024 | Interceptores, elevatórias, ETE, ETE de menor porte | Classes "interceptor", "EEE", "ETE" com hierarquia | R |
-| NBR 17015:2023 | Execução de obras lineares de água, esgoto e drenagem | Fonte do as-built de obra; não confirmei que substitui a NBR 12266 | R |
-| NBR 12266 (edição a confirmar) | Valas para assentamento | Profundidade e envoltória no as-built | R |
-| Drenagem urbana | **Não há NBR de projeto de microdrenagem pública**; usa-se NBR 10844:1989 (predial), NBR 8890 (tubos de concreto, edição a confirmar), NBR ISO 21138-1/-3:2021, DNIT 030/2004-ES e manuais municipais | Catálogo de drenagem configurável por tenant, sem regra rígida de norma | R |
+| NBR 17015:2022 (1ª edição de 30/08/2022; o normas.com.br a lista com data 07/2023, a confirmar) | Execução de obras lineares de água, esgoto e drenagem | Fonte do as-built de obra; cancela e substitui a NBR 12266 e também as NBR 9814, 9822 e 12595 | R |
+| NBR 12266:1992 (cancelada em 08/2022; substituída pela NBR 17015:2022) | Projeto e execução de valas para assentamento de tubulação de água, esgoto ou drenagem urbana | Profundidade e envoltória no as-built; manter apenas como referência histórica de as-built antigos | R (histórica) |
+| Drenagem urbana | **Não há NBR de projeto de microdrenagem pública**; usa-se NBR 10844:1989 (predial), NBR 8890:2020 (tubo de concreto de seção circular para água pluvial e esgoto sanitário; classes a conferir na edição de 2020), NBR ISO 21138-1/-3:2021, DNIT 030/2004-ES e manuais municipais | Catálogo de drenagem configurável por tenant, sem regra rígida de norma | R |
 | NBR 5647-1:2025; NBR 7665:2025; NBR 15750:2024 | Tubos PVC-U (DN ≤ 100), PVC-M DEFOFO, PVC-O | Domínio de material e classe de pressão, com edição da norma | R |
 | NBR 15561:2024; NBR 15802:2010 | Tubos PE 80/PE 100; projeto em PE | Domínio PEAD (SDR, PN) | R |
 | NBR 7675:2026; NBR 7362:2025 | Ferro dúctil (água); PVC parede maciça (esgoto) | Domínio de material | R |
 | NBR 10160:2026; NBR 7676:2024 | Tampões e grelhas; anéis de vedação | Atributos de tampão (classe de carga) em PV e caixas | R |
 | NBR 5667-1/-2/-3:2006 (conf. 04/2024) | Hidrantes urbanos de coluna, subterrâneos e com obturação própria | Feição hidrante com subtipo | O (quando exigida) |
 | Registros e válvulas | Não identifiquei norma de produto específica nesta pesquisa | Domínio de tipo de válvula configurável | a confirmar |
-| Desenho técnico: NBR 10647, 8402, 8403, 8196, 10068, 13142 (citadas pela Corsan, 2024) | Regras gerais de desenho | Só para pranchas exportadas; há indício de consolidação em NBR 16752 e 16861 (2020), a confirmar | R |
+| Desenho técnico: NBR 10647, 8402, 8403, 8196, 10068, 13142 (citadas pela Corsan, 2024, em lista desatualizada) | Terminologia (10647), escrita (8402), linhas (8403), escalas (8196), folha de desenho (10068) e dobramento de cópias (13142) | Só para pranchas exportadas. Situação segundo fontes secundárias (ABNT Catálogo não consultado): NBR 8402:1994 e 8403:1984 canceladas e substituídas pela NBR 16861:2020 (linhas e escrita; confirmada em 01/2025); NBR 10068:1987 cancelada e substituída pela NBR 16752:2020 (leiaute, legenda, dobramento de cópias e escalas), que também cancela a NBR 10582:1988; NBR 13142:1999 (cancelada em 06/2017) e NBR 8196:1999 (cancelada em 08/2016), sem substituta formal, com o escopo hoje tratado na NBR 16752; NBR 10647:1989 (terminologia; cancelada em 07/2005), sem sucessora vigente identificada (a NBR ISO 10209-2, registrada como substituta, teria sido cancelada, dado não oficial). A NBR 16861 não consolida as demais normas de desenho técnico | R |
 | Simbologia de redes | **Não há NBR de simbologia de redes de saneamento**; cada prestadora tem padrão próprio | Simbologia parametrizável por tenant | R |
 
 ### 2.2 Cartografia, geodésia e cadastro territorial
@@ -58,12 +58,12 @@ Legenda da última coluna: **O** = obrigatório (por lei, regulamento, ou quando
 | Projeção UTM/SIRGAS2000: EPSG 31978–31985 (fusos 18S–25S) e 31972–31976 (18N–22N) | Plano de trabalho métrico | SRID de trabalho por tenant (ex.: 31982 no RS/SC/PR/oeste de SP). Os fusos 31982–31985 não cobrem AC, RO, MT, AM, RR e AP | O (editais pedem) |
 | NBR 13133:2021 | Execução de levantamento topográfico; plano topográfico local até 35 km | Método de levantamento e classe por feição | O (quando exigida) |
 | NBR 14166:2022 (errata 03/2023) | Rede de Referência Cadastral Municipal (RRCM) | Vincular levantamento à RRCM do município quando existir | R |
-| NBR 17047:2022 | Levantamento cadastral territorial para registro público; cancelou a NBR 14645-2 | Fora do escopo de redes; relevante para parcelas | R |
-| NBR 14645-1:2001; 14645-3 (cancelada 09/2022, substituta a confirmar) | As built de **edificações** | Não é norma de rede; não usar como base do as-built de redes | — |
-| Decreto 89.817/1984 (PEC) + ET-CQDG (DSG, 2016) e ET-ADGV (PEC-PCD) | Exatidão posicional por classe e escala: 90% dos pontos ≤ PEC e RMS ≤ EP | Relatório de acurácia por lote importado. PEC-PCD classe A: 0,28 mm × escala (EP 0,17 mm, a confirmar no texto); B/C/D = 0,5/0,3, 0,8/0,5, 1,0/0,6 mm | O (para produto cartográfico); R (para cadastro) |
+| NBR 17047:2022 | Levantamento cadastral territorial para registro público; cancelou a NBR 14645-2:2005 (levantamento planimétrico para registro público, para retificação de imóvel urbano) | Fora do escopo de redes; relevante para parcelas | R |
+| NBR 14645-1:2001; 14645-3:2005 (cancelada em 09/2022 e substituída pela NBR 17058:2022, Locação topográfica e controle dimensional de edificação) | As built de **edificações** | Não é norma de rede; não usar como base do as-built de redes | — |
+| Decreto 89.817/1984 (PEC) + ET-CQDG (EB80-N-72.004, DSG, 1ª edição, Portaria 009-DCT de 10/02/2016; incorpora o PEC-PCD, com a medida PAP-PCD e a Tabela 32; em atualização pela CONGEO) e ET-ADGV (EB80-N-72.005, versão 3.0, 1ª edição, Portaria 115-DCT de 20/11/2018; o PEC-PCD foi estabelecido na ET-ADGV, mas as tabelas não constam da versão 3.0 e devem ser lidas na ET-CQDG) | Exatidão posicional por classe e escala: 90% dos pontos ≤ PEC e RMS ≤ EP | Relatório de acurácia por lote importado. PEC-PCD classe A: 0,28 mm × escala (EP 0,17 mm, a confirmar no texto: na Tabela 32 da ET-CQDG, escala 1:1.000, classe A, o erro máximo é 0,28 m e o erro padrão 0,17 m, em leitura automática que embaralha colunas); B/C/D = 0,5/0,3, 0,8/0,5, 1,0/0,6 mm | O (para produto cartográfico); R (para cadastro) |
 | ET-EDGV 3.0 (CONCAR, 2017/2018) | Modelo de dados vetoriais da INDE | Mapear camadas de base (lotes, quadras, vias, hidrografia) para exportação; não modela rede de saneamento em detalhe | R |
 | Decreto 6.666/2008 (INDE); Perfil MGB 2.0 (IBGE/DSG, ISO 19115-1) | Metadados e normas CONCAR para órgãos federais | Exportar metadados MGB por conjunto de dados; obrigatório só para publicação na INDE | R |
-| Portaria MDR 3.242/2022 (revogou a Portaria MCidades 511/2009) | Diretrizes do Cadastro Territorial Multifinalitário: parcela, cadastros temáticos, vínculo à RRCM | Saneamento é cadastro temático: guardar inscrição imobiliária/ID da parcela do CTM na unidade consumidora | R |
+| Portaria MDR 3.242/2022 (Ministério do Desenvolvimento Regional, DOU de 11/11/2022; revogou a Portaria MCidades 511/2009, art. 2º; o MDR foi extinto em 2023 e a portaria segue em vigor) | Diretrizes do Cadastro Territorial Multifinalitário: parcela, cadastros temáticos, vínculo à RRCM | Saneamento é cadastro temático (verificado em 22/10/2026: a portaria não menciona saneamento nominalmente; a inclusão decorre do art. 1º, §2º, redes de infraestrutura e equipamentos): guardar inscrição imobiliária/ID da parcela do CTM na unidade consumidora | R |
 
 ### 2.3 Regulação do saneamento que alcança o cadastro
 
@@ -75,7 +75,7 @@ Legenda da última coluna: **O** = obrigatório (por lei, regulamento, ou quando
 | NR 12/2025 (Res. 245, 17/03/2025) | Cadastro técnico atualizado e georreferenciado do sistema de drenagem, com material e estado de conservação | Classe de drenagem com estado de conservação, foto e histórico | O (onde a ERI adotar) |
 | NR 9/2024 e NR 15/2025 | Indicadores e balanço hídrico padronizado (ver `08`) | Extensão de rede e ligações por setor/DMA vindas do GIS | O |
 | SINISA (glossários 2025, ano-base 2024) | GTE1001 extensão da rede de esgoto (km, regra de inclusão própria); GTE0003/0004 ligações; GTE0006–0013 economias; coordenadas de EEE (GTE2002/2003) e ETE (GTE2103) em WGS-84 | Cálculo reprodutível por regra SINISA; exportação de coordenadas em graus decimais; código da extensão de água: a confirmar (equivale ao AG005 do SNIS) | O |
-| Agências infranacionais | Não encontrei resolução da ARIS, ARESC, ARSAE ou ARSESP que exija cadastro georreferenciado; a AGENERSA fiscalizou cadastro técnico de esgoto em 2024 (diferença de 192 km entre bases); a exigência costuma estar no contrato de concessão | Perfil regulatório por tenant (ver `14`) com regra de cadastro configurável; "AGESAN" não identificada | a confirmar |
+| Agências infranacionais | Não encontrei resolução da ARIS, ARESC, ARSAE ou ARSESP que exija cadastro georreferenciado; a AGENERSA fiscalizou cadastro técnico de esgoto em 2024 (diferença de 192 km entre bases; fonte: Relatório de Fiscalização AGENERSA/CASAN nº 222/2024, da Câmara Técnica de Saneamento, processo SEI-480002/001229/2024, assinado em 09/09/2024, sobre o cadastro técnico inicial de esgotamento sanitário da Iguá, Bloco 2; é documento de fiscalização, e não norma; localizado no site da AGENERSA em 22/10/2026; a amostra não é estatisticamente representativa, e parte da diferença decorre de redes projetadas e não executadas no cadastro da CEDAE); a exigência costuma estar no contrato de concessão | Perfil regulatório por tenant (ver `14`) com regra de cadastro configurável; "AGESAN" não identificada | a confirmar |
 | Lei 12.305/2010 (PNRS) e Decreto 10.936/2022 | Coleta seletiva, logística reversa integrada ao SINIR, MTR (ver `12`) | Feições de ecoponto/PEV, setor e rota de coleta, frequência; o decreto não exige georreferenciamento expresso (a confirmar no texto integral) | R |
 | NR 7/2024 e NR 14/2025 (resíduos) | Condições gerais e indicadores de SLU (ver `08`) | Setores e rotas georreferenciados alimentam indicadores | R |
 
@@ -83,17 +83,17 @@ Legenda da última coluna: **O** = obrigatório (por lei, regulamento, ou quando
 
 | Padrão (versão) | O que define | Impacto no Ziip SAN | O/R |
 |---|---|---|---|
-| OGC Simple Features / ISO 19125; ISO 19107:2019 | Geometria vetorial | PostGIS já atende; validar geometria (ST_IsValid) na importação | O (técnico) |
-| WMS 1.3.0 (ISO 19128); WMTS 1.0 | Mapas e tiles | Cliente WMS (editais) e publicação opcional | O (editais) |
-| WFS 2.0 (ISO 19142), com WFS-T | Feições e transação | Edital pede edição via WFS 1.0+; WFS-T com auditoria e RLS (ver `18d`) | O (editais) |
-| OGC API – Features, partes 1 a 3 (Core, CRS, Filtering/CQL2); parte 4 (CRUD) | API REST de feições | Adotar partes 1–3 na API pública; parte 4 só depois de aprovada (aprovação não confirmada) | R |
-| OGC API – Tiles 1.0 (2022; ISO 19177-1:2026) | Tiles vetoriais | Servir camadas ao MapLibre | R |
+| OGC Simple Feature Access 1.2.1 (OGC 06-103r4) / ISO 19125-1:2004 (arquitetura comum; a Parte 2, opção SQL, foi retirada em 2018 e absorvida pela ISO/IEC 13249-3); ISO 19107:2019 | Geometria vetorial | PostGIS já atende; validar geometria (ST_IsValid) na importação | O (técnico) (verificado em 22/10/2026: é decisão de projeto, não obrigação normativa) |
+| WMS 1.3.0 (OGC; ISO 19128:2005, Interface de servidor de mapas web); WMTS 1.0.0 (OGC 07-057r7, 2010) | Mapas e tiles | Cliente WMS (editais) e publicação opcional | O (editais) |
+| WFS 2.0 (OGC; ISO 19142:2010, Serviço de feições web, que inclui as operações de transação), com WFS-T | Feições e transação | Edital pede edição via WFS 1.0+; WFS-T com auditoria e RLS (ver `18d`) | O (editais) |
+| OGC API – Features, partes 1 a 3 (Core, CRS, Filtering; o CQL2, OGC 21-065r2, é norma separada referenciada pela parte 3); parte 4 (CRUD, ainda em minuta); parte 5 (Schemas 1.0.0, aprovada em 30/04/2026) | API REST de feições | Adotar partes 1–3 na API pública; parte 4 só depois de aprovada (em 22/10/2026 segue em minuta) | R |
+| OGC API – Tiles – Part 1: Core 1.0 (OGC 20-057, 2022); ISO 19177-1:2026 (Informação geográfica — API geoespacial para tiles — Parte 1: Núcleo, adaptação ISO do texto do OGC com ajustes editoriais; norma paga) | Tiles vetoriais (verificado em 22/10/2026: a norma define a API de tiles; o formato de codificação, por exemplo MVT, deve ser verificado à parte) | Servir camadas ao MapLibre | R |
 | GeoPackage 1.4.0 (2024) | Arquivo geoespacial aberto | Formato padrão de exportação e coleta offline | R |
-| CityGML 3.0 (2021); Utility Network ADE (não é norma OGC) | Modelo urbano 3D e redes | Só referência conceitual (rede com nós, arestas e hierarquia) | R |
-| LandInfra/InfraGML 1.0 (OGC, 2016); OGC MUDDI (aprovação a confirmar) | Infraestrutura civil; integração de dados de subsolo | Referência para intercâmbio de as-built e dados subterrâneos | R |
+| CityGML 3.0 (OGC; Parte 1, Modelo conceitual, 20-010, 2021; Parte 2, Codificação GML, 21-006r2, 2023); Utility Network ADE (não é norma OGC) | Modelo urbano 3D e redes | Só referência conceitual (rede com nós, arestas e hierarquia) | R |
+| LandInfra 1.0 (OGC 15-111r1, modelo conceitual, 2016) e InfraGML 1.0 (codificações, 2017); OGC MUDDI Parte 1 – 1.0 (23-024, aprovada em 07/06/2024, publicada em 05/07/2024) | Infraestrutura civil; integração de dados de subsolo | Referência para intercâmbio de as-built e dados subterrâneos (verificado em 22/10/2026: a MUDDI é apenas modelo conceitual; as codificações ficam para partes futuras, sem esquema de troca pronto) | R |
 | ISO 19115-1:2014 (+ emendas); ISO 19157-1:2023 | Metadados; qualidade (completude, consistência lógica, acurácia posicional, temporal, temática) | Metadado por conjunto e linhagem por feição | R (O na INDE) |
 | ISO 55001:2024 | Gestão de ativos | Ciclo de vida do ativo ligado à feição | R |
-| INSPIRE Utility and Governmental Services (D2.8.III.6 v3.0) | Modelo europeu de redes | Referência para tipologia de rede, nó e acessório | R |
+| INSPIRE Data Specification on Utility and Government Services – Technical Guidelines (D2.8.III.6, versão 3.2.0 de 31/01/2024; o prefácio do documento ainda se apresenta como versão 3.0, de 2013; Comissão Europeia/MIG, documento sem posição oficial da Comissão) | Modelo europeu de redes | Referência para tipologia de rede, nó e acessório | R |
 | IFC 4.3 (ISO 16739-1:2024) | BIM de infraestrutura (IfcPipeSegment, IfcPipeFitting, alinhamentos) | Importar projeto/as-built BIM no futuro; obrigação depende da Estratégia BIM BR para obras federais (Decreto 11.888/2024, a confirmar) | R |
 
 ### 2.5 LGPD aplicada ao GIS
@@ -172,11 +172,11 @@ Como não há NBR de simbologia de redes, adotar uma **simbologia padrão do pro
 ## 4. Pendências a confirmar
 
 1. Status oficial de todas as NBR no ABNT Catálogo; conteúdo das NBR 12586, 12587 e 17287 (exige a compra da norma).
-2. Edições vigentes das NBR 12212, 12266, 8890, 5626 e das normas de desenho (consolidação nas NBR 16752 e 16861).
-3. Valor de EP da classe A do PEC-PCD (0,17 mm) no texto da ET-CQDG.
+2. Edições vigentes das NBR 12212 e 5626, classes da NBR 8890:2020 e normas de desenho (substituição pelas NBR 16752 e 16861 apurada em fonte secundária; confirmar no ABNT Catálogo).
+3. Valor de EP da classe A do PEC-PCD (0,17 mm) no original da ET-CQDG (a Tabela 32 indica 0,17 m em 1:1.000, mas a leitura automática embaralha colunas).
 4. Código SINISA da extensão da rede de água e o glossário de água de 2025.
 5. Artigo exato da NR 12/2025 sobre cadastro técnico (lido no manual da ANA, não na resolução).
-6. Aprovação da OGC API – Features parte 4 e da OGC MUDDI.
+6. Aprovação da OGC API – Features parte 4 (segue em minuta em 22/10/2026; consulta pública até 23/09/2024). A aprovação da OGC MUDDI Parte 1 foi confirmada (07/06/2024).
 7. Resoluções de cadastro das ERIs dos primeiros clientes; identificação da "AGESAN".
 8. Versão final do guia de anonimização da ANPD.
 
@@ -196,7 +196,7 @@ Como não há NBR de simbologia de redes, adotar uma **simbologia padrão do pro
 - Decreto 89.817/1984: https://www.planalto.gov.br/ccivil_03/decreto/1980-1989/D89817.htm ; ET-EDGV 3.0: https://geoportal.eb.mil.br/portal/images/Documentos/2024/ET-EDGV-3_0_210518.pdf ; comparativo PEC/PEC-PCD (RBC/UFU): https://seer.ufu.br/index.php/revistabrasileiracartografia/article/view/45259
 - Portaria MDR 3.242/2022: https://www.lex.com.br/portaria-mdr-no-3-242-de-9-de-novembro-de-2022/
 - Decreto 10.936/2022: https://legis.senado.leg.br/norma/35443315/publicacao/35443916
-- AGENERSA, RF 222/2024: https://www.rj.gov.br/agenersa/sites/default/files/arquivos_paginas_basicas/RF%20222-2024.pdf
+- AGENERSA, Relatório de Fiscalização AGENERSA/CASAN nº 222/2024 (Câmara Técnica de Saneamento, assinado em 09/09/2024; não é norma; localizado em 22/10/2026): https://www.rj.gov.br/agenersa/sites/default/files/arquivos_paginas_basicas/RF%20222-2024.pdf
 - OGC API – Tiles: https://docs.ogc.org/is/20-057/20-057.html ; GeoPackage 1.4: https://docs.ogc.org/is/12-128r19/12-128r19.html ; consulta OGC API – Features partes 4 e 5: https://www.ogc.org/requests/ogc-seeks-public-comment-on-ogc-api-features-parts-4-5/ ; Utility Network ADE (TUM): https://asg.ed.tum.de/en/gis/projects/citygml-utility-network-ade
 - ISO 19157-1:2023: https://www.iso.org/standard/78900.html ; IFC 4.3 (buildingSMART): https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcPipeSegmentTypeEnum.htm
 - IRIB, LGPD e anonimização no registro de imóveis: https://irib.org.br/noticias/detalhes/registro-de-imoveis-dados-pessoais-undefined-anonimizacao-undefined-pseudonimizacao ; ANPD, consulta do guia de anonimização (2024): https://www.mattosfilho.com.br/unico/anonimizacao-pseudonimizacao-direitos-titulares/

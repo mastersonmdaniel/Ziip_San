@@ -515,9 +515,9 @@ imóvel, sem mudança na P2.5. O hidrômetro continua em `metering` e se liga à
   12587 (cadastro de água e de esgoto), 12218 (rede de distribuição), 9649 (rede coletora), 5647, 7665 e 7675 (tubos de
   PVC e de ferro fundido dúctil) e 15561 (PE), mais as demais citadas neste §4: 17287, 15750, 15802, 5667-1 a -3,
   12208, 12209, 12212, 12213, 12214, 12216, 12217, 12244, 7362, 7367, 14486, NBR ISO 21138-1 e -3, 8890, 9648, 10160,
-  17076 e 10004. Edição conferida no ABNT Catálogo antes da compra; arquivos fora do repositório, conforme a licença de
+  17076, 10004-1 e 10004-2 (série de 2024). Edição conferida no ABNT Catálogo antes da compra; arquivos fora do repositório, conforme a licença de
   uso; norma não comprada deixa os itens dela marcados.
-- **Perfis de prestadora.** Os padrões Corsan/Aegea (Anexo A, rev. 03/2024) e Saneago (IN 00.0229.03 e modelo
+- **Perfis de prestadora.** Os padrões Corsan/Aegea (Anexo A, rev. 03/2024) e Saneago (IN 00.0229, rev. 04 de 11/03/2024, e modelo
   Giswater) entram como perfis de importação e exportação (mapeamento de camadas e atributos, §9.2) e como conjuntos de
   itens ativáveis, não como catálogo paralelo.
 
@@ -623,7 +623,7 @@ usa `gis_containment` (`VALVE_CHAMBER`).
 |---|---|---|---|---|---|---|
 | PVC parede maciça (`PVC_SOLID_WALL`) | NBR 7362:2025; assentamento NBR 7367:1988; redes em PVC NBR 14486:2000 | DN 100 a 400 | — | elástica | 0,010 | norma para material; DN e n: valor de referência a validar |
 | PVC e PE de parede estruturada (`PVC_STRUCTURED`, `HDPE_STRUCTURED`) | NBR ISO 21138-1 e -3:2021 | DN 150 a 1000 | SN 4, SN 8 | elástica | 0,010 | norma para material; DN, SN e n: valor de referência a validar |
-| Concreto (`CONCRETE`) | NBR 8890 (edição a confirmar) | DN 300 a 1500 | classes da norma para esgoto, simples e armado | elástica | 0,013 | valor de referência a validar |
+| Concreto (`CONCRETE`) | NBR 8890:2020 | DN 300 a 1500 | classes da norma para esgoto, simples e armado | elástica | 0,013 | valor de referência a validar |
 | Cerâmica (`VITRIFIED_CLAY`) | a confirmar | DN 100 a 400 | — | elástica, argamassa (legado) | 0,013 | valor de referência a validar |
 | Ferro fundido dúctil (`DUCTILE_IRON`) | NBR 7675:2026 | DN 80 a 1200 (recalque) | idem água | idem água | C 130 (recalque, Hazen-Williams) | valor de referência a validar |
 | PE 100 (`PE100`) | NBR 15561:2024 | DE 63 a 500 (recalque) | SDR | eletrofusão, topo | C 150 | valor de referência a validar |
@@ -663,10 +663,10 @@ GIS-01; catálogo, regras e telas na GIS-13 (onda B).
 
 | Tipo (`code`) | Papel | Atributos principais | Domínios | Fonte |
 |---|---|---|---|---|
-| Galeria tubular (`STORM_PIPE`) | ARC | DN, material, cotas de montante e jusante, declividade, `geom1` | DN 300 a 1500; concreto simples ou armado, PE e PVC estruturados, aço corrugado | NBR 8890 (edição a confirmar); NBR ISO 21138; DN: valor de referência a validar |
+| Galeria tubular (`STORM_PIPE`) | ARC | DN, material, cotas de montante e jusante, declividade, `geom1` | DN 300 a 1500; concreto simples ou armado, PE e PVC estruturados, aço corrugado | NBR 8890:2020; NBR ISO 21138; DN: valor de referência a validar |
 | Galeria celular (`BOX_CULVERT`) | ARC | base × altura (`geom1`, `geom2`), número de células, material | 1,0 × 1,0 a 3,0 × 3,0 m | valor de referência a validar |
 | Canal (`OPEN_CHANNEL`) | ARC | seção (trapezoidal, retangular, natural), base, altura, talude, revestimento | revestimento: concreto, gabião, enrocamento, grama, terra | valor de referência a validar |
-| Bueiro (`CULVERT`) | ARC | tubular ou celular, DN ou seção, alas, cotas | — | DNIT 030/2004-ES como referência |
+| Bueiro (`CULVERT`) | ARC | tubular ou celular, DN ou seção, alas, cotas | — | DNIT 023/2006-ES (bueiros tubulares de concreto) e DNIT 025/2004-ES (bueiros celulares de concreto) como referência (verificado em 22/10/2026: a DNIT 030/2004-ES trata de dispositivos de drenagem pluvial urbana, não de bueiros; o Busca Normas menciona uma DNIT 023/2024-ES, a confirmar no IPR antes de citar a 023) |
 | Ligação boca de lobo–PV (`INLET_LEAD`) | ARC | DN, material, declividade | DN 300 a 400 | valor de referência a validar |
 | Sarjeta (`GUTTER`), sarjetão (`VALLEY_GUTTER`), valeta (`DITCH`) | ARC | seção, revestimento | — | valor de referência a validar |
 | Boca de lobo (`INLET`) | NODE | tipo (simples, dupla, tripla; com ou sem grelha; guia chapéu ou lateral), dimensões, cota, depressão, capacidade de engolimento | — | SWMM 5.2 (objeto *inlet*); valores: valor de referência a validar |
@@ -705,7 +705,7 @@ módulo GRS (ADR-0004; MTR do levantamento `12`). Classes e papéis desde a GIS-
 | Aterro de inertes e área de transbordo e triagem de RCC (`INERT_LANDFILL`, `CONSTRUCTION_WASTE_FACILITY`) | STRUCTURE | licença, capacidade | — | — |
 | Ponto de descarte irregular (`ILLEGAL_DUMP`) | POI | data de identificação, tipo (RCC, volumoso, doméstico, misto), volume estimado (m³), foto, situação (ativo, em limpeza, eliminado, reincidente), OS de limpeza | — | — |
 
-Classe do resíduo pela NBR 10004 (classe I, II A, II B; edição vigente a confirmar) quando a unidade recebe resíduo
+Classe do resíduo pelas NBR 10004-1 e 10004-2:2024 (classe 1, perigoso, e classe 2, não perigoso) (verificado em 22/10/2026: a série de 2024 abandonou a divisão em classe I, II A e II B da NBR 10004:2004, cancelada em 11/2024, com transição até 31/12/2026; fonte secundária, conferir no texto da ABNT) quando a unidade recebe resíduo
 classificado.
 
 ### 4.6 Listas de valores comuns
@@ -920,11 +920,11 @@ ligados a imóvel e titular), `gis.edit` (criar e editar pacotes), `gis.review` 
 | Serviço | Forma | Entrega |
 |---|---|---|
 | Cliente WMS (SG-827, TR-1014) | fonte raster do MapLibre por URL cadastrada pelo tenant | GIS-06 |
-| OGC API – Features, partes 1 a 3 (Core, CRS, Filtering/CQL2) | na `api`, autenticada por tenant, com permissões por camada e o mesmo serviço de leitura dos tiles | GIS-17 |
+| OGC API – Features, partes 1 a 3 (Core, CRS, Filtering; o CQL2 é norma OGC separada, referenciada pela parte 3) | na `api`, autenticada por tenant, com permissões por camada e o mesmo serviço de leitura dos tiles | GIS-17 |
 | WMS 1.3.0 servidor (`GetCapabilities`, `GetMap`, `GetFeatureInfo`) | pelo GeoServer (v2.12; decidido na v2.11, onda B), só leitura e acessível só pela `api`, autenticado por tenant, com permissões por camada e simbologia em SLD gerado de `gis_style` (§10.2); isolamento por tenant descrito abaixo; exceção registrada no ADR-0010 | GIS-17 |
 | WFS 2.0 com Transaction (SG-1357, F10 do 19e) | fachada na `api` sobre o mesmo serviço: `GetCapabilities`, `DescribeFeatureType`, `GetFeature`; `Transaction` grava no pacote do usuário, nunca na rede em operação | GIS-17 |
 | WCS | não previsto; edital que exigir abre exceção no ADR-0010 | pendência §14 (P-8) |
-| OGC API – Features parte 4 (escrita) | depois de aprovada pela OGC (19c §2.4) | — |
+| OGC API – Features parte 4 (escrita) | depois de aprovada pela OGC (19c §2.4; em 22/10/2026 a parte 4 segue em minuta, e a parte 5, Schemas, foi aprovada em 30/04/2026) | — |
 
 Toda publicação OGC é autenticada por tenant (decisão do dono do produto, v2.11): não há acesso anônimo, a credencial
 pertence a um usuário ou a uma integração cadastrada pelo tenant, e uma requisição nunca lê camada de outro tenant. O
@@ -1005,7 +1005,7 @@ revisão.
 | Perfil | Conteúdo | Origem |
 |---|---|---|
 | Corsan Anexo A (rev. 03/2024) | camadas `A_REDE`, `A_CONEXOES`, `A_VALVULA`, `A_HIDRANTE`, `A_PROTEHIDRAULICAS`, `A_RAMAIS`, `A_MACROMEDIDOR`, `A_PCP`, `A_PCQ`, `A_POCO`, `A_RESERVATORIO`, `A_EEAT`, `A_MOTOBOMBA`, `A_ETA`, `A_CAPTACOES`, `A_SETOR_FORNECIMENTO`; `E_REDE`, `E_POCO_VISITA`, `E_TIL`, `E_CX_LIGACAO`, `E_CX_DESCARGA`, `E_RAMAL`, `E_VALVULAS`, `E_EEE`, `E_MOTOBOMBA`, `E_ETE`, `E_BACIA`, `E_SUB_BACIA`, com os atributos mapeados para colunas e itens | 19b §3.3 |
-| Saneago | camadas e atributos da IN 00.0229.03 e do modelo Giswater (`arc`, `node`, `connec`, catálogos) | 19b §3.1; conteúdo a validar na leitura da IN |
+| Saneago | camadas e atributos da IN 00.0229 (rev. 04, de 11/03/2024; verificado em 22/10/2026: a revisão publicada é a 04, e a 03 citada antes não foi localizada) e do modelo Giswater (`arc`, `node`, `connec`, catálogos) | 19b §3.1; conteúdo a validar na leitura da IN |
 | Nova Trento/DGN `PREFIXO_Feição` | níveis `_TER`, `DIV`, `DRE`, `PAV`, `URB`, `USO`, `VIA` como camadas de contexto e de drenagem | 19a §2.4 |
 | Genérico | mapeamento montado na tela e salvo por cliente | — |
 
@@ -1099,7 +1099,7 @@ seleção por polígono com estatísticas, OS no mapa e temáticos (GIS-08). Rot
 | SWMM 5.2 | junção = PV (cota de fundo, profundidade máxima = tampa − fundo); conduto = arco com cotas, seção `geom1`–`geom4` e Manning; armazenamento = bacia de detenção; *outfall* = lançamento; *subcatchment* = sub-bacia; *inlet* = boca de lobo; importação de `.inp` | GIS-12 |
 | Perdas e DMA | `gis_zone` `DMA` ligada a `dma_district`; macromedidores como controladores; balanço por setor na ED-48 | GIS-01, ED-48 |
 | Telemetria | macromedidor e ponto de pressão ligados ao ponto da ED-17 | ED-17 |
-| Gestão de ativos (ISO 55000/55001) | probabilidade de falha (idade, material, vida útil, rompimentos por arco vindos das OS de reparo, estado) × consequência (traçado de isolamento: ligações, clientes sensíveis, DN, local); plano de renovação; manutenção preventiva e corretiva ligada à feição | GIS-19 (ED-56) |
+| Gestão de ativos (ISO 55000:2024 e ISO 55001:2024) | probabilidade de falha (idade, material, vida útil, rompimentos por arco vindos das OS de reparo, estado) × consequência (traçado de isolamento: ligações, clientes sensíveis, DN, local); plano de renovação; manutenção preventiva e corretiva ligada à feição | GIS-19 (ED-56) |
 | Inventário patrimonial pela NR 16/2026 da ANA (MCPSB) | códigos LOC, BCP, BRV, NTS-SDS, UP, UAR, AT1–AT5 por feição; extensão em metros por subdivisão de estrutura linear (rede de distribuição, adutora, rede coletora, coletor-tronco, interceptor, emissário, linha de recalque, interligação, extravasor, lododuto, rede de drenagem); conciliação GIS × patrimônio exportada à contabilidade (ED-32); bens reversíveis com data e origem do investimento (NR 3/2023) | GIS-19 |
 | Drenagem pela NR 12/2025 da ANA | cadastro georreferenciado com material, estado de conservação, foto e histórico; relatório para a ERI | GIS-13 |
 | SINISA | extensão da rede de esgoto pela regra do GTE1001 (inclui coletores-tronco e interceptores; exclui ramais, emissários e recalques), extensão de água (código a confirmar no glossário vigente), coordenadas de elevatórias e ETEs em graus decimais com 7 casas, na data de referência ("rede na data"), para o exportador assistido (ADR-0004, ED-48) | GIS-08 |

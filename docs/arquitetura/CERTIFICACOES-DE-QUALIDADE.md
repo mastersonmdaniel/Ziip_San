@@ -21,7 +21,7 @@ cláusulas é autoavaliação, e a interface o diz em toda tela que o exibe.
 | `REGULATORY` | NR 8, 9, 11, 13, 15 e 16 da ANA; NR-1, 18, 33 e 35 do MTE (segurança do trabalho, v2.18); Portaria GM/MS 888/2021 e SISAGUA; CONAMA 357, 430 e 498; Leis 11.445, 14.015, 14.898, 13.460 e 12.007; Decreto 5.440; LGPD; Portaria Inmetro 155/2022 | Obrigatória por aplicabilidade; não desativável; preenchida pelo perfil regulatório |
 | `VOLUNTARY` | ISO 9001, 14001, 45001, 55001; ISO/IEC 27001 e 27701; ISO/IEC 17025; ISO 46001; ISO 24510, 24511 e 24512 | Ativável pelo tenant com escopo e edição |
 | `REFERENCE` | NBR 12218, 9649, 9648, 12586, 12587, 13133, 14166, 16043 e 15538 | Ativável como checklist de completude |
-| `EXPORT_PROFILE` | ISO 37120, PNQS | Perfil de exportação de indicadores, sem entrada própria |
+| `EXPORT_PROFILE` | ISO 37120, PNQS | Perfil de exportação de indicadores, sem entrada própria (verificado em 22/10/2026: o PNQS é prêmio e selos de reconhecimento da ABES, sem formato de exportação definido e não certificável; a classe adequada é `VOLUNTARY`) |
 
 O CONAMA 503/2021 não entra para esgoto sanitário: trata de fertirrigação com efluentes de certas indústrias (21b).
 As ISO 24510, 24511 e 24512 não são certificáveis; servem de base do sistema de indicadores. A ISO/IEC 17025 é

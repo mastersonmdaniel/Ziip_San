@@ -9,12 +9,16 @@
 
 A G3 do plano perguntava se o produto constrói ou integra o emissor da NFAg-e (nota fiscal eletrônica de água e
 saneamento, modelo 75), com obrigatoriedade prevista para 01/12/2026, ainda a confirmar no DOU
-(`14-VALIDACAO-REGULATORIA-CONSOLIDADA.md`). O plano (R4) e a revisão 17 (P4) supunham emissão por integrador
+(`14-VALIDACAO-REGULATORIA-CONSOLIDADA.md`; verificado em 22/10/2026: a data consta do art. 1º, XVI, do Ato Conjunto
+RFB/CGIBS nº 4/2026 e do cronograma da Receita Federal, e o documento foi instituído pelo art. 114 do Decreto
+12.955/2026 e pelo regulamento do IBS, e não por Ajuste SINIEF). O plano (R4) e a revisão 17 (P4) supunham emissão por integrador
 terceiro até 30/04/2027, atrás de uma porta `FiscalAuthorizer` que ainda não existe no código.
 
 O mesmo dono mantém o Ziip Cloud (C#/.NET 8, `G:\Meu Drive\PROJETOS\Ziip Clould\Ziip-cloud-source`), que já tem um
 motor fiscal: emissão de NFS-e no Padrão Nacional, cofre de certificado A1/A3 com AES-GCM, assinatura XMLDSig,
-cliente mTLS com retry e cálculo de IBS/CBS conforme a NT 007/2026 (`src/Nfse.Domain`, `src/Nfse.Application`,
+cliente mTLS com retry e cálculo de IBS/CBS (o código cita a NT 007/2026; verificado em 22/10/2026: essa NT, da SE/CGNFS-e, aplica o arredondamento
+half-even e a tolerância de R$ 0,01 apenas a PIS e Cofins, e o arredondamento de IBS e CBS por documento e tributo
+continua a confirmar nas NTs 004, 008 e 009 e no manual da NFS-e) (`src/Nfse.Domain`, `src/Nfse.Application`,
 `src/Nfse.Infrastructure` com `Security`, `Xml`, `Sefin`, `Adn`; testes em `tests/Nfse.Tests`).
 
 A NFAg-e é um documento fiscal eletrônico distinto da NFS-e: tem leiaute, schema, autorizador e eventos próprios. O

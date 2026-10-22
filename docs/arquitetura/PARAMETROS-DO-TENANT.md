@@ -122,7 +122,7 @@ prazo maior), nunca menor. O piso só é ativado em produção depois de conferi
 | `pay.classify_tolerance`, `pay.adjust_tolerance`, `pay.duplicate_winner` | tolerâncias e vencedor da duplicidade | R$, enum | tolerâncias: sem; `pay.duplicate_winner`: `OLDEST_PAYMENT` (opções `OLDEST_PAYMENT`, `NEWEST_PAYMENT`; a quitação mais antiga protege contra acréscimo; 20c §5.2 e ARR-03, v2.15) | livre | d | FIN | P3 | `V6_1:213-215` |
 | `pay.pix_provider` | PSP, chave Pix, referência da credencial no cofre, webhook | objeto | sem | Regulamento Pix (Res. BCB 1/2020); tenant do webhook vem do convênio | d | FIN | P3 | novo |
 | `pay.hybrid_charge` | cobrança híbrida Pix + boleto | bool | desligado | facultativo, a partir de 01/02/2027 (Res. BCB 587/2026) | d | FIN | P3 | novo |
-| `pay.pix_automatic` | habilitado, antecedência da instrução, valor máximo | objeto | desligado | débito em conta com recebedor PJ só por Pix Automático desde 13/10/2025 (Res. CMN 5.251/2025) | d | FIN | P4 | novo |
+| `pay.pix_automatic` | habilitado, antecedência da instrução, valor máximo | objeto | desligado | débito em conta com recebedor PJ ou entidade não autorizada pelo BCB só por Pix Automático desde 13/10/2025 (Res. CMN 5.251/2025; verificado em 22/10/2026: para convênios de prestação de serviços públicos, a adequação de contratos e autorizações foi prorrogada para 01/01/2027 pela Res. CMN 5.278/2025, de 24/12/2025, que alterou o art. 2º-A, §2º, da Res. CMN 4.790/2020; o enquadramento da água e esgoto como convênio de serviço público exige análise jurídica; a data de 01/07/2027 é outra regra, a vigência do novo regime geral do débito automático, Res. BCB 565/2026) | d | FIN | P4 | novo |
 
 Travado (classe a): ajuste de conciliação com aprovação dupla (plano R5).
 
@@ -155,7 +155,7 @@ exceção.
 | Chave | Descrição | Tipo | Sug. | Limite | Cl. | Apr. | Fase | Código |
 |---|---|---|---|---|---|---|---|---|
 | `ret.billing_history_months` | histórico de leitura e faturamento | meses | 120 | piso 120 (NR 11 art. 22; `08` E-05, `11` R38, `13`), também quando a ERI não adotou a NR 11; só amplia | c | DPO+JUR | P2 | `lgpd_retention_schedule` sem semente (`V2_5:138-158`); motor não elimina |
-| `ret.billing_after_closure_years` | guarda após o encerramento do vínculo | anos | 10 | piso 10 anos, a confirmar: prescrição decenal (REsp 1.117.903, tema não confirmado, `13`); repetição de indébito 10 anos (Súmula 412); só amplia | c | JUR | P2 | novo |
+| `ret.billing_after_closure_years` | guarda após o encerramento do vínculo | anos | 10 | piso 10 anos, a confirmar: prescrição decenal (REsp 1.117.903/RS, Temas 251 a 254 do STJ, julgado em 09/12/2009; verificado em 22/10/2026: prazo da pretensão de cobrança pelo prestador, não da repetição de indébito, `13`); repetição de indébito 10 anos (Súmula 412 e Tema 932, REsp 1.532.514/SP); só amplia | c | JUR | P2 | novo |
 | `ret.prescription_years` | prescrição por natureza (tarifa, multa administrativa, repetição); não é prazo de guarda | mapa | sem | G6 | d | JUR | P4 | novo; estado `PRESCRIBED_DEBT` já existe (`V4_1:236`) |
 | `ret.social_base_days` | eliminação do lote CadÚnico/BPC importado | dias | sem | piso a definir (sem norma no levantamento); só amplia | c | DPO | P1 | novo (`purge_at`, `V4_2`) |
 | `ret.social_documents_years` | documentos do pedido manual | anos | 10 (ARSAE-MG) | piso a definir (sem norma federal no levantamento); só amplia | c | DPO | P1 | novo |

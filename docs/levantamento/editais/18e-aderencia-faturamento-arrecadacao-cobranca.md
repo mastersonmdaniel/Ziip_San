@@ -92,7 +92,7 @@ da contagem e estão listados na seção 2.22.
    em atraso (TR-286: a Lei 14.898/2024 proíbe condicionar a tarifa social à adimplência); dias e horários de geração
    das ordens de corte (TR-415, SG-398: só dentro das vedações da Lei 14.015/2020, travadas no produto); débito em
    conta com recebedor pessoa jurídica (TR-339, SG-327: desde 13/10/2025 a autorização segue o regulamento do Pix
-   Automático, Res. CMN 5.251/2025; relatório `11`, R15).
+   Automático, Res. CMN 5.251/2025, que altera a Res. CMN 4.790/2020; relatório `11`, R15).
 
 ## 2. Matriz de aderência
 
@@ -435,7 +435,7 @@ Não contadas à parte (já estão em TR-1074 e SG-1282). Fonte: relatório `11`
 | SG-411 | Simular um lote de negativação, com desfazer ou efetivar | sim (–/C) | **Não atende** | Não planejado | E10 | P |
 | SG-548 | Excluir uma fatura registrada no SPC ou SERASA (atendimento) | sim (–/C) | **Não atende** | Não planejado | E10 | P |
 | TR-572 | Excluir uma fatura registrada em cartório de protesto ou outro meio de cobrança legal | não (a/–) | **Não atende** | Não planejado | E10 | P |
-| SG-424 | Notificação extrajudicial e envio automático para protesto das faturas em dívida ativa | sim (–/C) | **Não atende** | Não planejado | E10 (protesto de CDA: Lei 9.492/1997, alterada pela Lei 12.767/2012) | M |
+| SG-424 | Notificação extrajudicial e envio automático para protesto das faturas em dívida ativa | sim (–/C) | **Não atende** | Não planejado | E10 (protesto de CDA: Lei 9.492/1997, alterada pelo art. 25 da Lei 12.767/2012, que incluiu a CDA entre os títulos sujeitos a protesto; constitucionalidade examinada pelo STF na ADI 5135) | M |
 | SG-425 | Integração com o sistema de cobrança do cartório: envio e baixa automática | sim (–/C) | **Não atende** | Não planejado | E10 | M |
 
 ### 2.15 Dívida ativa
@@ -653,7 +653,14 @@ Recomendação: B, em P3/P4 (E11), porque é o mínimo que passa nas duas POCs s
 
 O TR cobra débito automático FEBRABAN na POC (Anexo II h) e o SG o trata como crítico (SG-327). Desde 13/10/2025 a
 autorização com recebedor pessoa jurídica segue o regulamento do Pix Automático (Res. CMN 5.251/2025), e o regime atual
-é revogado em 01/07/2027 (Res. CMN 5.299/2026). O plano exclui o FEBRABAN 150 e põe o Pix Automático na P4.5.
+(Res. CMN 4.790/2020) é revogado em 01/07/2027 (art. 6º da Res. CMN 5.299/2026, norma de diretrizes; o regime
+operacional vem da Res. BCB 565/2026, que altera a Res. BCB 51/2020 a partir de 01/07/2027, e a Res. CMN 4.790 segue em
+vigor até 30/06/2027). O plano exclui o FEBRABAN 150 e põe o Pix Automático na P4.5. (verificado em 22/10/2026: para convênios de
+prestação de serviços públicos, o prazo de adequação à regra de 13/10/2025 é 01/01/2027 e não
+01/01/2026, pela Res. CMN 5.278/2025 (de 24/12/2025, que alterou o art. 2º-A, §2º, da Res. CMN 4.790/2020); a regra vale
+para recebedor pessoa jurídica ou entidade não autorizada a funcionar pelo BCB, e o enquadramento da água e esgoto como
+convênio de serviço público exige análise jurídica. São duas regras com datas diferentes: 01/01/2027 encerra a
+adequação ao Pix Automático desses convênios, e 01/07/2027 é a vigência do novo regime geral do débito automático.)
 
 | Opção | Conteúdo | Esforço |
 |---|---|---|

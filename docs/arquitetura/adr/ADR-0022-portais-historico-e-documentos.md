@@ -81,7 +81,7 @@ liquidação da despesa. Hoje a Central só prevê o lado do financeiro do Ziip.
      código errado e documento errado; tentativas limitadas por conta, por IP e por tenant, com bloqueio progressivo e
      429; cada tentativa registrada no `personal_data_access_log`; alerta de volume anômalo por tenant na Central.
 5. **Marca e acessibilidade.** PDFs com a marca do tenant (ADR-0016) e o modelo de conta aprovado; texto real e
-   estrutura marcada no PDF; páginas do portal em WCAG 2.1 AA e eMAG (RNF-60).
+   estrutura marcada no PDF; páginas do portal em WCAG 2.1 AA e eMAG (RNF-60; verificado em 22/10/2026: a WCAG 2.2, recomendação do W3C de 05/10/2023 e também a norma ISO/IEC 40500:2025, é compatível com a 2.1 e acrescenta critérios; o RNF-60 permanece em 2.1 AA, e a proposta de elevá-lo a 2.2 AA está no PLT-31 do levantamento 22c, a decidir).
 6. **Área do tenant na relação com o Ziip** (P2, antes do primeiro contrato): o prestador vê o histórico de faturas e
    pagamentos do contrato SaaS (ADR-0019) e baixa a fatura paga e a NFS-e da venda em PDF e XML. Acesso do
    administrador do tenant e de papel próprio de consulta do contrato; o tenant só vê o próprio contrato. O mesmo

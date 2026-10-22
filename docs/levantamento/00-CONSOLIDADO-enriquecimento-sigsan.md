@@ -16,7 +16,7 @@ Convenção: **[verificado]** = conferi no código do SIGSAN; **[agente]** = afi
 5. Os levantamentos acharam **defeitos estruturais no SIGSAN** que o build verde não pega (seção 2). Eles vêm antes de qualquer feature.
 6. **Licença:** o GSAN não tem `LICENSE` no repositório (provável GPL, não confirmada); o GEOSAN é GPL-2.0-only. Regra: **clean-room**. Conceitos, estados, fórmulas e regras entram; código, SQL, `.jrxml`, layouts e nomes de coluna não.
 7. O pacote de maior valor imediato são os **~90 casos de teste de cálculo** do relatório 02 e os 30+ do relatório 03: viram critério de aceite, na linha do que o diário já cobra.
-8. O GSAN **não cobre** PIX, NPC/DDA, CNAB 444 nem SNIS/ANA/ARSAE. O SIGSAN pode entrar nessas lacunas como diferencial.
+8. O GSAN **não cobre** PIX, NPC/DDA, CNAB 444 (layout próprio de administradoras de FIDC, factorings e securitizadoras, e não padrão FEBRABAN; verificado em 22/10/2026) nem SNIS/ANA/ARSAE. O SIGSAN pode entrar nessas lacunas como diferencial.
 9. Há **risco regulatório** concentrado em negativação SPC/Serasa (CDC, LGPD) e em tarifa social (dado socioeconômico sensível).
 10. O relatório 05 propõe esquema PostGIS por tenant com nó-trecho explícito; o 06 mostra que o escritor `.inp` atual gera arquivo inválido.
 
