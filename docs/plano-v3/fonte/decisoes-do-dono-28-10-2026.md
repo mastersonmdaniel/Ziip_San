@@ -40,3 +40,12 @@ decisões do dono não se alteram sem cartão.
 - PD-09: ED-68, ED-102 e ED-103 seguem como pacotes pendentes.
 - PD-10: pareceres jurídicos: primeiro o da RAS-06 (Pix Automático e débito automático), que decide o escopo da P3.24
   e da ED-27.
+
+## Cartões de 29/10/2026
+
+- ADR-0046 aceito: ingestão de supervisório somente leitura, por REST e arquivo, sem broker.
+- OWASP ASVS no aceite de segurança (P3.8): nível 2 em geral e nível 3 em autenticação, pagamento e dados pessoais.
+- Unidade consumidora sem usuário vigente: padrão de fábrica sem titular, com fatura retida até definir o responsável.
+- pgRouting na roteirização de equipes (ED-36): só depois de ADR próprio.
+- Seguem em aberto, por não terem sido aprovadas no cartão: leitura de "notas do tenant" como avaliação de satisfação
+  (P4.8) e alinhamento da instância dedicada (LC.15) ao banco dedicado do ADR-0024.

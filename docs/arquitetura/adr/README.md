@@ -70,7 +70,7 @@ cada tarefa entra.
 | [0043](ADR-0043-login-govbr-e-pagamento-sem-conta-no-portal.md) | Login gov.br (só tenant público) e pagamento sem conta por código impresso no portal; altera o ADR-0022 | Aceito | 28/10/2026 |
 | [0044](ADR-0044-projeto-sem-prazos.md) | O projeto não tem prazos: datas são indicação de sequência; datas de norma são fatos | Aceito | 28/10/2026 |
 | [0045](ADR-0045-os-no-nucleo-e-tipos-de-saneamento-no-pacote.md) | Motor de OS no núcleo da plataforma; tipos e alvos de saneamento no pacote `sanitation` | Aceito | 28/10/2026 |
-| [0046](ADR-0046-ingestao-de-supervisorio-somente-leitura.md) | Ingestão de supervisório somente leitura por REST e arquivo, sem broker (exceção ao ADR-0010) | Proposto | 28/10/2026 |
+| [0046](ADR-0046-ingestao-de-supervisorio-somente-leitura.md) | Ingestão de supervisório somente leitura por REST e arquivo, sem broker (exceção ao ADR-0010) | Aceito | 29/10/2026 |
 
 ## Referências
 

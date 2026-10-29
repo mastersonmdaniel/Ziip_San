@@ -31,7 +31,7 @@ em divergência entre o plano e um ADR, vale o ADR mais recente.
   ED-80 foram divididas; a P0.25 passa a limpar o código antes da renomeação. Total: 286 tarefas.
 - **ADRs.** ADR-0043 (login gov.br para tenant público e pagamento sem conta no portal; altera o ADR-0022); ADR-0044
   (o projeto não tem prazos); ADR-0045 (motor de OS no núcleo, tipos e alvos de saneamento no pacote); ADR-0046
-  (ingestão de supervisório somente leitura, proposto); nota de alinhamento ao NIST SP 800-63B-4 no ADR-0040; nova
+  (ingestão de supervisório somente leitura, aceito em 29/10/2026); nota de alinhamento ao NIST SP 800-63B-4 no ADR-0040; nova
   redação da regra 2 do índice de ADRs.
 - **Seções reescritas.** Estado atual (§1); decisões vigentes por tema (§2.2); pendências do dono sem data, com
   "Antes de" (§2.4); mapa Flyway com as reservas das tarefas novas e as faixas que faltavam (§3); caminho de

@@ -4,6 +4,8 @@
 - **Decisor:** dono do produto
 - **Afeta:** revisão 17, §4.3 (compose expõe serviços não usados), achado O2 (Terraform), §7 (lista de congelamento) e
   §8.5
+- **Ajuste de 29/10/2026 (plano v3.0):** exceção controlada pelo ADR-0046 para a ingestão de supervisório somente leitura,
+  por REST e arquivo, sem broker; pgRouting para roteirização de equipes só com ADR próprio antes do uso (ED-36).
 - **Ajuste de 12/10/2026 (editais), antes de qualquer implementação:** hospedagem decidida (ADR-0011, AWS
   `sa-east-1`), o que tira o perfil `vault` do caminho de produção; seção "Exceções" ampliada com o Apache Superset
   (ADR-0027), o ODA File Converter como ferramenta de implantação e a ingestão de telemetria por REST e arquivo, sem

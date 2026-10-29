@@ -1234,3 +1234,12 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   parâmetros bill.holder_name_display, portal.* e pay.own_cashier_enabled. Material de trabalho em docs/plano-v3.
 - Pendências do dono: as da seção 2.4 do plano (pareceres jurídicos na ordem do PD-10, decisões a rever das normas e as
   dez abertas na redação). Só documentação; o P0 aguarda ordem.
+
+### 29/10/2026 — Decisões sobre a seção 2.4 do plano
+
+- Detalhamento da seção 2.4 (9 decisões em aberto, 5 pareceres jurídicos, 31 premissas a rever e 10 pendências da redação).
+- Cartões do dono: ADR-0046 aceito (supervisório somente leitura, por REST e arquivo, sem broker; ajuste no ADR-0010);
+  ASVS nível 2 em geral e nível 3 em autenticação, pagamento e dados pessoais (P3.8); unidade consumidora sem usuário
+  vigente com padrão sem titular e fatura retida (P1.41); pgRouting na roteirização de equipes só com ADR próprio (ED-36).
+- Seguem em aberto: "notas do tenant" na Central (P4.8) e alinhamento da instância dedicada (LC.15) ao ADR-0024.
+- Plano remontado por scripts/plano/montar-v3.js (286 tarefas, 0 erros). Só documentação.

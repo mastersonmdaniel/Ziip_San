@@ -27,7 +27,7 @@
 - **Editais.** Dos 2.663 requisitos distintos da VISAN e do SAMAE (consolidado 18), 3% atendidos, 21% em parte e 75% não
   atendidos; o produto hoje reprova nas duas provas de conceito. A pesquisa de editais é suplemento de planejamento,
   não atendimento de edital (diretriz de 21/10/2026).
-- **Base documental.** 46 ADRs (0001 a 0046, com o 0029 revogado e o 0046 proposto); catálogo de 1.676 normas
+- **Base documental.** 46 ADRs (0001 a 0046, com o 0029 substituído pelo 0035); catálogo de 1.676 normas
   (1.330 conferidas em fonte oficial, 346 em fonte secundária); 333 achados com destino único no mapa de donos.
 
 **Histórico.** A v1 consolidou o PDCA de 12/10 (C1–C5) e o roadmap R0–R9 do `15c` em fundações E0–E6, com mapa Flyway e

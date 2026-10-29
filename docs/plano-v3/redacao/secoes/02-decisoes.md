@@ -102,7 +102,6 @@ precisa da decisão para começar; enquanto ela não vem, a tarefa não começa,
 | NFAg-e: manual e XSD oficiais (verificado em 22/10/2026: o portal da SVRS ainda indica o manual em forma de minuta, e o Anexo II, DANFAG, v1.02, é de 25/08/2026), inclusive o regime de contingência (chave gerada fora do autorizador, assinatura no momento da emissão, prazo de transmissão), de que depende a emissão em campo (ADR-0031, item 4); se a tarefa "confirmar no DOU a obrigatoriedade e a data" ainda procede, já que a data de 01/12/2026 consta do Ato Conjunto RFB/CGIBS 4/2026 (decisoes-a-rever, lote 2, item 1); aceitação do CNPJ da Ziip/TGP como emitente de teste do modelo 75 na homologação da UF do piloto (se não for aceito, a forma da P2.6 volta ao dono do produto); se o leiaute admite NFAg-e única por fatura agrupadora do órgão centralizador (`fiscal.central_billing_invoice_mode`) | Daniel | P2.6 (manual e XSD); ED-19 (contingência) | P2.6, ED-19 |
 | Arredondamento (half-even no C#, `HALF_DOWN` no billing) e tributo no CHECK de total de `bills` (hoje tratado como retenção); a NT 007/2026 não é a base normativa do arredondamento de IBS e CBS, e a regra fica sem norma citada até a leitura dos anexos da NT 004, das NTs 008 e 009 e do manual da NFS-e | técnico | P1.16 (e P2.4, P2.5) | P2.4, P2.5; vetores comuns do ADR-0031 |
 | Disponibilidade de `pgrouting`, `pg_jsonschema`, `pgaudit` e do SRID 5396 no RDS (ADR-0034) | técnico | P0.26 (documental); LC.1 (prática) | P2.21; GIS-10; lançamento |
-| Aceite do ADR-0046 (ingestão de supervisório somente leitura por REST e arquivo, sem broker), registrado como proposto (PD-04) | Daniel | início da onda A (ED-17) | ED-17, ED-87, ED-93 |
 | Liberação dos pacotes pendentes: ED-68 (cobrança por empresa terceirizada), recorte da ED-102 (obras e convênios de investimento), ED-103 (antecipação de recebíveis), ED-104 (trilha GRS) e P4.6 (schema compartilhado e banco dedicado, só com demanda); nenhuma tarefa fora da seção depende deles (PD-05, PD-09) | Daniel | entrada de cada pacote | seção de pacotes pendentes |
 | Pacote de validação do sistema por versão para a ISO/IEC 17025: pendente até haver cliente com laboratório acreditado que o exija (PD-08) | Daniel | contrato que o exija | ED-51 |
 | Nome comercial das verticais e relação com "Ziip SAN" (ADR-0037, item 7) | Daniel | primeiro material externo que cite outra vertical | nada no código; textos de marca e do Sobre |
@@ -158,7 +157,7 @@ de débito automático, MP 1.393, retenção por estatal e protesto de CDA estã
 | Justificativa do escore de crédito no PL 2.338/2023 (acesso a serviço essencial, art. 14, IV) | P4.1 (GES-24) |
 | Limites de efluente: nenhum limite da revisão da CONAMA 430 codificado antes da publicação | ED-105 |
 
-**Resolvidas pelo dono do produto em 28/10/2026 (cartões)**
+**Resolvidas pelo dono do produto em 28/10/2026 e 29/10/2026 (cartões)**
 
 | Decisão | Resultado | Onde foi aplicada |
 |---|---|---|
@@ -172,22 +171,23 @@ de débito automático, MP 1.393, retenção por estatal e protesto de CDA estã
 | PD-01 | ED-01 depende da onda A, do grupo B1 e do P4; o grupo B2 entra só no critério da LC.1 | ED-01; M12; LC.1 |
 | PD-02 | Motor de OS no núcleo; tipos e alvos de saneamento no pacote `sanitation` | ADR-0045; P0.47, P1.31, P1.32, P2.25 |
 | PD-03 | Regra 2 do índice de ADRs: ajuste só para esclarecimento; substância por ADR novo que substitui | README dos ADRs |
-| PD-04 | ADR proposto antes da onda A para ingestão de supervisório somente leitura por REST e arquivo, sem broker | ADR-0046 (proposto); ED-17 |
+| PD-04 | ADR antes da onda A para ingestão de supervisório somente leitura por REST e arquivo, sem broker; aceito em 29/10/2026 | ADR-0046 (aceito); ED-17 |
 | PD-05 | P4.6 na seção de pacotes pendentes, fora do critério da LC.1 | P4.6; LC.1 |
 | PD-06 | Atividade econômica (CNAE) na unidade consumidora | P1.3, P2.5 |
 | PD-07 | Caixa próprio do prestador como item condicional da ED-26, ligado por parâmetro e confirmado na P1.1 | ED-26, P1.1 |
 | PD-08 | Validação do sistema por versão para a ISO/IEC 17025 pendente até haver cliente que a exija | ED-51 |
 | PD-09 | ED-68, ED-102 e ED-103 seguem como pacotes pendentes | seção de pacotes pendentes |
 | PD-10 | Pareceres jurídicos na ordem acima, começando pela RAS-06 | P3.24, ED-27 e as tarefas da tabela de pareceres |
+| ADR-0046 | Aceito: ingestão de supervisório somente leitura, por REST e arquivo, sem broker (cartão de 29/10/2026) | ADR-0046; ED-17, ED-87, ED-93 |
+| Níveis do OWASP ASVS | Nível 2 em geral; nível 3 em autenticação, pagamento e dados pessoais (cartão de 29/10/2026) | P3.8 |
+| Unidade consumidora sem usuário vigente | Padrão de fábrica: sem titular, com fatura retida até definir o responsável; parâmetro do tenant (cartão de 29/10/2026) | P1.41 |
+| pgRouting na roteirização de equipes | Só com ADR próprio antes do uso (cartão de 29/10/2026) | ED-36 |
 
 **Pendências abertas na redação da v3.0 (28/10/2026).** Cada uma traz a recomendação de quem redigiu; nenhuma foi
 decidida:
 
 | Pendência | Recomendação | Tarefa |
 |---|---|---|
-| Níveis do OWASP ASVS no aceite de segurança | nível 2 em geral e nível 3 em autenticação, pagamento e dados pessoais (22c, PLT-08) | P3.8 |
-| Padrão de fábrica para unidade consumidora sem usuário vigente | sem titular, com fatura retida até a definição do responsável | P1.41 |
-| Uso do pgRouting para o tempo de viagem das equipes | ADR próprio antes de usar (22b, OPE-33) | ED-36 |
 | Leitura de "notas do tenant" na Central | avaliação de satisfação (CSAT e NPS) do suporte | P4.8 |
 | Instância dedicada e banco dedicado | alinhar a LC.15 ao ADR-0024, que trata a instância dedicada como extensão do modo de banco dedicado da P4.6 | LC.15, P4.6 |
 | Tamanho do código de unidade patrimonial (UP) do MCPSB | conferir no manual (a tabela 4 dá 2 dígitos e a figura 2 dá 3) antes da migration | P1.35 |

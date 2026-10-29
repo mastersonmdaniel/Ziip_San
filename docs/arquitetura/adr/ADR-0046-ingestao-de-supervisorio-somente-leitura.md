@@ -1,7 +1,6 @@
 # ADR-0046 — Ingestão de supervisório somente leitura, por REST e arquivo, sem broker
 
-- **Status:** Proposto, 28/10/2026 (registro antes da onda A, por cartão de 28/10/2026, decisão pendente PD-04 da
-  estrutura da v3.0; aceite do dono pendente, §2.4 do plano)
+- **Status:** Aceito, 29/10/2026 (proposto em 28/10/2026, decisão PD-04 da estrutura da v3.0; aceite do dono por cartão de 29/10/2026)
 - **Decisor:** dono do produto
 - **Exceção controlada a:** ADR-0010 (infraestrutura não usada congelada), dentro do ADR-0028, item j (telemetria por REST
   e arquivo; MQTT só sob demanda)
