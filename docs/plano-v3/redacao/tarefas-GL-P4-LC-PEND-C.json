@@ -1,0 +1,729 @@
+[
+  {
+    "id": "GL.1",
+    "title": "Carga na homologação local",
+    "origin": "17:X5; ADR-0033",
+    "size": "M",
+    "deps": [
+      "P2.10",
+      "P2.19"
+    ],
+    "acceptance": "extração do cadastro e do histórico do sistema do piloto anonimizada na origem pelo roteiro da P0.45, com código substituto no lugar da matrícula, e conciliada com os totais do sistema do piloto; carga feita pelos mesmos importadores que a LC.10 usará sobre o dado real (P1.2, P2.10 e P2.19); teste de varredura verde, sem nenhum dado pessoal real na base local; documentos fiscais anteriores à primeira produção só sintéticos, assinados com certificado de teste, e XML reais só na carga de produção (ver LC.10); cadastro técnico com a rede real do piloto (redes, peças e estruturas) carregado pela P3.26, com acesso restrito; ligações, ramais e imóveis anonimizados na origem, com coordenada deslocada dentro da quadra ou agregada por quadra (ADR-0033)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)",
+      "XML reais remetidos à LC.10"
+    ]
+  },
+  {
+    "id": "GL.2",
+    "title": "Dois ou três ciclos de faturamento paralelo local, conta a conta",
+    "origin": "ADR-0001; ADR-0033",
+    "size": "G",
+    "deps": [
+      "GL.1",
+      "P2.20",
+      "P3.22",
+      "P3.29",
+      "P3.30",
+      "P2.31",
+      "P2.32"
+    ],
+    "acceptance": "dois ou três ciclos de faturamento paralelo no ambiente local, com as contas comparadas conta a conta com as do sistema do piloto pelo código substituto; divergência dentro do critério da P0.30, toda explicada; usa o perfil regulatório da agência do piloto da P2.31 (RAS-01), ativo e com vigência conferida antes do primeiro ciclo; usa o conteúdo mínimo da fatura por lei e por agência da P2.32, conferido em cada conta do paralelo; NFAg-e só no simulador ou na homologação da SEFAZ (`tpAmb=2`), com os XML assinados apagados ao fim de cada ciclo (P3.7); divergências corrigidas pela retificação da P2.20 e conferidas pelos relatórios da P3.22; devoluções e pagamentos não identificados do paralelo tratados pela P3.29; operação do paralelo com unidade organizacional e escopo por área da P3.30; ensaio de POC registrado",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "nota de arquitetura: P2.31 e P2.32 conferidas no paralelo",
+      "RAS-01 consumido da P2.31"
+    ]
+  },
+  {
+    "id": "GL.3",
+    "title": "Ensaio de restauração local",
+    "origin": "17:X2",
+    "size": "P",
+    "deps": [
+      "P0.28",
+      "P3.33"
+    ],
+    "acceptance": "restauração do backup local da P0.28 cronometrada contra o RTO de referência de 4 h, com contagem de registros, checksum e teste de RLS no banco restaurado; usa a restauração seletiva de um tenant e o desfazer de operação em massa da P3.33 (PLT-03): no mesmo ensaio, um tenant é restaurado a um ponto no tempo sem afetar os demais e um lote é desfeito por OS inversa; resultado registrado como ensaio, sem meta (a meta vale na LC.12)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-03, consumido da P3.33)"
+    ]
+  },
+  {
+    "id": "GL.4",
+    "title": "Aceite da homologação local",
+    "origin": "ADR-0001; ADR-0033",
+    "size": "P",
+    "deps": [
+      "GL.2",
+      "GL.3",
+      "P3.24"
+    ],
+    "acceptance": "decisão formal do dono do produto e do piloto registrada sobre o resultado da GL.2 e da GL.3; com optantes no piloto (P3.24, condicional), remessa e retorno FEBRABAN 150 conferidos com arquivos de teste, sem envio ao banco; sem optantes, o aceite registra que a P3.24 não se aplica; o sistema do piloto continua oficial e emissor; relatório do paralelo anexado como base do paralelo com dado real (LC.11)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "dependência condicional da P3.24 explicitada"
+    ]
+  },
+  {
+    "id": "P4.1",
+    "title": "R8: cobrança; negativação e protesto na ED-30",
+    "origin": "R8 (v1); ADR-0039; ADR-0042; CAD-73, CAD-75, CAD-100, CAD-104, DAD-21, GES-24, RAS-11, RAS-15",
+    "size": "G",
+    "deps": [
+      "P3.4",
+      "P3.34"
+    ],
+    "acceptance": "parcelamento nasce de protocolo e OS (ADR-0039), com demonstrativo e termo gerados pelo motor de modelos da P2.30 e assinados no nível da Lei 14.063/2020 fixado por tipo de documento na P3.34; tabelas do parcelamento conforme o dicionário do 23b §3.16 (DAD-21): `unit_id` e `customer_id` com o titular como devedor, `policy_version_id` do perfil de parcelamento versionado, `protocol_id` e `service_order_id`, entrada e vencimento da entrada não inferiores ao mínimo salvo permissão, número e valor das parcelas dentro do máximo e acima da prestação mínima, `interest_method` (`PRICE`, `COMPOUND`, `NONE`) com a taxa, descontos limitados ao teto de abatimento, `status` (`PENDING_CONFIRMATION`, `ACTIVE`, `UNDONE`, `CANCELED`, `REPLACED`, `CONCLUDED`), `replaces_agreement_id` no reparcelamento, `included_bills` com o valor original de cada conta e `legacy_reference` para a carga da P2.10; desfazer o parcelamento restaura as contas incluídas (teste); contestação aberta bloqueia o corte (P3.4); programa de regularização por ato do ente (CAD-73) como campanha em `campaign.*`, com vigência, ato normativo citado, aprovação dupla, público-alvo por faixa de atraso e categoria, abatimento sobre multa, juros e correção, parcelas, termo de adesão, perda do benefício no descumprimento e relatório de adesão e recuperação, e abatimento do principal fora do limite recusado (teste); superendividamento (CAD-75, RAS-11; Lei 14.181/2021): situação em repactuação com número do processo, órgão, audiência e prazo, efeitos sobre encargos, negativação e ações pelo parâmetro `dun.repactuation_effects` conforme a lei e o plano homologado, importação do plano homologado como parcelamento com condições próprias e consulta da situação no pré-corte da P3.4; mínimo existencial informado como parâmetro versionado (R$ 600,00 pelo Decreto 11.567/2023, alterável por ato do CMN), nunca como constante no código; cessão de dívida a programa federal de renegociação (MP 1.393/2026) desligada e só habilitada depois de parecer jurídico favorável; régua de cobrança (CAD-100) em `dun.ruler`, segmentada por tipo de débito, idade, categoria e classe protegida, com passos e canais, link Pix na mensagem, promessa de pagamento que suspende os passos seguintes e os reinicia se quebrada, e conversão medida por passo; escore de propensão de atraso (GES-24) só ordena o contato e adapta canal, horário e oferta de parcelamento, desligado por padrão em `ai.collection_scoring_enabled`, sem dado do Open Finance, com explicação e oposição do titular, sob o ADR-0042; teste de arquitetura: corte, negativação, protesto e tarifa social nunca leem o escore (Lei 14.015/2020; Lei 14.898/2024; LGPD, art. 20); fatura nivelada opcional com acerto periódico e acordo por capacidade de pagamento para baixa renda fora da tarifa social, com parcelas pela renda declarada (CAD-104, `inst.income_based`); prescrição por natureza jurídica do prestador e por pretensão (RAS-15) em tabela versionada com a fonte de cada linha (Código Civil, arts. 205 e 206; Temas 251 a 254 do STJ para a execução de tarifa; Súmula 412 do STJ para a repetição de indébito; Decreto 20.910/1932 só com análise jurídica), consultada pela ED-30 e pela ED-31 para bloquear negativação, protesto e ajuizamento de dívida prescrita; teste com relógio da prescrição e da promessa de pagamento; negativação e protesto (ver ED-30); dívida ativa (ver ED-31)",
+    "findings_owned": [
+      "CAD-73",
+      "CAD-75",
+      "CAD-100",
+      "CAD-104",
+      "DAD-21",
+      "GES-24",
+      "RAS-11",
+      "RAS-15"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (CAD-73, CAD-75, CAD-100, CAD-104, GES-24 como critérios; PLT-07 consumido da P3.34)",
+      "DAD-21 (dicionário 23b §3.16)",
+      "RAS-11 e RAS-15 (23e)",
+      "JOR-06 consumido da P2.30",
+      "deixado: negativação e protesto na ED-30; dívida ativa na ED-31"
+    ]
+  },
+  {
+    "id": "P4.2",
+    "title": "R6: SINISA assistido",
+    "origin": "R6 (v1); ADR-0004; GES-16",
+    "size": "M",
+    "deps": [
+      "P2.5"
+    ],
+    "acceptance": "ciclo anual completo do SINISA assistido (ADR-0004): mapa das variáveis dos formulários financeiro, técnico e de balanço para a origem de cada dado no Ziip SAN; rascunho pré-preenchido, versão preliminar e resposta registradas; valor informado manualmente só com justificativa; Certificado de Adimplência registrado com data, por condicionar o acesso a recursos federais (Lei 11.445/2007, art. 50; Decreto 11.599/2023); prestador local e regional distinguidos pelo parâmetro `sinisa.provider_scope` (`LOCAL`, `REGIONAL`), com responsável; arquivo no formato oficial, com o meio de envio confirmado na página oficial do SINISA antes da construção, sem presumir API; casos da v1 passam (água não faturada de 3.000 m³; ILI); base do catálogo SINISA da ED-48; lembrete da janela do SINISA na agenda de obrigações (ver ED-98); o primeiro envio assistido com dado do Ziip SAN é o do primeiro ano-base depois do corte (LC.13)",
+    "findings_owned": [
+      "GES-16"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (GES-16)",
+      "nota de arquitetura: primeiro ano-base depois da LC.13",
+      "deixado: agenda na ED-98; catálogo e painel na ED-48"
+    ]
+  },
+  {
+    "id": "P4.5",
+    "title": "R5c: Pix Automático",
+    "origin": "R5 (v1); ADR-0028",
+    "size": "M",
+    "deps": [
+      "P3.2"
+    ],
+    "acceptance": "cobrança recorrente por Pix Automático no PSP do piloto; usa as regras operacionais do Banco Central registradas na P3.2 (GES-15): jornadas de autorização, inclusive QR Code de autorização com primeiro pagamento imediato, agendamento antes da liquidação, notificação ao pagador, retentativas previstas na autorização, cancelamento pelo pagador e pelo recebedor, multa e juros na instrução do ciclo seguinte, conciliação por identificador de cobrança e devolução de débito indevido, cada regra com teste; autorização do pagador guardada com prova; autorizações novas de débito em conta só por Pix Automático; FEBRABAN 150 legado na ED-27 e, com optantes no piloto, na P3.24, com o escopo da conversão dependente do parecer da RAS-06 (ver P3.24)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (GES-15, consumido da P3.2)",
+      "deixado: FEBRABAN 150 na ED-27 e na P3.24; parecer da RAS-06 na P3.24"
+    ]
+  },
+  {
+    "id": "P4.7",
+    "title": "Restauração mensal automatizada",
+    "origin": "ADR-0012",
+    "size": "P",
+    "deps": [
+      "P0.28"
+    ],
+    "acceptance": "restauração do backup executada automaticamente uma vez por mês no ambiente local, em base isolada, com relatório mensal de duração e resultado e alerta em caso de falha; na produção, a mesma rotina roda sobre o backup do RDS a partir da LC.3",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)"
+    ]
+  },
+  {
+    "id": "P4.8",
+    "title": "Suporte: resposta por e-mail, deflexão, assinatura de status, notas do tenant",
+    "origin": "ADR-0020; PLT-42",
+    "size": "G",
+    "deps": [
+      "P3.17",
+      "P3.18"
+    ],
+    "acceptance": "resposta por e-mail entra no chamado certo só de remetente verificado e sem anexo não varrido; deflexão cita o artigo da base de ajuda e transfere para atendimento humano a pedido; assinatura por e-mail das atualizações da página de status da P3.18; nota do tenant registrada por chamado encerrado (CSAT) e por pesquisa periódica (NPS); telemetria de produto com privacidade (PLT-42): adoção de funcionalidades, tempo para concluir o primeiro ciclo, abandono de assistentes e tarefas mais repetidas medidos em agregado por tenant e por papel, sem identificador de pessoa, sem gravação de sessão e sem conteúdo digitado, pelo parâmetro `telemetry.product_usage` (padrão agregado); dados disponíveis para a aba Adoção da Central Ziip, para o painel de uso do tenant e para a priorização do changelog; telemetria registrada no DPA (ver LC.9); teste: evento de telemetria com identificador de pessoa ou com conteúdo é recusado",
+    "findings_owned": [
+      "PLT-42"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-42)",
+      "deixado: registro no DPA na LC.9"
+    ]
+  },
+  {
+    "id": "ED-09",
+    "title": "Serviços de implantação padronizados",
+    "origin": "18h-E8; PLT-39",
+    "size": "G (4)",
+    "deps": [
+      "P1.2",
+      "P2.10",
+      "P2.19",
+      "P1.6"
+    ],
+    "acceptance": "metodologia de implantação e plano-modelo de 60 e de 90 dias publicados; jornada de implantação e gates de prontidão do console da P1.6 (PLT-21) seguem a metodologia; importador do legado do primeiro cliente de edital (GSAN, se confirmado) construído sobre o framework declarativo de migração da P1.2 (PLT-16), com conciliação; exportação e importação de parâmetros aceitos entre homologação e produção; dicionário de dados gerado do schema no CI (XLSX, CSV ou PDF); linhagem da migração registrada; clone mascarado do tenant (PLT-39): a partir da produção de um tenant, gera tenant de homologação ou de treinamento com o roteiro de anonimização da P0.45 (código substituto no lugar da matrícula, sem nome, documento, endereço nem contato, coordenada deslocada), marcado como sintético, para testar mudança de parâmetro, treinar usuários e ensaiar integração sem dado pessoal; teste de varredura da P0.45 verde no clone; avaliação do risco de reidentificação registrada no RIPD do tenant antes do primeiro clone; implantação simulada com tenant sintético concluída dentro do plano-modelo de 60 dias",
+    "findings_owned": [
+      "PLT-39"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-39 como critério; PLT-16 consumido da P1.2; PLT-21 consumido da P1.6)"
+    ]
+  },
+  {
+    "id": "ED-10",
+    "title": "Política comercial e preço por porte",
+    "origin": "18h-E10; ADR-0024",
+    "size": "P (0,4)",
+    "deps": [
+      "ED-04",
+      "P0.26",
+      "P2.12",
+      "ED-41"
+    ],
+    "acceptance": "planilha de custo e preço por porte, sobre a decisão de hospedagem e a tabela de custo da P0.26, comparada com os tetos de referência dos editais (VISAN R$ 18.866,65/mês; SAMAE R$ 7.636,74/mês); perfis profissionais e homem-hora; garantia de 12 meses e correção de vícios em 48 h; desconto da reversão aplicado a partir da reversão (ADR-0024); preço da instância dedicada cobrindo a pilha própria do cliente (ADR-0024); franquia ou repasse de mensagens e do modelo de linguagem calculados com a medição de uso e custo por tenant e a base comprovável de ligações ativas da P2.12 (PLT-17) e com o custo por categoria de modelo de mensagem e o uso medido da ED-41 (GES-19)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-17 consumido da P2.12; GES-19 consumido da ED-41)"
+    ]
+  },
+  {
+    "id": "ED-11",
+    "title": "Implantação e treinamento: plano, material e ambiente",
+    "origin": "18h-E11; ADR-0023",
+    "size": "G (3)",
+    "deps": [
+      "ED-09"
+    ],
+    "acceptance": "plano de treinamento de 40 h por módulo; material online; tenant de pré-treinamento com massa sintética ou com o clone mascarado da ED-09 (PLT-39); treinamento concluído como gate de prontidão na jornada de implantação do console da P1.6 (PLT-21); capacitação da TI do cliente; documentação das customizações do cliente",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-21 consumido da P1.6; PLT-39 consumido da ED-09)"
+    ]
+  },
+  {
+    "id": "ED-44",
+    "title": "Telefonia mínima",
+    "origin": "18f-ENT-14; ADR-0028 (k)",
+    "size": "M (1)",
+    "deps": [
+      "ED-35",
+      "ED-43"
+    ],
+    "acceptance": "chamada recebida abre a ficha do cliente no atendimento pelo número chamador, com registro de acesso (teste: abertura pela chamada aparece no log de acesso); API de consulta para URA de terceiros (ADR-0028, item k); listas de discagem geradas pelo produto",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)"
+    ]
+  },
+  {
+    "id": "ED-57",
+    "title": "Beneficiários de programas sociais",
+    "origin": "18d-E16",
+    "size": "M (1)",
+    "deps": [
+      "P1.5",
+      "P1.40"
+    ],
+    "acceptance": "importação de lista de beneficiários de programa social com base legal registrada (sem API pública) pelo importador genérico da P1.40 (JOR-26): modelo para baixar, área de preparação, validação, relatório de recusas e aplicação por OS de lote; conferência e vigência de cada benefício; usa a classificação automática e os avisos da tarifa social da P1.5 (RAS-05, CAD-91) e a origem da lista conforme a natureza jurídica do prestador (PLT-36), sem duplicar a regra da P1.5; cruzamento de edificações com unidades para perdas aparentes (ver ED-95)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (CAD-91, PLT-36 e RAS-05 consumidos da P1.5; JOR-26 consumido da P1.40)",
+      "remetido: OPE-37 à ED-95"
+    ]
+  },
+  {
+    "id": "ED-59",
+    "title": "Frota e equipes de campo",
+    "origin": "ADR-0028 (i); OPE-28",
+    "size": "G (3)",
+    "deps": [
+      "ED-36",
+      "ED-56",
+      "P1.35"
+    ],
+    "acceptance": "veículo cadastrado como ativo de frota (`FLEET_ASSET`) sobre o cadastro de ativos da P1.35; abastecimento, custo por veículo e manutenção pela rotina preventiva e corretiva da ED-56 estendida a veículos, com consumo apropriado à OS; equipes de campo (composição, veículo, escala) usadas na programação e no custo da OS; checklist pré-viagem (`fleet.checklist_required`); validade da habilitação do motorista e do licenciamento do veículo com alerta de vencimento (`fleet.docs_alert_days`) e multas registradas por veículo e condutor; consumo médio por veículo com alerta de desvio; equipamentos especiais (hidrojato, vácuo, limpa-fossa, retroescavadeira) como recurso exigido pelo tipo de serviço e como restrição no motor de programação da ED-36 (OPE-33); habilitação e segurança do trabalho do executor seguem a OS da P1.31 (OPE-14); teste: OS que exige equipamento especial não é programada sem o recurso disponível, e veículo com documento vencido não é alocado",
+    "findings_owned": [
+      "OPE-28"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (OPE-28 como critério; OPE-14 consumido da P1.31; OPE-33 consumido da ED-36)",
+      "nota de arquitetura: frota sobre a manutenção da ED-56 e o ativo da P1.35"
+    ]
+  },
+  {
+    "id": "ED-80",
+    "title": "Pacote de esgoto e água bruta",
+    "origin": "ADR-0041; 21b L-07",
+    "size": "G (a estimar)",
+    "deps": [
+      "ED-50",
+      "ED-79",
+      "P3.31",
+      "ED-105"
+    ],
+    "acceptance": "pacote próprio, separado da qualidade da água (cartão de 21/10/2026); usa o catálogo de padrão de efluente, o automonitoramento e a eficiência de DBO da ED-105 (JOR-16), sem duplicá-los; água bruta: captações ligadas à outorga e à licença ambiental, com vigência, condicionantes e alerta de vencimento (Lei 9.433/1997; Resolução ANA 236/2024 para rios de domínio da União); Declaração de Carga Poluidora gerada a partir do automonitoramento da ED-105, com a base normativa conferida no catálogo depois da publicação da norma que substitui a CONAMA 430/2011, em revisão; biossólido produzido a partir do lodo registrado na ED-105, com os critérios da CONAMA 498/2020; reúso codificado só depois da publicação da resolução conjunta CNRH/CONAMA aprovada em 01/09/2026, ainda a confirmar no catálogo, ficando as CNRH 54/2005 e 121/2010, em revisão, como referência antes dela; usa a qualidade operacional da ED-50, os sistemas de abastecimento e de esgoto da ED-79 e os requisitos legais da P3.31",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)",
+      "JOR-16 consumido da ED-105",
+      "remetido: catálogo de padrão de efluente, automonitoramento e eficiência de DBO à ED-105"
+    ]
+  },
+  {
+    "id": "ED-81",
+    "title": "Uso próprio de água, ISO 46001",
+    "origin": "ADR-0041; 21b L-14",
+    "size": "M (a estimar)",
+    "deps": [
+      "P1.3",
+      "ED-14",
+      "P3.31",
+      "ED-85"
+    ],
+    "acceptance": "unidades de uso operacional cadastradas sobre o cadastro da P1.3 e medidas pela hidrometria da ED-14; revisão do uso, linha de base e plano de ação da ISO 46001:2019 (em revisão; projeto da edição 2 acompanhado no catálogo); usa os usos operacionais e emergenciais e a água exportada do balanço hídrico da ED-85 (OPE-05) como fonte do uso próprio, sem recalcular; plano de ação ligado aos objetivos da P3.31; ativável por tenant com escopo de instalação",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (OPE-05, consumido da ED-85)"
+    ]
+  },
+  {
+    "id": "ED-82",
+    "title": "Perfis de exportação ISO 37120 e PNQS e checklist de cadastro das NBR",
+    "origin": "ADR-0041; 21b L-16, L-17",
+    "size": "M (a estimar)",
+    "deps": [
+      "ED-77",
+      "P1.28",
+      "P3.27"
+    ],
+    "acceptance": "perfil de exportação ISO 37120 (ABNT NBR ISO 37120:2021) com indicadores e série histórica, a partir das fichas de indicador da ED-77; perfil PNQS com indicadores e série histórica para preenchimento na plataforma da ABES, sem leiaute próprio: verificado em 22/10/2026, o regulamento do PNQS 2026 (versão 1.2) não define leiaute nem formato de troca de dados, e o PNQS é prêmio e selo de reconhecimento, não norma técnica nem certificação acreditada; checklist de completude do cadastro técnico pelas NBR 12586, 12587, 13133 e 14166, com vínculo à rede de referência cadastral municipal, sobre as normas compradas na P1.28 e os relatórios do cadastro da P3.27",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)",
+      "fato do PNQS 2026 retirado do título e mantido no aceite"
+    ]
+  },
+  {
+    "id": "ED-95",
+    "title": "Perdas aparentes: cruzamento de edificações com unidades e analítica de fraude",
+    "origin": "ADR-0034; ADR-0042; CAD-103, GES-25, OPE-37",
+    "size": "G (a estimar)",
+    "deps": [
+      "ED-24",
+      "ED-14",
+      "ED-17",
+      "ED-62"
+    ],
+    "acceptance": "cadastro imobiliário municipal (CAD-103) importado pelo conector da ED-62, com inscrição, área construída, uso, habite-se e alvará, sincronizado por `registry.property_registry_sync` e com base legal e finalidade do compartilhamento dentro do mesmo ente registradas; cruzamento das edificações e lotes (cadastro municipal ou importação de GIS) com as unidades consumidoras e o ramal (OPE-37): imóvel edificado sem ligação, consumo nulo com ligação ativa, área divergente da economia e uso divergente da categoria, em fila de revisão com prazo em `audit.unregistered_building_review_days`, gerando OS de vistoria, de fiscalização (ED-24) ou de recadastramento em lote; cruzamento restrito ao backoffice (ADR-0034, GIS-CADASTRO §12); biblioteca de regras de suspeita (GES-25) sobre consumo e cadastro, com limiares por tenant em `fraud.rules`: consumo zero com ligação ativa, queda abrupta, consumo por economia e por área, medidor parado ou subdimensionado, troca de hidrômetro (ED-14) e leitura repetida, com dados da telemetria da ED-17 quando houver; relatório de acerto das inspeções com a taxa de confirmação por regra; modelo de aprendizado de máquina só depois que as regras forem medidas, sob o ADR-0042; a saída é recomendação a humano e não decide corte, cobrança nem infração; auto de infração segue a ED-24, com defesa e decisão antes do débito (`infraction.charge_timing`); programa de autodenúncia com isenção de multa como opção do tenant; teste: nenhuma regra gera débito nem corte sem decisão humana registrada",
+    "findings_owned": [
+      "CAD-103",
+      "GES-25",
+      "OPE-37"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "CAD-103, GES-25 e OPE-37 (22a, 22b, 22d)",
+      "GES-08 seguido pelo ADR-0042"
+    ]
+  },
+  {
+    "id": "ED-100",
+    "title": "Projeção de receita, arrecadação e caixa por cenário",
+    "origin": "ADR-0042; GES-10",
+    "size": "M (a estimar)",
+    "deps": [
+      "ED-32",
+      "ED-47"
+    ],
+    "acceptance": "curva de recebimento por faixa de atraso e previsão mensal de arrecadação calculadas a partir da base e da inadimplência observada nos eventos contábeis da ED-32; cenários de reajuste (sobre a simulação de impacto da P2.29), de inadimplência, de tarifa social e do efeito do cashback de CBS e IBS (P2.34), com horizonte e cenários em `fc.horizon_months` e `fc.scenarios`; curva de perda disponível para a provisão de devedores duvidosos na opção `EXPECTED_LOSS` de `acc.doubtful_method` (ED-32); painéis no BI da ED-47; técnica estatística simples, com aprendizado de máquina só sob o ADR-0042; teste com base sintética de inadimplência conhecida",
+    "findings_owned": [
+      "GES-10"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "GES-10 (22d)"
+    ]
+  },
+  {
+    "id": "ED-101",
+    "title": "Metas de consumo, comparação com pares e gamificação",
+    "origin": "GES-28",
+    "size": "M (a estimar)",
+    "deps": [
+      "ED-17",
+      "ED-39",
+      "ED-41"
+    ],
+    "acceptance": "opcional por tenant (`eng.peer_report_enabled`), com adesão voluntária do usuário; meta de consumo definida pelo usuário no app da ED-39 e no portal, com lembretes pelas notificações da ED-41; relatório periódico de comparação com domicílios de perfil semelhante que usa a comparação da ED-38 (CAD-102), só com grupos de tamanho mínimo (`eng.peer_group_min_size`) e sem expor terceiros; consumo da telemetria da ED-17 quando houver; gamificação restrita a marcos da meta do próprio usuário, sem classificação que identifique outros usuários; mensagem impressa na conta segue o modelo aprovado pela agência (`bill.invoice_template`); teste: grupo abaixo do tamanho mínimo não gera comparação",
+    "findings_owned": [
+      "GES-28"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "GES-28 (22d)",
+      "CAD-102 consumido da ED-38"
+    ]
+  },
+  {
+    "id": "P4.6",
+    "title": "Schema compartilhado e banco dedicado",
+    "origin": "ADR-0005",
+    "size": "G",
+    "deps": [
+      "P1.14",
+      "P2.2"
+    ],
+    "acceptance": "pacote parado por decisão do dono (PD-05, cartão de 28/10/2026): sob demanda, fora das ondas, dos totais e do critério da LC.1, sem bloquear a ED-04 nem a LC.15; liberado só por demanda registrada, isto é, tenant cujo porte exija banco dedicado (referência inicial do ADR-0005: acima de 200 mil ligações) ou autarquias muito pequenas a agrupar em schema compartilhado, confirmada por cartão do dono; quando liberado, usa o `isolation_mode`, a coluna de shard e o teto por cluster da P0.21: tenant em banco dedicado com cluster, workers e janela de lote próprios, e tenants pequenos em schema compartilhado isolados por `tenant_id` e RLS; resolução de tenant devolve o cluster e a aplicação roteia os pools por cluster e por papel sobre a P2.2; migrations aplicadas por tenant e por cluster pelo rollout da P1.14; no schema compartilhado, exportação, restauração e eliminação de um tenant por `tenant_id`, com crypto-shredding da chave do tenant; mudança de modo de um tenant por procedimento de migração entre schemas ou clusters ensaiado; o mesmo teste de isolamento por RLS passa nos três modos",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)",
+      "PD-05 e COE-04 (sai da ED-04 e do critério da LC.1)",
+      "deixado: shard, isolation_mode e teste com 300 schemas na P0.21"
+    ]
+  },
+  {
+    "id": "ED-68",
+    "title": "Cobrança por empresa terceirizada, com remuneração por resultado",
+    "origin": "20c (COB-22, lacuna 14, §5.1); ADR-0038; ADR-0039",
+    "size": "M (a estimar)",
+    "deps": [
+      "P3.1",
+      "P4.1",
+      "ED-37"
+    ],
+    "acceptance": "pacote parado por decisão do dono de 21/10/2026, mantido na seção de pendentes pelo cartão de 28/10/2026 (PD-09): fora das ondas, dos totais da trilha, da prontidão de POC e do critério da LC.1; liberado só por cartão do dono, que fixa a onda e a estimativa; quando liberado: contas selecionadas por critério enviadas à empresa de cobrança com o mínimo de dados, com contrato de operador (LGPD) registrado antes do primeiro envio; empresa cadastrada como empreiteira da ED-37; arquivos ou API de ida e de volta; pagamento atribuído à empresa só dentro da janela do contrato e com acordo válido da P4.1; retirada da conta por pagamento, parcelamento ou fim da janela do contrato; remuneração pelo percentual do contrato, calculada pelo evento de pagamento; relatório de pagamentos e remuneração por empresa; teste da janela, da retirada e da remuneração; migrations pela sequência global com `dunning` no nome",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "COE-03 e PD-09 (seção de pendentes)"
+    ]
+  },
+  {
+    "id": "ED-102",
+    "title": "Obras e convênios de investimento, Transferegov e afins",
+    "origin": "GES-12",
+    "size": "G (a estimar)",
+    "deps": [],
+    "acceptance": "pacote parado por decisão do dono (PD-09, cartão de 28/10/2026), sem estimativa, fora das ondas, dos totais da trilha e do critério da LC.1; liberado só por cartão do dono que escolha o recorte: manter fora do produto e declarar o limite na proposta, ou criar ponto de integração com o ERP de obras do cliente; enquanto parado, projetos e as-built no GIS seguem na ED-53 e a integração com ERP na ED-62, sem convênio; se liberado com o recorte de integração: convênios e contratos de repasse federais ou estaduais ligados a projetos e pacotes do GIS, com medição, cronograma e dados para a prestação de contas no Transferegov, com critérios de aceite fixados no cartão de liberação",
+    "findings_owned": [
+      "GES-12"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "GES-12 (22d)",
+      "COE-03 e PD-09"
+    ]
+  },
+  {
+    "id": "ED-103",
+    "title": "Antecipação de recebíveis e conta vinculada",
+    "origin": "GES-34",
+    "size": "M (a estimar)",
+    "deps": [],
+    "acceptance": "pacote parado por decisão do dono (PD-09, cartão de 28/10/2026), porque o relatório 22d não o recomenda agora; sem estimativa, fora das ondas, dos totais da trilha e do critério da LC.1; liberado só por cartão do dono, precedido de parecer jurídico sobre operação de crédito por ente público (Lei Complementar 101/2000, risco apontado pelo 22d como inferência) e sobre a cessão de carteira com dado pessoal (LGPD); se liberado: relatório da carteira (aging e adimplência) a partir das contas a receber da ED-32, em formato que sirva à cessão, ao fundo de recebíveis ou à conta vinculada, com o mínimo de dados pessoais",
+    "findings_owned": [
+      "GES-34"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "GES-34 (22d)",
+      "COE-03 e PD-09"
+    ]
+  },
+  {
+    "id": "ED-104",
+    "title": "Trilha GRS sob demanda: MTR, CDF e DMR e operação de resíduos sólidos",
+    "origin": "ADR-0004; ADR-0010; COD-33, JOR-17, OPE-31, RAS-17",
+    "size": "a estimar",
+    "deps": [
+      "ED-105"
+    ],
+    "acceptance": "pacote parado pela decisão do dono de 22/10/2026 (trilha GRS só sob demanda), que esta tarefa mantém e apenas identifica (RAS-17): sem estimativa, fora das ondas, dos totais e do critério da LC.1; liberado por demanda registrada de tenant que gere resíduo com obrigação de MTR, inclusive o lodo de ETA e ETE, ou que preste a coleta de resíduos sólidos, confirmada por cartão do dono; enquanto parado, MTR, CDF e DMR ficam como item manual da agenda da ED-98 e o código de `grs/sigsan-mtr` fica congelado (ADR-0010), sem a chamada ao SINIR removida na P0.25; quando liberado: MTR, CDF e DMR no Sistema MTR do IMA em SC (Portaria IMA 009/2026: MTR no transporte externo, CDF, DMR trimestral, PGRS eletrônico e integração com outros estados e com o SINIR) e no MTR nacional (Portaria MMA 280/2020), assistidos pelo ADR-0004; resíduos codificados pela Lista Brasileira de Resíduos Sólidos (IN IBAMA 13/2012) e classificados pela NBR 10004-1 e NBR 10004-2:2024; lodo de ETA e ETE registrado pela ED-105 (JOR-16, OPE-25) emitido no MTR com o próprio tenant como gerador (JOR-17); operação de resíduos sólidos para o tenant que presta a coleta (OPE-31): pesagem com ticket de balança, roteiro de coleta e execução com GPS, coleta seletiva e cooperativas, grandes geradores, resíduos da construção e de serviços de saúde, plano operacional e indicadores da NR ANA 7/2024 e da NR ANA 14/2025, com `waste.collection_frequency_by_sector` e `waste.weighing_required`; PDF do MTR gerado por biblioteca, no lugar do gerador escrito byte a byte, com acentuação e PDF/A (COD-33); base legal da PNRS (Lei 12.305/2010; Decreto 10.936/2022)",
+    "findings_owned": [
+      "COD-33",
+      "JOR-17",
+      "OPE-31",
+      "RAS-17"
+    ],
+    "consumed": [
+      "tarefa nova (RAS-17, JOR-17, OPE-31, COD-33)",
+      "JOR-16 e OPE-25 consumidos da ED-105",
+      "deixado: item manual na ED-98; remoção do SINIR na P0.25"
+    ]
+  },
+  {
+    "id": "LC.1",
+    "title": "Ensaio de implantação na AWS com dado sintético",
+    "origin": "ADR-0033; ADR-0011",
+    "size": "M",
+    "deps": [
+      "P0.45",
+      "P0.27",
+      "GL.4",
+      "ED-01"
+    ],
+    "acceptance": "começa com todas as fases (P0 a P3, GL e P4) e as ondas A, B (grupos B1 e B2) e C da trilha concluídas, exceto a seção de pacotes pendentes e sob demanda (P4.6, ED-68, ED-102, ED-103 e ED-104), que não entra no critério nem bloqueia o início; aceite da homologação local (GL.4) e prontidão de POC (ED-01) concluídos; o grupo B2 conta aqui, embora fique fora da prontidão de POC (PD-01); a instância dedicada (LC.15) fica fora do caminho; conta de ensaio em `sa-east-1`; IaC aplicada do zero; suíte de contrato das interfaces da P0.45 verde contra KMS, Secrets Manager, S3 com Object Lock e o serviço de e-mail; testes de fumaça e carga de referência curta comparados com a linha de base do ambiente local da P0.27; versões de PostGIS, `pg_trgm`, `unaccent` e `pg_partman` conferidas no RDS; diferenças entre local e AWS registradas, cada uma com correção ou tarefa; ambiente destruído ao fim, sem segredo nem dado remanescente",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "COE-03 (critério sem a seção de pendentes)",
+      "PD-01 (B2 só no critério da LC.1)",
+      "PD-05 (P4.6 fora do critério)"
+    ]
+  },
+  {
+    "id": "LC.2",
+    "title": "IaC de homologação, produção e demonstração na AWS `sa-east-1`; borda",
+    "origin": "17:X1; 17:O2; ADR-0011; ADR-0024; ED-03; ED-04",
+    "size": "G (3)",
+    "deps": [
+      "LC.1",
+      "P2.27"
+    ],
+    "acceptance": "IaC de homologação, produção e demonstração na AWS `sa-east-1`, sem segredo no state; deploy pelo pipeline; produção com aprovação manual; rollback exercitado; IaC parametrizada de modo que a instância dedicada (LC.15) ou o ambiente de demonstração sejam mais um ambiente; ambiente de demonstração na nuvem (P3.23) criado com a massa sintética antes da primeira POC de licitação; CloudFront e AWS WAF com TLS 1.3 e HSTS; usa o domínio próprio do tenant da P2.27 (PLT-05) na borda, com certificado automático e proteção contra tomada de subdomínio; serviço de e-mail da AWS configurado com a entregabilidade por tenant da P3.5 (PLT-10); SMS, WhatsApp e custo por categoria de modelo de mensagem (ver ED-41); detecção de ameaças, inspeção de vulnerabilidades e registro de configuração do provedor ativos (TR-091, TR-092, TR-096); inventário de residência no Brasil (RNF-44)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-05 consumido da P2.27; PLT-10 consumido da P3.5)",
+      "remetido: GES-19 à ED-41",
+      "instância dedicada nomeada como LC.15"
+    ]
+  },
+  {
+    "id": "LC.3",
+    "title": "RDS, backup e PITR",
+    "origin": "17:X2; ADR-0011; ADR-0013; PLT-04",
+    "size": "G (2)",
+    "deps": [
+      "LC.2"
+    ],
+    "acceptance": "RDS PostgreSQL 17 Multi-AZ com réplica de leitura; PITR com RPO ≤ 15 min e RTO ≤ 4 h medidos (RNF-14, RNF-15); desastre regional por Multi-AZ mais cofre isolado na mesma região (PLT-04, decisão do dono de 22/10/2026): cópia dos snapshots e backups em outra conta, na mesma região, guardada em cofre lógico isolado do AWS Backup com Vault Lock em modo de conformidade e política de expiração; teste: exclusão ou alteração de cópia no cofre recusada mesmo com credencial administrativa da conta de produção; nenhum backup nem réplica fora de `sa-east-1`, porque a cópia fora do país continua vedada (RNF-44); a solução cobre falha de zona, ransomware e erro humano, não a perda da região inteira, e esse risco residual é entregue por escrito para o contrato do tenant e para o nível Setor Público (ADR-0025; ver LC.9); cópia em segundo provedor e pilot-light ficam fora pela mesma decisão; PgBouncer em modo transaction; teste de RLS no banco restaurado; restauração seletiva de um tenant e desfazer de operação em massa da P3.33 (PLT-03) exercitados sobre o PITR do RDS",
+    "findings_owned": [
+      "PLT-04"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (decisão de 22/10/2026 sobre PLT-04; PLT-03 consumido da P3.33)",
+      "remetido: declaração do risco residual no contrato à LC.9"
+    ]
+  },
+  {
+    "id": "LC.4",
+    "title": "KMS e Secrets Manager: R1 em produção",
+    "origin": "R1; ADR-0011; RNF-32; PLT-41",
+    "size": "M",
+    "deps": [
+      "LC.2",
+      "P0.28"
+    ],
+    "acceptance": "`TenantKeyProviderContract` verde sobre o KMS; DEK por tenant gerada pelo KMS; rotação; forma de atender ao backup da KEK registrada; segredos de produção criados no Secrets Manager, sem reaproveitar segredo nem chave do cofre local (teste); chave do cliente opcional (PLT-41), só sob demanda de contrato, pelo parâmetro `crypto.key_mode` (`PLATFORM` por padrão, `IMPORTED` com material de chave importado no KMS, `EXTERNAL` com armazenamento externo de chaves); os modos `IMPORTED` e `EXTERNAL` exigem aceite registrado do tenant sobre o risco de indisponibilidade e registram as limitações do provedor (sem rotação automática; no armazenamento externo, sem chave multirregião nem material importado); teste: revogar a chave do cliente torna ilegível o dado daquele tenant, com o efeito do crypto-shredding (RNF-43), sem afetar os demais tenants",
+    "findings_owned": [
+      "PLT-41"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-41)"
+    ]
+  },
+  {
+    "id": "LC.5",
+    "title": "S3 com Object Lock",
+    "origin": "ADR-0011; ADR-0022; P2.18",
+    "size": "P",
+    "deps": [
+      "LC.2"
+    ],
+    "acceptance": "suíte de contrato do armazenamento da P0.45 verde contra o S3; apagar ou sobrescrever XML retido é recusado pelo Object Lock (teste); prefixo e chave por tenant",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)"
+    ]
+  },
+  {
+    "id": "LC.6",
+    "title": "Keycloak de produção na AWS",
+    "origin": "17:O3; RNF-17",
+    "size": "M",
+    "deps": [
+      "LC.2",
+      "P0.29"
+    ],
+    "acceptance": "Keycloak de produção com a configuração do modo de produção da P0.29 reaplicada na AWS: `start --optimized`, TLS, `sslRequired=all` e 2 réplicas; derrubada de uma réplica sem perda de sessão (teste); tema da P0.35 na imagem",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)"
+    ]
+  },
+  {
+    "id": "LC.7",
+    "title": "Observabilidade gerenciada, operação e página de status",
+    "origin": "17:O1; ADR-0020; RNF-10 a RNF-12; RNF-53; RNF-54",
+    "size": "M",
+    "deps": [
+      "LC.2",
+      "P3.11",
+      "P3.18"
+    ],
+    "acceptance": "OpenTelemetry Collector exportando ao serviço gerenciado; SLOs com burn rate; error tracking; sondas sintéticas do backoffice e do portal (RNF-10, RNF-11); página pública de status da P3.18 em hospedagem separada da produção; plantão definido; usa a prática de resiliência da P3.11 (PLT-23): alertas ligados a runbook, exercício com falha provocada na AWS conduzido pelo runbook e revisão pós-incidente registrada",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-23, consumido da P3.11)"
+    ]
+  },
+  {
+    "id": "LC.8",
+    "title": "Pentest externo: isolamento, cofre, portal do consumidor, acesso assistido e de emergência, apps",
+    "origin": "17 §7; RNF-36; ADR-0020; ADR-0022",
+    "size": "M",
+    "deps": [
+      "LC.2",
+      "LC.3",
+      "LC.4",
+      "LC.5",
+      "LC.6",
+      "LC.7",
+      "P3.8"
+    ],
+    "acceptance": "pentest externo sobre a produção na AWS, com escopo na baseline de segurança da P3.8 (PLT-08: ASVS 5.0, OWASP API Top 10 e LLM Top 10); nenhum achado crítico ou alto aberto antes do primeiro dado real; cobertos isolamento entre tenants, cofre, vínculo do portal, enumeração de matrícula, de código de vinculação e de CPF/CNPJ ou e-mail no login e na recuperação de senha, troca de token entre realms, download do portal, acesso assistido e de emergência e os apps",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-08, consumido da P3.8)"
+    ]
+  },
+  {
+    "id": "LC.9",
+    "title": "Contrato SaaS, DPA e acordo de tratamento assinados com o piloto",
+    "origin": "ADR-0002; ADR-0019; ADR-0020; ADR-0023; ADR-0025",
+    "size": "P",
+    "deps": [
+      "P3.9",
+      "LC.8"
+    ],
+    "acceptance": "contrato SaaS, DPA e acordo de tratamento, a partir das minutas aprovadas na P3.9, assinados com o piloto antes do primeiro dado real e depois do pentest da LC.8 sem achado crítico ou alto aberto; Ziip SAN como operador e piloto como controlador; cláusula de emissão do atestado com prazo contado do corte (ADR-0023); nível de serviço escolhido (padrão ou Setor Público, ADR-0025); contrato declara o risco residual de desastre regional (ver LC.3); DPA registra a telemetria de produto agregada (ver P4.8)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "recebe por remissão: risco residual da LC.3 (PLT-04) e telemetria da P4.8 (PLT-42)"
+    ]
+  },
+  {
+    "id": "LC.10",
+    "title": "Carga real do legado",
+    "origin": "17:X5; ADR-0022",
+    "size": "M",
+    "deps": [
+      "LC.3",
+      "LC.4",
+      "LC.5",
+      "LC.9",
+      "GL.4"
+    ],
+    "acceptance": "importadores da P1.2, da P2.10 e da P2.19 executados sobre o dado real, só na produção; conciliação assinada pelo piloto; XML autorizados reais importados, com o relatório de recusas aceito pelo piloto; homologação e demonstração na nuvem só com massa sintética, com o teste de varredura da P0.45 verde nesses ambientes",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)"
+    ]
+  },
+  {
+    "id": "LC.11",
+    "title": "Paralelo com dado real",
+    "origin": "ADR-0001; ADR-0033",
+    "size": "G (2)",
+    "deps": [
+      "LC.10"
+    ],
+    "acceptance": "um ou dois ciclos de paralelo na produção, conta a conta contra o legado; divergência dentro do critério da P0.30, toda explicada; diferenças novas em relação à homologação local (GL.2) registradas; sem emissão fiscal de produção; com optantes, débito automático conferido",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)"
+    ]
+  },
+  {
+    "id": "LC.12",
+    "title": "Restauração da produção",
+    "origin": "17:X2; RNF-15; RNF-16",
+    "size": "P",
+    "deps": [
+      "LC.3",
+      "LC.10"
+    ],
+    "acceptance": "restauração da produção a partir do PITR do RDS (LC.3) dentro do RTO de 4 h (RNF-15), com contagem de registros, checksum e teste de RLS, concluída antes do corte (LC.13); é a meta que a GL.3 ensaiou",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)"
+    ]
+  },
+  {
+    "id": "LC.13",
+    "title": "Corte do legado: primeira produção",
+    "origin": "ADR-0001",
+    "size": "P",
+    "deps": [
+      "LC.11",
+      "LC.12",
+      "P3.24"
+    ],
+    "acceptance": "decisão formal de corte registrada; emissão fiscal ligada (`tpAmb=1`) com aprovação dupla (FISCAL-PORTE-JAVA §3.6); com optantes no piloto (P3.24, condicional), débito automático em produção pela P3.24; sem optantes, o registro do corte informa que a P3.24 não se aplica; legado do piloto desligado (M15)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "dependência condicional da P3.24 explicitada"
+    ]
+  },
+  {
+    "id": "LC.14",
+    "title": "Primeiro atestado",
+    "origin": "ADR-0023; ED-02",
+    "size": "P",
+    "deps": [
+      "LC.13"
+    ],
+    "acceptance": "atestado emitido pelo piloto depois dos ciclos em produção previstos no contrato, com ligações e, se ele for autarquia de SC, remessa e-Sfinge registradas (ED-33); kit de habilitação atualizado (M16)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21 (sem ajustes)"
+    ]
+  },
+  {
+    "id": "LC.15",
+    "title": "Instância dedicada na AWS",
+    "origin": "18h-E4; ADR-0024; ADR-0011",
+    "size": "a estimar",
+    "deps": [
+      "ED-04",
+      "LC.2"
+    ],
+    "acceptance": "instância dedicada executada só para o cliente cujo contrato a exija, fora do caminho crítico da LC.13; pilha própria (`api`, `worker`, Keycloak e banco) em conta AWS separada, em `sa-east-1`, criada pela mesma IaC da LC.2, com a mesma imagem e o mesmo pipeline de atualização, sem bifurcação de código nem de versão (ADR-0024); banco exclusivo do cliente no modo padrão de schema por tenant, sem depender do pacote sob demanda da P4.6; acesso administrativo da TI do órgão (TR-104) concedido só na instância dedicada, somente leitura sobre configuração e monitoramento, com MFA e auditoria, nunca em infraestrutura compartilhada (teste: tentativa de escrita pelo perfil do órgão recusada e registrada); backup, chaves e segredos nos mesmos padrões da produção, sem backup nem réplica fora de `sa-east-1` (ver LC.3 e LC.4); o pacote de reversão fica na ED-04 (COE-04)",
+    "findings_owned": [],
+    "consumed": [
+      "tarefa nova: parte da ED-04 (v2.21) que dependia da LC.2",
+      "COE-04 consumido da ED-04",
+      "deixado: pacote de reversão na ED-04; preço na ED-10"
+    ]
+  }
+]

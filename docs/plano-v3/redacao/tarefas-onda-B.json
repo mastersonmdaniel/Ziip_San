@@ -1,0 +1,482 @@
+[
+  {
+    "id": "ED-04",
+    "title": "Pacote de reversão",
+    "origin": "18h-E4; ADR-0024; ADR-0010; COE-04",
+    "size": "G (3,5)",
+    "deps": ["P0.5", "P0.27"],
+    "acceptance": "core `V11` na parte que registra o modo de isolamento e o ambiente do tenant (ADR-0024); pacote de reversão em contêineres Linux construído sobre o ambiente local da P0.27; o pacote sobe em servidor Linux limpo e, uma vez, em Windows Server 2022 ou superior com Docker no WSL2, com os requisitos mínimos publicados para os dois ambientes; nos dois ambientes, carrega a exportação de um tenant sintético e passa nos testes de fumaça; runbook de migração exercitado do início ao fim, com registro do ensaio; exceção no ADR-0010 registrada; a tarefa não depende da LC.2 nem da P4.6: a instância dedicada na AWS, criada pela mesma IaC, imagem e pipeline em conta separada, e o acesso administrativo do órgão somente leitura, com MFA e auditoria, ficam na LC.15; o perfil externo do regulador e do titular, somente leitura, fica na ED-75 (GES-22); separação que desfaz o ciclo ED-04, LC.2, LC.1 (COE-04)",
+    "findings_owned": ["COE-04"],
+    "consumed": ["v2.18 (lista de achados): GES-22 remetida à ED-75", "COE-04: instância dedicada e acesso do órgão remetidos à LC.15; LC.2 e P4.6 retiradas das dependências"]
+  },
+  {
+    "id": "ED-28",
+    "title": "Cartão no parcelamento pela credenciadora do cliente",
+    "origin": "18e-E14; ADR-0028 (h)",
+    "size": "M (1)",
+    "deps": ["P3.1", "P4.1"],
+    "acceptance": "parcelamento pago por link ou checkout da credenciadora contratada pelo tenant; baixa e conciliação automáticas pelo retorno da credenciadora e pelo extrato; nenhum dado de cartão trafega pelo produto nem é gravado nele, provado por teste sobre requisições, logs e banco",
+    "findings_owned": [],
+    "consumed": ["sem ajustes na v2.21; aceite reescrito sem mudança de escopo"]
+  },
+  {
+    "id": "ED-39",
+    "title": "App do cliente Android e iOS nas lojas",
+    "origin": "18f-ENT-09; ADR-0026, ADR-0030",
+    "size": "G (4)",
+    "deps": ["ED-18", "ED-38", "P3.21", "ED-17"],
+    "acceptance": "core `V11` na configuração do app do cliente por tenant (identificador do app, contas de loja, versão publicada; ADR-0026); POC-55 passa em Android e iOS; login pelo navegador do sistema com PKCE no realm `ziipsan-portal`, com client público por app criado pelo pipeline e Universal Link ou App Link; refresh token guardado só no Keychain ou no Keystore (RNF-39); app gerado por pipeline com nome, ícone e cores do tenant, publicado nas lojas na conta do prestador e ligado à base do tenant; usa da ED-18 as regras de plataformas móveis: requisitos de publicação das lojas, contas de organização e atualização remota (PLT-33); usa da ED-17 o consumo quase em tempo real e os alertas ao consumidor (GES-27), entregues por push sem dado pessoal; acessibilidade do aparelho (SG-782); SAMAE 2.24 sem falha",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados): PLT-33 usada da ED-18, GES-27 usada da ED-17", "P4.4 (descartada) substituída pela ED-18 nas dependências"]
+  },
+  {
+    "id": "ED-40",
+    "title": "Totem em modo quiosque e senhas",
+    "origin": "18f-ENT-10; ADR-0028 (k); RAS-26",
+    "size": "M (1)",
+    "deps": ["ED-38", "ED-35"],
+    "acceptance": "portal em modo quiosque no hardware do cliente; senha emitida com prioridade legal, usando o perfil de atendimento prioritário e de acessibilidade da P1.3 (CAD-81); chamada na tela de atendimento e painel de chamada em navegador (SG-625, SG-626); hora de emissão da senha, hora da chamada e hora de início do atendimento gravadas por senha; relatório de tempo de espera presencial por unidade de atendimento e por dia contra os limites da Lei estadual SC 12.465/2002 (15 minutos em dia útil comum e 30 minutos em véspera e no dia seguinte a feriado prolongado), com os limites como parâmetro de valor de fábrica da lei catarinense e teste com massa sintética que separa atendimentos dentro e fora do limite (RAS-26)",
+    "findings_owned": ["RAS-26"],
+    "consumed": ["v2.18 (lista de achados): CAD-81 usada da P1.3", "RAS-26 atendida"]
+  },
+  {
+    "id": "ED-42",
+    "title": "Omnichannel híbrido",
+    "origin": "18f-ENT-12; ADR-0028 (c)",
+    "size": "G (7)",
+    "deps": ["ED-35", "ED-41"],
+    "acceptance": "POC-70 e POC-75 passam: WhatsApp oficial, e-mail e chat do portal atendidos na tela do Ziip SAN, com a conversa registrada no protocolo da matrícula; Messenger e Instagram pela API oficial da Meta e Telegram pela Bot API, no mesmo modelo (conversa no protocolo, opt-in por canal, credenciais no cofre, webhook com assinatura ou segredo conferido, provedor no DPA), cada canal com teste de ponta a ponta em conta de teste; TR 21.1 da VISAN e item 4 do lote do SAMAE atendidos; logs com integridade (SG-655 a SG-661); mensagens medidas por tenant, com custo por categoria de template e uso medido lidos da mensageria da ED-41 (GES-19); e-mail com a entregabilidade por tenant da P3.5 (PLT-10); SAMAE 2.22 sem falha",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados): GES-19 usada da ED-41, PLT-10 usada da P3.5"]
+  },
+  {
+    "id": "ED-43",
+    "title": "Chatbot e IA por modelo de linguagem de terceiro",
+    "origin": "18f-ENT-13; ADR-0028 (c); ADR-0042; GES-26, OPE-40, PLT-18",
+    "size": "G (5)",
+    "deps": ["ED-42", "ED-38"],
+    "acceptance": "POC-71 a POC-74 e POC-76 passam; IA só nos termos do ADR-0042: humano no circuito, auditoria da conversa, mascaramento, desligamento e avaliação de modelo, sem decisão exclusivamente automatizada sobre corte, negativação ou tarifa social (GES-08, registrado no ADR-0042); o modelo só chama funções fechadas do portal, com as permissões do consumidor (teste de recusa de função fora da lista); texto enviado ao modelo sem CPF, CNPJ, nome nem endereço desnecessários (teste); transbordo humano; camada comum de IA: registro de modelo e de prompt com versão, conjunto de conversas de referência executado no CI a cada mudança como regressão de qualidade e de segurança, proteções contra injeção de instrução, vazamento de dado sensível, agência excessiva e consumo ilimitado conforme o OWASP Top 10 para LLM 2025, registro de cada conversa com dado mascarado e retenção própria, cota e teto de custo por tenant, desligamento por tenant e por função e vedação de treinar modelo com dado de tenant (PLT-18); itens SG-685 a SG-701 do SAMAE cobertos, entre eles detecção de sentimento, correção de resposta por humano, identificação de intenção nova, busca semântica, comportamento anômalo (SG-699), mascaramento inteligente (SG-700) e auditoria da conversa (SG-701); provedor no DPA e no RIPD, com processamento no Brasil ou transferência internacional amparada na Res. CD/ANPD 19/2024 e registrada pela P3.9 (RAS-20); bot restrito ao atendimento do prestador, sem assistente de propósito geral, conforme a política da Meta para o WhatsApp vigente desde 15/01/2026; parâmetros `ai.enabled_features` (classe b, padrão desligado), `ai.provider_region` e `ai.log_retention_days` (classe c) e `ai.human_review_required` (classe a, travado para corte, negativação e tarifa social); explicação da variação da conta como função fechada do chatbot e na visão 360 do atendente, sobre o motor determinístico que compara duas contas (dias faturados, consumo real ou estimado, tarifa e reajuste vigentes, serviços, créditos e multa), usando a explicação da fatura da ED-38 (CAD-102), com a IA generativa só na redação e parâmetro `bill.explain_enabled` (GES-26); copiloto do atendente que resume o histórico do protocolo, com o mesmo mascaramento (GES-26); ditado e rascunho do parecer de encerramento da OS, no limite de 400 caracteres do catálogo de OS, e do resumo de turno, sempre revisados pelo executor, sem acesso livre do modelo ao banco, com `assist.voice_enabled` e `assist.provider` (OPE-40)",
+    "findings_owned": ["GES-26", "OPE-40", "PLT-18"],
+    "consumed": ["v2.18: regra do ADR-0042 e achados PLT-18, GES-26, OPE-40 incorporados", "CAD-102 usada da ED-38; RAS-20 usada da P3.9; GES-08 segue o ADR-0042"]
+  },
+  {
+    "id": "ED-47",
+    "title": "BI embarcado com Apache Superset",
+    "origin": "18g-E-BI; ADR-0027; 17 §5 (P4.3)",
+    "size": "G (5)",
+    "deps": ["P0.28", "P3.22"],
+    "acceptance": "Superset com marca do produto e SSO do Keycloak, lendo só a réplica; nenhum relatório nem consulta de BI no primário, com teste que confere a conexão de cada fonte de dados; role de banco por tenant; teste de isolamento no CI: consulta livre e `SET` da GUC não leem outro tenant, em schema próprio e compartilhado; auditoria de acesso (SG-1252); exceção no ADR-0010 registrada; projeção de receita, arrecadação e caixa por cenário fica na ED-100 (GES-10)",
+    "findings_owned": [],
+    "consumed": ["P4.3 incorporada: regra de BI só na réplica (também na ED-46)", "v2.18 (lista de achados): GES-10 remetida à ED-100"]
+  },
+  {
+    "id": "ED-48",
+    "title": "Indicadores gerenciais e SINISA: catálogo, painel e fechamento",
+    "origin": "18g-E-IND, E-MACRO; GES-29",
+    "size": "G (7)",
+    "deps": ["P4.2", "ED-47", "P3.41", "ED-32"],
+    "acceptance": "catálogo SINISA vigente pré-configurado sobre o registro único de indicadores da P3.41 (JOR-19), com cada indicador ligado à variável do mapa SINISA da P4.2 (GES-16); painel exportável por período, setor, categoria e tipo de ligação; fechamento do período e semáforo do registro aplicados ao catálogo SINISA; indicadores de custo por m³ e por ligação, margem por categoria e custo total da OS lidos da ED-32 (GES-09); benchmark que compara cada indicador do tenant com a mediana do SINISA por porte, região e natureza jurídica, a partir de dado público importado como base global e versionada (GES-29); comparação entre tenants só com adesão registrada (`bench.cross_tenant_opt_in`, classe b, padrão desligado), agregação mínima e cláusula contratual, com teste de que tenant sem adesão não entra no agregado (GES-29); ficha com variáveis, contexto e grau de confiança no registro da P3.41 e conteúdo das fichas ISO e NR 9 na ED-77; macromedição e balanço por setor e por DMC no módulo `losses` da ED-85 (OPE-01); Índice de Tarifa Social e lista positiva na ED-97 (CAD-92); metas de universalização e regulação por incentivo na ED-77 (GES-03, GES-30); eficiência energética na ED-90 (OPE-08)",
+    "findings_owned": ["GES-29"],
+    "consumed": ["v2.17: ficha com variáveis e confiança remetida à P3.41 e à ED-77", "v2.18 (lista de achados): GES-29 atendida; GES-09 usada da ED-32; GES-16 usada da P4.2; JOR-19 usada da P3.41; CAD-92 à ED-97; GES-03 e GES-30 à ED-77; OPE-01 à ED-85; OPE-08 à ED-90", "COE-11: macromedição e balanço por setor deixados para a ED-85; registro para a P3.41"]
+  },
+  {
+    "id": "ED-49",
+    "title": "Sete painéis padrão",
+    "origin": "18g-E-PAIN; ADR-0027",
+    "size": "7 × M (7)",
+    "deps": ["ED-47", "ED-48", "ED-62"],
+    "acceptance": "POC-77 a POC-81 passam: painéis de arrecadação, atendimento, cobrança, faturamento, medição, operacional e indicadores estratégicos, no Superset da ED-47; indicadores, metas e semáforo lidos do registro da P3.41 (JOR-19), sem fórmula repetida no painel, com teste que compara o valor exibido com o do registro; painel estratégico mostra o benchmark com o SINISA da ED-48 (GES-29); o console operacional em tempo quase real fica fora do BI, na ED-93 (OPE-22)",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados): GES-29 usada da ED-48; OPE-22 remetida à ED-93", "JOR-19 usada da P3.41"]
+  },
+  {
+    "id": "ED-50",
+    "title": "Qualidade da água operacional",
+    "origin": "18g-E-QUAL; ADR-0028 (a); JOR-22, JOR-37, OPE-26",
+    "size": "G (9)",
+    "deps": ["P2.5", "P2.8", "P3.3", "P3.22", "ED-20", "ED-35"],
+    "acceptance": "catálogo da Portaria GM/MS 888/2021 revisado por responsável técnico; plano de amostragem, cadeia de custódia, conformidade e fechamento mensal; bloco de qualidade na conta (Decreto 5.440/2005) e no portal; arquivo SISAGUA assistido; coleta de amostra como OS de campo executada no app da ED-20, com etiqueta, cadeia de custódia do ponto ao laboratório e recebimento registrado pelo laboratório (JOR-37); reclamação de cor, gosto, odor ou pressão registrada como protocolo no atendimento da ED-35 gera OS de coleta no ponto de consumo com tipo de amostra `COMPLAINT`, resultado no laudo, recoleta quando fora do padrão e resposta ao usuário no mesmo protocolo, com o prazo de 30 dias do Decreto 5.440 como `sac.quality_complaint_deadline_days` (valor da norma, só reduz) (OPE-26); não conformidade com risco à saúde gera comunicação à autoridade de saúde pública e à população por modelo do motor da P2.30 (JOR-06), com registro de envio e prazo, e os artigos da Portaria GM/MS 888/2021 que fixam essa comunicação são conferidos com o responsável técnico antes da carga do modelo (JOR-22); SAMAE 2.26 e relatórios 2.28.117 a 2.28.126 sem falha; diário de operação de estações na ED-87 (OPE-02); insumos químicos e limpeza de reservatórios na ED-89 (OPE-06, OPE-07); efluente não doméstico na ED-83 (OPE-13); automonitoramento do efluente da ETE e lodo na ED-105 (JOR-16)",
+    "findings_owned": ["JOR-22", "JOR-37", "OPE-26"],
+    "consumed": ["v2.18 (lista de achados): OPE-26 atendida; OPE-02 à ED-87; OPE-06 e OPE-07 à ED-89; OPE-13 à ED-83", "JOR-22 e JOR-37 atendidos", "JOR-16: efluente e lodo deixados para a ED-105"]
+  },
+  {
+    "id": "ED-51",
+    "title": "Apoio à ISO/IEC 17025",
+    "origin": "18g-E-LIMS17025; ADR-0028 (a); ADR-0041",
+    "size": "G (5)",
+    "deps": ["ED-50", "P3.31"],
+    "acceptance": "laboratório com escopo, calibração com histórico e bloqueio do equipamento vencido, controle de Westgard, incerteza e validação por segunda pessoa demonstrados no ensaio; autorização de analista por método; condições ambientais; padrões e materiais de referência; validação de método; ensaios de proficiência; laudo com emenda rastreável e trabalho não conforme; laudo emitido por modelo do motor da P2.30 (JOR-06); laboratório externo, provedor de ensaio de proficiência e fornecedor de material de referência lidos do cadastro de fornecedor da P3.31 (JOR-18); recursos ligados com a ISO/IEC 17025:2017 ativa no módulo de certificações (ADR-0041), com teste ligada e desligada; entrada em produção na sequência da implantação do tenant que exigir a norma, com os seis meses citados no edital como indicação e não como compromisso do projeto (ADR-0044); o pacote de validação do sistema por versão permanece pendente de decisão do dono (PD-08)",
+    "findings_owned": [],
+    "consumed": ["v2.17: ampliação da ISO/IEC 17025 (21b L-11) incorporada", "JOR-06 usada da P2.30; JOR-18 usada da P3.31", "pacote de validação por versão deixado pendente (PD-08)"]
+  },
+  {
+    "id": "ED-54",
+    "title": "Traçados, isolamento e manobras com aviso e OS em lote (GIS-11)",
+    "origin": "18d-E14; ADR-0028 (b); ADR-0034",
+    "size": "G (5)",
+    "deps": ["P2.21", "P2.23", "ED-36", "ED-41"],
+    "acceptance": "aceite da GIS-11: montante e jusante; setores de manobra pré-calculados; isolamento sobre a topologia persistida, com válvulas a fechar, válvula inoperável atravessada, imóveis e economias afetados e clientes sensíveis primeiro (teste com resultado conhecido); plano de manobra com aviso pela ED-41 e OS de fechamento e reabertura em lote pela ED-36; baixa das OS atualiza o estado das válvulas e registra o período de desabastecimento por imóvel; a área afetada da interrupção programada cadastrada na ED-35 passa a ser calculada pelo isolamento, com imóveis e unidades essenciais afetados e aviso pela ED-41 (teste com resultado conhecido); áreas de influência, bacias e polígonos de roteamento (SG-887, SG-889); conexões funcionais (SG-852); TR-1064, TR-1065; SAMAE 2.27 sem falha nos itens de manobra; programa de exercício de válvulas na ED-56 (OPE-09); rodízio e crise hídrica na ED-91 (OPE-10); ocorrência de rede na ED-92 (OPE-16)",
+    "findings_owned": [],
+    "consumed": ["v2.15: área afetada da interrupção programada pelo isolamento", "v2.18 (lista de achados): OPE-09 à ED-56; OPE-10 à ED-91; OPE-16 à ED-92"]
+  },
+  {
+    "id": "ED-55",
+    "title": "Acesso QGIS e importação ampliada (GIS-10, GIS-18)",
+    "origin": "18d-E15, 18h-E8; ADR-0028 (b); ADR-0034",
+    "size": "G (5)",
+    "deps": ["P3.26", "P2.22", "P3.25", "P3.8", "P1.25"],
+    "acceptance": "dependência textual: core `V12` (`platform.gis_db_role`, role de login do QGIS ligada a tenant e usuário, gravada só pela rotina privilegiada de implantação); aceite da GIS-10: role individual sem privilégio mapeada ao tenant pela identidade da role; leitura por views `qgis_*` e escrita só por views `qgis_edit_*` com `INSTEAD OF` que gravam no pacote do usuário e passam pela validação, com revisão por outra pessoa; tabelas base sem escrita; teste prova que a role de um tenant não lê nem grava outro, em schema próprio e compartilhado; projeto `.qgz` gerado com formulários, listas e simbologia iguais às da web; endpoint próprio com TLS, fora do pooler, por VPN ou IP; conexões e comandos auditados; pentest; aceite da GIS-18: DGN v7, com o DGN v8 entrando pela conversão assistida da implantação para DWG ou DXF; INP do EPANET e do SWMM e CSV de pontos GNSS; casamento de unidades por matrícula ou endereço com fila de revisão (SG-1349); conciliação base × desenho (SG-1356); implantação em três etapas e treinamento (SG-1334, SG-884, SG-885); migração de amostra de rede concluída em no máximo 60 dias no ensaio; a migração DWG, DXF, SHP e GPKG fica na P3.26",
+    "findings_owned": [],
+    "consumed": ["sem ajustes na v2.21; texto do título sobre a P3.26 movido para o aceite; dependência textual core `V12` mantida"]
+  },
+  {
+    "id": "ED-64",
+    "title": "Drenagem no GIS (GIS-13)",
+    "origin": "ADR-0034 (decisão 1); NR 12/2025 da ANA; 18d (TR-1048); OPE-32",
+    "size": "G (3)",
+    "deps": ["P1.27", "P2.21", "ED-53"],
+    "acceptance": "aceite da GIS-13: catálogo de drenagem carregado; regras de conectividade, declividade e sentido; estado de conservação, obstrução, foto e inspeção; sub-bacias com atributos do SWMM; temático de conservação; relatório do cadastro de drenagem; TR-1048; símbolos de drenagem (`ICONES-E-SIMBOLOGIA` §4.3) em cinco estados, gerados no mesmo pipeline da P1.30, com aceite do dono; plano de operação e manutenção da drenagem com periodicidade e critérios por classe de elemento, conforme a NR 12/ANA (Res. ANA 245/2025, arts. 11 e 12), gerando OS recorrentes de limpeza de bocas de lobo e galerias (`drain.cleaning_interval_by_class`); ocorrência de alagamento registrada e ligada à chuva do período, com o tipo alagamento no catálogo de causas da ocorrência de rede da ED-92; monitoramento pluviométrico por fonte configurável (`drain.rain_source`: Cemaden, por importação do download mensal com a fonte citada, ou pluviômetro próprio), sem depender de API do Cemaden, não confirmada; relatório de indicadores operacionais da drenagem (OPE-32); inspeção de esgoto por vídeo e desobstrução programada na ED-56 (OPE-12), reaproveitável na drenagem quando existir",
+    "findings_owned": ["OPE-32"],
+    "consumed": ["v2.13: símbolos de drenagem em cinco estados", "v2.18 (lista de achados): OPE-32 atendida; OPE-12 à ED-56"]
+  },
+  {
+    "id": "ED-63",
+    "title": "Hidráulica: EPANET e SWMM, exportação e importação (GIS-12)",
+    "origin": "ADR-0034 (decisão 8); 19e; COD-34, GES-31, OPE-35",
+    "size": "G (4)",
+    "deps": ["P2.21", "P2.23", "ED-64"],
+    "acceptance": "aceite da GIS-12: `.inp` EPANET por zona, estado e data, com rugosidade do material e demanda do consumo faturado, executado na biblioteca do EPANET 2.2 no CI; `.inp` SWMM 5.2 de esgoto e drenagem (junções, condutos, armazenamento, outfalls, subcatchments, inlets), executado na biblioteca do SWMM no CI; importação de `.inp` EPANET e SWMM como pacote (SG-1339, parte INP); ida e volta preserva o código das feições; view `gis_network_element`, mantida como compatibilidade pela P1.26, e entidade antiga removidas; `EpanetSimulationService` deixa de devolver aviso de solução não calculada e executa o solver real sobre a topologia persistida, com teste em rede de resultado conhecido (COD-34); calibração do modelo com séries de pressão, vazão e nível de reservatório, quando houver telemetria, e cenários de falta de energia, rompimento, fechamento de válvula, plano de manobra e bombeamento fora da ponta, com resultado publicado só com solver, versão, premissas e grau de confiança (regra N7 do 15c), e licença e viabilidade das bibliotecas de calibração e de cenário na pilha Java conferidas antes da adoção (OPE-35); gêmeo digital em tempo real fora do escopo próprio: exportação da demanda por zona e por nó, do consumo faturado agregado por zona e do cadastro, com conector de arquivo ou API para ferramenta de terceiro (GES-31)",
+    "findings_owned": ["COD-34", "GES-31", "OPE-35"],
+    "consumed": ["v2.18 (lista de achados): OPE-35 e GES-31 atendidas", "COD-34 atendida (solver real)"]
+  },
+  {
+    "id": "ED-65",
+    "title": "Resíduos sólidos no GIS (GIS-14)",
+    "origin": "ADR-0034 (decisão 1); 18d (TR-1049)",
+    "size": "G (3)",
+    "deps": ["P1.27", "P3.25", "ED-25"],
+    "acceptance": "aceite da GIS-14: contêineres, PEV, ecopontos, lixeiras, pontos de coleta e de descarte irregular com foto e OS de limpeza; setores e rotas de coleta sobre o grafo de logradouros com pgRouting; imóvel ligado ao setor para a taxa da ED-25; TR-1049; camadas de resíduos na importação (SG-1340, parte); símbolos de resíduos (`ICONES-E-SIMBOLOGIA` §4.3) em cinco estados, gerados no mesmo pipeline da P1.30, com aceite do dono",
+    "findings_owned": [],
+    "consumed": ["v2.13: símbolos de resíduos em cinco estados"]
+  },
+  {
+    "id": "ED-66",
+    "title": "Campo GIS no app Capacitor (GIS-15)",
+    "origin": "ADR-0034 (decisões 3 e 5); ADR-0026; ADR-0030",
+    "size": "G (5)",
+    "deps": ["ED-18", "ED-20", "ED-53"],
+    "acceptance": "aceite da GIS-15: pacote offline por área; coleta e edição como deltas em pacote de campo, sem duplicar no reenvio, com conflito por atributo; GNSS externo por Bluetooth com tipo de solução e PDOP; as-built recusado sem RTK fixo dentro da meta do tenant; altitude convertida no servidor; fotos com posição, azimute e hash, varridas; croqui; dispositivo registrado e bloqueio remoto; usa a regra de privacidade do rastreamento do executor e das fotos de campo da ED-20 (OPE-11); teste instrumentado em Android sem rede",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados): OPE-11 usada da ED-20"]
+  },
+  {
+    "id": "ED-67",
+    "title": "Exportação, devolução da base e OGC autenticado por tenant (GIS-16, GIS-17)",
+    "origin": "ADR-0034; ADR-0010 (Exceções, GeoServer); 19e (F10); 18d (SG-1357, SG-1365)",
+    "size": "G (6; 5 na v2.10)",
+    "deps": ["P3.25", "P2.22"],
+    "acceptance": "aceite da GIS-16: GPKG, SHP, DXF, KML, GeoJSON, CSV e perfis Corsan e Saneago com metadado MGB, exportação pessoal registrada e devolução da base no ensaio de saída; aceite da GIS-17: OGC API – Features, partes 1 a 3 (situação conferida em 22/10/2026: a Parte 4, de criação e atualização, segue em minuta, e a Parte 5, de esquemas, foi aprovada em 30/04/2026), e WFS 2.0 com `Transaction` gravando no pacote, na `api`; WMS 1.3.0 (`GetCapabilities`, `GetMap`, `GetFeatureInfo`) pelo GeoServer, só leitura (WFS-T e edição desligados), sem porta publicada e acessível só pela `api`, que autentica, confere a permissão por camada e encaminha ao workspace do tenant da credencial; um workspace por tenant, com role de banco própria do tenant, somente leitura, presa ao schema dele ou a views filtradas pelo tenant da role no schema compartilhado; workspaces, stores, camadas e estilos gerados pelo produto pela API REST do GeoServer, sem configuração manual; simbologia em SLD gerada da fonte única de estilos, a mesma do mapa web e do projeto QGIS (teste compara regras e cores das três saídas); todos sem acesso anônimo, autenticados por tenant e com permissões por camada; requisição de um tenant nunca lê camada de outro, nem pela `api` nem pela role do workspace, em schema próprio e compartilhado (teste); fora do backoffice autenticado (credencial entregue a terceiro ou publicação pública), imóveis e ligações só agregados por quadra ou setor pelo piso de `gis.public_aggregation_min_units` (teste), e rede e ativos publicáveis, salvo infraestrutura crítica sem controle de acesso; conformidade conferida no TEAM Engine (SG-1357); GeoServer com versão fixada, imagem sem console administrativo exposto e atualização de segurança no mesmo ritmo das demais dependências (exceção do ADR-0010)",
+    "findings_owned": [],
+    "consumed": ["sem ajustes na v2.21; marcadores de versão do título retirados; nota de verificação de 22/10/2026 padronizada (COE-18)"]
+  },
+  {
+    "id": "ED-56",
+    "title": "Ativos, manutenção de rede e inventário regulatório (GIS-19)",
+    "origin": "18g-E-ATIVOS; ADR-0034; NR 16/2026 da ANA; OPE-09, OPE-12, OPE-20, OPE-38",
+    "size": "G (4)",
+    "deps": ["ED-53", "ED-54", "ED-32", "ED-36", "P1.35"],
+    "acceptance": "aceite da GIS-19 sobre o cadastro mínimo de ativos e a hierarquia de seis níveis da P1.35 (COE-05), com a feição do GIS e o hidrômetro apontando para o ativo, sem segunda fonte do código patrimonial (DAD-26); hierarquia completa do inventário: instalações, equipamentos e componentes do tenant classificados nos seis níveis (município, sistema, etapa do serviço, instalação, equipamento, componente), com classe e tipo no padrão de unidade de propriedade (UP) e unidade de adição e retirada (UAR), ficha técnica, vida útil, custo histórico e indicadores de bem compartilhado e reversível; fronteira de cada classe de equipamento definida como na ISO 14224, sem sobreposição entre classes; catálogo de equipamentos, instrumentos e edificações de `ALVOS-DA-OS-E-HIERARQUIA-DE-ATIVOS` carregado, com a frota tratada na ED-59; códigos MCPSB por feição e extensão por subdivisão da NR 16/2026 (Res. ANA 302/2026), com correspondência de cada tipo ao par UP e UAR e vida útil por perfil de agência, conferida na tabela original do MCPSB antes de virar dado do produto; conciliação GIS × patrimônio exportada à contabilidade, com o de-para do MCRSB da ED-32 (GES-14); bens reversíveis (NR 3/2023); manutenção preventiva e corretiva ligada ao GIS e ao ativo, por OS da ED-36; plano preventivo de ativos não lineares (bombas, motores e painéis de ETA, ETE, elevatória e reservatório) por tempo e por uso (horas de funcionamento, volume bombeado), com plano de trabalho (tarefas, materiais, ferramentas e plano de segurança), geração antecipada de OS, rotas de inspeção agrupadas, checklists de ronda e indicadores de backlog, MTBF e MTTR, com `maint.pm_generation_lead_days`, `maint.pm_overdue_tolerance_days` e `maint.checklist_templates` (OPE-20); programa de exercício de válvulas, de teste de hidrantes e de descarga de rede por criticidade, com OS agrupadas por região, número de voltas para fechar, estado encontrado e deixado, vazão e pressão do hidrante, atualização de `operational_status` da válvula e da data do último teste do hidrante, fila de substituição da válvula que não fecha e indicador de percentual de inoperantes, com `maint.valve_exercise_years_by_class` (referência da AWWA: críticas a cada ano, demais a cada cinco anos) e `maint.hydrant_test_months` (OPE-09); inspeção interna de esgoto por vídeo com códigos padronizados de defeito, grau de condição de 1 a 5 e pontuação do trecho, importação do arquivo de transferência da NASSCO (PACP), com o uso do PACP ou da prática da WRc confirmado com o cliente e o responsável técnico, e desobstrução programada nos trechos de reincidência (OPE-12); manutenção por condição, com OS gerada por leitura de horímetro, corrente, vibração ou temperatura, e política de peça sobressalente crítica por equipamento, com mínimo e ponto de reposição (`maint.condition_triggers`, `inv.critical_spares`) (OPE-38); risco por probabilidade × consequência, com a probabilidade alimentada pelo grau de condição e pelos rompimentos das OS de reparo, e plano de renovação; criticidade e ciclo de vida do ativo registrados aqui e lidos pela ED-72; TR-155, TR-1010, SG-1180; instrumento contratual regulatório na ED-96 (GES-02)",
+    "findings_owned": ["OPE-09", "OPE-12", "OPE-20", "OPE-38"],
+    "consumed": ["v2.17: criticidade e ciclo de vida servem à ED-72", "v2.18 (lista de achados): OPE-09, OPE-12, OPE-20 e OPE-38 atendidas; GES-14 usada da ED-32; GES-02 à ED-96", "v2.19: hierarquia completa do inventário sobre o cadastro mínimo da P1.35 (COE-05, DAD-26); entidade e seis níveis deixados para a P1.35"]
+  },
+  {
+    "id": "ED-69",
+    "title": "Pacote ISO 9001",
+    "origin": "ADR-0041; 21a §6.1, CQ-08",
+    "size": "G (a estimar)",
+    "deps": ["P2.25", "P3.31"],
+    "acceptance": "pacote da ISO 9001 no módulo `certification` (ADR-0041), ligado por `cert.<norma>.enabled` com escopo declarado (`cert.scope_statement`) e edição (`cert.<norma>.edition`), com proposta e aceite por pessoas diferentes; só com a norma ligada: mapa de processos com responsável, entradas, saídas, indicador e risco; calibração de instrumentos de medição com validade e bloqueio; saída não conforme classificada na ocorrência da P2.25; checklist de prontidão por edição, com a ISO 9001:2026 como alvo e a edição de 2015 só em transição, e comparação de cláusulas na troca de edição; mapa de cláusulas em palavras próprias apresentado como autoavaliação do cliente, sem afirmar certificação; desligar a norma não apaga registro; teste de aceite com a norma ligada e desligada",
+    "findings_owned": [],
+    "consumed": ["sem ajustes na v2.21; regras gerais de pacote do ADR-0041 explicitadas"]
+  },
+  {
+    "id": "ED-71",
+    "title": "Pacote ISO 45001",
+    "origin": "ADR-0041; 21a §6.3, CQ-10",
+    "size": "G (a estimar)",
+    "deps": ["P2.25", "P3.30", "ED-36", "ED-58", "ED-20"],
+    "acceptance": "pacote da ISO 45001 no módulo `certification` (ADR-0041), ligado por `cert.<norma>.enabled` com escopo declarado e edição, ISO 45001:2018 como edição-alvo e nova edição incorporada pela comparação de cláusulas quando publicada; só com a norma ligada: inventário de perigos e riscos por atividade e local; análise de risco da tarefa e permissão de trabalho como etapas da OS exigidas por tipo de OS de risco (espaço confinado, vala), sobre o catálogo de SST e a habilitação do executor da P1.31 (OPE-14), inclusive a NR-10 do mesmo catálogo (RAS-25), executadas no backoffice pela ED-36 e em campo pela ED-20; EPI entregue pelo almoxarifado da ED-58 com vínculo a trabalhador e função; investigação de acidente com dado de saúde de acesso restrito pela LGPD, prevalecendo o limite legal (ADR-0041, item 9); campo de risco psicossocial; escopo por área da P3.30; mapa de cláusulas como autoavaliação do cliente; desligar a norma não apaga registro; teste de aceite com a norma ligada e desligada",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados): OPE-14 usada da P1.31", "RAS-25 usada da P1.31"]
+  },
+  {
+    "id": "ED-72",
+    "title": "Pacote ISO 55001",
+    "origin": "ADR-0041; 21a §6.4, CQ-11",
+    "size": "G (a estimar)",
+    "deps": ["ED-56", "ED-53", "ED-36", "ED-58"],
+    "acceptance": "pacote da ISO 55001 no módulo `certification` (ADR-0041), ligado por `cert.<norma>.enabled` com escopo declarado e edição, ISO 55001:2024 como edição-alvo; só com a norma ligada: inventário e ciclo de vida do ativo sobre o ativo da P1.35 (COE-05) e o inventário regulatório do GIS da ED-56, com a definição da NR/ANA prevalecendo nos campos que coincidem; risco e criticidade lidos da ED-56; plano estratégico de gestão de ativos com objetivos e critérios de decisão (renovar, reparar, manter, descartar) e registro das decisões tomadas; plano de investimento e manutenção por ativo com custo apropriado das OS da ED-36 e dos materiais da ED-58; ação preditiva por regra estatística simples sobre séries históricas; usa da ED-56 o plano preventivo de ativos não lineares (OPE-20) e a manutenção por condição com peça sobressalente crítica (OPE-38); a frota fica na ED-59, que estende a manutenção da ED-56 para veículos; mapa de cláusulas como autoavaliação do cliente; desligar a norma não apaga registro; teste de aceite com a norma ligada e desligada",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados): OPE-20 usada da ED-56", "COE-05 usada da P1.35; OPE-38 usada da ED-56", "ED-59 retirada das dependências (frota fica na ED-59)"]
+  },
+  {
+    "id": "ED-73",
+    "title": "Pacote ISO/IEC 27001",
+    "origin": "ADR-0041; 21a §6.5, CQ-12",
+    "size": "G (a estimar)",
+    "deps": ["P2.25", "ED-06", "P3.8", "P3.9", "P3.17"],
+    "acceptance": "pacote da ISO/IEC 27001 no módulo `certification` (ADR-0041), ligado por `cert.<norma>.enabled` com escopo declarado e edição, ISO/IEC 27001:2022 com a Emenda 1:2024 como edição-alvo; só com a norma ligada: declaração de aplicabilidade com os 93 controles do Anexo A, cada um com aplicabilidade, justificativa, estado, evidência, responsável e última revisão, exportável e sem impedir exclusão justificada; identificadores e títulos do Anexo A reproduzidos só depois de decisão do dono sobre licença ou reescrita; matriz de responsabilidade compartilhada Ziip e cliente por controle, com a marcação de controle implementado pelo fornecedor acompanhada da evidência do fornecedor; campanha periódica de recertificação de acessos por papel e por escopo, com decisão do gestor e registro, sobre o catálogo de permissões da ED-06; pacote de evidência do fornecedor com a linha de base de segurança da P3.8 (ASVS 5.0, API Security Top 10 e LLM Top 10; PLT-08), a exportação verificável da trilha de auditoria da P1.7 (PLT-19), os documentos da P3.9 e os incidentes da P3.17; mapa de cláusulas como autoavaliação do cliente; desligar a norma não apaga registro; teste de aceite com a norma ligada e desligada",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados): PLT-08 usada da P3.8; PLT-19 usada da P1.7"]
+  },
+  {
+    "id": "ED-74",
+    "title": "Pacote ISO/IEC 27701",
+    "origin": "ADR-0041; 21a §6.6, CQ-13",
+    "size": "G (a estimar)",
+    "deps": ["P2.25", "P3.10", "P1.15", "P3.40"],
+    "acceptance": "pacote da ISO/IEC 27701 no módulo `certification` (ADR-0041), ligado por `cert.<norma>.enabled` com escopo declarado e edição, ISO/IEC 27701:2025 como edição-alvo e a de 2019 só em transição; o pacote contém só o que a norma pede além da LGPD: direitos do titular, registro de operações de tratamento e canal do titular são obrigação de todo tenant e ficam na P3.40 (JOR-15), e incidente com dado pessoal e RIPD ficam na P3.10; só com a norma ligada: papel de controlador ou operador por tratamento e escopo do sistema de gestão da privacidade da informação; mapa de cláusulas e de controles da edição de 2025, para controlador, operador e comuns, escrito em palavras próprias e ligado como evidência aos registros da P3.40 e da P3.10; verificação de privacidade desde a concepção na mudança, com registro de que o tratamento novo ou alterado teve RIPD; mapa de dados apoiado na classificação de dados por coluna da P0.11 (DAD-29); mapa de cláusulas como autoavaliação do cliente; desligar a norma não apaga registro nem afeta a P3.40 (teste); teste de aceite com a norma ligada e desligada",
+    "findings_owned": [],
+    "consumed": ["JOR-15 usada da P3.40: direitos do titular, registro de operações e canal deixados para a P3.40", "DAD-29 usada da P0.11", "módulo LGPD da coluna de dependências substituído pela P3.40 (COE-06)"]
+  },
+  {
+    "id": "ED-76",
+    "title": "Curadoria do conteúdo das normas",
+    "origin": "ADR-0041; 21a CQ-15; 21b L-18",
+    "size": "M (a estimar)",
+    "deps": ["P1.28"],
+    "acceptance": "textos ISO e do setor comprados para curadoria; o catálogo-base de normas de `docs/normas`, carregado pela P1.34, recebe desta tarefa o mapa de cláusulas por edição, escrito em palavras próprias a partir dos textos comprados, sem reproduzi-los; o produto guarda só título, edição e número de cláusula; revisão do mapa a cada nova edição, com comparação de cláusulas e lista de evidências a revalidar nos tenants que usam a norma",
+    "findings_owned": [],
+    "consumed": ["v2.20: catálogo-base existente em docs/normas e carregado pela P1.34"]
+  },
+  {
+    "id": "ED-84",
+    "title": "Fluxo do empreendedor e obras: loteamento, condomínio, recebimento de redes, medição e recomposição",
+    "origin": "22a CAD-71; 22b OPE-27; ADR-0039",
+    "size": "G (a estimar)",
+    "deps": ["ED-53", "ED-37", "ED-34"],
+    "acceptance": "fluxo do empreendedor inteiro como OS (ADR-0039), com a solicitação externa nascendo como protocolo da P1.36; estudo de viabilidade e diretrizes, com parecer técnico sobre dados de rede, pressão e diâmetro; análise e aprovação do projeto de rede do loteamento ou condomínio; acompanhamento e fiscalização da obra executada pelo empreendedor; vistoria, recebimento da rede executada sobre o pacote de as-built da ED-53 e termo de transferência com versão e aceite, vinculado às feições aprovadas, com incorporação dos bens ao patrimônio do prestador; interligação liberada só depois do aceite, do pagamento e da cessão (NR 11/ANA, arts. 25 a 30); tipos de serviço `DEVELOPMENT_*` com taxas do catálogo da ED-34 e lote de unidades `PROVISIONAL` do empreendimento (ADR-0039, item 3); ressarcimento conforme a agência (Lei 11.445, art. 18-A); parâmetros `developer.study_fee`, `developer.reimbursement_rule` e prazos por etapa (classe d, conforme a agência), `works.feasibility_deadline_days` (valor da agência) e `works.network_acceptance_checklist` (CAD-71); obras do prestador com cronograma, orçamento, medição de empreiteira pela ED-37 e fiscalização; OS de recomposição de pavimento derivada da OS de reparo, com tipo de pavimento (SG-138, SG-139) e medição da empreiteira; licença de intervenção em via pública e consulta de interferência com outros serviços registradas na OS, sem integração nacional de consulta antes de escavar, não confirmada (OPE-27); teste de ponta a ponta de um loteamento sintético, do protocolo à interligação",
+    "findings_owned": ["CAD-71", "OPE-27"],
+    "consumed": ["CAD-71 e OPE-27 atendidas", "decisão do dono 7: solicitação do empreendedor como protocolo da P1.36"]
+  },
+  {
+    "id": "ED-87",
+    "title": "Operação de estações sem supervisório: diário, ronda e turno",
+    "origin": "22b OPE-02; JOR-21",
+    "size": "G (a estimar)",
+    "deps": ["ED-17", "ED-50", "P1.31"],
+    "acceptance": "diário de operação por turno de ETA, ETE, elevatória e reservatório, com equipamentos em operação e em reserva, níveis, vazões, pressões, horímetro, partidas, ocorrências e passagem de turno; rondas com roteiro e checklist, em formulário que funciona sem rede; leituras manuais gravadas como série na tabela da ED-17 com origem `MANUAL`; alerta de ronda não realizada e apuração da cobertura da frequência exigida, com `ops.round_interval_by_unit` (a norma fixa a frequência mínima e o tenant só reduz o intervalo) e `ops.shift_pattern`; turbidez do efluente de cada unidade filtrante registrada no mínimo a cada 2 h quando a filtração for rápida (Portaria GM/MS 888/2021, art. 28, §3º), com apuração do percentil mensal de turbidez (OPE-02); dados de controle de processo do diário (turbidez por filtro, cloro e pH na saída) alimentam a conformidade mensal da ED-50 e o arquivo do SISAGUA sem redigitação, com teste que compara o arquivo gerado com os lançamentos do diário (JOR-21); ocorrência registrada no diário vira OS pelo núcleo da P1.31, conforme a fronteira da OS (COE-10)",
+    "findings_owned": ["JOR-21", "OPE-02"],
+    "consumed": ["OPE-02 atendida (retirada da P1.31, da ED-17 e da ED-50)", "JOR-21 atendida", "COE-10 usada da P1.31"]
+  },
+  {
+    "id": "ED-105",
+    "title": "Efluente da ETE e lodo de ETA e ETE: obrigação legal para todo tenant com estação",
+    "origin": "ADR-0041; 21b L-07 (de ED-80); 21a §6.2 (de ED-70); JOR-16, OPE-25",
+    "size": "a estimar",
+    "deps": ["ED-50", "ED-87"],
+    "acceptance": "obrigação legal da classe `REGULATORY` (CONAMA 430/2011 e CONAMA 498/2020), ativa para todo tenant com ETA ou ETE, sem depender da ISO 14001 nem do pacote de esgoto e água bruta, e ausente para tenant sem estação (teste nos dois casos) (JOR-16); catálogo de padrão de efluente versionado e com vigência futura, com os padrões federais e estaduais do catálogo de normas; a CONAMA 430/2011 está em revisão (nova resolução aprovada em 02/09/2026, sem publicação), e os limites novos só entram no catálogo depois da publicação, como versão com data de efeito; automonitoramento do efluente da ETE com plano de coleta, amostragem e análise pelo laboratório e pela cadeia de custódia da ED-50; eficiência de remoção de DBO por ETE e por período; geração e destinação do lodo de ETA e de ETE e dos resíduos de gradeamento e desarenação como resíduo do próprio tenant: registro de geração por unidade, pesagem ou estimativa de volume, armazenamento temporário, transportador, destino e documento de transporte, com `waste.sludge_destination_catalog` e `waste.mtr_exempt_origins` (OPE-25); volumes e paradas lidos do diário de operação da ED-87; recepção de lodo de fossa na ETE registrada com volume e origem; emissão do MTR como gerador como item manual da agenda da ED-98 enquanto a ED-104 não for liberada, e ligação do lodo ao MTR quando ela for (RAS-17); Declaração de Carga Poluidora, outorga, licença, biossólido e reúso continuam na ED-80; aspecto ambiental do lodo lido pela ED-70; a ED-83 usa o catálogo de padrão de efluente desta tarefa",
+    "findings_owned": ["JOR-16", "OPE-25"],
+    "consumed": ["de ED-80: catálogo de padrão de efluente com vigência futura, automonitoramento e eficiência de DBO", "de ED-70 (v2.18): lodo de ETA e ETE como gerador (OPE-25)", "JOR-16 atendida; MTR deixado para a ED-104, com item manual na ED-98 (RAS-17)"]
+  },
+  {
+    "id": "ED-70",
+    "title": "Pacote ISO 14001",
+    "origin": "ADR-0041; 21a §6.2, CQ-09",
+    "size": "G (a estimar)",
+    "deps": ["P3.31", "P2.25", "ED-105"],
+    "acceptance": "pacote da ISO 14001 no módulo `certification` (ADR-0041), ligado por `cert.<norma>.enabled` com escopo declarado e edição, ISO 14001:2026 como edição-alvo e a de 2015 só em transição; só com a norma ligada: aspectos e impactos ambientais com catálogo de fábrica de ETA, ETE e rede no pacote `sanitation`, situação normal, anormal e de emergência e critério de significância configurável pelo tenant; licenças e condicionantes com validade, responsável, evidência e alerta de vencimento; emergência ambiental por cenário; o aspecto lodo lê a geração e a destinação registradas pela ED-105 (JOR-16, OPE-25), que valem para todo tenant com estação, com a norma ligada ou desligada (teste); mapa de cláusulas como autoavaliação do cliente; desligar a norma não apaga registro; teste de aceite com a norma ligada e desligada",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados): OPE-25 usada da ED-105", "JOR-16 usada da ED-105: lodo como obrigação legal deixado para a ED-105"]
+  },
+  {
+    "id": "ED-75",
+    "title": "Pacote de evidência e auditor externo",
+    "origin": "ADR-0041; 21a §8, CQ-14; GES-22, JOR-23",
+    "size": "M (a estimar)",
+    "deps": ["ED-69", "ED-70", "ED-71", "ED-72", "ED-73", "ED-74", "P3.15"],
+    "acceptance": "pacote de evidência por norma ligada, com qualquer subconjunto das normas da ED-69 à ED-74, sem dado pessoal, só com dado agregado, mascarado ou pseudonimizado (classe a, travado); papel de auditor externo desligado por padrão, somente leitura, com validade do acesso e registro de cada leitura (classe b); evidência do Ziip como fornecedor; o papel se generaliza em observador externo com perfil por tipo: auditor de certificação, com escopo no pacote de evidência das normas ligadas, e regulador ou titular do serviço (agência e prefeitura), com escopo nos dados e relatórios regulatórios, sem pacote de evidência ISO e sem dado pessoal além do mínimo (GES-22, JOR-23); o escopo regulatório é definido pela ED-97 sobre este mecanismo; `reg.external_access` (classe b, com aceite) e expiração obrigatória em todo acesso externo; teste de escopo por perfil, que prova que o perfil regulador não lê pacote de evidência nem dado pessoal; o acesso do órgão à instância dedicada fica na LC.15",
+    "findings_owned": ["GES-22", "JOR-23"],
+    "consumed": ["v2.18 (lista de achados): GES-22 atendida (antes citada também na ED-04)", "JOR-23 atendida no mecanismo; escopo deixado para a ED-97"]
+  },
+  {
+    "id": "ED-83",
+    "title": "Esgoto não doméstico e carga poluidora do usuário",
+    "origin": "22a CAD-70; 22b OPE-13",
+    "size": "G (a estimar)",
+    "deps": ["ED-50", "ED-22", "ED-105"],
+    "acceptance": "cadastro do usuário não doméstico gerador de efluente (indústria, agroindústria, hospital, posto, lavanderia), com a marca `non_domestic_discharger` na unidade consumidora, autorização de lançamento, caracterização do efluente, termo de compromisso e pré-tratamento às expensas do usuário nos padrões do prestador (NR 11/ANA); catálogo de padrão de lançamento do prestador sobre o catálogo de padrão de efluente da ED-105 (`effluent.user_standard_catalog`); plano de amostragem do prestador no ponto de lançamento do usuário (`effluent.sampling_interval_days`), reaproveitando o laboratório e a cadeia de custódia da ED-50; automonitoramento informado pelo usuário e vistoria por OS; notificação e penalidade por não conformidade; cobrança complementar conforme `sewer.nondomestic_charge_model` (classe d: percentual do volume de água, por carga ou taxa fixa por classe), com cobrança por carga só quando a agência a previr e componente de cálculo na conta pelo motor da P2.5; usuário sem cadastro comercial atendido pela ED-22 (CAD-70, OPE-13); teste de ponta a ponta com gerador sintético, da autorização à cobrança",
+    "findings_owned": ["CAD-70", "OPE-13"],
+    "consumed": ["CAD-70 e OPE-13 atendidas", "ED-80 substituída pela ED-105 nas dependências"]
+  },
+  {
+    "id": "ED-88",
+    "title": "Soluções individuais, limpa-fossa e ligação obrigatória à rede",
+    "origin": "22b OPE-03; 22a CAD-87",
+    "size": "G (a estimar)",
+    "deps": ["ED-13", "ED-22", "ED-34"],
+    "acceptance": "cadastro da solução individual de esgoto por imóvel (fossa séptica, sumidouro, filtro), com volume, última limpeza e destino do lodo (SG-154, item crítico na POC do SAMAE); serviço de esgotamento prestado ou só cadastrado, por `sewer.alt_solution_service_enabled`: agenda periódica (`sewer.alt_solution_service_interval_months`) ou sob demanda, OS com caminhão e roteiro, ticket de descarga na ETE com volume, preço do serviço pelo catálogo da ED-34, tarifa pela fonte definida pela agência (`sewer.alt_solution_tariff_source`) e usuário avulso pela ED-22; MTR do tipo romaneio, onde exigido, como item da agenda da ED-98 enquanto a ED-104 não for liberada (OPE-03); ciclo da ligação obrigatória à rede disponível (Lei 11.445, art. 45; NR 13/ANA, arts. 17 a 20; NR 11/ANA, art. 8º): comunicação da disponibilidade, aviso na fatura anterior com piso de 90 dias (`avail.notice_days`, classe c), cobrança do valor de disponibilidade pela P2.5 (RAS-22), tempo máximo de um ano para ligar como teto (`avail.max_connect_months`, classe c), dispensa só por inviabilidade comprovada (`avail.exemption_requires_proof`, classe a), notificação ou OS de ligação compulsória pela ED-13 e multa; desativação da solução individual depois da ligação; lista de não conectados ao titular e à agência e relatório de imóveis com rede disponível sem ligação, pelo cruzamento de ramal e imóvel da P2.23 (CAD-87); a obrigação legal de conexão não é desativável (teste)",
+    "findings_owned": ["CAD-87", "OPE-03"],
+    "consumed": ["OPE-03 e CAD-87 atendidas", "RAS-22 usada da P2.5 (valor e multiplicador da disponibilidade ficam na P2.5)"]
+  },
+  {
+    "id": "ED-89",
+    "title": "Insumos químicos de tratamento e reservatórios",
+    "origin": "22b OPE-06, OPE-07",
+    "size": "M (a estimar)",
+    "deps": ["ED-50", "ED-58"],
+    "acceptance": "cadastro de produto químico de tratamento com lote, laudo do fornecedor, ficha de dados de segurança, validade e local de armazenamento (silo, tanque, cilindro), sobre o almoxarifado da ED-58; recebimento por nota fiscal com conferência; consumo por dia e por m³ tratado, com conciliação entre o consumo teórico da dosagem e o real; alerta de estoque mínimo (`chem.min_stock_days`); controle opcional, por tenant, dos produtos sujeitos à Polícia Federal (Lei 10.357/2001; Portaria MJSP 204/2022, alterada pela Portaria MJSP 223/2022): cadastro, licença de funcionamento com renovação e informações periódicas exigidas pela norma vigente, com a lista `chem.controlled_products_list` ligada à norma e atualizada pelo Ziip, e conferência dos insumos do tenant contra a lista vigente antes de ligar o controle (OPE-06); plano de limpeza e desinfecção por reservatório, com periodicidade em `ops.reservoir_cleaning_interval_months` (valor da agência, sem padrão de norma confirmado), OS recorrente, laudo, produto usado e volume descartado; registro público consultável no portal (Decreto 5.440/2005, Anexo, arts. 16 e 17; Portaria GM/MS 888/2021, art. 14, XVII), lido pelo relatório anual da ED-79 e, como uso operacional, pelo balanço da ED-85 (OPE-07)",
+    "findings_owned": ["OPE-06", "OPE-07"],
+    "consumed": ["OPE-06 e OPE-07 atendidas"]
+  },
+  {
+    "id": "ED-79",
+    "title": "Sistemas de abastecimento e de esgoto, Plano de Segurança da Água, relatório anual e Carta de Serviços",
+    "origin": "ADR-0041; 21b L-06, L-08 a L-10",
+    "size": "G (a estimar)",
+    "deps": ["P1.27", "ED-53", "ED-50", "P2.24", "P3.5", "P3.20", "ED-89", "P3.31"],
+    "acceptance": "entidade de sistema de abastecimento e de esgoto com componentes, população atendida, manancial e tratamento, sobre o catálogo da P1.27 e as feições da ED-53; Plano de Segurança da Água ligado aos riscos e ao registro de incidente operacional e de resiliência climática da P3.31 (GES-20); relatório anual de qualidade da água a cada ligação (Decreto 5.440/2005, art. 3º, III), com os resultados da ED-50, o bloco de qualidade da P2.24 e a limpeza e desinfecção de reservatórios da ED-89 (OPE-07); Carta de Serviços (Lei 13.460/2017) publicada pela P3.20; envio do relatório e mensagens legais da fatura pelo motor de mensagens legais com prova de emissão da P2.32 (CAD-96, RAS-04), sem motor próprio nesta tarefa, e entrega pelas notificações da P3.5",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados): OPE-07 usada da ED-89; GES-20 usada da P3.31", "motor de mensagens legais deixado para a P2.32 (CAD-96, RAS-04)"]
+  },
+  {
+    "id": "ED-91",
+    "title": "Crise hídrica e contingência: rodízio, racionamento, tarifa sazonal e carro-pipa",
+    "origin": "22b OPE-10; 22d GES-07; 22a CAD-72, CAD-74",
+    "size": "M (a estimar)",
+    "deps": ["ED-35", "ED-54", "P2.5", "P2.29"],
+    "acceptance": "medida excepcional por área como entidade: ato (decreto de emergência ou de calamidade, declaração da autoridade hídrica ou ato da agência), vigência e área (localidade, setor, rota ou polígono do GIS), com efeitos selecionáveis: suspender corte, negativação e encargos, conceder desconto ou isenção, prorrogar vencimento e aplicar bandeira ou tarifa de contingência; aplicação por OS de lote; medidas ativas consultadas pelo bloqueio de corte da P3.4 (teste) (CAD-74); mecanismo tarifário de contingência (adicional ou desconto por período de escassez declarado) e tarifa sazonal como componente com vigência própria sobre a estrutura tarifária com vigência da P2.29, com ato de autorização registrado, faixas afetadas, isenção de unidades essenciais travada e comunicação na fatura (Lei 11.445, art. 46; NR 13/ANA, arts. 22 a 24), com `tariff.contingency_*` (classe b, com aceite) e `event.*` (classe b) (GES-07); plano de rodízio por setor ou zona de abastecimento, com calendário, comunicação aos afetados pelo atendimento da ED-35 e pelo aviso da ED-54 e registro de horas sem água por setor como entrada da intermitência, lido pela ocorrência de rede da ED-92; `crisis.rotation_enabled` e `crisis.tariff_flag_enabled`; fornecimento de emergência a unidades essenciais em interrupção superior a 24 h (NR 11/ANA); carro-pipa com autorização, documento de abastecimento e cloro residual livre mínimo de 0,5 mg/L (`crisis.tanker_truck_min_chlorine_mg_l`, padrão 0,5, só amplia) (OPE-10); ligação temporária (obra, feira, evento) como tipo de ligação com vigência, tarifa ou taxa própria, aviso de vencimento e encerramento por OS, distinta da situação `PROVISIONAL` do ADR-0039, que indica cadastro incompleto (`connection.temporary_max_days`); permissão de uso de hidrante com medição; ponto de abastecimento de carro-pipa com venda avulsa e comprovante (CAD-72; TR-244, SG-241)",
+    "findings_owned": ["CAD-72", "CAD-74", "GES-07", "OPE-10"],
+    "consumed": ["CAD-72, CAD-74, GES-07 e OPE-10 atendidas", "P2.29 acrescentada: mecanismo excepcional sobre a estrutura tarifária com vigência"]
+  },
+  {
+    "id": "ED-92",
+    "title": "Ocorrência de rede como entidade",
+    "origin": "22b OPE-16; DAD-27, JOR-33, RAS-29",
+    "size": "M (a estimar)",
+    "deps": ["ED-35", "ED-54", "ED-38"],
+    "acceptance": "ocorrência de rede (`network_incidents`) com código único por tenant, tipo (interrupção, rompimento, extravasamento, obstrução, falta de energia, alagamento), indicação de programada, origem (`COMPLAINTS`, `TELEMETRY`, `CREW`, `PLANNED`), causa do catálogo `outage.cause_catalog` obrigatória no encerramento, início e fim, área afetada calculada pelo isolamento da ED-54, unidades e economias afetadas retratadas no início, extensão de rede no esgoto, datas de aviso à agência e aos usuários e de início do fornecimento de emergência (NR 11/ANA, art. 41) e situação (`OPEN`, `CONTROLLED`, `RESTORED`, `CLOSED`); interrupção programada da ED-35 tratada como subtipo; OS vinculadas, com a validação de existência do alvo `NETWORK_INCIDENT` da P1.31 habilitada nesta tarefa; relato sem login pelo portal cria ocorrência pelo fluxo da ED-38 (JOR-14); base dos indicadores de intermitência por economias afetadas em paralisações de 6 h ou mais (NR 9/ANA, Nível I-04; `outage.min_duration_hours`, padrão 6, só reduz) e de extravasamento por quilômetro de rede (Nível I-05); fornecimento de emergência quando a interrupção passar de 24 h (`outage.emergency_supply_after_hours`, padrão 24, só reduz) (OPE-16); volume perdido estimado e tempo de reparo gravados no encerramento da OS de reparo, como entrada das perdas reais da ED-85 e dos indicadores, com relatório de ocorrências por causa, tempo de reparo e volume perdido (JOR-33); `leak_detection` perde o ciclo próprio de reparo e passa a achado de pesquisa de vazamento ligado à ocorrência e à OS, com código único no tenant, e o reparo é registrado só na OS (DAD-27); regra opcional de crédito na fatura por interrupção prolongada, calculada da duração da ocorrência e ligada pelo perfil da agência que a exigir, como a AGERGS REN 37/2017, desligada por padrão (RAS-29)",
+    "findings_owned": ["DAD-27", "JOR-33", "OPE-16", "RAS-29"],
+    "consumed": ["OPE-16, DAD-27, JOR-33 e RAS-29 atendidas", "JOR-14 usada da ED-38", "habilita a validação do alvo NETWORK_INCIDENT da P1.31"]
+  },
+  {
+    "id": "ED-77",
+    "title": "Motor de fichas de indicador das ISO 24510 e 24512",
+    "origin": "ADR-0041; 21b L-02 a L-04, L-13; GES-03, GES-30, RAS-07, RAS-33",
+    "size": "G (a estimar)",
+    "deps": ["ED-48", "P3.31", "ED-92"],
+    "acceptance": "motor de fichas sobre o registro único de indicadores da P3.41 (JOR-19), sem registro próprio: cada ficha com variáveis, contexto, grau de confiança, rateio por município e separação urbano e rural; conteúdo das ISO 24510:2024 e 24512:2024 e da NR 9/ANA (Res. ANA 211/2024), níveis I e II; base de domicílios do IBGE global e versionada para cobertura e atendimento; interrupção não programada e intermitência a partir da ocorrência de rede da ED-92 (OPE-16); catálogo de fábrica das fichas adotadas pelas agências de SC (ARIS RN 57/2026, AGIR RN 025/2026 e ARIS RN 36/2022), cada uma com variável, fórmula, origem do dado no produto e teste de cálculo sobre massa sintética (RAS-07); regra de cômputo da solução alternativa na cobertura por agência (ARIS RN 47/2025, AGIR RN 024/2025, ARESC Res. 431/2026), com teste por perfil (RAS-33); metas de universalização versionadas por município e ano, com origem declarada (contrato, NR, plano municipal) e meta federal travada como piso (99% de água e 90% de coleta e tratamento em 31/12/2033, com prorrogação para 2040 só com anuência da agência; Lei 11.445, art. 11-B); cálculo de IAA e ICA por município sobre a base do IBGE, verificação anual com cumprimento em pelo menos 3 de 5 anos, trajetória de ligações a incorporar por ano e metas de perdas da Portaria MCID 788/2024 com valores conferidos antes da carga; `goal.universalization_*` e `loss.target_*` com origem e vigência (classe d, REG) (GES-03); apuração auditável para regulação por incentivo: versão da fórmula, congelamento do período, hash da apuração, trilha que liga o dado primário (leitura, ocorrência, protocolo) ao indicador, exportação ao verificador independente e simulação do efeito tarifário de bônus ou penalidade com fatores definidos pela agência (`perf.*`, classe d, REG), sem presumir os fatores Q, P e U, não encontrados na CP 03/2026 da ANA (conferido em 22/10/2026), e leitura pelo perfil externo da ED-75 (GES-30); energia, emissões e pessoal por entrada manual com confiança baixa, substituída por fonte automática na ED-90 (GES-21, OPE-08)",
+    "findings_owned": ["GES-03", "GES-30", "RAS-07", "RAS-33"],
+    "consumed": ["v2.18 (lista de achados): GES-03 e GES-30 atendidas; OPE-16 usada da ED-92; GES-21 e OPE-08 à ED-90", "RAS-07 e RAS-33 atendidas; JOR-19 usada da P3.41 (COE-11)", "ED-92 acrescentada às dependências (COE-06)"]
+  },
+  {
+    "id": "ED-85",
+    "title": "Módulo de perdas operacional: DMC, vazão mínima noturna e balanço por DMC",
+    "origin": "22b OPE-01, OPE-05; JOR-34",
+    "size": "G (a estimar)",
+    "deps": ["ED-48", "ED-17", "ED-92"],
+    "acceptance": "módulo `losses`, dono da setorização, da macromedição e do balanço por setor e por DMC (COE-11), com faixa Flyway própria reservada no §3; distrito de medição e controle (DMC) como entidade viva, com uma só fonte de verdade entre a zona DMA de `gis_zone` e `dma_district`, macromedidores de entrada e saída e metas por DMC (`loss.dmc_target_l_per_conn_day`); vazão mínima noturna e vazão noturna líquida (vazão mínima menos consumo noturno legítimo), com janela `loss.night_window` (padrão 02:00 a 04:00) e `loss.legit_night_use_l_per_conn_h`, sem padrão de norma; balanço hídrico mensal por DMC e por setor, com grau de confiança, ILI com dados reais e fila de DMC por prioridade; o `WaterBalanceCalculator` de `intelligence/sigsan-losses` deixa de calcular com marcadores no lugar das entradas (teste com entradas reais) (OPE-01); usos operacionais, emergenciais e sociais (descarga de rede, limpeza de reservatório, combate a incêndio, carro-pipa social) registrados como volume autorizado não faturado nos tipos de OS operacional (`authorized_unbilled_volume`), com método `loss.unbilled_estimate_method` (medido, estimado por vazão e tempo ou fixo por tipo de serviço), e água tratada exportada a outro prestador ou município excluída por contrato de fornecimento em bloco (ponto de entrega, macromedidor, volume contratado), conforme a ficha de perdas da NR 9/ANA (OPE-05); ajuste do volume micromedido ao período do macromedido quando as rotas são lidas em datas diferentes, com método declarado e gravado no balanço (JOR-34); volume perdido e tempo de reparo por ocorrência, da ED-92, como entrada das perdas reais (JOR-33); a ED-78 depende desta tarefa e lê dela a entrada real do balanço da NR 15",
+    "findings_owned": ["JOR-34", "OPE-01", "OPE-05"],
+    "consumed": ["OPE-01, OPE-05 e JOR-34 atendidas", "JOR-33 usada da ED-92", "COE-11: macromedição e balanço por setor recebidos da ED-48"]
+  },
+  {
+    "id": "ED-78",
+    "title": "Balanço de perdas e plano de gestão pela NR 15",
+    "origin": "ADR-0041; 21b L-05; Res. ANA 275/2025",
+    "size": "G (a estimar)",
+    "deps": ["ED-48", "ED-17", "P4.2", "ED-85"],
+    "acceptance": "saída da NR 15/ANA (Res. ANA 275/2025) sobre o módulo `losses` da ED-85 (OPE-01), sem cálculo próprio de balanço: balanço hídrico padronizado na base do SINISA com entrada real, declaração anual, Plano de Gestão de Redução e Controle de Perdas (diagnóstico, acompanhamento de perdas aparentes e reais, evolução da hidrometração e da macromedição e ações) e publicação; IVI e ILI por período; volume produzido lido da P4.2; aplicável ao tenant cuja agência adote a NR 15, pela aplicabilidade do perfil regulatório; verificação da adoção pela ANA a partir de maio de 2028 registrada como data de norma no catálogo; teste que reconcilia o balanço publicado com o balanço por DMC da ED-85 do mesmo período",
+    "findings_owned": [],
+    "consumed": ["v2.18: dependência da ED-85 (cartão de 22/10/2026); OPE-01 usada da ED-85", "COE-11: só a saída da NR 15; módulo de perdas da coluna substituído pela ED-85 (COE-06)"]
+  },
+  {
+    "id": "ED-86",
+    "title": "Gestão de pressão e controle ativo de vazamento",
+    "origin": "22b OPE-04, OPE-17",
+    "size": "M (a estimar)",
+    "deps": ["ED-85", "ED-17"],
+    "acceptance": "zonas de pressão e pontos de controle (`PRESSURE_ZONE`, `PRESSURE_POINT`) com série de pressão por ponto vinda da ED-17; limites mínimo e máximo por zona (`pressure.min_mca`, `pressure.max_mca`), sem valor de fábrica enquanto a ABNT NBR 12218:2017 não for conferida; alarme de pressão baixa e alta; ajuste de válvula redutora de pressão registrado por OS, com quem, quando, motivo, valor anterior e valor novo; relação entre pressão e rompimentos por arco; vínculo com reclamação de pouca água (OPE-04); campanha de pesquisa de vazamento não visível por DMC, com hipótese, equipamento, equipe, evidência, achado, reparo e ganho medido pela comparação da vazão mínima noturna antes e depois, sobre o balanço da ED-85; fila de suspeitas ponderada pela vazão noturna; achado de pesquisa no modelo definido pela ED-92; tempo de reparo medido nas fases de conhecimento, localização e reparo, com metas em `leak.repair_phase_targets_hours` e ciclo em `leak.survey_cycle_days_by_dmc_class` (OPE-17)",
+    "findings_owned": ["OPE-04", "OPE-17"],
+    "consumed": ["OPE-04 e OPE-17 atendidas"]
+  },
+  {
+    "id": "ED-90",
+    "title": "Eficiência energética e ESG",
+    "origin": "22b OPE-08; 22d GES-21",
+    "size": "M (a estimar)",
+    "deps": ["ED-77", "ED-48"],
+    "acceptance": "cadastro das instalações de energia por unidade operacional, com o número da instalação na distribuidora; importação da fatura de energia por arquivo, com o leiaute de cada distribuidora conferido na implantação; kWh por m³ produzido ou bombeado por sistema, ETA e elevatória; demanda contratada e medida, fator de potência, consumo na ponta e alerta de multa (`energy.demand_alert_pct`, `energy.pf_min`) (OPE-08); inventário simplificado de emissões, escopos 1 e 2 (energia elétrica, metano de ETE, combustível), com catálogo global e versionado de fatores de emissão (`esg.emission_factors_version`) e exportação voluntária para relatório de sustentabilidade (`esg.report_profile`), sem obrigação de relatório identificada para autarquia municipal; fonte automática (telemetria, fatura importada) no lugar da entrada manual das fichas da ED-77, com grau de confiança atualizado; combustível da frota lido da ED-59 quando ela existir e, antes disso, por entrada manual (GES-21); indicadores registrados no registro da P3.41 e publicados no catálogo da ED-48",
+    "findings_owned": ["GES-21", "OPE-08"],
+    "consumed": ["OPE-08 e GES-21 atendidas (antes citadas na ED-48 e na ED-77)"]
+  },
+  {
+    "id": "ED-93",
+    "title": "Sala de situação operacional em tempo quase real",
+    "origin": "22b OPE-22",
+    "size": "M (a estimar)",
+    "deps": ["ED-49", "ED-92"],
+    "acceptance": "console operacional nativo, fora do BI, em mapa: ocorrências abertas da ED-92, OS em execução e vencidas, posição das equipes, alarmes de telemetria, nível de reservatórios e unidades fora de operação; alimentado por tabela de estado resumida e nativa, nunca por consulta livre ao primário nem pelo Superset; meta de latência de segundos a poucos minutos registrada como RNF (ADR-0012), com teste de latência de ponta a ponta; indicadores do console lidos do registro da P3.41 (JOR-19); o painel operacional de gestão continua no BI da ED-49 (OPE-22)",
+    "findings_owned": ["OPE-22"],
+    "consumed": ["OPE-22 atendida (decisão de tabela de estado nativa já no aceite da v2.21)", "JOR-19 usada da P3.41"]
+  },
+  {
+    "id": "ED-94",
+    "title": "Detecção de anomalia explicável em séries",
+    "origin": "22b OPE-36; ADR-0042",
+    "size": "M (a estimar)",
+    "deps": ["ED-85", "ED-17"],
+    "acceptance": "regras estatísticas simples e auditáveis sobre a vazão noturna por DMC da ED-85, a pressão por ponto e o consumo por ligação: desvio contra a mesma hora e o mesmo dia da semana, consumo contínuo, consumo zero e queda súbita de pressão; cada alerta mostra a série, a regra e a confiança; revisão humana antes de qualquer ação, sem decisão exclusivamente automatizada, conforme o ADR-0042; OS ou pesquisa gerada só depois da revisão; `anomaly.rules_enabled` e `anomaly.sensitivity`; teste com séries sintéticas de anomalia conhecida (OPE-36)",
+    "findings_owned": ["OPE-36"],
+    "consumed": ["OPE-36 atendida; GES-08 segue o ADR-0042"]
+  },
+  {
+    "id": "ED-96",
+    "title": "Instrumento contratual regulatório do prestador",
+    "origin": "22d GES-02",
+    "size": "M (a estimar)",
+    "deps": ["ED-56", "P3.31"],
+    "acceptance": "registro, por município e por serviço, do instrumento sob o qual o tenant presta (contrato de programa, concessão, PPP, subdelegação ou prestação direta com agência), como dado cadastral; campos: partes, ato de regulação, vigência, metas contratuais, aditivos, inclusive os de metas da NR 8/ANA, matriz de riscos (NR 5/ANA), indenização de investimentos não amortizados (NR 3/ANA), cláusula de reequilíbrio e documentos; vínculo com os bens reversíveis do inventário da ED-56; matriz de riscos como primeiro uso, sobre o registro de riscos da P3.31; `reg.contract_type` (enum) e `reg.risk_matrix_required` (fato declarado, classe d, REG); painel opcional dos indicadores de capacidade econômico-financeira do Decreto 11.598/2023 (margem líquida sem depreciação e amortização maior que zero, endividamento menor ou igual a 1, retorno sobre o patrimônio líquido maior que zero, suficiência de caixa maior que 1), calculado da exportação do ERP do cliente e oferecido só a tenant sob contrato (GES-02); metas por município na ED-77; pleito de reequilíbrio na P2.34 (GES-13)",
+    "findings_owned": ["GES-02"],
+    "consumed": ["GES-02 atendida (antes citada na ED-56)"]
+  },
+  {
+    "id": "ED-97",
+    "title": "Pacote regulatório de saída por agência, com subsídios e Índice de Tarifa Social",
+    "origin": "22d GES-04; 22a CAD-92; RAS-08, RAS-31",
+    "size": "G (a estimar)",
+    "deps": ["P3.22", "ED-48", "P2.31", "ED-75"],
+    "acceptance": "camada de exportação parametrizada por agência sobre o perfil regulatório da P2.31 (RAS-01): leiaute, periodicidade, canal, versão do leiaute e registro de envio com hash, no modo assistido do ADR-0004 (`reg.reports`, classe d, REG); conteúdo: consumo médio por categoria e faixa, receita e usuários subsidiados, custo do subsídio tarifário, fiscal ou interno (Lei 11.445, art. 31), contratos de grandes usuários, taxa de inadimplência por categoria e relatório anual de beneficiários da tarifa social (GES-04); Índice de Tarifa Social mensal (economias residenciais beneficiadas sobre economias ativas), reconciliação com a lista positiva publicada mensalmente pela ANA por município e regulador e relatório anual à agência (NR 13/ANA, art. 45; `social.annual_report`) (CAD-92); perfis de saída de fábrica para ARIS, AGIR e ARESC; leiaute do SISARIS por módulo (ARIS IN DG 1/2025, ARIS RN 11/2017) e relatório trimestral de SAC e ouvidoria da AGIR (AGIR RN 013/2022), cada um com validação antes do envio e evidência do envio lida pela agenda da ED-98 (RAS-08); perfis de agências fora de SC só sob demanda de edital ou de tenant, e, enquanto não houver perfil, valores próprios aceitos pelo tenant (RAS-31); separação entre exportação agregada pública e exportação nominal restrita; escopo do perfil externo do regulador da ED-75: este pacote, os indicadores da ED-48, o relatório do art. 54 da NR 11, a ouvidoria e as interrupções, sem pacote de evidência ISO e sem dado pessoal (GES-22, JOR-23); teste por agência com massa sintética e comparação com o leiaute",
+    "findings_owned": ["CAD-92", "GES-04", "RAS-08", "RAS-31"],
+    "consumed": ["GES-04, CAD-92, RAS-08 e RAS-31 atendidas", "RAS-01 usada da P2.31; GES-22 e JOR-23 usadas da ED-75 (escopo definido aqui)"]
+  },
+  {
+    "id": "ED-98",
+    "title": "Agenda de obrigações regulatórias e de controle do tenant",
+    "origin": "22d GES-05",
+    "size": "M (a estimar)",
+    "deps": ["P3.15", "ED-07", "P2.25", "ED-97"],
+    "acceptance": "calendário de obrigações por tenant gerado do perfil `reg.*` e da natureza jurídica (`reg.obligations`, classe d): ciclo anual do SINISA, relatório anual de tarifa social, declaração anual de quitação (fatura de maio), balanço de perdas da NR 15, remessa bimestral ao e-Sfinge (IN TC-28/2021 e alterações), DMR, SISAGUA, publicação de reajuste com antecedência mínima de 30 dias da data-base e RREO e RGF do ente quando aplicável; cada item com responsável, evidência, situação e lembrete pelos alertas da ED-07; regras das obrigações lidas do catálogo de normas da P3.15; evidência de envio dos relatórios da ED-97 ligada ao item (RAS-08); fiscalização recebida da agência, do Tribunal de Contas ou do órgão ambiental registrada como ocorrência da P2.25, com plano de ação e lembrete nesta agenda (JOR-24); MTR, CDF e DMR como item manual enquanto a ED-104 não for liberada (RAS-17); alerta antecipado de norma com data de efeito futura, a partir da data de efeito da P1.34; teste com dois tenants de naturezas jurídicas diferentes que geram calendários diferentes (GES-05)",
+    "findings_owned": ["GES-05"],
+    "consumed": ["GES-05 atendida", "JOR-24 usada da P2.25; RAS-08 usada da ED-97; RAS-17 como item manual (dona ED-104)"]
+  },
+  {
+    "id": "ED-99",
+    "title": "Transparência ativa, LAI e dados abertos",
+    "origin": "22d GES-06; 22a CAD-77",
+    "size": "M (a estimar)",
+    "deps": ["ED-35", "ED-48"],
+    "acceptance": "módulo opcional por natureza jurídica do prestador, ligado por padrão para autarquia e empresa pública (Lei 12.527/2011, art. 1º, parágrafo único, II) e desligado nas demais naturezas; modo de atendimento `pub.lai_mode` (`NONE`, `EXTERNAL_LINK`, `NATIVE_SIC`), com link para o sistema de acesso do município como padrão e adesão ao Fala.BR voluntária (GES-06); pedido de acesso à informação como tipo de protocolo da P1.36, com resposta em 20 dias prorrogáveis por 10, recurso em 10 dias e decisão do recurso em 5, pelo motor de prazos, com `sac.lai_deadlines` (classe c, nunca superior à lei), e relatório estatístico anual (CAD-77); cada Município regula a LAI por norma própria (art. 45), e o tenant ajusta os prazos dentro do limite legal; transparência ativa: competências, canais, tarifas, contratos, Carta de Serviços e indicadores da ED-48; dados abertos legíveis por máquina e sem dado pessoal (`pub.open_data_enabled`); teste com tenant autarquia e tenant de outra natureza",
+    "findings_owned": ["CAD-77", "GES-06"],
+    "consumed": ["GES-06 e CAD-77 atendidas; `sac.lai_enabled` (CAD-77) unificado em `pub.lai_mode` (GES-06)"]
+  },
+  {
+    "id": "ED-01",
+    "title": "Prontidão de POC: kit de campo e ensaio final",
+    "origin": "18h-E3; ADR-0023",
+    "size": "M–G (3)",
+    "deps": ["P3.23"],
+    "acceptance": "dependência textual (PD-01): onda A, grupo B1 da onda B e tarefas do P4 concluídos; o grupo B2 da onda B (ED-56, ED-69 a ED-79, ED-83 a ED-94, ED-96 a ED-99 e ED-105) não conta para a prontidão de POC e entra só no critério da LC.1; kit de campo mantido (Android, iPhone, impressora Zebra série ZQ, bobinas, 4G); massa do tenant de demonstração atualizada a cada versão; meta final: roteiro da VISAN com pelo menos 146 de 162 pontos e nenhuma falha em item crítico do SAMAE, em dois ensaios consecutivos feitos no tempo de preparo que os editais concedem (marco M12)",
+    "findings_owned": [],
+    "consumed": ["PD-01 (COE-02): recorte da prontidão sem o grupo B2"]
+  }
+]

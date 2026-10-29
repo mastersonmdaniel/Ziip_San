@@ -1,0 +1,828 @@
+[
+  {
+    "id": "P0.1",
+    "title": "Desenvolvimento em disco local; GitHub como fonte da verdade",
+    "origin": "ADR-0009; 17:M15; COD-29, COD-40",
+    "size": "M",
+    "deps": [],
+    "acceptance": "build Maven (`mvn clean verify`), testes do frontend e `ci.sh` verdes num clone em disco local fora do Google Drive, sem `robocopy` nem PowerShell no caminho do build; o GitHub é a fonte da verdade e o clone local é recriável a partir dele; `scripts/` sem o espelho do Drive por `robocopy`; `.env` fora do Drive, com valores novos gerados no destino: as credenciais de desenvolvimento que estavam na pasta sincronizada (`POSTGRES_SUPERUSER_PASSWORD`, `SIGSAN_APP_PASSWORD`, `SIGSAN_MIGRATOR_PASSWORD`, `KEYCLOAK_DB_PASSWORD`, `KEYCLOAK_ADMIN_PASSWORD`, `SIGSAN_DEV_MASTER_KEY`, `SIGSAN_DEV_PASSWORD`) não são reaproveitadas; pastas `target/` com compilados antigos apagadas do Drive (`compliance/sigsan-lgpd`, `grs/sigsan-mtr`, `intelligence/sigsan-gis`, `intelligence/sigsan-losses`, `intelligence/sigsan-quality`, `platform/sigsan-platform`, `shared/sigsan-core`), sem pasta `target/` restante fora do clone local; na sequência do P0 vêm a limpeza (P0.25) e a P0.7, antes da renomeação (P0.33)",
+    "findings_owned": [
+      "COD-29",
+      "COD-40"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-29",
+      "COD-40",
+      "ordem P0.1, P0.25, P0.7, P0.33 (23c §4.1)"
+    ]
+  },
+  {
+    "id": "P0.2",
+    "title": "Push automático ao fim de etapa",
+    "origin": "ADR-0009",
+    "size": "P",
+    "deps": [
+      "P0.1"
+    ],
+    "acceptance": "ao fim de cada etapa concluída, o push para o GitHub é automático e só ocorre depois do build e da suíte de testes; com teste vermelho nada é publicado, comprovado por ensaio com um teste falho deliberado; o resultado de cada push (commit publicado ou motivo da recusa) fica visível no log da etapa",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.25",
+    "title": "Limpeza do código antes da renomeação; dívidas da execução; SINIR em modo assistido",
+    "origin": "diário §18; ADR-0004; 23c §4.1 e §4.3; decisão do dono de 28/10/2026; COD-07, COD-08, COD-09, COD-18, COD-19, COD-20, COD-21, COD-22, COD-41",
+    "size": "P",
+    "deps": [
+      "P0.1"
+    ],
+    "acceptance": "executada logo depois da P0.1 e antes da P0.7 e da P0.33, para que nada do que é apagado aqui seja renomeado; nenhuma troca de `sigsan` por `ziipsan` nesta tarefa; legado do Keycloak apagado: `platform/sigsan-platform/src/main/java/br/com/sigsan/platform/tenant/KeycloakAdminService.java`, `platform/sigsan-platform/src/main/java/br/com/sigsan/platform/security/KeycloakConfig.java`, a chamada em `TenantProvisioningService.java` e a dependência `keycloak-admin-client` dos `pom.xml`, sem realm por tenant, client confidencial com password grant nem claim `tenant_id` preenchido com o nome do schema em lugar algum (busca no código sem ocorrência); `platform/sigsan-platform/src/main/java/br/com/sigsan/platform/module/ModuleRegistry.java` apagado, sem referência remanescente (o registro de pacotes nasce na P0.47); `shared/sigsan-core/src/main/java/br/com/sigsan/core/audit/AuditListener.java` (arquivo vazio) apagado; SINIR em modo assistido (ADR-0004): `grs/sigsan-mtr/src/main/java/br/com/sigsan/grs/mtr/integration/SinirIntegrationService.java` apagado e as chamadas em `MtrService.java` (coleta e destinação) retiradas, sem caminho de chamada ao SINIR; `MtrService` não decifra o documento do gerador nem o CPF do motorista sem uso (teste que conta as decifrações do fluxo de coleta e destinação); `GovBrSignatureService.sign` reduzido a cálculo de resumo, sem se apresentar como assinatura; ingestão de SCADA por MQTT apagada: `intelligence/sigsan-quality/src/main/java/br/com/sigsan/intelligence/quality/scada/ScadaIntegrationService.java`, `ScadaTopic.java` e a dependência Paho de `intelligence/sigsan-quality/pom.xml` (a ingestão por REST e arquivo nasce na `api` e no `worker` pela ED-17, ADR-0010 e ADR-0028); regras de consumo com um dono só: as cópias do billing apagadas (`commercial/sigsan-billing/src/main/java/br/com/sigsan/commercial/billing/consumption/NonMeteredConsumption.java`, `.../billing/consumption/ExpectedReadingRange.java`, `.../billing/bill/CondominiumApportionment.java`, `.../billing/tariff/EconomyGroup.java`), com o metering dono de consumo, faixa esperada, economias e rateio de condomínio e o billing dono da tarifa, recebendo o consumo pronto; teste de vetor comum com os mesmos casos de não medido, faixa esperada, economias e rateio passa pelo metering e pelo cálculo da conta com resultado idêntico (a P1.13 não repete essa remoção); Jackson 2 fora do collection e do core: `FreeFieldLayout.java` e `AgreementBarcodeLayout.java` usam o `Json` do core (Jackson 3) e `shared/sigsan-core/pom.xml` deixa de declarar Jackson 2, sem `ObjectMapper` do Jackson 2 no código (busca e build verdes); os 14 diretórios de módulo vazios apagados (`platform/sigsan-auth`, `platform/sigsan-tenant`, `shared/sigsan-events`, `commercial/sigsan-accounting`, `commercial/sigsan-dunning`, `commercial/sigsan-portal`, `compliance/sigsan-integration`, `grs/sigsan-collection-waste`, `grs/sigsan-disposal`, `grs/sigsan-pgrs`, `operations/sigsan-assets`, `operations/sigsan-field`, `operations/sigsan-maintenance`, `operations/sigsan-reading`); cada módulo novo nasce com a tarefa que o cria (por exemplo, o fiscal na P0.32); `platform/sigsan-platform/src/main/resources/db/migration/tenant/V1_1__create_tenant_schema.sql` reescrita sem `users`, `roles`, `user_roles`, `tenant_metadata`, `documents` e `service_orders`, aproveitando a única janela de mudança de checksum antes da P0.33, e as sementes de papéis e permissões retiradas de `TenantProvisioningService.java` (a tabela de usuários renasce na P0.13; o modelo de OS na P1.31, `V9_1`); bancos de desenvolvimento e de integração recriados do zero com a `V1_1` nova, RLS forçada em todas as tabelas de tenant restantes e `DatabaseHardeningTest` e `TenantRlsIsolationTest` verdes; avaliação da coluna `tenant_schema` acrescentada por `register_tenant_table` e `TenantAwareEntity` feita na reescrita da `V1_1`, com a decisão (remover ou manter) registrada no diário (contexto explícito do tenant no worker: ver P1.9); `grantConsent` sem versão manual; suíte Java e do frontend verdes depois de cada remoção; linha de log de depuração e métodos sem uso do provisionamento (ver P0.17)",
+    "findings_owned": [
+      "COD-07",
+      "COD-08",
+      "COD-09",
+      "COD-18",
+      "COD-19",
+      "COD-20",
+      "COD-21",
+      "COD-22",
+      "COD-41"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-07",
+      "COD-08",
+      "COD-09",
+      "COD-18",
+      "COD-19",
+      "COD-20",
+      "COD-21",
+      "COD-22",
+      "COD-41",
+      "23c §4.1 e §4.3",
+      "avaliação de `tenant_schema` (COD-36, dona P1.9)",
+      "deixado: COD-23 na P0.17; worker na P1.9; OS na P1.31"
+    ]
+  },
+  {
+    "id": "P0.7",
+    "title": "Congelar infra parada",
+    "origin": "ADR-0010; 17:M13, 17:O2, 17:B8; COD-06, COD-28",
+    "size": "P",
+    "deps": [
+      "P0.1"
+    ],
+    "acceptance": "executada depois da P0.25 e antes da P0.33; `docker compose up` sem perfil sobe só PostgreSQL e Keycloak; TimescaleDB, Redis, Kafka, Zookeeper e Vault em modo dev retirados do `docker-compose.yml` (hoje publicados em `0.0.0.0`, com senha padrão literal, Redis sem senha e token raiz fixo no comando do Vault); SeaweedFS (serviço hoje chamado `minio`) mantido só como emulador de S3 da P0.27, num perfil de `profiles:`, publicado em 127.0.0.1 e sem senha padrão no arquivo; toda porta publicada do compose em 127.0.0.1, conferida por verificação automática que lê o compose e falha com porta em todas as interfaces; `infra/kubernetes` e `infra/terraform` movidos para `infra/_arquivado/` com LEIA-ME que registra o arquivamento (ADR-0010) e a região divergente do Terraform (`us-east-1`, contra o ADR-0011); os `Secret` com senha literal de marcador em `grafana-deployment.yaml`, `keycloak.yaml` e `minio.yaml` apagados, ou `infra/_arquivado/` declarada como a única pasta tolerada pelo gitleaks da P0.3",
+    "findings_owned": [
+      "COD-06",
+      "COD-28"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-06",
+      "COD-28",
+      "emulador de S3 usado pela P0.27",
+      "regra do gitleaks aplicada na P0.3"
+    ]
+  },
+  {
+    "id": "P0.33",
+    "title": "Renomeação `sigsan` → `ziipsan` como tarefa única, depois da limpeza (P0.25) e da P0.7 e antes das demais tarefas de código do P0, na ordem de MARCA-E-TEMAS §5.2; inclui os códigos de contrato da API em inglês: prefixo `urn:sigsan:problema:` → `urn:ziipsan:problem:` e códigos da tabela do P0",
+    "origin": "ADR-0016; MARCA-E-TEMAS §5.2; COD-11, COD-13",
+    "size": "M",
+    "deps": [
+      "P0.1",
+      "P0.25",
+      "P0.7"
+    ],
+    "acceptance": "executada sobre o código já limpo pela P0.25 e pela P0.7, na ordem de MARCA-E-TEMAS §5.2; tag `pre-rename`, sem branch aberto; `mvn clean verify`, testes do frontend, `ci.sh` e `dev-up.sh` do zero verdes; login ponta a ponta no realm `ziipsan`; checksums das migrations mudam uma única vez (os `GRANT` citam as roles), com banco e Keycloak de desenvolvimento recriados, e voltam a ser imutáveis em seguida; contexto HKDF de `EnvDerivedTenantKeyProvider` em `ziipsan/enc/v1` e `ziipsan/bidx/v1`, com teste de vetor fixo, congelados daí em diante; todo problem+json com `type` `urn:ziipsan:problem:<código>` e código da tabela de problemas do texto do P0, acrescida de `requisicao-invalida` → `invalid-request` (emitido hoje por `GlobalExceptionHandler.java` para rota inexistente, método não permitido e corpo ilegível); `titleFor` trata 401, 413 e 429; teste de contrato varre o código-fonte e falha com código emitido fora da tabela ou fora do formato em inglês, minúsculas com hífen; `title`, `detail` e mensagens de campo seguem em português; backend, `frontend/src/services/registry/errors.ts` e testes (Java e frontend) atualizados no mesmo commit; busca residual sem `sigsan` fora da lista permitida, em todo o repositório exceto `docs/`, `target/` e `node_modules` (antes da tarefa: 2.125 ocorrências em 508 arquivos), e sem `problema:` nem código antigo da tabela; a renomeação só troca `sigsan` por `ziipsan`: o nome definitivo de módulo (`platform/*`, `packages/sanitation/*`) é o da P0.47 (ver P0.47)",
+    "findings_owned": [
+      "COD-11",
+      "COD-13"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-11 (código `invalid-request`, 401, 413, 429, teste de contrato)",
+      "COD-13 (depois da limpeza)",
+      "COE-16: nomes definitivos na P0.47",
+      "dependências P0.25 e P0.7"
+    ]
+  },
+  {
+    "id": "P0.3",
+    "title": "CI no GitHub Actions",
+    "origin": "17:X1, 17:S6; COD-30, COD-31, COD-39, PLT-37",
+    "size": "M",
+    "deps": [
+      "P0.1",
+      "P0.7"
+    ],
+    "acceptance": "CI no GitHub Actions com build Java contra PostgreSQL de serviço e build e testes do frontend; `npm audit` com achado alto e gitleaks bloqueiam o merge; `main` protegida; senha do banco de integração gerada no próprio script ou no serviço do CI, sem valor versionado em `scripts/it-db.env` nem valor padrão em `TenantProvisioningServiceTest.java` e `TenantRlsIsolationTest.java`; banco de integração e build numa rede Docker própria, sem publicar a porta 55433 em todas as interfaces (`reset-it-db.sh`): porta não publicada ou publicada em 127.0.0.1; se algum valor de teste continuar versionado, regra explícita do gitleaks para ele; cobertura medida com JaCoCo, sem meta inicial; `maven-enforcer-plugin` com execução ativa (hoje só em `pluginManagement`); análise de vulnerabilidade das dependências Maven (OWASP Dependency-Check ou OSV) bloqueia com achado alto; ArchUnit disponível no build para os testes de fronteira da P0.47; o primeiro build confere e adota o patch mais recente da linha 4.1 do Spring Boot, com a versão registrada; ações do GitHub fixadas por hash de commit; arquivo de bloqueio de dependências obrigatório, com revisão de dependência em todo PR; scripts de instalação de pacotes npm desabilitados por padrão; período mínimo de espera para adotar versão nova de dependência configurado e registrado; atestado de proveniência da compilação gerado no CI e verificado na implantação da imagem da P0.5; usa o arquivamento de `infra/` da P0.7: o gitleaks tolera só `infra/_arquivado/`, quando os `Secret` não tiverem sido apagados; federação OIDC do GitHub com a AWS no lugar de chave de longa duração (ver LC.2)",
+    "findings_owned": [
+      "COD-30",
+      "COD-31",
+      "COD-39",
+      "PLT-37"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-37)",
+      "COD-30",
+      "COD-31",
+      "COD-39",
+      "COD-28 consumido da P0.7",
+      "remoção de Paho e do cliente admin feita na P0.25",
+      "deixado: federação OIDC com a AWS na LC.2"
+    ]
+  },
+  {
+    "id": "P0.4",
+    "title": "PostgreSQL 17 + PostGIS 3.5",
+    "origin": "ADR-0013; 17:X2; COD-27",
+    "size": "M",
+    "deps": [],
+    "acceptance": "PostgreSQL 17 com PostGIS 3.5 em desenvolvimento, integração e CI, na mesma versão e com tag fixa; `docker-compose.yml` sem `postgis/postgis:15-3.4`; `reset-it-db.sh` e o serviço de banco do CI na mesma imagem; extensões usadas pelas migrations disponíveis na versão nova; suíte verde, inclusive `TenantRlsIsolationTest` e `DatabaseHardeningTest`; Keycloak em modo de produção no ambiente local (ver P0.29)",
+    "findings_owned": [
+      "COD-27"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-27 (parte do PostgreSQL)",
+      "deixado: Keycloak `start-dev` na P0.29"
+    ]
+  },
+  {
+    "id": "P0.5",
+    "title": "Dockerfile multi-stage não root; uma imagem para `api`, `worker`, `migrate`; `config.json` do frontend em execução",
+    "origin": "17:X1, 17:B7; COD-32",
+    "size": "M",
+    "deps": [
+      "P0.3"
+    ],
+    "acceptance": "Dockerfile multi-stage com usuário não root (UID diferente de 0); uma imagem única para os processos `api`, `worker` e `migrate`; imagem sem segredo embutido (varredura no CI); SBOM gerado por imagem; tag fixa, sem `latest`; `config.json` do frontend lido em execução, de modo que trocar o emissor OIDC não exige novo build (teste); os módulos que a imagem leva e que ainda estão fora do scan da aplicação (hoje a aplicação escaneia só core, platform e registry) constam do SBOM como incluídos e sem API, enquanto não forem expostos; a imagem já não leva Paho, retirado na P0.25",
+    "findings_owned": [
+      "COD-32"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-32",
+      "COD-18 (Paho) resolvido na P0.25"
+    ]
+  },
+  {
+    "id": "P0.6",
+    "title": "Migração só no job `migrate`",
+    "origin": "17:S2; D10; COD-03",
+    "size": "P",
+    "deps": [
+      "P0.5"
+    ],
+    "acceptance": "migração executada só pelo job `migrate`; `migratorDataSource` (`DataSourceConfig.java`), `DatabaseMigrator` e a exigência da senha do migrador (classe de propriedades da aplicação, hoje `SigsanProperties`) existem só no perfil do job `migrate`; perfil `prod` sem `migratorDataSource` (teste de contexto); `api` e `worker` sobem sem a senha do migrador e sem migrar na subida (teste de contexto); `application-local.yml` deixa de ligar a migração na subida da `api`, e o desenvolvimento local executa o `migrate` antes da `api`",
+    "findings_owned": [
+      "COD-03"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-03"
+    ]
+  },
+  {
+    "id": "P0.8",
+    "title": "Observabilidade mínima",
+    "origin": "17:O1; PLT-32",
+    "size": "M",
+    "deps": [
+      "P0.5"
+    ],
+    "acceptance": "métricas HTTP e do Hikari expostas; traces com `tenant_id`; `pg_stat_statements` ligado; logs JSON com `X-Request-ID`; latência por rota sem rótulo de tenant; rótulo de tenant só em contadores agregados por grupo de rota e num conjunto curto e listado de métricas de negócio; visão por tenant pelos traces e pelos resumos `metric_point` da Central; orçamento de séries ativas por serviço declarado e verificado no CI, que falha quando a contagem estimada passa do orçamento; telemetria de produto com privacidade (ver P4.8)",
+    "findings_owned": [
+      "PLT-32"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-32)",
+      "deixado: PLT-42 na P4.8"
+    ]
+  },
+  {
+    "id": "P0.9",
+    "title": "Pools e timeouts",
+    "origin": "17:D3",
+    "size": "P",
+    "deps": [],
+    "acceptance": "pools do Hikari dimensionados por processo, com os valores registrados; `statement_timeout` e `idle_in_transaction_session_timeout` definidos na role da aplicação; consulta longa cancelada pelo `statement_timeout` (teste); transação ociosa encerrada pelo `idle_in_transaction_session_timeout` (teste); testes de upgrade, catálogo e instrução preparada com esquema por tenant (ver P0.21)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "deixado: PLT-35 na P0.21"
+    ]
+  },
+  {
+    "id": "P0.10",
+    "title": "API versionada",
+    "origin": "17:M12; COD-12",
+    "size": "P",
+    "deps": [],
+    "acceptance": "rotas de negócio sob `/api/v1`; `/api/me` (`MeController.java`) e `/api/registry` (`RegistryRoles.java`) migrados para `/api/v1`, com a base do cliente HTTP do frontend (`frontend/src/services/api.ts`) ajustada no mesmo commit; teste recusa rota de negócio fora de `/api/v1`; OpenAPI gerado do código e conferido no CI, que falha com diferença não registrada; API pública, webhooks de saída e catálogo de conectores de parceiros (ver P2.26)",
+    "findings_owned": [
+      "COD-12"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-12",
+      "deixado: GES-11 na P2.26"
+    ]
+  },
+  {
+    "id": "P0.13",
+    "title": "Gestão de usuários por tenant",
+    "origin": "17:S3, 17:M5, 17:B3; ADR-0040; COD-25, DAD-13, DAD-31, JOR-02",
+    "size": "G",
+    "deps": [
+      "P0.25"
+    ],
+    "acceptance": "catálogo de permissões `recurso:ação` do produto, versionado e verificado no serviço, com negação por padrão (ADR-0040), no lugar dos papéis fixos por `hasAnyRole` de `RegistryRoles.java`; exemplos `protocol:create`, `so:close`, `connection:cut`; formato único `recurso:ação` (nomes como `gis.edit` e `registry.reveal-document` convertidos); toda rota declara a permissão que exige e um teste no CI recusa rota sem permissão declarada; documento do catálogo (módulo, recurso, ação, perfil de fábrica e tarefa de origem) gerado do código e conferido no CI; ADMIN, OPERATOR, MANAGER e VIEWER como perfis mínimos de fábrica compostos do catálogo (perfis por função: ver P1.37; escopo por área: ver P3.30); ADMIN do tenant A não altera usuário do tenant B (teste); `tenant_id` do usuário atribuído só pela API própria de gestão de usuários; ação de papel de plataforma auditada; usa a remoção do `KeycloakAdminService`, do realm por tenant e das sementes de papéis feita na P0.25; a tabela de usuários do tenant, retirada da `V1_1` na P0.25, é criada nesta tarefa em versão Flyway de platform reservada no §3: sem `password_hash` nem `mfa_secret` (senha e segundo fator só no Keycloak), com `status` por domínio fechado no lugar de texto livre e `UNIQUE (tenant_id, id)` para chave estrangeira composta de executor, leiturista e aprovador",
+    "findings_owned": [
+      "COD-25",
+      "DAD-13",
+      "DAD-31",
+      "JOR-02"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.15 (ADR-0040)",
+      "COD-25",
+      "DAD-13",
+      "DAD-31",
+      "JOR-02",
+      "COD-08 e COD-09 consumidos da P0.25",
+      "deixado: perfis por função na P1.37; escopo por área na P3.30"
+    ]
+  },
+  {
+    "id": "P0.14",
+    "title": "BFF com cookie HttpOnly no processo `api`, sessão no PostgreSQL",
+    "origin": "17:S5; ADR-0006; COD-05",
+    "size": "G",
+    "deps": [
+      "P0.5"
+    ],
+    "acceptance": "BFF no processo `api`, com sessão no PostgreSQL (core `V5`); nenhum token no navegador (teste E2E); `frontend/src/services/auth/oidc.ts` e `frontend/src/services/api.ts` reescritos, sem token em `sessionStorage` e sem cabeçalho Bearer; `SecurityConfig.java` com CSRF ligado e sessão no servidor no lugar de STATELESS; cookie `__Host-` HttpOnly, Secure e SameSite; refresh com rotação; réplicas sem afinidade de sessão (teste com duas réplicas); CSP, rate limit e limite de corpo (ver P0.16)",
+    "findings_owned": [
+      "COD-05"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-05"
+    ]
+  },
+  {
+    "id": "P0.15",
+    "title": "MFA",
+    "origin": "ADR-0007 (prevalece sobre 17:S4)",
+    "size": "M",
+    "deps": [
+      "P0.13"
+    ],
+    "acceptance": "usuário de plataforma sempre com segundo fator, sem exceção; política de MFA do tenant aplicada no login do backoffice, com teste de um tenant que exige o segundo fator e de outro que não exige; mudança da política só pelo parâmetro do tenant",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.16",
+    "title": "Superfície web",
+    "origin": "17:S5; COD-10, COD-24",
+    "size": "M",
+    "deps": [
+      "P0.14"
+    ],
+    "acceptance": "CSP estrita; HSTS atrás de proxy; rate limit por IP, por usuário e por tenant, com 429; `@Size` nos campos de texto (400); limite de corpo da requisição (413); `fail-on-unknown-properties` ligado nas rotas de escrita (hoje desligado em `application.yml`): propriedade desconhecida devolve 400 com o nome do campo e código de problema em inglês da tabela da P0.33, ou o campo sai da tela; `rg` e `motherName` (`frontend/src/pages/cadastro/customerSchema.ts`) e `costCenter` (`territoryDefinitions.ts`) não são coletados sem backend que os grave (RG e nome da mãe também por minimização da LGPD); `@Valid` nos DTOs de busca de `CustomerController.java` e `ConsumerUnitController.java`, `q` com `@Size` e teto de página que impede o transbordo de `page * size` em `JpqlQuery.java` (página acima do teto devolve 400, nunca 500); usa o BFF da P0.14",
+    "findings_owned": [
+      "COD-10",
+      "COD-24"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-10",
+      "COD-24",
+      "COD-05 consumido da P0.14"
+    ]
+  },
+  {
+    "id": "P0.17",
+    "title": "Médios de segurança",
+    "origin": "17:M1–M4, 17:B4, 17:S6; COD-01, COD-02, COD-15, COD-16, COD-17, COD-23, COD-38",
+    "size": "P",
+    "deps": [
+      "P0.3"
+    ],
+    "acceptance": "um teste por item; `ziipsan_app` (antes `sigsan_app`) só com SELECT em `public.tenant_catalog`, com escrita só pela role de migração ou de plataforma (core `V4`) e teste de privilégio em `DatabaseHardeningTest`; provisionamento recusa schema existente (sem `CREATE SCHEMA IF NOT EXISTS`) e nome que mude na normalização (troca de caracteres ou truncamento em 63), conflito do catálogo resolvido pela chave `id` e não por `schema_name`, passos idempotentes por `tenant_id` (teste com duas entradas que normalizam para o mesmo nome); `dev-env` aceito só numa lista fechada de perfis (hoje `CryptoConfig.java` recusa só perfil com `prod` no nome); resposta de `me` (`MeController.java`) sem `tenantSchema`; cache com tenant do contexto: em `LgpdEngineService.java`, chave montada do `TenantContextHolder` (ou de parâmetro explícito) e evict pela mesma chave, com teste de dois tenants que concede consentimento e lê o valor novo; `TenantProvisioningService.java` sem a linha de log `DEBUG audit falhou`, sem os métodos sem uso `isSchemaInitialized` e `listInitializedSchemas`, sem o comentário que afirma RLS no catálogo e com `set_config` por parâmetro em vez de concatenação; frontend com `maplibre-gl` 6 e `react-router` 7, Vite em linha que traga `esbuild` 0.25 ou superior e Vitest da mesma linha, com a suíte do frontend verde",
+    "findings_owned": [
+      "COD-01",
+      "COD-02",
+      "COD-15",
+      "COD-16",
+      "COD-17",
+      "COD-23",
+      "COD-38"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-01",
+      "COD-02 (colisão por normalização, conflito pela chave `id`)",
+      "COD-15",
+      "COD-16",
+      "COD-17 (evict)",
+      "COD-23",
+      "COD-38",
+      "deixado: Lucide na P0.46"
+    ]
+  },
+  {
+    "id": "P0.18",
+    "title": "`current_tenant_id()` como SQL STABLE",
+    "origin": "17:M10",
+    "size": "P",
+    "deps": [
+      "P0.4"
+    ],
+    "acceptance": "`current_tenant_id()` reescrita como função SQL `STABLE`, sem subtransação por linha (conferido pelo plano de execução de uma consulta com RLS sobre várias linhas); `DatabaseHardeningTest` verde",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.19",
+    "title": "Parâmetros do tenant",
+    "origin": "ADR-0002; ADR-0041; DAD-33, PLT-14",
+    "size": "G",
+    "deps": [
+      "P0.4"
+    ],
+    "acceptance": "core `V3` (`parameter_definitions`, `parameter_legal_limits`, catálogo global só de leitura para a aplicação) e `V1_5` (`parameter_versions` com vigência por EXCLUDE e quem propõe diferente de quem aprova, `parameter_acceptances`, `regulatory_profiles` e `holidays`, que sai do `V6_1`); valor fora do limite recusado; vigência sobreposta recusada pelo banco; operação sem valor aceito e vigente falha com erro explícito; definições `cert.*` com enumeração de edição por norma, e `cert.deactivation_keeps_records` e `cert.evidence_pack_personal_data` em classe a (ADR-0041); `registry.require_user_document` como parâmetro do tenant com vigência e aceite, no lugar de configuração da aplicação; `tenant.timezone` (identificador IANA, classe d, padrão de fábrica `America/Sao_Paulo`), com instantes gravados em UTC e datas de negócio como data local do tenant; teste com relógio simulado em tenants de `America/Manaus`, `America/Rio_Branco` e `America/Noronha`; feriados municipais e pontos facultativos em `cal.holidays`; aplicação do fuso no calendário do ciclo, na janela de corte e no SLA (ver P2.1, P3.4 e P2.15); tela do tenant para propor, aprovar e aceitar mudança de parâmetro (ver P1.6); carga dos perfis das agências (ver P2.31)",
+    "findings_owned": [
+      "DAD-33",
+      "PLT-14"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.17 (`cert.*`, ADR-0041)",
+      "v2.18 (PLT-14)",
+      "DAD-33",
+      "PLT-14",
+      "deixado: tela na P1.6 (JOR-25); perfis na P2.31"
+    ]
+  },
+  {
+    "id": "P0.11",
+    "title": "Máscara com teto; busca por documento com papel, registro e cota; leituras registradas",
+    "origin": "17:S1, 17:M6; ADR-0008; DAD-29",
+    "size": "M",
+    "deps": [
+      "P0.19",
+      "P0.13"
+    ],
+    "acceptance": "teto de máscara acima do permitido recusado; busca por documento só com a permissão própria do catálogo da P0.13 (sem ela, 403), com registro da busca e cota por usuário; buscas e leituras de dado pessoal registradas em `personal_data_access_log` (`V1_6`); cota excedida devolve 429 e gera alerta; catálogo `data_classification` por tabela e coluna, com as classes ID, CT, LOC, FIN, SOC e SENS; teste no CI recusa coluna nova sem classificação, regra que vale para toda tarefa que cria tabela; isenção de `consumer_units.coordinates` revista, com a coluna classificada como LOC; detecção de anomalia de acesso a dado pessoal segue o ADR-0008 e o RNF-41, implementada sobre esse registro, sem critério próprio; incidente e RIPD (ver P3.10); direitos do titular (ver P3.40)",
+    "findings_owned": [
+      "DAD-29"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "DAD-29",
+      "COD-25 consumido da P0.13",
+      "PLT-38 pelo ADR-0008"
+    ]
+  },
+  {
+    "id": "P0.12",
+    "title": "Recalcular em lote as máscaras já gravadas",
+    "origin": "ADR-0008",
+    "size": "P",
+    "deps": [
+      "P0.11"
+    ],
+    "acceptance": "job decifra e regrava os campos `*_masked` com o teto vigente, cobrindo `CustomerDocumentService.java:72` e `MtrDocumentProtection.java:74,99`; depois da execução, nenhuma máscara gravada acima do teto (teste de varredura sobre a base)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.20",
+    "title": "Limites, sugeridos e pisos do §2.3",
+    "origin": "ADR-0002; §2.3; cmn-res-5171-2024, lei-10406-2002; RAS-16",
+    "size": "M",
+    "deps": [
+      "P0.19"
+    ],
+    "acceptance": "cada limite travado de PARAMETROS-DO-TENANT tem norma de origem e teste nomeado pela chave: dias de vencimento ofertados (`bill.due_date_options`, ao menos 6 para concessionária, Lei 8.987, art. 7º-A, só amplia); média sem leitura (`meter.average_months`, `meter.max_estimated_cycles`, NR 11, art. 35); multa (`fee.fine_pct`) com padrão de 2% e, acima disso, só com norma citada, aprovação dupla, aceite formal registrado e alerta de risco, com o CHECK de `V6_1` e o `LegalLimits` ajustados; juros simples sem capitalização e com o teto da agência (`fee.interest_mode`, SC 0,033% ao dia); taxa legal do art. 406 do Código Civil (`fee.legal_rate_fallback`) pela metodologia da Resolução CMN 5.171/2024, com a taxa divulgada mensalmente pelo BCB; bloco do fornecedor travado na fatura (CDC, art. 42-A); piso de retenção não reduzível; valor fora de limite recusado em cada teste; perfis das agências que usam esses limites (ver P2.31); aplicação dos encargos na conta (ver P2.5)",
+    "findings_owned": [
+      "RAS-16"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "RAS-16"
+    ]
+  },
+  {
+    "id": "P0.21",
+    "title": "Shard no catálogo; teste com 300 schemas",
+    "origin": "ADR-0005; 17:D2; PLT-35",
+    "size": "G",
+    "deps": [
+      "P0.4"
+    ],
+    "acceptance": "core `V4` (`tenant_catalog.cluster_id`, `isolation_mode`, revisão do `schema_name UNIQUE`, `tenant_schema_version`); teste com 300 schemas mede tempo de migração, tamanho do catálogo, vacuum e latência; teto de schemas por cluster registrado; o mesmo teste mede, com o número alvo de schemas, o tempo de atualização de versão principal (`pg_upgrade`) e de `pg_dump` por schema; instruções preparadas sob PgBouncer em modo transaction (`max_prepared_statements` e `prepareThreshold` do pgJDBC) testadas, sem a combinação com defeito conhecido (pgJDBC 42.7.8 com `prepareThreshold=0`, defeito 3896); versões exatas de PgBouncer e do driver registradas na ARQUITETURA-ALVO §4; pools por papel (ver P2.2)",
+    "findings_owned": [
+      "PLT-35"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-35)"
+    ]
+  },
+  {
+    "id": "P0.22",
+    "title": "Busca e listas",
+    "origin": "17:D4, 17:D5",
+    "size": "M",
+    "deps": [
+      "P0.16"
+    ],
+    "acceptance": "`V3_4` (GIN trigram sobre `unaccent(lower(name))`); busca por trecho do nome usa o índice (plano de execução conferido em teste); listas com número constante de consultas, independente do tamanho da página (teste que conta as consultas); paginação keyset nas listas grandes; usa a validação dos DTOs de busca e o teto de página da P0.16; geração de matrícula por sequência (ver P1.4)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-24 consumido da P0.16"
+    ]
+  },
+  {
+    "id": "P0.23",
+    "title": "Carga inicial",
+    "origin": "17:O4; ADR-0012; PLT-28",
+    "size": "M",
+    "deps": [
+      "P0.8"
+    ],
+    "acceptance": "teste de carga noturno (k6 ou Gatling) com 20 mil ligações sintéticas; p95 comparado ao RNF; regressão acima de 15% no p95 falha (RNF-70); cenário do Keycloak com o kit de benchmark oficial (logins, renovações de token e concessões `client_credentials`), com meta de pico do portal no vencimento e na emissão da conta registrada; medição do autenticador próprio do portal (localização da conta pelo índice cego) com base sintética de 1 milhão de usuários no realm do portal; resultados comparados ao dimensionamento da ARQUITETURA-ALVO §6 e ao RNF-17; séries temporais (ver ED-17); carga de referência da API em escala (ver P2.9)",
+    "findings_owned": [
+      "PLT-28"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-28)",
+      "deixado: OPE-19 na ED-17"
+    ]
+  },
+  {
+    "id": "P0.24",
+    "title": "Modelagem de ameaças (STRIDE)",
+    "origin": "17 §7",
+    "size": "P",
+    "deps": [
+      "P0.14"
+    ],
+    "acceptance": "modelo de ameaças STRIDE de API, BFF, worker, webhook e importador, versionado no repositório; cada ameaça identificada tem controle existente ou tarefa do plano que a trata",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.26",
+    "title": "Decisão de hospedagem e tabela de custo",
+    "origin": "ADR-0011, ADR-0033; ED-03",
+    "size": "P",
+    "deps": [],
+    "acceptance": "decisão de hospedagem registrada (ADR-0011 aceito em 12/10/2026: AWS `sa-east-1` gerenciada, implantada no lançamento comercial pelo ADR-0033); tabela de custo mensal para a capacidade da ARQUITETURA-ALVO §6, para o piloto e para o dimensionamento mínimo dos primeiros tenants, com o custo contado a partir do lançamento (data de referência: outubro de 2028, opção A do §2.4); versões de PostGIS, `pg_trgm`, `unaccent` e `pg_partman` conferidas na documentação do RDS for PostgreSQL 17 (prova prática na LC.1); relatórios de certificação e de asseguração com escopo em `sa-east-1` baixados do AWS Artifact para o kit da P0.44 (ISO 9001, 27001 e 27017 são certificações; SOC 1 e SOC 3 são relatórios de asseguração de auditor independente), o que exige só a conta, sem recurso provisionado",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.27",
+    "title": "Ambiente local completo: desenvolvimento, homologação local e demonstração local",
+    "origin": "17:X1; ADR-0033, ADR-0010",
+    "size": "G",
+    "deps": [
+      "P0.5"
+    ],
+    "acceptance": "Docker Compose com PostgreSQL 17, Keycloak, emulador de S3 e cofre local (exceções do ADR-0010), portas em 127.0.0.1 e credenciais fora do repositório; perfis de desenvolvimento, homologação local e demonstração local (P3.23), cada um recriável do zero por script, com tempo medido; implantação pela mesma imagem da P0.5 e pelo job `migrate`, com rollback da imagem exercitado; `ziipsan.fiscal.production-allowed` falsa em todos os perfis; nenhum recurso na AWS; homologação e produção com IaC na AWS (ver LC.2)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "texto retirado do título (v2.7, AWS na LC.2)",
+      "emulador de S3 mantido pela P0.7"
+    ]
+  },
+  {
+    "id": "P0.29",
+    "title": "Keycloak em modo de produção, no ambiente local",
+    "origin": "17:O3",
+    "size": "M",
+    "deps": [
+      "P0.27",
+      "P0.4"
+    ],
+    "acceptance": "Keycloak local com `start --optimized`, no lugar do `start-dev` atual do `docker-compose.yml`; TLS com certificado local e `sslRequired=all`; duas réplicas no compose; derrubada de uma réplica sem perda de sessão (ensaio do RNF-17); usa o PostgreSQL 17 da P0.4; Keycloak na AWS (ver LC.6)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "texto retirado do título (v2.7, AWS na LC.6)",
+      "COD-27 consumido da P0.4 (parte do Keycloak executada aqui)"
+    ]
+  },
+  {
+    "id": "P0.30",
+    "title": "Escolha do piloto",
+    "origin": "ADR-0001, ADR-0023, ADR-0033",
+    "size": "P",
+    "deps": [],
+    "acceptance": "termo de intenção com a entrada em produção no lançamento comercial, pela opção A do §2.4 (datas de referência, ADR-0044: início do lançamento em outubro de 2028, corte e primeira produção por volta de fevereiro de 2029); acesso ao legado; termo de cooperação para a homologação local com anonimização na origem pelo roteiro da P0.45 (o acordo de tratamento de dados vai para a LC.9), com autorização da carga da rede real do piloto (redes, peças e estruturas, sem ligações nem imóveis reais) e acesso restrito a ela (ADR-0033); critério de divergência da homologação local e do paralelo real; critério de editais (ADR-0023, item 3): prestadora de água pública em Santa Catarina, contratação por dispensa (Lei 14.133, art. 75, II) ou CPSI (LC 182/2021) e cláusula de emissão de atestado depois dos ciclos em produção, que só começam no lançamento (ADR-0033), com ligações e e-Sfinge registrados; escolha fora desse critério só com justificativa no diário; levantamento de optantes de débito automático (quantidade e leiaute bancário em uso) registrado: com optantes, a parte FEBRABAN 150 da ED-27 entra no P3 (P3.24) como requisito da homologação local e do corte no lançamento; sem optantes, fica na onda A (ADR-0028, item f); calendário regulatório do débito automático e da cobrança híbrida (ver P3.24 e P3.2)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "deixado: PLT-27 na P3.24; GES-15 na P3.2",
+      "linguagem de prazo retirada (ADR-0044)"
+    ]
+  },
+  {
+    "id": "P0.31",
+    "title": "Comunicação aos clientes-alvo",
+    "origin": "G0 (v1); ADR-0044",
+    "size": "P",
+    "deps": [],
+    "acceptance": "comunicação enviada aos clientes-alvo com o que entra em cada fase e o que segue no legado (data de referência 23/10/2026, indicação de sequência pelo ADR-0044); envio e destinatários registrados no diário",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "data como indicação de sequência (ADR-0044)"
+    ]
+  },
+  {
+    "id": "P0.32",
+    "title": "Esqueleto fiscal",
+    "origin": "ADR-0003",
+    "size": "M",
+    "deps": [],
+    "acceptance": "módulo fiscal `commercial/ziipsan-fiscal` criado por esta tarefa, com o nome posterior à P0.33; vetores do motor C# passam no porte Java; sem `ziipsan.fiscal.production-allowed` verdadeira não há emissão com `tpAmb=1` (teste)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo",
+      "módulo nasce com a tarefa que o cria (COD-41, P0.25)"
+    ]
+  },
+  {
+    "id": "P0.34",
+    "title": "Pacote de marca",
+    "origin": "ADR-0016; COD-37",
+    "size": "M",
+    "deps": [
+      "P0.33",
+      "P0.5"
+    ],
+    "acceptance": "pacote `branding/ziipsan` validado por schema no CI (SVG com `script` recusado); `BrandProvider` no frontend; plugin do Vite que aplica o pacote; `GET /api/v1/public/brand`; literais `SIGSAN` de `index.html`, `Layout.tsx`, `PageHeader.tsx` e `Login.tsx` substituídos pelo pacote; `check-brand-literals.sh` no `ci.sh` falha com literal de marca fora do pacote; internacionalização mínima e idioma de preferência (ver P1.18)",
+    "findings_owned": [
+      "COD-37"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-37 (literais de marca)",
+      "deixado: PLT-25 na P1.18; cores literais na P0.36"
+    ]
+  },
+  {
+    "id": "P0.35",
+    "title": "Tema de login e de e-mail do Keycloak gerado do pacote",
+    "origin": "ADR-0016",
+    "size": "P",
+    "deps": [
+      "P0.34"
+    ],
+    "acceptance": "realm com `loginTheme`, `emailTheme` e `displayName` gerados do pacote de marca; trocar `ZIIPSAN_BRAND` muda login e e-mail sem alterar código (teste); o tema entra na imagem de produção do Keycloak da P0.29",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.36",
+    "title": "Temas claro, escuro e do sistema",
+    "origin": "ADR-0017; PLT-31",
+    "size": "M",
+    "deps": [
+      "P0.16",
+      "P0.34"
+    ],
+    "acceptance": "tokens semânticos de cor; registro de padrões com Azul Água e Verde Água; lint recusa cor literal, com `Badge.tsx` e `Alert.tsx` migrados das cores Tailwind literais; script inline aplica o tema antes da primeira pintura, com hash na CSP conferido pelo CI; contraste e verificações automáticas pela WCAG 2.2 AA (ISO/IEC 40500:2025) por padrão e por modo (claro, escuro e do sistema), em Vitest e Playwright com axe, bloqueiam o merge; eMAG 3.1 mantido como referência do setor público; usa os tokens e o pacote de marca da P0.34; declaração de acessibilidade por tenant e VLibras no portal (ver P3.3 e ED-38)",
+    "findings_owned": [
+      "PLT-31"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "v2.18 (PLT-31: WCAG 2.2 AA no lugar da 2.1 AA)",
+      "COD-37 consumido da P0.34",
+      "deixado: declaração e Libras na P3.3 e na ED-38"
+    ]
+  },
+  {
+    "id": "P0.37",
+    "title": "Valores dos padrões aplicados e ajuste fino",
+    "origin": "ADR-0017",
+    "size": "P",
+    "deps": [
+      "P0.36"
+    ],
+    "acceptance": "valores de MARCA-E-TEMAS §4.2, aprovados pelo dono em 12/10/2026, no registro de padrões; teste de contraste verde com eles; ajuste fino feito depois de o dono ver as telas só entra com o teste verde e o valor novo registrado no §4.2",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.38",
+    "title": "Keycloak Organizations para a marca no login",
+    "origin": "ADR-0016",
+    "size": "P",
+    "deps": [
+      "P0.13"
+    ],
+    "acceptance": "decisão sobre Keycloak Organizations para a marca no login registrada em MARCA-E-TEMAS §3.3 (subdomínio, e-mail primeiro ou caminho), com prova de conceito executada e resultado registrado; login gov.br no portal (ver ED-38); SSO corporativo por OIDC e SAML e SCIM por tenant (ver ED-06)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "deixado: PLT-06 e GES-32 na ED-38; PLT-29 na ED-06"
+    ]
+  },
+  {
+    "id": "P0.39",
+    "title": "Versão gerada pela tag",
+    "origin": "ADR-0021",
+    "size": "M",
+    "deps": [
+      "P0.3",
+      "P0.5"
+    ],
+    "acceptance": "versão gerada pela tag e injetada por `-Drevision` no Maven; mesma versão, commit e data no build do Vite; `build-info`, `git.properties` e `version.json` gerados; nenhuma versão escrita à mão (verificação no CI); dois builds do mesmo commit dão a mesma versão; cabeçalhos `Ziip-Version` e `Ziip-Min-Client-Version` em toda resposta; SPA antigo mostra aviso de recarga (teste E2E)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.40",
+    "title": "Licenças de terceiros pelo SBOM",
+    "origin": "ADR-0021; RNF-35",
+    "size": "P",
+    "deps": [
+      "P0.5"
+    ],
+    "acceptance": "`third-party-licenses.json` gerado do SBOM CycloneDX de Maven e npm; licença fora da lista permitida bloqueia o CI",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.41",
+    "title": "Changelog do cliente",
+    "origin": "ADR-0021",
+    "size": "P",
+    "deps": [
+      "P0.3"
+    ],
+    "acceptance": "esquema de `content/release-notes/<version>.yaml` validado no CI; commit marcado como segurança, legislação ou parâmetro regulatório sem item correspondente no changelog bloqueia a release (teste do CI)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.42",
+    "title": "Registro de implantação e Sobre mínimo",
+    "origin": "ADR-0021",
+    "size": "P",
+    "deps": [
+      "P0.6",
+      "P0.39"
+    ],
+    "acceptance": "core `V5_1` (schema `platform` e `platform.deployment`); o job `migrate` grava cada implantação em `platform.deployment`; `GET /api/v1/about` devolve versão, commit, ambiente e data gravada",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.43",
+    "title": "Papéis de plataforma",
+    "origin": "ADR-0018, ADR-0007",
+    "size": "P",
+    "deps": [
+      "P0.13",
+      "P0.15"
+    ],
+    "acceptance": "`PLATFORM_OWNER`, `PLATFORM_OPS`, `PLATFORM_SUPPORT` e `PLATFORM_FINANCE` no realm; matriz de permissões de CENTRAL-ZIIP §2 com teste por papel; rota `/api/v1/platform/*` sem `amr` de segundo fator devolve 403 `mfa-required`; token com `tenant_id` recusado em rota de plataforma",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21, sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P0.44",
+    "title": "Kit de habilitação, INPI e escrituração, fora do caminho crítico",
+    "origin": "ADR-0023 item 6; ED-02",
+    "size": "P",
+    "deps": [
+      "P0.26"
+    ],
+    "acceptance": "tarefa fora do caminho crítico; empresa licitante definida, com CNAE compatível; contador contratado e escrituração desde o exercício de 2026 em curso (os balanços de 2027 e 2028 são exigidos nas licitações a partir do 3º trimestre de 2029, data de referência da opção A do §2.4); pedido de registro do programa no INPI protocolado; e-CNPJ obtido (o da Ziip/TGP também serve à homologação fiscal local, guardado no cofre local, §2.4); lista de certidões do levantamento 18h §2.2 com data de validade e rotina de renovação; relatório de certificações do provedor arquivado (P0.26); cláusula-padrão de licença das customizações, sem cessão de direitos, redigida; divulgação responsável de vulnerabilidade e Trust Center público (ver P3.38)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "deixado: PLT-09 na P3.38"
+    ]
+  },
+  {
+    "id": "P0.45",
+    "title": "Interfaces de infraestrutura com implementação local e teste de contrato",
+    "origin": "ADR-0033, ADR-0011 (item 4), ADR-0014",
+    "size": "G",
+    "deps": [
+      "P0.5"
+    ],
+    "acceptance": "interfaces de armazenamento de objetos, chaves (`TenantKeyProvider`), segredos, fila e envio de e-mail; implementação local de armazenamento (emulador de S3), chaves e segredos (cofre local) e e-mail (gravação sem envio externo); suíte de contrato por interface no CI contra a implementação local, pronta para rodar contra a AWS na LC.1; a interface de fila e sua suíte de contrato ficam aqui, e a implementação sobre a tabela `outbox` no PostgreSQL com o `worker` é da P1.9, que passa na mesma suíte (ver P1.9); teste de fronteira recusa SDK de provedor em módulo de domínio; teste de varredura recusa dado pessoal real na base local (documento sem a marca de sintético); roteiro de anonimização na origem para o piloto: sem nome, documento, endereço nem contato; código substituto no lugar da matrícula, com a correspondência só no piloto; no cadastro técnico, rede, peças e estruturas reais, e ligações, ramais, cavaletes e imóveis com coordenada deslocada dentro da quadra, sem coincidir com o lote de origem, ou agregada no centroide da quadra, com o método registrado por camada (ADR-0033); hub de integrações (ver P3.37); clone mascarado do tenant para homologação e treinamento (ver ED-09)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "outbox e worker na P1.9 (COD-26)",
+      "deixado: PLT-20 na P3.37; PLT-39 na ED-09"
+    ]
+  },
+  {
+    "id": "P0.28",
+    "title": "Backup e PITR locais; R1 sobre o cofre local",
+    "origin": "17:X2; R1; ADR-0011, ADR-0033; COD-04",
+    "size": "G",
+    "deps": [
+      "P0.27",
+      "P0.45"
+    ],
+    "acceptance": "arquivamento de WAL e backup em volume local; PITR ensaiado com tempo registrado contra o RPO de 15 min e o RTO de 4 h de referência, sem meta (a meta vale na LC.3); teste de RLS no banco restaurado; core `V6` (`tenant_key`, DEK por tenant); `TenantKeyProviderContract` verde sobre o cofre local (KEK no cofre, DEK por tenant guardada cifrada); rotação de chave ensaiada; destruição da DEK torna ilegível o dado do tenant (crypto-shredding ensaiado); contexto de tenant local à transação: `MultiTenantConnectionProvider` passa de `set_config(..., false)` para `set_config(..., true)` aplicado depois do BEGIN; PgBouncer em modo transaction no compose, com teste de vazamento em que transações de tenants diferentes na mesma conexão física não veem o contexto uma da outra; restauração seletiva de um tenant e desfazer de operação em massa (ver P3.33); RDS e KMS (ver LC.3 e LC.4); pools por papel (ver P2.2)",
+    "findings_owned": [
+      "COD-04"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "COD-04",
+      "texto retirado do título (v2.7, RDS e KMS na LC.3 e na LC.4)",
+      "deixado: PLT-03 na P3.33; pools na P2.2"
+    ]
+  },
+  {
+    "id": "P0.46",
+    "title": "Guia de estilo e pacote de ícones da interface",
+    "origin": "ADR-0036",
+    "size": "M",
+    "deps": [
+      "P0.36",
+      "P0.17"
+    ],
+    "acceptance": "`ICONES-E-SIMBOLOGIA` §2 como guia de estilo; Lucide com versão fixada (`lucide-react`) e os 25 ícones atuais migrados para o `IconRegistry` tipado e o componente `<Icon>`; SVG não sanitizado ou com cor literal recusado no CI; toda rota e todo item de menu com ícone (teste); nome acessível pelo i18n; licença do Lucide na lista do Sobre; usa o frontend atualizado na P0.17 (Vite, Vitest e `react-router` de linha)",
+    "findings_owned": [],
+    "consumed": [
+      "texto-base v2.21",
+      "texto retirado do título (v2.13)",
+      "COD-38 consumido da P0.17"
+    ]
+  },
+  {
+    "id": "P0.47",
+    "title": "Contrato do pacote de vertical e teste de fronteira",
+    "origin": "ADR-0037; ADR-0041; JOR-03",
+    "size": "M",
+    "deps": [
+      "P0.33",
+      "P0.34"
+    ],
+    "acceptance": "`vertical.json` com schema validado no CI; manifesto `modules` inclui `certification`, com motor no núcleo e conteúdo de saneamento no pacote `sanitation`, coberto pelo teste de fronteira; registro de pacotes e core `V9_7` (`platform.vertical` e `platform.tenant_vertical`; todo tenant existente nasce com `sanitation` ativo), no lugar do `ModuleRegistry` apagado na P0.25; pacote `sanitation` mínimo (domínios, menu atual, parâmetros atuais) sem mudar o comportamento (suíte existente verde); teste de arquitetura com o ArchUnit da P0.3 recusa núcleo dependente de pacote e termo de saneamento no núcleo, com lista de exceções versionada; pacote de exemplo só em teste; nomes definitivos de módulo (`platform/*`, `packages/sanitation/*`) aplicados conforme a tabela única de módulos de PLATAFORMA-E-VERTICAIS, prevalecendo sobre os da P0.33; mapa do produto (módulos, itens de menu, rotas, ícone, permissão e tarefa de origem) gerado do `vertical.json` e conferido no CI; regra registrada no contrato do pacote: cada tarefa que cria uma fonte da ficha da unidade (contas, débitos, OS, atendimentos, documentos, qualidade) acrescenta a aba correspondente ao manifesto; aplicação da regra das abas no frontend (ver P1.12)",
+    "findings_owned": [
+      "JOR-03"
+    ],
+    "consumed": [
+      "texto-base v2.21",
+      "texto retirado do título (v2.13)",
+      "v2.17 (`certification`)",
+      "JOR-03",
+      "COD-21 consumido da P0.25",
+      "COD-31 consumido da P0.3 (ArchUnit)",
+      "COE-16 pela tabela de PLATAFORMA-E-VERTICAIS"
+    ]
+  }
+]

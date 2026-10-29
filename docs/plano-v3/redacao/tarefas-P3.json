@@ -1,0 +1,811 @@
+[
+  {
+    "id": "P3.1",
+    "title": "R5a: retorno e conciliação N3",
+    "origin": "R5 (v1); G4; DAD-19, RAS-09, RAS-27",
+    "size": "G",
+    "deps": [
+      "P2.5"
+    ],
+    "acceptance": "`V6_2`; retorno idempotente por NSA e hash do arquivo, com reprocessamento que não duplica baixa (teste); aprovação dupla nas classificações manuais; a classificação grava o efeito: baixa da versão vigente da conta, débito a cobrar ou crédito a realizar de ajuste na conta seguinte dentro de `pay.adjust_tolerance` e aviso ao usuário do pagamento em duplicidade (NR 11, art. 37), com a devolução pela P3.29; sem acréscimo sobre conta em revisão aberta; transferência de pagamento por OS `PAYMENT_TRANSFER` com aprovação dupla; pagamento de conta prescrita é recebimento válido, sem devolução (Código Civil, art. 882), com a conta marcada paga e evento de recuperação de crédito para a ED-32; as colunas próprias do FEBRABAN 150 (`capture_form`, `payment_form`, `collecting_branch`, `authentication`, `line_number`, `barcode`) saem de `payments` para a tabela de detalhe do arquivo de retorno, sem uso por Pix e cartão; `payments` ganha a referência de arrecadação `collection_month` (dia 1, independente da competência de faturamento) e `fiscal_document_id` com FK para o documento fiscal; conciliação do valor líquido recebido com o tributo segregado na liquidação (split payment, LC 214/2025 e LC 227/2026), por modo de recolhimento definido na P2.4, com um teste por modo; baixa com retenção na fonte para pagador de natureza pública (IN RFB 1.234/2012), com o valor retido registrado como crédito do tenant, ligada por parâmetro só depois do parecer jurídico sobre o alcance (PD-10), com teste com o recurso desligado e ligado; usa a validação de CNPJ alfanumérico da P1.39 nos arquivos de retorno (teste com CNPJ alfanumérico); um teste por situação de classificação; a GL.2 fecha conta a conta; regras do Pix Automático e da cobrança híbrida (ver P3.2); caixa de aprovações com delegação (ver P2.28)",
+    "findings_owned": [
+      "DAD-19",
+      "RAS-09",
+      "RAS-27"
+    ],
+    "consumed": [
+      "v2.15 (com o complemento de 15/10/2026, 20c ARR-05)",
+      "v2.18",
+      "DAD-19, RAS-09, RAS-27 atendidos",
+      "usa RAS-03 (P1.39)",
+      "deixados: GES-15 (P3.2), PLT-13 (P2.28)"
+    ]
+  },
+  {
+    "id": "P3.2",
+    "title": "R5b: Pix Cobrança e boleto híbrido",
+    "origin": "R5 (v1); 17:P4; GES-15, GES-33, PLT-26, RAS-19",
+    "size": "G",
+    "deps": [
+      "P3.1"
+    ],
+    "acceptance": "`V6_3` (partição de `payments` e `pix_inbox`); callback Pix gravado na `pix_inbox` de forma idempotente por `(psp, end_to_end_id)`, com resposta 200 em menos de 2 s depois de gravar; tenant e convênio identificados por segmento aleatório na URL do webhook e conferidos com o convênio cadastrado; origem do callback autenticada por mTLS com o certificado do PSP e, onde o PSP oferecer, por segredo adicional, no lugar de assinatura do PSP, que o padrão do Banco Central não define; antes da baixa, confirmação do `endToEndId` por `GET /pix/{e2eid}` quando o PSP não oferecer mecanismo equivalente; varredura periódica de `GET /pix` por intervalo (`inicio` e `fim`) para recuperar Pix sem `txid` e callbacks perdidos; matriz de comportamento por PSP (reenvio, SLA do callback, entrega de certificado) registrada na interface de PSP e lida pelo hub da P3.37; teste com callback forjado, repetido e fora de ordem; cobrança híbrida pela Res. BCB 587/2026 (regra vigente a partir de 01/02/2027): só para Pix Cobrança com vencimento e boleto comum ou dinâmico não vinculado a ativo financeiro, com o emissor do boleto igual ao PSP do recebedor e oferta facultativa por tenant; boleto e Pix do mesmo documento com baixa única, Pix Cobrança cancelado quando o boleto é pago e segundo pagamento encaminhado à devolução da P3.29 (um teste por caso, inclusive recusa de boleto de proposta, de depósito e vinculado a ativo financeiro); fluxos do Manual de Fluxos do Pix 2.2 (IN BCB 777/2026, vigente a partir de 01/02/2027) conferidos com o PSP; regras operacionais do Pix Automático registradas na interface de PSP e nos parâmetros `pay.auto_debit.retry_policy`, `pay.auto_debit.notice_days` e `pay.auto_debit.incentive` (classe d): jornadas 1 a 4 de autorização, inclusive QR Code de autorização e primeiro pagamento imediato, agendamento de 2 a 10 dias antes da liquidação, notificação ao pagador, retentativas (no máximo 3 em 7 dias, se previstas na autorização), cancelamento pelo pagador até 23h59 da véspera e pelo recebedor até 22h, multa e juros na instrução do ciclo seguinte, conciliação por identificador de cobrança e devolução de débito indevido em 24 horas pelo banco do pagador, com teste por regra na P4.5 e na ED-27; o PSP escolhido declara suporte à iniciação de pagamento por Open Finance com Jornada Sem Redirecionamento e ao Pix por aproximação, oferecidos em `pay.channels` como capacidade do provedor, sem que o Ziip SAN ou o tenant se tornem participantes; usa a referência de arrecadação e o vínculo com o documento fiscal da P3.1 (DAD-19) e a validação de CNPJ alfanumérico da P1.39; proteção contra cobrança falsa (ver P3.35); calendário do débito automático legado (ver P3.24)",
+    "findings_owned": [
+      "GES-15",
+      "GES-33",
+      "PLT-26",
+      "RAS-19"
+    ],
+    "consumed": [
+      "v2.18",
+      "GES-15, GES-33, PLT-26, RAS-19 atendidos",
+      "usa DAD-19 (P3.1) e RAS-03 (P1.39)",
+      "deixados: PLT-11 (P3.35), PLT-27 (P3.24)"
+    ]
+  },
+  {
+    "id": "P3.3",
+    "title": "Portal do cliente: 2ª via, Pix, protocolo",
+    "origin": "17:P2; ADR-0022; ADR-0043; CAD-97, PLT-22, PLT-40",
+    "size": "G",
+    "deps": [
+      "P3.2",
+      "P0.14",
+      "P1.36",
+      "P1.41",
+      "P0.36"
+    ],
+    "acceptance": "Realm `ziipsan-portal` com conta própria do consumidor (login por CPF, CNPJ ou e-mail, com senha; MFA opcional; sem SMS nem login por celular) e client confidencial do BFF; autenticador próprio do Keycloak calcula o índice cego do documento digitado e localiza a conta, sem gravar nem consultar o valor em claro; CPF e CNPJ da conta cifrados e com índice cego; documento ausente de URL (inclusive `login_hint`), dos logs da API e dos eventos de login do Keycloak (teste de log, RNF-52); resposta e tempo iguais para documento ou e-mail inexistente e senha errada, inclusive na recuperação de senha; tentativas limitadas por identificador e por IP, com atraso crescente, 429 e alerta na Central, sem bloquear de fora a conta da vítima; token do realm do portal recusado nas rotas do backoffice e token do backoffice recusado nas do portal (teste); sem acesso ao backoffice; titular autenticado obtém a 2ª via da conta em aberto em PDF e o Pix copia e cola da P3.2; pagamento sem conta (ADR-0043): o convidado informa o código de vinculação impresso na fatura, de alta entropia e nunca a matrícula, e recebe só a fatura em aberto daquele código (valor, vencimento, mês de referência, linha digitável e Pix copia e cola), sem nome, endereço, documento nem consumo detalhado (teste do conteúdo da resposta); `portal.guest_payment` (classe b: desligado, só código, código mais sufixo do documento do titular; padrão de fábrica só código), com um teste por opção; no caminho de convidado, limite de tentativas por origem e por código, resposta indistinta para código inexistente, nenhuma sessão persistente e registro de cada consulta; login gov.br (ADR-0043): `portal.idp_govbr_enabled` (classe d) aceito só para tenant cuja natureza jurídica (`reg.legal_nature`) seja de direito público (teste de recusa para tenant privado) e `portal.min_assurance_by_operation` (classe b), com o BFF exigindo nível prata ou ouro na troca de titularidade, na tarifa social, na alteração de dado de contato e na negociação de débito quando a entrada é pelo gov.br (teste com token de cada nível); sem gov.br, valem as regras de vínculo do ADR-0022; integração com o provedor gov.br, solicitação do serviço e domínio GOV.BR (ver ED-38); defesa contra automação compatível com a WCAG 2.2, critério 3.3.8: desafio não cognitivo (prova de trabalho ou desafio invisível) no lugar de quebra-cabeça de imagem, gerenciador de senha e colar permitidos, detecção de preenchimento de credenciais (um IP com muitos documentos, um documento com muitos IPs), verificação da senha contra lista de senhas vazadas no cadastro, limite de criação de conta por e-mail e telemetria na aba Segurança da Central, por `portal.bot_defense` (`OFF`, `PASSIVE`, `CHALLENGE`, classe d) e `portal.account_throttle` (classe c, só reduz); regra gerenciada de bot na borda (ver LC.2); modo de contingência estático: no fechamento de cada conta, objeto cifrado com a 2ª via e o Pix copia e cola, servido pela borda por link assinado de curta duração enviado ao contato verificado do titular, com expiração e revogação, quando a `api` ou o banco estiverem indisponíveis (`portal.static_fallback_enabled`, classe d; teste com a `api` derrubada); pedido ou alteração feita pelo consumidor no portal gera protocolo da P1.36 e OS interna, com aprovação conforme o tipo, e o consumidor acompanha a OS pelo protocolo; usa a representação legal e o terceiro autorizado da P1.41 (CAD-66) para pedido feito em nome do titular, com escopo, validade e registro no `personal_data_access_log`; usa o critério WCAG 2.2 AA da P0.36 (PLT-31; axe sem violação `serious` ou `critical`) e publica a declaração de acessibilidade do tenant (`portal.accessibility_statement`, classe d, com canal de contato e data da avaliação), com o widget VLibras opcional por `portal.vlibras_enabled` (classe d), ligado só depois da consulta formal aos termos do serviço; senha do portal pela nota de alinhamento ao NIST 800-63B-4 do ADR-0040 (ver ED-06) e passkey no portal (ver ED-38); canal de privacidade do titular e exibição do encarregado do tenant (ver P3.40); disponibilidade medida contra 99,9% a partir do lançamento (LC.7); histórico, documentos e vínculo, que exigem conta própria ou gov.br, na P3.20",
+    "findings_owned": [
+      "CAD-97",
+      "PLT-22",
+      "PLT-40"
+    ],
+    "consumed": [
+      "v2.14",
+      "v2.18",
+      "ADR-0043 (itens 1 a 5) e COE-07",
+      "CAD-97, PLT-22, PLT-40 atendidos",
+      "usa CAD-66 (P1.41) e PLT-31 (P0.36)",
+      "deixados: CAD-101, GES-32, PLT-06 (ED-38), PLT-30 (ED-06), canal de privacidade (P3.40)"
+    ]
+  },
+  {
+    "id": "P3.6",
+    "title": "NFS-e de serviços avulsos",
+    "origin": "ADR-0003; Ato Conjunto RFB/CGIBS 4/2026 (23e)",
+    "size": "M",
+    "deps": [
+      "P1.8",
+      "P1.39"
+    ],
+    "acceptance": "Serviço da OS gera NFS-e padrão nacional na produção restrita; cada tipo de serviço avulso registra a etapa de obrigatoriedade dos grupos de IBS e CBS pelo Ato Conjunto RFB/CGIBS 4/2026: 01/10/2026 para serviços também sujeitos ao ISS fora das hipóteses especiais (art. 1º, III, d), 01/12/2026 para as demais hipóteses de NFS-e (art. 1º, III, h) e 01/01/2027 para optantes do Simples Nacional (§ 1º); NFS-e emitida na data da etapa do serviço ou depois sai com os grupos de IBS e CBS (teste por etapa, com relógio); a ausência de IBS e CBS na NFS-e não gera rejeição até 31/12/2026 (nota do CGNFS-e de 07/08/2026), e o teste confere a regra de rejeição vigente na produção restrita; usa a validação de CNPJ alfanumérico da P1.39 no prestador e no tomador (teste com CNPJ alfanumérico)",
+    "findings_owned": [],
+    "consumed": [
+      "etapa por serviço do Ato Conjunto RFB/CGIBS 4/2026 (23e §4)",
+      "usa RAS-03 (P1.39)"
+    ]
+  },
+  {
+    "id": "P3.7",
+    "title": "Homologação fiscal a partir do ambiente local",
+    "origin": "ADR-0003; ADR-0033",
+    "size": "M",
+    "deps": [
+      "P2.6"
+    ],
+    "acceptance": "Contingência testada na homologação da SEFAZ (`tpAmb=2`), com o e-CNPJ da própria Ziip/TGP (§2.4); restauração do XML autorizado testada com XML sintéticos assinados com certificado de teste, no armazenamento imutável da P2.18; registro de acessos ao certificado no cofre local conferido; XML assinados na homologação, que levam o certificado público da Ziip/TGP com o CPF do responsável, na mesma exceção e no mesmo consentimento do ADR-0033, gravados só na área separada da base local, fora das tabelas do produto, do armazenamento imutável e dos backups locais (P0.28); ao fim de cada ciclo de testes (rodada de homologação encerrada com resultado registrado no diário: emissão, cancelamento e substituição da NFS-e, ciclo de faturamento com NFAg-e, ensaio de contingência), os XML da área são apagados, com a exclusão registrada (ciclo, data, quantidade e hash do lote), e só os vetores de referência sem assinatura, sem o elemento `Signature` e sem o certificado ficam em `fiscal-contract-fixtures` (FISCAL-PORTE-JAVA §5); o teste de varredura da P0.45 recusa XML com o certificado da Ziip/TGP fora da área separada ou depois do fim do ciclo (teste)",
+    "findings_owned": [],
+    "consumed": [
+      "aceite da v2.21 reescrito sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P3.8",
+    "title": "Revisão de segurança no ambiente local: isolamento, cofre, portal do consumidor, acesso assistido e de emergência",
+    "origin": "17 §7; ADR-0020; ADR-0022; ADR-0033; ADR-0043; PLT-08",
+    "size": "M",
+    "deps": [
+      "P0.27",
+      "P3.3"
+    ],
+    "acceptance": "Varredura DAST autenticada (OWASP ZAP) e testes automatizados dos casos do pentest no ambiente local: vínculo, enumeração de matrícula, de código de vinculação e de CPF, CNPJ ou e-mail no login e na recuperação de senha, enumeração do código no caminho de convidado (ADR-0043, item 4), troca de token entre realms, download do portal, acesso assistido e de emergência; testes da defesa contra automação da P3.3 (PLT-22), inclusive ausência de teste cognitivo sem alternativa; OWASP ASVS 5.0 como critério de aceite de segurança, com nível 2 para backoffice, portal, API e BFF e nível 3 para isolamento de tenant, cofre de chaves, console da plataforma e acesso assistido; ASVS como anexo do REQUISITOS-NAO-FUNCIONAIS, com os capítulos mapeados às RNF-30 a RNF-39 e aos casos desta tarefa e da LC.8, e matriz requisito, teste e evidência gerada no CI; OWASP API Security Top 10 2023 no teste da API pública da P2.26; OWASP Top 10:2025 registrado na matriz, com as categorias novas de falha na cadeia de suprimentos de software (A03) e de tratamento de condições excepcionais (A10) cobertas; OWASP Top 10 para LLM 2025 como critério da ED-43 (ver ED-43); nenhum achado alto aberto; escopo e contratação do pentest externo definidos, com a execução na LC.8",
+    "findings_owned": [
+      "PLT-08"
+    ],
+    "consumed": [
+      "v2.18",
+      "PLT-08 atendido",
+      "usa PLT-22 (P3.3) e ADR-0043 item 4",
+      "fronteira mantida: pentest externo na LC.8"
+    ]
+  },
+  {
+    "id": "P3.10",
+    "title": "Resposta a incidente; modelo de RIPD",
+    "origin": "17 §7; PLT-34",
+    "size": "P",
+    "deps": [
+      "P2.25",
+      "P0.11"
+    ],
+    "acceptance": "Procedimento de resposta a incidente com dado pessoal: o Ziip SAN, operador, informa o tenant, controlador, sem demora injustificada e dentro do prazo contratual (`lgpd.operator_notice_hours`, classe c, só reduz, com o teto fixado no contrato da P3.9); relógio do incidente iniciado no conhecimento pelo Ziip SAN, com alerta na Central a 24 h e a 48 h; modelos do formulário de comunicação à ANPD e do aviso aos titulares entregues ao controlador, que comunica em 3 dias úteis, com complementação em 20 dias úteis (Res. CD/ANPD 15/2024); registro do incidente guardado por 5 anos (`ret.incident_record_years`); incidente e RIPD ligados à ocorrência da P2.25; escopo do incidente descrito pelas categorias de dado da classificação por coluna da P0.11 (DAD-29); modelo de RIPD por módulo; vínculo com o registro de operações de tratamento (ver P3.40); simulação de mesa feita, com o relógio, os alertas e os modelos exercitados; privacidade do rastreamento do executor e das fotos de campo (ver ED-20)",
+    "findings_owned": [
+      "PLT-34"
+    ],
+    "consumed": [
+      "v2.17 (registro de operações remetido à P3.40, que vem depois)",
+      "v2.18",
+      "PLT-34 atendido",
+      "usa DAD-29 (P0.11)",
+      "deixado: OPE-11 (ED-20)"
+    ]
+  },
+  {
+    "id": "P3.9",
+    "title": "Contrato SaaS, DPA, termos, SLA, suboperadores: minutas aprovadas",
+    "origin": "ADR-0002; ADR-0019; ADR-0020; ADR-0033; RAS-20",
+    "size": "M",
+    "deps": [
+      "P2.12",
+      "P2.14",
+      "P2.15",
+      "P3.10"
+    ],
+    "acceptance": "Minutas aprovadas pelo piloto; Ziip SAN operador e cliente controlador; cláusulas de aviso, restrição só manual e saída; cláusula de comunicação de incidente do operador ao controlador com o prazo contratual da P3.10 (`lgpd.operator_notice_hours`), já que a Res. CD/ANPD 15/2024 não fixa número e a ANPD recomenda fixá-lo em contrato; política de SLA de suporte; retenção de chamados pela vigência mais 5 anos e a exceção no certificado de descarte previstas no DPA; lista de suboperadores com aviso de mudança ao controlador; para todo provedor fora do país (modelo de linguagem, Meta, Telegram e demais da lista), cláusulas-padrão contratuais da ANPD incorporadas ao contrato (Res. CD/ANPD 19/2024, LGPD arts. 33 a 36) e a transferência registrada no RIPD pelo modelo da P3.10 (teste de conferência: suboperador estrangeiro sem cláusula-padrão bloqueia a aprovação da minuta); termo da homologação local assinado, sem transferência de dado pessoal (anonimização na origem); contrato e DPA assinados só na LC.9, antes do primeiro dado real",
+    "findings_owned": [
+      "RAS-20"
+    ],
+    "consumed": [
+      "v2.18",
+      "RAS-20 atendido",
+      "usa PLT-34 (P3.10)",
+      "fronteira mantida: assinatura na LC.9"
+    ]
+  },
+  {
+    "id": "P3.40",
+    "title": "Privacidade do titular para todo tenant: direitos do titular, registro de operações de tratamento e canal no portal",
+    "origin": "ED-74 e P3.10 (v2.21); ADR-0041; decisão do dono de 28/10/2026; JOR-15, RAS-23",
+    "size": "a estimar",
+    "deps": [
+      "P0.11",
+      "P1.15",
+      "P1.36",
+      "P3.3",
+      "P3.10",
+      "P1.6"
+    ],
+    "acceptance": "Obrigação de todo tenant, sem depender de pacote nem de flag (teste: tenant sem a ED-74 tem a privacidade do titular ativa); o módulo `lgpd` existente entra no scan da aplicação e ganha telas sobre o que já modela: pedido do titular (`lgpd_data_subject_request`), consentimento (`lgpd_consent`), RIPD (`lgpd_dpia`) e retenção (`lgpd_retention_schedule`), com a chave de cache por tenant já corrigida na P0.17 (COD-17); canal do titular no portal, na área Privacidade do titular autenticado, e no atendimento, por registro do atendente; todo pedido nasce como protocolo da P1.36 do tipo privacidade, com os direitos do art. 18 da LGPD (confirmação, acesso, correção, anonimização, bloqueio ou eliminação, portabilidade, informação sobre compartilhamento e revogação do consentimento); identidade do titular verificada antes de qualquer entrega, e pedido feito por representante pela representação da P1.41; prazo de 15 dias para a declaração completa (LGPD, art. 19, II), contado pelo motor de prazos da P1.36, com alerta antes do vencimento, e a referência do código corrigida de art. 18 para art. 19, II; pedido de eliminação confrontado com a tabela de retenção: dado com guarda legal ou regulatória fica bloqueado e é eliminado ou anonimizado ao fim da guarda (LGPD, art. 16), com a justificativa na resposta (teste com dado fiscal em guarda); resposta e arquivo de acesso ou portabilidade entregues no portal, com registro no `personal_data_access_log`; fila do encarregado como item de minhas tarefas da P2.28, com responsável e prazo; registro de operações de tratamento (LGPD, art. 37) por finalidade e base legal, montado sobre a classificação de dados por coluna da P0.11 (DAD-29), com categorias de dado, titulares, compartilhamento, retenção, operador e suboperadores, pré-carregado com as operações de fábrica do pacote `sanitation` e editável pelo tenant com versão; coluna classificada como dado pessoal sem operação de tratamento associada aparece como pendência no relatório do encarregado (teste); relatório para o encarregado com pedidos por tipo, situação e prazo, consentimentos por finalidade, operações de tratamento, RIPD e alertas de acesso anômalo a dado pessoal previstos no ADR-0008 e no RNF-41; encarregado de dados do tenant na fonte única do tenant da P1.6 (DAD-32; `lgpd.dpo_contact`, classe d), exibido no portal, na política de privacidade e nos documentos (Res. CD/ANPD 18/2024), com teste de exibição em cada lugar; política de privacidade do tenant publicada e versionada no portal; revogação de consentimento pelo portal, com a finalidade pelo catálogo da P1.3 (DAD-30); item de menu Privacidade, visível ao perfil de fábrica de encarregado de dados da P1.37; migrations do `lgpd` na faixa reservada no §3, depois de `V2_5` e `V2_7` (COE-15); incidente e modelo de RIPD na P3.10; o que a ISO/IEC 27701 pede além da lei (ver ED-74)",
+    "findings_owned": [
+      "JOR-15",
+      "RAS-23"
+    ],
+    "consumed": [
+      "núcleo de LGPD da ED-74 (registro de operações, direitos do titular com o módulo existente)",
+      "v2.17 da P3.10 (vínculo do incidente com o registro de operações)",
+      "JOR-15, RAS-23 atendidos",
+      "usa DAD-29 (P0.11), DAD-32 (P1.6), DAD-30 (P1.3), COD-17 (P0.17), PLT-38 (ADR-0008)",
+      "deixado: o que a 27701 pede além da lei (ED-74)"
+    ]
+  },
+  {
+    "id": "P3.11",
+    "title": "Operação: runbook, plantão, status, error tracking, burn rate",
+    "origin": "17:O1; PLT-23",
+    "size": "M",
+    "deps": [
+      "P0.8",
+      "P0.27"
+    ],
+    "acceptance": "Falha provocada dispara alerta no ambiente local; runbook exercitado localmente; burn rate calculado na homologação local; cada `alert_rule` com `runbook_url` e responsável obrigatórios (teste que recusa regra sem runbook); programa de exercícios de falha (derrubada de réplica, perda do PSP, indisponibilidade da SEFAZ, fila parada, certificado vencido) executado na homologação local e, depois do lançamento, em produção controlada, com resultado registrado; modelo de revisão pós-incidente sem atribuição de culpa, com resumo publicável na página de status da P3.18; revisão trimestral de SLO e orçamento de erro registrada; plantão e error tracking de produção na LC.7",
+    "findings_owned": [
+      "PLT-23"
+    ],
+    "consumed": [
+      "v2.18",
+      "PLT-23 atendido"
+    ]
+  },
+  {
+    "id": "P3.13",
+    "title": "Plano da homologação local e do paralelo real",
+    "origin": "ADR-0001; ADR-0033",
+    "size": "P",
+    "deps": [
+      "P0.30"
+    ],
+    "acceptance": "Critérios da homologação local (GL.2) e plano preliminar do paralelo real, do corte e da volta no lançamento (LC.11, LC.13) aprovados pelo piloto, com o registro da aprovação no diário",
+    "findings_owned": [],
+    "consumed": [
+      "aceite da v2.21 reescrito sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P3.14",
+    "title": "Spring Boot na linha com suporte",
+    "origin": "D4",
+    "size": "M",
+    "deps": [],
+    "acceptance": "Nenhum ambiente roda linha do Spring Boot com suporte do fornecedor encerrado: a linha atual tem fim de suporte em 31/07/2027, data do fornecedor e não do projeto, e a troca de linha entra antes dela; build, testes e varredura de dependências verdes depois da troca; plataformas móveis, contas de loja e atualização remota (ver ED-18)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18 (só remissão)",
+      "deixado: PLT-33 (ED-18)"
+    ]
+  },
+  {
+    "id": "P3.15",
+    "title": "Central Ziip completa",
+    "origin": "ADR-0018; ADR-0025",
+    "size": "G",
+    "deps": [
+      "P2.11",
+      "P3.1",
+      "P3.2",
+      "P3.11",
+      "P1.34"
+    ],
+    "acceptance": "Abas Arrecadação, Pix, LGPD, Regulatório, Infraestrutura com SLO, Radar e Suporte; a aba Regulatório lê a biblioteca de normas da P1.34, com situação, versões, vigência futura e perfil por agência; falha provocada alerta; kit de evidências com hash na trilha; relatório mensal por contrato de disponibilidade (meta de 99,9% no nível Setor Público, medida a partir do lançamento) e de aderência por severidade, com o cálculo da multa; aba Integrações (ver P3.37); aba Estoque (ver ED-58); agenda de obrigações do tenant (ver ED-98)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.17",
+      "v2.18 (só remissões)",
+      "v2.20",
+      "deixados: PLT-20 (P3.37), GES-05 (ED-98), JOR-36 (ED-58)"
+    ]
+  },
+  {
+    "id": "P3.17",
+    "title": "Acesso assistido com consentimento e acesso de emergência",
+    "origin": "ADR-0020",
+    "size": "M",
+    "deps": [
+      "P1.23",
+      "P0.43",
+      "P3.10"
+    ],
+    "acceptance": "core `V10_3`; sem consentimento, acesso negado e auditado; revogação encerra a sessão em até 1 min; revelar documento e exportar bloqueados; cada requisição no `audit_log` do tenant com o id do consentimento; emergência: sem incidente de segurança declarado, sem `PLATFORM_OWNER` ou sem reautenticação com MFA no momento, acesso negado e auditado; qualquer escrita recebe 403; aviso ao tenant enviado pela outbox em até 24 h (teste com relógio); cada requisição no `audit_log` do tenant e em `audit_event` com o id do incidente, e a sessão no registro do incidente",
+    "findings_owned": [],
+    "consumed": [
+      "aceite da v2.21 reescrito sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P3.18",
+    "title": "Página pública de status",
+    "origin": "ADR-0020; RNF-54",
+    "size": "M",
+    "deps": [
+      "P0.27",
+      "P3.11"
+    ],
+    "acceptance": "core `V10_4`; página construída e testada no ambiente local; status muda sozinho com a sonda fora; janela de manutenção publicada com 72 h de antecedência; resumo da revisão pós-incidente da P3.11 publicado na página; publicação em hospedagem separada da produção na LC.7; divulgação responsável de vulnerabilidade e Trust Center (ver P3.38)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18 (só remissão)",
+      "usa o modelo de revisão pós-incidente da P3.11 (PLT-23)",
+      "deixado: PLT-09 (P3.38)"
+    ]
+  },
+  {
+    "id": "P3.19",
+    "title": "Retenção, expurgo e exportação de chamados",
+    "origin": "ADR-0020; RAS-18",
+    "size": "P",
+    "deps": [
+      "P1.23",
+      "P2.12"
+    ],
+    "acceptance": "`purge_at` igual ao fim da vigência do contrato mais 5 anos; ensaio de expurgo com contagem; chamados na exportação de fim de contrato; RIPD do módulo atualizado; manual de atendimento; para tenant de natureza pública (`reg.legal_nature`), expurgo de chamados e eliminação de fim de contrato só com tabela de temporalidade do tenant e listagem de eliminação registradas e aprovadas pelo tenant (Lei 8.159/1991), e execução recusada sem elas (teste por valor de `reg.legal_nature`)",
+    "findings_owned": [
+      "RAS-18"
+    ],
+    "consumed": [
+      "RAS-18 atendido"
+    ]
+  },
+  {
+    "id": "P3.16",
+    "title": "Ensaio de saída de tenant sintético",
+    "origin": "ADR-0018; ADR-0015; RNF-42; ADR-0025",
+    "size": "M",
+    "deps": [
+      "P1.6",
+      "P0.28",
+      "P3.19"
+    ],
+    "acceptance": "Exportação em até 15 dias (10 dias úteis no nível Setor Público), em CSV, JSON ou XML, com manifesto, hash e dicionário de dados gerado do schema; no nível Setor Público, período de consulta somente leitura pós-contrato (core `V10_5`) pelo prazo do contrato, de no máximo 120 dias, antes da carência, com escrita recusada (teste) e a carência contada do fim da consulta; carência de 30 dias contada do fim do contrato, com download da exportação e contestação registradas; eliminação agendada só por `PLATFORM_OWNER` com MFA e cancelável durante a carência; execução antes do fim da carência recusada (teste); contestação registrada na carência suspende a execução, e a resposta do Ziip sai em até 15 dias, com alerta na Central antes do vencimento (teste com relógio); ordem judicial registrada suspende a execução enquanto vigorar (teste); crypto-shredding; eliminação concluída e certificado emitido em até 30 dias após o fim da carência ou da resposta à última contestação, o que ocorrer depois, no máximo 75 dias do fim do contrato (60 sem contestação); certificado com hashes, expiração de backups e de cópias imutáveis e a exceção dos chamados; para tenant de natureza pública, a eliminação usa a tabela de temporalidade e a listagem de eliminação da P3.19 (RAS-18) e é recusada sem elas (teste); restauração seletiva e cópia lógica diária por tenant (ver P3.33)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18 (só remissão)",
+      "usa RAS-18 (P3.19)",
+      "deixado: PLT-03 (P3.33)"
+    ]
+  },
+  {
+    "id": "P3.20",
+    "title": "Portal do consumidor: vínculo, histórico de 120 meses e documentos",
+    "origin": "ADR-0022; ADR-0043; JOR-12",
+    "size": "G",
+    "deps": [
+      "P3.3",
+      "P2.6",
+      "P2.8",
+      "P2.10",
+      "P2.18",
+      "P2.19"
+    ],
+    "acceptance": "Tenant `V8_2`; vínculo pelo código de vinculação da conta mais o CPF ou CNPJ do titular, comparado pelo índice cego; resposta igual para matrícula inexistente, código errado e documento errado; tentativas limitadas por conta, IP e tenant, com bloqueio progressivo, registro e alerta de volume (ADR-0008); uma conta com vários imóveis; troca de titularidade revoga o vínculo e invalida o código; histórico, documentos e vínculo só com conta própria ou gov.br, nunca pelo caminho de convidado da P3.3 (ADR-0043, item 5; teste); contas e pagamentos de 120 meses numa só lista, com a origem de cada documento (emitido pelo Ziip SAN, importado do sistema anterior ou do emissor do intervalo); conta paga com quitação, DANFAG em PDF e XML original; consumidor só vê matrículas vinculadas (teste com dois titulares e troca de titularidade); XML com hash igual ao gravado; todo download no `personal_data_access_log`; excesso de requisições recebe 429; PDF com marca do tenant e estrutura marcada; axe sem violação `serious` ou `critical`; conta em formato acessível a pedido, pelo indicador da P1.3 (RAS-10); alteração de dados pelo consumidor segue o protocolo e a OS interna da P3.3; contrato de adesão e regulamento da prestação do tenant publicados e versionados (NR 11, arts. 18 e 53); na ligação nova e na troca de titularidade, o contrato de adesão vigente é entregue ao usuário titular no portal e no comprovante do protocolo, com a versão entregue e a ciência registradas na unidade consumidora (teste nas duas OS); taxa e documentos da ligação nova (ver ED-34); assinatura eletrônica dos documentos (ver P3.34); autenticidade pública da fatura (ver P3.35)",
+    "findings_owned": [
+      "JOR-12"
+    ],
+    "consumed": [
+      "v2.14",
+      "v2.18 (só remissões)",
+      "ADR-0043 item 5",
+      "JOR-12 atendido",
+      "usa RAS-10 (P1.3)",
+      "deixados: PLT-07 (P3.34), PLT-11 (P3.35)"
+    ]
+  },
+  {
+    "id": "P3.23",
+    "title": "Ambiente de demonstração permanente e ensaio de POC do P3",
+    "origin": "ADR-0023; ED-01",
+    "size": "M",
+    "deps": [
+      "P0.23",
+      "P0.27",
+      "P1.25",
+      "P2.9"
+    ],
+    "acceptance": "Ambiente local de demonstração separado da homologação local (perfil de demonstração da P0.27); versão na nuvem criada pela IaC na LC.2, antes da primeira POC de licitação, que exige o sistema em nuvem; tenant de demonstração com pelo menos 10 mil unidades fictícias geradas pela massa sintética, sem dado pessoal real (documentos gerados marcados como sintéticos; teste no gerador); recriação do zero por script, com tempo medido; ensaio cronometrado contra o tempo de preparo que os editais de referência concedem (5 e 7 dias úteis), com o resultado por item registrado na matriz viva; critério de ensaio do P3: pelo menos 50 de 162 pontos no roteiro da VISAN e seções 2.4 e 2.5 do SAMAE sem falha; relatório de cobertura (requisito, tarefa, teste e item de roteiro) anexado ao aceite",
+    "findings_owned": [],
+    "consumed": [
+      "aceite da v2.21 reescrito; meta do P3 tratada como critério de ensaio (ADR-0044)"
+    ]
+  },
+  {
+    "id": "P3.24",
+    "title": "Débito automático FEBRABAN 150 para autorizações legadas, só se a P0.30 encontrar optantes",
+    "origin": "ADR-0028 (f); ED-27; PLT-27, RAS-06",
+    "size": "M (1,5)",
+    "deps": [
+      "P3.1",
+      "P1.1",
+      "P1.2"
+    ],
+    "acceptance": "Antes de iniciar, parecer jurídico sobre o enquadramento da cobrança de água e esgoto como convênio de prestação de serviço público (primeiro parecer da PD-10), registrado no diário; se enquadrar, o FEBRABAN 150 legado perde objeto no corte do lançamento e a tarefa passa a ser a campanha de conversão dos optantes para o Pix Automático da P4.5, com o consentimento guardado; caso contrário, e só se a P0.30 tiver encontrado optantes: `V6_4` (ou sequência global, se executada depois da P3.12); só entram optantes cujo banco do pagador seja o mesmo do recebedor, condição levantada por optante na P0.30; autorizações legadas importadas do legado e conferidas por matrícula; remessa com registros B, C, E e F gerada e retorno processado com baixa idempotente; reenvio e cancelamento de optante; autorização nova recusada (só Pix Automático, na P4.5); `pay.legacy_debit_enabled` (classe d), com a data de desligamento deduzida da regra vigente do Banco Central, e não digitada, e um teste por regra: 01/01/2027 como fim da adequação ao Pix Automático para convênios de prestação de serviços públicos (Res. CMN 5.278/2025, contas de depósitos e conta-salário; Res. BCB 544/2025, contas de pagamento pré-pagas) e 01/07/2027 como vigência do novo regime geral do débito automático (Res. BCB 565/2026); a ED-27 e a P4.5 seguem a mesma data parametrizada; conferido no paralelo local (GL.2) com arquivos de teste, sem envio ao banco, e exigido no corte do lançamento (LC.13); sem optantes, a tarefa é cancelada com registro no diário e a parte FEBRABAN 150 fica na ED-27; regras do Pix Automático e da cobrança híbrida (ver P3.2)",
+    "findings_owned": [
+      "PLT-27",
+      "RAS-06"
+    ],
+    "consumed": [
+      "v2.18 (com a nota de 22/10/2026 sobre as datas do Banco Central)",
+      "PLT-27, RAS-06 atendidos",
+      "deixado: GES-15 (P3.2)"
+    ]
+  },
+  {
+    "id": "P3.25",
+    "title": "GIS-06: tiles vetoriais, simbologia padrão e mapa web de consulta",
+    "origin": "ADR-0034; ED-52",
+    "size": "G (4)",
+    "deps": [
+      "P2.21",
+      "P2.22",
+      "P2.23",
+      "P0.14",
+      "P0.36"
+    ],
+    "acceptance": "`V13_6` (ou sequência global, se executada depois da P3.12); aceite da GIS-06: `/api/v1/gis/tiles/{layer}/{z}/{x}/{y}.mvt` com `ST_AsMVT`; tile e cache nunca servidos a outro tenant (teste com a chave de cache); invalidação em até 1 min após aprovação de pacote; estilo gerado da fonte única com o padrão Ziip por tipo e estado e override do tenant sem código; sprite e estilos publicados com os símbolos da P1.30 e dos pacotes ativos do tenant, recolorizados pelos tokens `map-*` nos temas claro e escuro, e escolha de símbolo da biblioteca por tipo e estado na tela de estilos; camadas, rótulos, mapas base, cliente WMS, identificação, medição e pesquisas por coordenada UTM, atributo e endereço (E2E sobre SG-824 a SG-836, SG-888, TR-1012 a TR-1024); axe sem violação séria ou crítica nos temas claro e escuro; metas de tile medidas e propostas ao RNF; tiles de imóveis e ligações só para quem tem `gis.view-personal` (teste)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.13"
+    ]
+  },
+  {
+    "id": "P3.26",
+    "title": "GIS-07: importador do cadastro técnico (DWG via DXF, DXF, SHP, GPKG)",
+    "origin": "ADR-0034; ADR-0028 (b); ED-55",
+    "size": "G (4)",
+    "deps": [
+      "P1.9",
+      "P1.20",
+      "P1.25",
+      "P2.21",
+      "P2.22"
+    ],
+    "acceptance": "`V13_7` (ou sequência global); aceite da GIS-07: DWG convertido pelo ODA File Converter na etapa assistida, com hash do original e do DXF; staging sem tocar no cadastro; arquivo sem SRS recusado ou com escolha registrada; SAD69 e Córrego Alegre convertidos pela grade do IBGE; mapeamento de camadas salvo por cliente e perfis Corsan Anexo A e genérico com amostras sintéticas; limpeza topológica com contagem antes e depois; relatório ISO 19157 no pacote; publicação só por pacote `IMPORT` revisado; 50 km sintéticos em até 2 h; reimportação sem duplicar; camadas de contexto importadas; DGN v8 aceito só depois da conversão assistida para DWG ou DXF, com hash do original e do convertido; rede real do piloto (redes, peças e estruturas) importada na homologação local, com ligações, ramais e imóveis só sintéticos ou anonimizados com coordenada deslocada ou agregada por quadra, e lote com camada pessoal sem o método de anonimização registrado recusado (teste; ADR-0033)",
+    "findings_owned": [],
+    "consumed": [
+      "aceite da v2.21 reescrito sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P3.28",
+    "title": "Revisão por vazamento oculto e aferição de hidrômetro",
+    "origin": "ADR-0038; NR 11 art. 38; levantamento 20f (LEG-09, LEG-23)",
+    "size": "M",
+    "deps": [
+      "P2.20",
+      "P1.31",
+      "P2.31"
+    ],
+    "acceptance": "OS de revisão e OS de aferição com laudo, como tipos do núcleo de OS da P1.31; desconto, prazo, âncora do prazo, limite de faturas em 12 meses e esgoto pela média conforme os parâmetros `leak.*` e `meter.test_*` escolhidos pelo tenant; valores de fábrica dos perfis ARIS, AGIR e ARESC lidos dos perfis regulatórios carregados pela P2.31 (RAS-01); teste por perfil; a revisão parte da OS `BILL_REVIEW` da P2.20; agenda, vistoria e fases (ver ED-23)",
+    "findings_owned": [],
+    "consumed": [
+      "usa RAS-01 (P2.31)",
+      "fronteira mantida: ED-23 amplia"
+    ]
+  },
+  {
+    "id": "P3.29",
+    "title": "Devolução de pagamento e fila de pagamentos não identificados",
+    "origin": "20c (lacuna 1; ARR-04, ARR-07 a ARR-09, ARR-21; §2.4); 20b (FAT-44, §5.1); ADR-0038; ADR-0039; CAD-79",
+    "size": "M",
+    "deps": [
+      "P3.1",
+      "P1.31",
+      "P3.2"
+    ],
+    "acceptance": "`V6_5`; devolução por OS `REFUND_REQUEST` ligada ao pagamento de origem, com aprovação dupla acima da alçada e efeito no encerramento: crédito na conta seguinte ou devolução bancária conforme `pay.refund_mode` (padrão: escolha do usuário); tipo da devolução (pagamento em duplicidade, cobrança indevida), com devolução em dobro da cobrança indevida conforme `bill.undue_charge_double_refund` e justificativa obrigatória para afastá-la; destino da devolução por `pay.refund_destination` (classe b): devolução Pix ao pagador de origem (`PIX_RETURN_TO_PAYER`) quando o pagamento original foi Pix e o PSP a oferecer, chave Pix do titular só do tipo CPF ou CNPJ e só com documento igual ao do titular, ou conta bancária com validação de titularidade; dado de destino cifrado e com retenção definida; devolução sem pagamento de origem ou com valor divergente fica pendente com motivo; segundo pagamento da cobrança híbrida chega da P3.2 como duplicidade (RAS-19); fila de pagamentos não identificados e não classificados sem cliente fictício, tratada por OS interna `PAYMENT_IDENTIFICATION`, que vincula o pagamento a unidade e documento e o devolve à classificação da P3.1; reenvio da OS não duplica crédito nem devolução; teste por opção de `pay.refund_mode` e de `pay.refund_destination` e por motivo de pendência; relatório na P3.22; usada no paralelo (GL.2)",
+    "findings_owned": [
+      "CAD-79"
+    ],
+    "consumed": [
+      "v2.15 (aceite de origem)",
+      "v2.18",
+      "CAD-79 atendido",
+      "usa RAS-19 (P3.2)"
+    ]
+  },
+  {
+    "id": "P3.30",
+    "title": "Unidade organizacional e escopo por área",
+    "origin": "ADR-0040; 20d (§4, lacuna 3; SEG-03, SEG-04, ATD-17, ATD-18, OS-25)",
+    "size": "M",
+    "deps": [
+      "P0.13",
+      "P1.3",
+      "P1.31",
+      "P2.28"
+    ],
+    "acceptance": "`V1_8`; unidades organizacionais hierárquicas por tenant, ligadas a áreas (localidade, setor, rota); escopo do usuário por unidade e área aplicado por filtro obrigatório de repositório em toda leitura e escrita de protocolo, OS, unidade consumidora e conta (teste: usuário com escopo na localidade A não lê nem altera registro da localidade B; o RLS continua só para o tenant); o mesmo filtro vale para a caixa de minhas tarefas da P2.28, inclusive para item delegado (teste: item da localidade B não aparece a quem só tem escopo na A); ADMIN do tenant só concede escopo e permissão que possui (teste); trâmite do protocolo entre unidades com as OS acompanhando e bloqueio quando há OS programada; permissões nomeadas `protocol:transfer-any-unit`, `so:close-retroactive` e `so:close-without-activities` no catálogo `recurso:ação` da P0.13 (DAD-31); perfis compostos e restrição negativa na ED-06; ganchos de integração para compras, RH e orçamento (ver ED-62)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.15 (aceite de origem)",
+      "v2.18",
+      "usa DAD-31 (P0.13), JOR-05 e PLT-13 (P2.28)",
+      "deixado: GES-23 (ED-62)"
+    ]
+  },
+  {
+    "id": "P3.33",
+    "title": "Restauração seletiva de um tenant e desfazer de operação em massa",
+    "origin": "22c; PLT-03",
+    "size": "G (a estimar)",
+    "deps": [
+      "P0.28",
+      "P3.16"
+    ],
+    "acceptance": "Restauração de um único tenant a um instante anterior sem afetar os demais do cluster: PITR restaurado em instância lateral, extração do schema do tenant (`pg_dump -n`, ou por `tenant_id` no schema compartilhado), comparação com o estado atual e substituição ou mesclagem em janela, com aprovação do tenant nos moldes do consentimento do ADR-0020 e registro na trilha; execução só por `PLATFORM_OWNER` com step-up; cópia lógica diária do schema de cada tenant em armazenamento com retenção imutável, que também alimenta a exportação de fim de contrato da P3.16 e o pacote de reversão da ED-04, com retenção pelo RNF-43 (expiração em até 35 dias) e crypto-shredding (escopo da LC.5); operação em massa reversível em duas etapas (simulação e aplicação), com `run_id` e remoção por execução; correção de efeito de negócio por OS inversa (ADR-0039); runbook; ensaio documentado com tenant sintético, com o RTO por tenant registrado, sem meta antes da LC.3; RNF novo de RTO de restauração de um tenant; teste de isolamento durante a restauração (os demais tenants seguem lendo e gravando sem alteração)",
+    "findings_owned": [
+      "PLT-03"
+    ],
+    "consumed": [
+      "PLT-03 atendido",
+      "consumidores: GL.3 e LC.3"
+    ]
+  },
+  {
+    "id": "P3.34",
+    "title": "Assinatura eletrônica dos documentos do consumidor e do tenant",
+    "origin": "22c; 13 (AS-01, AS-03, AS-04); PLT-07",
+    "size": "G (a estimar)",
+    "deps": [
+      "P3.20"
+    ],
+    "acceptance": "Serviço de assinatura com interface `DocumentSigner` e os três níveis da Lei 14.063/2020: simples (aceite com evidências: hash do texto, data, IP e autenticação, sobre o `document_acceptance` da P1.24), avançada e qualificada; nível mínimo por tipo de documento e por tenant (`sign.min_level.<document_type>`, classe d: `SIMPLE`, `ADVANCED`, `QUALIFIED`), porque a lei atribui a cada ente a definição e sua aplicação entre privados não foi verificada; documentos candidatos: contrato de adesão (P3.20), termo de parcelamento (P4.1), laudo e aceite da OS em campo (ED-19, ED-23), autodeclaração da tarifa social (P1.5) e autorização de débito; assinatura qualificada por certificado em nuvem de PSC credenciado (`sign.psc_provider`, classe d), em PAdES, com a política de assinatura conferida na tabela do DOC-ICP-15.03 na implementação; carimbo do tempo de ACT credenciada pelo protocolo da RFC 3161 (`sign.timestamp_authority`, classe d); verificação pública por código QR que aponta para a página de validação do Ziip e para o VALIDAR do ITI; a assinatura avançada do gov.br não é caminho, por ser restrita a gestor público e a serviço em domínio gov.br; documentos de entrega ao tenant (DPA, contrato) usam o serviço só por decisão do dono; versão Flyway própria reservada no §3 (COE-15); um teste por nível",
+    "findings_owned": [
+      "PLT-07"
+    ],
+    "consumed": [
+      "PLT-07 atendido",
+      "consumidores: P4.1, ED-19, ED-23, ED-38"
+    ]
+  },
+  {
+    "id": "P3.35",
+    "title": "Proteção contra cobrança falsa: autenticidade pública da fatura e canais oficiais",
+    "origin": "22c; ADR-0043; PLT-11",
+    "size": "M (a estimar)",
+    "deps": [
+      "P3.20",
+      "P2.8"
+    ],
+    "acceptance": "Página pública `GET /api/v1/public/documents/verify` que confirma a autenticidade de uma fatura pelo código curto ou QR impresso na conta, conferindo valor, vencimento, recebedor e hash do documento, sem expor dado pessoal (teste de que a verificação não revela titular, endereço nem documento); `portal.verify_enabled` (classe d, padrão ligado); código de verificação no leiaute da conta da P2.8; lista de canais oficiais do tenant (`portal.official_channels`, classe d, a partir de `branding.contact`) na conta, no portal e nos e-mails; no Pix, nome do recebedor e CNPJ conferíveis no aplicativo do banco, com orientação impressa e teste de que o recebedor cadastrado no PSP é a razão social do tenant; texto padrão nos canais informando que o tenant nunca pede pagamento por link avulso; alerta de golpe configurável no portal; denúncia de golpe pelo portal, que alimenta alerta na Central; telemetria de verificações na aba Segurança da Central; tentativas de verificação limitadas como no caminho de convidado da P3.3 (ADR-0043, item 4); política DMARC rígida e remetente fixo por tenant (ver P3.5)",
+    "findings_owned": [
+      "PLT-11"
+    ],
+    "consumed": [
+      "PLT-11 atendido",
+      "usa o código de vinculação da P2.8 e as proteções do ADR-0043"
+    ]
+  },
+  {
+    "id": "P3.36",
+    "title": "Central de notificações do usuário e preferências",
+    "origin": "22c; ADR-0020; PLT-12",
+    "size": "M (a estimar)",
+    "deps": [
+      "P1.9",
+      "P1.18",
+      "P1.3",
+      "P1.38"
+    ],
+    "acceptance": "Central única de avisos por usuário dentro da aplicação (sino, lista, lido e não lido), alimentada pela outbox da P1.9 e pelo catálogo de eventos da P1.38 (evento fora do catálogo recusado); registro único de preferências por canal (aplicação, e-mail, push) e por finalidade, em `user_preferences` da P1.18, lido pela P3.5 e pela ED-41; resumo diário ou imediato (`notify.digest_default`, classe d) e silêncio por período; categorias obrigatórias que não se desligam (segurança, aprovação pendente, aviso legal) por `notify.mandatory_categories` (classe c, piso da plataforma), com teste de que aviso legal não é desligável; preferência por finalidade do consumidor ligada ao contato verificado e ao consentimento com FK da P1.3 (CAD-84, DAD-30); leitura registrada; avisos de revogação e de sessão de acesso assistido (ADR-0020); página inicial (ver P3.39); alertas do tenant (ver ED-07)",
+    "findings_owned": [
+      "PLT-12"
+    ],
+    "consumed": [
+      "PLT-12 atendido; dona do registro de preferências (COE-19)",
+      "usa CAD-84 e DAD-30 (P1.3), JOR-20 (P1.38)"
+    ]
+  },
+  {
+    "id": "P3.5",
+    "title": "Notificações com prova de entrega",
+    "origin": "17:P4; CAD-99, PLT-10, RAS-30",
+    "size": "M",
+    "deps": [
+      "P1.9",
+      "P2.5",
+      "P3.36",
+      "P2.30",
+      "P1.38"
+    ],
+    "acceptance": "Aviso de corte sem prova de entrega bloqueia a OS (teste); prova de entrega registrada por canal a partir dos eventos `delivered`, `bounced` e `complained` da interface de e-mail da P0.45; mensagens montadas pelo motor de modelos da P2.30 e disparadas por eventos do catálogo da P1.38; preferências por canal e finalidade lidas da P3.36, com aviso legal fora do alcance da preferência; e-mail por tenant: domínio de envio do tenant com SPF, DKIM e DMARC alinhados (`msg.email_from_domain`, classe d), reputação, métricas, pausa e supressão isoladas por tenant (`msg.suppression_policy`, classe b), de modo que um tenant com lista ruim não interrompe o envio dos demais (teste), e requisitos de remetente em massa de Gmail, Yahoo e Microsoft atendidos (SPF, DKIM, DMARC e taxa de reclamação abaixo de 0,10%); provedor de e-mail decidido na LC.2, com o recurso de tenants do Amazon SES em `sa-east-1` como referência; rejeição ou reclamação marca o contato como inválido no cadastro da P1.3, abre pendência e conta como aviso não entregue na regra de prova; canais ligados por `msg.channels_enabled` (classe d); remetente autenticado: provedor de SMS ou voz só aceito com identificação da pessoa jurídica do tenant (MP 1.396/2026; acompanhar a conversão em lei), regra aplicada pela ED-41; alerta preventivo de consumo anormal: no fechamento da leitura, quando a crítica da P2.5 aponta consumo acima de `alert.high_consumption_pct` da média, aviso ao usuário antes da fatura pelos canais de `alert.channels` (classe d), com orientação de teste de vazamento e atalho para pedir revisão por protocolo (teste com a crítica disparada e sem disparo); SMS, WhatsApp, push e custo por mensagem (ver ED-41); alerta por telemetria de fluxo contínuo (ver ED-17)",
+    "findings_owned": [
+      "CAD-99",
+      "PLT-10",
+      "RAS-30"
+    ],
+    "consumed": [
+      "v2.18",
+      "CAD-99, PLT-10, RAS-30 atendidos",
+      "usa CAD-84 (P1.3), JOR-06 (P2.30), JOR-20 (P1.38) e o registro de preferências da P3.36 (COE-19)",
+      "deixado: GES-19 (ED-41)"
+    ]
+  },
+  {
+    "id": "P3.4",
+    "title": "Corte e religação: regras e bloqueios",
+    "origin": "R7 (v1); G9; ADR-0039; RAS-12",
+    "size": "G",
+    "deps": [
+      "P2.5",
+      "P1.31",
+      "P1.36",
+      "P2.30",
+      "P2.31",
+      "P3.5"
+    ],
+    "acceptance": "Tenant `V9_2` com os bloqueios de corte, a seleção mínima do aviso, a prova de entrega e os motivos de não geração; a `V8_1` do protocolo é da P1.36 e o modelo de OS (`V9_1`) é da P1.31; corte e religação como operações do núcleo de OS da P1.31; casos da v1 (aviso em 15/10 com corte a partir de 16/11; 19/11 e 20/11 bloqueados; ADASA; sem prova, religação sem taxa); vedações para todos os motivos; corte de emergência exige justificativa e foto; seleção mínima do aviso e do documento de cobrança por idade e valor do débito, situação da ligação e classes protegidas (usuários essenciais e vulneráveis do cadastro da P1.3, CAD-80), sem conta em revisão ou contestada; aviso pelo modelo da P2.30, com prova de entrega da P3.5; motivo de não geração registrado por unidade, com relatório na P3.22; aviso pós-corte (`cut.post_cut_notice_hours`); teto de idade do débito por agência (ARIS: 120 dias) e demais regras por agência lidos dos perfis da P2.31; compensação automática por corte indevido ou atraso de religação conforme a fórmula escolhida (`rec.undue_cut_compensation`); revalidação do corte na execução, inclusive offline (quitação ou parcelamento, contestação, vedações, aviso válido, classe protegida), com a OS cancelada se falhar (classe a), e a execução em campo na ED-20; OS de religação gerada pelo pagamento (`rec.auto_order_on_payment`, `rec.release_condition`); ligação cortada que volta a registrar consumo não muda de situação sozinha: gera OS de fiscalização (possível religação à revelia, NR 11, art. 42, V), e a situação só muda pelo encerramento dela (ADR-0039); vedação federal de suspensão iniciada de sexta a domingo, em feriado ou na véspera (Lei 14.015/2020) e vedação estadual de SC (Lei SC 11.959/2001, na redação da Lei SC 17.780/2019): sem corte entre as 8h de sexta-feira e as 8h de segunda-feira nem entre as 8h do dia útil anterior a feriado ou ponto facultativo e as 8h do primeiro dia útil seguinte, ressalvada ordem judicial; pontos facultativos em `cal.holidays` e fuso do calendário operacional do tenant da P0.19 (PLT-14), com a janela das 8h por UF; teste de corte às 7h de segunda-feira e em ponto facultativo, ambos recusados; um teste por regra e por opção de parâmetro; prazo do protocolo por especificação, motor de prazo com feriados e prorrogação registrada (ver P1.36); ação de cobrança completa (ver P4.1); medida excepcional por área (ver ED-91)",
+    "findings_owned": [
+      "RAS-12"
+    ],
+    "consumed": [
+      "v2.14",
+      "v2.15 (com o complemento de 15/10/2026, 20c COB-12)",
+      "v2.18",
+      "RAS-12 atendido",
+      "usa CAD-80 (P1.3), COE-10 (P1.31), JOR-06 (P2.30), PLT-14 (P0.19), RAS-01 (P2.31)",
+      "deixados: `V8_1`, prazo do protocolo e prorrogação (P1.36), CAD-74 (ED-91)"
+    ]
+  },
+  {
+    "id": "P3.21",
+    "title": "Marca do tenant no portal e nos e-mails",
+    "origin": "ADR-0016",
+    "size": "P",
+    "deps": [
+      "P1.19",
+      "P3.3",
+      "P3.5"
+    ],
+    "acceptance": "Portal e e-mails com nome, logo e cor do tenant (marca da P1.19); atribuição operado com conforme o pacote contratado; teste visual do portal e de um e-mail por tema",
+    "findings_owned": [],
+    "consumed": [
+      "aceite da v2.21 reescrito sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P3.22",
+    "title": "Relatórios operacionais nativos: núcleo e cerca de 20 relatórios",
+    "origin": "ADR-0027; ADR-0025 (RNF-71); ED-45",
+    "size": "G",
+    "deps": [
+      "P0.28",
+      "P2.1",
+      "P2.5",
+      "P2.7",
+      "P2.20",
+      "P3.1",
+      "P3.4",
+      "P1.12"
+    ],
+    "acceptance": "`V15_1`; núcleo declarativo sobre views, com filtros, ordenação, agrupamento, exportação PDF, XLSX e CSV, agendamento pelo `worker` e permissão por papel; exportação e relatório agendado pela regra única da P1.12 (permissão `*:export`, máscara pelo teto, registro no `personal_data_access_log`, limite de linhas e entrega assíncrona em Arquivos gerados, JOR-29); leitura na réplica de leitura (no ambiente local, réplica local se configurada; a do RDS a partir da LC.3) ou, sem ela, no primário com `statement_timeout`; relatórios: arrecadação diária (POC-58), pagamentos não identificados, em duplicidade (POC-59) e por data de remessa, pagamento, crédito e banco (POC-60), situação da importação do retorno, faturamento sucinto e detalhado por categoria e faixa, fechamento do ciclo por grupo, contas emitidas, canceladas e retificadas, leituras retidas e ocorrências de leitura, histograma de consumo por faixa (POC-56), ligações e economias por situação e categoria, valores a receber por tipo de unidade (POC-57), pendências por usuário (POC-65), aptos ao corte e notificações emitidas, motivos de não geração do aviso (P3.4), serviços por protocolo com tempos (POC-64), tarifa social e isenções, NFAg-e autorizadas, rejeitadas e em contingência, e devoluções e pagamentos não identificados (P3.29); relatório mensal de reclamações do art. 54 da NR 11, por mês, motivo e sistema, com o percentual não atendido, sobre o motivo classificado obrigatório no encerramento do protocolo da P1.36; o núcleo recebe os relatórios do módulo de certificações (mapa de cláusulas, pendências e vencimentos) registrados pela P3.31; cada relatório com teste de conteúdo sobre massa sintética; gerado em até 2 min na massa da P2.9 (RNF-71); usados no paralelo (GL.2); relatórios ausentes da 23d §5.2 (ver ED-46); cobrança por disponibilidade (ver ED-88); índice de tarifa social, lista positiva e pacote por agência (ver ED-97)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.15",
+      "v2.17",
+      "v2.18 (só remissões)",
+      "usa JOR-29 (P1.12) e o motivo classificado da P1.36",
+      "deixados: CAD-87 (ED-88), CAD-92 e GES-04 (ED-97), JOR-39 (ED-46)"
+    ]
+  },
+  {
+    "id": "P3.41",
+    "title": "Registro único de indicadores e metas",
+    "origin": "ED-48 (v2.21); ED-77 (v2.17); JOR-19",
+    "size": "a estimar",
+    "deps": [
+      "P0.19",
+      "P3.22"
+    ],
+    "acceptance": "Registro único de indicadores por tenant: código, nome, definição, fórmula versionada, variáveis com fonte declarada (view do núcleo de relatórios da P3.22 ou entrada manual com responsável), unidade, periodicidade, meta por período e por área, grau de confiança da informação e contexto, de modo a comportar a ficha da ED-77; fechamento por período que congela o valor com a versão da fórmula e das variáveis, com reabertura só com motivo e registro na trilha (teste: recálculo não altera período fechado); mudança de fórmula gera nova versão com vigência, sem reescrever o histórico; indicador com variável sem fonte recusado (teste); semáforo por faixa da meta; parâmetros de meta e de faixa com vigência pelo motor da P0.19; marcação de indicador por perfil, lida pela página inicial da P3.39; leitores só leem e não gravam definição (teste): objetivos da P3.31, página inicial da P3.39, catálogo SINISA e painel da ED-48, fichas ISO 24510, ISO 24512 e NR 9 da ED-77, painéis da ED-49 e sala de situação da ED-93; tabelas na faixa `V15_x` do `reporting` (catálogo de indicadores, metas e fechamentos), com reserva no §3; macromedição e balanço por setor (ver ED-85)",
+    "findings_owned": [
+      "JOR-19"
+    ],
+    "consumed": [
+      "parte do aceite da ED-48 (indicadores parametrizáveis com metas, fechamento e semáforo)",
+      "v2.17 da ED-48 (ficha com variáveis, contexto e grau de confiança)",
+      "JOR-19 atendido; fronteira COE-11",
+      "deixados: catálogo SINISA e painel (ED-48), macromedição e balanço (ED-85)"
+    ]
+  },
+  {
+    "id": "P3.27",
+    "title": "GIS-08: temáticos, precisão, OS no mapa e relatórios do cadastro",
+    "origin": "ADR-0034; ED-52",
+    "size": "G (2)",
+    "deps": [
+      "P3.25",
+      "P2.5",
+      "P3.1",
+      "P3.4",
+      "P3.22"
+    ],
+    "acceptance": "`V13_8` (ou sequência global); aceite da GIS-08: temáticos configuráveis com legenda automática e filtro por categoria, com os cenários SG-873 a SG-883 e TR-1060 a TR-1063 sobre massa sintética; temático e relatório de precisão separando levantado na meta, fora da meta e aproximado; OS no mapa (SG-491, TR-534); seleção por polígono com estatísticas (TR-1059); relatório de extensão por domínio, função, material, DN, década e setor em qualquer data, pelo núcleo da P3.22; fora do backoffice autenticado, temático e relatório com imóveis ou ligações só agregados por quadra ou setor com no mínimo `gis.public_aggregation_min_units` imóveis (piso 5, classe c), com célula de 4 imóveis não publicada e nenhum ponto de imóvel ou ligação (teste); rede e ativos publicáveis",
+    "findings_owned": [],
+    "consumed": [
+      "aceite da v2.21 reescrito sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P3.31",
+    "title": "Riscos, objetivos, auditoria interna, análise crítica, competência, fornecedor e requisitos legais",
+    "origin": "ADR-0041; 21a C02 a C14, CQ-03, CQ-05, CQ-06, CQ-07; GES-20, JOR-18",
+    "size": "G (a estimar)",
+    "deps": [
+      "P2.25",
+      "P3.22",
+      "P3.30",
+      "P3.15",
+      "P3.41"
+    ],
+    "acceptance": "`V21_3`, com reserva no §3; riscos e oportunidades com critério declarado pelo tenant; risco e continuidade do prestador: tipo incidente operacional na ocorrência da P2.25 (falta de energia na ETA, rompimento de adutora, contaminação) e incidente cibernético, com comunicação à agência pelo canal de `reg.incident_report_channel`, plano de contingência do atendimento em modo degradado e eventos de resiliência climática no registro de riscos; vínculo com a interrupção programada ou de emergência da ED-35 quando ela existir; objetivos ligados a indicadores do registro da P3.41 (JOR-19); programa e achados de auditoria interna, com o relatório de auditoria pelo motor de modelos da P2.30; análise crítica pela direção; treinamento e competência, com o registro de competência alimentando a verificação de habilitação dos tipos de OS da P1.31 (OPE-14); cadastro mínimo de fornecedor (material, serviço, laboratório externo e empreiteira) criado aqui, com avaliação de fornecedor sobre esse cadastro (teste com um fornecedor de cada tipo); a ED-37 estende o cadastro para empreiteiras e a ED-58 e a ED-51 o leem; requisitos legais por tenant com avaliação de conformidade e catálogo de fábrica do pacote `sanitation`; painel de pendências e vencimentos, cujos itens entram em minhas tarefas da P2.28; relatórios do módulo no núcleo da P3.22; matriz de riscos contratual (ver ED-96); Plano de Segurança da Água (ver ED-79)",
+    "findings_owned": [
+      "GES-20",
+      "JOR-18"
+    ],
+    "consumed": [
+      "v2.17 (aceite de origem)",
+      "v2.18",
+      "GES-20, JOR-18 atendidos",
+      "usa JOR-06 (P2.30), JOR-19 (P3.41), OPE-14 (P1.31)",
+      "deixado: matriz de riscos contratual GES-02 (ED-96)"
+    ]
+  },
+  {
+    "id": "P3.12",
+    "title": "Fim do `outOfOrder`",
+    "origin": "17:D1; G10a; COD-14",
+    "size": "P",
+    "deps": [
+      "P1.14",
+      "P3.22",
+      "P3.29",
+      "P3.30",
+      "P3.31"
+    ],
+    "acceptance": "Executada depois das tarefas que usam versão de faixa (`V15_1` da P3.22, `V6_5` da P3.29, `V1_8` da P3.30 e `V21_3` da P3.31); `outOfOrder(true)` do `TenantMigrator` mantido enquanto houver versão de faixa pendente e retirado nesta tarefa; sequência global a partir de `V100`; CI recusa versão menor ou igual à maior publicada (teste); migrations de tenant aplicadas pelo job `migrate` em ondas, com quarentena do tenant cuja migração falha, no lugar da aplicação em sequência na subida (`DatabaseMigrator`), com teste de um tenant em falha que não bloqueia os demais",
+    "findings_owned": [
+      "COD-14"
+    ],
+    "consumed": [
+      "COD-14 atendido",
+      "ordem pela COE-15"
+    ]
+  },
+  {
+    "id": "P3.32",
+    "title": "Qualidade cadastral contínua",
+    "origin": "22a; CAD-98",
+    "size": "G (a estimar)",
+    "deps": [
+      "P1.3",
+      "P2.23",
+      "P3.22",
+      "P2.8"
+    ],
+    "acceptance": "Regras contínuas de qualidade do cadastro comercial por `quality.rules` (classe d, regras e limiares por tenant): documento ausente, inválido ou com situação irregular; contato não verificado; categoria incompatível com o CNAE; economias incompatíveis com a área construída; unidade ativa sem hidrômetro ou sem leitura em N ciclos; hidrômetro vencido; endereço sem coordenada ou fora do setor; titular possivelmente falecido; duplicidades; unidade sem usuário; conta não entregue (devolução, endereço não localizado) registrada pela P2.8 (JOR-35); pontuação por rota e setor, indicador de completude e tendência sobre o núcleo da P3.22; fila de correção que gera OS de lote (ADR-0039), sobre a qual a ED-16 executa as campanhas de recadastramento e a ED-24 a fiscalização por critério; teste de que a correção só ocorre por OS; teste de cada regra sobre massa sintética",
+    "findings_owned": [
+      "CAD-98"
+    ],
+    "consumed": [
+      "CAD-98 atendido; fronteira COE-19 com a ED-16",
+      "usa JOR-35 (P2.8)"
+    ]
+  },
+  {
+    "id": "P3.39",
+    "title": "Início por perfil: página inicial e agenda",
+    "origin": "23d; JOR-04, JOR-30",
+    "size": "a estimar",
+    "deps": [
+      "P1.37",
+      "P2.28",
+      "P3.36",
+      "P3.41"
+    ],
+    "acceptance": "Item de menu Início; página inicial por perfil de fábrica da P1.37, com os itens de minhas tarefas da P2.28 filtrados pelo escopo do usuário, os avisos da central da P3.36, atalhos do perfil e no máximo quatro indicadores do papel lidos do registro da P3.41; um teste por perfil de fábrica com a composição esperada; os alertas do tenant entram quando a ED-07 existir, que estende esta página; agenda que só lê, sobre um contrato de tipo de evento de agenda que cada fonte registra: nascem registrados o cronograma de faturamento da P2.5 e as auditorias da P3.31, e entram depois, pela tarefa de cada fonte, a programação de OS (ED-36), as interrupções programadas (ED-35), as calibrações (ED-51), as preventivas (ED-56) e as obrigações (ED-98); a agenda não cria nem altera evento (teste) e exibe só tipos registrados, sem erro quando uma fonte não existe",
+    "findings_owned": [
+      "JOR-04",
+      "JOR-30"
+    ],
+    "consumed": [
+      "JOR-04, JOR-30 atendidos",
+      "usa JOR-01 (P1.37), JOR-05 (P2.28), JOR-19 (P3.41)",
+      "deixados: alertas (ED-07) e tipos de agenda das fontes posteriores"
+    ]
+  },
+  {
+    "id": "P3.37",
+    "title": "Hub de integrações: saúde, credenciais, reprocessamento e teste de contrato",
+    "origin": "22c; 17 §2; PLT-20",
+    "size": "G (a estimar)",
+    "deps": [
+      "P0.45",
+      "P3.15",
+      "P2.26"
+    ],
+    "acceptance": "Porta `ExternalConnector` comum a todo conector externo (PSP, bancos, SEFAZ e NFS-e, WhatsApp, e-mail, SMS, birôs, CENPROT, gráfica, ERP); credenciais por tenant no cofre da P0.45, com rotação e alerta de expiração (`integration.<name>.credential_ref`, classe d); teste de conexão; limites de taxa e circuito aberto; política padrão de tempo limite e de repetição; idempotência; fila de falhas com tela de reprocessamento de mensagens; correlação por `correlation_id`; log com carga mascarada; modo por tenant e integração (`integration.<name>.mode`: `SIMULATED`, `SANDBOX`, `PRODUCTION`, classe d, produção só com aceite); painel de saúde por integração e por tenant na aba Integrações da Central e no console do tenant; teste de contrato diário contra o ambiente de homologação do terceiro, por versão do parceiro, para detectar mudança de leiaute; matriz de comportamento por PSP da P3.2 lida pelo hub; catálogo de conectores de parceiros vindo da P2.26 (GES-11); conectores específicos (ver ED-62)",
+    "findings_owned": [
+      "PLT-20"
+    ],
+    "consumed": [
+      "PLT-20 atendido; fronteira COE-19",
+      "usa GES-11 (P2.26) e a matriz de PSP da P3.2 (PLT-26)"
+    ]
+  },
+  {
+    "id": "P3.38",
+    "title": "Divulgação responsável de vulnerabilidade e Trust Center",
+    "origin": "22c; ADR-0020; ADR-0021; PLT-09",
+    "size": "P (a estimar)",
+    "deps": [
+      "P0.44",
+      "P3.18"
+    ],
+    "acceptance": "Política pública de divulgação responsável de vulnerabilidade com arquivo `/.well-known/security.txt` (RFC 9116), canal, prazo de resposta e salvaguarda legal ao pesquisador; fluxo de recebimento, triagem e resposta registrado, com teste de ponta a ponta de um relato fictício; página de confiança na mesma hospedagem estática separada da produção usada pela P3.18, com lista de suboperadores e aviso de mudança (P3.9), certificações do provedor (P0.26), resumo do pentest (LC.8), status (P3.18), política de privacidade e de retenção, encarregado (Res. CD/ANPD 18/2024), resposta padrão a questionários de segurança e evidências do ASVS da P3.8 (PLT-08)",
+    "findings_owned": [
+      "PLT-09"
+    ],
+    "consumed": [
+      "PLT-09 atendido"
+    ]
+  }
+]

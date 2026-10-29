@@ -1,0 +1,412 @@
+[
+  {
+    "id": "P1.1",
+    "title": "Discovery do legado",
+    "origin": "17:X5; ADR-0028",
+    "size": "M",
+    "deps": ["P0.30"],
+    "acceptance": "dicionário de dados, mapeamento campo a campo e volumes do legado aprovados pelo piloto; optantes de débito automático e leiaute bancário conferidos no legado contra o levantamento da P0.30, com a lista das autorizações a migrar (base da P3.24, se houver optantes); verificado se o piloto usa parcela bônus (perdão de juros na antecipação; prestação perdoada a cada três contas pagas em dia por resolução especial; 20c COB-36): se usar, ela entra como opção de `inst.bonus_installments`, desligada por padrão, nunca como regra fixa; lista dos parcelamentos ativos e das prestações a vencer, base da carga da P1.2 e da P2.10; verificado se o piloto mantém guichê de caixa próprio, resposta que decide se o item condicional de caixa da ED-26 é ligado por parâmetro (PD-07, JOR-13); verificado onde o legado registra a atividade econômica (CNAE), para o mapeamento à unidade consumidora definido na P1.3 (PD-06)",
+    "findings_owned": [],
+    "consumed": ["v2.15", "PD-07 (caixa próprio, confirmação na discovery)", "PD-06 (atividade econômica na unidade; mapeamento na P1.3)"]
+  },
+  {
+    "id": "P1.4",
+    "title": "Matrícula por sequência",
+    "origin": "17:M9; COD-42",
+    "size": "P",
+    "deps": [],
+    "acceptance": "`V3_5`; matrícula gerada por sequência ou tabela de contador por tenant, no lugar do `MAX(CAST(matricula AS bigint))` com trava consultiva de `ConsumerUnitService`; dois lotes paralelos de inclusão rodam sem espera, sem lacuna nem duplicata (teste); tempo de geração medido na carga da P0.23 e registrado",
+    "findings_owned": ["COD-42"],
+    "consumed": ["COD-42"]
+  },
+  {
+    "id": "P1.39",
+    "title": "CNPJ alfanumérico em todas as fronteiras",
+    "origin": "IN RFB 2.229/2024; IN RFB 2.119/2022; RAS-03",
+    "size": "a estimar",
+    "deps": ["P0.11"],
+    "acceptance": "`DocumentNumber` valida o CNPJ alfanumérico (12 posições alfanuméricas e 2 dígitos verificadores numéricos, cálculo conforme a IN RFB 2.119/2022 com a redação da IN RFB 2.229/2024) e continua aceitando o CNPJ só numérico (vetores válidos e inválidos dos dois formatos); normalização em maiúsculas antes do índice cego, de modo que o mesmo CNPJ digitado em minúsculas gere o mesmo hash (teste); máscara de entrada e de exibição para os dois formatos, seguindo a classificação de dado da P0.11; nenhuma coluna, DTO ou esquema de API trata CNPJ como número (varredura no CI recusa tipo numérico em campo de CNPJ); cadastro (P1.3), importador do legado (P1.2) e importador genérico (P1.40) aceitam CNPJ alfanumérico; vetores de teste publicados para as fronteiras consumidoras, cada uma das quais acrescenta o seu teste: NFAg-e (P2.6), NFS-e (P2.13 e P3.6), arquivos bancários e Pix (P3.1 e P3.2); fato normativo: a Receita atribui CNPJ alfanumérico a novas inscrições desde julho de 2026",
+    "findings_owned": ["RAS-03"],
+    "consumed": ["RAS-03 (validação, índice cego, máscara, cadastro e importadores; testes de fronteira nas tarefas consumidoras)"]
+  },
+  {
+    "id": "P1.5",
+    "title": "R3: tarifa social satélite + N4",
+    "origin": "R3 (v1); G1; G2; ADR-0038; CAD-91, DAD-23, PLT-36, RAS-05",
+    "size": "M",
+    "deps": ["P0.20"],
+    "acceptance": "`V4_2`; casos da v1 (T-03 → 102,00 e 87,00; CadÚnico de 25 meses inelegível; `GRACE_3M`); benefício abaixo do piso federal recusado; inscrição da tarifa social com unidade, economias (uma por família, com desempate pela regra da NR 13), titular, base de elegibilidade (`CADUNICO`, `BPC`, `LOCAL_PROGRAM`), origem da inscrição, código familiar só por índice cego, data de atualização do CadÚnico limitada por `social.cadunico_max_age_months` (24), vigência, situação (`ACTIVE`, `LOSS_NOTICE`, `GRACE`, `ENDED`) sem campo de adimplência (classe a), data de início do aviso de perda, motivo de fim por catálogo e base legal declarada; coluna `service_order_id` criada aqui, com a FK e a obrigatoriedade acrescentadas pela P1.31; classificação automática, sem pedido, pela lista oficial: recebimento da lista, validação do leiaute, cruzamento pelo CPF do titular da fatura e dos membros da família, desempate de uma economia por família, lista de elegíveis sem unidade para busca ativa, validade do CadÚnico e recertificação, tudo sobre massa sintética; origem da lista conforme a natureza jurídica do prestador em `social.list_source` (`REGULATOR_LIST`, `MUNICIPAL_BASE`, `CONECTA_API`, classe c), com a combinação de `social.base_import` e `social.list_source` com `reg.legal_nature` que a lei não permite travada (classe a), porque a cessão direta de dados do CadÚnico só alcança órgão ou entidade de direito público (Decreto 11.016/2022); parâmetros `social.matching_rule` e `social.active_search` (classe b); perda do benefício só depois de aviso na fatura por no mínimo três meses (Lei 14.898/2024, art. 3º, parágrafo único), com a situação `LOSS_NOTICE` controlada aqui e o texto do aviso emitido pelo motor de mensagens legais (ver P2.32); recusa de manter fora da tarifa social quem entregou a documentação exigida, tratada como cobrança indevida (art. 5º, §2º); um teste por caso; adaptadores de lista por agência na ED-57; categorias opcionais da NR 13 e benefícios com validade (ver P2.5); homologação local, com a regra legal aplicável a partir de 11/12/2026, data de conclusão da implementação fixada pela Lei 14.898/2024 e pela NR 13, art. 26, §1º (data normativa, não marco do projeto)",
+    "findings_owned": ["CAD-91", "DAD-23", "PLT-36", "RAS-05"],
+    "consumed": ["v2.18 (lista de achados)", "CAD-91", "DAD-23 (dicionário 23b §3.18)", "PLT-36", "RAS-05 (parte da ED-57 antecipada)", "remetido: CAD-88 → P2.5; texto do aviso → P2.32; FK de service_order_id → P1.31; adaptadores por agência → ED-57"]
+  },
+  {
+    "id": "P1.7",
+    "title": "Partição do `audit_log`",
+    "origin": "17:X3; 17:M7; PLT-19",
+    "size": "G",
+    "deps": ["P0.4"],
+    "acceptance": "core `V7`; UUIDv7; retenção com piso; consulta por período poda partições (teste); retenção do `audit_log` e dos registros do módulo de certificações por `cert.record_retention_years`, que só amplia, com dado pessoal seguindo o grupo G6; prova de integridade da trilha do tenant: raiz diária por tenant e partição (encadeamento por hash ou árvore de Merkle) gravada fora do banco, em armazenamento com retenção imutável, e conferida por tarefa agendada, no mesmo modelo de `platform.audit_event`; alteração de uma linha por acesso privilegiado é detectada na conferência seguinte (teste); exportação contínua da trilha do tenant (`audit_log` e `personal_data_access_log`) para o SIEM do cliente, em JSON por linha ou CEF, por entrega em armazenamento do cliente ou fluxo HTTPS assinado, com `log.export_enabled` e `log.export_format` (classe d) e sem dado pessoal em claro (RNF-52); consulta da trilha por usuário (ver ED-06)",
+    "findings_owned": ["PLT-19"],
+    "consumed": ["v2.17", "v2.18 (lista de achados)", "PLT-19 (raiz diária e exportação)", "remetido: consulta por usuário → ED-06"]
+  },
+  {
+    "id": "P1.8",
+    "title": "Porte fiscal: NFS-e Nacional, cofre de certificado, numeração",
+    "origin": "ADR-0003; ADR-0033",
+    "size": "G",
+    "deps": ["P0.32", "P0.28"],
+    "acceptance": "`V4_5`; emissão, cancelamento e substituição de NFS-e Nacional na produção restrita, a partir do ambiente local, com o e-CNPJ da própria Ziip/TGP lido do cofre local, fora do banco, e cada acesso registrado (§2.4; ADR-0033); XML assinados com esse certificado gravados só na área separada da homologação fiscal local, fora das tabelas do produto, do armazenamento imutável e dos backups locais, e apagados ao fim de cada ciclo de testes, guardados só os vetores de referência sem assinatura (ADR-0033; regra e conferência na P3.7); nenhum certificado de cliente no ambiente local; numeração sem número repetido nem perdido (teste)",
+    "findings_owned": [],
+    "consumed": ["aceite v2.21 reescrito sem mudança de escopo; marcadores de ajuste do ADR-0033 retirados (histórico no anexo)"]
+  },
+  {
+    "id": "P1.9",
+    "title": "Outbox e `worker` básico",
+    "origin": "ADR-0014; 17:X4; COD-26, COD-36",
+    "size": "G",
+    "deps": ["P0.5"],
+    "acceptance": "core `V8` com a tabela `outbox`, interface de publicação e teste de contrato, de modo que `shared/sigsan-events` deixe de ser módulo vazio; mensagem gravada na mesma transação do negócio (transação desfeita não deixa mensagem, teste); consumo com `SKIP LOCKED` e tempo de posse, com mensagem de posse vencida retomada por outro worker; role `sigsan_worker`; o worker recebe o tenant de forma explícita na mensagem e abre o contexto a cada execução, sem depender do `TenantContextHolder` em ThreadLocal (teste: tarefa assíncrona sem tenant explícito falha, e mensagens de tenants diferentes no mesmo worker não se misturam); interface de fila (ver P0.45); remoção da coluna `tenant_schema` avaliada na reescrita da `V1_1` (ver P0.25); usado no provisionamento e no console; eventos publicados pelo catálogo da P1.38; eventos e webhooks de saída (ver P2.26); central de notificações do usuário (ver P3.36)",
+    "findings_owned": ["COD-26", "COD-36"],
+    "consumed": ["v2.18 (lista de achados)", "COD-26", "COD-36", "remetido: PLT-02 → P2.26; PLT-12 → P3.36; catálogo de eventos → P1.38; coluna tenant_schema → P0.25"]
+  },
+  {
+    "id": "P1.6",
+    "title": "Console da plataforma v0",
+    "origin": "17:P1; ADR-0002; ADR-0018; ADR-0037; DAD-32, JOR-25, PLT-21",
+    "size": "G",
+    "deps": ["P0.13", "P0.19", "P0.43", "P1.9"],
+    "acceptance": "core `V9`; assistente de implantação; produção bloqueada sem parâmetros aceitos; planos, cotas e flags; suspensão manual com aviso prévio, por uma pessoa com MFA, step-up e justificativa (`PLATFORM_OWNER`, ou `PLATFORM_FINANCE` só com o motivo inadimplência contratual), deixando o backoffice só leitura e o portal, o Pix, os retornos e a 2ª via funcionando (teste); `PLATFORM_FINANCE` com outro motivo ou pedindo eliminação recebe 403 (teste); exportação e eliminação com carência de 30 dias e certificado de descarte, eliminação só por `PLATFORM_OWNER`; contestação registrada na carência e ordem judicial suspendem a eliminação (estado e datas em `tenant_lifecycle`); toda ação auditada em `platform.audit_event`; sem impersonação (acesso assistido na P3.17, ADR-0020); fonte única dos dados do tenant, sem duplicação entre `tenant_catalog` e `tenant_metadata`: razão social, nome fantasia, CNPJ em `CHAR(14)` sem máscara validado pelo `DocumentNumber`, natureza jurídica por domínio (base de `reg.legal_nature`, que muda o regime LGPD e a fonte do CadÚnico), endereço estruturado com `municipality_ibge`, dados de emitente fiscal (inscrição estadual e regime tributário, ou `fiscal_issuers`), encarregado de dados com nome e contato de divulgação pública e situação por domínio ligada a `tenant_lifecycle`; `plan` e `settings` sem uso em `tenant_metadata` e `tenant_catalog` removidos; jornada de implantação visível ao cliente: painel do tenant sobre `onboarding_step` com o checklist (parâmetros pendentes de aceite, importação e conciliação, certificado fiscal, teste com o PSP, política de MFA, restauração ensaiada, encarregado informado, DPA assinado, treinamento) e a porcentagem concluída, com o conteúdo vindo do manifesto do pacote de vertical (ADR-0037); o mesmo checklist é a fonte do gate automático de pronto para produção, lido pela Central Ziip com o Health Score (ver P1.17); tela do tenant para propor, aprovar e aceitar mudança de parâmetro depois da implantação, com comparação entre versões, vigência futura e alerta de risco, e aprovação por pessoa diferente de quem propôs (teste); gestão tarifária com reajuste, revisão e simulação (ver P2.29); API pública e catálogo de conectores (ver P2.26)",
+    "findings_owned": ["DAD-32", "JOR-25", "PLT-21"],
+    "consumed": ["v2.18 (lista de achados)", "DAD-32 (dicionário 23b §3.27)", "PLT-21", "JOR-25", "remetido: GES-01 → P2.29; GES-11 → P2.26; gate na Central → P1.17"]
+  },
+  {
+    "id": "P1.38",
+    "title": "Catálogo único de eventos de negócio",
+    "origin": "ADR-0037; JOR-20",
+    "size": "a estimar",
+    "deps": ["P0.47", "P1.9"],
+    "acceptance": "catálogo único de eventos de negócio declarado por cada pacote no `vertical.json` (ADR-0037), com nome, versão, esquema da carga sem dado pessoal (só identificadores e códigos) e permissão exigida de quem recebe; documento do catálogo gerado do código e conferido no CI; publicação pela outbox da P1.9 de evento fora do catálogo, em versão não declarada ou com carga fora do esquema é recusada (teste no CI), regra que vale para todas as tarefas que publicam eventos; mudança incompatível de carga exige nova versão do evento; destinatário só recebe evento cuja permissão o usuário ou a integração tem (teste); consumidores declarados: central de avisos (P3.36), notificações ao consumidor (P3.5 e ED-41), webhooks de saída (P2.26), minhas tarefas (P2.28) e alertas do tenant (ED-07)",
+    "findings_owned": ["JOR-20"],
+    "consumed": ["JOR-20"]
+  },
+  {
+    "id": "P1.10",
+    "title": "Corpus de XML de referência nos dois CIs",
+    "origin": "ADR-0003",
+    "size": "M",
+    "deps": ["P0.32"],
+    "acceptance": "o mesmo corpus de XML de referência roda no CI do Ziip Cloud e no CI do Ziip SAN, com o mesmo resultado nos dois",
+    "findings_owned": [],
+    "consumed": ["aceite v2.21 reescrito sem mudança de escopo"]
+  },
+  {
+    "id": "P1.11",
+    "title": "`Idempotency-Key` e ETag/If-Match",
+    "origin": "17:M12",
+    "size": "M",
+    "deps": ["P0.10"],
+    "acceptance": "POST repetido com a mesma `Idempotency-Key` devolve a mesma resposta; escrita sem `If-Match` recebe 428; escrita com versão desatualizada recebe 412; API pública de integração com credencial por tenant, escopos e cota (ver P2.26)",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados)", "remetido: PLT-01 → P2.26"]
+  },
+  {
+    "id": "P1.12",
+    "title": "Frontend robusto",
+    "origin": "17:F1; 17:M14; 17:B9–B11; JOR-29",
+    "size": "M",
+    "deps": ["P0.14", "P1.9", "P0.47"],
+    "acceptance": "Error Boundary; code splitting; ações exibidas por papel; filtro preservado ao voltar da ficha; tabelas legíveis no celular; menu modal com axe limpo; nova tentativa por tipo de erro; Web Vitals medidos; aplica a regra das abas da ficha da unidade a partir do mapa do produto da P0.47 (JOR-03); regra única de exportação de listas: permissão `*:export` por recurso, máscara pelo teto do usuário (ADR-0008), registro de cada exportação em `personal_data_access_log`, limite de linhas e, acima dele, geração assíncrona pelo worker da P1.9 com entrega no item Arquivos gerados, onde também ficam os relatórios agendados da P3.22; exportação sem `*:export` é recusada e a máscara do arquivo é a mesma da tela (teste); busca global, atalhos, visões salvas e densidade (ver P1.33)",
+    "findings_owned": ["JOR-29"],
+    "consumed": ["v2.18 (lista de achados)", "JOR-29", "usa JOR-03 da P0.47", "remetido: PLT-15 → P1.33"]
+  },
+  {
+    "id": "P1.13",
+    "title": "Fronteiras de módulos",
+    "origin": "17:M11",
+    "size": "M",
+    "deps": ["P0.47"],
+    "acceptance": "suíte de fronteira de módulos no CI (ArchUnit ou Spring Modulith), que estende a suíte de fronteira do pacote de vertical da P0.47 e usa o ArchUnit e a análise de dependências ligados no CI pela P0.3 (COD-31); dependência proibida entre módulos falha o build (teste com violação proposital); remoção das duplicatas de billing e metering (ver P0.25)",
+    "findings_owned": [],
+    "consumed": ["usa COD-31 da P0.3", "fronteira COE-19 com a P0.47", "remetido: remoção das duplicatas (COD-07) → P0.25"]
+  },
+  {
+    "id": "P1.14",
+    "title": "Rollout de migrations por tenant",
+    "origin": "17:D1; ADR-0005",
+    "size": "M",
+    "deps": ["P0.6", "P0.21"],
+    "acceptance": "situação da migration registrada por tenant; tenant com falha vai para quarentena sem parar os demais; paralelismo limitado; canário antes da aplicação aos demais tenants",
+    "findings_owned": [],
+    "consumed": ["aceite v2.21 reescrito sem mudança de escopo"]
+  },
+  {
+    "id": "P1.15",
+    "title": "Baixos de dado pessoal",
+    "origin": "17:B5; 17:B6",
+    "size": "P",
+    "deps": [],
+    "acceptance": "VIEWER não vê registros excluídos; `consentId` conferido contra o titular, e consentimento de outro titular é recusado (teste); direitos do titular, registro de operações de tratamento e canal no portal (ver P3.40)",
+    "findings_owned": [],
+    "consumed": ["fronteira com a P3.40 (privacidade do titular)"]
+  },
+  {
+    "id": "P1.16",
+    "title": "Arredondamento e tributo na conta",
+    "origin": "FISCAL-PORTE-JAVA",
+    "size": "P",
+    "deps": ["P0.32"],
+    "acceptance": "regra única de arredondamento e de tributo na conta registrada em ADR; vetores C# e Java com resultados iguais; CHECK de `bills` definido para a `V4_6`",
+    "findings_owned": [],
+    "consumed": ["aceite v2.21 reescrito sem mudança de escopo"]
+  },
+  {
+    "id": "P1.17",
+    "title": "Central Ziip v0, junto do console v0",
+    "origin": "ADR-0018",
+    "size": "G",
+    "deps": ["P1.6", "P1.9", "P0.8"],
+    "acceptance": "core `V9_1`; coletor de 5 min com trava e watchdog; abas Visão geral, Plataforma, Segurança e Alertas; alerta abre e fecha sem duplicar; `SELECT` de `ziipsan_central` em tabela de tenant falha no teste; cada função `platform_stats.*` com teste de ausência de coluna pessoal; API de métricas `v1` com catálogo e teste de contrato",
+    "findings_owned": [],
+    "consumed": ["aceite v2.21 reescrito sem mudança de escopo"]
+  },
+  {
+    "id": "P1.18",
+    "title": "Preferência de tema no servidor; padrão e restrição do tenant",
+    "origin": "ADR-0017; PLT-25",
+    "size": "M",
+    "deps": ["P0.36", "P1.6"],
+    "acceptance": "tenant `V1_7`; `GET` e `PUT /api/v1/me/preferences`; precedência usuário, tenant e Azul Água no modo do sistema (teste); padrão retirado da lista do tenant cai no padrão dele sem apagar a escolha do usuário; idioma de preferência do usuário em `ui.locale` e padrão do tenant em `ui.default_locale` (classe d, padrão `pt-BR`), com pt-BR como único idioma publicado; textos da interface em catálogo de mensagens externalizado e data, número e moeda formatados por `Intl`, com lint no CI recusando texto fixo de interface fora do catálogo; central de notificações e preferências de aviso (ver P3.36); busca global, atalhos, visões salvas e densidade (ver P1.33)",
+    "findings_owned": ["PLT-25"],
+    "consumed": ["v2.18 (lista de achados)", "PLT-25", "remetido: PLT-12 → P3.36; PLT-15 → P1.33"]
+  },
+  {
+    "id": "P1.20",
+    "title": "Pipeline de arquivos enviados com ClamAV",
+    "origin": "ADR-0010 (Exceções); ADR-0020; ADR-0002 (G6); DAD-40",
+    "size": "M",
+    "deps": ["P1.9"],
+    "acceptance": "tipo do arquivo detectado pelo conteúdo; arquivo em quarentena enquanto não for varrido; EICAR bloqueado e com alerta; PDF limpo liberado; idade das assinaturas do ClamAV monitorada; varredor atrás de interface substituível pelo serviço da hospedagem; documento anexo com tipo por catálogo (`document_type_id` no lugar do texto livre), classe de retenção do grupo G6 (`retention_class_id`), classificação de dado (`data_classification`), situação da varredura (`scan_status`), checksum SHA-256 e marca de imutabilidade, com documento imutável recusando substituição e regeração (teste; XML autorizado nunca é regerado)",
+    "findings_owned": ["DAD-40"],
+    "consumed": ["DAD-40 (dicionário 23b §3.25)"]
+  },
+  {
+    "id": "P1.19",
+    "title": "Marca do tenant",
+    "origin": "ADR-0016",
+    "size": "M",
+    "deps": ["P0.34", "P1.6", "P1.20"],
+    "acceptance": "core `V9_2`; chaves `branding.*`; logo PNG ou WebP reencodado e varrido pelo pipeline da P1.20 (EICAR e arquivo poliglota recusados); `GET /api/v1/public/tenant-brand` pelo subdomínio, com slug desconhecido devolvendo a marca do produto e o mesmo status; regra de contraste da cor aplicada ao salvar; domínio próprio do tenant (ver P2.27)",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados)", "remetido: PLT-05 → P2.27"]
+  },
+  {
+    "id": "P1.21",
+    "title": "Ajuda: conteúdo, publicação e ajuda contextual",
+    "origin": "ADR-0020",
+    "size": "M",
+    "deps": ["P0.3", "P0.6"],
+    "acceptance": "core `V9_3`; `content/help` validado no CI (cabeçalho, links, rotas e alvos `data-tour` existentes); publicação pelo `migrate` sem nova imagem; busca em português; `useContextualHelp` e `<Hint>`",
+    "findings_owned": [],
+    "consumed": ["aceite v2.21 reescrito sem mudança de escopo"]
+  },
+  {
+    "id": "P1.22",
+    "title": "Catálogo de erros explicados",
+    "origin": "ADR-0020",
+    "size": "P",
+    "deps": ["P1.21"],
+    "acceptance": "teste falha se um código `urn:ziipsan:problem:*` não tiver explicação no catálogo de erros",
+    "findings_owned": [],
+    "consumed": ["aceite v2.21 reescrito sem mudança de escopo"]
+  },
+  {
+    "id": "P1.23",
+    "title": "Chamados v0 e fila na Central",
+    "origin": "ADR-0020",
+    "size": "G",
+    "deps": ["P1.9", "P1.17", "P1.20"],
+    "acceptance": "core `V9_4`; chamado de suporte numerado `SUP-AAAA-NNNNNN`, termo distinto de protocolo de atendimento (ver P1.36); conversa, estados e notificações pela outbox; fila de chamados na Central Ziip; usuário de outro tenant recebe 404; e-mail de aviso sem conteúdo nem anexo; anexos pelo pipeline da P1.20; formulário orienta a não anexar dado pessoal e marca `contains_personal_data`",
+    "findings_owned": [],
+    "consumed": ["aceite v2.21 reescrito sem mudança de escopo", "termo qualificado conforme COE-23"]
+  },
+  {
+    "id": "P1.24",
+    "title": "Sobre completo e novidades por usuário",
+    "origin": "ADR-0021",
+    "size": "M",
+    "deps": ["P0.34", "P0.41", "P0.42", "P1.20"],
+    "acceptance": "core `V9_5`; Sobre com marca, versão, documentos com versão vigente e aceita (`platform.document_acceptance`) e licenças; documentos guardados com tipo por catálogo, classe de retenção e imutabilidade do pipeline da P1.20; novidades exibidas uma vez por versão por usuário, com estado no servidor; o ciclo de revisão e ciência dos documentos é reaproveitado pela P2.25, sem infraestrutura paralela",
+    "findings_owned": [],
+    "consumed": ["v2.17", "usa DAD-40 da P1.20"]
+  },
+  {
+    "id": "P1.25",
+    "title": "Roteiros internos de POC, matriz viva e modelos jurídicos",
+    "origin": "ADR-0023; ADR-0028; ED-01",
+    "size": "P",
+    "deps": [],
+    "acceptance": "roteiro da VISAN (81 itens, com a forma de demonstração de cada um) e do SAMAE (lista crítica com subitens e itens sorteáveis) versionados no repositório, cada item ligado a requisito, ED, tarefa e fase; matriz viva criada a partir dos levantamentos 18d a 18h no formato do consolidado 18 §7 e conferida no CI; modelos de pedido de esclarecimento e de impugnação para os itens do consolidado 18 §6 (no mínimo TR-286, TR-415, SG-398 e TR-494); licença de uso comercial do ODA File Converter conferida; primeiro ensaio, ao fim do P1, registrado no diário, sem meta",
+    "findings_owned": [],
+    "consumed": ["aceite v2.21 reescrito sem mudança de escopo"]
+  },
+  {
+    "id": "P1.28",
+    "title": "Compra das normas ABNT para a curadoria do catálogo do GIS",
+    "origin": "ADR-0034 (decisão 2); §2.4",
+    "size": "P (curadoria contada na P1.27)",
+    "deps": [],
+    "acceptance": "lista fechada, com a edição vigente conferida no ABNT Catálogo, das NBR 12586, 12587, 12218, 9649, 5647, 7665, 7675 e 15561 e das demais apontadas em GIS-CADASTRO-TECNICO §4 (entre elas 17287, 15750, 7362, 8890 e 10160); a compra inclui os textos ISO e das normas do setor usados na curadoria da ED-76, e o produto guarda só a referência; custo estimado e aprovado pelo dono antes da compra; normas guardadas fora do repositório, conforme a licença de uso da ABNT; lista comprada registrada no diário de bordo, com edição e data; norma não comprada deixa os seus itens marcados como valor de referência a validar; executada no início do P1, antes da P1.26 e do fechamento do catálogo na P1.27",
+    "findings_owned": [],
+    "consumed": ["v2.17", "marcador (v2.11) retirado do título; ordem antes da P1.26 mantida no aceite"]
+  },
+  {
+    "id": "P1.26",
+    "title": "GIS-01: modelo de dados do núcleo do GIS, histórico, metadados de qualidade, SRS e migração do `gis_network_element`",
+    "origin": "ADR-0034; ED-52; COD-35, DAD-35",
+    "size": "G (3)",
+    "deps": ["P0.4", "P0.19", "P0.33", "P1.28"],
+    "acceptance": "`V13_1`, `V13_2` e core `V9_6`; aceite da GIS-01 em GIS-CADASTRO-TECNICO §13.2: tenant com o modelo antigo sintético migrado sem perda, com relatório de não mapeadas; geometria tipada por papel, recusando tipo errado; `code` único por tenant e não global; `attributes` fora do JSON Schema recusado pela `api` e por SQL direto; metadado de captura obrigatório; histórico com período sem sobreposição e consulta por data; view `gis_network_element` gera o mesmo `.inp` sobre a massa de referência; parâmetros `gis.*` no catálogo e em PARAMETROS-DO-TENANT, com `gis.public_aggregation_min_units` de piso 5 (classe c); `gis_domain` (chave, pacote, rótulo, cor, ordem) na `V13_1` no lugar da lista fixa de `domain`, com os cinco domínios atuais carregados pelo pacote `sanitation`; domínio inexistente é recusado pelo banco e o catálogo de um pacote não aparece para tenant sem ele (teste); `UNIQUE (tenant_id, code)` em `dma_district` e `leak_detection` na `V13_2`; uma só entidade e um só repositório de distrito de medição, sem a cópia do `DmaDistrictRepository` entre `sigsan-gis` e `sigsan-losses` (teste de fronteira); itens do modelo conferidos nas normas compradas na P1.28",
+    "findings_owned": ["COD-35", "DAD-35"],
+    "consumed": ["v2.13", "DAD-35", "COD-35", "dependência da P1.28 declarada (COE-06)"]
+  },
+  {
+    "id": "P1.27",
+    "title": "GIS-02: catálogo de fábrica de água e esgoto e administração por tenant",
+    "origin": "ADR-0034; ED-52",
+    "size": "G (2)",
+    "deps": ["P1.26", "P1.28"],
+    "acceptance": "`R__gis_factory_catalog.sql`; aceite da GIS-02: reaplicação sem duplicar nem alterar o que o tenant ativou ou criou; todo item com norma e edição ou marcado como valor de referência a validar, com relatório; itens conferidos nas normas compradas na P1.28 passam a `STANDARD`, com norma e edição; ativar, desativar e criar tipo e item pela tela, com aprovação por outra pessoa e sem código (E2E); item desativado continua válido nas feições existentes; catálogo de fábrica acrescido dos tipos do manual da ARSESP e do glossário do SINISA que faltavam: unidade de tratamento simplificado (UTS), poço amazonas, captação flutuante, barragem, lododuto, travessia aérea, canal, galeria e túnel, chaminé de equilíbrio, tanque de alimentação unidirecional, reservatório hidropneumático, estação de pré-condicionamento e booster móvel; o tipo de elevatória guarda a condição de sucção em pressão (booster, NBR 12208), conforme ALVOS-DA-OS-E-HIERARQUIA-DE-ATIVOS; esta tarefa é dona do catálogo de tipos de instalação e de feição, e a entidade ativo e a hierarquia são da P1.35; caixa unificada de pendências e aprovações (ver P2.28)",
+    "findings_owned": [],
+    "consumed": ["v2.18 (lista de achados)", "v2.19", "fronteira COE-05 com a P1.35", "remetido: PLT-13 → P2.28"]
+  },
+  {
+    "id": "P1.29",
+    "title": "Ícones de telas e itens, conjunto inicial",
+    "origin": "ADR-0036",
+    "size": "M",
+    "deps": ["P0.46"],
+    "acceptance": "ícones de navegação, ação, estado e entidades de saneamento do ICONES-E-SIMBOLOGIA §4.1 e §4.2, próprios onde o Lucide não cobre; folha de contato por tema (claro e escuro, Azul Água e Verde Água) em 16, 20 e 24 px; contraste e cobertura verdes no CI; aceite do dono",
+    "findings_owned": [],
+    "consumed": ["marcador (v2.13) retirado do título; aceite v2.21 reescrito sem mudança de escopo"]
+  },
+  {
+    "id": "P1.30",
+    "title": "Símbolos de mapa de água e esgoto e pipeline de geração",
+    "origin": "ADR-0036; ADR-0034 (decisão 6)",
+    "size": "G",
+    "deps": ["P0.46", "P1.27"],
+    "acceptance": "um símbolo por classe e tipo do catálogo de fábrica de água e esgoto da P1.27, em cinco estados; pipeline gera sprite MapLibre, símbolos do QGIS, SLD e SVG de legenda a partir do mesmo arquivo, com regressão visual entre os canais; teste de cobertura recusa tipo ativo sem símbolo; contraste sobre mapa base claro e escuro; folha de contato e aceite do dono",
+    "findings_owned": [],
+    "consumed": ["marcador (v2.13) retirado do título; aceite v2.21 reescrito sem mudança de escopo"]
+  },
+  {
+    "id": "P1.31",
+    "title": "Núcleo de OS e unidade consumidora como raiz",
+    "origin": "ADR-0039; ADR-0038; ADR-0041; COE-10, DAD-01, DAD-25, JOR-27, JOR-28, OPE-14, OPE-15, RAS-25",
+    "size": "G",
+    "deps": ["P0.19", "P0.33", "P1.9"],
+    "acceptance": "`V9_1`, criada sobre a reescrita da `V1_1` sem a `service_orders` antiga (usa COD-09 da P0.25): `service_orders` com `UNIQUE (tenant_id, id)`, tipo de serviço por FK, modo de execução (`FIELD`, `INTERNAL`, `CONTRACTOR`), prioridade e situação por domínio, `approved_by` diferente de `created_by` quando o tipo exige aprovação, motivo de encerramento por catálogo, `reverses_order_id` para a OS inversa, `parent_order_id` e `batch_id`; solicitante externo vem do protocolo, e quem registra é `created_by`; materiais vão à requisição (ADR-0032) e fotos a `documents`; coluna `protocol_id` reservada, com a FK criada pela P1.36; catálogo de tipos de serviço com operação, efeito, indicador interno ou de campo, aprovação por tipo (parâmetro com o padrão de fábrica do ADR-0039, item 8), classes de alvo aceitas e referência ao item de preço, sendo preço, vigência e lançamento da cobrança da ED-34; máquina de estados (`DRAFT`, `OPEN`, `SCHEDULED`, `IN_EXECUTION`, `EXECUTED`, `WAITING_DEPENDENCY`, `PENDING_APPROVAL`, `CLOSED_EXECUTED`, `CLOSED_NOT_EXECUTED`) com transição inválida recusada (teste); aplicador de efeitos transacional e idempotente: efeito aplicado uma vez, sem reversão, e correção por OS inversa ligada; OS de lote (ADR-0039, item 9); alvos múltiplos e tipados em `service_order_targets` (`target_type`, `target_id`, local para `LOCATION_ONLY`, código e carga do efeito validada pelo esquema do tipo e marca de efeito aplicado por alvo), com as classes `CONSUMER_UNIT`, `WATER_CONNECTION`, `SEWER_CONNECTION`, `METER`, `GIS_LINEAR`, `GIS_POINT`, `OPERATIONAL_SITE`, `EQUIPMENT`, `COMPONENT`, `BUILDING`, `FLEET_ASSET`, `NETWORK_INCIDENT`, `ZONE` e `LOCATION_ONLY` (catálogo em ALVOS-DA-OS-E-HIERARQUIA-DE-ATIVOS); o alvo é contrato tipado: cada classe tem verificador de existência registrado pela tarefa que cria a entidade (feições do GIS, P1.26; ativo, P1.35; ocorrência de rede, ED-92; frota, ED-59), e classe sem verificador registrado não pode ser declarada por tipo de serviço (teste); tipos de serviço operacionais sem efeito comercial, com origem (ocorrência, plano preventivo, inspeção, reclamação), `so.operational_types_enabled` e prazo por tipo em `so.deadline_hours_by_type`, que só reduz e nunca excede o prazo da agência; mapa campo → tipo de OS do 23b §3.2 como contrato do cadastro (contatos por `CUSTOMER_CONTACT_UPDATE`; nome, documento e nome social por `CUSTOMER_DATA_UPDATE`; vínculo por `OWNERSHIP_TRANSFER`; economias por `ECONOMIES_CATEGORY_CHANGE`; perfil e área por `UNIT_PROFILE_CHANGE` e `UNIT_PROFILE_UPDATE`; situação de água e de esgoto por OS de ligação, corte, religação, supressão e tamponamento; vencimento por `ALTERNATIVE_DUE_DAY`; endereço de entrega por `DELIVERY_ADDRESS_CHANGE`; inscrição por OS de alteração de inscrição), cada um com a aprovação e a vigência do efeito ali definidas; `service_order_id NOT NULL` com FK em `unit_status_history` e nos históricos novos, inclusive na inscrição da tarifa social da P1.5; teste de arquitetura: nenhuma escrita em cliente, unidade consumidora e históricos fora do aplicador, e escrita direta de campo com efeito de faturamento recusada; OS interna aplicada ou aprovada pela tela sem ida a campo; relatórios separam OS interna de OS de campo; solicitação externa nasce como protocolo e gera a OS, e alteração interna do backoffice gera OS sem protocolo (ver P1.36); segurança do trabalho: tipo de serviço marcado como espaço confinado, altura, vala ou eletricidade exige análise de risco da tarefa, permissão de entrada ou de trabalho rastreável, habilitação vigente e equipe mínima, e a OS não é programada nem encerrada sem eles (teste por marca), com ligação ao catálogo das NR-1, NR-18, NR-33 e NR-35 do MTE como normas obrigatórias no ADR-0041 e à NR-10 na redação que vigora a partir de 01/06/2027 (Portaria MTE 737/2026); PET emitida por entrada, rastreável e arquivada por cinco anos (NR-33); escavação acima de 1,25 m só inicia com liberação de profissional habilitado (NR-18, 18.7.2.3); `sst.required_controls_by_service_type` (classe c, o tenant só amplia), `sst.min_crew_confined_space` travado em 2 ou mais (classe a, NR-33, 33.3.4.4) e `sst.training_validity_months` (padrão da norma, só reduz); a habilitação é conferida contra o registro de competências da P3.31 e da ED-59, por contrato ligado quando o registro existir; nos demais tipos, etapas opcionais habilitadas por norma ligada (análise de risco e permissão de trabalho, ocorrência ambiental) ficam desligadas por padrão; cadastro de espaços confinados (ver P1.35); observações internas em OS, unidade e, quando existirem, protocolo, conta e ocorrência, com menção a usuário, visibilidade interna ou ao usuário e alerta contra dado pessoal sensível em texto livre; aba Histórico padronizada para todo registro, lendo as OS aplicadas, as versões (conta, parâmetro, tarifa, pacote GIS) e a trilha, com quem, quando, antes e depois; preço do serviço (ver ED-34), corte e religação (ver P3.4), programação e execução no backoffice (ver ED-36), execução offline (ver ED-20), diário de estações (ver ED-87), situações do titular (ver P1.41); tamanho G mantido como indicação de esforço",
+    "findings_owned": ["COE-10", "DAD-01", "DAD-25", "JOR-27", "JOR-28", "OPE-14", "OPE-15", "RAS-25"],
+    "consumed": ["v2.17", "v2.18", "v2.19", "COE-10 (fronteira da OS)", "COE-05 (alvos como contrato tipado; entidade na P1.35)", "DAD-01 (mapa 23b §3.2)", "DAD-25 (dicionário 23b §3.20)", "OPE-14", "OPE-15", "RAS-25", "JOR-27", "JOR-28", "usa COD-09 da P0.25", "protocolo deixa de ser opcional (decisão do dono 7)", "remetido: CAD-65, CAD-66, CAD-78, CAD-82, PLT-24 → P1.41; OPE-02 → ED-87; FK de protocol_id → P1.36; cadastro de espaços confinados → P1.35"]
+  },
+  {
+    "id": "P1.2",
+    "title": "Importador v0 do cadastro com conciliação",
+    "origin": "17:X5; ADR-0039; PLT-16",
+    "size": "G",
+    "deps": ["P1.1", "P1.4", "P0.28", "P1.31", "P1.39"],
+    "acceptance": "`V14_1`; importador construído como framework declarativo de migração por legado: leitores de fonte (dump SQL, CSV e banco legado), mapeamento declarativo versionado em arquivo (campo de origem, transformação, validação e destino), staging com perfil de qualidade (completude, duplicidade, integridade referencial e documento inválido), ensaio sem gravar, conciliação automática por setor, rota, categoria e saldo, relatório de linhagem por registro e reexecução idempotente; legado novo entra como arquivo de mapeamento mais testes, sem importador novo (teste com dois mapeamentos no mesmo motor); reimportação não duplica; totais por setor e rota iguais aos do legado; cada carga gera uma OS interna de lote que referencia as unidades e aplica os efeitos pela regra da P1.31; data de ligação (`connected_on`) levada ao staging; prestações a vencer dos parcelamentos ativos do piloto mapeadas e levadas ao staging, com referência ao acordo do legado, para a carga da P2.10; CNPJ alfanumérico aceito pelo `DocumentNumber` da P1.39; só dado sintético ou anonimizado na origem, com o teste de varredura da P0.45 verde em toda carga; dado real só na produção do lançamento (LC.10); unidade sem usuário vigente e revalidação cadastral externa dos registros migrados (ver P1.41); cruzamento de edificações com unidades para perdas aparentes (ver ED-95); planilhas avulsas pelo importador genérico (ver P1.40)",
+    "findings_owned": ["PLT-16"],
+    "consumed": ["v2.14", "v2.15", "v2.18 (lista de achados)", "PLT-16", "DAD-10 (connected_on no staging)", "usa RAS-03 da P1.39", "remetido: CAD-68, CAD-82 → P1.41; OPE-37 → ED-95"]
+  },
+  {
+    "id": "P1.40",
+    "title": "Importador genérico de planilha com aplicação por OS de lote",
+    "origin": "P1.3 (v2.21); ADR-0039; JOR-26",
+    "size": "a estimar",
+    "deps": ["P1.9", "P1.20", "P1.31"],
+    "acceptance": "importador genérico de planilha para todo cadastro que declare o seu esquema de importação: modelo para baixar gerado do esquema (colunas, tipos, domínios e exemplo); arquivo recebido pelo pipeline da P1.20; área de preparação com validação por linha (tipo, domínio, chave estrangeira, duplicidade na planilha e no banco) e relatório de recusas por linha, campo e motivo, para baixar; aplicação só depois da validação, com as linhas recusadas fora do lote e listadas no relatório; aplicação por OS interna de lote da P1.31 (ADR-0039), com efeito aplicado uma vez e correção por OS inversa do lote; validação e aplicação assíncronas pelo worker da P1.9; histórico no item de menu Importações (quem, quando, arquivo, totais aceitos e recusados, OS de lote); reenvio do mesmo arquivo não duplica (teste); usado pelo CSV do cadastro (P1.3), pela planilha do laboratório (P2.24), pelos catálogos auxiliares (ED-12), pelos cadastros de consistência (ED-20) e pela lista de beneficiários (ED-57); a migração do legado é da P1.2 (PLT-16)",
+    "findings_owned": ["JOR-26"],
+    "consumed": ["JOR-26", "parte CSV da P1.3 da v2.21"]
+  },
+  {
+    "id": "P1.3",
+    "title": "R2: cadastro completo: modelo de dados, tela e carga",
+    "origin": "R2 (v1); ADR-0039; ADR-0038; CAD-69, CAD-80, CAD-81, CAD-83, CAD-84, CAD-89, DAD-02, DAD-03, DAD-04, DAD-05, DAD-06, DAD-07, DAD-08, DAD-30, DAD-34, DAD-36, DAD-37, DAD-38, DAD-39, RAS-10",
+    "size": "G",
+    "deps": ["P1.31", "P1.39", "P1.40"],
+    "acceptance": "`V3_6`; cliente cadastrado pela tela, com rascunho e `validate-step`, CEP e carga por CSV pelo importador genérico da P1.40; toda inclusão ou alteração de cliente e de unidade consumidora pela tela, pela API ou pelo CSV gera OS interna da P1.31, com o efeito aplicado no encerramento e o tipo de OS de cada campo pelo mapa da P1.31 (DAD-01); teste de arquitetura recusa gravação direta; pedido em local sem cadastro cria a unidade em `PROVISIONAL`; contrato tela × API: propriedade enviada pela tela é gravada ou recusada com 400 que nomeia o campo (regra global da P0.16), e os campos hoje descartados (entre eles `customerTypeId`, `documentExemptionReason`, `activityBranchId`, `parentCustomerId`, `addresses[]`, `blockFaceId`, `profileId`, `sewerDischargeId`, `iptu`) ganham coluna ou saem da tela, com os indicadores de `billing` mantidos na cobrança (teste de contrato tela × DTO); cliente: `customer_type_id` compatível com `person_type`, `government_sphere` (`FEDERAL`, `STATE`, `MUNICIPAL`, `NONE`) obrigatório para ente público, `trade_name` nulo em PF por CHECK, motivo de dispensa de documento por catálogo e com permissão (Lei 13.460/2017, art. 10-A), órgão centralizador sem ciclo e motivo de exclusão por catálogo; unidade: `registration_number` e `check_digit` no lugar de `matricula` e `dv`, `property_profile_id` com perfil provisório só em `PROVISIONAL`, face de quadra quando `registry.use_block_face`, tipo de esgotamento, unidade-mãe com tipo de relação (`CONDOMINIUM_MACRO`, `ANNEX`; mesma quadra, sem ciclo), inscrição imobiliária municipal única por município, atividade econômica (CNAE) na unidade consumidora (PD-06), remoção de `tariff_type_id`, `meter_id` e `properties`, com hidrômetro só por `meter_installations`, e uma só fonte do dia de vencimento, na unidade, com vigência e OS `ALTERNATIVE_DUE_DAY`; vínculo: papel por catálogo (`relation_roles` com `system_role`), período sem sobreposição por EXCLUDE, motivo de fim por catálogo obrigatório com a data de fim, `opened_by_service_order_id` e `closed_by_service_order_id`, forma de entrega obrigatória quando há responsável e exatamente um vínculo vigente com o nome na conta, que sai em nome do usuário titular (NR 11, art. 33, §2º), com a opção do tenant de exibir também o proprietário em `registry.bill_name_roles` (classe b, padrão `USER`, decisão do dono 6); endereço: ligação por tabelas próprias (`customer_addresses` e `address_id` da unidade) no lugar do par polimórfico, endereço de correspondência do cliente com tipo e vigência, `municipality_ibge CHAR(7)` com CHECK e FK ao catálogo do IBGE, CHECK em `type`, `state` e `cep`, logradouro e bairro por catálogo, ponto de referência e geocodificação com nível de precisão gravado, separada do cadastro técnico de rede; território: rota de leitura com setor e grupo de faturamento, o que torna verificável a regra de rota do mesmo setor da quadra, e rede da quadra por domínio (`NONE`, `FULL`, `PARTIAL`); economias com vigência (`valid_from`, `valid_to`, EXCLUDE por unidade e subcategoria, início no primeiro dia da competência) e OS `ECONOMIES_CATEGORY_CHANGE`, de modo que a competência passada use o valor da época (teste); categoria com classe regulatória (`RESIDENTIAL`, `SOCIAL_RESIDENTIAL`, `COMMERCIAL`, `INDUSTRIAL`, `PUBLIC`, `OTHER`; NR 13, art. 6º); contatos com tipo de telefone, ramal e nome do contato, e-mail e telefone validados por CHECK (RFC 5322 e E.164), vigência do contato principal e estado de verificação por código ou link, com `contact.verification_required` (classe b); preferências por finalidade, horário e ordem de contingência (ver P3.36); consentimento com `UNIQUE (tenant_id, id)` em `lgpd_consent`, FK de `customer_contacts.consent_id` e finalidade por catálogo; fonte alternativa de água por unidade (`unit_alternative_sources`: poço raso ou profundo, captação superficial, água de chuva ou reúso, com autorização do órgão gestor, medidor, volume captado e uso), com `connection.alt_source_requires_authorization` (classe b) e cobrança de esgoto sobre o volume captado na P2.5 (Lei 11.445/2007, art. 45; NR 13, art. 16, §3º); usuário essencial por unidade (hospital, escola, internação coletiva, identificados por CNES, INEP ou alvará) e pessoa dependente de abastecimento contínuo por motivo de saúde, com comprovação, validade e consentimento específico, coletado só a pedido do titular por ser dado sensível (LGPD, art. 11), com `vulnerable.enabled` (classe b, ligado por padrão) e `vulnerable.effects`, efeitos aplicados pela P3.4 e pela ED-35; perfil de atendimento prioritário (categorias da Lei 10.048/2000), acompanhante, formato acessível de documentos a pedido (braile, fonte ampliada, PDF acessível, áudio; Lei 13.146/2015, art. 62) e canal (Libras, TDD, videoatendimento), com `registry.accessible_formats` e `bill.braille_enabled` (classe d) e indicador lido pelo arquivo da gráfica (P2.8) e pelo portal (teste); marca de sazonalidade da unidade com `meter.seasonal_rule` (classe d), cujo efeito na crítica e na média é da P2.5; nomes de campo pelo glossário do §8 do plano (logradouro `street_name`, papel `role`, perfil `property_profiles`, contatos `customer_contacts`); aba Histórico da ficha pelo componente da P1.31; CNPJ alfanumérico pelo `DocumentNumber` da P1.39; situações do titular e validação externa (ver P1.41)",
+    "findings_owned": ["CAD-69", "CAD-80", "CAD-81", "CAD-83", "CAD-84", "CAD-89", "DAD-02", "DAD-03", "DAD-04", "DAD-05", "DAD-06", "DAD-07", "DAD-08", "DAD-30", "DAD-34", "DAD-36", "DAD-37", "DAD-38", "DAD-39", "RAS-10"],
+    "consumed": ["v2.14", "v2.18 (lista de achados)", "dicionário 23b §3.1 a §3.5 e §3.28 (campos e regras essenciais)", "CAD-69, CAD-80, CAD-81, CAD-83, CAD-84 (só contato verificado), CAD-89, RAS-10", "DAD-02 a DAD-08, DAD-30, DAD-34, DAD-36 a DAD-39", "PD-06 (CNAE na unidade)", "decisão do dono 6 (nome na conta)", "usa DAD-01 e JOR-28 da P1.31, JOR-26 da P1.40, RAS-03 da P1.39", "glossário COE-17", "remetido: CAD-65, CAD-66, CAD-67, CAD-68, CAD-78, CAD-82, PLT-24 → P1.41; preferências por finalidade de CAD-84 → P3.36"]
+  },
+  {
+    "id": "P1.41",
+    "title": "Cadastro: situações do titular e validação externa",
+    "origin": "P1.3 e P1.31 (v2.21); ADR-0039; ADR-0042; CAD-65, CAD-66, CAD-67, CAD-68, CAD-78, CAD-82, PLT-24",
+    "size": "a estimar",
+    "deps": ["P1.3", "P1.31"],
+    "acceptance": "cada situação por tipo de OS interna da P1.31, com aprovação por outra pessoa e efeito no encerramento, em migration do cadastro posterior à `V3_6`, com reserva no §3; titular falecido: tipo `HOLDER_DECEASED` com motivo de fim de vínculo por falecimento, responsável provisório (herdeiro, inventariante ou ocupante), fornecimento mantido e acréscimos, aviso de corte e negativação suspensos enquanto a sucessão não é regularizada, e nova titularidade por OS, com `registry.deceased_holder_policy` (classe b) e padrão protetivo de continuidade do serviço e suspensão de encargos e de negativação por período definido pelo tenant (bloqueios aplicados pela P3.4 e pela ED-30); representação: `customer_representations` com representado, representante cadastrado como cliente e diferente do representado, tipo (`ATTORNEY`, `GUARDIAN`, `CURATOR`, `CONDO_MANAGER`, `ESTATE_ADMINISTRATOR`, `LEGAL_REPRESENTATIVE`, `AUTHORIZED_THIRD_PARTY`), poderes (`VIEW`, `REQUEST`, `PAY`, `CHANGE_BILLING`, `OWNERSHIP`; ao menos um), unidade opcional, vigência, documento comprobatório obrigatório e OS `REPRESENTATIVE_SET`, com `registry.representation_proof` (classe d) e `portal.delegated_access` (classe b, desligado por padrão para operações que alteram faturamento); representação vencida deixa de valer (teste); acesso delegado no portal (ver P3.3); nome social: `social_name` só em PF, usado no atendimento, no portal e nas mensagens, com o nome civil mantido no documento fiscal e nos termos, por `registry.social_name_display` (classe d, padrão protetivo: nome social em toda interação, exceto documento fiscal); unidade desocupada: `occupancy_status` (`OCCUPIED`, `VACANT`, `UNKNOWN`) em coluna própria, com `VACANT` só sem usuário vigente, como exceção controlada à regra do usuário vigente, e `registry.vacant_unit_holder` (classe b: proprietário como titular provisório; último usuário enquanto não houver aviso; sem titular, com fatura retida), com padrão de fábrica sem titular e com fatura retida, o mais protetivo; unidades carregadas sem titular pela P1.2 recebem `VACANT`; estimativa e cobrança da unidade vaga pela extensão de `bill.inactive_economy_rule` (ver P2.5); fusão e separação de cadastros duplicados: detecção de candidatos, inclusive sem CPF ou com documento digitado de formas diferentes, OS `CUSTOMER_MERGE` com visualização prévia que religa vínculos, consentimentos, protocolos, débitos e contas do portal, aprovação por outra pessoa (`service_type.internal_approval`) e desfazimento por OS inversa que devolve o estado anterior (teste); validação externa: situação cadastral do CPF e do CNPJ e, nas operações de risco (troca de titularidade, tarifa social), validação biográfica ou biométrica, por `registry.validate_document_online` (classe d: nenhuma; situação; situação e biometria) e `reg.cpf_validation_provider` (classe d), com credencial no cofre, consulta paga por tenant com custo medido, cache, base legal registrada (LGPD, art. 7º) e só situação e data guardadas; validação como condição da OS `OWNERSHIP_TRANSFER` e revalidação em lote dos cadastros migrados; resultado irregular gera alerta, não bloqueio; detecção de óbito: resultado de óbito abre OS interna de titular falecido para revisão humana, sem efeito automático (ADR-0042), com `reg.deceased_check` (classe d) e consulta ao Sirc só para tenant de direito público, em pedido motivado (Decreto 9.929/2019, art. 7º); nome na conta pela regra da P1.3 (usuário titular; exibir o proprietário é opção do tenant), inclusive quando há responsável provisório",
+    "findings_owned": ["CAD-65", "CAD-66", "CAD-67", "CAD-68", "CAD-78", "CAD-82", "PLT-24"],
+    "consumed": ["CAD-65", "CAD-66 (dicionário 23b §3.1, representante)", "CAD-67", "CAD-68 (23b §3.2, occupancy_status)", "CAD-78", "CAD-82", "PLT-24", "decisão do dono 6 (aplicada pela regra da P1.3)", "remetido: bloqueio de corte e negativação → P3.4 e ED-30; acesso delegado → P3.3; cobrança da unidade vaga → P2.5"]
+  },
+  {
+    "id": "P1.35",
+    "title": "Cadastro mínimo de ativos e hierarquia de seis níveis",
+    "origin": "ED-56 e P1.31 (v2.21); ADR-0034; ADR-0039; NR 16/2026 da ANA; decisão do dono de 28/10/2026; COE-05, DAD-26",
+    "size": "a estimar",
+    "deps": ["P0.19", "P1.27", "P1.31"],
+    "acceptance": "entidade `asset`, em migration com reserva nova no §3, com inclusão e alteração só por OS interna da P1.31 (teste de arquitetura recusa escrita direta); hierarquia de seis níveis (município e localidade, sistema, natureza e subdivisão do serviço, instalação, equipamento, componente opcional), com `parent_asset_id` sem ciclo, nível coerente com o do pai e componente só sob equipamento (teste); classe e tipo lidos do catálogo da P1.27, com correspondência ao par UP e UAR do MCPSB, e fronteira de cada classe de equipamento registrada sem sobreposição entre classes (ISO 14224, cláusula 8.1, como analogia técnica); peça não é ativo, e sim material consumido pela OS (ED-58); instalação que é estrutura do GIS liga-se à feição da P1.26; códigos MCPSB da NR 16/2026 da ANA só no ativo: `cib` (25 posições, só bem individual), `loc_ibge` (7), `ac` (6), `nts_sds` (19 códigos), `up`, `uar` (7, atribuído pela agência), `at1` a `at5` (`00` quando não se aplica), modo de controle (`INDIVIDUAL`, `MASS`) e unidade de medida, com o tamanho de `up` (2 ou 3 dígitos) conferido no manual antes da migration; indicadores de bem compartilhado (`bcp`) e reversível (`brv`); feição do GIS e hidrômetro referenciam o ativo por FK, sem código patrimonial em JSONB na feição (teste de que o código só existe no ativo); ficha técnica mínima (fabricante, modelo, número de série, ano de fabricação, potência, capacidade), data de entrada em operação, situação do ciclo de vida e localização; atributo de espaço confinado nos tipos de instalação e de ponto (poço de visita, câmara de válvula, reservatório, poço úmido, tanques da ETE) e relatório de todos os espaços confinados, inclusive desativados (NR-33, 33.3.3, a), lido pelos tipos de serviço de espaço confinado da P1.31; registra na P1.31 os verificadores de existência dos alvos `OPERATIONAL_SITE`, `EQUIPMENT`, `COMPONENT` e `BUILDING`, e OS com alvo de ativo inexistente ou de outro tenant é recusada (teste); vida útil, custo histórico, inventário regulatório completo, conciliação com o patrimônio, manutenção e risco (ver ED-56); conteúdo da ISO 55001 (ver ED-72); catálogo de tipos (ver P1.27)",
+    "findings_owned": ["COE-05", "DAD-26"],
+    "consumed": ["v2.19 da ED-56 (cadastro de ativo e hierarquia; ficha técnica mínima)", "v2.19 da P1.31 (alvos de ativo)", "COE-05", "DAD-26", "dicionário 23b §3.21", "OPE-14 (cadastro de espaços confinados no catálogo; dona P1.31)", "remetido: vida útil, custo histórico, inventário, manutenção e risco → ED-56; ISO 55001 → ED-72"]
+  },
+  {
+    "id": "P1.36",
+    "title": "Protocolo de atendimento (NR 11) como origem de toda solicitação externa",
+    "origin": "P3.4 (v2.21); ADR-0039 (item 7); decisão do dono 7 de 28/10/2026; DAD-24",
+    "size": "a estimar",
+    "deps": ["P0.19", "P1.31"],
+    "acceptance": "`V8_1`, que sai da P3.4: tabela de protocolo de atendimento com número por tenant e ano, único e sem duplicata em aberturas paralelas (teste; NR 11, art. 52, §1º), canal (`COUNTER`, `PHONE`, `PORTAL`, `APP`, `EMAIL`, `WHATSAPP`, `REGULATOR`, `OMBUDSMAN`), especificação da solicitação por catálogo (prazo, documentos exigidos, exigência de matrícula), unidade consumidora quando a especificação exige matrícula ou endereço e ponto quando não há unidade, solicitante cadastrado ou nome e contato mínimos de quem não é cliente, papel do solicitante (`HOLDER`, `USER`, `THIRD_PARTY`, `INTERNAL`), datas de abertura, de prazo original e de prazo corrente, situação (`OPEN`, `IN_PROGRESS`, `ANSWER_PENDING`, `ANSWERED`, `CLOSED`, `CANCELLED`), motivo classificado obrigatório no encerramento (base do relatório do art. 54 na P3.22), duplicidade só com referência ao protocolo original e referência da agência; toda solicitação externa nasce como protocolo e gera a OS, e alteração interna do backoffice gera OS sem protocolo (ADR-0039, item 7; decisão do dono 7): a coluna `protocol_id` da OS ganha FK aqui, com vínculo 1:N entre protocolo e OS, e OS de tipo externo sem protocolo é recusada (teste); prazo do protocolo por especificação, contado por motor único de prazo em dias corridos ou úteis, com feriados nacionais, estaduais e municipais de `cal.holidays` (P0.19), por `sac.deadline_counting_rule` e `sac.holiday_scope`, motor reutilizado pela P3.4 e pela ED-35; prorrogação registrada como evento com motivo, autor e aviso, sem apagar o prazo original (`sac.extension_policy`); um teste por regra de contagem; termo sempre protocolo de atendimento, distinto do chamado de suporte `SUP-AAAA-NNNNNN` da P1.23 (COE-23); atendimento completo, ouvidoria e visão 360 (ver ED-35)",
+    "findings_owned": ["DAD-24"],
+    "consumed": ["V8_1 e a parte de protocolo da v2.15 da P3.4 (prazo por especificação, motor único de prazo, prorrogação como evento)", "DAD-24 (dicionário 23b §3.19)", "DAD-25 (FK de protocol_id; dona P1.31)", "decisão do dono 7", "termo COE-23", "remetido: atendimento completo → ED-35; relatório do art. 54 → P3.22"]
+  },
+  {
+    "id": "P1.37",
+    "title": "Perfis de acesso de fábrica por função, com menu próprio",
+    "origin": "decisão do dono de 28/10/2026; ADR-0040; JOR-01",
+    "size": "a estimar",
+    "deps": ["P0.13", "P0.47", "P1.12"],
+    "acceptance": "perfis de acesso de fábrica compostos do catálogo `recurso:ação` da P0.13, com negação por padrão: atendente, supervisor comercial, faturista, analista de arrecadação, leiturista, programador de OS, executor de campo, almoxarife, operador de estação, analista de perdas, laboratorista, responsável técnico da qualidade, editor e revisor do cadastro técnico, gestor, auditor interno, ouvidor, encarregado de dados, procurador, contador, auditor externo e regulador; ADMIN, OPERATOR, MANAGER e VIEWER continuam como perfis mínimos da P0.13; cada perfil com menu derivado do mapa do produto da P0.47 e página inicial atribuída, construída pela P3.39; usuário de cada perfil vê só os itens de menu e as ações cujas permissões o perfil tem (E2E por perfil, usando as ações por papel da P1.12); o documento do catálogo de permissões gerado do código (JOR-02, P0.13) mostra o perfil de fábrica de cada permissão; regra para todas as tarefas: permissão nova entra nos perfis de fábrica pertinentes, e teste no CI recusa permissão que não esteja em nenhum perfil; auditor externo e regulador nascem desligados, com o mecanismo de liberação na ED-75; perfis de fábrica versionados com o produto e atribuídos pelo administrador do tenant, com atribuição auditada; composição de perfis próprios pelo administrador do tenant (ver ED-06)",
+    "findings_owned": ["JOR-01"],
+    "consumed": ["JOR-01", "usa JOR-02 da P0.13 e JOR-03 da P0.47", "remetido: página inicial → P3.39; composição → ED-06; liberação de auditor externo e regulador → ED-75"]
+  },
+  {
+    "id": "P1.32",
+    "title": "Núcleo do módulo Certificações de qualidade",
+    "origin": "ADR-0041; 21a §3, CQ-01",
+    "size": "G (a estimar)",
+    "deps": ["P0.13", "P0.19", "P0.47", "P1.7", "P1.31"],
+    "acceptance": "core `V9_8` e tenant `V21_1`, ambas com reserva no §3; catálogo de normas em quatro classes (`REGULATORY`, `VOLUNTARY`, `REFERENCE`, `EXPORT_PROFILE`), populado pela carga da P1.34 a partir do catálogo consolidado em docs/normas; ligar e desligar norma por tenant com escopo, edição e aceite; mapa de cláusulas e vínculo muitos-para-muitos de evidência; desligar não apaga registro; aviso fixo de que o módulo não certifica; parâmetros `cert.*`; permissões `cert:read`, `cert:write`, `cert:approve` e `cert:audit`; teste de fronteira (núcleo sem dependência do pacote); teste por norma ligada e desligada",
+    "findings_owned": [],
+    "consumed": ["v2.20", "reserva Flyway COE-15", "marcador (v2.17) retirado do título"]
+  },
+  {
+    "id": "P1.33",
+    "title": "Busca global, atalhos de teclado, visões salvas e densidade",
+    "origin": "22c PLT-15; ADR-0008; PLT-15",
+    "size": "M (a estimar)",
+    "deps": ["P1.12", "P1.18"],
+    "acceptance": "busca global por teclado (Ctrl ou Cmd+K) sobre cliente, unidade, protocolo, OS, conta e documento, respeitando permissão, escopo por área (P3.30, quando existir) e a cota de busca por documento (`sec.document_search_quota`, ADR-0008), de modo que a busca global não contorne o controle de CPF (teste); atalhos de teclado com remapeamento e desligamento (WCAG 2.1.4); visões salvas de filtros e colunas por usuário, compartilháveis por unidade organizacional quando o escopo da P3.30 existir, em migration com reserva no §3 que estende `user_preferences` da P1.18; densidade da tabela (confortável e compacta); ações recentes e favoritos; teste de acessibilidade por teclado",
+    "findings_owned": ["PLT-15"],
+    "consumed": ["PLT-15", "reserva Flyway COE-15", "marcador (v2.18) retirado do título"]
+  },
+  {
+    "id": "P1.34",
+    "title": "Área \"Normas e legislação\": biblioteca de normas, carga e consulta",
+    "origin": "ADR-0041; docs/normas; DAD-28",
+    "size": "M (a estimar)",
+    "deps": ["P1.32", "P0.47"],
+    "acceptance": "carga do catálogo `docs/normas/catalogo-normas.json` no catálogo global do core por migration repetível `R__` (as tabelas são da `V9_8`, P1.32), só com metadados e resumos em palavras próprias, sem texto de norma; id estável do catálogo usado como chave e datas de vigência estruturadas (`effective_from`, `effective_to`); transição automática de `VIGENCIA_FUTURA` para `VIGENTE` na data de efeito, com alerta antecipado ao responsável do tenant (teste com data simulada); tabelas com referência normativa em texto livre (`tariff_versions.regulatory_act`, `collection_policies.norm_source`, `holidays.source`, `surcharge_indexes.source`) ganham `norm_id` opcional, mantido o texto para ato local fora do catálogo; consulta por classe (`REGULATORY`, `VOLUNTARY`, `REFERENCE`, `EXPORT_PROFILE`), área, módulo, situação e agência; selos de verificação (fonte oficial, secundária, não confirmada) e de vigência futura, revogada ou substituída; link para a fonte oficial; alerta ao responsável do tenant quando muda a situação de norma ligada ao seu perfil; atualização por nova versão do catálogo, revisada por outra pessoa; norma própria do tenant (classe d); normas obrigatórias exibidas como não desativáveis; teste de que nenhum campo traz texto de norma e de que item não confirmado exibe o selo de revisão",
+    "findings_owned": ["DAD-28"],
+    "consumed": ["regra da v2.20 (carga a partir de docs/normas)", "DAD-28 (dicionário 23b §3.23)", "carga por R__ no lugar da V9_8 (COE-15)", "23e §4 (data de efeito e alerta)", "marcador (v2.20) retirado do título"]
+  }
+]

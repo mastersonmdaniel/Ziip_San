@@ -1,0 +1,635 @@
+[
+  {
+    "id": "P2.1",
+    "title": "Fundação de lote: Spring Batch por tenant e rota, `job_runs`, trava (tenant, ciclo), fila justa",
+    "origin": "17:X4; ADR-0014",
+    "size": "G",
+    "deps": [
+      "P1.9",
+      "P0.19"
+    ],
+    "acceptance": "core `V10` com `job_runs` e trava por (tenant, ciclo); Spring Batch por tenant e por rota; reinício de execução interrompida continua só as rotas pendentes, sem reprocessar as concluídas (teste com falha no meio do lote); disparo duplo do mesmo (tenant, ciclo) não corre, e o segundo pedido é recusado com registro; fila justa: tenant grande não atrasa o pequeno além do RNF (teste com dois tenants de porte diferente em paralelo); agendamento, data de referência e registro de cada execução usam o fuso horário e o calendário operacional do tenant da P0.19 (PLT-14)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18 (PLT-14 escrito como uso da P0.19)"
+    ]
+  },
+  {
+    "id": "P2.2",
+    "title": "GUC por transação; pools por papel",
+    "origin": "17:D3; ADR-0005",
+    "size": "M",
+    "deps": [
+      "P2.1",
+      "P0.21",
+      "P0.28"
+    ],
+    "acceptance": "o GUC por transação (`set_config(..., true)`) e o PgBouncer em modo transaction vêm da P0.28 (ver P0.28, COD-04); esta tarefa cria os pools por papel (API, lote e ingestão), cada um com credencial e limite de conexões próprios; teste de isolamento entre tenants repetido nos três pools com o PgBouncer em modo transaction: nenhuma consulta enxerga dado de outro tenant depois de troca de conexão; lote que satura o pool de lote não esgota o pool da API (teste); base para o schema compartilhado documentada; usa os testes de upgrade de schema por tenant, o catálogo e a regra de instrução preparada da P0.21 (PLT-35), executados também sobre os três pools",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18 (PLT-35 escrito como uso da P0.21)",
+      "COD-04: GUC por transação e PgBouncer remetidos à P0.28"
+    ]
+  },
+  {
+    "id": "P2.3",
+    "title": "Tabelas de fato particionadas; auditoria por lote",
+    "origin": "17:M8, 17:X3, 17:B1, 17:B2",
+    "size": "G",
+    "deps": [
+      "P1.7"
+    ],
+    "acceptance": "`V4_6` com partição de `bills` e `bill_items` e auditoria por lote; `V5_4` com a chave de idempotência das leituras; 100 mil contas auditadas por `run_id`, com consulta da trilha de um lote inteiro restrita às partições do lote (plano de execução conferido); leitura reenviada com a mesma chave não duplica (teste); o padrão de partição definido aqui é o que a ED-17 usa para as séries temporais (ver ED-17, OPE-19)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: OPE-19 remetido à ED-17"
+    ]
+  },
+  {
+    "id": "P2.4",
+    "title": "R4a: CBS/IBS com vigência",
+    "origin": "R4a (v1)",
+    "size": "P",
+    "deps": [
+      "P1.8",
+      "P1.16"
+    ],
+    "acceptance": "CBS e IBS com vigência sobre as tabelas de tributo da `V4_5` (P1.8, P1.16), sem sobreposição de vigências (restrição no banco e teste); alíquota ausente para a competência faturada gera erro e a conta não é emitida (teste); alíquotas sempre em tabela com vigência, nunca em código; as linhas de 2026 (ano de teste: CBS 0,9% e IBS 0,1%), da CBS plena a partir de 01/01/2027 e da transição do IBS de 2029 a 2032 (LC 214/2025, art. 544; fatos normativos) são cadastráveis, com teste de troca de alíquota na virada de 01/01/2027; cashback de CBS e IBS, fato gerador e reequilíbrio ficam na P2.34 (ver P2.34, GES-13); split payment fica na conciliação da P3.1 (ver P3.1, RAS-09)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: GES-13 remetido à P2.34",
+      "RAS-09 remetido à P3.1",
+      "datas de vigência do catálogo (lc-214-2025)"
+    ]
+  },
+  {
+    "id": "P2.5",
+    "title": "R4: medição, ciclo, conta, N6",
+    "origin": "R4 (v1); G5; G6; ADR-0002; ADR-0038; decisão do dono de 28/10/2026 (item 6); CAD-88, DAD-14, DAD-15, DAD-20, JOR-10, JOR-11, RAS-13, RAS-14, RAS-22, RAS-24",
+    "size": "G",
+    "deps": [
+      "P2.1",
+      "P0.20",
+      "P1.41"
+    ],
+    "acceptance": "`V4_3` e `V4_4` (ciclo e modelos de conta); casos da v1 passam (1000→1027 com E-01 resulta em 201,60; ciclo repetido não gera segunda conta); cronograma mensal por grupo na `V4_3`, com catálogo de atividades do produto (ordem, obrigatoriedade, repetição, precedência) e datas prevista, comandada e realizada; atividade só é comandada com a precedente realizada; faturamento recusado para rota de leitura não transmitida; encerramento do mês por referência depois de todos os grupos, sem geração em referência fechada (teste de precedência e de referência fechada); a conta grava `parameter_version_ids` em coluna própria, além do `tariff_snapshot`, e cada linha de consumo ganha `version_no`, `superseded_by_id`, `bill_id` e `parameter_version_ids`, com o índice único valendo só para a versão vigente: retificação cria nova versão em vez de `UPDATE`, e o histórico de 120 meses é reconstituído sem ler o `audit_log` (teste; DAD-14); a conta grava `billed_customer_id` (vínculo `show_on_bill` vigente na emissão) e `billed_customer_snapshot` cifrado (nome, documento mascarado, endereço de entrega), que não muda com troca posterior de titular (teste; DAD-15; NR 11, art. 33, §2º; CDC, art. 42-A); o nome impresso segue `bill.holder_name_display`, classe b, com `USER_HOLDER_ONLY` (só o usuário titular) como padrão de fábrica e `USER_HOLDER_AND_OWNER` (titular e proprietário) como opção do tenant, com teste das duas opções (decisão do dono de 28/10/2026); catálogos `debit_types` (com `generates_bill`) e `credit_origins` (classe a) substituem o texto livre de débitos a cobrar e créditos a realizar, que ganham `source_type` e `source_id` (`SERVICE_ORDER`, `INSTALLMENT_AGREEMENT`, `INFRACTION`, `PAYMENT_ADJUSTMENT`, `LEGACY_IMPORT`, `MANUAL`), `legacy_reference`, `service_order_id` obrigatório para débito de serviço, mês contábil (`accounting_month`), mês de arrecadação (`collection_month`) e prazo de financiamento (`financing_term`) (DAD-20); catálogo de ocorrências de leitura com o efeito de cada uma (tipo de OS gerado pelo catálogo da P1.31, consumo a faturar por média, mínimo ou sem faturar, mudança de situação e perda de benefício), com teste por ocorrência (JOR-10); primeira conta, conta final e ciclo com dias fora da faixa seguem `bill.partial_period_rule`, classe b, com padrão proporcional (parte fixa e consumo proporcionalizados pelos dias), com teste das três situações e do ajuste por dias para leitura acima de 33 dias, conforme a faixa de 27 a 33 dias da Res. ARESC 046/2016 (JOR-11, RAS-14); média sem leitura por `meter.average_months`, teto de ciclos estimados por `meter.max_estimated_cycles` e regra posterior por `meter.after_cap_rule`, testados com os valores convergentes das ERIs de SC (6 meses, até 3 ciclos) (RAS-14); cobrança por economia com franquia e excedente, recusa, na configuração, do modelo híbrido vedado pelo STJ (Tema 414) e apoio à medição individualizada (Lei 13.312/2016), com teste, ficando o condomínio completo na ED-15 (RAS-13); componente fixo por disponibilidade de infraestrutura pela regra da ERI (TFDI da Res. ARESC 105/2018; Lei 11.445/2007, art. 45), lido de `tariff.fixed_part_model` e de `bill.cut_connection_charge`, com teste de unidade não conectada (RAS-22); `bill.due_date_options` com no mínimo seis datas para concessionária (Lei 8.987/1995, art. 7º-A, incluído pela Lei 9.791/1999) e `bill.min_days_delivery_to_due` por categoria, com teste de configuração com cinco datas recusada e de antecedência entre entrega e vencimento (RAS-24); categorias opcionais da NR 13 (art. 6º) em `tariff.optional_categories`, classe d (residencial vulnerável, micro e pequena empresa, coletiva com várias economias e hidrômetro único, entidade assistencial), cada uma com critério de enquadramento, prova e validade; benefício vencido deixa de ser aplicado na competência seguinte ao vencimento, e o aviso de vencimento sai com a antecedência de `benefit.expiry_notice_days`, classe d, pelo motor de mensagens da P2.32 (CAD-88; a ED-22 consome); chaves de PARAMETROS-DO-TENANT da fase P2.5 lidas pelo motor, com teste por opção: `bill.hold_on_anomaly`, `bill.auto_review_value_bands`, `bill.min_issue_amount`, `bill.below_min_rule`, `bill.validity_months`, `bill.mail_extra_days`, `bill.delivery_address_fee`, `bill.inactive_economy_rule`, `bill.carry_over_unpaid`, `sewer.no_water_volume_rule`, `credit.type_limits`, `fee.fine_mode`, `fee.charge_moment` e `fee.exemptions`; usa a situação de unidade sem usuário vigente da P1.41 (CAD-68), a fonte alternativa de água e a sazonalidade da P1.3 (CAD-69, CAD-89), o vínculo, a categoria, o território e a deduplicação da P1.3 (DAD-06, DAD-08, DAD-36, DAD-38) e os tetos de juros e a taxa legal da P0.20 (RAS-16); fora desta tarefa: perfis por agência (ver P2.31), conteúdo mínimo da conta e mensagens legais (ver P2.32, CAD-96), cashback (ver P2.34, GES-13), gestão tarifária (ver P2.29, GES-01), medida excepcional e tarifa de contingência (ver ED-91, CAD-74, GES-07), ligação obrigatória (ver ED-88, CAD-87) e alerta de consumo anormal (ver P3.5, CAD-99)",
+    "findings_owned": [
+      "CAD-88",
+      "DAD-14",
+      "DAD-15",
+      "DAD-20",
+      "JOR-10",
+      "JOR-11",
+      "RAS-13",
+      "RAS-14",
+      "RAS-22",
+      "RAS-24"
+    ],
+    "consumed": [
+      "v2.15 (cronograma por grupo, precedência, referência fechada, mês contábil, origem e OS em débitos e créditos)",
+      "v2.18",
+      "achados atendidos: CAD-88, DAD-14, DAD-15, DAD-20, JOR-10, JOR-11, RAS-13, RAS-14, RAS-22, RAS-24",
+      "decisão do dono 6 como `bill.holder_name_display`",
+      "usa: CAD-68, CAD-69, CAD-89, DAD-06, DAD-08, DAD-36, DAD-38, RAS-16",
+      "remetidos: perfis (P2.31), CAD-96 (P2.32), GES-13 (P2.34), GES-01 (P2.29), CAD-74 e GES-07 (ED-91), CAD-87 (ED-88), CAD-99 (P3.5)"
+    ]
+  },
+  {
+    "id": "P2.31",
+    "title": "Perfis regulatórios das agências de SC: carga, simulação e teste",
+    "origin": "nova (23e RAS-01), a partir da P0.20; ADR-0002; ADR-0038; mapa de ERIs (normas/partes/04); RAS-01",
+    "size": "a estimar",
+    "deps": [
+      "P0.20",
+      "P1.34",
+      "P2.5"
+    ],
+    "acceptance": "perfis regulatórios pré-carregados na `regulatory_profiles` da P0.19 para ARIS (RN 19/2019 compilada, com as RN 20/2019, 38/2023, 40/2024 e 55/2026), ARESC (Res. 046/2016 consolidada, com as Res. 139/2019 e 259/2023), AGIR (RN 001/2013), AGR-Tubarão (Res. 007/2013 e 040/2024), CISAM Meio-Oeste (RN 01/2017 e RN 05/2026) e CISAM-SUL (RN 03/2017); perfil identificado por agência e município, com data de início, porque o mesmo tenant pode responder a mais de uma ERI (a CASAN responde a ARESC, ARIS, AGIR e CISAM-SUL conforme o município); cada chave dos grupos G1, G5, G6 e G9 e das bifurcações de PARAMETROS-DO-TENANT traz valor, artigo de origem, vigência e marca de confirmação, e valor não confirmado no texto lido (AGR-Tubarão sem condições gerais comerciais localizadas; CISAM-SUL com texto só digitalizado) fica sem valor de fábrica e exige valor informado pelo tenant; cada prazo do perfil é marcado como dias corridos ou úteis (ARIS corridos, ARESC úteis, AGIR não definido); valores convergentes de SC carregados e testados: aviso de corte de 30 dias, seis datas de vencimento (CISAM-SUL: mínimo de quatro), vencimento mínimo de 5 dias úteis após a apresentação (10 para a categoria pública), ciclo de leitura de 27 a 33 dias, multa de 2%, juros de até 0,033% ao dia, correção pelo IPCA, religação em 48 h, urgência em 4 h e corte indevido em 4 h, média de 6 meses por até 3 ciclos; diferenças carregadas por perfil: regra depois da média (ARIS e AGIR, consumo mínimo; ARESC, saldo parcelado em 3 vezes), limite de 120 dias de idade da dívida para cortar (só ARIS), compensação por corte indevido em `rec.undue_cut_compensation` e idade do atendimento prioritário (60 anos na AGIR e no CISAM-SUL; 65 na ARESC); regra local que contraria lei federal é recusada na carga e exibida ao tenant como divergência: o corte até 12 h de sexta-feira (ARIS, art. 158; AGIR, art. 148; ARESC, art. 85) fica travado no piso da Lei 14.015/2020, e a perda da tarifa social após dois cortes (AGIR, RN 001/2013, art. 127, §7º) é recusada pela Lei 14.898/2024; simulação antes de ativar mostra, sobre a massa sintética, a diferença de cada chave e o efeito na conta-tipo, sem gravar na base (teste); ativação pelo envelope de proposta, aprovação e aceite da P0.19, com quem propõe diferente de quem aprova; teste automatizado por perfil cobrindo média, teto de ciclos e ajuste por dias, datas de vencimento e período parcial da P2.5 (RAS-14, RAS-24, JOR-11) e os limites da P0.20 (RAS-16); troca de perfil na data de vigência do ato, testada com relógio simulado: o CISAM Meio-Oeste passa da RN 01/2017 para a RN 05/2026 em 20/05/2027 (art. 163); `reg.ana_nr_adoption` de cada perfil preenchida com os atos de adoção das NR da ANA do mapa de ERIs (§5) e ligada ao catálogo de normas da P1.34 como norma ativa por adoção (DAD-28); a verificação da NR 11 pela ANA a partir de 20/05/2027 (Res. ANA 230/2024, art. 74, §3º) consta do perfil como fato normativo; a P3.4 usa os perfis nas vedações estaduais de corte (ver P3.4, RAS-12) e a P3.28 nas regras de vazamento e aferição (ver P3.28); perfis fora de SC ficam sob demanda (ver ED-97, RAS-31)",
+    "findings_owned": [
+      "RAS-01"
+    ],
+    "consumed": [
+      "RAS-01 atendido (seis ERIs de SC da nota da estrutura; o 23e fala em cinco)",
+      "valores e artigos do mapa de ERIs (§4, §5, §6 e anexo B)",
+      "usa: DAD-28 (P1.34), JOR-11, RAS-14 e RAS-24 (P2.5), RAS-16 (P0.20)",
+      "remetidos: RAS-12 (P3.4), RAS-31 (ED-97)"
+    ]
+  },
+  {
+    "id": "P2.6",
+    "title": "NFAg-e (modelo 75, instituída pelo art. 114 do Decreto 12.955/2026 e pelo regulamento do IBS; não há Ajuste SINIEF instituidor) sobre o motor portado",
+    "origin": "ADR-0003; 17:P4; DAD-17, DAD-18",
+    "size": "G",
+    "deps": [
+      "P1.8",
+      "P2.5",
+      "P1.6"
+    ],
+    "acceptance": "`V4_7`; NFAg-e autorizada na homologação da SEFAZ do piloto (`tpAmb=2`) a partir do ambiente local, com o e-CNPJ da própria Ziip/TGP como emitente de teste, lido do cofre local (§2.4; aceitação desse CNPJ no modelo 75 a confirmar); XML assinados tratados como na P1.8: área separada e apagados ao fim de cada ciclo de testes; ciclo reexecutado não gera segunda NFAg-e; documento fiscal pelo dicionário do 23b §3.13 (DAD-18): emitente em `fiscal_issuers`, `document_type`, modelo 75, série e número sem lacuna por `fiscal_series`, `access_key` única com dígito verificador, `source_type` e `source_id` únicos entre documentos vivos, estados `RESERVED`, `SIGNED`, `TRANSMITTED`, `AUTHORIZED`, `REJECTED`, `PENDING_RECONCILIATION`, `CANCELLED`, `REPLACED` e `VOIDED`, `environment` com trava tripla para produção, `issued_at` no fuso America/Sao_Paulo, protocolo de autorização e rejeição, contingência com motivo, `recipient_municipality_ibge`, `xml_sha256` e `xml_storage_uri`, substituição, evento de cancelamento e vínculo com pagamentos (NT 2026.001); campos que dependem do MOC definitivo (destinatário sem CPF ou CNPJ, código de classificação do item, campos do grupo IBS e CBS por item, documento do destinatário cifrado com hash) marcados como condicionais e ligados à versão do leiaute; a conta ganha `fiscal_document_id` (uma NFAg-e viva por conta) e o item ganha `fiscal_item_code` e o grupo IBS e CBS por item (CST, `cClassTrib`, base, alíquotas e valores; NT 2026.002), com o CHECK do total com tributo na `V4_6` (DAD-17); vetores de teste incluem a regra de 2027 da NT 2026.004 (valor líquido e soma de IBS e CBS no total do documento a partir de 2027); obrigatoriedade da NFAg-e para fatos geradores a partir de 01/12/2026 (Ato Conjunto RFB/CGIBS 4/2026) registrada como fato normativo; usa o município IBGE do endereço da P1.3 (DAD-04), os dados do emitente no tenant da P1.6 (DAD-32) e a validação do CNPJ alfanumérico de emitente e destinatário da P1.39 (RAS-03); a tela de documentos fiscais do tenant é da P2.33 (ver P2.33)",
+    "findings_owned": [
+      "DAD-17",
+      "DAD-18"
+    ],
+    "consumed": [
+      "DAD-17 e DAD-18 atendidos",
+      "regra de 2027 da NT 2026.004 (23e §4)",
+      "usa: DAD-04 (P1.3), DAD-32 (P1.6), RAS-03 (P1.39)",
+      "remetido: tela do tenant (P2.33)"
+    ]
+  },
+  {
+    "id": "P2.34",
+    "title": "Cashback de CBS e IBS na fatura",
+    "origin": "nova (23e RAS-02; 22d GES-13), a partir da P2.4; LC 214/2025; Decreto 12.955/2026; GES-13, RAS-02",
+    "size": "a estimar",
+    "deps": [
+      "P2.4",
+      "P2.5",
+      "P2.6"
+    ],
+    "acceptance": "cashback de CBS e IBS concedido na cobrança da conta de água e esgoto, como crédito na fatura, para os domicílios da lista da RFB (Decreto 12.955/2026, art. 511; LC 214/2025, arts. 112 a 118), com 100% da CBS e 20% do IBS conforme a LC 214/2025; cálculo por domicílio e por período de aferição, com uma única devolução por domicílio no período, inclusive quando a família tem mais de uma unidade (teste); CBS sobre consumo devolvida desde 01/2027 e IBS desde 01/2029, por vigência (fatos normativos); lista importada com origem, data e versão, com cada acesso registrado como no G2; reflexo na NFAg-e da P2.6, nos campos do leiaute vigente, condicionais ao MOC definitivo, e em relatório por competência (valor devolvido por domicílio e total); `tax.profile`, classe b, aprovação JUR, com `cashback_enabled`, `tax_event_date_rule` e `split_payment_mode`, mantidas as alíquotas em tabela com vigência da P2.4; `tax_event_date` gravado separado de `due_on` e de `issued_on`, pela regra de fato gerador de operação contínua da LC 227/2026 (art. 10, §3º), cujo texto é conferido antes da ativação; efeito tributário por competência registrado para o pleito de reequilíbrio contratual (LC 214/2025, arts. 373 a 377), com a simulação tarifária na P2.29 (ver P2.29); teste com domicílio elegível, não elegível e elegível com duas unidades; a condição de contribuinte de IBS e CBS de prestador constituído como autarquia fica registrada como ponto a confirmar por parecer tributário; split payment fica na conciliação da P3.1 (ver P3.1, RAS-09)",
+    "findings_owned": [
+      "GES-13",
+      "RAS-02"
+    ],
+    "consumed": [
+      "RAS-02 e GES-13 atendidos",
+      "GES-13: cashback, `tax_event_date`, `tax.profile`, registro para reequilíbrio",
+      "remetidos: split payment (P3.1, RAS-09), simulação do reequilíbrio (P2.29)"
+    ]
+  },
+  {
+    "id": "P2.7",
+    "title": "Leitura terceirizada",
+    "origin": "17:P3",
+    "size": "M",
+    "deps": [
+      "P2.5"
+    ],
+    "acceptance": "`V5_3` com as tarefas de leitura ligadas à rota e ao ciclo; arquivo do fornecedor do piloto importado e exportado no leiaute dele; reenvio do mesmo arquivo ou do mesmo registro não duplica leitura (teste)",
+    "findings_owned": [],
+    "consumed": [
+      "aceite da v2.21 reescrito sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P2.9",
+    "title": "Carga com 300 mil ligações",
+    "origin": "17:O4; ADR-0012",
+    "size": "M",
+    "deps": [
+      "P2.5",
+      "P0.23"
+    ],
+    "acceptance": "carga com 300 mil ligações sintéticas: 100 mil contas faturadas em menos de 2 h sem estourar o p95 da API medido em paralelo; durante a carga, o realm do portal fica dentro da capacidade do Keycloak medida na P0.23 (PLT-28); resultado registrado com volume, duração, p95 e uso de recursos",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18 (PLT-28 escrito como uso da P0.23)"
+    ]
+  },
+  {
+    "id": "P2.10",
+    "title": "Importador v1 com 120 meses",
+    "origin": "17:X5",
+    "size": "G",
+    "deps": [
+      "P1.2",
+      "P1.41",
+      "P2.5"
+    ],
+    "acceptance": "`V14_2`; importador da v1 com 120 meses de histórico, construído sobre o framework declarativo de migração da P1.2 (PLT-16); saldo por matrícula igual ao do legado; prestações a vencer dos parcelamentos ativos migradas como débitos a cobrar com origem parcelamento (`source_type`) e referência ao acordo do legado (`legacy_reference`), nas colunas de origem da P2.5 (DAD-20), cobradas uma a uma na conta, e saldo por matrícula conferido com elas incluídas; unidade sem usuário vigente importada na situação da P1.41 (CAD-68); simular, desfazer, reparcelar e antecipar parcelamento continuam na P4.1 (ver P4.1)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.15 (prestações a vencer como débitos a cobrar)",
+      "v2.18",
+      "usa: PLT-16 (P1.2), DAD-20 (P2.5), CAD-68 (P1.41)",
+      "remetido: operações de parcelamento (P4.1)"
+    ]
+  },
+  {
+    "id": "P2.11",
+    "title": "Central: abas Faturamento e Fiscal",
+    "origin": "ADR-0018",
+    "size": "M",
+    "deps": [
+      "P1.17",
+      "P2.1",
+      "P2.6"
+    ],
+    "acceptance": "abas Faturamento e Fiscal na Central da Ziip; ciclo de faturamento atrasado e fila fiscal acima do RNF-08 disparam alerta em homologação (teste de cada alerta); a fila de documentos fiscais operada pelo tenant é da P2.33 (ver P2.33)",
+    "findings_owned": [],
+    "consumed": [
+      "fronteira com a P2.33 registrada"
+    ]
+  },
+  {
+    "id": "P2.12",
+    "title": "Cobrança do SaaS por contrato, antes do primeiro contrato",
+    "origin": "ADR-0019; PLT-17",
+    "size": "G",
+    "deps": [
+      "P1.6",
+      "P1.17"
+    ],
+    "acceptance": "core `V10_1`; contrato SaaS com aditivos, empenhos, reajuste (só proposta enquanto não houver apostilamento), faturas e pagamentos conciliados; alertas do item 7 do ADR-0019; restrição manual por uma pessoa com MFA, step-up e justificativa, executada por `PLATFORM_FINANCE` ou `PLATFORM_OWNER`, com motivo inadimplência contratual ligado a fatura vencida e a aviso prévio registrados, e recusada sem eles; teste prova que nenhum caminho de código bloqueia tenant sozinho; registro de uso por tenant e por mês em `usage_ledger`, no schema `platform` e sem dado pessoal: ligações ativas, usuários, armazenamento, relatórios gerados, chamadas de API, mensagens por canal e categoria, consumo de modelo de linguagem e minutos de lote; fotografia mensal das ligações ativas por tenant com hash, relatório entregue ao cliente e janela de contestação em `usage.statement_contest_days` (classe d), como base comprovável da cobrança proporcional a ligações (teste: fotografia alterada depois do hash é detectada); custo do provedor atribuído a cada tenant por etiqueta e por proxy (tamanho do schema, mensagens, tokens), com margem por contrato na aba Contratos da Central; as cotas `quota.*` do contrato são medidas pelo mesmo registro, com alertas a 80% e a 100% (ADR-0019); a ED-10 usa o custo medido (ver ED-10)",
+    "findings_owned": [
+      "PLT-17"
+    ],
+    "consumed": [
+      "v2.18: PLT-17 atendido (`usage_ledger`, fotografia de ligações, contestação, custo por tenant)",
+      "remetido: planilha de preço (ED-10)"
+    ]
+  },
+  {
+    "id": "P2.13",
+    "title": "NFS-e da venda pelo motor portado",
+    "origin": "ADR-0019; ADR-0003",
+    "size": "M",
+    "deps": [
+      "P1.8",
+      "P2.12",
+      "P1.39"
+    ],
+    "acceptance": "contexto fiscal da plataforma definido e registrado; fatura do contrato SaaS gera NFS-e pelo motor portado, autorizada na produção restrita; tomador com CNPJ alfanumérico aceito pela validação da P1.39 (RAS-03), com teste",
+    "findings_owned": [],
+    "consumed": [
+      "usa: RAS-03 (P1.39)"
+    ]
+  },
+  {
+    "id": "P2.14",
+    "title": "Área do tenant: contrato com o Ziip",
+    "origin": "ADR-0022",
+    "size": "M",
+    "deps": [
+      "P2.12",
+      "P2.13"
+    ],
+    "acceptance": "na área do tenant, o tenant vê faturas e pagamentos do próprio contrato e baixa a fatura paga e a NFS-e em PDF e em XML; pedido de documento de outro tenant responde 404 (teste); XML baixado idêntico ao autorizado, com hash conferido; cada acesso auditado",
+    "findings_owned": [],
+    "consumed": [
+      "aceite da v2.21 reescrito sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P2.15",
+    "title": "SLA de suporte por contrato e CSAT; severidades do nível Setor Público",
+    "origin": "ADR-0020; ADR-0025; ED-05",
+    "size": "M",
+    "deps": [
+      "P1.23",
+      "P2.12"
+    ],
+    "acceptance": "core `V10_2`; política de SLA de suporte referenciada no contrato; prazo calculado bate com os casos de feriado municipal e de pausa; alerta a 80% do prazo e no estouro; relatório mensal de FRT, MTTR, SLA e CSAT na Central; política com cinco severidades (S1 a S5) por impacto e criticidade, cada uma com prazo de primeira resposta, prazo de solução, meta de aderência e multa do contrato; casos de Videira (2, 4, 6, 16 e 32 h úteis) e do SAMAE (2, 4, 16, 72 e 160 h) testados",
+    "findings_owned": [],
+    "consumed": [
+      "aceite da v2.21 reescrito sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P2.16",
+    "title": "Rejeições fiscais no catálogo de erros; novidades filtradas por tenant",
+    "origin": "ADR-0020; ADR-0021",
+    "size": "P",
+    "deps": [
+      "P1.22",
+      "P1.24",
+      "P2.6"
+    ],
+    "acceptance": "todo código de rejeição da NFAg-e no leiaute vigente e da NFS-e tem explicação no catálogo de erros da P1.22 (teste que falha diante de código sem explicação); novidade cujo `affects` não inclui o tenant não aparece para ele (teste)",
+    "findings_owned": [],
+    "consumed": [
+      "aceite da v2.21 reescrito sem mudança de escopo"
+    ]
+  },
+  {
+    "id": "P2.30",
+    "title": "Motor único de modelos de documento e mensagem",
+    "origin": "nova (23d JOR-06); decisão do dono de 28/10/2026; JOR-06",
+    "size": "a estimar",
+    "deps": [
+      "P0.19",
+      "P1.19",
+      "P1.24"
+    ],
+    "acceptance": "motor único de modelos de documento e de mensagem por tenant, com reserva Flyway nova registrada no §3 (COE-15) e item de menu Configurações > Modelos; cada modelo tem tipo de documento, canal (PDF, e-mail, SMS, WhatsApp ou leiaute térmico), variáveis tipadas de um catálogo por tipo de documento, versão e vigência sem sobreposição; variável inexistente ou de tipo incompatível recusa o modelo na validação (teste); prévia com massa sintética antes da aprovação; aprovação por outra pessoa no envelope de proposta e aprovação da P0.19, e autor não aprova o próprio modelo (teste); marca do tenant aplicada sobre o modelo pela P2.17 (ver P2.17) e arquivos guardados pela infraestrutura de documentos da P1.24; modelos de fábrica, que o tenant copia e ajusta, para comprovante de protocolo, resposta ao usuário, aviso de corte, cartas de cobrança, termo de parcelamento, auto de infração, certidões, CDA, OS impressa, laudo, relatório de auditoria, e-mail, SMS e WhatsApp; documento gerado grava o modelo e a versão usados, e mudança posterior do modelo não altera documento já emitido (teste); blocos de conteúdo legal obrigatório vêm da P2.32 e ficam travados na edição (ver P2.32); P3.4, P3.5, P3.31, P4.1, ED-19 (leiaute térmico), ED-29, ED-31, ED-36, ED-41 e ED-51 usam este motor e não criam leiaute próprio",
+    "findings_owned": [
+      "JOR-06"
+    ],
+    "consumed": [
+      "JOR-06 atendido (decisão do dono de 28/10/2026)",
+      "fronteiras: marca na P2.17, conteúdo legal na P2.32"
+    ]
+  },
+  {
+    "id": "P2.32",
+    "title": "Conteúdo mínimo da fatura por lei e por agência e motor de mensagens legais",
+    "origin": "nova (23e RAS-04; 22a CAD-96), a partir de ED-79, P2.17 e P2.24; ADR-0041; Lei 11.445/2007; CDC; Decreto 5.440/2005; CAD-96, RAS-04, RAS-28",
+    "size": "a estimar",
+    "deps": [
+      "P2.5",
+      "P2.30",
+      "P2.31"
+    ],
+    "acceptance": "lista de campos obrigatórios da conta como dado versionado, por lei e por ERI: Lei 11.445/2007, art. 39 (modelo de fatura definido pela entidade reguladora), CDC, art. 42-A, incluído pela Lei 12.039/2009 (nome, endereço e CPF ou CNPJ do fornecedor, em bloco travado), Decreto 5.440/2005 (informação mensal de qualidade da água) e Lei 12.007/2009 (declaração anual de quitação), mais os campos de cada perfil da P2.31 (ARIS, RN 19/2019; ARESC, Res. 046/2016; demais ERIs de SC conforme o texto lido); `bill.invoice_template` (G1) só é aprovado se o modelo da conta, montado no motor da P2.30, contiver todos os campos obrigatórios do perfil vigente: teste de conteúdo do modelo por perfil, e campo faltante recusa a aprovação; motor de mensagens legais da fatura no P2, antecipado da ED-79: catálogo de mensagens versionado com chave por norma (classes a e b), condição de disparo, vigência e ordem, com as mensagens legais sempre impressas antes das demais (travado), e prova de emissão que registra qual mensagem saiu em qual versão da conta (teste); mensagens de fábrica: aviso de perda da tarifa social com pelo menos 3 meses de antecedência (`social.loss_notice_months`; Lei 14.898/2024, arts. 2º, §2º, e 3º; regra da P1.5), declaração anual de quitação e bloco de qualidade da água (usados pela P2.24) e aviso de vencimento de benefício (CAD-88, da P2.5); espaços de mensagem para o aviso de disponibilidade de 90 dias da ligação obrigatória (ED-88), o cofaturamento de 60 dias (ED-25) e o alerta de consumo anormal (P3.5), que essas tarefas ativam; nome do titular impresso pela regra `bill.holder_name_display` da P2.5; valor aproximado dos tributos (Lei 12.741/2012; Decreto 8.264/2014) só depois do parecer jurídico: se o parecer confirmar a aplicação à conta, campo na fatura com a fonte das alíquotas, e sem parecer o campo não entra no modelo (RAS-28); a P2.8, a P2.17 e a P2.24 consomem este conteúdo; a ED-79 deixa de construir o motor e mantém o restante (ver ED-79); perfis fora de SC trazem a própria lista quando forem carregados (ver ED-97)",
+    "findings_owned": [
+      "CAD-96",
+      "RAS-04",
+      "RAS-28"
+    ],
+    "consumed": [
+      "CAD-96, RAS-04 e RAS-28 atendidos",
+      "ED-79: só o motor de mensagens legais com prova de emissão; o restante fica na ED-79",
+      "P2.17 e P2.24: v2.18 (CAD-96) concentrado aqui",
+      "usa: JOR-06 (P2.30)"
+    ]
+  },
+  {
+    "id": "P2.8",
+    "title": "Arquivo para gráfica",
+    "origin": "17:P4; ADR-0022; JOR-35",
+    "size": "M",
+    "deps": [
+      "P2.5",
+      "P2.32"
+    ],
+    "acceptance": "leiaute do arquivo para a gráfica aprovado com amostra impressa; o arquivo carrega o conteúdo mínimo e as mensagens legais da P2.32 (RAS-04), sem texto próprio; a conta traz o código de vinculação ao portal do imóvel (ADR-0022), que não aparece em log nem em arquivo intermediário fora do da gráfica (teste); conta de unidade com formato acessível marcado no cadastro da P1.3 (CAD-81, RAS-10) sai no arquivo com o indicador do formato pedido (braile ou fonte ampliada); registro de conta não entregue (devolução, endereço não localizado) com motivo de catálogo, data e origem do retorno, que alimenta a qualidade cadastral da P3.32 e o contato verificado (JOR-35; teste com retorno de devolução); a verificação pública de autenticidade da fatura fica na P3.35 (ver P3.35, PLT-11)",
+    "findings_owned": [
+      "JOR-35"
+    ],
+    "consumed": [
+      "v2.18: PLT-11 remetido à P3.35",
+      "JOR-35 atendido",
+      "usa: RAS-04 (P2.32), CAD-81 e RAS-10 (P1.3)"
+    ]
+  },
+  {
+    "id": "P2.17",
+    "title": "Marca do tenant e metadados nos PDFs",
+    "origin": "ADR-0016",
+    "size": "P",
+    "deps": [
+      "P1.19",
+      "P2.5",
+      "P2.30",
+      "P1.41",
+      "P2.32"
+    ],
+    "acceptance": "conta e documentos com nome, logo e rodapé do tenant e metadados do `BrandProvider`, aplicados sobre os modelos do motor da P2.30; regras de contraste de MARCA-E-TEMAS §3.4 verificadas por teste; conta e documentos mostram o nome social cadastrado na P1.41, com o nome civil só onde a lei exige (CAD-67); a marca não sobrepõe nem altera os blocos de conteúdo legal e as mensagens da P2.32 (CAD-96, RAS-04), com teste de modelo com marca que mantém todos os campos obrigatórios do perfil; explicação da variação do consumo e comparação com domicílios semelhantes ficam na ED-38 (ver ED-38, CAD-102)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: CAD-67 (uso da P1.41), CAD-96 (uso da P2.32), CAD-102 remetido à ED-38",
+      "usa: RAS-04 (P2.32)"
+    ]
+  },
+  {
+    "id": "P2.18",
+    "title": "XML autorizado em armazenamento com retenção imutável",
+    "origin": "ADR-0003; ADR-0022",
+    "size": "P",
+    "deps": [
+      "P2.6",
+      "P0.27",
+      "P0.45"
+    ],
+    "acceptance": "cópia do XML autorizado com bloqueio de retenção e hash na `HashChain`, no emulador de S3 local pela interface da P0.45 (S3 com Object Lock na LC.5); apagar ou sobrescrever é recusado (teste); a leitura confere o SHA-256; no ambiente local entram só XML do simulador ou sintéticos assinados com certificado de teste, e os XML da homologação com o e-CNPJ da Ziip/TGP não entram neste armazenamento, porque são apagados ao fim de cada ciclo (P3.7); segunda via e Pix em contingência estática ficam na P3.3 (ver P3.3, PLT-40)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: PLT-40 remetido à P3.3"
+    ]
+  },
+  {
+    "id": "P2.19",
+    "title": "Importador: documentos anteriores à primeira produção",
+    "origin": "ADR-0022; 17:X5; ADR-0033",
+    "size": "M",
+    "deps": [
+      "P2.10",
+      "P2.18"
+    ],
+    "acceptance": "`V14_3`; no ambiente local, testado só com lotes de XML sintéticos assinados com certificado de teste, porque os XML reais do piloto trazem dado pessoal do destinatário e são importados só na LC.10; importa, pelo framework declarativo de migração da P1.2 (PLT-16), os XML autorizados que o piloto entregar (sistema antigo ou emissor usado no intervalo), recusando os de assinatura inválida, sem protocolo de autorização, de outro emitente ou repetidos, com relatório por lote; os aceitos vão para o armazenamento imutável da P2.18 com o hash e a origem `LEGACY_IMPORT`, sem alteração do arquivo; o PDF das contas antigas sai sob demanda dos dados importados pela P2.10, com a indicação de que foi gerado a partir do histórico importado; contagem por competência conferida com o legado",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18 (PLT-16 escrito como uso da P1.2)"
+    ]
+  },
+  {
+    "id": "P2.20",
+    "title": "Retificação e manutenção de conta pelo backoffice",
+    "origin": "ED-21 (18e-E1, 18f-ENT-15); ADR-0039; DAD-16, JOR-09",
+    "size": "G",
+    "deps": [
+      "P2.5",
+      "P2.6",
+      "P1.11",
+      "P1.31",
+      "P1.36"
+    ],
+    "acceptance": "`V4_8`; operações pelo backoffice: cancelar, alterar vencimento, alterar leitura, consumo e serviços, recalcular por mudança de cadastro, retirar água ou esgoto, crédito avulso, pagamento a confirmar, emitir fora do lote, 2ª via e espelho; retificação, cancelamento, revisão e alteração de vencimento são OS internas tipadas do núcleo da P1.31 (`BILL_RECTIFICATION`, `BILL_CANCELLATION`, `BILL_REVIEW`, `BILL_DUE_DATE_CHANGE` e os demais tipos da tabela §2.9 do 20b); pedido do usuário entra pelo protocolo da P1.36 e gera a OS, e alteração interna do backoffice gera OS sem protocolo (ADR-0039, item 7); motivo de catálogo e anotação obrigatórios, com `review_reason_id` e `cancel_reason_id` no lugar do texto livre, `protocol_id` e `service_order_id` na conta e `bill_status_events` só de inserção (situação anterior e nova, motivo, OS e momento) (DAD-16); aprovação conforme `service_type.internal_approval`; cada operação gera nova versão da conta sem apagar a anterior, com trilha por campo (valor anterior e posterior, usuário, data), e a nova versão do consumo fica ligada à versão da conta pela P2.5 (DAD-14); revisão aberta suspende cobrança, acréscimos, negativação, corte e débito automático conforme `bill.review_effects` (padrão `SUSPEND_ALL`; corte de conta em revisão sempre vedado), com o teto de `bill.review_max_days`; cancelamento devolve ao saldo os créditos realizados (travado, CDC, art. 42) e só volta a cobrar débitos que o motivo não abranja; pagamento, item da fatura agrupadora e débito automático migram para a conta nova; diferença apurada sem multa nem juros; limites de retificação só contra o usuário (`bill.rectification_limits_against_user`; correção a favor do usuário nunca limitada); alteração de vencimento sujeita a `bill.due_change_max_per_year` e `bill.due_change_min_days_before_due`; NFAg-e cancelada ou substituída conforme o leiaute, testada na homologação da SEFAZ; repetição com a mesma `Idempotency-Key` não duplica; casos POC-49 e POC-50 da VISAN passam no ensaio, com o registro pelo protocolo da P1.36; portal e relatórios mostram a versão vigente, e a aba Histórico da P1.31 lista as versões (JOR-28); fila de análise das leituras e contas retidas, com comparação com a média e os últimos meses, foto e ocorrência da leitura e ação em lote (liberar, manter, abrir `BILL_REVIEW`, pedir releitura), com teste de cada ação (JOR-09); a fila aparece como item de minhas tarefas pela P2.28 (ver P2.28, PLT-13); teste por efeito e por opção de parâmetro",
+    "findings_owned": [
+      "DAD-16",
+      "JOR-09"
+    ],
+    "consumed": [
+      "v2.15 (OS internas tipadas, efeitos da revisão, cancelamento, migração de pagamento, limites)",
+      "v2.18: PLT-13 remetido à P2.28",
+      "DAD-16 e JOR-09 atendidos",
+      "usa: DAD-14 (P2.5), JOR-28 (P1.31)",
+      "protocolo da P1.36 no lugar da P3.4 (decisão do dono 7)"
+    ]
+  },
+  {
+    "id": "P2.21",
+    "title": "GIS-03: topologia persistida, regras de conectividade, validação contínua e EPANET sobre a topologia",
+    "origin": "ADR-0034; ED-52",
+    "size": "G (3)",
+    "deps": [
+      "P1.26",
+      "P1.27",
+      "P1.9"
+    ],
+    "acceptance": "`V13_3`; aceite da GIS-03: arco gravado pela `api`, por SQL direto e por importação recebe `node_1_id` e `node_2_id` com snap pela tolerância do tenant em metros; nó sobre arco divide o arco; cada regra de conectividade com teste; validação no `worker` por área suja, com painel de qualidade; `pgr_connectedComponents` igual ao traçado Java na massa sintética; `NetworkTopologyBuilder` sem busca do nó mais próximo e `.inp` igual onde a topologia era correta; a view de compatibilidade da exportação permanece, e o solver hidráulico real é da ED-63 (ver ED-63, COD-34)",
+    "findings_owned": [],
+    "consumed": [
+      "COD-34 remetido à ED-63"
+    ]
+  },
+  {
+    "id": "P2.22",
+    "title": "GIS-04: pacotes de edição, revisão por outra pessoa, ciclo de vida, travas por área e \"rede na data\"",
+    "origin": "ADR-0034; ED-52",
+    "size": "G (2)",
+    "deps": [
+      "P1.26",
+      "P2.21"
+    ],
+    "acceptance": "`V13_4`; aceite da GIS-04: gravação em feição em operação fora de pacote aplicado é recusada pelo banco, inclusive por SQL direto; autor não aprova o próprio pacote (403 e erro no banco); aprovação numa transação, com falha desfazendo tudo; rebase exigido em base desatualizada; trava por área; feição projetada fora do traçado e dos indicadores; `GET /api/v1/gis/network-at` correto por data de negócio e por data de registro; tela de revisão com antes e depois; pacote aguardando revisão aparece como item de minhas tarefas pela P2.28 (ver P2.28, PLT-13)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: PLT-13 remetido à P2.28"
+    ]
+  },
+  {
+    "id": "P2.23",
+    "title": "GIS-05: base da ligação e vínculo feição ↔ imóvel ↔ ligação ↔ ramal; ramais automáticos",
+    "origin": "ADR-0034; ED-52; ED-13 (base, confirmada pelo dono na v2.11); DAD-09, DAD-10",
+    "size": "G (2)",
+    "deps": [
+      "P1.3",
+      "P1.26",
+      "P2.22"
+    ],
+    "acceptance": "`V3_7` e `V13_5`; aceite da GIS-05: `service_connections` com ligação 1:1 com o imóvel físico (lote) por tipo, água ou esgoto, enquanto ativa, e várias unidades consumidoras por ligação em condomínio, conforme o glossário do §8 (COE-17), sem mudança no ciclo da P2.5 (testes do faturamento verdes); a `V3_7` move a situação da unidade para a ligação, com catálogo único `connection_statuses` com `kind`, `system_role` e `days_to_cut`, e `connection_status_history` (situação anterior e nova, momento, `service_order_id` obrigatório e `parameter_version_ids`) substitui `unit_status_history`, com a migração do histórico existente conferida por contagem (DAD-09); `connected_on` (data de início do serviço; NR 11, art. 22) obrigatório na ligação e preenchido pela carga do legado que a P1.2 leva ao staging (DAD-10); ramal sem ligação e ligação ativa sem ramal viram problema de validação; ramal automático até `gis.service_line_max_distance_m` (padrão 100 m) em pacote revisado, com `capture_method = AUTO_SERVICE_LINE`; ficha com ligação, imóvel e hidrômetro vigente, e só identificador e situação para quem não tem `gis.view-personal`; usa o endereço normalizado e a geocodificação da P1.3 (CAD-83); a ED-13 completa a ligação sobre esta base (ver ED-13), e ligação obrigatória e cobrança por disponibilidade são da ED-88 (ver ED-88, CAD-87)",
+    "findings_owned": [
+      "DAD-09",
+      "DAD-10"
+    ],
+    "consumed": [
+      "v2.18: CAD-83 (uso da P1.3), CAD-87 remetido à ED-88",
+      "DAD-09 e DAD-10 atendidos",
+      "regra 1:1 reescrita pelo glossário (COE-17)"
+    ]
+  },
+  {
+    "id": "P2.24",
+    "title": "Declaração anual de quitação e bloco de qualidade da água na conta",
+    "origin": "Lei 12.007/2009; Decreto 5.440/2005; levantamento 20f (LEG-05, LEG-06)",
+    "size": "M",
+    "deps": [
+      "P2.5",
+      "P2.8",
+      "P2.32"
+    ],
+    "acceptance": "declaração anual de quitação (Lei 12.007/2009) gerada na fatura de maio e no mês seguinte à quitação tardia, pelo canal de `quit.statement_channel` (padrão: espaço na fatura), como mensagem legal do motor da P2.32 (CAD-96); bloco mensal de qualidade da água (Decreto 5.440/2005) no modelo da conta, pelo conteúdo mínimo da P2.32, alimentado pela planilha mensal do laboratório carregada pelo importador genérico da P1.40 (JOR-26) enquanto o módulo de qualidade da ED-50 não estiver ativo, conforme `bill.water_quality_source`; teste com conta sem débito, com débito e com quitação tardia, e com planilha do laboratório recusada na validação",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18 (CAD-96 escrito como uso da P2.32)",
+      "usa: JOR-26 (P1.40)",
+      "marcador v2.14 retirado do título"
+    ]
+  },
+  {
+    "id": "P2.25",
+    "title": "Informação documentada, ocorrência e ação",
+    "origin": "ADR-0041; 21a C01, C15, C16, CQ-02, CQ-04; JOR-24",
+    "size": "G (a estimar)",
+    "deps": [
+      "P1.32",
+      "P1.20",
+      "P1.24",
+      "P1.31"
+    ],
+    "acceptance": "`V21_2`, com reserva registrada no §3; documento com ciclo de revisão, ciência e classificação sobre a infraestrutura de documentos da P1.24; ocorrência única (não conformidade, incidente, melhoria) com causa raiz, ação e verificação de eficácia exigidas só quando a norma ativa pede; pontes com protocolo, OS e incidente de segurança; um registro vinculado a várias cláusulas do mapa da P1.32; fiscalização recebida da agência reguladora, do Tribunal de Contas ou do órgão ambiental registrada como origem de ocorrência, com termo, constatações, prazo de resposta contado pelo calendário do tenant, plano de ação e evidência de atendimento (JOR-24; teste com uma fiscalização de cada origem); ação com responsável e prazo aparece em minhas tarefas pela P2.28 (ver P2.28), e o lembrete pela agenda de obrigações é da ED-98 (ver ED-98)",
+    "findings_owned": [
+      "JOR-24"
+    ],
+    "consumed": [
+      "JOR-24 atendido",
+      "marcador v2.17 retirado do título",
+      "remetidos: item de tarefa (P2.28), lembrete (ED-98)"
+    ]
+  },
+  {
+    "id": "P2.26",
+    "title": "API pública de integração e webhooks de saída",
+    "origin": "22c; 22d; GES-11, PLT-01, PLT-02",
+    "size": "G (a estimar)",
+    "deps": [
+      "P1.11",
+      "P1.9",
+      "P1.38"
+    ],
+    "acceptance": "reserva Flyway registrada no §3 (COE-15); API pública distinta da API do frontend: cliente OAuth 2.0 por tenant com `client_credentials` e `private_key_jwt` ou mTLS (DPoP opcional), escopos no catálogo `recurso:ação` do ADR-0040 (por exemplo `properties:read`, `bills:read`, `service-orders:write`), cota e limite de taxa por cliente com resposta 429 e `Retry-After`, lista de IPs permitidos e cota de API no plano do contrato da P1.6 (ADR-0019, item 2); tela de credenciais no tenant para criar, girar, revogar e ver o último uso; ambiente de teste com massa sintética; documentação gerada do OpenAPI; ciclo de vida e versionamento com os cabeçalhos `Deprecation` e `Sunset`; erros em `application/problem+json` (RFC 9457); REST e JSON versionados, compatíveis com a e-PING; primeira entrega com leitura de `properties`, `bills`, `payments` e `service-orders`, ampliada a cada módulo; eventos de saída pela outbox da P1.9, com nome e carga do catálogo de eventos da P1.38 (JOR-20), entregues por HTTPS a endpoints cadastrados pelo tenant (`webhook_endpoint`, `webhook_delivery`): entrega pelo menos uma vez com `event_id` único, ordem por chave de agregado, assinatura HMAC-SHA-256 com carimbo de tempo contra repetição, rotação de segredo com sobreposição, tentativas com recuo exponencial e jitter, desativação automática depois de falhas consecutivas com alerta, tela de entregas com reenvio por 30 dias e carga útil sem dado pessoal, só com identificadores; proteção contra SSRF: só HTTPS, bloqueio de endereços privados e de redirecionamento e resolução de DNS fixada no envio (teste); parâmetros `api.enabled` (classe d, desligado sem previsão no contrato), `api.rate_limit_per_minute` (classe c, só reduz, teto da plataforma), `api.ip_allowlist`, `api.client_max`, `api.webhooks_enabled`, `api.webhook_max_endpoints` e `api.webhook_event_types` (classe d); teste de contrato por versão e testes do OWASP API Security Top 10 (autorização por objeto e por propriedade, consumo irrestrito, fluxos sensíveis, inventário), dentro da linha de base de segurança da P3.8 (ver P3.8, PLT-08); a ED-07 usa o mesmo mecanismo para evento configurado pelo tenant (ver ED-07), e a ED-17 e a ED-62 usam a mesma camada de API (ver ED-17, ED-62); o catálogo de conectores de parceiros é da P3.37 (ver P3.37, GES-11)",
+    "findings_owned": [
+      "GES-11",
+      "PLT-01",
+      "PLT-02"
+    ],
+    "consumed": [
+      "PLT-01, PLT-02 e GES-11 atendidos (exceto catálogo de conectores)",
+      "usa: JOR-20 (P1.38)",
+      "remetidos: catálogo de conectores (P3.37), ED-07, ED-17, ED-62, P3.8",
+      "marcador v2.18 e prioridade retirados do título"
+    ]
+  },
+  {
+    "id": "P2.27",
+    "title": "Domínio próprio do tenant",
+    "origin": "22c; PLT-05",
+    "size": "M (a estimar)",
+    "deps": [
+      "P1.19"
+    ],
+    "acceptance": "CNAME do tenant apontado para a borda do Ziip, com certificado emitido e renovado automaticamente; `tenant_domain` com estados e verificação de posse por registro TXT; proteção contra tomada de subdomínio, com remoção do apontamento no encerramento do contrato; `Origin`, CSP, `redirect_uri` do OIDC e cookie `__Host-` mapeados por host; parâmetro `brand.custom_domain`, classe d, com verificação de posse; reserva Flyway registrada no §3 (COE-15); no ambiente local, teste com certificado de teste, e a automação de certificados na AWS fica na LC.2 (ver LC.2); teste de renovação, de revogação e de tentativa de tomada de subdomínio; o remetente de e-mail com DKIM alinhado ao domínio é da P3.5 (ver P3.5, PLT-10)",
+    "findings_owned": [
+      "PLT-05"
+    ],
+    "consumed": [
+      "PLT-05 atendido",
+      "remetidos: automação de certificados (LC.2), remetente de e-mail (P3.5, PLT-10)",
+      "marcador v2.18 retirado do título"
+    ]
+  },
+  {
+    "id": "P2.28",
+    "title": "Minhas tarefas: caixa unificada de pendências e aprovações, com prazo e delegação temporária",
+    "origin": "22c; 23d; decisão do dono de 28/10/2026; JOR-05, PLT-13",
+    "size": "G (a estimar)",
+    "deps": [
+      "P1.31",
+      "P2.20",
+      "P1.38"
+    ],
+    "acceptance": "item de menu Minhas tarefas, com uma caixa por usuário que reúne todo trabalho com responsável e prazo, de qualquer módulo: aprovações de OS, de retificação, de parâmetro (pela tela de parâmetros da P1.6, JOR-25) e de documento, protocolo a vencer, OS atrasada, conta retida (fila da P2.20, JOR-09), rejeição fiscal, pacote GIS a revisar, ação corretiva, calibração vencendo, pedido de titular, obrigação regulatória e divergência de conciliação, com filtro por prazo; contrato de item de trabalho que cada módulo registra (tipo, objeto, módulo de origem, solicitante, responsável ou aprovadores elegíveis, prazo, estado e endereço do registro), com criação e encerramento por eventos do catálogo da P1.38 (JOR-20); tarefa de aprovação comum (`approval_task`) com a segregação aplicada pelo componente: quem solicita não aprova (`wf.self_approval`, classe a, sempre falso), com teste; delegação temporária com início, fim e registro, limitada por `wf.delegation_max_days` (classe d), nunca maior que a permissão do delegante e auditada; escalonamento por prazo conforme `wf.escalation_hours` (classe d); a retificação da P2.20 passa a usar a caixa sem mudar a regra, e as demais aprovações usam o componente quando nascem; o escopo por área é aplicado pela P3.30, que depende desta (ver P3.30); teste de que a delegação expira na data de fim, de que o delegado não recebe permissão além da do delegante e de que item vencido escala",
+    "findings_owned": [
+      "JOR-05",
+      "PLT-13"
+    ],
+    "consumed": [
+      "JOR-05 e PLT-13 atendidos",
+      "usa: JOR-09 (P2.20), JOR-20 (P1.38), JOR-25 (P1.6)",
+      "remetido: escopo por área (P3.30)",
+      "marcador v2.18 retirado do título"
+    ]
+  },
+  {
+    "id": "P2.33",
+    "title": "Documentos fiscais do tenant: fila de rejeições, contingência, inutilização e reenvio",
+    "origin": "nova (23d JOR-08); ARQUITETURA-ALVO §2.3; JOR-08",
+    "size": "a estimar",
+    "deps": [
+      "P2.6",
+      "P2.16",
+      "P2.28"
+    ],
+    "acceptance": "tela e item de menu Documentos fiscais do tenant, que constrói a fila de pendências do operador da ARQUITETURA-ALVO §2.3: NFAg-e autorizadas, rejeitadas com a explicação do catálogo da P2.16, em contingência, canceladas e substituídas, com filtro por estado, competência e grupo; ações de reenvio, inutilização de numeração e cancelamento pendente, cada uma com permissão própria, motivo e registro na trilha; reenvio repetido não gera segundo documento (teste); inutilização aceita só faixa de numeração não usada e registra o evento conforme o leiaute (teste na homologação, `tpAmb=2`); documento em contingência ainda não transmitido aparece com o tempo decorrido; rejeição, contingência e cancelamento pendente geram item de minhas tarefas para o responsável pelo contrato da P2.28 (JOR-05), com teste de criação do item e de encerramento quando o documento é autorizado; a tela usa o modelo de documento fiscal da P2.6 e recebe a NFS-e avulsa da P3.6 pelo mesmo modelo; a visão da Ziip na Central é da P2.11 (ver P2.11)",
+    "findings_owned": [
+      "JOR-08"
+    ],
+    "consumed": [
+      "JOR-08 atendido",
+      "usa: JOR-05 (P2.28)",
+      "fronteira com a P2.11 registrada"
+    ]
+  },
+  {
+    "id": "P2.29",
+    "title": "Gestão tarifária: reajuste, revisão, cópia de versão e simulação de impacto",
+    "origin": "22d; corrige a remissão da P1.6; GES-01",
+    "size": "G (a estimar)",
+    "deps": [
+      "P2.5",
+      "P1.6"
+    ],
+    "acceptance": "migration própria do billing na faixa `V4_x`, com reserva registrada no §3; reajuste por índice (IPCA ou fórmula paramétrica com fator X, conforme a NR 10 e a NR 6 da ANA) a partir da data-base, e revisão por ato da agência, cada um gerando nova versão da estrutura tarifária com vigência sem sobreposição (`EXCLUDE` da `V4_1`); ato, índice e data de aplicação guardados por tenant, porque ARESC e AGIR editam reajustes por prestador; publicação com no mínimo 30 dias de antecedência da vigência, travada: reajuste com publicação em menos de 30 dias é recusado (teste); homologação tácita só quando a norma da agência a prevê; cópia de uma estrutura existente como ponto de partida da nova versão; comparação entre a tarifa vigente e a proposta; simulação de impacto antes da vigência sobre a base real, em leitura que não grava: receita por categoria e faixa, conta-tipo por categoria e perfil de consumo e efeito na tarifa social e no subsídio, com teste de que a simulação não altera a base e de que reproduz a conta da P2.5 para a mesma massa; histórico de 5 anos com o método de cálculo mantido para a transparência tarifária da NR 13 (arts. 61 e 62), com publicação no portal pela ED-38 (ver ED-38); `bill.tariff_readjust` ampliado com fórmula, índice, fator X, regra de homologação tácita e prazo de publicação (classe d, aprovação REG; o mínimo de 30 dias segue travado), com as chaves novas `tariff.readjust_formula`, `tariff.tacit_approval_days` e `tariff.history_years_public`; a metodologia da revisão periódica (receita requerida, base de remuneração e fatores) entra só quando a norma da ANA em consulta pública for aprovada; fronteira com a P1.6 (COE-19): tarifa com simulação é desta tarefa, não do console da P1.6; a ED-91 usa as versões com vigência no mecanismo excepcional de contingência (ver ED-91)",
+    "findings_owned": [
+      "GES-01"
+    ],
+    "consumed": [
+      "GES-01 atendido",
+      "fronteira com a P1.6 (COE-19)",
+      "remetidos: publicação do histórico (ED-38), contingência (ED-91)",
+      "marcador v2.18 retirado do título"
+    ]
+  }
+]

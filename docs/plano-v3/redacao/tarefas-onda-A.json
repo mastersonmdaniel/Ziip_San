@@ -1,0 +1,700 @@
+[
+  {
+    "id": "ED-05",
+    "title": "Nível Setor Público: telefone, canal de contingência e plantão",
+    "origin": "18h-E7, E9; ADR-0025",
+    "size": "P (0,5)",
+    "deps": [
+      "P2.15",
+      "P3.15",
+      "P3.16"
+    ],
+    "acceptance": "telefone no Brasil e canal de contingência publicados e testados com a ferramenta de chamados fora do ar; escala de plantão para incidentes S1 montada antes da primeira produção e acionada a partir dela (LC.13; ADR-0025, ajustado na v2.7); contrato-modelo do nível Setor Público com as metas do ADR-0025; Item 3 do SAMAE (manutenção e suporte) sem falha no ensaio; item 2.5 do SAMAE demonstrado em conjunto com os alertas da ED-07",
+    "findings_owned": [],
+    "consumed": [
+      "sem ajustes na v2.21; aceite reescrito sem mudar o escopo",
+      "data de montagem do plantão trocada por sequência (antes da primeira produção, ADR-0044)",
+      "itens de edital do 18 §5.1 preservados: SAMAE Item 3 e 2.5"
+    ]
+  },
+  {
+    "id": "ED-06",
+    "title": "Controle de acesso de edital",
+    "origin": "18h-E5; ADR-0040, ADR-0043; PLT-29, PLT-30",
+    "size": "G (3)",
+    "deps": [
+      "P0.13",
+      "P0.15",
+      "P0.43",
+      "P1.7",
+      "P3.30",
+      "P1.37"
+    ],
+    "acceptance": "alínea b do roteiro VISAN (POC-04 a POC-07) passa, com bloqueio em 3 tentativas no POC-05, login único por usuário e perfil só de consulta; catálogo `recurso:ação` da P0.13 e escopo da P3.30 ampliados com perfis compostos criados pelo administrador do tenant a partir dos perfis de fábrica da P1.37, restrição negativa por usuário e delegação limitada ao que o ADMIN possui; bloqueio por tentativas, expiração, histórico e tamanho da senha por tenant aplicados por autenticador próprio no Keycloak, num realm só, que lê a política do tenant do usuário (`sec.password_min_length`, `sec.password_max_age_days`, `sec.password_history`, `sec.lockout_attempts`, `sec.user_inactivity_days`); tentativas contadas no servidor por usuário e por IP, com resposta indistinta; teste com dois tenants de políticas diferentes no mesmo realm, repetido a cada atualização do Keycloak; política alinhada ao NIST SP 800-63B-4: comparação com lista de senhas vazadas, expiração desligada por padrão e mínimo de 15 caracteres quando a senha é fator único, como no portal sem MFA; expiração periódica e regra de composição exigidas por edital ficam disponíveis como opção marcada no console como contrária à recomendação, com aceite registrado do administrador do tenant (nota de alinhamento no ADR-0040); passkey como método de MFA e de entrada definida na política (`portal.passkey_enabled`), que a ED-38 aplica ao portal; federação LDAP/AD por organização no Keycloak, testada contra servidor de teste; SSO corporativo por OIDC ou SAML vinculado à organização do tenant (`sec.sso_mode` com `LOCAL`, `OIDC`, `SAML` ou `LDAP`; `sec.sso_enforced` torna o SSO obrigatório), provado com dois tenants e provedores distintos; provisionamento por SCIM (`sec.scim_enabled`) sobre a API nativa do Keycloak, com escopo por organização, sem conceder papel que o ADMIN do tenant não possua, e teste de que o token de um tenant não lê nem altera usuário de outro, repetido a cada atualização do Keycloak (ADR-0040, item 5); sessões ativas e trilha visíveis ao ADMIN do tenant; consulta da trilha por usuário (TR-128, SG-062), com exportação e integridade verificável pela P1.7; recertificação periódica de acessos pelo ADMIN do tenant, com registro de cada decisão, que a ED-73 usa como evidência da ISO/IEC 27001; item 2.7 do SAMAE (controle de acesso, inclusive Active Directory) sem falha",
+    "findings_owned": [
+      "PLT-29",
+      "PLT-30"
+    ],
+    "consumed": [
+      "v2.15 (perfis compostos, autenticador por tenant, teste com dois tenants)",
+      "v2.17 (recertificação de acessos para a ED-73)",
+      "v2.18: PLT-29 e PLT-30 com critério testável; PLT-19 como consumo da P1.7",
+      "JOR-01 consumido da P1.37",
+      "COE-07: nota NIST no ADR-0040 é destino documental; passkey no portal aplicada pela ED-38"
+    ]
+  },
+  {
+    "id": "ED-07",
+    "title": "Monitoramento e alertas para o cliente",
+    "origin": "18h-E6",
+    "size": "M (1)",
+    "deps": [
+      "P1.9",
+      "P1.17",
+      "P2.1",
+      "P3.5",
+      "P2.26",
+      "P3.39"
+    ],
+    "acceptance": "evento de negócio do catálogo da P1.38, escolhido pelo tenant, gera alerta ao usuário responsável (teste); alerta entregue na central de avisos da P3.36 e, se configurado, por webhook de saída da P2.26, com entrega confiável e assinatura; alertas do tenant acrescentados à página inicial por perfil da P3.39; alerta sobre evento fora do catálogo da P1.38 é recusado (teste no CI); painel de uso e desempenho do tenant; falha de lote notifica o responsável do tenant (teste); item 2.5 do SAMAE (alertas ao cliente) sem falha; agenda de obrigações regulatórias e de controle do tenant fora desta entrega (ver ED-98)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: PLT-02 consumido da P2.26 e PLT-12 da P3.36; GES-05 remetido à ED-98",
+      "JOR-04 (P3.39) e JOR-20 (P1.38) consumidos"
+    ]
+  },
+  {
+    "id": "ED-08",
+    "title": "Compatibilidade técnica de edital",
+    "origin": "18h-E12",
+    "size": "P (0,4)",
+    "deps": [
+      "P0.22",
+      "P1.12"
+    ],
+    "acceptance": "matriz E2E com Edge 88, Chrome 100 e Firefox 116 verde no CI; seletor de tamanho de página e opção 'ir para página' sobre paginação keyset (teste); nota técnica sobre gatilhos e linguagem no kit de edital; compatibilidade de navegadores demonstrável na alínea a do roteiro VISAN (POC-01 a POC-03)",
+    "findings_owned": [],
+    "consumed": [
+      "sem ajustes na v2.21; aceite reescrito sem mudar o escopo",
+      "item de edital do 18 §5.1 preservado: VISAN alínea a"
+    ]
+  },
+  {
+    "id": "ED-12",
+    "title": "Cadastro comercial ampliado e catálogos auxiliares",
+    "origin": "18d-E1, E2",
+    "size": "M (2)",
+    "deps": [
+      "P1.3",
+      "P1.20"
+    ],
+    "acceptance": "POC-08 a POC-11 do roteiro VISAN passam (alínea c); RG e filiação cifrados, com finalidade registrada; os 22 catálogos da SAMAE 2.8.10 com CRUD genérico e carga pelo importador de planilha da P1.40, aplicada por OS de lote (teste com recusa de linha inválida); endereço alternativo da unidade; item 2.8 do SAMAE sem falha na parte de cadastro comercial",
+    "findings_owned": [],
+    "consumed": [
+      "sem ajustes na v2.21",
+      "JOR-26 consumido da P1.40",
+      "itens de edital do 18 §5.1 preservados: VISAN c e SAMAE 2.8"
+    ]
+  },
+  {
+    "id": "ED-13",
+    "title": "Ligações de água e esgoto",
+    "origin": "18d-E3; ADR-0034, ADR-0038, ADR-0039",
+    "size": "G (2,5)",
+    "deps": [
+      "P1.3",
+      "P3.4",
+      "P2.23"
+    ],
+    "acceptance": "base da ligação (`service_connections`, `V3_7`) criada na P2.23 (ADR-0034) e usada como única fonte da ligação, conforme a P2.23; ligações 1:1 com o imóvel, com catálogos técnicos; consumo mínimo e situação lidos da ligação no ciclo (teste); operações de ligação (ligar, cortar, suprimir, restabelecer, religar, tamponar) executadas como efeitos de OS do núcleo da P1.31, com cada alteração no histórico da ligação; esgoto 'fora de uso' e supressão a pedido pelos parâmetros de bifurcação do tenant, com padrão mais protetivo (ADR-0038) e teste por opção; fonte alternativa de água lida do campo da P1.3 na cobrança e na situação da ligação de esgoto; parte de ligações da alínea c do roteiro VISAN (POC-10, ligações com economias mistas) demonstrável; item 2.8 do SAMAE sem falha; ligação provisória, hidrante e carro-pipa (ver ED-91) e soluções individuais (ver ED-88) fora desta entrega",
+    "findings_owned": [],
+    "consumed": [
+      "v2.14 (operações de ligação como efeitos de OS; bifurcações de esgoto)",
+      "v2.18: CAD-69 consumido da P1.3 e DAD-09 da P2.23; CAD-72 remetido à ED-91 e OPE-03 à ED-88"
+    ]
+  },
+  {
+    "id": "ED-14",
+    "title": "Hidrometria",
+    "origin": "18d-E4; DAD-11, DAD-12, OPE-24",
+    "size": "G (3)",
+    "deps": [
+      "P2.5",
+      "P3.4",
+      "P1.20",
+      "P1.35"
+    ],
+    "acceptance": "POC-12 a POC-14 do roteiro VISAN passam (alínea d): cadastro com lote, modelo, classe e lacre, instalação, retirada com destino disponível e sucata e reinstalação com histórico; cadastro pelo regulamento metrológico da Portaria Inmetro 155/2022: modelo aprovado e regime, com catálogos de marca e de modelo (portaria de aprovação, DN, Q3, R, classe, posição) no lugar de texto livre, classe de exatidão 1 e 2, vazões Q1 a Q4 com as razões da portaria e verificação inicial, subsequente e após reparo; `meters.metrological_class` das classes antigas A a D migra para o modelo novo, com classe antiga aceita só no parque migrado (teste de migração); recebimento de lote; data da próxima verificação calculada, e não digitada, por `meter.verification_interval_years` (padrão 7, só reduz); local de armazenagem obrigatório para hidrômetro disponível ou em manutenção e motivo de baixa obrigatório na baixa; estado do hidrômetro muda só por instalação, retirada ou movimentação; instalação ligada à ligação (`service_connection_id`, sobre a `V3_7` da P2.23), com as OS de instalação e de retirada referenciadas, proteção e local de instalação por catálogo e lacre registrado num lugar só; hidrômetro como alvo de OS (`METER`) e como ativo com classe própria no catálogo, referenciando o `asset` da P1.35; alerta de validade gera OS em lote (teste); critério de troca por volume totalizado e classe, além da idade (`meter.replace_by_volume_m3_by_class`); análise de sub e superdimensionamento contra o perfil de consumo; plano de amostragem de lote para ensaio (`meter.sample_plan_pct`); registro de ensaio em bancada própria (resultado por vazão, curva de erro, aprovação de lote) e de verificação por laboratório externo; plano de renovação do parque por custo e benefício (perda aparente evitada contra custo de troca); item 2.9 do SAMAE sem falha; analítica de fraude e de perdas aparentes fora desta entrega (ver ED-95)",
+    "findings_owned": [
+      "DAD-11",
+      "DAD-12",
+      "OPE-24"
+    ],
+    "consumed": [
+      "v2.17 (Portaria Inmetro 155/2022, `meter.verification_interval_years`, migração das classes A a D)",
+      "v2.19 (alvo `METER` e ativo)",
+      "v2.18: OPE-24 com critério testável; GES-25 remetido à ED-95",
+      "DAD-11 e DAD-12 (23b §3.8)",
+      "COE-05 e DAD-26 consumidos da P1.35",
+      "OPE-24: a dúvida entre as Portarias 295/2018 e 155/2022 foi resolvida pelo catálogo (a 295/2018 está revogada)"
+    ]
+  },
+  {
+    "id": "ED-17",
+    "title": "Telemetria e supervisório por REST e arquivo",
+    "origin": "18d-E10, 18g-E-AMR, E-SUP; ADR-0010, ADR-0028 (j); GES-27, OPE-18, OPE-19, OPE-30",
+    "size": "M (2)",
+    "deps": [
+      "P1.9",
+      "P2.3",
+      "P2.7",
+      "P3.5",
+      "P2.26"
+    ],
+    "acceptance": "API REST e importação de arquivo de leituras AMR (origem `TELEMETRY`) em tabela particionada pelo padrão da P2.3, sem auditoria por linha, com credencial de integração por tenant e escopos da P2.26; modelo de medição com ponto de medição, dispositivo e canal, estado do dado (medido, estimado, substituído, atrasado), relógio e fuso; alarmes padronizados do medidor (fluxo contínuo ou vazamento, fluxo reverso, tubo vazio, violação, bateria, estouro) com limiares por parâmetro (`meter.alarm_leak_hours`, `meter.alarm_reverse_flow_l`, `ami.alert_thresholds`) que abrem OS ou avisam o usuário, conforme a configuração (teste); alarmes persistidos de grandes consumidores; validação, estimativa e edição (VEE) antes de a leitura de telemetria virar leitura de faturamento (teste com leitura rejeitada e estimada); prioridade entre leitura de telemetria e leitura manual no ciclo pela bifurcação `meter.telemetry_priority_over_manual` (ADR-0038), com teste nas duas opções; curva horária disponível ao usuário (`meter.hourly_profile_visible_to_customer`) e como prova na revisão por vazamento oculto; alerta ao consumidor de consumo contínuo por 24 horas e de pico pelo canal de aviso da P3.5, junto do alerta preventivo de consumo anormal da P3.5; consumo horário tratado como dado pessoal, com base legal registrada, retenção curta (`ami.retention_days`) e minimização; retenção por resolução (`tele.retention_raw_days`, `tele.retention_hourly_months`) e agregados por `tele.rollup_policy`, com partição, tabela de resumo e índice por ponto e tempo; teste de carga com 100 mil ligações em leitura horária e meta de desempenho registrada; extensão de série temporal só por decisão do dono, se o PostgreSQL puro não atender (ADR-0010, item 3); registro manual de paradas da ETA; contrato de ingestão de supervisório somente leitura: o Ziip SAN nunca escreve em CLP, RTU ou IHM, a ingestão é unidirecional e o agente do cliente lê do historiador (OPC UA, MQTT, SQL somente leitura ou CSV agendado) e envia por HTTPS sem porta de entrada, com armazenamento local e reenvio quando o enlace volta, envelope de esquema publicado, assinatura e idempotência por amostra (teste de reenvio), segundo o modelo de zonas e conduítes da IEC 62443; nenhum broker, conforme o ADR proposto da decisão PD-04 (REST e arquivo, exceção controlada ao ADR-0010), mantido como pendência no §2.4 enquanto não aceito; itens 2.9, 2.10 e 2.26 do SAMAE sem falha na parte de telemetria e supervisório; diário de operação de estações (ver ED-87), gestão de pressão (ver ED-86), contratos de grandes usuários (ver ED-22) e analítica de perdas aparentes (ver ED-95) fora desta entrega",
+    "findings_owned": [
+      "GES-27",
+      "OPE-18",
+      "OPE-19",
+      "OPE-30"
+    ],
+    "consumed": [
+      "v2.18: GES-27, OPE-18, OPE-19 e OPE-30 com critério testável; CAD-99 consumido da P3.5 e PLT-01 da P2.26; CAD-93 remetido à ED-22, GES-25 à ED-95, OPE-02 à ED-87 e OPE-04 à ED-86",
+      "decisão PD-04 (ADR proposto de ingestão sem broker)",
+      "aceite consolidado (COE-18)"
+    ]
+  },
+  {
+    "id": "ED-18",
+    "title": "App de campo Android, base, autenticação e leitura offline",
+    "origin": "18d-E6; ADR-0026, ADR-0030; P4.4 (fundida); OPE-34, PLT-33",
+    "size": "G (5)",
+    "deps": [
+      "P2.3",
+      "P2.7"
+    ],
+    "acceptance": "projeto Capacitor com build e assinatura Android no CI; APK instalável (TR-621); login pelo navegador do sistema com PKCE no realm `ziipsan` e retorno por App Link; refresh token rotativo só no Android Keystore, inacessível ao JavaScript (teste instrumentado); core `V11_1`; aparelho não registrado ou bloqueado não sincroniza (teste); `RETIRE` envia pendências e apaga, `BLOCK` recusa e apaga; revogação pela área do tenant e pela Central efetiva em no máximo 5 minutos; banco local cifrado com chave no Keystore; leitura offline de uma rota com sincronização idempotente por `task_id` (reenvio não duplica) e fotos por ocorrência, com as ocorrências de leitura e seus efeitos lidos do catálogo da P2.5; leitura por foto do visor com reconhecimento óptico no próprio aparelho, comparada com o valor digitado e com o histórico, e divergência enviada à fila de revisão (`read.ocr_mode` desligado, sugerir ou exigir; `read.ocr_tolerance_digits`), sem envio da imagem a terceiro (teste); componente de reconhecimento de terceiro registrado no DPA quando houver serviço externo; política de manutenção do toolchain móvel nos moldes da P3.14: linha do Capacitor com suporte ativo e API alvo exigida pelo Google Play para novos apps e atualizações (hoje Android 16, API 36), revista a cada mudança de exigência da loja; conta de organização na loja com D-U-N-S ou verificação de órgão governamental e titular da conta registrado em `app.store_account_owner`, regra que a ED-39 aplica ao app por tenant; atualização remota só de código interpretado que não altere o propósito do app, sem depender do Ionic Appflow; RNF-39 verde; base da alínea e do roteiro VISAN (POC-15 e POC-17, na leitura no dispositivo e na importação) e do item 2.11 do SAMAE, completados pela emissão simultânea da ED-19 e pela OS de campo da ED-20; remissões à P4.4 em outros documentos passam a ler ED-18; identificação de hidrômetro e lacre por QR, código de barras ou NFC (ver ED-20)",
+    "findings_owned": [
+      "OPE-34",
+      "PLT-33"
+    ],
+    "consumed": [
+      "P4.4 fundida (duplicata pura); o aceite dela era o desta entrega",
+      "v2.18: OPE-34 e PLT-33 com critério testável; OPE-39 remetido à ED-20",
+      "JOR-10 consumido da P2.5"
+    ]
+  },
+  {
+    "id": "ED-15",
+    "title": "Ciclo de leitura: complementos e autoleitura",
+    "origin": "18d-E5; OPE-23",
+    "size": "M (2)",
+    "deps": [
+      "P2.5",
+      "P2.7",
+      "P3.3",
+      "ED-18"
+    ],
+    "acceptance": "roteiro com reordenação da sequência de leitura; boletim de contingência; regra de condomínio configurável nas duas modalidades (SAMAE 2.10.10), sobre o vínculo do condomínio da P1.3 e a cobrança por economia da P2.5, com recusa do modelo híbrido vedado (teste); autoleitura pelo portal com crítica; releitura amostral por critério (`read.resample_pct`) por OS seletiva; relatório de faixa falsa de leitura; desvio entre a posição da leitura, vinda do app da ED-18, e a posição do imóvel gera alerta, sem bloqueio (teste); taxa de impedimento por leiturista e por rota e produtividade por dia; foto obrigatória conforme `read.photo_required_on` (impedimento ou toda leitura) e impedimento aceito só depois do número de tentativas de `read.impediment_attempts`; ocorrências de leitura e seus efeitos lidos do catálogo da P2.5; item 2.10 do SAMAE sem falha; telemetria e prioridade da leitura automática fora desta entrega (ver ED-17)",
+    "findings_owned": [
+      "OPE-23"
+    ],
+    "consumed": [
+      "v2.18: OPE-23 com critério testável; OPE-18 remetido à ED-17",
+      "DAD-37 consumido da P1.3; JOR-10 e RAS-13 da P2.5"
+    ]
+  },
+  {
+    "id": "ED-16",
+    "title": "Recadastramento",
+    "origin": "18d-E11; ADR-0039",
+    "size": "G (3)",
+    "deps": [
+      "ED-18",
+      "P1.3",
+      "P3.32"
+    ],
+    "acceptance": "lote de recadastramento aberto como OS interna de lote (ADR-0039), a partir da fila de correção da qualidade cadastral da P3.32; coleta no app de campo da ED-18; aprovação campo a campo; cada alteração aprovada aplicada como efeito da OS de lote, com histórico (teste); os cinco relatórios do recadastramento; itens 2.11 e 2.28 do SAMAE sem falha na parte de recadastramento; cruzamento com o cadastro imobiliário municipal fora desta entrega (ver ED-95)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.14 (lote como OS interna de lote; alteração aprovada como efeito)",
+      "v2.18: CAD-103 remetido à ED-95",
+      "fronteira COE-19: campanha de campo sobre a fila da P3.32",
+      "dependência da P4.4 substituída pela ED-18"
+    ]
+  },
+  {
+    "id": "ED-19",
+    "title": "Emissão simultânea e impressão térmica",
+    "origin": "18d-E6, 18e-E6; ADR-0026, ADR-0031",
+    "size": "G (8)",
+    "deps": [
+      "ED-18",
+      "P2.5",
+      "P2.6",
+      "P3.2",
+      "P2.20",
+      "P3.34"
+    ],
+    "acceptance": "módulo `ziipsan-billing-rules` puro, usado pelo servidor e pelo plugin Android como o mesmo artefato (hash conferido); vetores de `billing-contract-fixtures` iguais no JVM e no emulador Android em todo build, com divergência bloqueando o merge, e teste diferencial noturno com 10 mil ligações; pacote da rota com `task_id`, tarifas e versões de parâmetro; conta de campo única por `task_id` (reenvio não duplica conta nem NFAg-e), recalculada no servidor; divergência provocada vai à fila, é aprovada por quem tem a permissão da P2.20 (dupla acima do limite) e corrigida por nova versão, sem alterar a conta impressa; alerta de divergência na Central; teste com certificado ausente do aparelho; forma fiscal do ADR-0031, item 4, confirmada contra o manual e testada na homologação da SEFAZ; impressão em Zebra série ZQ por Bluetooth com leiaute térmico (ZPL e CPCL) do motor de modelos da P2.30, código de barras e QR Pix; comunicados de débito e de excesso pelo mesmo motor; contas retidas reenviadas e reimpressas; teste de cabeçote e bateria; envio a cada N imóveis configurável; leitura por foto com reconhecimento óptico da ED-18 usada na crítica antes da emissão; documento emitido em campo assinado no nível da Lei 14.063 configurado na P3.34, quando o tipo exigir; contingência da NFAg-e definida pelo leiaute de contingência registrado no §2.4 (dependência textual); POC-15, POC-16 e POC-21 do roteiro VISAN passam; item 2.11 do SAMAE sem falha",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: OPE-34 consumido da ED-18 e PLT-07 da P3.34",
+      "JOR-06: leiaute térmico pelo motor de modelos da P2.30",
+      "dependência da P4.4 substituída pela ED-18"
+    ]
+  },
+  {
+    "id": "ED-26",
+    "title": "Arrecadação ampliada",
+    "origin": "18e-E7; JOR-13 (PD-07)",
+    "size": "M (1)",
+    "deps": [
+      "P3.1",
+      "P2.1"
+    ],
+    "acceptance": "documento agrupador com quitação em cascata; fatura agrupadora do órgão centralizador com quitação em cascata nas contas das unidades, pela ordem de `pay.partial_settlement_order` quando paga a menor (teste); guia do usuário avulso; guia e extrato com validade, recalculados pela data real quando pagos depois dela (teste); fechamento mensal congelado; depósitos identificados e não identificados; VAN configurável; baixa de pagamento com retenção na fonte pela regra da P3.1, aplicada só depois do parecer que a condiciona; caixa próprio do prestador como item condicional, ligado pelo parâmetro `pay.own_cashier_enabled` (desligado por padrão) e exigido neste aceite só se a P1.1 ou os editais confirmarem guichê (decisão PD-07): abertura e fechamento de caixa por operador, recebimento em espécie e em cartão com comprovante, sangria, conferência do fechamento e baixa pela mesma classificação da P3.1 (teste do ciclo completo); com o parâmetro desligado, menu, permissões e rotas do caixa ficam indisponíveis (teste); item 2.14 do SAMAE sem falha",
+    "findings_owned": [
+      "JOR-13"
+    ],
+    "consumed": [
+      "v2.15 (agrupadora com `pay.partial_settlement_order`, guia avulsa, validade e recálculo)",
+      "JOR-13 com critério testável, condicionado por parâmetro (PD-07)",
+      "RAS-27 consumido da P3.1"
+    ]
+  },
+  {
+    "id": "ED-22",
+    "title": "Situações especiais de faturamento, usuário avulso e órgão centralizador",
+    "origin": "18e-E2, 18f-ENT-16; ADR-0039; CAD-93, DAD-22, JOR-38",
+    "size": "G (4)",
+    "deps": [
+      "P2.5",
+      "P1.3",
+      "ED-26",
+      "P3.20"
+    ],
+    "acceptance": "POC-51 do roteiro VISAN passa (não usuário regular com matrícula e fatura); faturas agrupadas e centralizadora com código único; tipos de situação especial com os sete indicadores do tipo e registro conforme o dicionário do 23b §3.17 (unidade, domínio de faturamento ou de cobrança, tipo, motivo, base legal, meses de início, fim e retirada, volumes fixos de água e esgoto, OS de abertura e de encerramento e lote), incluídos e retirados por OS `SPECIAL_SITUATION_SET` e `SPECIAL_SITUATION_REMOVE`, com lote como OS-mãe e OS-filhas; consumo de tipo `SPECIAL_SITUATION_FIXED` exige `special_situation_id` com FK (teste); isenção como tipo de situação com base legal e vigência; usuário avulso como unidade consumidora de tipo próprio no catálogo, sem exceção por cliente (ADR-0039, itens 1 e 3); vínculo com o órgão centralizador por OS `CENTRAL_BILLING_LINK`, com o documento fiscal conforme `fiscal.central_billing_invoice_mode`; parâmetros `special_situation.max_months`, `quality.noncompliance_compensation` e `bill.advance_billing`, com teste por opção; categorias opcionais e benefícios com validade da NR 13 lidos da P2.5; contrato especial de grande usuário (NR 11, art. 19) com volume contratado e mínimo, tarifa negociada, vigência e renovação, reajuste, penalidade por excesso, pontos de medição dedicados, aprovação pela agência e relatório dos contratos à agência, pelos parâmetros `large_user.*` (teste do cálculo com mínimo e excesso); venda de água tratada em bloco a outro prestador como modalidade do contrato especial; visão do órgão centralizador e do grande cliente com muitas unidades no portal da P3.20, com lista das unidades, exportação e fatura agrupadora, que a ED-38 exibe; isenção, contrato especial e conta final testados; item 2.13 do SAMAE sem falha; medida excepcional por área e contingência tarifária (ver ED-91) e soluções individuais (ver ED-88) fora desta entrega",
+    "findings_owned": [
+      "CAD-93",
+      "DAD-22",
+      "JOR-38"
+    ],
+    "consumed": [
+      "v2.15 (OS de situação especial, isenção, avulso, centralizador, parâmetros)",
+      "v2.18: CAD-93 com critério testável; CAD-88 consumido da P2.5; CAD-74 remetido à ED-91 e OPE-03 à ED-88",
+      "DAD-22 (23b §3.17) e JOR-38 (sobre a P3.20)"
+    ]
+  },
+  {
+    "id": "ED-27",
+    "title": "Débito em conta: Pix Automático e FEBRABAN 150 legado",
+    "origin": "18e-E8; ADR-0028 (f)",
+    "size": "M (2)",
+    "deps": [
+      "P3.1",
+      "P4.5"
+    ],
+    "acceptance": "POC-29 do roteiro VISAN passa: arquivo FEBRABAN 150 (registros B, C, E, F) para autorizações legadas e retorno processado; autorizações novas só por Pix Automático, pelas regras operacionais do Banco Central tratadas na P3.2; data de desligamento do legado parametrizada conforme a regra vigente do Banco Central; relatórios de débito em conta; se a P0.30 encontrar optantes no piloto, a parte FEBRABAN 150 já foi feita na P3.24 e esta entrega fica com o Pix Automático integrado e os relatórios; escopo da parte legada sujeito ao parecer jurídico da RAS-06, que decide o da P3.24 e o desta entrega (decisão PD-10); item 2.14 do SAMAE sem falha; calendário regulatório do débito automático e da cobrança híbrida (ver P3.24)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: GES-15 consumido da P3.2; PLT-27 remetido à P3.24",
+      "decisão PD-10 (parecer da RAS-06)"
+    ]
+  },
+  {
+    "id": "ED-32",
+    "title": "Eventos contábeis e integração contábil",
+    "origin": "18e-E12; ADR-0028 (e); GES-09, GES-14, RAS-21, RAS-32",
+    "size": "G (4)",
+    "deps": [
+      "P2.5",
+      "P3.1",
+      "P1.9",
+      "P2.1"
+    ],
+    "acceptance": "POC-37 a POC-40 e POC-66 a POC-68 do roteiro VISAN passam; lançamentos gerados por fato, com regra contábil por chave de evento (conta débito, conta crédito e histórico configuráveis); recuperação de crédito como evento próprio; contas a receber e provisão para devedores duvidosos pelo método de `acc.doubtful_method`; contas a receber contábil com saldo mensal por curto e longo prazo e por esfera (particular e público): anterior, faturado, pago, parcelado, cancelado, devolvido, imposto e atual (20c FIN-05); mês contábil dos débitos e créditos vindo da P2.5; fechamento mensal congelado, sem reprocessamento que apague lançamentos (teste); exportação diária ao sistema contábil por arquivo e pela ED-62; catálogo do plano de contas regulatório do MCRSB (NR 16, Res. ANA 302/2026) como dado global versionado, com de-para para o plano do tenant (PCASP, para autarquias, ou plano societário) como configuração com vigência no grupo `acc.*`; catálogo do PCASP versionado por exercício, com o PCASP 2027 da Portaria STN/MF 2.520/2026 aplicado a partir do exercício de 2027 e de-para por exercício (teste de virada de exercício); balancetes mensais, relatórios trimestrais e demonstrações anuais por contrato e por município; dado contábil regulatório separado do gerencial e destinado às agências, com rastreabilidade e auditoria; o produto não substitui o sistema contábil oficial do órgão (ADR-0028, e); contabilidade gerencial com custo por m³ faturado, por ligação e por categoria, margem por categoria, custo do subsídio e custo total da OS (material, mão de obra pela tabela de custo-hora por função com vigência em `cost.hourly_rates`, frota quando a ED-59 existir, e terceiros), com rateio por `cost.allocation_method`; item 2.16.18 do SAMAE sem falha; cofaturamento (ver ED-25) e projeção de receita, arrecadação e caixa (ver ED-100) fora desta entrega",
+    "findings_owned": [
+      "GES-09",
+      "GES-14",
+      "RAS-21",
+      "RAS-32"
+    ],
+    "consumed": [
+      "v2.15 e o complemento de 15/10/2026 (20c FIN-05) como ajuste",
+      "v2.18: GES-09 e GES-14 com critério testável; CAD-90 remetido à ED-25 e GES-10 à ED-100",
+      "RAS-21 (catálogo MCRSB e balancetes por contrato e município) e RAS-32 (PCASP por exercício)"
+    ]
+  },
+  {
+    "id": "ED-25",
+    "title": "Resíduos sólidos na conta",
+    "origin": "18e-E15, 18g-E-RES; CAD-90",
+    "size": "G (3)",
+    "deps": [
+      "P2.5",
+      "ED-22",
+      "ED-32"
+    ],
+    "acceptance": "componente de resíduos sólidos no cálculo da conta, com isenção, fatura desvinculada e carnê mensal ou anual; cofaturamento pela NR 13, arts. 46 a 56: contrato de cofaturamento por serviço, aviso ao usuário com pelo menos 60 dias de antecedência do início pelo motor de mensagens legais da P2.32, valores discriminados na conta, retirada a pedido do usuário, repasse e segregação contábil pela regra por evento da ED-32, documento de cobrança com identificador único e inadimplência do serviço cofaturado sem efeito de corte de água (`cut.third_party_debt_blocks`), pelos parâmetros `cobill.*`, com teste por regra; SG-324 e SG-325 no ensaio; item 2.13 do SAMAE sem falha",
+    "findings_owned": [
+      "CAD-90"
+    ],
+    "consumed": [
+      "v2.18: CAD-90 com critério testável",
+      "mensagem de aviso pelo motor da P2.32 (CAD-96)"
+    ]
+  },
+  {
+    "id": "ED-34",
+    "title": "Catálogo de serviços e serviços faturáveis",
+    "origin": "18f-ENT-01, 18e-E5; CAD-85, CAD-86, GES-17",
+    "size": "G (4)",
+    "deps": [
+      "P0.19",
+      "P3.4",
+      "P3.6",
+      "ED-32",
+      "P3.20"
+    ],
+    "acceptance": "POC-41 do roteiro VISAN (três tipos de serviço com todos os parâmetros) e POC-31 (parcelamento de serviço) passam; tabelas de preço de serviços e de materiais com vigência por tenant, ligadas aos tipos de OS da P1.31, que guardam só a referência ao item de preço; cobrança lançada no encerramento da OS (teste); natureza de cada receita (tarifária, complementar, acessória ou de projeto associado) no item de serviço, com registro da homologação regulatória da atividade ou do preço (`rev.homologation_required`) e do percentual compartilhado com a modicidade tarifária (`rev.sharing_pct`), conforme a Lei 11.445/2007, art. 10-A, II; documentos exigidos por tipo de serviço (`service_type.required_documents`), com validade e estado de verificação, sem exigir firma reconhecida nem cópia autenticada (Lei 13.726/2018); política de assinatura por tipo de documento emitido (`doc.signature_policy`), nos níveis da Lei 14.063/2020 da P3.34, com código verificador ou QR de autenticidade, que a ED-38 usa em certidões e declarações; fluxo encadeado por tipo de solicitação (`service_type.workflow`, com etapas, dependências e prazos do catálogo), e na ligação nova: pedido, documentos, viabilidade (rede, pressão, diâmetro), esgoto simultâneo onde há rede (`connection.new_requires_sewer_when_available`), orçamento por bitola, pavimento e categoria, guia ou NFS-e, vistoria do padrão, execução, ativação com hidrômetro, primeira leitura e dias mínimos de cobrança (TR-300), entrega do contrato de adesão pela P3.20 e vínculo do cliente; prazos de vistoria e de ligação lidos da regra da agência (NR 11, arts. 72 e 73); teste do fluxo completo da ligação nova; item 2.17 do SAMAE sem falha na parte de catálogo e cobrança de serviços; ligação provisória, hidrante e carro-pipa (ver ED-91) e soluções individuais (ver ED-88) fora desta entrega",
+    "findings_owned": [
+      "CAD-85",
+      "CAD-86",
+      "GES-17"
+    ],
+    "consumed": [
+      "v2.18: CAD-85, CAD-86 e GES-17 com critério testável; CAD-72 remetido à ED-91 e OPE-03 à ED-88",
+      "COE-10 (fronteira: preço, vigência e lançamento sobre os tipos da P1.31) e JOR-12 (P3.20) consumidos"
+    ]
+  },
+  {
+    "id": "ED-35",
+    "title": "Atendimento completo",
+    "origin": "18f-ENT-02; NR 11; CAD-76, CAD-95, JOR-31",
+    "size": "G (3)",
+    "deps": [
+      "P3.4",
+      "P3.5",
+      "P1.20",
+      "P1.36",
+      "ED-34"
+    ],
+    "acceptance": "POC-47 e POC-48 do roteiro VISAN passam: atendimento sobre o protocolo de atendimento da P1.36, único por canal, com visão 360 (faturas, consumos, serviços e análise de água) e fila por prazo; ouvidoria como fila de segunda instância sobre o protocolo, com os prazos da Lei 13.460/2017 (`sac.ombudsman_days`, uma prorrogação), identidade do manifestante preservada e relatório anual (NR 11, art. 52, §2º); origem externa do protocolo (Consumidor.gov.br, Procon pelo SINDEC, agência reguladora, Ministério Público e Defensoria), cada uma com prazo próprio em `sac.external_channels`, retorno ao canal de origem e indicador por origem, com relatório por origem no catálogo da ED-46; interrupção programada (NR 11, arts. 39 a 41) com cadastro por área (localidade, setor, rota), comunicação à agência e aos usuários afetados pela P3.5 (pela ED-41 quando disponível) e fornecimento de emergência às unidades essenciais marcadas no cadastro da P1.3, sem mapa; aviso ao atendente e agrupamento dos protocolos do mesmo evento; consulta pública, sem login, da situação do abastecimento por endereço, bairro ou inscrição, com interrupções ativas e programadas e previsão de retorno atualizada pelo operador (`portal.outage_status_visibility`), que a ED-38 expõe no portal; atribuição e redistribuição de protocolos e de OS entre pessoas, além do trâmite entre unidades da P3.30, com motivo obrigatório e registro na trilha (teste); atendimento prioritário e de acessibilidade pelo perfil da P1.3; solicitação de ligação nova pelo fluxo encadeado da ED-34; reclamação, resposta e pesquisa de satisfação registradas como evidência de comunicação e retorno para a ISO 9001 e a ISO 24510; teste dos prazos e do aviso; item 2.19 do SAMAE sem falha; área calculada pelo GIS (ver ED-54); pedidos de acesso à informação (ver ED-99), copiloto do atendente (ver ED-43), crise hídrica (ver ED-91), ocorrência de rede (ver ED-92) e reclamação de qualidade com coleta (ver ED-50) fora desta entrega",
+    "findings_owned": [
+      "CAD-76",
+      "CAD-95",
+      "JOR-31"
+    ],
+    "consumed": [
+      "v2.15 (ouvidoria, interrupção programada, agrupamento)",
+      "v2.17 (satisfação para ISO 9001 e ISO 24510)",
+      "v2.18: CAD-76 e CAD-95 com critério testável; CAD-80 e CAD-81 consumidos da P1.3 e CAD-86 da ED-34; CAD-77 remetido à ED-99, GES-26 à ED-43, OPE-10 à ED-91, OPE-16 à ED-92 e OPE-26 à ED-50",
+      "JOR-31; protocolo da P1.36 (decisão do dono 7); aceite consolidado (COE-18)"
+    ]
+  },
+  {
+    "id": "ED-36",
+    "title": "OS completa no backoffice",
+    "origin": "18f-ENT-03; ADR-0032, ADR-0039; CAD-94, JOR-07, OPE-33",
+    "size": "G (4)",
+    "deps": [
+      "ED-34",
+      "P3.4",
+      "P1.9",
+      "P2.1",
+      "P1.31",
+      "P1.35",
+      "ED-35"
+    ],
+    "acceptance": "POC-42 a POC-46 do roteiro VISAN passam (abrir, encerrar com executores e materiais, monitorar, programar e desprogramar, anexos); construída sobre o núcleo da P1.31 (tipos, estados, efeitos e OS de lote existentes desde o P1), sem redefinir modelo, tipo ou efeito; OS completa trata os alvos múltiplos e tipados da P1.31, inclusive equipamento e componente do cadastro de ativos da P1.35; programação, executores, desdobramento, retrabalho e materiais previstos; materiais da OS com quantidade prevista e usada, que a ED-58 liga à requisição com alçada, à reserva e à baixa no estoque (ADR-0032); custo total da OS apropriado pela regra da ED-32; janelas de agendamento por turno definidas pelo tenant (`sched.customer_windows`) no calendário de OS, com confirmação e reagendamento, oferecidas ao usuário pela ED-38, e lembrete pelo canal da ED-41 quando disponível; sugestão de programação com custo de deslocamento sobre o grafo viário do pgRouting (ADR-0010), restrições duras (habilitação de segurança do trabalho e prazo da P1.31, janela de agendamento e, quando a ED-59 existir, equipamento) e brandas (agrupamento por região, equilíbrio de carga) por `sched.hard_constraints`, `sched.soft_weights` e `sched.replan_on_urgency`, com resultado explicável e sempre confirmado por pessoa (teste); uso do grafo viário para tempo de viagem das equipes registrado em ADR antes da implementação; solver de código aberto com licença conferida, sem serviço pago de terceiro no caminho crítico; impressão da OS e do roteiro da equipe pelo motor de modelos da P2.30, com QR que abre a OS; baixa posterior pelo backoffice, para equipe sem app e empreiteira, com data e hora de execução, executor, materiais e foto, e prazos de religação e de compensação contados da hora de execução registrada (teste); redistribuição de OS entre pessoas pela regra da ED-35; ligação nova executada pelas etapas do fluxo encadeado da ED-34; item 2.17 do SAMAE sem falha, com a parte de estoque demonstrada depois da ED-58",
+    "findings_owned": [
+      "CAD-94",
+      "JOR-07",
+      "OPE-33"
+    ],
+    "consumed": [
+      "v2.14 (constrói sobre o núcleo da P1.31)",
+      "v2.19 (alvos múltiplos e tipados)",
+      "v2.18: CAD-94 e OPE-33 com critério testável; CAD-86 (ED-34), GES-09 (ED-32) e OPE-15 (P1.31) consumidos",
+      "JOR-07 com o motor da P2.30 (JOR-06); JOR-31 consumido da ED-35; COE-05 (P1.35) e COE-10 (P1.31) consumidos"
+    ]
+  },
+  {
+    "id": "ED-24",
+    "title": "Controle de fraudes e fiscalização",
+    "origin": "18e-E4",
+    "size": "M (1)",
+    "deps": [
+      "ED-36",
+      "P2.20"
+    ],
+    "acceptance": "OS de fiscalização gerada por critério; fraude registrada com tipo, fotos e boletim; auto de infração por OS `INFRACTION_NOTICE`, emitido pelo motor de modelos da P2.30, com prazo de defesa (`infraction.appeal_days`) e débito lançado só depois da decisão (`infraction.charge_timing`); recurso por OS `INFRACTION_APPEAL` suspende o débito (teste); consumo em ligação cortada gera OS de fiscalização, sem religação automática (teste, 20d OS-10); fonte alternativa de água declarada no campo da P1.3 entra nos critérios de fiscalização; relatório de unidades com fraude; item 2.13 do SAMAE sem falha na parte de fiscalização; cruzamento com o cadastro imobiliário municipal e analítica de fraude e perdas aparentes fora desta entrega (ver ED-95)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.15 (auto de infração, recurso, consumo em ligação cortada)",
+      "v2.18: CAD-69 consumido da P1.3; CAD-103 e GES-25 remetidos à ED-95"
+    ]
+  },
+  {
+    "id": "ED-29",
+    "title": "Cobrança: complementos, corte e religação por nível",
+    "origin": "18e-E9, 18f-ENT-04",
+    "size": "G (4)",
+    "deps": [
+      "P3.4",
+      "P4.1",
+      "ED-36"
+    ],
+    "acceptance": "POC-32 e POC-33 do roteiro VISAN passam (alínea j), com níveis de corte (cavalete, ramal, supressão) e religação de água e de esgoto sobre as regras e bloqueios da P3.4; geração de OS de corte fora da janela da Lei 14.015/2020 recusada (teste); prioridade e cota diária; cartas de cobrança e de liberação de esgoto pelo motor de modelos da P2.30; seleção pela régua de cobrança da P4.1, inclusive a adaptativa quando ligada; item 2.15 do SAMAE sem falha",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: GES-24 consumido da P4.1",
+      "JOR-06 consumido da P2.30"
+    ]
+  },
+  {
+    "id": "ED-31",
+    "title": "Dívida ativa (núcleo)",
+    "origin": "18e-E11; ADR-0028 (d); GES-18",
+    "size": "G (4)",
+    "deps": [
+      "P2.20",
+      "ED-26",
+      "ED-29",
+      "ED-32"
+    ],
+    "acceptance": "POC-34 a POC-36 do roteiro VISAN passam (alínea k): inscrição individual e periódica, livro, CDA impressa pelo motor de modelos da P2.30 e parcelamento de dívida ativa; saldo mensal congelado; arquivo e petição-modelo para a procuradoria; registro do ajuizamento da execução fiscal (número do processo, vara, fase), sem que o produto conduza o processo judicial (ADR-0028, d); valor mínimo para ajuizar pela lei do ente (`da.min_filing_amount`); alerta de prescrição pelo prazo parametrizado e bloqueio de inscrição, protesto e ajuizamento de dívida prescrita pela regra de prescrição da P4.1 (teste com relógio); controle do protesto de CDA (Lei 9.492/1997, art. 1º, parágrafo único) pelo parâmetro `da.protest_enabled`, desligado por padrão e liberado só depois do parecer jurídico sobre o protesto de CDA de créditos de água e esgoto (decisão PD-10); item 2.15 do SAMAE sem falha",
+    "findings_owned": [
+      "GES-18"
+    ],
+    "consumed": [
+      "v2.18: GES-18 com critério testável",
+      "JOR-06 (P2.30) e RAS-15 (P4.1) consumidos",
+      "decisão PD-10 (parecer sobre protesto de CDA)"
+    ]
+  },
+  {
+    "id": "ED-30",
+    "title": "Negativação e protesto por arquivo",
+    "origin": "18e-E10; ADR-0028 (g)",
+    "size": "G (3)",
+    "deps": [
+      "P4.1",
+      "ED-31",
+      "P1.41"
+    ],
+    "acceptance": "remessa ao birô e à central de protesto gerada e retorno importado, pelos canais de `neg.channels`; inclusão sem carta de aviso prévio com entrega registrada é recusada; aviso prévio com prova de entrega e intervalo mínimo antes da inclusão (`neg.prior_notice_by`, `neg.notice_min_days`); perfis excluídos (`neg.excluded_profiles`), com motivo registrado para cada unidade avaliada e recusada; conta contestada ou em revisão fica fora; titular falecido não é negativado, pela situação registrada na P1.41 (teste); unidade em repactuação por superendividamento e dívida prescrita ficam fora, pelas regras da P4.1 (teste); exclusão marcada no pagamento e enviada em no máximo 5 dias úteis, baixa quando a conta é cancelada (20b FAT-43) e expiração em 5 anos, com esses valores travados; baixa no prazo legal após a quitação (teste com relógio); exclusão a pedido por OS `NEGATIVE_LISTING_EXCLUSION`; relatório de inclusões e exclusões; item 2.15 do SAMAE sem falha",
+    "findings_owned": [],
+    "consumed": [
+      "v2.15 (canais, aviso prévio, perfis excluídos, prazos travados, OS de exclusão)",
+      "v2.18: CAD-65 consumido da P1.41; CAD-75 e RAS-15 da P4.1"
+    ]
+  },
+  {
+    "id": "ED-33",
+    "title": "Remessa e-Sfinge assistida",
+    "origin": "18e-E13; ADR-0028 (e)",
+    "size": "G (3)",
+    "deps": [
+      "ED-31",
+      "ED-32"
+    ],
+    "acceptance": "remessa tributária gerada com as regras de consistência do leiaute vigente do TCE/SC, validada e baixada pelo cliente, com hash, versão do leiaute e retorno registrados; relatório de envio utilizável no atestado de habilitação da VISAN; em operação no piloto a partir da primeira produção (LC.13), se o piloto for autarquia de SC",
+    "findings_owned": [],
+    "consumed": [
+      "sem ajustes na v2.21; aceite reescrito sem mudar o escopo",
+      "item de edital do 18 §5.1 preservado: habilitação VISAN (atestado)"
+    ]
+  },
+  {
+    "id": "ED-37",
+    "title": "Empreiteiras terceirizadas",
+    "origin": "18f-ENT-06",
+    "size": "M (1)",
+    "deps": [
+      "ED-36",
+      "P3.31"
+    ],
+    "acceptance": "cadastro de empreiteiras como extensão do cadastro mínimo de fornecedor da P3.31, sem cadastro paralelo; contratos, penalidades e medição (SG-492 a SG-496), com a medição ligada às OS executadas pela empreiteira na ED-36; item 2.17 do SAMAE sem falha na parte de empreiteiras; obras e projetos (ver ED-84) e campos de integração orçamentária dos contratos (ver ED-62) fora desta entrega",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: OPE-27 remetido à ED-84 e GES-23 à ED-62",
+      "JOR-18 consumido da P3.31 (dependência declarada, COE-06)"
+    ]
+  },
+  {
+    "id": "ED-38",
+    "title": "Portal e autoatendimento ampliados",
+    "origin": "18f-ENT-08, 18e-E17; ADR-0043; CAD-101, CAD-102, GES-32, JOR-14, PLT-06",
+    "size": "G (4)",
+    "deps": [
+      "P3.3",
+      "P3.20",
+      "P1.5",
+      "ED-34",
+      "ED-36",
+      "ED-35",
+      "P3.34",
+      "ED-06",
+      "ED-22"
+    ],
+    "acceptance": "POC-69 do roteiro VISAN passa: faturas pendentes e quitadas, segunda via, simulação de fatura e de parcelamento e certidão de quitação anual; certidões, declarações e comprovantes emitidos com código verificador ou QR de autenticidade, pela política de assinatura da ED-34 e nos níveis da P3.34; login gov.br opcional no realm `ziipsan-portal` pelo ADR-0043, por intermediação OIDC no Keycloak com PKCE S256, só para tenant de direito público (`portal.idp_govbr_enabled`), com nível mínimo `SILVER` ou `GOLD` (`portal.idp_govbr_min_level`) e exigência por operação (`portal.min_assurance_by_operation`: prata ou ouro para troca de titularidade, tarifa social, negociação de dívida e alteração de contato); requisitos de elegibilidade conferidos no checklist de implantação antes de ligar a opção: integração solicitada pelo órgão, por serviço, sistema hospedado em domínio gov.br pelo domínio próprio da P2.27 e município aderido à Rede Nacional de Governo Digital; login local por CPF, CNPJ ou e-mail da P3.3 mantido em todos os casos (teste com a opção ligada e desligada); passkey no portal como método de MFA e de entrada, pela política da ED-06; explicação determinística da variação da conta, gerada do cálculo gravado (dias de leitura, consumo contra o mês anterior e a média, faixa atingida, reajuste, serviços e encargos), no portal e como função disponível ao assistente da ED-43 (teste de reprodução com a conta gravada); comparativo opcional com domicílios semelhantes (`bill.peer_comparison`, desligado por padrão), com agregado mínimo por analogia a `gis.public_aggregation_min_units`; relato sem login, com foto, localização e contato opcional, que cria protocolo da P1.36 com alvo `LOCATION_ONLY`, agrupa relatos do mesmo evento, fica sob a defesa contra automação e abuso do portal da P3.3 e passa a criar ocorrência de rede quando a ED-92 existir; agendamento pelo usuário nas janelas da ED-36; consulta da situação do abastecimento por endereço da ED-35; visão do órgão centralizador e do grande cliente da ED-22; acessibilidade WCAG 2.2 AA conforme a P0.36; SAMAE 2.20 com pelo menos 90% no ensaio; aviso 'a caminho' e aceite do usuário na OS fora desta entrega (ver ED-20)",
+    "findings_owned": [
+      "CAD-101",
+      "CAD-102",
+      "GES-32",
+      "JOR-14",
+      "PLT-06"
+    ],
+    "consumed": [
+      "v2.18: CAD-101 e CAD-102 com critério testável; CAD-85 (ED-34), CAD-94 (ED-36), CAD-95 (ED-35) e PLT-07 (P3.34) consumidos; OPE-21 remetido à ED-20",
+      "PLT-06 e GES-32 (login gov.br, ADR-0043, COE-07); JOR-14",
+      "JOR-38 (ED-22), PLT-30 (ED-06) e PLT-31 (P0.36) consumidos"
+    ]
+  },
+  {
+    "id": "ED-41",
+    "title": "Notificações multicanal e fatura por e-mail",
+    "origin": "18f-ENT-11; ADR-0019, ADR-0028 (l); GES-19",
+    "size": "G (3)",
+    "deps": [
+      "P1.9",
+      "P3.5",
+      "P3.9",
+      "P3.36"
+    ],
+    "acceptance": "POC-20 do roteiro VISAN passa: fatura por e-mail com aviso e link autenticado ao portal, e comunicado de débito; PDF anexo só com opt-in registrado do morador, ou por padrão do tenant com aceite formal (ADR-0028, l); SMS, WhatsApp e push com opt-in por canal e finalidade, lido do registro de preferências da P3.36 e dos contatos verificados e consentimentos da P1.3; mensagens pelos modelos da P2.30, disparadas por eventos do catálogo da P1.38; e-mail com remetente autenticado por tenant da P3.5; remetente de SMS e conta de WhatsApp por tenant, com entregabilidade medida; cada modelo de WhatsApp classificado por categoria de preço (marketing, utilidade, autenticação) em `msg.template_category_map`, com estimativa de custo antes do envio e alerta na aprovação quando um modelo de cobrança tiver texto que o classifique como marketing; teto de gasto mensal por tenant (`msg.monthly_cap`) com alertas a 80% e 100% (ADR-0019) (teste); uso medido por tenant e por módulo (mensagens, SMS, tokens de IA, armazenamento, GIS) exposto no console da P1.6, base da franquia ou do repasse da ED-10 e da medição da ED-42; provedores no DPA; item 2.19 do SAMAE sem falha na parte de notificações; o aviso 'a caminho' da OS (ver ED-20) e os alertas de consumo da telemetria (ver ED-17) usam este canal",
+    "findings_owned": [
+      "GES-19"
+    ],
+    "consumed": [
+      "v2.18: GES-19 com critério testável; CAD-84 e DAD-30 (P1.3), PLT-10 e RAS-30 (P3.5) consumidos; GES-27 remetido à ED-17 e OPE-21 à ED-20",
+      "JOR-06 (P2.30) e JOR-20 (P1.38) consumidos; preferências da P3.36 (COE-19)"
+    ]
+  },
+  {
+    "id": "ED-20",
+    "title": "OS em campo e acompanhamento de campo",
+    "origin": "18f-ENT-05, 18d-E7; ADR-0026, ADR-0032; OPE-11, OPE-21, OPE-39",
+    "size": "G (5)",
+    "deps": [
+      "ED-18",
+      "ED-36",
+      "P3.25",
+      "ED-41"
+    ],
+    "acceptance": "POC-52 a POC-54 do roteiro VISAN passam (alínea p); app de OS offline com fotos, GPS e anexos, sobre a base da ED-18, para a execução e a sincronização das OS da P1.31; o pacote de campo leva, para cada OS de corte, o estado do débito, a contestação, o aviso e as vedações; o app revalida antes de executar, inclusive sem rede, e o servidor revalida na sincronização; falha cancela a OS sem efeito na ligação (classe a); teste offline com quitação registrada depois da emissão do pacote; trilha GPS do leiturista e da equipe e painel com deslocamento, tempo e paradas no mapa do núcleo do GIS da P3.25; rastreamento só durante a jornada (`field.track_only_in_shift`, travado em verdadeiro), retenção da trilha por `field.track_retention_days` (só reduz) e desfoque de rostos nas fotos de campo por `field.photo_blur_faces`; finalidade e base legal do rastreamento registradas (LGPD, art. 7º, V e IX), aviso ao empregado, acesso à trilha só da chefia e item correspondente no RIPD do tenant da P3.10; janela de atendimento combinada (`so.appointment_window_hours`), aviso de técnico a caminho com janela estimada pelo canal da ED-41, estados de execução visíveis ao usuário (a caminho, no local, em execução, concluída), foto antes e depois, comprovante e aceite do usuário na tela do aparelho por assinatura ou código conforme o tipo (`so.require_customer_acceptance_by_type`) e pesquisa de satisfação ao final, registrada no atendimento da ED-35; leitura de QR, código de barras ou NFC do hidrômetro, do lacre e da placa do ativo para confirmar identidade e posição antes de registrar leitura ou intervenção, no app de leitura da ED-18 e no de OS (teste com código de outra unidade); importação de materiais, funcionários de campo e cadastros de consistência pelo importador da P1.40; material usado registrado por tarefa e enviado na sincronização com `task_id`, com a baixa no estoque feita pela ED-58 (ADR-0032); itens 2.18 e 2.12.5 do SAMAE sem falha; qualidade do trabalho de leitura (ver ED-15) e assistência por voz (ver ED-43) fora desta entrega",
+    "findings_owned": [
+      "OPE-11",
+      "OPE-21",
+      "OPE-39"
+    ],
+    "consumed": [
+      "v2.15 (revalidação do corte no app e no servidor)",
+      "v2.18: OPE-11, OPE-21 e OPE-39 com critério testável; OPE-23 remetido à ED-15 e OPE-40 à ED-43",
+      "COE-10 (fronteira: execução offline e sincronização) e JOR-26 (P1.40) consumidos",
+      "dependência da P4.4 substituída pela ED-18"
+    ]
+  },
+  {
+    "id": "ED-23",
+    "title": "Revisão de consumo e desconto por vazamento",
+    "origin": "18d-E9, 18e-E3",
+    "size": "G (4)",
+    "deps": [
+      "P3.4",
+      "P2.20",
+      "ED-20",
+      "P3.5",
+      "P3.34"
+    ],
+    "acceptance": "POC-26 do roteiro VISAN passa (alínea g): duas revisões completas e duas faturas alteradas por vazamento; protocolo da revisão com fases, vistoria e laudo no celular pelo app da ED-20, sem papel; laudo e decisão assinados no nível da Lei 14.063/2020 configurado na P3.34; itens 2.12 e 2.12.5 do SAMAE sem falha",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: PLT-07 consumido da P3.34"
+    ]
+  },
+  {
+    "id": "ED-46",
+    "title": "Catálogo completo de relatórios",
+    "origin": "18g-E-REL, 18d-E8, 18e-E16; ADR-0027; P4.3 (extinta); JOR-39",
+    "size": "G (12)",
+    "deps": [
+      "P3.22"
+    ],
+    "acceptance": "catálogo de relatórios das seções 19 (VISAN) e 2.28 (SAMAE), com teste por relatório; POC-56 a POC-68 do roteiro VISAN passam; nenhum relatório nem consulta de BI executado no banco primário (teste); RNF-71 medido; relatórios ausentes da 23d §5.2 incluídos no catálogo: produtividade por atendente (protocolos, tempo médio, reabertura), reclamações por origem externa do protocolo da ED-35, compensações pagas ao usuário por tipo de usuário e de compensação (corte indevido, atraso de religação, interrupção, qualidade) lidas do cálculo da P3.4 (TR-665, SG-891), acessos (usuários inativos, perfis com permissão sensível, uso de cotas e de mensagens) e almoxarifado analítico (curva ABC, giro, itens sem movimento, divergência de inventário, consumo por tipo de OS) sobre a fonte da ED-58; cada relatório depende da tarefa que produz a sua fonte (dependência textual); relatórios de privacidade (ver P3.40) e de operação de estações (ver ED-87 e ED-89) entram pela tarefa do módulo; item 2.28 do SAMAE sem falha",
+    "findings_owned": [
+      "JOR-39"
+    ],
+    "consumed": [
+      "sem ajustes na v2.21",
+      "da P4.3 extinta: regra de nenhum relatório no primário",
+      "JOR-39 com critério testável; relatórios de módulos posteriores remetidos à tarefa do módulo"
+    ]
+  },
+  {
+    "id": "ED-53",
+    "title": "GIS: edição web completa e cadastro de unidades (GIS-09)",
+    "origin": "18d-E13; ADR-0028 (b); ADR-0034",
+    "size": "G (5)",
+    "deps": [
+      "P2.22",
+      "P3.25",
+      "ED-13",
+      "ED-36"
+    ],
+    "acceptance": "aceite da GIS-09: editor de ponto, linha e polígono com vértices, mover, rotacionar e escalar (SG-838, SG-839, TR-1026, TR-1027); dividir e unir arcos; inserir nó que segmenta; formulário gerado do JSON Schema; cadastro de ETA, ETE, elevatórias e reservatório com geometria (SG-148 a SG-152); camada do usuário e junção de tabelas (SG-840, SG-841); permissões por camada e operação (SG-864, SG-865); ligação nova desenhada vira ligação no cadastro, sincronizada (SG-866, TR-1053); pacotes de projeto e de as-built com tela; projetos e obras (SG-858, TR-1050, TR-1051); OS que altera rede abre pacote (TR-626); itens 2.8 e 2.27 do SAMAE sem falha no ensaio da onda A; viabilidade, loteamento, recebimento de rede e recomposição de obras fora desta entrega (ver ED-84)",
+    "findings_owned": [],
+    "consumed": [
+      "v2.18: OPE-27 remetido à ED-84",
+      "itens de edital do 18 §5.1 preservados: SAMAE 2.8 e 2.27"
+    ]
+  },
+  {
+    "id": "ED-58",
+    "title": "Almoxarifado: materiais e estoque para a OS, com alçada e baixa automática",
+    "origin": "ADR-0028 (i), ADR-0032; 18g-E-ALMOX; JOR-32, JOR-36, OPE-29",
+    "size": "G (7,5)",
+    "deps": [
+      "ED-36",
+      "ED-12",
+      "ED-14",
+      "ED-20",
+      "P3.31"
+    ],
+    "acceptance": "estoque por local (hidrômetros e materiais de rede), entradas, ajustes com justificativa, custo médio, inventário e relatórios de materiais e insumos; parâmetros do grupo de almoxarifado com aceite; seleção de material na OS gera requisição; aprovação pela faixa de valor e pelo papel configurados, com item controlado sempre submetido a aprovação e aprovação automática registrada abaixo do limite; reserva na aprovação reduz o saldo disponível e mantém o físico (teste); entrega registrada; encerramento baixa a quantidade usada e devolve a sobra (teste), com custo apropriado na OS; OS cancelada libera a reserva; requisitante não aprova a própria requisição (teste, recusa 403 e auditoria); aprovação sem saldo deixa saldo negativo e gera alerta de reposição no painel e na Central (teste); relatório diário de negativos e alerta além do prazo de regularização; baixa do material de campo na sincronização da ED-20, idempotente por `task_id` (reenvio não baixa duas vezes), com alçada a posteriori para item controlado; entrada de material pela NF-e do fornecedor do cadastro da P3.31, com leitura do XML e conferência de item e quantidade (teste com divergência); transferência entre locais com estado de trânsito; hidrômetro rastreado por número de série e lacre do recebimento à sucata; lote e validade para reagentes, produtos químicos e EPI com certificado de aprovação, com alerta por `inv.lot_expiry_alert_days`; kit de materiais por tipo de OS, que preenche a previsão na abertura da OS (SG-476); ponto de reposição por item; EPI e consumo por tarefa registrados como evidência para a ISO 45001 (ED-71); aba Estoque da Central Ziip (CENTRAL-ZIIP §3), com saldos, negativos e alertas por tenant; toda operação na auditoria; parte de estoque do item 2.17 do SAMAE sem falha no ensaio da onda A, quando o estoque oficial não for o do ERP do cliente; compras continuam fora do produto (ADR-0028, i); insumos químicos com controle da Polícia Federal (ver ED-89), manutenção por condição e peça sobressalente (ver ED-56) e natureza de despesa para exportação (ver ED-62) fora desta entrega",
+    "findings_owned": [
+      "JOR-32",
+      "JOR-36",
+      "OPE-29"
+    ],
+    "consumed": [
+      "v2.17 (EPI e consumo por tarefa para a ISO 45001)",
+      "v2.18: OPE-29 com critério testável; GES-23 remetido à ED-62, OPE-06 à ED-89 e OPE-38 à ED-56",
+      "JOR-32 e JOR-36; JOR-18 consumido da P3.31",
+      "dependência da ED-20 só para a baixa de campo"
+    ]
+  },
+  {
+    "id": "ED-62",
+    "title": "Integração com ERP do cliente (Betha, IPM, Fiorilli)",
+    "origin": "18g-E-ERPIND, 18f-ENT-07; ADR-0028 (i), ADR-0032; GES-23",
+    "size": "G (7)",
+    "deps": [
+      "ED-32",
+      "ED-36",
+      "ED-58",
+      "P3.37",
+      "P2.26"
+    ],
+    "acceptance": "conectores por API ou arquivo para contabilidade, estoque e RH dos ERPs Betha, IPM e Fiorilli, sobre o hub de integrações da P3.37 e a API pública da P2.26, testados contra leiaute publicado ou ambiente do fornecedor; previsão de materiais da OS enviada ao estoque do cliente (SG-476, TR-521); movimentos de material da OS exportados quando o estoque oficial for o do ERP (ADR-0032); lançamentos contábeis da ED-32 exportados pelo conector; indicadores de compras, RH e orçamento lidos do ERP do cliente e disponíveis para o painel estratégico, sem construir esses módulos no produto (ADR-0028, item i, módulos de 2029 sob demanda); ganchos de integração: código de centro de custo compatível com a unidade organizacional da P3.30, natureza de despesa nos materiais da ED-58 para exportação e campos de número de empenho ou ordem de compra externa e de número no PNCP nos contratos de terceiros, inclusive os de empreiteira da ED-37; itens 2.16.18 e 2.17 do SAMAE sem falha na parte de integração; indicadores lidos do ERP disponíveis para a alínea t do roteiro VISAN; cruzamento com o cadastro imobiliário municipal fora desta entrega (ver ED-95)",
+    "findings_owned": [
+      "GES-23"
+    ],
+    "consumed": [
+      "v2.18: GES-23 com critério testável; GES-11 e PLT-01 consumidos da P2.26; CAD-103 remetido à ED-95",
+      "conectores sobre o hub da P3.37 (COE-19)"
+    ]
+  }
+]

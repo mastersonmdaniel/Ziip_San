@@ -1214,3 +1214,23 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   (COE-02); LGPD do titular só no pacote voluntário (JOR-15); CNPJ alfanumérico ausente (RAS-03); cashback de CBS e
   IBS só como título (RAS-02).
 - Relatórios em docs/levantamento/revisao-geral. Plano e código não alterados. Decisões do dono a colher por cartão.
+
+### 28/10/2026 — Plano v3.0 consolidado
+
+- Cartões do dono: reescrever o plano numa v3.0 consolidada; aprovar todas as recomendações dos relatórios 23a a 23e
+  (perfis de fábrica por função, LGPD do titular para todo tenant, limpeza do código antes da renomeação, hierarquia de
+  ativos no P1); ADR-0043 (login gov.br só para tenant público e pagamento sem conta por código impresso, alterando o
+  ADR-0022); ADR-0044 (o projeto não tem prazos); não reestimar agora; nome na conta só do usuário titular, como
+  parâmetro; protocolo sempre antes da OS. As 10 decisões da estrutura (PD-01 a PD-10) foram aceitas como recomendadas.
+- Método: extração das 270 tarefas e dos 181 ajustes da v2.21 (scripts/plano/extrair-tarefas.js); estrutura v3.0 e mapa
+  de donos por um agente (286 tarefas, 18 novas, 2 fundidas; 333 achados com destino, 311 com tarefa dona); redação das
+  tarefas por sete agentes, com os ajustes incorporados ao aceite; seções narrativas e ADRs por um oitavo; montagem e
+  checagem por scripts/plano/montar-v3.js (0 erros: nenhuma dependência inexistente ou posterior, todo achado com dona).
+- Correções da montagem: ED-88 e ED-92 no grupo B1 (SG-154 crítico na POC do SAMAE); curadoria das normas (ED-76) antes
+  dos pacotes ISO; dependências antes só no texto declaradas; versões Flyway alinhadas ao mapa novo (P0.47 no core V6_1,
+  usuários na V1_9, instância dedicada no core V13 e as reservas das tarefas novas).
+- Documentos: plano canônico substituído pela v3.0; histórico de versões em docs/plano/HISTORICO-DE-VERSOES.md; ADRs
+  0043 a 0046 (0046 proposto); notas aplicadas ao ADR-0040 (NIST 800-63B-4), ADR-0035, ADR-0037 e ao índice (nova regra 2);
+  parâmetros bill.holder_name_display, portal.* e pay.own_cashier_enabled. Material de trabalho em docs/plano-v3.
+- Pendências do dono: as da seção 2.4 do plano (pareceres jurídicos na ordem do PD-10, decisões a rever das normas e as
+  dez abertas na redação). Só documentação; o P0 aguarda ordem.

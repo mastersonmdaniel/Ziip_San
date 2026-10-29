@@ -58,6 +58,7 @@ serviço exige solicitação própria; o nível de confiabilidade da conta (bron
 
 ## Tarefas derivadas
 
-- P3.3: caminho de convidado e opção gov.br; P0.38: provedor de identidade por tenant no realm do portal; ED-38: uso
+- P3.3: caminho de convidado, parâmetros do gov.br e nível mínimo por operação; ED-38: integração com o provedor
+  gov.br (OIDC intermediado pelo Keycloak); P0.38: provedor de identidade por tenant no realm do portal; ED-38: uso
   no aplicativo; P3.8: teste de enumeração do código; parâmetros `portal.idp_govbr_enabled`,
   `portal.min_assurance_by_operation` e `portal.guest_payment` no catálogo do tenant.

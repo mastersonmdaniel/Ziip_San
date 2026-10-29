@@ -8,9 +8,14 @@ cada tarefa entra.
 
 1. Decisão nova, alterada ou revogada vira ADR. Não se decide em conversa, diário ou comentário de código sem ADR
    correspondente.
-2. ADR não se apaga nem se reescreve. Quando a decisão muda, cria-se um ADR novo que o substitui; o antigo passa a
-   "Substituído por ADR-NNNN" e só essa linha de status é editada. Quando a decisão sai do escopo sem substituta, o ADR
-   passa a "Revogado", com data, versão do plano e motivo, e o texto fica como histórico (ADR-0029, v2.12).
+2. ADR não se apaga. Linha de ajuste datada (por exemplo, "**Ajuste de 28/10/2026 (plano v3.0):** ...") só registra
+   esclarecimento que não muda a substância da decisão: precisão de texto, remissão a tarefa, nome ou número
+   atualizado, leitura de um item à luz de ADR posterior, fato conferido em fonte. Mudança de substância (o que se
+   decide, o escopo, a alternativa escolhida, uma regra ou um limite) exige ADR novo, que declara qual ADR e qual item
+   altera ou substitui. O ADR alterado só em parte recebe linha de ajuste que aponta para o ADR novo; o substituído por
+   inteiro passa a "Substituído por ADR-NNNN", e só a linha de status é editada. Quando a decisão sai do escopo sem
+   substituta, o ADR passa a "Revogado", com data, versão do plano e motivo, e o texto fica como histórico. As linhas de
+   ajuste gravadas até a versão 2.21 do plano continuam válidas como estão.
 3. Numeração sequencial de quatro dígitos, sem reaproveitar números. Nome do arquivo: `ADR-NNNN-titulo-curto.md`.
 4. Status possíveis: Proposto (pendente de decisão), Aceito, Substituído, Revogado, Rejeitado.
 5. Documentos de plano e de levantamento (`docs/PLANO-EXECUCAO-PDCA-R0-R9.md`, `docs/levantamento/`) citam o ADR em vez
@@ -20,7 +25,7 @@ cada tarefa entra.
 
 | ADR | Título | Status | Data |
 |---|---|---|---|
-| [0001](ADR-0001-roadmap-p0-p4.md) | Roadmap P0–P4 com marco de go-live piloto no lugar do R1–R9 | Aceito | 12/10/2026 |
+| [0001](ADR-0001-roadmap-p0-p4.md) | Roadmap P0–P4 com homologação local e lançamento comercial no lugar do R1–R9 | Aceito | 12/10/2026 |
 | [0002](ADR-0002-decisoes-g-como-parametros-do-tenant.md) | Decisões G1, G2, G4, G5, G6 e G9 como parâmetros do tenant com aceite formal | Aceito | 12/10/2026 |
 | [0003](ADR-0003-motor-fiscal-portado-para-java.md) | Motor fiscal do Ziip Cloud portado para Java; NFAg-e e NFS-e construídas sobre ele (G3) | Aceito | 12/10/2026 |
 | [0004](ADR-0004-sinisa-e-sinir-assistidos.md) | SINISA e SINIR em modo assistido, sem Web Service nem credencial de terceiros (G7, G8) | Aceito | 12/10/2026 |
@@ -30,7 +35,7 @@ cada tarefa entra.
 | [0008](ADR-0008-mascara-de-documento-configuravel.md) | Máscara de CPF/CNPJ configurável com teto validado; busca por documento controlada | Aceito | 12/10/2026 |
 | [0009](ADR-0009-push-automatico-e-dev-fora-do-drive.md) | Push automático para o GitHub e desenvolvimento fora do Google Drive | Aceito | 12/10/2026 |
 | [0010](ADR-0010-infra-nao-usada-congelada.md) | Infraestrutura não usada congelada em perfis opcionais e arquivo | Aceito | 12/10/2026 |
-| [0011](ADR-0011-hospedagem-a-decidir.md) | Hospedagem de produção: AWS `sa-east-1` gerenciado | Aceito | 12/10/2026 |
+| [0011](ADR-0011-hospedagem-a-decidir.md) | Hospedagem decidida: AWS `sa-east-1` gerenciado | Aceito | 12/10/2026 |
 | [0012](ADR-0012-metas-nao-funcionais.md) | Metas não funcionais como critério de aceite | Aceito | 12/10/2026 |
 | [0013](ADR-0013-postgresql-17-no-p0.md) | PostgreSQL 17 e PostGIS 3.5 no P0 | Aceito | 12/10/2026 |
 | [0014](ADR-0014-outbox-no-postgresql.md) | Trabalho assíncrono por outbox no PostgreSQL | Aceito | 12/10/2026 |
@@ -48,7 +53,7 @@ cada tarefa entra.
 | [0026](ADR-0026-apps-hibridos-com-capacitor.md) | Apps híbridos com Capacitor | Aceito | 12/10/2026 |
 | [0027](ADR-0027-bi-hibrido-com-apache-superset.md) | BI híbrido com Apache Superset | Aceito | 12/10/2026 |
 | [0028](ADR-0028-escopo-funcional-ampliado-pelos-editais.md) | Escopo funcional ampliado pelos editais | Aceito | 12/10/2026 |
-| [0029](ADR-0029-capacidade-e-equipe-da-trilha-de-editais.md) | Capacidade e equipe para a trilha de editais | Revogado (v2.12): gestão de equipe fora do escopo do plano | 12/10/2026 |
+| [0029](ADR-0029-capacidade-e-equipe-da-trilha-de-editais.md) | Capacidade e equipe para a trilha de editais | Substituído por ADR-0035 (gestão de equipe fora do escopo do plano) | 12/10/2026 |
 | [0030](ADR-0030-autenticacao-nos-apps.md) | Autenticação nos apps | Aceito | 12/10/2026 |
 | [0031](ADR-0031-calculo-offline-e-nota-fiscal-na-emissao-em-campo.md) | Cálculo offline e nota fiscal na emissão em campo | Aceito | 12/10/2026 |
 | [0032](ADR-0032-material-da-os-com-alcada-e-baixa-automatica.md) | Material da OS com alçada e baixa automática | Aceito | 12/10/2026 |
@@ -64,6 +69,8 @@ cada tarefa entra.
 | [0042](ADR-0042-politica-de-ia-e-decisoes-automatizadas.md) | Política de IA e decisões automatizadas: humano no circuito, vedações federais, auditoria e desligamento | Aceito | 22/10/2026 |
 | [0043](ADR-0043-login-govbr-e-pagamento-sem-conta-no-portal.md) | Login gov.br (só tenant público) e pagamento sem conta por código impresso no portal; altera o ADR-0022 | Aceito | 28/10/2026 |
 | [0044](ADR-0044-projeto-sem-prazos.md) | O projeto não tem prazos: datas são indicação de sequência; datas de norma são fatos | Aceito | 28/10/2026 |
+| [0045](ADR-0045-os-no-nucleo-e-tipos-de-saneamento-no-pacote.md) | Motor de OS no núcleo da plataforma; tipos e alvos de saneamento no pacote `sanitation` | Aceito | 28/10/2026 |
+| [0046](ADR-0046-ingestao-de-supervisorio-somente-leitura.md) | Ingestão de supervisório somente leitura por REST e arquivo, sem broker (exceção ao ADR-0010) | Proposto | 28/10/2026 |
 
 ## Referências
 
@@ -78,4 +85,9 @@ cada tarefa entra.
 - `docs/arquitetura/ICONES-E-SIMBOLOGIA.md` e `docs/arquitetura/PLATAFORMA-E-VERTICAIS.md` — projeto dos ADRs 0036 e 0037.
 - `docs/levantamento/gsan/20a` a `20g` — regras de negócio do GSAN, demandas legais, mercado e normas de 2024–2026
   (base dos ADRs 0038 a 0040).
+- `docs/levantamento/certificacoes/21a` e `21b` — requisitos de software das normas de gestão e do setor (base do
+  ADR-0041).
+- `docs/levantamento/lacunas/22a` a `22d` — lacunas e inovações (base do ADR-0042 e dos ajustes da v2.18).
+- `docs/levantamento/revisao-geral/23a` a `23e` — revisão geral do projeto (base dos ADRs 0043 a 0046 e da v3.0).
+- `docs/normas` — biblioteca de normas e legislação do setor.
 - `docs/PLANO-EXECUCAO-PDCA-R0-R9.md` — plano canônico: decisões (§2), mapa Flyway (§3) e fases P0–P4 (§4).

@@ -5,6 +5,8 @@
 - **Afeta:** ADR-0001 (fases); ADR-0002 (parâmetros por tenant); ADR-0016 e ADR-0017 (marca e temas); ADR-0018
   (Central Ziip); ADR-0020 e ADR-0021 (ajuda, suporte, Sobre); ADR-0034 (GIS: domínios e catálogo); ADR-0036 (ícones e
   símbolos); `docs/arquitetura/PLATAFORMA-E-VERTICAIS.md`; plano v2.13 (P0.47, P1.26, §2.4, §3)
+- **Ajuste de 28/10/2026 (plano v3.0):** o motor de OS fica no núcleo e os tipos e alvos de saneamento no pacote
+  `sanitation`, conforme o ADR-0045.
 
 ## Contexto
 

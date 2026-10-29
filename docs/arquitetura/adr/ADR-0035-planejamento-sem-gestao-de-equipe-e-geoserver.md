@@ -4,6 +4,8 @@
 - **Decisor:** dono do produto (cartão de 12/10/2026)
 - **Afeta:** ADR-0029 (revogado); ADR-0010 (exceção do GeoServer); ADR-0028 (item b.1); ADR-0034 (ED-67); plano v2.12;
   consolidado 18; `docs/arquitetura/GIS-CADASTRO-TECNICO.md`
+- **Ajuste de 28/10/2026 (plano v3.0):** a leitura das datas como "metas de calendário" (item 1) passa a ser a do
+  ADR-0044: datas são indicação de sequência, sem prazo.
 
 ## Contexto
 

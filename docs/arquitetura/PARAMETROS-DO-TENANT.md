@@ -258,6 +258,7 @@ validador avisa e o limite legal prevalece (ADR-0041, item 9).
 | `portal.idp_govbr_enabled` | login gov.br no portal | ligado; desligado (só tenant de direito público com integração aprovada) | desligado | d | ADR-0043 |
 | `portal.min_assurance_by_operation` | nível mínimo do gov.br por operação | bronze, prata ou ouro por operação | prata para troca de titularidade, tarifa social, contato e negociação | b | ADR-0043 |
 | `portal.guest_payment` | pagamento sem conta | `OFF`; `CODE_ONLY`; `CODE_AND_DOCUMENT_SUFFIX` | `CODE_ONLY` | b | ADR-0043 |
+| `pay.own_cashier_enabled` | caixa próprio de recebimento do prestador (guichê) | ligado; desligado | desligado | d | PD-07; ED-26, confirmado na P1.1 |
 
 ### Parâmetros previstos pelos levantamentos 22a a 22d (plano v2.18)
 
