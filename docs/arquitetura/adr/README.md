@@ -62,6 +62,8 @@ cada tarefa entra.
 | [0040](ADR-0040-permissoes-escopo-e-senha-por-tenant.md) | Permissões `recurso:ação`, escopo por área e política de senha por tenant no realm único | Aceito | 14/10/2026 |
 | [0041](ADR-0041-modulo-certificacoes-de-qualidade.md) | Módulo Certificações de qualidade: catálogo único de normas, voluntárias ativáveis e obrigatórias não desativáveis | Aceito | 21/10/2026 |
 | [0042](ADR-0042-politica-de-ia-e-decisoes-automatizadas.md) | Política de IA e decisões automatizadas: humano no circuito, vedações federais, auditoria e desligamento | Aceito | 22/10/2026 |
+| [0043](ADR-0043-login-govbr-e-pagamento-sem-conta-no-portal.md) | Login gov.br (só tenant público) e pagamento sem conta por código impresso no portal; altera o ADR-0022 | Aceito | 28/10/2026 |
+| [0044](ADR-0044-projeto-sem-prazos.md) | O projeto não tem prazos: datas são indicação de sequência; datas de norma são fatos | Aceito | 28/10/2026 |
 
 ## Referências
 

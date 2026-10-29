@@ -1,6 +1,6 @@
 # ADR-0022 — Histórico e documentos no portal do consumidor e na área do tenant
 
-- **Status:** Aceito, 12/10/2026
+- **Status:** Aceito, 12/10/2026; item 4 e a alternativa "acesso só por matrícula e CPF, sem conta" alterados pelo ADR-0043 (28/10/2026): login gov.br para tenant público e pagamento sem conta por código impresso
 - **Decisor:** dono do produto
 - **Afeta:** ADR-0003 (NFAg-e e NFS-e), ADR-0008 (registro de acesso), ADR-0015 (retenção), ADR-0016 (marca do
   tenant), ADR-0018 e ADR-0019 (Central e cobrança por contrato); ADR-0006 e ADR-0007 (sessão e MFA); decisões D5/D6

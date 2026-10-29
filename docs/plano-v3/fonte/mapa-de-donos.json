@@ -1,0 +1,3079 @@
+[
+  {
+    "finding_id": "CAD-65",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Titular falecido e sucessão da conta",
+    "owner": "P1.41",
+    "consumers": [
+      "ED-30"
+    ],
+    "destination_note": "Tarefa dona P1.41: Cadastro: situações do titular e validação externa. sucessão da conta por OS interna; a ED-30 não negativa titular falecido"
+  },
+  {
+    "finding_id": "CAD-66",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Representação legal e terceiro autorizado",
+    "owner": "P1.41",
+    "consumers": [
+      "P3.3"
+    ],
+    "destination_note": "Tarefa dona P1.41: Cadastro: situações do titular e validação externa. representante legal e terceiro autorizado com escopo e validade"
+  },
+  {
+    "finding_id": "CAD-67",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Nome social e nome civil",
+    "owner": "P1.41",
+    "consumers": [
+      "P2.17"
+    ],
+    "destination_note": "Tarefa dona P1.41: Cadastro: situações do titular e validação externa. nome social; nome civil só onde a lei exige"
+  },
+  {
+    "finding_id": "CAD-68",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Unidade sem usuário vigente (desocupada)",
+    "owner": "P1.41",
+    "consumers": [
+      "P2.5",
+      "P2.10"
+    ],
+    "destination_note": "Tarefa dona P1.41: Cadastro: situações do titular e validação externa. unidade desocupada sem usuário vigente"
+  },
+  {
+    "finding_id": "CAD-69",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Fonte alternativa de água no cadastro e na cobrança de esgoto",
+    "owner": "P1.3",
+    "consumers": [
+      "P2.5",
+      "ED-13",
+      "ED-24"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga. campo de fonte alternativa; cobrança de esgoto na P2.5"
+  },
+  {
+    "finding_id": "CAD-70",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Esgoto não doméstico e carga poluidora do usuário",
+    "owner": "ED-83",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-83: Esgoto não doméstico e carga poluidora do usuário"
+  },
+  {
+    "finding_id": "CAD-71",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Fluxo do empreendedor (loteamento, condomínio, transferência de redes)",
+    "owner": "ED-84",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-84: Fluxo do empreendedor e obras: loteamento, condomínio, recebimento de redes, medição e recomposição"
+  },
+  {
+    "finding_id": "CAD-72",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Ligação provisória, hidrante e carro-pipa",
+    "owner": "ED-91",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-91: Crise hídrica e contingência: rodízio, racionamento, tarifa sazonal e carro-pipa. o catálogo de tipos de ligação da ED-13 admite o tipo provisória"
+  },
+  {
+    "finding_id": "CAD-73",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Programas de regularização e renegociação por ato do ente",
+    "owner": "P4.1",
+    "consumers": [],
+    "destination_note": "Tarefa dona P4.1: R8: cobrança; negativação e protesto na ED-30"
+  },
+  {
+    "finding_id": "CAD-74",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Medida excepcional por área e mecanismo tarifário de contingência",
+    "owner": "ED-91",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-91: Crise hídrica e contingência: rodízio, racionamento, tarifa sazonal e carro-pipa. mecanismo excepcional sobre a estrutura tarifária com vigência da P2.29"
+  },
+  {
+    "finding_id": "CAD-75",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Superendividamento e processo de repactuação",
+    "owner": "P4.1",
+    "consumers": [
+      "ED-30"
+    ],
+    "destination_note": "Tarefa dona P4.1: R8: cobrança; negativação e protesto na ED-30"
+  },
+  {
+    "finding_id": "CAD-76",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Canais externos de reclamação (Consumidor.gov.br, Procon, agência)",
+    "owner": "ED-35",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-35: Atendimento completo"
+  },
+  {
+    "finding_id": "CAD-77",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Pedidos de acesso à informação (LAI)",
+    "owner": "ED-99",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-99: Transparência ativa, LAI e dados abertos. pedido LAI como protocolo da P1.36"
+  },
+  {
+    "finding_id": "CAD-78",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Fusão e separação de cadastros duplicados",
+    "owner": "P1.41",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.41: Cadastro: situações do titular e validação externa. fusão e separação por OS inversa"
+  },
+  {
+    "finding_id": "CAD-79",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Destino da devolução (chave Pix)",
+    "owner": "P3.29",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.29: Devolução de pagamento e fila de pagamentos não identificados"
+  },
+  {
+    "finding_id": "CAD-80",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Usuários essenciais e vulneráveis (institucionais e pessoais)",
+    "owner": "P1.3",
+    "consumers": [
+      "P3.4",
+      "ED-35"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "CAD-81",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Perfil de atendimento prioritário e de acessibilidade",
+    "owner": "P1.3",
+    "consumers": [
+      "ED-35",
+      "ED-40",
+      "P2.8"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "CAD-82",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Validação cadastral externa (CPF, CNPJ, biometria)",
+    "owner": "P1.41",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.41: Cadastro: situações do titular e validação externa"
+  },
+  {
+    "finding_id": "CAD-83",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Endereço normalizado e geocodificação do imóvel",
+    "owner": "P1.3",
+    "consumers": [
+      "P2.23"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "CAD-84",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Contatos verificados e preferências por finalidade",
+    "owner": "P1.3",
+    "consumers": [
+      "P3.5",
+      "P3.36",
+      "ED-41"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga. contato verificado na P1.3; registro de preferências por finalidade na P3.36"
+  },
+  {
+    "finding_id": "CAD-85",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Documentos exigidos por serviço e documentos emitidos verificáveis",
+    "owner": "ED-34",
+    "consumers": [
+      "ED-38"
+    ],
+    "destination_note": "Tarefa dona ED-34: Catálogo de serviços e serviços faturáveis"
+  },
+  {
+    "finding_id": "CAD-86",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Fluxo encadeado da ligação nova",
+    "owner": "ED-34",
+    "consumers": [
+      "ED-35",
+      "ED-36"
+    ],
+    "destination_note": "Tarefa dona ED-34: Catálogo de serviços e serviços faturáveis"
+  },
+  {
+    "finding_id": "CAD-87",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Ligação obrigatória e cobrança por disponibilidade",
+    "owner": "ED-88",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-88: Soluções individuais, limpa-fossa e ligação obrigatória à rede. componente de disponibilidade na P2.5 (RAS-22)"
+  },
+  {
+    "finding_id": "CAD-88",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Categorias opcionais da NR 13 e benefícios com validade",
+    "owner": "P2.5",
+    "consumers": [
+      "ED-22"
+    ],
+    "destination_note": "Tarefa dona P2.5: R4: medição, ciclo, conta, N6"
+  },
+  {
+    "finding_id": "CAD-89",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Sazonalidade da unidade",
+    "owner": "P1.3",
+    "consumers": [
+      "P2.5"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "CAD-90",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Cofaturamento (NR 13, arts. 46 a 56)",
+    "owner": "ED-25",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-25: Resíduos sólidos na conta. repasse contábil pela regra por evento da ED-32"
+  },
+  {
+    "finding_id": "CAD-91",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Identificação automática da tarifa social e fonte do CadÚnico por natureza jurídica",
+    "owner": "P1.5",
+    "consumers": [
+      "ED-57"
+    ],
+    "destination_note": "Tarefa dona P1.5: R3: tarifa social satélite + N4"
+  },
+  {
+    "finding_id": "CAD-92",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Índice de Tarifa Social, lista positiva da ANA e relatório anual",
+    "owner": "ED-97",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-97: Pacote regulatório de saída por agência, com subsídios e Índice de Tarifa Social"
+  },
+  {
+    "finding_id": "CAD-93",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Contratos especiais de grandes usuários e venda por atacado",
+    "owner": "ED-22",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-22: Situações especiais de faturamento, usuário avulso e órgão centralizador"
+  },
+  {
+    "finding_id": "CAD-94",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Agendamento pelo usuário",
+    "owner": "ED-36",
+    "consumers": [
+      "ED-38"
+    ],
+    "destination_note": "Tarefa dona ED-36: OS completa no backoffice. janelas de agendamento oferecidas no portal"
+  },
+  {
+    "finding_id": "CAD-95",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Situação do abastecimento por endereço (consulta pública)",
+    "owner": "ED-35",
+    "consumers": [
+      "ED-38"
+    ],
+    "destination_note": "Tarefa dona ED-35: Atendimento completo"
+  },
+  {
+    "finding_id": "CAD-96",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Motor de mensagens legais da fatura antes da ED-79",
+    "owner": "P2.32",
+    "consumers": [
+      "P2.17",
+      "P2.24",
+      "ED-79"
+    ],
+    "destination_note": "Tarefa dona P2.32: Conteúdo mínimo da fatura por lei e por agência e motor de mensagens legais. motor de mensagens legais antecipado da ED-79 para o P2 (RAS-04)"
+  },
+  {
+    "finding_id": "CAD-97",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Segunda via e pagamento sem conta no portal",
+    "owner": "P3.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.3: Portal do cliente: 2ª via, Pix, protocolo. pagamento sem conta autorizado pelo ADR-0043 (decisão do dono 3)"
+  },
+  {
+    "finding_id": "CAD-98",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Qualidade cadastral contínua",
+    "owner": "P3.32",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.32: Qualidade cadastral contínua"
+  },
+  {
+    "finding_id": "CAD-99",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Alerta preventivo de consumo anormal",
+    "owner": "P3.5",
+    "consumers": [
+      "ED-17"
+    ],
+    "destination_note": "Tarefa dona P3.5: Notificações com prova de entrega. detecção na crítica de leitura da P2.5; aviso pela P3.5"
+  },
+  {
+    "finding_id": "CAD-100",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Régua de cobrança com promessa de pagamento e priorização",
+    "owner": "P4.1",
+    "consumers": [],
+    "destination_note": "Tarefa dona P4.1: R8: cobrança; negativação e protesto na ED-30"
+  },
+  {
+    "finding_id": "CAD-101",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Login gov.br como provedor federado do portal",
+    "owner": "ED-38",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-38: Portal e autoatendimento ampliados. login gov.br pelo ADR-0043"
+  },
+  {
+    "finding_id": "CAD-102",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Fatura que explica a variação e compara com domicílios semelhantes",
+    "owner": "ED-38",
+    "consumers": [
+      "ED-43",
+      "ED-101"
+    ],
+    "destination_note": "Tarefa dona ED-38: Portal e autoatendimento ampliados"
+  },
+  {
+    "finding_id": "CAD-103",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Cruzamento com o cadastro imobiliário municipal",
+    "owner": "ED-95",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-95: Perdas aparentes: cruzamento de edificações com unidades e analítica de fraude"
+  },
+  {
+    "finding_id": "CAD-104",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22a)",
+    "summary": "Planos de pagamento por capacidade (fatura nivelada e acordo por renda)",
+    "owner": "P4.1",
+    "consumers": [],
+    "destination_note": "Tarefa dona P4.1: R8: cobrança; negativação e protesto na ED-30"
+  },
+  {
+    "finding_id": "OPE-01",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Módulo de perdas operacional sem tarefa dona (DMC, vazão mínima noturna, balanço por DMC)",
+    "owner": "ED-85",
+    "consumers": [
+      "ED-78"
+    ],
+    "destination_note": "Tarefa dona ED-85: Módulo de perdas operacional: DMC, vazão mínima noturna e balanço por DMC"
+  },
+  {
+    "finding_id": "OPE-02",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Operação de ETA, ETE, elevatórias e reservatórios sem supervisório: diário, ronda e turno",
+    "owner": "ED-87",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-87: Operação de estações sem supervisório: diário, ronda e turno. retirada da P1.31, da ED-17 e da ED-50 (COE-10)"
+  },
+  {
+    "finding_id": "OPE-03",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Soluções individuais, limpa-fossa e ligação obrigatória à rede",
+    "owner": "ED-88",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-88: Soluções individuais, limpa-fossa e ligação obrigatória à rede"
+  },
+  {
+    "finding_id": "OPE-04",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Gestão de pressão: zonas, pontos de controle e ajuste de válvulas redutoras",
+    "owner": "ED-86",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-86: Gestão de pressão e controle ativo de vazamento"
+  },
+  {
+    "finding_id": "OPE-05",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Usos operacionais e emergenciais e água exportada no balanço hídrico",
+    "owner": "ED-85",
+    "consumers": [
+      "ED-81"
+    ],
+    "destination_note": "Tarefa dona ED-85: Módulo de perdas operacional: DMC, vazão mínima noturna e balanço por DMC"
+  },
+  {
+    "finding_id": "OPE-06",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Insumos químicos de tratamento: consumo, lote, ficha de segurança e controle da Polícia Federal",
+    "owner": "ED-89",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-89: Insumos químicos de tratamento e reservatórios"
+  },
+  {
+    "finding_id": "OPE-07",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Limpeza e desinfecção de reservatórios com registro público",
+    "owner": "ED-89",
+    "consumers": [
+      "ED-79"
+    ],
+    "destination_note": "Tarefa dona ED-89: Insumos químicos de tratamento e reservatórios"
+  },
+  {
+    "finding_id": "OPE-08",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Eficiência energética das unidades (kWh por m³, demanda, fator de potência)",
+    "owner": "ED-90",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-90: Eficiência energética e ESG"
+  },
+  {
+    "finding_id": "OPE-09",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Programa de exercício de válvulas, de hidrantes e de descarga de rede",
+    "owner": "ED-56",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-56: Ativos, manutenção de rede e inventário regulatório (GIS-19)"
+  },
+  {
+    "finding_id": "OPE-10",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Crise hídrica: rodízio, racionamento, bandeira de contingência e carro-pipa",
+    "owner": "ED-91",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-91: Crise hídrica e contingência: rodízio, racionamento, tarifa sazonal e carro-pipa"
+  },
+  {
+    "finding_id": "OPE-11",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Privacidade do rastreamento do executor e das fotos de campo",
+    "owner": "ED-20",
+    "consumers": [
+      "ED-66"
+    ],
+    "destination_note": "Tarefa dona ED-20: OS em campo e acompanhamento de campo"
+  },
+  {
+    "finding_id": "OPE-12",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Inspeção de esgoto por vídeo (CCTV) e desobstrução programada",
+    "owner": "ED-56",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-56: Ativos, manutenção de rede e inventário regulatório (GIS-19). a ED-64 reaproveita a inspeção para drenagem quando a ED-56 existir; sem dependência, porque a ED-64 vem antes na onda B"
+  },
+  {
+    "finding_id": "OPE-13",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Efluentes não domésticos: cadastro, pré-tratamento e amostragem pelo prestador",
+    "owner": "ED-83",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-83: Esgoto não doméstico e carga poluidora do usuário"
+  },
+  {
+    "finding_id": "OPE-14",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Segurança do trabalho na OS: habilitação, PET, análise de risco, espaço confinado e trabalho isolado",
+    "owner": "P1.31",
+    "consumers": [
+      "P3.31",
+      "ED-59",
+      "ED-71"
+    ],
+    "destination_note": "Tarefa dona P1.31: Núcleo de OS e unidade consumidora como raiz. ADR-0041 (NR-1, 18, 33 e 35)"
+  },
+  {
+    "finding_id": "OPE-15",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Alvo da OS além da unidade consumidora (rede, ativo, unidade operacional, ocorrência)",
+    "owner": "P1.31",
+    "consumers": [
+      "ED-36"
+    ],
+    "destination_note": "Tarefa dona P1.31: Núcleo de OS e unidade consumidora como raiz"
+  },
+  {
+    "finding_id": "OPE-16",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Ocorrência de rede (incidente) como entidade, ligada às NR 9 Nível I-04 e I-05",
+    "owner": "ED-92",
+    "consumers": [
+      "ED-77"
+    ],
+    "destination_note": "Tarefa dona ED-92: Ocorrência de rede como entidade"
+  },
+  {
+    "finding_id": "OPE-17",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Controle ativo de vazamento: pesquisa, reparo e ganho medido",
+    "owner": "ED-86",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-86: Gestão de pressão e controle ativo de vazamento"
+  },
+  {
+    "finding_id": "OPE-18",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Medição inteligente e telemetria: dispositivo, alarme que abre OS, validação e estimativa",
+    "owner": "ED-17",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-17: Telemetria e supervisório por REST e arquivo"
+  },
+  {
+    "finding_id": "OPE-19",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Dimensionamento, retenção e agregação de séries temporais",
+    "owner": "ED-17",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-17: Telemetria e supervisório por REST e arquivo. padrão de partição da P2.3"
+  },
+  {
+    "finding_id": "OPE-20",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Manutenção preventiva de ativos não lineares (plano por tempo e por uso, rotas, checklist)",
+    "owner": "ED-56",
+    "consumers": [
+      "ED-72"
+    ],
+    "destination_note": "Tarefa dona ED-56: Ativos, manutenção de rede e inventário regulatório (GIS-19)"
+  },
+  {
+    "finding_id": "OPE-21",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Janela de atendimento, \"a caminho\" e aceite do usuário na OS",
+    "owner": "ED-20",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-20: OS em campo e acompanhamento de campo. mensagem \"a caminho\" pelo canal da ED-41"
+  },
+  {
+    "finding_id": "OPE-22",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Sala de situação operacional em tempo quase real, fora do BI",
+    "owner": "ED-93",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-93: Sala de situação operacional em tempo quase real"
+  },
+  {
+    "finding_id": "OPE-23",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Qualidade do trabalho de leitura: releitura amostral, faixa falsa, desvio de posição",
+    "owner": "ED-15",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-15: Ciclo de leitura: complementos e autoleitura"
+  },
+  {
+    "finding_id": "OPE-24",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Ciclo de vida econômico do parque de hidrômetros e bancada de ensaio",
+    "owner": "ED-14",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-14: Hidrometria"
+  },
+  {
+    "finding_id": "OPE-25",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Lodo de ETA e de ETE como resíduo do próprio tenant (gerador)",
+    "owner": "ED-105",
+    "consumers": [
+      "ED-70",
+      "ED-104"
+    ],
+    "destination_note": "Tarefa dona ED-105: Efluente da ETE e lodo de ETA e ETE: obrigação legal para todo tenant com estação. obrigação legal separada do pacote ISO 14001 (JOR-16)"
+  },
+  {
+    "finding_id": "OPE-26",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Reclamação de qualidade que gera coleta de amostra e resposta no protocolo",
+    "owner": "ED-50",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-50: Qualidade da água operacional"
+  },
+  {
+    "finding_id": "OPE-27",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Obras e projetos: viabilidade, projeto de loteamento, recebimento de rede, medição e recomposição",
+    "owner": "ED-84",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-84: Fluxo do empreendedor e obras: loteamento, condomínio, recebimento de redes, medição e recomposição"
+  },
+  {
+    "finding_id": "OPE-28",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Frota: checklist, documentos do motorista e equipamentos especiais como recurso",
+    "owner": "ED-59",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-59: Frota e equipes de campo"
+  },
+  {
+    "finding_id": "OPE-29",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Almoxarifado: número de série, lote, validade e kit por tipo de OS",
+    "owner": "ED-58",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-58: Almoxarifado: materiais e estoque para a OS, com alçada e baixa automática"
+  },
+  {
+    "finding_id": "OPE-30",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Contrato de ingestão de supervisório (somente leitura) e rascunho do ADR de exceção",
+    "owner": "ED-17",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-17: Telemetria e supervisório por REST e arquivo. rascunho da exceção ao ADR-0010 como pendência no §2.4"
+  },
+  {
+    "finding_id": "OPE-31",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Resíduos sólidos operacionais: pesagem, roteiro, coleta seletiva e plano operacional",
+    "owner": "ED-104",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-104: Trilha GRS sob demanda: MTR, CDF e DMR e operação de resíduos sólidos. decisão de 22/10/2026 mantida (trilha GRS sob demanda); a trilha ganha ID pela RAS-17; o 22b é o detalhamento"
+  },
+  {
+    "finding_id": "OPE-32",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Drenagem: plano de operação e manutenção e monitoramento pluviométrico",
+    "owner": "ED-64",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-64: Drenagem no GIS (GIS-13)"
+  },
+  {
+    "finding_id": "OPE-33",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Otimização de programação e roteirização com habilidades, janelas e SLA",
+    "owner": "ED-36",
+    "consumers": [
+      "ED-59"
+    ],
+    "destination_note": "Tarefa dona ED-36: OS completa no backoffice"
+  },
+  {
+    "finding_id": "OPE-34",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Leitura por foto com reconhecimento óptico e revisão por exceção",
+    "owner": "ED-18",
+    "consumers": [
+      "ED-19"
+    ],
+    "destination_note": "Tarefa dona ED-18: App de campo Android, base, autenticação e leitura offline"
+  },
+  {
+    "finding_id": "OPE-35",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Modelo hidráulico calibrado com telemetria e cenários de falha",
+    "owner": "ED-63",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-63: Hidráulica: EPANET e SWMM, exportação e importação (GIS-12)"
+  },
+  {
+    "finding_id": "OPE-36",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Detecção de anomalia explicável em séries (vazão noturna, pressão, consumo)",
+    "owner": "ED-94",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-94: Detecção de anomalia explicável em séries"
+  },
+  {
+    "finding_id": "OPE-37",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Cruzamento de edificações com unidades consumidoras para perdas aparentes",
+    "owner": "ED-95",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-95: Perdas aparentes: cruzamento de edificações com unidades e analítica de fraude"
+  },
+  {
+    "finding_id": "OPE-38",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Manutenção por condição e criticidade de peça sobressalente",
+    "owner": "ED-56",
+    "consumers": [
+      "ED-72"
+    ],
+    "destination_note": "Tarefa dona ED-56: Ativos, manutenção de rede e inventário regulatório (GIS-19)"
+  },
+  {
+    "finding_id": "OPE-39",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Identificação de hidrômetro, lacre e ativo por QR, código de barras ou NFC",
+    "owner": "ED-20",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-20: OS em campo e acompanhamento de campo"
+  },
+  {
+    "finding_id": "OPE-40",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22b)",
+    "summary": "Assistência por voz e rascunho de parecer da OS, com os limites do ADR-0028 (c)",
+    "owner": "ED-43",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-43: Chatbot e IA por modelo de linguagem de terceiro. limites do ADR-0028 (c) e do ADR-0042"
+  },
+  {
+    "finding_id": "PLT-01",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "API pública de integração: credencial por tenant, escopos, cota, ambiente de teste e ciclo de vida",
+    "owner": "P2.26",
+    "consumers": [
+      "ED-17",
+      "ED-62"
+    ],
+    "destination_note": "Tarefa dona P2.26: API pública de integração e webhooks de saída"
+  },
+  {
+    "finding_id": "PLT-02",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Eventos e webhooks de saída para o tenant, com entrega confiável e assinatura",
+    "owner": "P2.26",
+    "consumers": [
+      "ED-07"
+    ],
+    "destination_note": "Tarefa dona P2.26: API pública de integração e webhooks de saída"
+  },
+  {
+    "finding_id": "PLT-03",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Restauração seletiva de um tenant e desfazer de operação em massa",
+    "owner": "P3.33",
+    "consumers": [
+      "GL.3",
+      "LC.3"
+    ],
+    "destination_note": "Tarefa dona P3.33: Restauração seletiva de um tenant e desfazer de operação em massa"
+  },
+  {
+    "finding_id": "PLT-04",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Desastre regional em território nacional: decisão, cofre isolado e cópia em segundo provedor",
+    "owner": "LC.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona LC.3: RDS, backup e PITR. decidido em 22/10/2026: Multi-AZ e cofre isolado na mesma região"
+  },
+  {
+    "finding_id": "PLT-05",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Domínio próprio do tenant (CNAME, certificado automático, proteção contra tomada de subdomínio)",
+    "owner": "P2.27",
+    "consumers": [
+      "LC.2"
+    ],
+    "destination_note": "Tarefa dona P2.27: Domínio próprio do tenant"
+  },
+  {
+    "finding_id": "PLT-06",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Login gov.br no portal, com as restrições reais de elegibilidade (ver GES-32)",
+    "owner": "ED-38",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-38: Portal e autoatendimento ampliados. login gov.br pelo ADR-0043, com as restrições de elegibilidade"
+  },
+  {
+    "finding_id": "PLT-07",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Assinatura eletrônica dos documentos do consumidor e do tenant, por nível da Lei 14.063",
+    "owner": "P3.34",
+    "consumers": [
+      "P4.1",
+      "ED-19",
+      "ED-23",
+      "ED-38"
+    ],
+    "destination_note": "Tarefa dona P3.34: Assinatura eletrônica dos documentos do consumidor e do tenant"
+  },
+  {
+    "finding_id": "PLT-08",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Baseline de segurança de produto: ASVS 5.0, API Top 10 e LLM Top 10 como critério de aceite",
+    "owner": "P3.8",
+    "consumers": [
+      "LC.8",
+      "ED-73"
+    ],
+    "destination_note": "Tarefa dona P3.8: Revisão de segurança no ambiente local: isolamento, cofre, portal do consumidor, acesso assistido e de emergência"
+  },
+  {
+    "finding_id": "PLT-09",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Divulgação responsável de vulnerabilidade e Trust Center público",
+    "owner": "P3.38",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.38: Divulgação responsável de vulnerabilidade e Trust Center"
+  },
+  {
+    "finding_id": "PLT-10",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Entregabilidade e mensageria por tenant: e-mail, SMS e WhatsApp (ver GES-19)",
+    "owner": "P3.5",
+    "consumers": [
+      "ED-41",
+      "ED-42",
+      "LC.2"
+    ],
+    "destination_note": "Tarefa dona P3.5: Notificações com prova de entrega. e-mail por tenant na P3.5; SMS e WhatsApp na ED-41"
+  },
+  {
+    "finding_id": "PLT-11",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Proteção contra cobrança falsa: verificação pública de autenticidade e canais oficiais",
+    "owner": "P3.35",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.35: Proteção contra cobrança falsa: autenticidade pública da fatura e canais oficiais"
+  },
+  {
+    "finding_id": "PLT-12",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Central de notificações do usuário e preferências",
+    "owner": "P3.36",
+    "consumers": [
+      "ED-07"
+    ],
+    "destination_note": "Tarefa dona P3.36: Central de notificações do usuário e preferências"
+  },
+  {
+    "finding_id": "PLT-13",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Caixa unificada de pendências e aprovações, com delegação temporária",
+    "owner": "P2.28",
+    "consumers": [
+      "P3.30"
+    ],
+    "destination_note": "Tarefa dona P2.28: Minhas tarefas: caixa unificada de pendências e aprovações, com prazo e delegação temporária"
+  },
+  {
+    "finding_id": "PLT-14",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Fuso horário e calendário operacional do tenant",
+    "owner": "P0.19",
+    "consumers": [
+      "P2.1",
+      "P3.4"
+    ],
+    "destination_note": "Tarefa dona P0.19: Parâmetros do tenant"
+  },
+  {
+    "finding_id": "PLT-15",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Busca global, atalhos de teclado, visões salvas e densidade",
+    "owner": "P1.33",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.33: Busca global, atalhos de teclado, visões salvas e densidade"
+  },
+  {
+    "finding_id": "PLT-16",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Framework declarativo de migração por legado",
+    "owner": "P1.2",
+    "consumers": [
+      "P2.10",
+      "P2.19",
+      "ED-09"
+    ],
+    "destination_note": "Tarefa dona P1.2: Importador v0 do cadastro com conciliação"
+  },
+  {
+    "finding_id": "PLT-17",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Medição de uso e custo por tenant, e base comprovável de ligações ativas",
+    "owner": "P2.12",
+    "consumers": [
+      "ED-10"
+    ],
+    "destination_note": "Tarefa dona P2.12: Cobrança do SaaS por contrato, antes do primeiro contrato"
+  },
+  {
+    "finding_id": "PLT-18",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Plataforma de IA: operação de modelos, segurança e aceite da ED-43 (ver GES-08)",
+    "owner": "ED-43",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-43: Chatbot e IA por modelo de linguagem de terceiro. ADR-0042"
+  },
+  {
+    "finding_id": "PLT-19",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Exportação e integridade verificável da trilha de auditoria do tenant",
+    "owner": "P1.7",
+    "consumers": [
+      "ED-06",
+      "ED-73"
+    ],
+    "destination_note": "Tarefa dona P1.7: Partição do `audit_log`"
+  },
+  {
+    "finding_id": "PLT-20",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Hub de integrações: saúde, credenciais, reprocessamento e teste de contrato",
+    "owner": "P3.37",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.37: Hub de integrações: saúde, credenciais, reprocessamento e teste de contrato"
+  },
+  {
+    "finding_id": "PLT-21",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Jornada de implantação visível ao cliente e gates de prontidão",
+    "owner": "P1.6",
+    "consumers": [
+      "ED-09",
+      "ED-11"
+    ],
+    "destination_note": "Tarefa dona P1.6: Console da plataforma v0"
+  },
+  {
+    "finding_id": "PLT-22",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Defesa contra automação e abuso no portal, compatível com WCAG 3.3.8",
+    "owner": "P3.3",
+    "consumers": [
+      "P3.8"
+    ],
+    "destination_note": "Tarefa dona P3.3: Portal do cliente: 2ª via, Pix, protocolo"
+  },
+  {
+    "finding_id": "PLT-23",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Prática de resiliência: exercícios de falha, alerta ligado a runbook, revisão pós-incidente",
+    "owner": "P3.11",
+    "consumers": [
+      "LC.7"
+    ],
+    "destination_note": "Tarefa dona P3.11: Operação: runbook, plantão, status, error tracking, burn rate"
+  },
+  {
+    "finding_id": "PLT-24",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Validação cadastral e detecção de óbito do titular",
+    "owner": "P1.41",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.41: Cadastro: situações do titular e validação externa"
+  },
+  {
+    "finding_id": "PLT-25",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Internacionalização mínima e idioma de preferência",
+    "owner": "P1.18",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.18: Preferência de tema no servidor; padrão e restrição do tenant"
+  },
+  {
+    "finding_id": "PLT-26",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Webhook Pix: mTLS e confirmação, no lugar de \"assinatura do PSP\"",
+    "owner": "P3.2",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.2: R5b: Pix Cobrança e boleto híbrido"
+  },
+  {
+    "finding_id": "PLT-27",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Calendário regulatório do débito automático e da cobrança híbrida (ver GES-15)",
+    "owner": "P3.24",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.24: Débito automático FEBRABAN 150 para autorizações legadas, só se a P0.30 encontrar optantes. calendário do débito automático; a ED-27 e a P4.5 seguem a data parametrizada"
+  },
+  {
+    "finding_id": "PLT-28",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Capacidade do Keycloak e do realm do portal",
+    "owner": "P0.23",
+    "consumers": [
+      "P2.9"
+    ],
+    "destination_note": "Tarefa dona P0.23: Carga inicial"
+  },
+  {
+    "finding_id": "PLT-29",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "SSO corporativo (OIDC e SAML) e SCIM por tenant, além de LDAP/AD",
+    "owner": "ED-06",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-06: Controle de acesso de edital"
+  },
+  {
+    "finding_id": "PLT-30",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Política de senha e MFA alinhada ao NIST 800-63B-4; passkey no portal",
+    "owner": "ED-06",
+    "consumers": [
+      "ED-38"
+    ],
+    "destination_note": "Tarefa dona ED-06: Controle de acesso de edital. nota de alinhamento ao NIST 800-63B-4 no ADR-0040 (COE-07); passkey no portal pela ED-38"
+  },
+  {
+    "finding_id": "PLT-31",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Acessibilidade: WCAG 2.2 AA, declaração por tenant e Libras",
+    "owner": "P0.36",
+    "consumers": [
+      "P3.3",
+      "ED-38"
+    ],
+    "destination_note": "Tarefa dona P0.36: Temas claro, escuro e do sistema"
+  },
+  {
+    "finding_id": "PLT-32",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Cardinalidade e custo das métricas por tenant",
+    "owner": "P0.8",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.8: Observabilidade mínima"
+  },
+  {
+    "finding_id": "PLT-33",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Plataformas móveis: prazos de loja, contas de organização e atualização remota",
+    "owner": "ED-18",
+    "consumers": [
+      "ED-39"
+    ],
+    "destination_note": "Tarefa dona ED-18: App de campo Android, base, autenticação e leitura offline"
+  },
+  {
+    "finding_id": "PLT-34",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Incidente de segurança e contrato de operador (Res. ANPD 15/2024)",
+    "owner": "P3.10",
+    "consumers": [
+      "P3.9"
+    ],
+    "destination_note": "Tarefa dona P3.10: Resposta a incidente; modelo de RIPD"
+  },
+  {
+    "finding_id": "PLT-35",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Esquema por tenant: testes de upgrade, catálogo e instrução preparada",
+    "owner": "P0.21",
+    "consumers": [
+      "P2.2"
+    ],
+    "destination_note": "Tarefa dona P0.21: Shard no catálogo; teste com 300 schemas"
+  },
+  {
+    "finding_id": "PLT-36",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Tarifa social: origem da lista conforme a natureza jurídica do prestador",
+    "owner": "P1.5",
+    "consumers": [
+      "ED-57"
+    ],
+    "destination_note": "Tarefa dona P1.5: R3: tarifa social satélite + N4"
+  },
+  {
+    "finding_id": "PLT-37",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Cadeia de suprimentos: proveniência, fixação de versões e endurecimento do CI",
+    "owner": "P0.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.3: CI no GitHub Actions"
+  },
+  {
+    "finding_id": "PLT-38",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Detecção de anomalia no acesso a dados pessoais (comportamento do usuário)",
+    "owner": "doc:ADR-0008",
+    "consumers": [
+      "P0.11",
+      "P3.40"
+    ],
+    "destination_note": "Não vira tarefa: ADR-0008. decisão de 22/10/2026 mantida: sem tarefa própria; ajuste do ADR-0008 e do RNF-41, detalhado na implementação do acesso a dado pessoal (P0.11) e lido pela P3.40"
+  },
+  {
+    "finding_id": "PLT-39",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Clone mascarado do tenant para homologação e treinamento",
+    "owner": "ED-09",
+    "consumers": [
+      "ED-11"
+    ],
+    "destination_note": "Tarefa dona ED-09: Serviços de implantação padronizados"
+  },
+  {
+    "finding_id": "PLT-40",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Segunda via e Pix em modo de contingência estático quando a API cai",
+    "owner": "P3.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.3: Portal do cliente: 2ª via, Pix, protocolo"
+  },
+  {
+    "finding_id": "PLT-41",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Chave do cliente (BYOK e HYOK) opcional",
+    "owner": "LC.4",
+    "consumers": [],
+    "destination_note": "Tarefa dona LC.4: KMS e Secrets Manager: R1 em produção"
+  },
+  {
+    "finding_id": "PLT-42",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22c)",
+    "summary": "Telemetria de produto com privacidade (adoção e funil de implantação)",
+    "owner": "P4.8",
+    "consumers": [],
+    "destination_note": "Tarefa dona P4.8: Suporte: resposta por e-mail, deflexão, assinatura de status, notas do tenant"
+  },
+  {
+    "finding_id": "GES-01",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Gestão tarifária: reajuste, revisão, cópia de versão e simulação de impacto",
+    "owner": "P2.29",
+    "consumers": [],
+    "destination_note": "Tarefa dona P2.29: Gestão tarifária: reajuste, revisão, cópia de versão e simulação de impacto"
+  },
+  {
+    "finding_id": "GES-02",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Instrumento contratual regulatório (contrato de programa, concessão, PPP), aditivos e matriz de riscos",
+    "owner": "ED-96",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-96: Instrumento contratual regulatório do prestador"
+  },
+  {
+    "finding_id": "GES-03",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Metas de universalização e indicadores das NR 8 e NR 9 por município",
+    "owner": "ED-77",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-77: Motor de fichas de indicador das ISO 24510 e 24512"
+  },
+  {
+    "finding_id": "GES-04",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Pacote regulatório de saída por agência, com subsídios e índice de tarifa social",
+    "owner": "ED-97",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-97: Pacote regulatório de saída por agência, com subsídios e Índice de Tarifa Social"
+  },
+  {
+    "finding_id": "GES-05",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Agenda de obrigações regulatórias e de controle do tenant",
+    "owner": "ED-98",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-98: Agenda de obrigações regulatórias e de controle do tenant"
+  },
+  {
+    "finding_id": "GES-06",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Transparência ativa, LAI e dados abertos",
+    "owner": "ED-99",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-99: Transparência ativa, LAI e dados abertos"
+  },
+  {
+    "finding_id": "GES-07",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Contingência hídrica e tarifa sazonal",
+    "owner": "ED-91",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-91: Crise hídrica e contingência: rodízio, racionamento, tarifa sazonal e carro-pipa"
+  },
+  {
+    "finding_id": "GES-08",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Política de IA e registro de decisões automatizadas",
+    "owner": "doc:ADR-0042",
+    "consumers": [
+      "ED-43",
+      "ED-94",
+      "ED-95"
+    ],
+    "destination_note": "Não vira tarefa: ADR-0042. política de IA e decisões automatizadas já registrada no ADR-0042"
+  },
+  {
+    "finding_id": "GES-09",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Custo por m³ e por ligação, margem por categoria e custo total da OS",
+    "owner": "ED-32",
+    "consumers": [
+      "ED-36",
+      "ED-48"
+    ],
+    "destination_note": "Tarefa dona ED-32: Eventos contábeis e integração contábil"
+  },
+  {
+    "finding_id": "GES-10",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Projeção de receita, arrecadação e caixa por cenário",
+    "owner": "ED-100",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-100: Projeção de receita, arrecadação e caixa por cenário"
+  },
+  {
+    "finding_id": "GES-11",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "API pública, webhooks de saída e catálogo de conectores de parceiros",
+    "owner": "P2.26",
+    "consumers": [
+      "P3.37",
+      "ED-62"
+    ],
+    "destination_note": "Tarefa dona P2.26: API pública de integração e webhooks de saída. catálogo de conectores de parceiros passa à P3.37 (COE-19)"
+  },
+  {
+    "finding_id": "GES-12",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Obras e convênios de investimento (Transferegov e afins)",
+    "owner": "ED-102",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-102: Obras e convênios de investimento, Transferegov e afins. pacote pendente: recorte por decisão do dono"
+  },
+  {
+    "finding_id": "GES-13",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Reforma tributária além da alíquota: cashback, split payment, fato gerador, reequilíbrio",
+    "owner": "P2.34",
+    "consumers": [],
+    "destination_note": "Tarefa dona P2.34: Cashback de CBS e IBS na fatura. split payment na conciliação da P3.1 (RAS-09)"
+  },
+  {
+    "finding_id": "GES-14",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Contabilidade regulatória da NR 16 (MCRSB) e de-para com o plano do cliente",
+    "owner": "ED-32",
+    "consumers": [
+      "ED-56"
+    ],
+    "destination_note": "Tarefa dona ED-32: Eventos contábeis e integração contábil"
+  },
+  {
+    "finding_id": "GES-15",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Pix Automático e cobrança híbrida: regras operacionais do Banco Central",
+    "owner": "P3.2",
+    "consumers": [
+      "P4.5",
+      "ED-27"
+    ],
+    "destination_note": "Tarefa dona P3.2: R5b: Pix Cobrança e boleto híbrido"
+  },
+  {
+    "finding_id": "GES-16",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "SINISA: ciclo completo, mapa de variáveis e certificado de adimplência",
+    "owner": "P4.2",
+    "consumers": [
+      "ED-48"
+    ],
+    "destination_note": "Tarefa dona P4.2: R6: SINISA assistido"
+  },
+  {
+    "finding_id": "GES-17",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Receitas alternativas, complementares e acessórias, com compartilhamento",
+    "owner": "ED-34",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-34: Catálogo de serviços e serviços faturáveis"
+  },
+  {
+    "finding_id": "GES-18",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Dívida ativa: ajuizamento, alçada e prescrição",
+    "owner": "ED-31",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-31: Dívida ativa (núcleo)"
+  },
+  {
+    "finding_id": "GES-19",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Mensageria: custo por categoria de template e uso medido do SaaS",
+    "owner": "ED-41",
+    "consumers": [
+      "ED-42",
+      "ED-10"
+    ],
+    "destination_note": "Tarefa dona ED-41: Notificações multicanal e fatura por e-mail"
+  },
+  {
+    "finding_id": "GES-20",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Risco e continuidade do prestador: incidente operacional, resiliência climática",
+    "owner": "P3.31",
+    "consumers": [
+      "ED-79"
+    ],
+    "destination_note": "Tarefa dona P3.31: Riscos, objetivos, auditoria interna, análise crítica, competência, fornecedor e requisitos legais"
+  },
+  {
+    "finding_id": "GES-21",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "ESG e energia: kWh por m³, inventário simplificado de emissões",
+    "owner": "ED-90",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-90: Eficiência energética e ESG"
+  },
+  {
+    "finding_id": "GES-22",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Perfil de acesso externo do regulador e do titular, somente leitura",
+    "owner": "ED-75",
+    "consumers": [
+      "ED-97"
+    ],
+    "destination_note": "Tarefa dona ED-75: Pacote de evidência e auditor externo"
+  },
+  {
+    "finding_id": "GES-23",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Ganchos de integração para compras, RH e orçamento (2029)",
+    "owner": "ED-62",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-62: Integração com ERP do cliente (Betha, IPM, Fiorilli). ganchos para 2029 (ADR-0028, item i)"
+  },
+  {
+    "finding_id": "GES-24",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Previsão de inadimplência e régua de cobrança adaptativa",
+    "owner": "P4.1",
+    "consumers": [
+      "ED-29"
+    ],
+    "destination_note": "Tarefa dona P4.1: R8: cobrança; negativação e protesto na ED-30"
+  },
+  {
+    "finding_id": "GES-25",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Analítica de fraude, ligação clandestina e perdas aparentes",
+    "owner": "ED-95",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-95: Perdas aparentes: cruzamento de edificações com unidades e analítica de fraude"
+  },
+  {
+    "finding_id": "GES-26",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Explicação automática da variação da conta e copiloto do atendente",
+    "owner": "ED-43",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-43: Chatbot e IA por modelo de linguagem de terceiro"
+  },
+  {
+    "finding_id": "GES-27",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Consumo quase em tempo real e alertas ao consumidor (AMI)",
+    "owner": "ED-17",
+    "consumers": [
+      "ED-39"
+    ],
+    "destination_note": "Tarefa dona ED-17: Telemetria e supervisório por REST e arquivo"
+  },
+  {
+    "finding_id": "GES-28",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Metas de consumo, comparação com pares e gamificação",
+    "owner": "ED-101",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-101: Metas de consumo, comparação com pares e gamificação"
+  },
+  {
+    "finding_id": "GES-29",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Benchmark com o SINISA aberto e, depois, entre tenants",
+    "owner": "ED-48",
+    "consumers": [
+      "ED-49"
+    ],
+    "destination_note": "Tarefa dona ED-48: Indicadores gerenciais e SINISA: catálogo, painel e fechamento"
+  },
+  {
+    "finding_id": "GES-30",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Regulação por incentivo: apuração auditável e simulador de fatores Q, P e U (verificado em 22/10/2026: a menção a fatores Q, P e U na CP 03/2026 da ANA não foi encontrada nas fontes lidas; ver o 22d, GES-30)",
+    "owner": "ED-77",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-77: Motor de fichas de indicador das ISO 24510 e 24512"
+  },
+  {
+    "finding_id": "GES-31",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Gêmeo digital: integração, não construção",
+    "owner": "ED-63",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-63: Hidráulica: EPANET e SWMM, exportação e importação (GIS-12)"
+  },
+  {
+    "finding_id": "GES-32",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Login gov.br como provedor de identidade opcional no portal",
+    "owner": "ED-38",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-38: Portal e autoatendimento ampliados. login gov.br pelo ADR-0043"
+  },
+  {
+    "finding_id": "GES-33",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Open Finance (iniciação) e Pix por aproximação via PSP",
+    "owner": "P3.2",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.2: R5b: Pix Cobrança e boleto híbrido"
+  },
+  {
+    "finding_id": "GES-34",
+    "source_report": "22-INCORPORACAO-NO-PLANO (detalhe em 22d)",
+    "summary": "Antecipação de recebíveis e conta vinculada",
+    "owner": "ED-103",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-103: Antecipação de recebíveis e conta vinculada. pacote pendente: o 22d não recomenda agora"
+  },
+  {
+    "finding_id": "COE-01",
+    "source_report": "23a",
+    "summary": "Formato que oculta conteúdo — 28 linhas: P0.13, P1.1, P1.2, P1.3, P1.26, P2.5, P2.10, P2.20, P3.1, P3.3, P3.4, P3.20, P3.22, P3.25, ED-06, ED-13, ED-16, ED-20, ED-22, ED-24, ED-26, ED-30, ED-32, ED-35, ED-36, ED-54, ED-64, ED-65",
+    "owner": "doc:reescrita-v3",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: reescrita-v3. a v3.0 incorpora cada ajuste ao aceite; a sétima célula deixa de existir; conferir com o 01-extrair-tarefas.js (nenhuma linha com mais de seis células)"
+  },
+  {
+    "finding_id": "COE-02",
+    "source_report": "23a",
+    "summary": "Onda ambígua — ED-69 a ED-79, ED-83 a ED-94, ED-96 a ED-99 (título \"onda B\", tabela \"Onda C\"); ED-01; M12",
+    "owner": "doc:estrutura-v3",
+    "consumers": [
+      "ED-01"
+    ],
+    "destination_note": "Não vira tarefa: estrutura-v3. 27 entregas da onda B no título passam à onda B (grupo B2); ED-56 também sobe para a B; a inclusão do grupo B2 na prontidão de POC é decisão do dono"
+  },
+  {
+    "finding_id": "COE-03",
+    "source_report": "23a",
+    "summary": "Pacote pendente dentro de onda e de critério de fase — ED-68, ED-102, ED-103; LC.1; M14; §7 (linha da trilha)",
+    "owner": "doc:estrutura-v3",
+    "consumers": [
+      "LC.1"
+    ],
+    "destination_note": "Não vira tarefa: estrutura-v3. seção própria de pacotes pendentes e sob demanda; LC.1 e M14 leem 'todas as fases e ondas, exceto pacotes pendentes e sob demanda'; §7 sem as pendentes"
+  },
+  {
+    "finding_id": "COE-04",
+    "source_report": "23a",
+    "summary": "Ciclo lógico — ED-04 → LC.2 → LC.1 → \"todas as fases, inclusive a trilha\"",
+    "owner": "ED-04",
+    "consumers": [
+      "LC.15"
+    ],
+    "destination_note": "Tarefa dona ED-04: Pacote de reversão. ED-04 fica com o pacote de reversão (onda B); instância dedicada vira LC.15, depois da LC.2; P4.6 sai das dependências"
+  },
+  {
+    "finding_id": "COE-05",
+    "source_report": "23a",
+    "summary": "Ordem invertida entre entidade e consumidor — P1.31 (ajuste v2.19), ED-14, ED-36, ED-56, ED-59, ED-72, ED-92",
+    "owner": "P1.35",
+    "consumers": [
+      "ED-14",
+      "ED-36",
+      "ED-56",
+      "ED-72"
+    ],
+    "destination_note": "Tarefa dona P1.35: Cadastro mínimo de ativos e hierarquia de seis níveis. decisão do dono de 28/10/2026: cadastro mínimo de ativos no P1, junto do núcleo de OS"
+  },
+  {
+    "finding_id": "COE-06",
+    "source_report": "23a",
+    "summary": "Dependência fora da coluna Dep. — P1.2, P3.4, ED-36 (→ P1.31); ED-78 (→ ED-85); ED-74 (\"módulo LGPD\"); P2.28 (→ P3.30); P3.31 (→ ED-37); P1.26 (← P1.28); ED-77 (← ED-92); P3.10 (→ P2.25)",
+    "owner": "doc:estrutura-v3",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: estrutura-v3. dependências textuais declaradas na coluna (P1.2, P3.4, ED-36 → P1.31; ED-78 → ED-85; ED-74 → P3.40; P3.30 → P2.28; ED-37 → P3.31; P1.26 → P1.28; ED-77 → ED-92; P3.10 → P2.25)"
+  },
+  {
+    "finding_id": "COE-07",
+    "source_report": "23a",
+    "summary": "Tarefa contra ADR vigente — P3.3, P0.38, ED-38 (CAD-97, CAD-101, PLT-06, GES-32) × ADR-0022; ED-06, P3.3 (PLT-30) × ADR-0040; PLT-38 × ADR-0008",
+    "owner": "doc:ADR-0043",
+    "consumers": [
+      "P3.3",
+      "ED-38",
+      "ED-06"
+    ],
+    "destination_note": "Não vira tarefa: ADR-0043. ADR-0043 altera o ADR-0022 (login gov.br e pagamento sem conta); nota NIST 800-63B-4 no ADR-0040; PLT-38 segue no ADR-0008"
+  },
+  {
+    "finding_id": "COE-08",
+    "source_report": "23a",
+    "summary": "Ajuste sem critério de aceite — 123 dos 127 marcadores v2.18 (\"levantamentos 22a a 22d: …\")",
+    "owner": "doc:reescrita-v3",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: reescrita-v3. cada achado vira critério testável na tarefa dona e remissão nas consumidoras (este mapa)"
+  },
+  {
+    "finding_id": "COE-09",
+    "source_report": "23a",
+    "summary": "Achado sem tarefa dona — 121 de 154 achados em duas a seis tarefas; ex.: CAD-96, PLT-02, PLT-03, PLT-12, PLT-13, PLT-20, GES-05, GES-15",
+    "owner": "doc:mapa-de-donos",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: mapa-de-donos. uma tarefa dona por achado neste arquivo"
+  },
+  {
+    "finding_id": "COE-10",
+    "source_report": "23a",
+    "summary": "Sobreposição: OS — P1.31, P3.4, ED-20, ED-34, ED-36, ED-87; OPE-02 em P1.31, ED-17, ED-50 e ED-87",
+    "owner": "P1.31",
+    "consumers": [
+      "P3.4",
+      "ED-34",
+      "ED-36",
+      "ED-20",
+      "ED-87"
+    ],
+    "destination_note": "Tarefa dona P1.31: Núcleo de OS e unidade consumidora como raiz. fronteira da OS: P1.31 modelo, tipos, estados, efeitos e alvos; ED-34 preço; P3.4 corte e religação; ED-36 programação e execução no backoffice; ED-20 execução offline; ED-87 dona da OPE-02"
+  },
+  {
+    "finding_id": "COE-11",
+    "source_report": "23a",
+    "summary": "Sobreposição: perdas e indicadores — ED-48, ED-77, ED-78, ED-85, ED-86, ED-90, ED-94; schema `losses`; §4 \"2028, sob demanda\"; §7 linha 2028",
+    "owner": "doc:estrutura-v3",
+    "consumers": [
+      "ED-48",
+      "ED-77",
+      "ED-78",
+      "ED-85",
+      "P3.41"
+    ],
+    "destination_note": "Não vira tarefa: estrutura-v3. ED-85 dona do módulo losses; ED-78 só a saída da NR 15; P3.41 registro único de indicadores; ED-48 catálogo SINISA e painel; ED-77 fichas ISO 24510, 24512 e NR 9; tirar da lista de 2028 o que está na trilha"
+  },
+  {
+    "finding_id": "COE-12",
+    "source_report": "23a",
+    "summary": "Esforço desatualizado — §4 (trilha), §5 (M12, M14), 49 tarefas a estimar, 49 entregas reajustadas",
+    "owner": "doc:plano-§4-§5-esforco",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: plano-§4-§5-esforco. decisão do dono 5 (28/10/2026): não reestimar agora; M12 e M14 com 'esforço a recalcular'; tamanhos só como indicação"
+  },
+  {
+    "finding_id": "COE-13",
+    "source_report": "23a",
+    "summary": "Caminho crítico desatualizado — §5: caminho até GL.4 e marcos M6 a M8",
+    "owner": "doc:plano-§5-caminho-critico",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: plano-§5-caminho-critico. incluir P1.31, P1.36, P2.31, P2.32, P3.29 e P3.30 no caminho até o GL.4; marcos M6 a M8 com 'todas as tarefas da fase'"
+  },
+  {
+    "finding_id": "COE-14",
+    "source_report": "23a",
+    "summary": "Data tratada como prazo depois da diretriz de 21/10 — §5 (texto e M12, M14), §8 (\"Aceite de fase\"), §2.4 (coluna \"Até\"), §6 (\"data-limite 13/11\"); ADR-0035 item 1",
+    "owner": "doc:ADR-0044",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: ADR-0044. decisão do dono 4: ADR-0044 formaliza que o projeto não tem prazos; datas como indicação de sequência; coluna 'Até' do §2.4 vira 'Antes de'"
+  },
+  {
+    "finding_id": "COE-15",
+    "source_report": "23a",
+    "summary": "Mapa Flyway incompleto ou divergente — §3; P1.32, P1.34, P2.25, P2.26 a P2.29, P3.4, P3.12, P3.31 a P3.38, ED-74, ED-78, ED-83 a ED-101",
+    "owner": "doc:plano-§3-flyway",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: plano-§3-flyway. reservas para P1.33, P1.35, P1.36, P2.26 a P2.30, P2.33, P2.34, P3.32 a P3.41, losses, lgpd, operação, ocorrência de rede, regulatório; V21_1 a V21_3; R__ do catálogo de normas no core; V9_1 fora da P3.4; P3.12 depois das tarefas que usam faixa"
+  },
+  {
+    "finding_id": "COE-16",
+    "source_report": "23a",
+    "summary": "Arquitetura e fronteira divergentes — ARQUITETURA-ALVO; PLATAFORMA-E-VERTICAIS §2 e §3; plano §3 e §8; P1.32, P2.25",
+    "owner": "doc:PLATAFORMA-E-VERTICAIS",
+    "consumers": [
+      "P0.47"
+    ],
+    "destination_note": "Não vira tarefa: PLATAFORMA-E-VERTICAIS. tabela única de módulos (nome Maven, schema, faixa Flyway, núcleo ou pacote); ARQUITETURA-ALVO atualizada com os ADRs 0034 a 0044; OS no núcleo pendente de decisão do dono"
+  },
+  {
+    "finding_id": "COE-17",
+    "source_report": "23a",
+    "summary": "Termo com dois sentidos — \"imóvel\", \"unidade consumidora\", \"matrícula\", \"edificação\", \"economia\" (P2.23, `V3_7`, piso de agregação, ED-95, alvo `BUILDING`, ADR-0039)",
+    "owner": "doc:plano-§8-glossario",
+    "consumers": [
+      "P1.3",
+      "P2.23"
+    ],
+    "destination_note": "Não vira tarefa: plano-§8-glossario. imóvel ou lote, edificação, unidade consumidora, economia, matrícula e ligação; regra 1:1 da ligação reescrita na P2.23"
+  },
+  {
+    "finding_id": "COE-18",
+    "source_report": "23a",
+    "summary": "Tarefa que pede reescrita — P1.31, P3.4, P3.3, P3.22, P1.3, P2.5, ED-17, ED-35, ED-48, ED-56",
+    "owner": "doc:reescrita-v3",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: reescrita-v3. aceite consolidado com histórico de ajustes no anexo; 'Complemento de 15/10/2026' e 'verificado em 22/10/2026' padronizados"
+  },
+  {
+    "finding_id": "COE-19",
+    "source_report": "23a",
+    "summary": "Sobreposições menores — P0.47 × P1.13; P3.32 × ED-16; P3.5 × P3.36 × ED-41 × ED-07; P2.26 × P3.37 × ED-62; P1.6 × P2.29",
+    "owner": "doc:estrutura-v3",
+    "consumers": [
+      "P1.13",
+      "P3.5",
+      "P3.32",
+      "P3.37"
+    ],
+    "destination_note": "Não vira tarefa: estrutura-v3. fronteiras: P1.13 estende a suíte da P0.47; P3.32 gera a fila e ED-16 executa campanha; P3.36 dona das preferências; P2.26 só API e eventos, P3.37 operação de conectores, ED-62 conectores; P1.6 sem GES-01 e GES-11"
+  },
+  {
+    "finding_id": "COE-20",
+    "source_report": "23a",
+    "summary": "Pendências de decisão incompletas — §2.4",
+    "owner": "doc:plano-§2.4",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: plano-§2.4. em aberto: ED-68, ED-102, ED-103; exceção do ADR-0010 para ingestão de supervisório; resolvidas separadas por data"
+  },
+  {
+    "finding_id": "COE-21",
+    "source_report": "23a",
+    "summary": "Resumo e cabeçalho defasados — §7; §2.2; §1; cabeçalho (v2.20)",
+    "owner": "doc:plano-§7-§2.2-§1-cabecalho",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: plano-§7-§2.2-§1-cabecalho. resumo, decisões e estado atual reescritos na v3.0"
+  },
+  {
+    "finding_id": "COE-22",
+    "source_report": "23a",
+    "summary": "Governança dos ADRs — README dos ADRs (regra 2); ADR-0001, ADR-0011, ADR-0029, ADR-0035",
+    "owner": "doc:README-ADRs",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: README-ADRs. regra 2 do README; ADR-0029 'Substituído por ADR-0035'; ADR-0001 e ADR-0011 com nome atualizado; pendente de decisão do dono a forma da regra"
+  },
+  {
+    "finding_id": "COE-23",
+    "source_report": "23a",
+    "summary": "Termos sobrecarregados — \"protocolo\", \"Central\", \"pacote\", \"go-live\"",
+    "owner": "doc:plano-§8-glossario",
+    "consumers": [],
+    "destination_note": "Não vira tarefa: plano-§8-glossario. 'protocolo de atendimento' x 'chamado de suporte'; 'Central Ziip' só para o console; 'pacote' sempre qualificado; 'go-live' só no histórico"
+  },
+  {
+    "finding_id": "DAD-01",
+    "source_report": "23b",
+    "summary": "Cliente, unidade, vínculo — Viola decisão (ADR-0039)",
+    "owner": "P1.31",
+    "consumers": [
+      "P1.3"
+    ],
+    "destination_note": "Tarefa dona P1.31: Núcleo de OS e unidade consumidora como raiz. mapa campo → tipo de OS"
+  },
+  {
+    "finding_id": "DAD-02",
+    "source_report": "23b",
+    "summary": "Cliente, unidade (tela × API) — Campo coletado e descartado",
+    "owner": "P1.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga. regra global de recusa de propriedade desconhecida na P0.16 (COD-10)"
+  },
+  {
+    "finding_id": "DAD-03",
+    "source_report": "23b",
+    "summary": "Unidade — Sobra",
+    "owner": "P1.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "DAD-04",
+    "source_report": "23b",
+    "summary": "Endereço — Falta de chave e de domínio",
+    "owner": "P1.3",
+    "consumers": [
+      "P2.6"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "DAD-05",
+    "source_report": "23b",
+    "summary": "Cliente, endereço — Falta (norma)",
+    "owner": "P1.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "DAD-06",
+    "source_report": "23b",
+    "summary": "Vínculo — Texto livre, falta de histórico, decisão",
+    "owner": "P1.3",
+    "consumers": [
+      "P2.5"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga. nome na conta pela decisão do dono 6"
+  },
+  {
+    "finding_id": "DAD-07",
+    "source_report": "23b",
+    "summary": "Economias — Falta de vigência",
+    "owner": "P1.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "DAD-08",
+    "source_report": "23b",
+    "summary": "Categoria — Falta de domínio regulatório",
+    "owner": "P1.3",
+    "consumers": [
+      "P2.5"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "DAD-09",
+    "source_report": "23b",
+    "summary": "Ligação — Duas fontes de verdade",
+    "owner": "P2.23",
+    "consumers": [
+      "ED-13"
+    ],
+    "destination_note": "Tarefa dona P2.23: GIS-05: base da ligação e vínculo feição ↔ imóvel ↔ ligação ↔ ramal; ramais automáticos"
+  },
+  {
+    "finding_id": "DAD-10",
+    "source_report": "23b",
+    "summary": "Ligação — Falta (norma)",
+    "owner": "P2.23",
+    "consumers": [],
+    "destination_note": "Tarefa dona P2.23: GIS-05: base da ligação e vínculo feição ↔ imóvel ↔ ligação ↔ ramal; ramais automáticos. P1.2 leva connected_on ao staging; a coluna nasce na V3_7"
+  },
+  {
+    "finding_id": "DAD-11",
+    "source_report": "23b",
+    "summary": "Hidrômetro — Desacordo com norma; texto livre",
+    "owner": "ED-14",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-14: Hidrometria"
+  },
+  {
+    "finding_id": "DAD-12",
+    "source_report": "23b",
+    "summary": "Instalação do hidrômetro — Falta de FK; texto livre",
+    "owner": "ED-14",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-14: Hidrometria. FK da instalação para a ligação depende da V3_7 (P2.23)"
+  },
+  {
+    "finding_id": "DAD-13",
+    "source_report": "23b",
+    "summary": "Usuário (FK transversal) — Falta de chave",
+    "owner": "P0.13",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.13: Gestão de usuários por tenant"
+  },
+  {
+    "finding_id": "DAD-14",
+    "source_report": "23b",
+    "summary": "Consumo — Falta de histórico",
+    "owner": "P2.5",
+    "consumers": [
+      "P2.20"
+    ],
+    "destination_note": "Tarefa dona P2.5: R4: medição, ciclo, conta, N6"
+  },
+  {
+    "finding_id": "DAD-15",
+    "source_report": "23b",
+    "summary": "Fatura — Falta (norma)",
+    "owner": "P2.5",
+    "consumers": [],
+    "destination_note": "Tarefa dona P2.5: R4: medição, ciclo, conta, N6. decisão do dono 6: titular na conta, proprietário opcional por parâmetro"
+  },
+  {
+    "finding_id": "DAD-16",
+    "source_report": "23b",
+    "summary": "Fatura — Texto livre; falta de histórico",
+    "owner": "P2.20",
+    "consumers": [],
+    "destination_note": "Tarefa dona P2.20: Retificação e manutenção de conta pelo backoffice"
+  },
+  {
+    "finding_id": "DAD-17",
+    "source_report": "23b",
+    "summary": "Fatura, item — Falta (fiscal)",
+    "owner": "P2.6",
+    "consumers": [],
+    "destination_note": "Tarefa dona P2.6: NFAg-e (modelo 75, instituída pelo art. 114 do Decreto 12.955/2026 e pelo regulamento do IBS; não há Ajuste SINIEF instituidor) sobre o motor portado"
+  },
+  {
+    "finding_id": "DAD-18",
+    "source_report": "23b",
+    "summary": "Documento fiscal — Falta",
+    "owner": "P2.6",
+    "consumers": [],
+    "destination_note": "Tarefa dona P2.6: NFAg-e (modelo 75, instituída pelo art. 114 do Decreto 12.955/2026 e pelo regulamento do IBS; não há Ajuste SINIEF instituidor) sobre o motor portado"
+  },
+  {
+    "finding_id": "DAD-19",
+    "source_report": "23b",
+    "summary": "Pagamento — Falta de FK; acoplamento a leiaute",
+    "owner": "P3.1",
+    "consumers": [
+      "P3.2"
+    ],
+    "destination_note": "Tarefa dona P3.1: R5a: retorno e conciliação N3"
+  },
+  {
+    "finding_id": "DAD-20",
+    "source_report": "23b",
+    "summary": "Débito e crédito — Texto livre; falta de origem",
+    "owner": "P2.5",
+    "consumers": [
+      "P2.10"
+    ],
+    "destination_note": "Tarefa dona P2.5: R4: medição, ciclo, conta, N6"
+  },
+  {
+    "finding_id": "DAD-21",
+    "source_report": "23b",
+    "summary": "Parcelamento — Falta",
+    "owner": "P4.1",
+    "consumers": [],
+    "destination_note": "Tarefa dona P4.1: R8: cobrança; negativação e protesto na ED-30. a P2.10 usa só as colunas de origem do DAD-20"
+  },
+  {
+    "finding_id": "DAD-22",
+    "source_report": "23b",
+    "summary": "Situação especial — Falta; FK ausente",
+    "owner": "ED-22",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-22: Situações especiais de faturamento, usuário avulso e órgão centralizador"
+  },
+  {
+    "finding_id": "DAD-23",
+    "source_report": "23b",
+    "summary": "Tarifa social — Falta (norma)",
+    "owner": "P1.5",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.5: R3: tarifa social satélite + N4"
+  },
+  {
+    "finding_id": "DAD-24",
+    "source_report": "23b",
+    "summary": "Protocolo — Falta; ordem de dependência",
+    "owner": "P1.36",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.36: Protocolo de atendimento (NR 11) como origem de toda solicitação externa. decisão do dono 7: protocolo sempre antes da OS externa"
+  },
+  {
+    "finding_id": "DAD-25",
+    "source_report": "23b",
+    "summary": "OS — Chave errada; texto livre",
+    "owner": "P1.31",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.31: Núcleo de OS e unidade consumidora como raiz"
+  },
+  {
+    "finding_id": "DAD-26",
+    "source_report": "23b",
+    "summary": "Ativo — Duas fontes de verdade",
+    "owner": "P1.35",
+    "consumers": [
+      "ED-14",
+      "ED-56"
+    ],
+    "destination_note": "Tarefa dona P1.35: Cadastro mínimo de ativos e hierarquia de seis níveis"
+  },
+  {
+    "finding_id": "DAD-27",
+    "source_report": "23b",
+    "summary": "Ocorrência de rede — Sobreposição com tabela existente",
+    "owner": "ED-92",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-92: Ocorrência de rede como entidade"
+  },
+  {
+    "finding_id": "DAD-28",
+    "source_report": "23b",
+    "summary": "Norma — Texto livre; falta de vigência",
+    "owner": "P1.34",
+    "consumers": [
+      "P2.31"
+    ],
+    "destination_note": "Tarefa dona P1.34: Área \"Normas e legislação\": biblioteca de normas, carga e consulta"
+  },
+  {
+    "finding_id": "DAD-29",
+    "source_report": "23b",
+    "summary": "Transversal (LGPD) — Dado pessoal sem classificação",
+    "owner": "P0.11",
+    "consumers": [
+      "P3.10",
+      "P3.40",
+      "ED-74"
+    ],
+    "destination_note": "Tarefa dona P0.11: Máscara com teto; busca por documento com papel, registro e cota; leituras registradas"
+  },
+  {
+    "finding_id": "DAD-30",
+    "source_report": "23b",
+    "summary": "Consentimento — Falta de FK; texto livre",
+    "owner": "P1.3",
+    "consumers": [
+      "P3.36",
+      "ED-41"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "DAD-31",
+    "source_report": "23b",
+    "summary": "Usuário e permissão — Sobra; texto livre",
+    "owner": "P0.13",
+    "consumers": [
+      "P3.30"
+    ],
+    "destination_note": "Tarefa dona P0.13: Gestão de usuários por tenant"
+  },
+  {
+    "finding_id": "DAD-32",
+    "source_report": "23b",
+    "summary": "Tenant — Duplicidade; falta",
+    "owner": "P1.6",
+    "consumers": [
+      "P2.6",
+      "P3.40"
+    ],
+    "destination_note": "Tarefa dona P1.6: Console da plataforma v0"
+  },
+  {
+    "finding_id": "DAD-33",
+    "source_report": "23b",
+    "summary": "Parâmetro — Classe errada de configuração",
+    "owner": "P0.19",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.19: Parâmetros do tenant"
+  },
+  {
+    "finding_id": "DAD-34",
+    "source_report": "23b",
+    "summary": "Transversal — Nomes divergentes",
+    "owner": "P1.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga. glossário no §8"
+  },
+  {
+    "finding_id": "DAD-35",
+    "source_report": "23b",
+    "summary": "Rede, perdas — Unicidade fora do tenant",
+    "owner": "P1.26",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.26: GIS-01: modelo de dados do núcleo do GIS, histórico, metadados de qualidade, SRS e migração do `gis_network_element`"
+  },
+  {
+    "finding_id": "DAD-36",
+    "source_report": "23b",
+    "summary": "Território — Falta de FK",
+    "owner": "P1.3",
+    "consumers": [
+      "P2.5"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "DAD-37",
+    "source_report": "23b",
+    "summary": "Unidade (condomínio) — Falta de FK",
+    "owner": "P1.3",
+    "consumers": [
+      "ED-15"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "DAD-38",
+    "source_report": "23b",
+    "summary": "Cliente, unidade — Duplicidade",
+    "owner": "P1.3",
+    "consumers": [
+      "P2.5"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "DAD-39",
+    "source_report": "23b",
+    "summary": "Cliente — Falta de domínio",
+    "owner": "P1.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "DAD-40",
+    "source_report": "23b",
+    "summary": "Documento anexo — Texto livre; falta de retenção",
+    "owner": "P1.20",
+    "consumers": [
+      "P1.24"
+    ],
+    "destination_note": "Tarefa dona P1.20: Pipeline de arquivos enviados com ClamAV"
+  },
+  {
+    "finding_id": "COD-01",
+    "source_report": "23c",
+    "summary": "core, platform — Segurança",
+    "owner": "P0.17",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.17: Médios de segurança"
+  },
+  {
+    "finding_id": "COD-02",
+    "source_report": "23c",
+    "summary": "platform — Segurança",
+    "owner": "P0.17",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.17: Médios de segurança"
+  },
+  {
+    "finding_id": "COD-03",
+    "source_report": "23c",
+    "summary": "app, platform — Divergência de decisão",
+    "owner": "P0.6",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.6: Migração só no job `migrate`"
+  },
+  {
+    "finding_id": "COD-04",
+    "source_report": "23c",
+    "summary": "platform — Divergência de decisão",
+    "owner": "P0.28",
+    "consumers": [
+      "P2.2"
+    ],
+    "destination_note": "Tarefa dona P0.28: Backup e PITR locais; R1 sobre o cofre local"
+  },
+  {
+    "finding_id": "COD-05",
+    "source_report": "23c",
+    "summary": "app, frontend — Divergência de decisão",
+    "owner": "P0.14",
+    "consumers": [
+      "P0.16"
+    ],
+    "destination_note": "Tarefa dona P0.14: BFF com cookie HttpOnly no processo `api`, sessão no PostgreSQL"
+  },
+  {
+    "finding_id": "COD-06",
+    "source_report": "23c",
+    "summary": "compose — Segurança",
+    "owner": "P0.7",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.7: Congelar infra parada"
+  },
+  {
+    "finding_id": "COD-07",
+    "source_report": "23c",
+    "summary": "billing, metering — Qualidade",
+    "owner": "P0.25",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.25: Limpeza do código antes da renomeação; dívidas da execução; SINIR em modo assistido"
+  },
+  {
+    "finding_id": "COD-08",
+    "source_report": "23c",
+    "summary": "platform — Sobra / segurança",
+    "owner": "P0.25",
+    "consumers": [
+      "P0.13"
+    ],
+    "destination_note": "Tarefa dona P0.25: Limpeza do código antes da renomeação; dívidas da execução; SINIR em modo assistido. apagado antes da renomeação; a gestão de usuários pela API própria segue na P0.13"
+  },
+  {
+    "finding_id": "COD-09",
+    "source_report": "23c",
+    "summary": "platform — Sobra / divergência",
+    "owner": "P0.25",
+    "consumers": [
+      "P0.13",
+      "P1.31"
+    ],
+    "destination_note": "Tarefa dona P0.25: Limpeza do código antes da renomeação; dívidas da execução; SINIR em modo assistido"
+  },
+  {
+    "finding_id": "COD-10",
+    "source_report": "23c",
+    "summary": "app — Qualidade / dado",
+    "owner": "P0.16",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.16: Superfície web"
+  },
+  {
+    "finding_id": "COD-11",
+    "source_report": "23c",
+    "summary": "app, platform — Divergência de decisão",
+    "owner": "P0.33",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.33: Renomeação `sigsan` → `ziipsan` como tarefa única, depois da limpeza (P0.25) e da P0.7 e antes das demais tarefas de código do P0, na ordem de MARCA-E-TEMAS §5.2; inclui os códigos de contrato da API em inglês: prefixo `urn:sigsan:problema:` → `urn:ziipsan:problem:` e códigos da tabela"
+  },
+  {
+    "finding_id": "COD-12",
+    "source_report": "23c",
+    "summary": "app, registry, frontend — Divergência de decisão",
+    "owner": "P0.10",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.10: API versionada"
+  },
+  {
+    "finding_id": "COD-13",
+    "source_report": "23c",
+    "summary": "todos — Divergência de decisão",
+    "owner": "P0.33",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.33: Renomeação `sigsan` → `ziipsan` como tarefa única, depois da limpeza (P0.25) e da P0.7 e antes das demais tarefas de código do P0, na ordem de MARCA-E-TEMAS §5.2; inclui os códigos de contrato da API em inglês: prefixo `urn:sigsan:problema:` → `urn:ziipsan:problem:` e códigos da tabela"
+  },
+  {
+    "finding_id": "COD-14",
+    "source_report": "23c",
+    "summary": "platform — Dívida técnica",
+    "owner": "P3.12",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.12: Fim do `outOfOrder`. outOfOrder mantido até a P3.12"
+  },
+  {
+    "finding_id": "COD-15",
+    "source_report": "23c",
+    "summary": "app — Segurança",
+    "owner": "P0.17",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.17: Médios de segurança"
+  },
+  {
+    "finding_id": "COD-16",
+    "source_report": "23c",
+    "summary": "app — Segurança",
+    "owner": "P0.17",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.17: Médios de segurança"
+  },
+  {
+    "finding_id": "COD-17",
+    "source_report": "23c",
+    "summary": "lgpd — Segurança / qualidade",
+    "owner": "P0.17",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.17: Médios de segurança"
+  },
+  {
+    "finding_id": "COD-18",
+    "source_report": "23c",
+    "summary": "quality — Divergência de decisão",
+    "owner": "P0.25",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.25: Limpeza do código antes da renomeação; dívidas da execução; SINIR em modo assistido"
+  },
+  {
+    "finding_id": "COD-19",
+    "source_report": "23c",
+    "summary": "mtr — Divergência / LGPD",
+    "owner": "P0.25",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.25: Limpeza do código antes da renomeação; dívidas da execução; SINIR em modo assistido"
+  },
+  {
+    "finding_id": "COD-20",
+    "source_report": "23c",
+    "summary": "collection, core — Dívida técnica",
+    "owner": "P0.25",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.25: Limpeza do código antes da renomeação; dívidas da execução; SINIR em modo assistido"
+  },
+  {
+    "finding_id": "COD-21",
+    "source_report": "23c",
+    "summary": "platform — Sobra",
+    "owner": "P0.25",
+    "consumers": [
+      "P0.47"
+    ],
+    "destination_note": "Tarefa dona P0.25: Limpeza do código antes da renomeação; dívidas da execução; SINIR em modo assistido"
+  },
+  {
+    "finding_id": "COD-22",
+    "source_report": "23c",
+    "summary": "core — Sobra",
+    "owner": "P0.25",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.25: Limpeza do código antes da renomeação; dívidas da execução; SINIR em modo assistido"
+  },
+  {
+    "finding_id": "COD-23",
+    "source_report": "23c",
+    "summary": "platform — Qualidade",
+    "owner": "P0.17",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.17: Médios de segurança"
+  },
+  {
+    "finding_id": "COD-24",
+    "source_report": "23c",
+    "summary": "registry — Segurança",
+    "owner": "P0.16",
+    "consumers": [
+      "P0.22"
+    ],
+    "destination_note": "Tarefa dona P0.16: Superfície web"
+  },
+  {
+    "finding_id": "COD-25",
+    "source_report": "23c",
+    "summary": "registry — Divergência de decisão",
+    "owner": "P0.13",
+    "consumers": [
+      "P0.11"
+    ],
+    "destination_note": "Tarefa dona P0.13: Gestão de usuários por tenant"
+  },
+  {
+    "finding_id": "COD-26",
+    "source_report": "23c",
+    "summary": "events — Divergência de decisão",
+    "owner": "P1.9",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.9: Outbox e `worker` básico. interface de fila na P0.45"
+  },
+  {
+    "finding_id": "COD-27",
+    "source_report": "23c",
+    "summary": "compose, infra — Divergência de decisão",
+    "owner": "P0.4",
+    "consumers": [
+      "P0.29"
+    ],
+    "destination_note": "Tarefa dona P0.4: PostgreSQL 17 + PostGIS 3.5"
+  },
+  {
+    "finding_id": "COD-28",
+    "source_report": "23c",
+    "summary": "infra — Segurança / sobra",
+    "owner": "P0.7",
+    "consumers": [
+      "P0.3"
+    ],
+    "destination_note": "Tarefa dona P0.7: Congelar infra parada"
+  },
+  {
+    "finding_id": "COD-29",
+    "source_report": "23c",
+    "summary": "raiz — Segurança",
+    "owner": "P0.1",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.1: Desenvolvimento em disco local; GitHub como fonte da verdade"
+  },
+  {
+    "finding_id": "COD-30",
+    "source_report": "23c",
+    "summary": "scripts, testes — Segurança",
+    "owner": "P0.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.3: CI no GitHub Actions"
+  },
+  {
+    "finding_id": "COD-31",
+    "source_report": "23c",
+    "summary": "build — Qualidade",
+    "owner": "P0.3",
+    "consumers": [
+      "P0.47",
+      "P1.13"
+    ],
+    "destination_note": "Tarefa dona P0.3: CI no GitHub Actions"
+  },
+  {
+    "finding_id": "COD-32",
+    "source_report": "23c",
+    "summary": "app — Dívida técnica",
+    "owner": "P0.5",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.5: Dockerfile multi-stage não root; uma imagem para `api`, `worker`, `migrate`; `config.json` do frontend em execução"
+  },
+  {
+    "finding_id": "COD-33",
+    "source_report": "23c",
+    "summary": "mtr — Dívida técnica",
+    "owner": "ED-104",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-104: Trilha GRS sob demanda: MTR, CDF e DMR e operação de resíduos sólidos. congelado até a trilha GRS ser liberada"
+  },
+  {
+    "finding_id": "COD-34",
+    "source_report": "23c",
+    "summary": "gis — Esqueleto",
+    "owner": "ED-63",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-63: Hidráulica: EPANET e SWMM, exportação e importação (GIS-12). view de compatibilidade mantida na P1.26"
+  },
+  {
+    "finding_id": "COD-35",
+    "source_report": "23c",
+    "summary": "intelligence — Qualidade",
+    "owner": "P1.26",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.26: GIS-01: modelo de dados do núcleo do GIS, histórico, metadados de qualidade, SRS e migração do `gis_network_element`"
+  },
+  {
+    "finding_id": "COD-36",
+    "source_report": "23c",
+    "summary": "core — Dívida técnica",
+    "owner": "P1.9",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.9: Outbox e `worker` básico. remoção da coluna tenant_schema avaliada na reescrita da V1_1 (P0.25)"
+  },
+  {
+    "finding_id": "COD-37",
+    "source_report": "23c",
+    "summary": "frontend — Divergência de decisão",
+    "owner": "P0.34",
+    "consumers": [
+      "P0.36"
+    ],
+    "destination_note": "Tarefa dona P0.34: Pacote de marca"
+  },
+  {
+    "finding_id": "COD-38",
+    "source_report": "23c",
+    "summary": "frontend — Dependências",
+    "owner": "P0.17",
+    "consumers": [
+      "P0.46"
+    ],
+    "destination_note": "Tarefa dona P0.17: Médios de segurança"
+  },
+  {
+    "finding_id": "COD-39",
+    "source_report": "23c",
+    "summary": "backend — Dependências",
+    "owner": "P0.3",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.3: CI no GitHub Actions. remoção de Paho e do cliente admin na P0.25"
+  },
+  {
+    "finding_id": "COD-40",
+    "source_report": "23c",
+    "summary": "raiz — Sobra",
+    "owner": "P0.1",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.1: Desenvolvimento em disco local; GitHub como fonte da verdade"
+  },
+  {
+    "finding_id": "COD-41",
+    "source_report": "23c",
+    "summary": "raiz — Sobra",
+    "owner": "P0.25",
+    "consumers": [],
+    "destination_note": "Tarefa dona P0.25: Limpeza do código antes da renomeação; dívidas da execução; SINIR em modo assistido"
+  },
+  {
+    "finding_id": "COD-42",
+    "source_report": "23c",
+    "summary": "registry — Desempenho",
+    "owner": "P1.4",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.4: Matrícula por sequência. medir na carga da P0.23"
+  },
+  {
+    "finding_id": "JOR-01",
+    "source_report": "23d",
+    "summary": "Administração; todos os perfis — Perfis de fábrica por persona, compostos do catálogo `recurso:ação`, cada um com menu e página inicial próprios: atendente, supervisor comer",
+    "owner": "P1.37",
+    "consumers": [
+      "ED-06",
+      "P3.39"
+    ],
+    "destination_note": "Tarefa dona P1.37: Perfis de acesso de fábrica por função, com menu próprio. decisão do dono de 28/10/2026"
+  },
+  {
+    "finding_id": "JOR-02",
+    "source_report": "23d",
+    "summary": "Administração; plataforma — Documento do catálogo de permissões gerado do código e conferido no CI, com módulo, recurso, ação, perfil de fábrica e tarefa de origem; uni",
+    "owner": "P0.13",
+    "consumers": [
+      "P1.37"
+    ],
+    "destination_note": "Tarefa dona P0.13: Gestão de usuários por tenant"
+  },
+  {
+    "finding_id": "JOR-03",
+    "source_report": "23d",
+    "summary": "Navegação; ficha da unidade — Documento de mapa do produto (módulos, itens de menu, rotas, ícone, permissão, tarefa) derivado do `vertical.json`, e regra de que cada tare",
+    "owner": "P0.47",
+    "consumers": [
+      "P1.12"
+    ],
+    "destination_note": "Tarefa dona P0.47: Contrato do pacote de vertical e teste de fronteira"
+  },
+  {
+    "finding_id": "JOR-04",
+    "source_report": "23d",
+    "summary": "Início; todos — Página inicial por perfil com pendências (JOR-05), alertas (ED-07), avisos (P3.36), atalhos e até quatro indicadores do papel, lendo o regis",
+    "owner": "P3.39",
+    "consumers": [
+      "ED-07"
+    ],
+    "destination_note": "Tarefa dona P3.39: Início por perfil: página inicial e agenda"
+  },
+  {
+    "finding_id": "JOR-05",
+    "source_report": "23d",
+    "summary": "Início; todos — Ampliar a caixa da P2.28 de \"aprovações\" para \"minhas tarefas\": todo item com responsável e prazo, de qualquer módulo (protocolo a vencer, O",
+    "owner": "P2.28",
+    "consumers": [
+      "P2.33",
+      "P3.30",
+      "P3.39"
+    ],
+    "destination_note": "Tarefa dona P2.28: Minhas tarefas: caixa unificada de pendências e aprovações, com prazo e delegação temporária"
+  },
+  {
+    "finding_id": "JOR-06",
+    "source_report": "23d",
+    "summary": "Transversal; atendimento, cobrança, qualidade, administração — Motor único de modelos de documento e mensagem por tenant, com variáveis tipadas, versão, vigência, aprovação, marca (P2.17) e prévia: compr",
+    "owner": "P2.30",
+    "consumers": [
+      "P2.32",
+      "P3.4",
+      "P3.5",
+      "P3.31",
+      "P4.1",
+      "ED-19",
+      "ED-29",
+      "ED-31",
+      "ED-36",
+      "ED-41",
+      "ED-51"
+    ],
+    "destination_note": "Tarefa dona P2.30: Motor único de modelos de documento e mensagem. decisão do dono de 28/10/2026"
+  },
+  {
+    "finding_id": "JOR-07",
+    "source_report": "23d",
+    "summary": "Ordens de serviço — Impressão da OS e do roteiro da equipe (com QR que abre a OS) e baixa posterior pelo backoffice com data e hora de execução, executor, mater",
+    "owner": "ED-36",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-36: OS completa no backoffice"
+  },
+  {
+    "finding_id": "JOR-08",
+    "source_report": "23d",
+    "summary": "Fiscal; faturista — Tela \"Documentos fiscais\" do tenant: autorizadas, rejeitadas com a explicação da P2.16, em contingência, canceladas e substituídas; reenvio,",
+    "owner": "P2.33",
+    "consumers": [],
+    "destination_note": "Tarefa dona P2.33: Documentos fiscais do tenant: fila de rejeições, contingência, inutilização e reenvio"
+  },
+  {
+    "finding_id": "JOR-09",
+    "source_report": "23d",
+    "summary": "Medição; faturista — Fila de análise das leituras e contas retidas: comparação com a média e os últimos meses, foto e ocorrência da leitura, ação em lote (libera",
+    "owner": "P2.20",
+    "consumers": [
+      "P2.28"
+    ],
+    "destination_note": "Tarefa dona P2.20: Retificação e manutenção de conta pelo backoffice"
+  },
+  {
+    "finding_id": "JOR-10",
+    "source_report": "23d",
+    "summary": "Medição; ordens de serviço — Tabela de ocorrências de leitura com o efeito de cada uma: tipo de OS gerada, consumo a faturar (média, mínimo, sem faturar), mudança de sit",
+    "owner": "P2.5",
+    "consumers": [
+      "ED-15",
+      "ED-18"
+    ],
+    "destination_note": "Tarefa dona P2.5: R4: medição, ciclo, conta, N6"
+  },
+  {
+    "finding_id": "JOR-11",
+    "source_report": "23d",
+    "summary": "Faturamento — Regra da primeira conta, da conta final e do ciclo com dias fora da faixa: proporcionalizar ou não a tarifa mínima ou fixa e o consumo pelos",
+    "owner": "P2.5",
+    "consumers": [
+      "P2.31"
+    ],
+    "destination_note": "Tarefa dona P2.5: R4: medição, ciclo, conta, N6"
+  },
+  {
+    "finding_id": "JOR-12",
+    "source_report": "23d",
+    "summary": "Atendimento; cadastro — Entrega do contrato de adesão vigente na ligação nova e na troca de titularidade, com versão e ciência registradas (a P3.20 só publica e ver",
+    "owner": "P3.20",
+    "consumers": [
+      "ED-34"
+    ],
+    "destination_note": "Tarefa dona P3.20: Portal do consumidor: vínculo, histórico de 120 meses e documentos"
+  },
+  {
+    "finding_id": "JOR-13",
+    "source_report": "23d",
+    "summary": "Arrecadação — Caixa próprio do prestador: abertura e fechamento de caixa, recebimento em espécie e cartão com comprovante, sangria, conferência e baixa pe",
+    "owner": "ED-26",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-26: Arrecadação ampliada. condicionado à confirmação de guichê no piloto (P1.1) e nos editais"
+  },
+  {
+    "finding_id": "JOR-14",
+    "source_report": "23d",
+    "summary": "Portal; atendimento; rede — Relato sem login, com foto, localização e contato opcional, que cria ocorrência de rede (ED-92) ou protocolo com alvo `LOCATION_ONLY` (P1.31",
+    "owner": "ED-38",
+    "consumers": [
+      "ED-92"
+    ],
+    "destination_note": "Tarefa dona ED-38: Portal e autoatendimento ampliados"
+  },
+  {
+    "finding_id": "JOR-15",
+    "source_report": "23d",
+    "summary": "Privacidade; consumidor; administração — A LGPD está na classe `REGULATORY` do catálogo de normas, mas o registro de operações de tratamento e o atendimento dos direitos do titular ",
+    "owner": "P3.40",
+    "consumers": [
+      "ED-74"
+    ],
+    "destination_note": "Tarefa dona P3.40: Privacidade do titular para todo tenant: direitos do titular, registro de operações de tratamento e canal no portal. decisão do dono de 28/10/2026"
+  },
+  {
+    "finding_id": "JOR-16",
+    "source_report": "23d",
+    "summary": "Operação de estações; qualidade — Separar a obrigação legal do pacote voluntário: geração e destinação do lodo de ETA e ETE (hoje na ED-70, ISO 14001) e automonitoramento do ",
+    "owner": "ED-105",
+    "consumers": [
+      "ED-70",
+      "ED-80",
+      "ED-104"
+    ],
+    "destination_note": "Tarefa dona ED-105: Efluente da ETE e lodo de ETA e ETE: obrigação legal para todo tenant com estação"
+  },
+  {
+    "finding_id": "JOR-17",
+    "source_report": "23d",
+    "summary": "Resíduos sólidos — Dar IDs à trilha GRS ou declará-la congelada como a infraestrutura parada (ADR-0010), e ligar o lodo do próprio tenant (JOR-16) ao MTR como ",
+    "owner": "ED-104",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-104: Trilha GRS sob demanda: MTR, CDF e DMR e operação de resíduos sólidos"
+  },
+  {
+    "finding_id": "JOR-18",
+    "source_report": "23d",
+    "summary": "Certificações; almoxarifado; laboratório — A P3.31 constrói avaliação de fornecedor \"sobre a ED-37\", que é da onda A e só cobre empreiteiras. Proposta: cadastro mínimo de fornecedor (",
+    "owner": "P3.31",
+    "consumers": [
+      "ED-37",
+      "ED-51",
+      "ED-58"
+    ],
+    "destination_note": "Tarefa dona P3.31: Riscos, objetivos, auditoria interna, análise crítica, competência, fornecedor e requisitos legais"
+  },
+  {
+    "finding_id": "JOR-19",
+    "source_report": "23d",
+    "summary": "Gestão e regulação — Declarar a ED-48 dona do registro de indicadores (definição, fórmula, fonte, meta, periodicidade, grau de confiança); P3.31 (objetivos), ED-",
+    "owner": "P3.41",
+    "consumers": [
+      "P3.31",
+      "P3.39",
+      "ED-48",
+      "ED-49",
+      "ED-77",
+      "ED-93"
+    ],
+    "destination_note": "Tarefa dona P3.41: Registro único de indicadores e metas. registro sai da ED-48 para o P3 porque a P3.31 e a P3.39 leem indicadores antes da trilha"
+  },
+  {
+    "finding_id": "JOR-20",
+    "source_report": "23d",
+    "summary": "Transversal — Catálogo único de eventos de negócio (nome, carga sem dado pessoal, permissão de quem recebe), usado pela central de avisos (P3.36), pelos a",
+    "owner": "P1.38",
+    "consumers": [
+      "P2.26",
+      "P2.28",
+      "P3.5",
+      "P3.36",
+      "ED-07",
+      "ED-41"
+    ],
+    "destination_note": "Tarefa dona P1.38: Catálogo único de eventos de negócio"
+  },
+  {
+    "finding_id": "JOR-21",
+    "source_report": "23d",
+    "summary": "Operação de estações; qualidade — Dados de controle de processo do diário (turbidez por filtro, cloro, pH) alimentam a conformidade mensal e o arquivo do SISAGUA sem redigita",
+    "owner": "ED-87",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-87: Operação de estações sem supervisório: diário, ronda e turno"
+  },
+  {
+    "finding_id": "JOR-22",
+    "source_report": "23d",
+    "summary": "Qualidade; laboratorista — Passo de comunicação de não conformidade com risco à autoridade de saúde pública e à população, com modelo (JOR-06), registro de envio e pra",
+    "owner": "ED-50",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-50: Qualidade da água operacional"
+  },
+  {
+    "finding_id": "JOR-23",
+    "source_report": "23d",
+    "summary": "Regulador — Perfil externo do regulador distinto do auditor externo de certificação: escopo pelos dados e relatórios regulatórios da agência (ED-97, ED-",
+    "owner": "ED-75",
+    "consumers": [
+      "ED-97"
+    ],
+    "destination_note": "Tarefa dona ED-75: Pacote de evidência e auditor externo"
+  },
+  {
+    "finding_id": "JOR-24",
+    "source_report": "23d",
+    "summary": "Gestão; regulador — Fiscalização recebida da agência, do Tribunal de Contas ou do órgão ambiental como origem de ocorrência (P2.25): termo, constatações, prazo ",
+    "owner": "P2.25",
+    "consumers": [
+      "ED-98"
+    ],
+    "destination_note": "Tarefa dona P2.25: Informação documentada, ocorrência e ação"
+  },
+  {
+    "finding_id": "JOR-25",
+    "source_report": "23d",
+    "summary": "Administração — Tela do tenant para propor, aprovar e aceitar mudança de parâmetro depois da implantação, com comparação de versões, vigência futura e alert",
+    "owner": "P1.6",
+    "consumers": [
+      "P2.28"
+    ],
+    "destination_note": "Tarefa dona P1.6: Console da plataforma v0"
+  },
+  {
+    "finding_id": "JOR-26",
+    "source_report": "23d",
+    "summary": "Transversal; administração — Importador genérico de planilha: modelo para baixar, área de preparação, validação, relatório de recusas, aplicação por OS de lote e históri",
+    "owner": "P1.40",
+    "consumers": [
+      "P1.3",
+      "P2.24",
+      "ED-12",
+      "ED-20",
+      "ED-57"
+    ],
+    "destination_note": "Tarefa dona P1.40: Importador genérico de planilha com aplicação por OS de lote"
+  },
+  {
+    "finding_id": "JOR-27",
+    "source_report": "23d",
+    "summary": "Transversal — Observações internas com menção a usuário em protocolo, OS, unidade, conta e ocorrência, com visibilidade (interna ou ao usuário) e sem dado",
+    "owner": "P1.31",
+    "consumers": [],
+    "destination_note": "Tarefa dona P1.31: Núcleo de OS e unidade consumidora como raiz"
+  },
+  {
+    "finding_id": "JOR-28",
+    "source_report": "23d",
+    "summary": "Transversal — Aba \"Histórico\" padronizada em todo registro, lendo as OS aplicadas (ADR-0039), as versões (conta, parâmetro, tarifa, pacote GIS) e a trilha",
+    "owner": "P1.31",
+    "consumers": [
+      "P1.3",
+      "P2.20"
+    ],
+    "destination_note": "Tarefa dona P1.31: Núcleo de OS e unidade consumidora como raiz"
+  },
+  {
+    "finding_id": "JOR-29",
+    "source_report": "23d",
+    "summary": "Transversal — Regra única de exportação de listas: permissão `*:export` por recurso, máscara pelo teto (ADR-0008), registro no `personal_data_access_log`,",
+    "owner": "P1.12",
+    "consumers": [
+      "P3.22"
+    ],
+    "destination_note": "Tarefa dona P1.12: Frontend robusto"
+  },
+  {
+    "finding_id": "JOR-30",
+    "source_report": "23d",
+    "summary": "Início — Agenda que só lê: cronograma de faturamento (P2.5), programação de OS (ED-36), auditorias (P3.31), calibrações (ED-51), preventivas (ED-56),",
+    "owner": "P3.39",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.39: Início por perfil: página inicial e agenda"
+  },
+  {
+    "finding_id": "JOR-31",
+    "source_report": "23d",
+    "summary": "Atendimento; OS — Atribuir e redistribuir protocolos e OS entre pessoas, além do trâmite entre unidades da P3.30, com motivo e registro",
+    "owner": "ED-35",
+    "consumers": [
+      "ED-36"
+    ],
+    "destination_note": "Tarefa dona ED-35: Atendimento completo"
+  },
+  {
+    "finding_id": "JOR-32",
+    "source_report": "23d",
+    "summary": "Almoxarifado — Entrada de material pela NF-e do fornecedor (leitura do XML, conferência de item e quantidade) e transferência entre locais com trânsito; nã",
+    "owner": "ED-58",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-58: Almoxarifado: materiais e estoque para a OS, com alçada e baixa automática"
+  },
+  {
+    "finding_id": "JOR-33",
+    "source_report": "23d",
+    "summary": "Perdas; rede — Volume perdido estimado e tempo de reparo por ocorrência de rede, gravados no encerramento da OS, como entrada do balanço (perdas reais) e d",
+    "owner": "ED-92",
+    "consumers": [
+      "ED-85"
+    ],
+    "destination_note": "Tarefa dona ED-92: Ocorrência de rede como entidade"
+  },
+  {
+    "finding_id": "JOR-34",
+    "source_report": "23d",
+    "summary": "Perdas — Ajuste do volume micromedido ao período do macromedido (leituras de datas diferentes por rota), com método declarado",
+    "owner": "ED-85",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-85: Módulo de perdas operacional: DMC, vazão mínima noturna e balanço por DMC"
+  },
+  {
+    "finding_id": "JOR-35",
+    "source_report": "23d",
+    "summary": "Faturamento; cadastro — Registro de conta não entregue (devolução, endereço não localizado), que alimenta a qualidade cadastral (P3.32) e o contato verificado",
+    "owner": "P2.8",
+    "consumers": [
+      "P3.32"
+    ],
+    "destination_note": "Tarefa dona P2.8: Arquivo para gráfica"
+  },
+  {
+    "finding_id": "JOR-36",
+    "source_report": "23d",
+    "summary": "Central Ziip — Incluir a aba Estoque (CENTRAL-ZIIP §3) no aceite de uma tarefa",
+    "owner": "ED-58",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-58: Almoxarifado: materiais e estoque para a OS, com alçada e baixa automática. aba Estoque da Central só existe depois da ED-58"
+  },
+  {
+    "finding_id": "JOR-37",
+    "source_report": "23d",
+    "summary": "Qualidade; campo — Coleta de amostra como OS de campo no app, com etiqueta e cadeia de custódia, entregando a amostra ao laboratório",
+    "owner": "ED-50",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-50: Qualidade da água operacional"
+  },
+  {
+    "finding_id": "JOR-38",
+    "source_report": "23d",
+    "summary": "Portal — Visão do órgão centralizador e do grande cliente com muitas unidades: lista, exportação e fatura agrupadora",
+    "owner": "ED-22",
+    "consumers": [
+      "ED-38"
+    ],
+    "destination_note": "Tarefa dona ED-22: Situações especiais de faturamento, usuário avulso e órgão centralizador"
+  },
+  {
+    "finding_id": "JOR-39",
+    "source_report": "23d",
+    "summary": "Relatórios — Relatórios ausentes da seção 5.2: operação de estações, almoxarifado analítico, privacidade, acessos, compensações pagas ao usuário, produti",
+    "owner": "ED-46",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-46: Catálogo completo de relatórios. relatórios de módulos posteriores (estações, privacidade) entram pela tarefa do módulo"
+  },
+  {
+    "finding_id": "RAS-01",
+    "source_report": "23e",
+    "summary": "OBR-01 perfil da ERI com vigência e validação",
+    "owner": "P2.31",
+    "consumers": [
+      "P3.4",
+      "P3.28",
+      "GL.2",
+      "ED-97"
+    ],
+    "destination_note": "Tarefa dona P2.31: Perfis regulatórios das agências de SC: carga, simulação e teste"
+  },
+  {
+    "finding_id": "RAS-02",
+    "source_report": "23e",
+    "summary": "OBR-50 cashback desconto de CBS e IBS na cobrança",
+    "owner": "P2.34",
+    "consumers": [],
+    "destination_note": "Tarefa dona P2.34: Cashback de CBS e IBS na fatura"
+  },
+  {
+    "finding_id": "RAS-03",
+    "source_report": "23e",
+    "summary": "OBR-53 CNPJ alfanumérico",
+    "owner": "P1.39",
+    "consumers": [
+      "P1.2",
+      "P1.3",
+      "P2.6",
+      "P2.13",
+      "P3.1",
+      "P3.2",
+      "P3.6"
+    ],
+    "destination_note": "Tarefa dona P1.39: CNPJ alfanumérico em todas as fronteiras"
+  },
+  {
+    "finding_id": "RAS-04",
+    "source_report": "23e",
+    "summary": "OBR-19 e OBR-42 conteúdo mínimo da fatura e identificação do fornecedor",
+    "owner": "P2.32",
+    "consumers": [
+      "P2.8",
+      "P2.17",
+      "ED-79"
+    ],
+    "destination_note": "Tarefa dona P2.32: Conteúdo mínimo da fatura por lei e por agência e motor de mensagens legais"
+  },
+  {
+    "finding_id": "RAS-05",
+    "source_report": "23e",
+    "summary": "OBR-31 classificação automática e avisos da tarifa social",
+    "owner": "P1.5",
+    "consumers": [
+      "ED-57"
+    ],
+    "destination_note": "Tarefa dona P1.5: R3: tarifa social satélite + N4. parte da ED-57 antecipada"
+  },
+  {
+    "finding_id": "RAS-06",
+    "source_report": "23e",
+    "summary": "OBR-45 migração do débito automático para Pix Automático",
+    "owner": "P3.24",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.24: Débito automático FEBRABAN 150 para autorizações legadas, só se a P0.30 encontrar optantes. parecer antes de iniciar; a ED-27 e a P4.5 seguem o resultado"
+  },
+  {
+    "finding_id": "RAS-07",
+    "source_report": "23e",
+    "summary": "OBR-69 indicadores operacionais da NR 9",
+    "owner": "ED-77",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-77: Motor de fichas de indicador das ISO 24510 e 24512"
+  },
+  {
+    "finding_id": "RAS-08",
+    "source_report": "23e",
+    "summary": "OBR-70 e OBR-04 envio no sistema e formato da agência",
+    "owner": "ED-97",
+    "consumers": [
+      "ED-98"
+    ],
+    "destination_note": "Tarefa dona ED-97: Pacote regulatório de saída por agência, com subsídios e Índice de Tarifa Social"
+  },
+  {
+    "finding_id": "RAS-09",
+    "source_report": "23e",
+    "summary": "OBR-51 split payment",
+    "owner": "P3.1",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.1: R5a: retorno e conciliação N3"
+  },
+  {
+    "finding_id": "RAS-10",
+    "source_report": "23e",
+    "summary": "OBR-87 conta em formato acessível a pedido",
+    "owner": "P1.3",
+    "consumers": [
+      "P2.8",
+      "P3.20"
+    ],
+    "destination_note": "Tarefa dona P1.3: R2: cadastro completo: modelo de dados, tela e carga"
+  },
+  {
+    "finding_id": "RAS-11",
+    "source_report": "23e",
+    "summary": "OBR-40 superendividamento e renegociação",
+    "owner": "P4.1",
+    "consumers": [],
+    "destination_note": "Tarefa dona P4.1: R8: cobrança; negativação e protesto na ED-30. cessão a programa federal só com parecer"
+  },
+  {
+    "finding_id": "RAS-12",
+    "source_report": "23e",
+    "summary": "OBR-36 vedações estaduais de corte",
+    "owner": "P3.4",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.4: Corte e religação: regras e bloqueios"
+  },
+  {
+    "finding_id": "RAS-13",
+    "source_report": "23e",
+    "summary": "OBR-25 condomínio e múltiplas economias",
+    "owner": "P2.5",
+    "consumers": [
+      "ED-15"
+    ],
+    "destination_note": "Tarefa dona P2.5: R4: medição, ciclo, conta, N6"
+  },
+  {
+    "finding_id": "RAS-14",
+    "source_report": "23e",
+    "summary": "OBR-20 leitura fora da janela e média com teto",
+    "owner": "P2.5",
+    "consumers": [
+      "P2.31"
+    ],
+    "destination_note": "Tarefa dona P2.5: R4: medição, ciclo, conta, N6"
+  },
+  {
+    "finding_id": "RAS-15",
+    "source_report": "23e",
+    "summary": "OBR-41 prescrição por pretensão",
+    "owner": "P4.1",
+    "consumers": [
+      "ED-30",
+      "ED-31"
+    ],
+    "destination_note": "Tarefa dona P4.1: R8: cobrança; negativação e protesto na ED-30"
+  },
+  {
+    "finding_id": "RAS-16",
+    "source_report": "23e",
+    "summary": "OBR-93 teto de juros e taxa legal",
+    "owner": "P0.20",
+    "consumers": [
+      "P2.5",
+      "P2.31"
+    ],
+    "destination_note": "Tarefa dona P0.20: Limites, sugeridos e pisos do §2.3"
+  },
+  {
+    "finding_id": "RAS-17",
+    "source_report": "23e",
+    "summary": "OBR-63 MTR, CDF e DMR",
+    "owner": "ED-104",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-104: Trilha GRS sob demanda: MTR, CDF e DMR e operação de resíduos sólidos. até a liberação, item manual da agenda da ED-98"
+  },
+  {
+    "finding_id": "RAS-18",
+    "source_report": "23e",
+    "summary": "OBR-83 tabela de temporalidade de prestador público",
+    "owner": "P3.19",
+    "consumers": [
+      "P3.16"
+    ],
+    "destination_note": "Tarefa dona P3.19: Retenção, expurgo e exportação de chamados"
+  },
+  {
+    "finding_id": "RAS-19",
+    "source_report": "23e",
+    "summary": "OBR-44 cobrança híbrida",
+    "owner": "P3.2",
+    "consumers": [
+      "P3.29"
+    ],
+    "destination_note": "Tarefa dona P3.2: R5b: Pix Cobrança e boleto híbrido"
+  },
+  {
+    "finding_id": "RAS-20",
+    "source_report": "23e",
+    "summary": "OBR-81 transferência internacional",
+    "owner": "P3.9",
+    "consumers": [
+      "ED-43"
+    ],
+    "destination_note": "Tarefa dona P3.9: Contrato SaaS, DPA, termos, SLA, suboperadores: minutas aprovadas"
+  },
+  {
+    "finding_id": "RAS-21",
+    "source_report": "23e",
+    "summary": "OBR-74 contabilidade regulatória",
+    "owner": "ED-32",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-32: Eventos contábeis e integração contábil"
+  },
+  {
+    "finding_id": "RAS-22",
+    "source_report": "23e",
+    "summary": "OBR-13 cobrança por disponibilidade e TFDI",
+    "owner": "P2.5",
+    "consumers": [
+      "ED-88"
+    ],
+    "destination_note": "Tarefa dona P2.5: R4: medição, ciclo, conta, N6"
+  },
+  {
+    "finding_id": "RAS-23",
+    "source_report": "23e",
+    "summary": "OBR-80 encarregado de dados do tenant",
+    "owner": "P3.40",
+    "consumers": [],
+    "destination_note": "Tarefa dona P3.40: Privacidade do titular para todo tenant: direitos do titular, registro de operações de tratamento e canal no portal"
+  },
+  {
+    "finding_id": "RAS-24",
+    "source_report": "23e",
+    "summary": "OBR-23 datas de vencimento",
+    "owner": "P2.5",
+    "consumers": [
+      "P2.31"
+    ],
+    "destination_note": "Tarefa dona P2.5: R4: medição, ciclo, conta, N6"
+  },
+  {
+    "finding_id": "RAS-25",
+    "source_report": "23e",
+    "summary": "OBR-90 serviço em eletricidade",
+    "owner": "P1.31",
+    "consumers": [
+      "ED-71"
+    ],
+    "destination_note": "Tarefa dona P1.31: Núcleo de OS e unidade consumidora como raiz"
+  },
+  {
+    "finding_id": "RAS-26",
+    "source_report": "23e",
+    "summary": "OBR-88 tempo de espera presencial",
+    "owner": "ED-40",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-40: Totem em modo quiosque e senhas"
+  },
+  {
+    "finding_id": "RAS-27",
+    "source_report": "23e",
+    "summary": "OBR-47 pagamento com retenção na fonte",
+    "owner": "P3.1",
+    "consumers": [
+      "ED-26"
+    ],
+    "destination_note": "Tarefa dona P3.1: R5a: retorno e conciliação N3. depois do parecer sobre o alcance"
+  },
+  {
+    "finding_id": "RAS-28",
+    "source_report": "23e",
+    "summary": "OBR-54 valor aproximado dos tributos",
+    "owner": "P2.32",
+    "consumers": [],
+    "destination_note": "Tarefa dona P2.32: Conteúdo mínimo da fatura por lei e por agência e motor de mensagens legais. depois do parecer"
+  },
+  {
+    "finding_id": "RAS-29",
+    "source_report": "23e",
+    "summary": "OBR-09 compensação por interrupção prolongada",
+    "owner": "ED-92",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-92: Ocorrência de rede como entidade"
+  },
+  {
+    "finding_id": "RAS-30",
+    "source_report": "23e",
+    "summary": "OBR-85 remetente autenticado",
+    "owner": "P3.5",
+    "consumers": [
+      "ED-41"
+    ],
+    "destination_note": "Tarefa dona P3.5: Notificações com prova de entrega"
+  },
+  {
+    "finding_id": "RAS-31",
+    "source_report": "23e",
+    "summary": "OBR-01 perfil de ERI fora de SC",
+    "owner": "ED-97",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-97: Pacote regulatório de saída por agência, com subsídios e Índice de Tarifa Social. perfis fora de SC sob demanda de edital ou tenant"
+  },
+  {
+    "finding_id": "RAS-32",
+    "source_report": "23e",
+    "summary": "OBR-77 PCASP do exercício",
+    "owner": "ED-32",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-32: Eventos contábeis e integração contábil"
+  },
+  {
+    "finding_id": "RAS-33",
+    "source_report": "23e",
+    "summary": "OBR-12 solução alternativa nas metas",
+    "owner": "ED-77",
+    "consumers": [],
+    "destination_note": "Tarefa dona ED-77: Motor de fichas de indicador das ISO 24510 e 24512"
+  }
+]

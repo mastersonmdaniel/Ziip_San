@@ -47,7 +47,8 @@ inclusive alteração cadastral, gera uma ordem de serviço, mesmo que interna e
    OS. Os históricos (`unit_status_history` e os novos de cadastro) passam a ter `service_order_id` obrigatório, e um
    teste de arquitetura recusa escrita nessas tabelas fora do aplicador de efeitos.
 7. **Protocolo e OS.** Toda solicitação recebe protocolo (NR 11, art. 52 §1º) e gera ao menos uma OS; a alteração feita
-   pelo próprio backoffice gera OS interna sem protocolo de atendimento.
+   pelo próprio backoffice gera OS interna sem protocolo de atendimento. Confirmado pelo dono do produto em 28/10/2026: o protocolo vem sempre antes da OS em
+   toda solicitação externa, por qualquer canal (portal, aplicativo, atendimento, telefone, integração).
 8. **Aprovação da OS interna é parâmetro (ADR-0038).** Por tipo de serviço, o tenant escolhe se a OS interna é aplicada
    por quem a registra ou se exige aprovação por outra pessoa. Padrão de fábrica: aprovação por outra pessoa para
    alterações que mudam o faturamento (categoria, economias, titularidade, situação da ligação, tarifa social, consumo
