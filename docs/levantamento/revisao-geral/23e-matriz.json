@@ -1,0 +1,5074 @@
+[
+  {
+    "norm_id": "decreto-10936-2022",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "decreto-11016-2022",
+    "obligation": "OBR-31 Classificar automaticamente os beneficiários pela lista oficial conforme a natureza jurídica e avisar na fatura antes da perda do benefício",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-57"
+    ],
+    "notes": "Importação de lista com base legal na ED-57 (trilha); classificação automática (CAD-91) e mensagens (CAD-96) só como títulos. Não classificar depois de entregues os documentos é cobrança indevida (Lei 14.898, art. 5º, §2º)."
+  },
+  {
+    "norm_id": "decreto-11150-2022",
+    "obligation": "OBR-40 Preservar o mínimo existencial no superendividamento e operar programas de renegociação do ente ou da União",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.1"
+    ],
+    "notes": "CAD-73 e CAD-75 só como títulos; adesão à MP 1.393/2026 depende de parecer (questoes-para-parecer-juridico)."
+  },
+  {
+    "norm_id": "decreto-11567-2023",
+    "obligation": "OBR-40 Preservar o mínimo existencial no superendividamento e operar programas de renegociação do ente ou da União",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.1"
+    ],
+    "notes": "CAD-73 e CAD-75 só como títulos; adesão à MP 1.393/2026 depende de parecer (questoes-para-parecer-juridico)."
+  },
+  {
+    "norm_id": "decreto-11599-2023",
+    "obligation": "OBR-67 Demonstrar as condicionantes do art. 50 da Lei 11.445 (perdas, regionalização, metas)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-48",
+      "ED-78"
+    ],
+    "notes": "GES-16 só como título."
+  },
+  {
+    "norm_id": "decreto-12805-2025",
+    "obligation": "OBR-67 Demonstrar as condicionantes do art. 50 da Lei 11.445 (perdas, regionalização, metas)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-48",
+      "ED-78"
+    ],
+    "notes": "GES-16 só como título."
+  },
+  {
+    "norm_id": "decreto-12955-2026",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "decreto-12955-2026",
+    "obligation": "OBR-49 Calcular e destacar CBS e IBS com alíquotas e regras de transição por vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.4",
+      "P1.16"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "decreto-12955-2026",
+    "obligation": "OBR-50 Conceder o cashback desconto de CBS e IBS na cobrança de água e esgoto a famílias do CadÚnico, com a lista da RFB",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.4",
+      "P2.5"
+    ],
+    "notes": "GES-13 só como título; CBS sobre consumo desde 01/2027 e IBS desde 01/2029 (LC 214, arts. 112 a 124; Decreto 12.955, arts. 495 e 511)."
+  },
+  {
+    "norm_id": "decreto-20910-1932",
+    "obligation": "OBR-41 Separar a prescrição por pretensão e natureza jurídica e impedir cobrança judicial, negativação e protesto de dívida prescrita",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "ED-30"
+    ],
+    "notes": "G6 em PARAMETROS; a ED-30 limita a 5 anos o registro; separação das pretensões pendente (decisoes-a-rever, lote 2, item 8)."
+  },
+  {
+    "norm_id": "decreto-5296-2004",
+    "obligation": "OBR-86 Dar atendimento prioritário (idoso, PcD, TEA, gestante, acompanhante) nos canais presenciais e na fila",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-40"
+    ],
+    "notes": "Perfil de prioridade no cadastro (CAD-81) só como título."
+  },
+  {
+    "norm_id": "decreto-5296-2004",
+    "obligation": "OBR-87 Tornar portal e documentos acessíveis e entregar a conta em formato acessível a pedido",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.20",
+      "P2.8"
+    ],
+    "notes": "axe e PDF marcado na P3.20; conta em braile ou fonte ampliada a pedido sem aceite."
+  },
+  {
+    "norm_id": "decreto-5440-2005",
+    "obligation": "OBR-57 Controlar a qualidade da água (plano de amostragem, padrões, conformidade), enviar ao SISAGUA e informar o consumidor na conta e no relatório anual",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-50",
+      "P2.24",
+      "ED-79"
+    ],
+    "notes": "Até a ED-50, o bloco da conta vem de planilha do laboratório (P2.24)."
+  },
+  {
+    "norm_id": "decreto-5440-2005",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "decreto-7217-2010",
+    "obligation": "OBR-16 Aplicar estrutura tarifária por categoria e faixa com versão, vigência e antecedência mínima de publicação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.5",
+      "P2.29"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Vigência mínima após publicação travada em `bill.tariff_readjust`."
+  },
+  {
+    "norm_id": "decreto-7217-2010",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "decreto-7217-2010",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA."
+  },
+  {
+    "norm_id": "decreto-7217-2010",
+    "obligation": "OBR-13 Conduzir o ciclo da ligação obrigatória à rede e a cobrança por disponibilidade ou tarifa fixa de infraestrutura",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-88",
+      "P2.5"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Ciclo coberto na ED-88; cobrança por disponibilidade (CAD-87) só como título na P2.5; TFDI da ARESC sem aceite."
+  },
+  {
+    "norm_id": "decreto-8264-2014",
+    "obligation": "OBR-54 Informar o valor aproximado dos tributos no documento entregue ao consumidor, se a conta de água estiver alcançada",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Aplicação à conta de água a confirmar juridicamente; o rol da lei ainda não cita IBS e CBS."
+  },
+  {
+    "norm_id": "decreto-8771-2016",
+    "obligation": "OBR-82 Guardar registros de acesso à aplicação pelo prazo mínimo, com segurança",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.20",
+      "P0.8"
+    ],
+    "notes": "Piso de 6 meses (G6) não reduzível."
+  },
+  {
+    "norm_id": "decreto-89817-1984",
+    "obligation": "OBR-92 Classificar a exatidão posicional do cadastro técnico pelo padrão cartográfico",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.26",
+      "P3.27"
+    ],
+    "notes": "Metadados de qualidade e precisão existem; classe do padrão cartográfico sem aceite."
+  },
+  {
+    "norm_id": "ec-132-2023",
+    "obligation": "OBR-49 Calcular e destacar CBS e IBS com alíquotas e regras de transição por vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.4",
+      "P1.16"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lc-214-2025",
+    "obligation": "OBR-49 Calcular e destacar CBS e IBS com alíquotas e regras de transição por vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.4",
+      "P1.16"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lc-214-2025",
+    "obligation": "OBR-50 Conceder o cashback desconto de CBS e IBS na cobrança de água e esgoto a famílias do CadÚnico, com a lista da RFB",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.4",
+      "P2.5"
+    ],
+    "notes": "GES-13 só como título; CBS sobre consumo desde 01/2027 e IBS desde 01/2029 (LC 214, arts. 112 a 124; Decreto 12.955, arts. 495 e 511)."
+  },
+  {
+    "norm_id": "lc-214-2025",
+    "obligation": "OBR-51 Suportar o recolhimento por split payment na liquidação e conciliar o valor líquido recebido",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.4",
+      "P3.1"
+    ],
+    "notes": "GES-13 só como título; `tax.profile.split_payment_mode` previsto no 22d."
+  },
+  {
+    "norm_id": "lc-214-2025",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "lc-227-2026",
+    "obligation": "OBR-49 Calcular e destacar CBS e IBS com alíquotas e regras de transição por vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.4",
+      "P1.16"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lc-227-2026",
+    "obligation": "OBR-51 Suportar o recolhimento por split payment na liquidação e conciliar o valor líquido recebido",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.4",
+      "P3.1"
+    ],
+    "notes": "GES-13 só como título; `tax.profile.split_payment_mode` previsto no 22d."
+  },
+  {
+    "norm_id": "lc-236-2026",
+    "obligation": "OBR-38 Inscrever em dívida ativa, emitir CDA e apoiar execução fiscal, protesto e transação quando o prestador for ente público",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-31",
+      "ED-30"
+    ],
+    "notes": "Núcleo coberto; transação, alçada e prescrição (GES-18) só como título; protesto de CDA depende de parecer (decisoes-a-rever, lote 4)."
+  },
+  {
+    "norm_id": "lei-10048-2000",
+    "obligation": "OBR-86 Dar atendimento prioritário (idoso, PcD, TEA, gestante, acompanhante) nos canais presenciais e na fila",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-40"
+    ],
+    "notes": "Perfil de prioridade no cadastro (CAD-81) só como título."
+  },
+  {
+    "norm_id": "lei-10406-2002",
+    "obligation": "OBR-93 Limitar os juros de mora ao teto da agência e aplicar a taxa legal quando nada for pactuado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P2.5"
+    ],
+    "notes": "Teto por dia da ERI (SC: 0,033%) e `fee.legal_rate_fallback` estão em PARAMETROS; o aceite da P0.20 é genérico (\"cada limite com norma e teste\") e a taxa legal deve vir da divulgação do BCB (decisoes-a-rever, lote 2, item 5)."
+  },
+  {
+    "norm_id": "lei-10406-2002",
+    "obligation": "OBR-41 Separar a prescrição por pretensão e natureza jurídica e impedir cobrança judicial, negativação e protesto de dívida prescrita",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "ED-30"
+    ],
+    "notes": "G6 em PARAMETROS; a ED-30 limita a 5 anos o registro; separação das pretensões pendente (decisoes-a-rever, lote 2, item 8)."
+  },
+  {
+    "norm_id": "lei-10406-2002",
+    "obligation": "OBR-22 Retificar conta sem apagar a anterior, devolver em dobro a cobrança indevida e tratar pagamento em duplicidade",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.20",
+      "P3.1",
+      "P3.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-10637-2002",
+    "obligation": "OBR-55 Fornecer à contabilidade a base de receitas e retenções para PIS, Cofins e Pasep e sua escrituração enquanto vigorarem",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-32"
+    ],
+    "notes": "Tributos substituídos pela CBS em 2027; relevância maior para o histórico importado."
+  },
+  {
+    "norm_id": "lei-10741-2003",
+    "obligation": "OBR-86 Dar atendimento prioritário (idoso, PcD, TEA, gestante, acompanhante) nos canais presenciais e na fila",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-40"
+    ],
+    "notes": "Perfil de prioridade no cadastro (CAD-81) só como título."
+  },
+  {
+    "norm_id": "lei-10833-2003",
+    "obligation": "OBR-55 Fornecer à contabilidade a base de receitas e retenções para PIS, Cofins e Pasep e sua escrituração enquanto vigorarem",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-32"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Tributos substituídos pela CBS em 2027; relevância maior para o histórico importado."
+  },
+  {
+    "norm_id": "lei-11445-2007",
+    "obligation": "OBR-16 Aplicar estrutura tarifária por categoria e faixa com versão, vigência e antecedência mínima de publicação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.5",
+      "P2.29"
+    ],
+    "notes": "Vigência mínima após publicação travada em `bill.tariff_readjust`."
+  },
+  {
+    "norm_id": "lei-11445-2007",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "lei-11445-2007",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-11445-2007",
+    "obligation": "OBR-13 Conduzir o ciclo da ligação obrigatória à rede e a cobrança por disponibilidade ou tarifa fixa de infraestrutura",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-88",
+      "P2.5"
+    ],
+    "notes": "Ciclo coberto na ED-88; cobrança por disponibilidade (CAD-87) só como título na P2.5; TFDI da ARESC sem aceite."
+  },
+  {
+    "norm_id": "lei-11445-2007",
+    "obligation": "OBR-66 Preencher o SINISA com mapa de variáveis e obter o certificado de adimplência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P4.2",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-11445-2007",
+    "obligation": "OBR-25 Faturar condomínio e múltiplas economias pelo modelo admitido (franquia por economia mais excedente) e apoiar a medição individualizada",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-15",
+      "P2.5"
+    ],
+    "notes": "Regra de condomínio configurável na ED-15 (onda A); os modelos do Tema 414 revisado e o modelo híbrido vedado não estão no aceite."
+  },
+  {
+    "norm_id": "lei-11445-2007",
+    "obligation": "OBR-67 Demonstrar as condicionantes do art. 50 da Lei 11.445 (perdas, regionalização, metas)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-48",
+      "ED-78"
+    ],
+    "notes": "GES-16 só como título."
+  },
+  {
+    "norm_id": "lei-11445-2007",
+    "obligation": "OBR-30 Conceder a tarifa social pelos critérios federais (CadÚnico, BPC, renda), sem exigir adimplência, com piso federal travado",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-12007-2009",
+    "obligation": "OBR-29 Emitir a declaração anual de quitação de débitos e comprová-la quando a agência pedir",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.24"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-12039-2009",
+    "obligation": "OBR-42 Identificar o fornecedor (nome, endereço, CPF ou CNPJ) em todo documento de cobrança",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17"
+    ],
+    "notes": "Bloco do fornecedor travado em `bill.invoice_template` (PARAMETROS); nenhum aceite o testa."
+  },
+  {
+    "norm_id": "lei-12305-2010",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "lei-12527-2011",
+    "obligation": "OBR-73 Publicar informação de interesse público (LAI, dados abertos, relatórios de reservatório e segurança hídrica)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-99"
+    ],
+    "notes": "Painel de reservatórios da Lei 15.012 sem aceite."
+  },
+  {
+    "norm_id": "lei-12741-2012",
+    "obligation": "OBR-54 Informar o valor aproximado dos tributos no documento entregue ao consumidor, se a conta de água estiver alcançada",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Aplicação à conta de água a confirmar juridicamente; o rol da lei ainda não cita IBS e CBS."
+  },
+  {
+    "norm_id": "lei-12767-2012",
+    "obligation": "OBR-38 Inscrever em dívida ativa, emitir CDA e apoiar execução fiscal, protesto e transação quando o prestador for ente público",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-31",
+      "ED-30"
+    ],
+    "notes": "Núcleo coberto; transação, alçada e prescrição (GES-18) só como título; protesto de CDA depende de parecer (decisoes-a-rever, lote 4)."
+  },
+  {
+    "norm_id": "lei-12965-2014",
+    "obligation": "OBR-82 Guardar registros de acesso à aplicação pelo prazo mínimo, com segurança",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.20",
+      "P0.8"
+    ],
+    "notes": "Piso de 6 meses (G6) não reduzível."
+  },
+  {
+    "norm_id": "lei-13146-2015",
+    "obligation": "OBR-86 Dar atendimento prioritário (idoso, PcD, TEA, gestante, acompanhante) nos canais presenciais e na fila",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-40"
+    ],
+    "notes": "Perfil de prioridade no cadastro (CAD-81) só como título."
+  },
+  {
+    "norm_id": "lei-13146-2015",
+    "obligation": "OBR-87 Tornar portal e documentos acessíveis e entregar a conta em formato acessível a pedido",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.20",
+      "P2.8"
+    ],
+    "notes": "axe e PDF marcado na P3.20; conta em braile ou fonte ampliada a pedido sem aceite."
+  },
+  {
+    "norm_id": "lei-13312-2016",
+    "obligation": "OBR-25 Faturar condomínio e múltiplas economias pelo modelo admitido (franquia por economia mais excedente) e apoiar a medição individualizada",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-15",
+      "P2.5"
+    ],
+    "notes": "Regra de condomínio configurável na ED-15 (onda A); os modelos do Tema 414 revisado e o modelo híbrido vedado não estão no aceite."
+  },
+  {
+    "norm_id": "lei-13455-2017",
+    "obligation": "OBR-46 Informar com clareza desconto por meio ou prazo de pagamento, se o tenant o oferecer",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só se aplica se houver desconto; compatibilidade com a isonomia tarifária a confirmar com a ERI."
+  },
+  {
+    "norm_id": "lei-13460-2017",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "lei-13460-2017",
+    "obligation": "OBR-03 Manter ouvidoria como segunda instância, com prazos da Lei 13.460/2017, identidade preservada e relatório anual",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-35"
+    ],
+    "notes": "Ajuste v2.15 da ED-35. Conferir se a RN ARIS 41/2024 mudou prazos (decisoes-a-rever, lote 5)."
+  },
+  {
+    "norm_id": "lei-13460-2017",
+    "obligation": "OBR-06 Publicar e manter a Carta de Serviços ao usuário",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-79"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-13709-2018",
+    "obligation": "OBR-78 Tratar dados pessoais com base legal, minimização, máscara, registro de acesso e atendimento dos direitos do titular",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.11",
+      "P1.15",
+      "P3.20",
+      "ED-74"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-13709-2018",
+    "obligation": "OBR-79 Comunicar incidente de segurança à ANPD e aos titulares no prazo e manter o registro",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.10"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-13709-2018",
+    "obligation": "OBR-81 Formalizar transferência internacional de dados com cláusulas-padrão da ANPD",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-43",
+      "ED-42",
+      "P3.9"
+    ],
+    "notes": "Transferência registrada se houver (ED-43) e provedores no DPA; cláusulas-padrão não citadas."
+  },
+  {
+    "norm_id": "lei-13726-2018",
+    "obligation": "OBR-84 Dispensar exigência documental redundante nos pedidos feitos a prestador público",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-38"
+    ],
+    "notes": "CAD-85 só como título."
+  },
+  {
+    "norm_id": "lei-13853-2019",
+    "obligation": "OBR-78 Tratar dados pessoais com base legal, minimização, máscara, registro de acesso e atendimento dos direitos do titular",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.11",
+      "P1.15",
+      "P3.20",
+      "ED-74"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA."
+  },
+  {
+    "norm_id": "lei-13853-2019",
+    "obligation": "OBR-80 Divulgar identidade e contato do encarregado do tenant no portal e nos documentos",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. O plano não menciona o encarregado."
+  },
+  {
+    "norm_id": "lei-14015-2020",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-14015-2020",
+    "obligation": "OBR-35 Religar nos prazos normal e de urgência, sem taxa quando o corte for indevido, com OS gerada pelo pagamento",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-14026-2020",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "lei-14026-2020",
+    "obligation": "OBR-68 Apurar metas de universalização e indicadores de acesso por município, urbano e rural",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-77",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-14026-2020",
+    "obligation": "OBR-71 Apurar o balanço hídrico e manter plano de redução de perdas",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-78",
+      "ED-85"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-14026-2020",
+    "obligation": "OBR-66 Preencher o SINISA com mapa de variáveis e obter o certificado de adimplência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P4.2",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-14026-2020",
+    "obligation": "OBR-12 Computar soluções alternativas nas metas de universalização e informá-las à agência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-88",
+      "ED-77"
+    ],
+    "notes": "A ED-88 cadastra fossa e sumidouro; a ED-77 calcula cobertura sem regra para solução alternativa."
+  },
+  {
+    "norm_id": "lei-14181-2021",
+    "obligation": "OBR-40 Preservar o mínimo existencial no superendividamento e operar programas de renegociação do ente ou da União",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.1"
+    ],
+    "notes": "CAD-73 e CAD-75 só como títulos; adesão à MP 1.393/2026 depende de parecer (questoes-para-parecer-juridico)."
+  },
+  {
+    "norm_id": "lei-14364-2022",
+    "obligation": "OBR-86 Dar atendimento prioritário (idoso, PcD, TEA, gestante, acompanhante) nos canais presenciais e na fila",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-40"
+    ],
+    "notes": "Perfil de prioridade no cadastro (CAD-81) só como título."
+  },
+  {
+    "norm_id": "lei-14534-2023",
+    "obligation": "OBR-56 Usar o CPF como identificador suficiente do cidadão no cadastro",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.3",
+      "P3.3"
+    ],
+    "notes": "CPF é chave de login e índice cego; nenhum aceite dispensa outros documentos."
+  },
+  {
+    "norm_id": "lei-14546-2023",
+    "obligation": "OBR-71 Apurar o balanço hídrico e manter plano de redução de perdas",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-78",
+      "ED-85"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-14626-2023",
+    "obligation": "OBR-86 Dar atendimento prioritário (idoso, PcD, TEA, gestante, acompanhante) nos canais presenciais e na fila",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-40"
+    ],
+    "notes": "Perfil de prioridade no cadastro (CAD-81) só como título."
+  },
+  {
+    "norm_id": "lei-14898-2024",
+    "obligation": "OBR-30 Conceder a tarifa social pelos critérios federais (CadÚnico, BPC, renda), sem exigir adimplência, com piso federal travado",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-14898-2024",
+    "obligation": "OBR-31 Classificar automaticamente os beneficiários pela lista oficial conforme a natureza jurídica e avisar na fatura antes da perda do benefício",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-57"
+    ],
+    "notes": "Importação de lista com base legal na ED-57 (trilha); classificação automática (CAD-91) e mensagens (CAD-96) só como títulos. Não classificar depois de entregues os documentos é cobrança indevida (Lei 14.898, art. 5º, §2º)."
+  },
+  {
+    "norm_id": "lei-14898-2024",
+    "obligation": "OBR-33 Informar à agência a lista de beneficiários, os subsídios e o relatório anual da tarifa social",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-15012-2024",
+    "obligation": "OBR-73 Publicar informação de interesse público (LAI, dados abertos, relatórios de reservatório e segurança hídrica)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-99"
+    ],
+    "notes": "Painel de reservatórios da Lei 15.012 sem aceite."
+  },
+  {
+    "norm_id": "lei-15190-2025",
+    "obligation": "OBR-62 Registrar outorgas e licenças ambientais das unidades com validade e condicionantes",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80",
+      "ED-98"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-6437-1977",
+    "obligation": "OBR-57 Controlar a qualidade da água (plano de amostragem, padrões, conformidade), enviar ao SISAGUA e informar o consumidor na conta e no relatório anual",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-50",
+      "P2.24",
+      "ED-79"
+    ],
+    "notes": "Até a ED-50, o bloco da conta vem de planilha do laboratório (P2.24)."
+  },
+  {
+    "norm_id": "lei-6830-1980",
+    "obligation": "OBR-38 Inscrever em dívida ativa, emitir CDA e apoiar execução fiscal, protesto e transação quando o prestador for ente público",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-31",
+      "ED-30"
+    ],
+    "notes": "Núcleo coberto; transação, alçada e prescrição (GES-18) só como título; protesto de CDA depende de parecer (decisoes-a-rever, lote 4)."
+  },
+  {
+    "norm_id": "lei-8078-1990",
+    "obligation": "OBR-22 Retificar conta sem apagar a anterior, devolver em dobro a cobrança indevida e tratar pagamento em duplicidade",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.20",
+      "P3.1",
+      "P3.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-8078-1990",
+    "obligation": "OBR-24 Limitar a multa a 2% e não cobrar encargo sobre conta em revisão ou contestada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "P2.20"
+    ],
+    "notes": "Multa acima de 2% só com aceite formal (P0.20); sem acréscimo sobre conta em revisão (P3.1, P2.20)."
+  },
+  {
+    "norm_id": "lei-8078-1990",
+    "obligation": "OBR-37 Negativar só com aviso prévio comprovado, excluir em até 5 dias úteis após o pagamento e não manter registro além de 5 anos",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-30"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-8078-1990",
+    "obligation": "OBR-42 Identificar o fornecedor (nome, endereço, CPF ou CNPJ) em todo documento de cobrança",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17"
+    ],
+    "notes": "Bloco do fornecedor travado em `bill.invoice_template` (PARAMETROS); nenhum aceite o testa."
+  },
+  {
+    "norm_id": "lei-8078-1990",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "lei-8078-1990",
+    "obligation": "OBR-39 Oferecer parcelamento com demonstrativo e bloquear o corte durante contestação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P4.1",
+      "P2.20"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-8159-1991",
+    "obligation": "OBR-83 Reter documentos pelos prazos legais e eliminar documento de prestador público só por tabela de temporalidade",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P3.19",
+      "P3.16"
+    ],
+    "notes": "Piso de 120 meses coberto; tabela de temporalidade (Lei 8.159) ausente."
+  },
+  {
+    "norm_id": "lei-8987-1995",
+    "obligation": "OBR-23 Oferecer datas de vencimento (no mínimo seis para concessionária) e respeitar antecedência entre entrega e vencimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.20",
+      "P2.5"
+    ],
+    "notes": "`bill.due_date_options` e `bill.min_days_delivery_to_due` em PARAMETROS; sem aceite."
+  },
+  {
+    "norm_id": "lei-8987-1995",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-8987-1995",
+    "obligation": "OBR-16 Aplicar estrutura tarifária por categoria e faixa com versão, vigência e antecedência mínima de publicação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.5",
+      "P2.29"
+    ],
+    "notes": "Vigência mínima após publicação travada em `bill.tariff_readjust`."
+  },
+  {
+    "norm_id": "lei-9298-1996",
+    "obligation": "OBR-24 Limitar a multa a 2% e não cobrar encargo sobre conta em revisão ou contestada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "P2.20"
+    ],
+    "notes": "Multa acima de 2% só com aceite formal (P0.20); sem acréscimo sobre conta em revisão (P3.1, P2.20)."
+  },
+  {
+    "norm_id": "lei-9433-1997",
+    "obligation": "OBR-62 Registrar outorgas e licenças ambientais das unidades com validade e condicionantes",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80",
+      "ED-98"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-9715-1998",
+    "obligation": "OBR-55 Fornecer à contabilidade a base de receitas e retenções para PIS, Cofins e Pasep e sua escrituração enquanto vigorarem",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-32"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Tributos substituídos pela CBS em 2027; relevância maior para o histórico importado."
+  },
+  {
+    "norm_id": "lei-9718-1998",
+    "obligation": "OBR-55 Fornecer à contabilidade a base de receitas e retenções para PIS, Cofins e Pasep e sua escrituração enquanto vigorarem",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-32"
+    ],
+    "notes": "Tributos substituídos pela CBS em 2027; relevância maior para o histórico importado."
+  },
+  {
+    "norm_id": "lei-9791-1999",
+    "obligation": "OBR-23 Oferecer datas de vencimento (no mínimo seis para concessionária) e respeitar antecedência entre entrega e vencimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.20",
+      "P2.5"
+    ],
+    "notes": "`bill.due_date_options` e `bill.min_days_delivery_to_due` em PARAMETROS; sem aceite."
+  },
+  {
+    "norm_id": "lei-9933-1999",
+    "obligation": "OBR-64 Controlar o parque de hidrômetros pelo regulamento metrológico (modelo aprovado, classe, verificações, prazo de troca)",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-14"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "lei-9984-2000",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "mp-1393-2026",
+    "obligation": "OBR-40 Preservar o mínimo existencial no superendividamento e operar programas de renegociação do ente ou da União",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.1"
+    ],
+    "notes": "CAD-73 e CAD-75 só como títulos; adesão à MP 1.393/2026 depende de parecer (questoes-para-parecer-juridico)."
+  },
+  {
+    "norm_id": "mp-1396-2026",
+    "obligation": "OBR-85 Enviar SMS e chamadas com remetente identificado e autenticado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.5",
+      "ED-41"
+    ],
+    "notes": "PLT-10 só como título."
+  },
+  {
+    "norm_id": "ana-aviso-encerramento-prazo-tarifa-social-2026",
+    "obligation": "OBR-30 Conceder a tarifa social pelos critérios federais (CadÚnico, BPC, renda), sem exigir adimplência, com piso federal travado",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "ana-lei-14898-2024-tarifa-social",
+    "obligation": "OBR-30 Conceder a tarifa social pelos critérios federais (CadÚnico, BPC, renda), sem exigir adimplência, com piso federal travado",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "ana-lista-positiva-tarifa-social-2026-07",
+    "obligation": "OBR-33 Informar à agência a lista de beneficiários, os subsídios e o relatório anual da tarifa social",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "ana-res-114-2021",
+    "obligation": "OBR-27 Cobrar o manejo de resíduos sólidos na fatura de água (cofaturamento) com isenção e repasse",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-25"
+    ],
+    "notes": "Cofaturamento (CAD-90) como título; a prestação do serviço de limpeza urbana está fora do escopo."
+  },
+  {
+    "norm_id": "ana-res-230-2024-nr11-art-74",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "ana-res-271-2025-nr13",
+    "obligation": "OBR-16 Aplicar estrutura tarifária por categoria e faixa com versão, vigência e antecedência mínima de publicação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.5",
+      "P2.29"
+    ],
+    "notes": "Vigência mínima após publicação travada em `bill.tariff_readjust`."
+  },
+  {
+    "norm_id": "ana-res-271-2025-nr13",
+    "obligation": "OBR-30 Conceder a tarifa social pelos critérios federais (CadÚnico, BPC, renda), sem exigir adimplência, com piso federal travado",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "ana-res-271-2025-nr13",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Categorias opcionais da NR 13 (CAD-88) só como título."
+  },
+  {
+    "norm_id": "ana-resolution-236-2024",
+    "obligation": "OBR-62 Registrar outorgas e licenças ambientais das unidades com validade e condicionantes",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80",
+      "ED-98"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "cnrh-121-2010",
+    "obligation": "OBR-61 Controlar lodo, biossólido e reúso pelas resoluções vigentes",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80"
+    ],
+    "notes": "Situação no catálogo: EM_REVISAO. Resolução conjunta CNRH/CONAMA de reúso aprovada e não publicada."
+  },
+  {
+    "norm_id": "cnrh-54-2005",
+    "obligation": "OBR-61 Controlar lodo, biossólido e reúso pelas resoluções vigentes",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80"
+    ],
+    "notes": "Situação no catálogo: EM_REVISAO. Resolução conjunta CNRH/CONAMA de reúso aprovada e não publicada."
+  },
+  {
+    "norm_id": "conama-237-1997",
+    "obligation": "OBR-62 Registrar outorgas e licenças ambientais das unidades com validade e condicionantes",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80",
+      "ED-98"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "conama-357-2005",
+    "obligation": "OBR-59 Monitorar efluentes contra padrões de lançamento com vigência, automonitoramento e declaração de carga poluidora",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Catálogo de padrão de efluente com vigência futura; não codificar limites antes da publicação."
+  },
+  {
+    "norm_id": "conama-377-2006",
+    "obligation": "OBR-62 Registrar outorgas e licenças ambientais das unidades com validade e condicionantes",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80",
+      "ED-98"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "conama-430-2011",
+    "obligation": "OBR-59 Monitorar efluentes contra padrões de lançamento com vigência, automonitoramento e declaração de carga poluidora",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80"
+    ],
+    "notes": "Situação no catálogo: EM_REVISAO. Catálogo de padrão de efluente com vigência futura; não codificar limites antes da publicação."
+  },
+  {
+    "norm_id": "conama-430-2011",
+    "obligation": "OBR-60 Cadastrar e cobrar o esgoto não doméstico por carga poluidora",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-83"
+    ],
+    "notes": "Situação no catálogo: EM_REVISAO."
+  },
+  {
+    "norm_id": "conama-498-2020",
+    "obligation": "OBR-61 Controlar lodo, biossólido e reúso pelas resoluções vigentes",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80"
+    ],
+    "notes": "Resolução conjunta CNRH/CONAMA de reúso aprovada e não publicada."
+  },
+  {
+    "norm_id": "mcid-portaria-1069-2025",
+    "obligation": "OBR-66 Preencher o SINISA com mapa de variáveis e obter o certificado de adimplência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P4.2",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "mcid-portaria-788-2024",
+    "obligation": "OBR-67 Demonstrar as condicionantes do art. 50 da Lei 11.445 (perdas, regionalização, metas)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-48",
+      "ED-78"
+    ],
+    "notes": "GES-16 só como título."
+  },
+  {
+    "norm_id": "mcid-portaria-788-2024",
+    "obligation": "OBR-71 Apurar o balanço hídrico e manter plano de redução de perdas",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-78",
+      "ED-85"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "mcid-portaria-966-2025",
+    "obligation": "OBR-67 Demonstrar as condicionantes do art. 50 da Lei 11.445 (perdas, regionalização, metas)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-48",
+      "ED-78"
+    ],
+    "notes": "GES-16 só como título."
+  },
+  {
+    "norm_id": "portaria-consolidacao-gm-ms-5-2017",
+    "obligation": "OBR-57 Controlar a qualidade da água (plano de amostragem, padrões, conformidade), enviar ao SISAGUA e informar o consumidor na conta e no relatório anual",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-50",
+      "P2.24",
+      "ED-79"
+    ],
+    "notes": "Até a ED-50, o bloco da conta vem de planilha do laboratório (P2.24)."
+  },
+  {
+    "norm_id": "portaria-gm-ms-2472-2021",
+    "obligation": "OBR-57 Controlar a qualidade da água (plano de amostragem, padrões, conformidade), enviar ao SISAGUA e informar o consumidor na conta e no relatório anual",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-50",
+      "P2.24",
+      "ED-79"
+    ],
+    "notes": "Até a ED-50, o bloco da conta vem de planilha do laboratório (P2.24)."
+  },
+  {
+    "norm_id": "portaria-gm-ms-888-2021",
+    "obligation": "OBR-57 Controlar a qualidade da água (plano de amostragem, padrões, conformidade), enviar ao SISAGUA e informar o consumidor na conta e no relatório anual",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-50",
+      "P2.24",
+      "ED-79"
+    ],
+    "notes": "Até a ED-50, o bloco da conta vem de planilha do laboratório (P2.24)."
+  },
+  {
+    "norm_id": "prc-5-2017-anexo-xxi",
+    "obligation": "OBR-58 Monitorar o teor de flúor pelas faixas do Anexo XXI",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-50"
+    ],
+    "notes": "Catálogo da Portaria 888 na ED-50; faixas do Anexo XXI sem aceite (decisoes-a-rever, lote 3, item 10)."
+  },
+  {
+    "norm_id": "inmetro-portaria-155-2022",
+    "obligation": "OBR-64 Controlar o parque de hidrômetros pelo regulamento metrológico (modelo aprovado, classe, verificações, prazo de troca)",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-14"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "inmetro-portaria-293-2021",
+    "obligation": "OBR-65 Registrar reparo e ensaio de hidrômetro por oficina e laboratório autorizados pelo Inmetro",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-14"
+    ],
+    "notes": "Verificação após reparo coberta; autorização da oficina sem registro; não depender da declaração de conformidade (Portaria 657 suspensa)."
+  },
+  {
+    "norm_id": "inmetro-portaria-457-2021",
+    "obligation": "OBR-65 Registrar reparo e ensaio de hidrômetro por oficina e laboratório autorizados pelo Inmetro",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-14"
+    ],
+    "notes": "Verificação após reparo coberta; autorização da oficina sem registro; não depender da declaração de conformidade (Portaria 657 suspensa)."
+  },
+  {
+    "norm_id": "inmetro-portaria-657-2025",
+    "obligation": "OBR-65 Registrar reparo e ensaio de hidrômetro por oficina e laboratório autorizados pelo Inmetro",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-14"
+    ],
+    "notes": "Situação no catálogo: EM_REVISAO. Verificação após reparo coberta; autorização da oficina sem registro; não depender da declaração de conformidade (Portaria 657 suspensa)."
+  },
+  {
+    "norm_id": "inmetro-portaria-713-2025",
+    "obligation": "OBR-65 Registrar reparo e ensaio de hidrômetro por oficina e laboratório autorizados pelo Inmetro",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-14"
+    ],
+    "notes": "Verificação após reparo coberta; autorização da oficina sem registro; não depender da declaração de conformidade (Portaria 657 suspensa)."
+  },
+  {
+    "norm_id": "inmetro-portaria-78-2022",
+    "obligation": "OBR-65 Registrar reparo e ensaio de hidrômetro por oficina e laboratório autorizados pelo Inmetro",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-14"
+    ],
+    "notes": "Verificação após reparo coberta; autorização da oficina sem registro; não depender da declaração de conformidade (Portaria 657 suspensa)."
+  },
+  {
+    "norm_id": "mte-nr-1",
+    "obligation": "OBR-89 Exigir análise de risco, permissão de trabalho e habilitação do executor na OS de espaço confinado, altura e escavação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.31",
+      "ED-71"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "mte-nr-1",
+    "obligation": "OBR-91 Registrar entrega de EPI e apoiar o PGR com riscos psicossociais, sem meta punitiva automática",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-71",
+      "P3.31"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "mte-nr-10",
+    "obligation": "OBR-90 Exigir autorização e habilitação para serviço em eletricidade pela NR-10 revisada",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.31",
+      "ED-71"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. O catálogo da P1.31 cita NR-1, 18, 33 e 35, não a NR-10."
+  },
+  {
+    "norm_id": "mte-nr-18",
+    "obligation": "OBR-89 Exigir análise de risco, permissão de trabalho e habilitação do executor na OS de espaço confinado, altura e escavação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.31",
+      "ED-71"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "mte-nr-33",
+    "obligation": "OBR-89 Exigir análise de risco, permissão de trabalho e habilitação do executor na OS de espaço confinado, altura e escavação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.31",
+      "ED-71"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "mte-nr-35",
+    "obligation": "OBR-89 Exigir análise de risco, permissão de trabalho e habilitação do executor na OS de espaço confinado, altura e escavação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.31",
+      "ED-71"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "mte-nr-6",
+    "obligation": "OBR-91 Registrar entrega de EPI e apoiar o PGR com riscos psicossociais, sem meta punitiva automática",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-71",
+      "P3.31"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "anpd-res-15-2024",
+    "obligation": "OBR-79 Comunicar incidente de segurança à ANPD e aos titulares no prazo e manter o registro",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.10"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "anpd-res-18-2024",
+    "obligation": "OBR-80 Divulgar identidade e contato do encarregado do tenant no portal e nos documentos",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "O plano não menciona o encarregado."
+  },
+  {
+    "norm_id": "anpd-res-19-2024",
+    "obligation": "OBR-81 Formalizar transferência internacional de dados com cláusulas-padrão da ANPD",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-43",
+      "ED-42",
+      "P3.9"
+    ],
+    "notes": "Transferência registrada se houver (ED-43) e provedores no DPA; cláusulas-padrão não citadas."
+  },
+  {
+    "norm_id": "ato-conjunto-rfb-cgibs-1-2025",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "ato-conjunto-rfb-cgibs-1-2025",
+    "obligation": "OBR-49 Calcular e destacar CBS e IBS com alíquotas e regras de transição por vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.4",
+      "P1.16"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "ato-conjunto-rfb-cgibs-4-2026",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "ato-conjunto-rfb-cgibs-4-2026",
+    "obligation": "OBR-52 Emitir NFS-e padrão nacional para serviços avulsos com os grupos de IBS e CBS",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.8",
+      "P3.6"
+    ],
+    "notes": "Escalonamento em três etapas a considerar (decisoes-a-rever, lote 2, item 11)."
+  },
+  {
+    "norm_id": "ato-conjunto-rfb-cgibs-5-2026",
+    "obligation": "OBR-49 Calcular e destacar CBS e IBS com alíquotas e regras de transição por vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.4",
+      "P1.16"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "ato-tecnico-conjunto-rfb-cgibs-1-2026",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "ato-tecnico-conjunto-rfb-cgibs-2-2026",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "ato-tecnico-conjunto-rfb-cgibs-8-2026",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "bcb-in-743-2026",
+    "obligation": "OBR-45 Migrar o débito automático para Pix Automático nos prazos do Banco Central e guardar o consentimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.5",
+      "ED-27",
+      "P3.24"
+    ],
+    "notes": "Datas oficiais de 01/01/2027 (convênios de serviço público) e 01/07/2027 (novo regime); a P3.24 prevê FEBRABAN 150 para autorizações legadas no corte, premissa já listada em decisoes-a-rever (lotes 3 e 5)."
+  },
+  {
+    "norm_id": "bcb-in-777-2026",
+    "obligation": "OBR-43 Emitir e conciliar Pix Cobrança e boleto pelos regulamentos dos arranjos, com webhook seguro e baixa idempotente",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.1",
+      "P3.2"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA."
+  },
+  {
+    "norm_id": "bcb-res-1-2020",
+    "obligation": "OBR-43 Emitir e conciliar Pix Cobrança e boleto pelos regulamentos dos arranjos, com webhook seguro e baixa idempotente",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.1",
+      "P3.2"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "bcb-res-402-2024",
+    "obligation": "OBR-45 Migrar o débito automático para Pix Automático nos prazos do Banco Central e guardar o consentimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.5",
+      "ED-27",
+      "P3.24"
+    ],
+    "notes": "Datas oficiais de 01/01/2027 (convênios de serviço público) e 01/07/2027 (novo regime); a P3.24 prevê FEBRABAN 150 para autorizações legadas no corte, premissa já listada em decisoes-a-rever (lotes 3 e 5)."
+  },
+  {
+    "norm_id": "bcb-res-443-2024",
+    "obligation": "OBR-43 Emitir e conciliar Pix Cobrança e boleto pelos regulamentos dos arranjos, com webhook seguro e baixa idempotente",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.1",
+      "P3.2"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "bcb-res-467-2025",
+    "obligation": "OBR-43 Emitir e conciliar Pix Cobrança e boleto pelos regulamentos dos arranjos, com webhook seguro e baixa idempotente",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.1",
+      "P3.2"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "bcb-res-482-2025",
+    "obligation": "OBR-45 Migrar o débito automático para Pix Automático nos prazos do Banco Central e guardar o consentimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.5",
+      "ED-27",
+      "P3.24"
+    ],
+    "notes": "Datas oficiais de 01/01/2027 (convênios de serviço público) e 01/07/2027 (novo regime); a P3.24 prevê FEBRABAN 150 para autorizações legadas no corte, premissa já listada em decisoes-a-rever (lotes 3 e 5)."
+  },
+  {
+    "norm_id": "bcb-res-51-2020",
+    "obligation": "OBR-45 Migrar o débito automático para Pix Automático nos prazos do Banco Central e guardar o consentimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.5",
+      "ED-27",
+      "P3.24"
+    ],
+    "notes": "Datas oficiais de 01/01/2027 (convênios de serviço público) e 01/07/2027 (novo regime); a P3.24 prevê FEBRABAN 150 para autorizações legadas no corte, premissa já listada em decisoes-a-rever (lotes 3 e 5)."
+  },
+  {
+    "norm_id": "bcb-res-515-2025",
+    "obligation": "OBR-43 Emitir e conciliar Pix Cobrança e boleto pelos regulamentos dos arranjos, com webhook seguro e baixa idempotente",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.1",
+      "P3.2"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "bcb-res-544-2025",
+    "obligation": "OBR-45 Migrar o débito automático para Pix Automático nos prazos do Banco Central e guardar o consentimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.5",
+      "ED-27",
+      "P3.24"
+    ],
+    "notes": "Datas oficiais de 01/01/2027 (convênios de serviço público) e 01/07/2027 (novo regime); a P3.24 prevê FEBRABAN 150 para autorizações legadas no corte, premissa já listada em decisoes-a-rever (lotes 3 e 5)."
+  },
+  {
+    "norm_id": "bcb-res-587-2026",
+    "obligation": "OBR-44 Operar a cobrança híbrida (boleto com Pix) sem pagamento em duplicidade a partir da vigência da regra",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.2"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Aparece no título da P3.2 e no §5 (01/02/2027, facultativo); o aceite só trata o webhook; GES-15 e PLT-27 como títulos."
+  },
+  {
+    "norm_id": "bcb-res-587-2026",
+    "obligation": "OBR-45 Migrar o débito automático para Pix Automático nos prazos do Banco Central e guardar o consentimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.5",
+      "ED-27",
+      "P3.24"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Datas oficiais de 01/01/2027 (convênios de serviço público) e 01/07/2027 (novo regime); a P3.24 prevê FEBRABAN 150 para autorizações legadas no corte, premissa já listada em decisoes-a-rever (lotes 3 e 5)."
+  },
+  {
+    "norm_id": "cgnfse-nfse-padrao-nacional",
+    "obligation": "OBR-52 Emitir NFS-e padrão nacional para serviços avulsos com os grupos de IBS e CBS",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.8",
+      "P3.6"
+    ],
+    "notes": "Escalonamento em três etapas a considerar (decisoes-a-rever, lote 2, item 11)."
+  },
+  {
+    "norm_id": "cmn-res-4790-2020",
+    "obligation": "OBR-45 Migrar o débito automático para Pix Automático nos prazos do Banco Central e guardar o consentimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.5",
+      "ED-27",
+      "P3.24"
+    ],
+    "notes": "Datas oficiais de 01/01/2027 (convênios de serviço público) e 01/07/2027 (novo regime); a P3.24 prevê FEBRABAN 150 para autorizações legadas no corte, premissa já listada em decisoes-a-rever (lotes 3 e 5)."
+  },
+  {
+    "norm_id": "cmn-res-5171-2024",
+    "obligation": "OBR-93 Limitar os juros de mora ao teto da agência e aplicar a taxa legal quando nada for pactuado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P2.5"
+    ],
+    "notes": "Teto por dia da ERI (SC: 0,033%) e `fee.legal_rate_fallback` estão em PARAMETROS; o aceite da P0.20 é genérico (\"cada limite com norma e teste\") e a taxa legal deve vir da divulgação do BCB (decisoes-a-rever, lote 2, item 5)."
+  },
+  {
+    "norm_id": "cmn-res-5251-2025",
+    "obligation": "OBR-45 Migrar o débito automático para Pix Automático nos prazos do Banco Central e guardar o consentimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.5",
+      "ED-27",
+      "P3.24"
+    ],
+    "notes": "Datas oficiais de 01/01/2027 (convênios de serviço público) e 01/07/2027 (novo regime); a P3.24 prevê FEBRABAN 150 para autorizações legadas no corte, premissa já listada em decisoes-a-rever (lotes 3 e 5)."
+  },
+  {
+    "norm_id": "cmn-res-5278-2025",
+    "obligation": "OBR-45 Migrar o débito automático para Pix Automático nos prazos do Banco Central e guardar o consentimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P4.5",
+      "ED-27",
+      "P3.24"
+    ],
+    "notes": "Datas oficiais de 01/01/2027 (convênios de serviço público) e 01/07/2027 (novo regime); a P3.24 prevê FEBRABAN 150 para autorizações legadas no corte, premissa já listada em decisoes-a-rever (lotes 3 e 5)."
+  },
+  {
+    "norm_id": "in-rfb-1234-2012",
+    "obligation": "OBR-47 Registrar pagamento de órgão público com retenção de tributo na fonte sem tratá-lo como pagamento a menor",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Alcance para estatais pendente (decisoes-a-rever, lote 2, item 7)."
+  },
+  {
+    "norm_id": "in-rfb-1252-2012",
+    "obligation": "OBR-55 Fornecer à contabilidade a base de receitas e retenções para PIS, Cofins e Pasep e sua escrituração enquanto vigorarem",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-32"
+    ],
+    "notes": "Tributos substituídos pela CBS em 2027; relevância maior para o histórico importado."
+  },
+  {
+    "norm_id": "in-rfb-2121-2022",
+    "obligation": "OBR-55 Fornecer à contabilidade a base de receitas e retenções para PIS, Cofins e Pasep e sua escrituração enquanto vigorarem",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-32"
+    ],
+    "notes": "Tributos substituídos pela CBS em 2027; relevância maior para o histórico importado."
+  },
+  {
+    "norm_id": "moc-nfag-modelo-75",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "nfse-nt-007-2026",
+    "obligation": "OBR-52 Emitir NFS-e padrão nacional para serviços avulsos com os grupos de IBS e CBS",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.8",
+      "P3.6"
+    ],
+    "notes": "Escalonamento em três etapas a considerar (decisoes-a-rever, lote 2, item 11)."
+  },
+  {
+    "norm_id": "nt-2026-002-rtc-nfag",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "nt-2026-004-rtc-nfag",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "nt-2026-004-rtc-nfag",
+    "obligation": "OBR-49 Calcular e destacar CBS e IBS com alíquotas e regras de transição por vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.4",
+      "P1.16"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA."
+  },
+  {
+    "norm_id": "nt-se-cgnfse-008-009-rtc",
+    "obligation": "OBR-52 Emitir NFS-e padrão nacional para serviços avulsos com os grupos de IBS e CBS",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.8",
+      "P3.6"
+    ],
+    "notes": "Escalonamento em três etapas a considerar (decisoes-a-rever, lote 2, item 11)."
+  },
+  {
+    "norm_id": "portaria-conjunta-mf-cgibs-7-2026",
+    "obligation": "OBR-49 Calcular e destacar CBS e IBS com alíquotas e regras de transição por vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.4",
+      "P1.16"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "resolucao-cgibs-6-2026",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "resolucao-cgibs-6-2026",
+    "obligation": "OBR-49 Calcular e destacar CBS e IBS com alíquotas e regras de transição por vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.4",
+      "P1.16"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "resolucao-cgnfse-3-2023",
+    "obligation": "OBR-52 Emitir NFS-e padrão nacional para serviços avulsos com os grupos de IBS e CBS",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.8",
+      "P3.6"
+    ],
+    "notes": "Escalonamento em três etapas a considerar (decisoes-a-rever, lote 2, item 11)."
+  },
+  {
+    "norm_id": "rfb-in-2119-2022",
+    "obligation": "OBR-53 Aceitar CNPJ alfanumérico no cadastro, nos documentos fiscais, na cobrança e nas integrações",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Nenhuma menção no plano; CNPJ alfanumérico atribuído a novas inscrições desde julho de 2026."
+  },
+  {
+    "norm_id": "rfb-in-2145-2023",
+    "obligation": "OBR-47 Registrar pagamento de órgão público com retenção de tributo na fonte sem tratá-lo como pagamento a menor",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Alcance para estatais pendente (decisoes-a-rever, lote 2, item 7)."
+  },
+  {
+    "norm_id": "rfb-in-2229-2024",
+    "obligation": "OBR-53 Aceitar CNPJ alfanumérico no cadastro, nos documentos fiscais, na cobrança e nas integrações",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Nenhuma menção no plano; CNPJ alfanumérico atribuído a novas inscrições desde julho de 2026."
+  },
+  {
+    "norm_id": "rfb-in-2239-2024",
+    "obligation": "OBR-47 Registrar pagamento de órgão público com retenção de tributo na fonte sem tratá-lo como pagamento a menor",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Alcance para estatais pendente (decisoes-a-rever, lote 2, item 7)."
+  },
+  {
+    "norm_id": "rfb-nt-011-2026",
+    "obligation": "OBR-55 Fornecer à contabilidade a base de receitas e retenções para PIS, Cofins e Pasep e sua escrituração enquanto vigorarem",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-32"
+    ],
+    "notes": "Tributos substituídos pela CBS em 2027; relevância maior para o histórico importado."
+  },
+  {
+    "norm_id": "stn-mf-portaria-2520-2026",
+    "obligation": "OBR-77 Contabilizar prestador público no PCASP do exercício e gerar remessas ao tribunal de contas",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-32",
+      "ED-33"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Regra contábil configurável; catálogo PCASP versionado por exercício sem aceite; e-Sfinge coberto na ED-33."
+  },
+  {
+    "norm_id": "svrs-nfag-e-modelo-75",
+    "obligation": "OBR-48 Emitir NFAg modelo 75 por fornecimento no leiaute vigente (MOC, NT), com contingência, cancelamento, substituição, DANFAG e guarda do XML",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.6",
+      "P2.18",
+      "P2.20",
+      "P3.7",
+      "ED-19"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Produção só no corte (LC.13); até lá o prestador emite por outro meio (§5 e risco do §6)."
+  },
+  {
+    "norm_id": "stj-sumula-323",
+    "obligation": "OBR-37 Negativar só com aviso prévio comprovado, excluir em até 5 dias úteis após o pagamento e não manter registro além de 5 anos",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-30"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "stj-sumula-359",
+    "obligation": "OBR-37 Negativar só com aviso prévio comprovado, excluir em até 5 dias úteis após o pagamento e não manter registro além de 5 anos",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-30"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "stj-sumula-407",
+    "obligation": "OBR-16 Aplicar estrutura tarifária por categoria e faixa com versão, vigência e antecedência mínima de publicação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.5",
+      "P2.29"
+    ],
+    "notes": "Vigência mínima após publicação travada em `bill.tariff_readjust`."
+  },
+  {
+    "norm_id": "stj-sumula-412",
+    "obligation": "OBR-41 Separar a prescrição por pretensão e natureza jurídica e impedir cobrança judicial, negativação e protesto de dívida prescrita",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "ED-30"
+    ],
+    "notes": "G6 em PARAMETROS; a ED-30 limita a 5 anos o registro; separação das pretensões pendente (decisoes-a-rever, lote 2, item 8)."
+  },
+  {
+    "norm_id": "stj-sumula-548",
+    "obligation": "OBR-37 Negativar só com aviso prévio comprovado, excluir em até 5 dias úteis após o pagamento e não manter registro além de 5 anos",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-30"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "stj-tema-251-254",
+    "obligation": "OBR-41 Separar a prescrição por pretensão e natureza jurídica e impedir cobrança judicial, negativação e protesto de dívida prescrita",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "ED-30"
+    ],
+    "notes": "G6 em PARAMETROS; a ED-30 limita a 5 anos o registro; separação das pretensões pendente (decisoes-a-rever, lote 2, item 8)."
+  },
+  {
+    "norm_id": "stj-tema-414",
+    "obligation": "OBR-25 Faturar condomínio e múltiplas economias pelo modelo admitido (franquia por economia mais excedente) e apoiar a medição individualizada",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-15",
+      "P2.5"
+    ],
+    "notes": "Regra de condomínio configurável na ED-15 (onda A); os modelos do Tema 414 revisado e o modelo híbrido vedado não estão no aceite."
+  },
+  {
+    "norm_id": "stj-tema-565",
+    "obligation": "OBR-26 Cobrar esgoto pela regra do contrato e da agência (percentual, coleta sem tratamento, fonte alternativa) e não cobrar sem conexão",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5",
+      "ED-13"
+    ],
+    "notes": "Esgoto \"fora de uso\" e supressão por parâmetro (ED-13); fonte alternativa (CAD-69) só como título."
+  },
+  {
+    "norm_id": "stj-tema-932-153",
+    "obligation": "OBR-41 Separar a prescrição por pretensão e natureza jurídica e impedir cobrança judicial, negativação e protesto de dívida prescrita",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "ED-30"
+    ],
+    "notes": "G6 em PARAMETROS; a ED-30 limita a 5 anos o registro; separação das pretensões pendente (decisoes-a-rever, lote 2, item 8)."
+  },
+  {
+    "norm_id": "stj-tema-932-153",
+    "obligation": "OBR-16 Aplicar estrutura tarifária por categoria e faixa com versão, vigência e antecedência mínima de publicação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.5",
+      "P2.29"
+    ],
+    "notes": "Vigência mínima após publicação travada em `bill.tariff_readjust`."
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-08 Cumprir prazos de vistoria, ligação nova e conexão à rede, distinguindo área urbana e rural quando a norma pedir",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4",
+      "ED-36",
+      "ED-84"
+    ],
+    "notes": "Motor de prazo por especificação na P3.4; fluxo encadeado da ligação nova (CAD-86) só como título na ED-36; distinção urbana e rural sem aceite."
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-20 Ajustar a conta quando o intervalo de leitura foge da janela e faturar por média com teto de ciclos estimados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5"
+    ],
+    "notes": "Chaves `meter.average_months`, `meter.max_estimated_cycles` e `meter.after_cap_rule` em PARAMETROS; o aceite da P2.5 não as testa; ajuste proporcional por intervalo sem chave."
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-21 Revisar consumo, conceder desconto por vazamento oculto e aferir hidrômetro com laudo",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.28",
+      "ED-23"
+    ],
+    "notes": "Perfis pré-carregados só para ARIS, AGIR e ARESC."
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-23 Oferecer datas de vencimento (no mínimo seis para concessionária) e respeitar antecedência entre entrega e vencimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.20",
+      "P2.5"
+    ],
+    "notes": "`bill.due_date_options` e `bill.min_days_delivery_to_due` em PARAMETROS; sem aceite."
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-24 Limitar a multa a 2% e não cobrar encargo sobre conta em revisão ou contestada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "P2.20"
+    ],
+    "notes": "Multa acima de 2% só com aceite formal (P0.20); sem acréscimo sobre conta em revisão (P3.1, P2.20)."
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-93 Limitar os juros de mora ao teto da agência e aplicar a taxa legal quando nada for pactuado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P2.5"
+    ],
+    "notes": "Teto por dia da ERI (SC: 0,033%) e `fee.legal_rate_fallback` estão em PARAMETROS; o aceite da P0.20 é genérico (\"cada limite com norma e teste\") e a taxa legal deve vir da divulgação do BCB (decisoes-a-rever, lote 2, item 5)."
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-35 Religar nos prazos normal e de urgência, sem taxa quando o corte for indevido, com OS gerada pelo pagamento",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Categorias opcionais da NR 13 (CAD-88) só como título."
+  },
+  {
+    "norm_id": "agir-rn-001-2013",
+    "obligation": "OBR-07 Publicar e versionar o contrato de adesão e o regulamento da prestação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.20"
+    ],
+    "notes": "Ajuste v2.14 da P3.20 (NR 11, arts. 18 e 53)."
+  },
+  {
+    "norm_id": "agir-rn-002-2013",
+    "obligation": "OBR-15 Atender à fiscalização da agência: fornecer dados sob demanda e registrar autos, penalidades e compromissos de ajuste com prazo e evidência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-98",
+      "P2.25",
+      "ED-96"
+    ],
+    "notes": "Agenda com evidência (ED-98) e ocorrência com ação (P2.25) existem; não há registro de auto de infração recebido da agência nem de termo de ajuste."
+  },
+  {
+    "norm_id": "agir-rn-003-2013",
+    "obligation": "OBR-15 Atender à fiscalização da agência: fornecer dados sob demanda e registrar autos, penalidades e compromissos de ajuste com prazo e evidência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-98",
+      "P2.25",
+      "ED-96"
+    ],
+    "notes": "Agenda com evidência (ED-98) e ocorrência com ação (P2.25) existem; não há registro de auto de infração recebido da agência nem de termo de ajuste."
+  },
+  {
+    "norm_id": "agir-rn-005-2015",
+    "obligation": "OBR-05 Avisar com antecedência as interrupções programadas aos usuários afetados e à agência e atender unidades essenciais",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-35",
+      "ED-54",
+      "P3.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "agir-rn-008-2019",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA."
+  },
+  {
+    "norm_id": "agir-rn-008-2019",
+    "obligation": "OBR-18 Fornecer à agência mercado e receita por categoria e faixa para reajuste e revisão tarifária",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.22",
+      "P2.29"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Faturamento por categoria e faixa na P3.22; simulação de impacto na P2.29."
+  },
+  {
+    "norm_id": "agir-rn-009-2019",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA."
+  },
+  {
+    "norm_id": "agir-rn-009-2019",
+    "obligation": "OBR-18 Fornecer à agência mercado e receita por categoria e faixa para reajuste e revisão tarifária",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.22",
+      "P2.29"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Faturamento por categoria e faixa na P3.22; simulação de impacto na P2.29."
+  },
+  {
+    "norm_id": "agir-rn-009-2019",
+    "obligation": "OBR-74 Escriturar a contabilidade regulatória no plano da agência e enviar balancetes e demonstrações",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-32",
+      "ED-56"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. GES-14 (MCRSB e de-para) só como título; a ED-32 é contabilidade por evento."
+  },
+  {
+    "norm_id": "agir-rn-011-2020",
+    "obligation": "OBR-74 Escriturar a contabilidade regulatória no plano da agência e enviar balancetes e demonstrações",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-32",
+      "ED-56"
+    ],
+    "notes": "GES-14 (MCRSB e de-para) só como título; a ED-32 é contabilidade por evento."
+  },
+  {
+    "norm_id": "agir-rn-012-2021",
+    "obligation": "OBR-03 Manter ouvidoria como segunda instância, com prazos da Lei 13.460/2017, identidade preservada e relatório anual",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-35"
+    ],
+    "notes": "Ajuste v2.15 da ED-35. Conferir se a RN ARIS 41/2024 mudou prazos (decisoes-a-rever, lote 5)."
+  },
+  {
+    "norm_id": "agir-rn-013-2022",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "agir-rn-013-2022",
+    "obligation": "OBR-04 Produzir os relatórios periódicos de reclamações, SAC e ouvidoria pedidos pela agência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.22",
+      "ED-35",
+      "ED-97"
+    ],
+    "notes": "Relatório mensal do art. 54 da NR 11 está na P3.22; formatos próprios de agência (trimestral da AGIR) sem aceite."
+  },
+  {
+    "norm_id": "agir-rn-015-2024",
+    "obligation": "OBR-11 Cadastrar soluções individuais de esgoto, programar a limpeza e cobrar o serviço conforme a agência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-88"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "agir-rn-018-2025",
+    "obligation": "OBR-27 Cobrar o manejo de resíduos sólidos na fatura de água (cofaturamento) com isenção e repasse",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-25"
+    ],
+    "notes": "Cofaturamento (CAD-90) como título; a prestação do serviço de limpeza urbana está fora do escopo."
+  },
+  {
+    "norm_id": "agir-rn-019-2025",
+    "obligation": "OBR-75 Manter base de ativos e bens reversíveis com dados para indenização de investimentos não amortizados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-56"
+    ],
+    "notes": "Bens reversíveis e MCPSB cobertos; valoração regulatória sem aceite."
+  },
+  {
+    "norm_id": "agir-rn-020-2025",
+    "obligation": "OBR-76 Registrar contratos de programa, concessão e PPP com aditivos e matriz de riscos",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-96"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "agir-rn-021-2025",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "agir-rn-021-2025",
+    "obligation": "OBR-18 Fornecer à agência mercado e receita por categoria e faixa para reajuste e revisão tarifária",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.22",
+      "P2.29"
+    ],
+    "notes": "Faturamento por categoria e faixa na P3.22; simulação de impacto na P2.29."
+  },
+  {
+    "norm_id": "agir-rn-022-2025",
+    "obligation": "OBR-27 Cobrar o manejo de resíduos sólidos na fatura de água (cofaturamento) com isenção e repasse",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-25"
+    ],
+    "notes": "Cofaturamento (CAD-90) como título; a prestação do serviço de limpeza urbana está fora do escopo."
+  },
+  {
+    "norm_id": "agir-rn-023-2025",
+    "obligation": "OBR-68 Apurar metas de universalização e indicadores de acesso por município, urbano e rural",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-77",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "agir-rn-023-2025",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "agir-rn-024-2025",
+    "obligation": "OBR-12 Computar soluções alternativas nas metas de universalização e informá-las à agência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-88",
+      "ED-77"
+    ],
+    "notes": "A ED-88 cadastra fossa e sumidouro; a ED-77 calcula cobertura sem regra para solução alternativa."
+  },
+  {
+    "norm_id": "agir-rn-025-2026",
+    "obligation": "OBR-69 Calcular os indicadores operacionais da NR 9 adotados pela agência, com fichas",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-77",
+      "ED-92",
+      "ED-48"
+    ],
+    "notes": "ED-92 é base de I-04 e I-05; catálogo completo da NR 9 (GES-03) só como título."
+  },
+  {
+    "norm_id": "agir-rn-025-2026",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "agr-tb-res-007-2013",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "agr-tb-res-007-2013",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "agr-tb-res-007-2013",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "agr-tb-res-040-2024",
+    "obligation": "OBR-25 Faturar condomínio e múltiplas economias pelo modelo admitido (franquia por economia mais excedente) e apoiar a medição individualizada",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-15",
+      "P2.5"
+    ],
+    "notes": "Regra de condomínio configurável na ED-15 (onda A); os modelos do Tema 414 revisado e o modelo híbrido vedado não estão no aceite."
+  },
+  {
+    "norm_id": "agr-tb-res-043-2025",
+    "obligation": "OBR-30 Conceder a tarifa social pelos critérios federais (CadÚnico, BPC, renda), sem exigir adimplência, com piso federal travado",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "agr-tb-res-043-2025",
+    "obligation": "OBR-31 Classificar automaticamente os beneficiários pela lista oficial conforme a natureza jurídica e avisar na fatura antes da perda do benefício",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-57"
+    ],
+    "notes": "Importação de lista com base legal na ED-57 (trilha); classificação automática (CAD-91) e mensagens (CAD-96) só como títulos. Não classificar depois de entregues os documentos é cobrança indevida (Lei 14.898, art. 5º, §2º)."
+  },
+  {
+    "norm_id": "agr-tb-res-043-2025",
+    "obligation": "OBR-33 Informar à agência a lista de beneficiários, os subsídios e o relatório anual da tarifa social",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "agr-tb-res-046-2025",
+    "obligation": "OBR-15 Atender à fiscalização da agência: fornecer dados sob demanda e registrar autos, penalidades e compromissos de ajuste com prazo e evidência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-98",
+      "P2.25",
+      "ED-96"
+    ],
+    "notes": "Agenda com evidência (ED-98) e ocorrência com ação (P2.25) existem; não há registro de auto de infração recebido da agência nem de termo de ajuste."
+  },
+  {
+    "norm_id": "agr-tb-res-048-2026",
+    "obligation": "OBR-68 Apurar metas de universalização e indicadores de acesso por município, urbano e rural",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-77",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "agr-tb-res-048-2026",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "agr-tubarao-decreto-municipal-9159-2026",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-046-2016",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "aresc-res-046-2016",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "aresc-res-046-2016",
+    "obligation": "OBR-08 Cumprir prazos de vistoria, ligação nova e conexão à rede, distinguindo área urbana e rural quando a norma pedir",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4",
+      "ED-36",
+      "ED-84"
+    ],
+    "notes": "Motor de prazo por especificação na P3.4; fluxo encadeado da ligação nova (CAD-86) só como título na ED-36; distinção urbana e rural sem aceite."
+  },
+  {
+    "norm_id": "aresc-res-046-2016",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "aresc-res-046-2016",
+    "obligation": "OBR-20 Ajustar a conta quando o intervalo de leitura foge da janela e faturar por média com teto de ciclos estimados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5"
+    ],
+    "notes": "Chaves `meter.average_months`, `meter.max_estimated_cycles` e `meter.after_cap_rule` em PARAMETROS; o aceite da P2.5 não as testa; ajuste proporcional por intervalo sem chave."
+  },
+  {
+    "norm_id": "aresc-res-046-2016",
+    "obligation": "OBR-21 Revisar consumo, conceder desconto por vazamento oculto e aferir hidrômetro com laudo",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.28",
+      "ED-23"
+    ],
+    "notes": "Perfis pré-carregados só para ARIS, AGIR e ARESC."
+  },
+  {
+    "norm_id": "aresc-res-046-2016",
+    "obligation": "OBR-23 Oferecer datas de vencimento (no mínimo seis para concessionária) e respeitar antecedência entre entrega e vencimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.20",
+      "P2.5"
+    ],
+    "notes": "`bill.due_date_options` e `bill.min_days_delivery_to_due` em PARAMETROS; sem aceite."
+  },
+  {
+    "norm_id": "aresc-res-046-2016",
+    "obligation": "OBR-24 Limitar a multa a 2% e não cobrar encargo sobre conta em revisão ou contestada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "P2.20"
+    ],
+    "notes": "Multa acima de 2% só com aceite formal (P0.20); sem acréscimo sobre conta em revisão (P3.1, P2.20)."
+  },
+  {
+    "norm_id": "aresc-res-046-2016",
+    "obligation": "OBR-93 Limitar os juros de mora ao teto da agência e aplicar a taxa legal quando nada for pactuado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P2.5"
+    ],
+    "notes": "Teto por dia da ERI (SC: 0,033%) e `fee.legal_rate_fallback` estão em PARAMETROS; o aceite da P0.20 é genérico (\"cada limite com norma e teste\") e a taxa legal deve vir da divulgação do BCB (decisoes-a-rever, lote 2, item 5)."
+  },
+  {
+    "norm_id": "aresc-res-046-2016",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-046-2016",
+    "obligation": "OBR-35 Religar nos prazos normal e de urgência, sem taxa quando o corte for indevido, com OS gerada pelo pagamento",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-049-2016",
+    "obligation": "OBR-57 Controlar a qualidade da água (plano de amostragem, padrões, conformidade), enviar ao SISAGUA e informar o consumidor na conta e no relatório anual",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-50",
+      "P2.24",
+      "ED-79"
+    ],
+    "notes": "Até a ED-50, o bloco da conta vem de planilha do laboratório (P2.24)."
+  },
+  {
+    "norm_id": "aresc-res-049-2016",
+    "obligation": "OBR-59 Monitorar efluentes contra padrões de lançamento com vigência, automonitoramento e declaração de carga poluidora",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80"
+    ],
+    "notes": "Catálogo de padrão de efluente com vigência futura; não codificar limites antes da publicação."
+  },
+  {
+    "norm_id": "aresc-res-105-2018",
+    "obligation": "OBR-13 Conduzir o ciclo da ligação obrigatória à rede e a cobrança por disponibilidade ou tarifa fixa de infraestrutura",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-88",
+      "P2.5"
+    ],
+    "notes": "Ciclo coberto na ED-88; cobrança por disponibilidade (CAD-87) só como título na P2.5; TFDI da ARESC sem aceite."
+  },
+  {
+    "norm_id": "aresc-res-111-2018",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-139-2019",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "aresc-res-139-2019",
+    "obligation": "OBR-16 Aplicar estrutura tarifária por categoria e faixa com versão, vigência e antecedência mínima de publicação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.5",
+      "P2.29"
+    ],
+    "notes": "Vigência mínima após publicação travada em `bill.tariff_readjust`."
+  },
+  {
+    "norm_id": "aresc-res-156-2020",
+    "obligation": "OBR-10 Manter plano de contingência e emergência com rodízio, racionamento, abastecimento alternativo e comunicação ao usuário",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-91",
+      "ED-35"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-158-2020",
+    "obligation": "OBR-20 Ajustar a conta quando o intervalo de leitura foge da janela e faturar por média com teto de ciclos estimados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5"
+    ],
+    "notes": "Chaves `meter.average_months`, `meter.max_estimated_cycles` e `meter.after_cap_rule` em PARAMETROS; o aceite da P2.5 não as testa; ajuste proporcional por intervalo sem chave."
+  },
+  {
+    "norm_id": "aresc-res-195-2022",
+    "obligation": "OBR-15 Atender à fiscalização da agência: fornecer dados sob demanda e registrar autos, penalidades e compromissos de ajuste com prazo e evidência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-98",
+      "P2.25",
+      "ED-96"
+    ],
+    "notes": "Agenda com evidência (ED-98) e ocorrência com ação (P2.25) existem; não há registro de auto de infração recebido da agência nem de termo de ajuste."
+  },
+  {
+    "norm_id": "aresc-res-255-2023",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-259-2023",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "aresc-res-259-2023",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "aresc-res-259-2023",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "aresc-res-309-2024",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-313-2024",
+    "obligation": "OBR-30 Conceder a tarifa social pelos critérios federais (CadÚnico, BPC, renda), sem exigir adimplência, com piso federal travado",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-313-2024",
+    "obligation": "OBR-31 Classificar automaticamente os beneficiários pela lista oficial conforme a natureza jurídica e avisar na fatura antes da perda do benefício",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-57"
+    ],
+    "notes": "Importação de lista com base legal na ED-57 (trilha); classificação automática (CAD-91) e mensagens (CAD-96) só como títulos. Não classificar depois de entregues os documentos é cobrança indevida (Lei 14.898, art. 5º, §2º)."
+  },
+  {
+    "norm_id": "aresc-res-321-2025",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-324-2025",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-335-2025",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-348-2025",
+    "obligation": "OBR-30 Conceder a tarifa social pelos critérios federais (CadÚnico, BPC, renda), sem exigir adimplência, com piso federal travado",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-348-2025",
+    "obligation": "OBR-31 Classificar automaticamente os beneficiários pela lista oficial conforme a natureza jurídica e avisar na fatura antes da perda do benefício",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-57"
+    ],
+    "notes": "Importação de lista com base legal na ED-57 (trilha); classificação automática (CAD-91) e mensagens (CAD-96) só como títulos. Não classificar depois de entregues os documentos é cobrança indevida (Lei 14.898, art. 5º, §2º)."
+  },
+  {
+    "norm_id": "aresc-res-348-2025",
+    "obligation": "OBR-33 Informar à agência a lista de beneficiários, os subsídios e o relatório anual da tarifa social",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-364-2025",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-374-2025",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-375-2025",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-389-2026",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-396-2026",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-422-2026",
+    "obligation": "OBR-11 Cadastrar soluções individuais de esgoto, programar a limpeza e cobrar o serviço conforme a agência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-88"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-427-2026",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-430-2026",
+    "obligation": "OBR-68 Apurar metas de universalização e indicadores de acesso por município, urbano e rural",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-77",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-430-2026",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "aresc-res-431-2026",
+    "obligation": "OBR-12 Computar soluções alternativas nas metas de universalização e informá-las à agência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-88",
+      "ED-77"
+    ],
+    "notes": "A ED-88 cadastra fossa e sumidouro; a ED-77 calcula cobertura sem regra para solução alternativa."
+  },
+  {
+    "norm_id": "aresc-res-432-2026",
+    "obligation": "OBR-76 Registrar contratos de programa, concessão e PPP com aditivos e matriz de riscos",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-96"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aresc-res-433-2026",
+    "obligation": "OBR-75 Manter base de ativos e bens reversíveis com dados para indenização de investimentos não amortizados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-56"
+    ],
+    "notes": "Bens reversíveis e MCPSB cobertos; valoração regulatória sem aceite."
+  },
+  {
+    "norm_id": "aris-in-dg-1-2025",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "aris-in-dg-1-2025",
+    "obligation": "OBR-72 Manter agenda de obrigações regulatórias com responsável, lembrete e evidência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-98"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-11-2017",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "aris-rn-17-2019",
+    "obligation": "OBR-15 Atender à fiscalização da agência: fornecer dados sob demanda e registrar autos, penalidades e compromissos de ajuste com prazo e evidência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-98",
+      "P2.25",
+      "ED-96"
+    ],
+    "notes": "Agenda com evidência (ED-98) e ocorrência com ação (P2.25) existem; não há registro de auto de infração recebido da agência nem de termo de ajuste."
+  },
+  {
+    "norm_id": "aris-rn-18-2019",
+    "obligation": "OBR-15 Atender à fiscalização da agência: fornecer dados sob demanda e registrar autos, penalidades e compromissos de ajuste com prazo e evidência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-98",
+      "P2.25",
+      "ED-96"
+    ],
+    "notes": "Agenda com evidência (ED-98) e ocorrência com ação (P2.25) existem; não há registro de auto de infração recebido da agência nem de termo de ajuste."
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-08 Cumprir prazos de vistoria, ligação nova e conexão à rede, distinguindo área urbana e rural quando a norma pedir",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4",
+      "ED-36",
+      "ED-84"
+    ],
+    "notes": "Motor de prazo por especificação na P3.4; fluxo encadeado da ligação nova (CAD-86) só como título na ED-36; distinção urbana e rural sem aceite."
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-20 Ajustar a conta quando o intervalo de leitura foge da janela e faturar por média com teto de ciclos estimados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5"
+    ],
+    "notes": "Chaves `meter.average_months`, `meter.max_estimated_cycles` e `meter.after_cap_rule` em PARAMETROS; o aceite da P2.5 não as testa; ajuste proporcional por intervalo sem chave."
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-21 Revisar consumo, conceder desconto por vazamento oculto e aferir hidrômetro com laudo",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.28",
+      "ED-23"
+    ],
+    "notes": "Perfis pré-carregados só para ARIS, AGIR e ARESC."
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-23 Oferecer datas de vencimento (no mínimo seis para concessionária) e respeitar antecedência entre entrega e vencimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.20",
+      "P2.5"
+    ],
+    "notes": "`bill.due_date_options` e `bill.min_days_delivery_to_due` em PARAMETROS; sem aceite."
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-24 Limitar a multa a 2% e não cobrar encargo sobre conta em revisão ou contestada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "P2.20"
+    ],
+    "notes": "Multa acima de 2% só com aceite formal (P0.20); sem acréscimo sobre conta em revisão (P3.1, P2.20)."
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-93 Limitar os juros de mora ao teto da agência e aplicar a taxa legal quando nada for pactuado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P2.5"
+    ],
+    "notes": "Teto por dia da ERI (SC: 0,033%) e `fee.legal_rate_fallback` estão em PARAMETROS; o aceite da P0.20 é genérico (\"cada limite com norma e teste\") e a taxa legal deve vir da divulgação do BCB (decisoes-a-rever, lote 2, item 5)."
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-35 Religar nos prazos normal e de urgência, sem taxa quando o corte for indevido, com OS gerada pelo pagamento",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-09 Creditar compensação ao usuário por falha do prestador (corte indevido, atraso de religação, interrupção prolongada, não conformidade)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4",
+      "ED-22"
+    ],
+    "notes": "Corte indevido e atraso de religação cobertos (`rec.undue_cut_compensation`); não conformidade por `quality.noncompliance_compensation` (ED-22); interrupção de longa duração sem regra (a ED-92 só registra a ocorrência)."
+  },
+  {
+    "norm_id": "aris-rn-19-2019",
+    "obligation": "OBR-07 Publicar e versionar o contrato de adesão e o regulamento da prestação",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.20"
+    ],
+    "notes": "Ajuste v2.14 da P3.20 (NR 11, arts. 18 e 53)."
+  },
+  {
+    "norm_id": "aris-rn-20-2019",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "aris-rn-20-2019",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "aris-rn-20-2019",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "aris-rn-26-2021",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-26-2021",
+    "obligation": "OBR-18 Fornecer à agência mercado e receita por categoria e faixa para reajuste e revisão tarifária",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.22",
+      "P2.29"
+    ],
+    "notes": "Faturamento por categoria e faixa na P3.22; simulação de impacto na P2.29."
+  },
+  {
+    "norm_id": "aris-rn-31-2021",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-31-2021",
+    "obligation": "OBR-18 Fornecer à agência mercado e receita por categoria e faixa para reajuste e revisão tarifária",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.22",
+      "P2.29"
+    ],
+    "notes": "Faturamento por categoria e faixa na P3.22; simulação de impacto na P2.29."
+  },
+  {
+    "norm_id": "aris-rn-33-2021",
+    "obligation": "OBR-74 Escriturar a contabilidade regulatória no plano da agência e enviar balancetes e demonstrações",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-32",
+      "ED-56"
+    ],
+    "notes": "GES-14 (MCRSB e de-para) só como título; a ED-32 é contabilidade por evento."
+  },
+  {
+    "norm_id": "aris-rn-33-2021",
+    "obligation": "OBR-75 Manter base de ativos e bens reversíveis com dados para indenização de investimentos não amortizados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-56"
+    ],
+    "notes": "Bens reversíveis e MCPSB cobertos; valoração regulatória sem aceite."
+  },
+  {
+    "norm_id": "aris-rn-36-2022",
+    "obligation": "OBR-68 Apurar metas de universalização e indicadores de acesso por município, urbano e rural",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-77",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-36-2022",
+    "obligation": "OBR-69 Calcular os indicadores operacionais da NR 9 adotados pela agência, com fichas",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-77",
+      "ED-92",
+      "ED-48"
+    ],
+    "notes": "ED-92 é base de I-04 e I-05; catálogo completo da NR 9 (GES-03) só como título."
+  },
+  {
+    "norm_id": "aris-rn-36-2022",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "aris-rn-38-2023",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "aris-rn-38-2023",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-38-2023",
+    "obligation": "OBR-20 Ajustar a conta quando o intervalo de leitura foge da janela e faturar por média com teto de ciclos estimados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5"
+    ],
+    "notes": "Chaves `meter.average_months`, `meter.max_estimated_cycles` e `meter.after_cap_rule` em PARAMETROS; o aceite da P2.5 não as testa; ajuste proporcional por intervalo sem chave."
+  },
+  {
+    "norm_id": "aris-rn-39-2023",
+    "obligation": "OBR-11 Cadastrar soluções individuais de esgoto, programar a limpeza e cobrar o serviço conforme a agência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-88"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-40-2024",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "aris-rn-40-2024",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "aris-rn-40-2024",
+    "obligation": "OBR-65 Registrar reparo e ensaio de hidrômetro por oficina e laboratório autorizados pelo Inmetro",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-14"
+    ],
+    "notes": "Verificação após reparo coberta; autorização da oficina sem registro; não depender da declaração de conformidade (Portaria 657 suspensa)."
+  },
+  {
+    "norm_id": "aris-rn-41-2024",
+    "obligation": "OBR-03 Manter ouvidoria como segunda instância, com prazos da Lei 13.460/2017, identidade preservada e relatório anual",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-35"
+    ],
+    "notes": "Ajuste v2.15 da ED-35. Conferir se a RN ARIS 41/2024 mudou prazos (decisoes-a-rever, lote 5)."
+  },
+  {
+    "norm_id": "aris-rn-42-2025",
+    "obligation": "OBR-08 Cumprir prazos de vistoria, ligação nova e conexão à rede, distinguindo área urbana e rural quando a norma pedir",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4",
+      "ED-36",
+      "ED-84"
+    ],
+    "notes": "Motor de prazo por especificação na P3.4; fluxo encadeado da ligação nova (CAD-86) só como título na ED-36; distinção urbana e rural sem aceite."
+  },
+  {
+    "norm_id": "aris-rn-42-2025",
+    "obligation": "OBR-13 Conduzir o ciclo da ligação obrigatória à rede e a cobrança por disponibilidade ou tarifa fixa de infraestrutura",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-88",
+      "P2.5"
+    ],
+    "notes": "Ciclo coberto na ED-88; cobrança por disponibilidade (CAD-87) só como título na P2.5; TFDI da ARESC sem aceite."
+  },
+  {
+    "norm_id": "aris-rn-43-2025",
+    "obligation": "OBR-68 Apurar metas de universalização e indicadores de acesso por município, urbano e rural",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-77",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-43-2025",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "aris-rn-44-2025",
+    "obligation": "OBR-76 Registrar contratos de programa, concessão e PPP com aditivos e matriz de riscos",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-96"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-45-2025",
+    "obligation": "OBR-10 Manter plano de contingência e emergência com rodízio, racionamento, abastecimento alternativo e comunicação ao usuário",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-91",
+      "ED-35"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-45-2025",
+    "obligation": "OBR-05 Avisar com antecedência as interrupções programadas aos usuários afetados e à agência e atender unidades essenciais",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-35",
+      "ED-54",
+      "P3.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-46-2025",
+    "obligation": "OBR-27 Cobrar o manejo de resíduos sólidos na fatura de água (cofaturamento) com isenção e repasse",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-25"
+    ],
+    "notes": "Cofaturamento (CAD-90) como título; a prestação do serviço de limpeza urbana está fora do escopo."
+  },
+  {
+    "norm_id": "aris-rn-47-2025",
+    "obligation": "OBR-12 Computar soluções alternativas nas metas de universalização e informá-las à agência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-88",
+      "ED-77"
+    ],
+    "notes": "A ED-88 cadastra fossa e sumidouro; a ED-77 calcula cobertura sem regra para solução alternativa."
+  },
+  {
+    "norm_id": "aris-rn-48-2025",
+    "obligation": "OBR-11 Cadastrar soluções individuais de esgoto, programar a limpeza e cobrar o serviço conforme a agência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-88"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-49-2025",
+    "obligation": "OBR-27 Cobrar o manejo de resíduos sólidos na fatura de água (cofaturamento) com isenção e repasse",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-25"
+    ],
+    "notes": "Cofaturamento (CAD-90) como título; a prestação do serviço de limpeza urbana está fora do escopo."
+  },
+  {
+    "norm_id": "aris-rn-50-2025",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-50-2025",
+    "obligation": "OBR-18 Fornecer à agência mercado e receita por categoria e faixa para reajuste e revisão tarifária",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.22",
+      "P2.29"
+    ],
+    "notes": "Faturamento por categoria e faixa na P3.22; simulação de impacto na P2.29."
+  },
+  {
+    "norm_id": "aris-rn-51-2025",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-52-2025",
+    "obligation": "OBR-75 Manter base de ativos e bens reversíveis com dados para indenização de investimentos não amortizados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-56"
+    ],
+    "notes": "Bens reversíveis e MCPSB cobertos; valoração regulatória sem aceite."
+  },
+  {
+    "norm_id": "aris-rn-53-2025",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-53-2025",
+    "obligation": "OBR-18 Fornecer à agência mercado e receita por categoria e faixa para reajuste e revisão tarifária",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.22",
+      "P2.29"
+    ],
+    "notes": "Faturamento por categoria e faixa na P3.22; simulação de impacto na P2.29."
+  },
+  {
+    "norm_id": "aris-rn-54-2026",
+    "obligation": "OBR-68 Apurar metas de universalização e indicadores de acesso por município, urbano e rural",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-77",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-54-2026",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "aris-rn-55-2026",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "aris-rn-55-2026",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-55-2026",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "aris-rn-56-2026",
+    "obligation": "OBR-30 Conceder a tarifa social pelos critérios federais (CadÚnico, BPC, renda), sem exigir adimplência, com piso federal travado",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-56-2026",
+    "obligation": "OBR-31 Classificar automaticamente os beneficiários pela lista oficial conforme a natureza jurídica e avisar na fatura antes da perda do benefício",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-57"
+    ],
+    "notes": "Importação de lista com base legal na ED-57 (trilha); classificação automática (CAD-91) e mensagens (CAD-96) só como títulos. Não classificar depois de entregues os documentos é cobrança indevida (Lei 14.898, art. 5º, §2º)."
+  },
+  {
+    "norm_id": "aris-rn-56-2026",
+    "obligation": "OBR-33 Informar à agência a lista de beneficiários, os subsídios e o relatório anual da tarifa social",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-56-2026",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "aris-rn-57-2026",
+    "obligation": "OBR-69 Calcular os indicadores operacionais da NR 9 adotados pela agência, com fichas",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-77",
+      "ED-92",
+      "ED-48"
+    ],
+    "notes": "ED-92 é base de I-04 e I-05; catálogo completo da NR 9 (GES-03) só como título."
+  },
+  {
+    "norm_id": "aris-rn-57-2026",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2015-03",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2015-03",
+    "obligation": "OBR-18 Fornecer à agência mercado e receita por categoria e faixa para reajuste e revisão tarifária",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.22",
+      "P2.29"
+    ],
+    "notes": "Faturamento por categoria e faixa na P3.22; simulação de impacto na P2.29."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-01",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-01",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-01",
+    "obligation": "OBR-08 Cumprir prazos de vistoria, ligação nova e conexão à rede, distinguindo área urbana e rural quando a norma pedir",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4",
+      "ED-36",
+      "ED-84"
+    ],
+    "notes": "Motor de prazo por especificação na P3.4; fluxo encadeado da ligação nova (CAD-86) só como título na ED-36; distinção urbana e rural sem aceite."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-01",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-01",
+    "obligation": "OBR-20 Ajustar a conta quando o intervalo de leitura foge da janela e faturar por média com teto de ciclos estimados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5"
+    ],
+    "notes": "Chaves `meter.average_months`, `meter.max_estimated_cycles` e `meter.after_cap_rule` em PARAMETROS; o aceite da P2.5 não as testa; ajuste proporcional por intervalo sem chave."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-01",
+    "obligation": "OBR-21 Revisar consumo, conceder desconto por vazamento oculto e aferir hidrômetro com laudo",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.28",
+      "ED-23"
+    ],
+    "notes": "Perfis pré-carregados só para ARIS, AGIR e ARESC."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-01",
+    "obligation": "OBR-23 Oferecer datas de vencimento (no mínimo seis para concessionária) e respeitar antecedência entre entrega e vencimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.20",
+      "P2.5"
+    ],
+    "notes": "`bill.due_date_options` e `bill.min_days_delivery_to_due` em PARAMETROS; sem aceite."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-01",
+    "obligation": "OBR-24 Limitar a multa a 2% e não cobrar encargo sobre conta em revisão ou contestada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "P2.20"
+    ],
+    "notes": "Multa acima de 2% só com aceite formal (P0.20); sem acréscimo sobre conta em revisão (P3.1, P2.20)."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-01",
+    "obligation": "OBR-93 Limitar os juros de mora ao teto da agência e aplicar a taxa legal quando nada for pactuado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P2.5"
+    ],
+    "notes": "Teto por dia da ERI (SC: 0,033%) e `fee.legal_rate_fallback` estão em PARAMETROS; o aceite da P0.20 é genérico (\"cada limite com norma e teste\") e a taxa legal deve vir da divulgação do BCB (decisoes-a-rever, lote 2, item 5)."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-01",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-01",
+    "obligation": "OBR-35 Religar nos prazos normal e de urgência, sem taxa quando o corte for indevido, com OS gerada pelo pagamento",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2017-03",
+    "obligation": "OBR-15 Atender à fiscalização da agência: fornecer dados sob demanda e registrar autos, penalidades e compromissos de ajuste com prazo e evidência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-98",
+      "P2.25",
+      "ED-96"
+    ],
+    "notes": "Agenda com evidência (ED-98) e ocorrência com ação (P2.25) existem; não há registro de auto de infração recebido da agência nem de termo de ajuste."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2025-01-nr03",
+    "obligation": "OBR-75 Manter base de ativos e bens reversíveis com dados para indenização de investimentos não amortizados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-56"
+    ],
+    "notes": "Bens reversíveis e MCPSB cobertos; valoração regulatória sem aceite."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2025-02-nr05",
+    "obligation": "OBR-76 Registrar contratos de programa, concessão e PPP com aditivos e matriz de riscos",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-96"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2025-03-nr06",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2025-03-nr06",
+    "obligation": "OBR-18 Fornecer à agência mercado e receita por categoria e faixa para reajuste e revisão tarifária",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.22",
+      "P2.29"
+    ],
+    "notes": "Faturamento por categoria e faixa na P3.22; simulação de impacto na P2.29."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2025-05-nr08",
+    "obligation": "OBR-68 Apurar metas de universalização e indicadores de acesso por município, urbano e rural",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-77",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2025-05-nr08",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-04",
+    "obligation": "OBR-30 Conceder a tarifa social pelos critérios federais (CadÚnico, BPC, renda), sem exigir adimplência, com piso federal travado",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P1.5"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-04",
+    "obligation": "OBR-31 Classificar automaticamente os beneficiários pela lista oficial conforme a natureza jurídica e avisar na fatura antes da perda do benefício",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-57"
+    ],
+    "notes": "Importação de lista com base legal na ED-57 (trilha); classificação automática (CAD-91) e mensagens (CAD-96) só como títulos. Não classificar depois de entregues os documentos é cobrança indevida (Lei 14.898, art. 5º, §2º)."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-04",
+    "obligation": "OBR-33 Informar à agência a lista de beneficiários, os subsídios e o relatório anual da tarifa social",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-05",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-05",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-05",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-05",
+    "obligation": "OBR-20 Ajustar a conta quando o intervalo de leitura foge da janela e faturar por média com teto de ciclos estimados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Chaves `meter.average_months`, `meter.max_estimated_cycles` e `meter.after_cap_rule` em PARAMETROS; o aceite da P2.5 não as testa; ajuste proporcional por intervalo sem chave."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-05",
+    "obligation": "OBR-21 Revisar consumo, conceder desconto por vazamento oculto e aferir hidrômetro com laudo",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.28",
+      "ED-23"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Perfis pré-carregados só para ARIS, AGIR e ARESC."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-05",
+    "obligation": "OBR-23 Oferecer datas de vencimento (no mínimo seis para concessionária) e respeitar antecedência entre entrega e vencimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.20",
+      "P2.5"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. `bill.due_date_options` e `bill.min_days_delivery_to_due` em PARAMETROS; sem aceite."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-05",
+    "obligation": "OBR-24 Limitar a multa a 2% e não cobrar encargo sobre conta em revisão ou contestada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "P2.20"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Multa acima de 2% só com aceite formal (P0.20); sem acréscimo sobre conta em revisão (P3.1, P2.20)."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-05",
+    "obligation": "OBR-93 Limitar os juros de mora ao teto da agência e aplicar a taxa legal quando nada for pactuado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P2.5"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Teto por dia da ERI (SC: 0,033%) e `fee.legal_rate_fallback` estão em PARAMETROS; o aceite da P0.20 é genérico (\"cada limite com norma e teste\") e a taxa legal deve vir da divulgação do BCB (decisoes-a-rever, lote 2, item 5)."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-05",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-05",
+    "obligation": "OBR-35 Religar nos prazos normal e de urgência, sem taxa quando o corte for indevido, com OS gerada pelo pagamento",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA."
+  },
+  {
+    "norm_id": "cisam-meio-oeste-rn-2026-05",
+    "obligation": "OBR-08 Cumprir prazos de vistoria, ligação nova e conexão à rede, distinguindo área urbana e rural quando a norma pedir",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4",
+      "ED-36",
+      "ED-84"
+    ],
+    "notes": "Situação no catálogo: VIGENCIA_FUTURA. Motor de prazo por especificação na P3.4; fluxo encadeado da ligação nova (CAD-86) só como título na ED-36; distinção urbana e rural sem aceite. Vistoria em 3 e 5 dias úteis e ligação em 10 e 15 dias úteis (urbana e rural); vigência em 20/05/2027."
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2016",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2016",
+    "obligation": "OBR-18 Fornecer à agência mercado e receita por categoria e faixa para reajuste e revisão tarifária",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.22",
+      "P2.29"
+    ],
+    "notes": "Faturamento por categoria e faixa na P3.22; simulação de impacto na P2.29."
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2017",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2017",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2017",
+    "obligation": "OBR-08 Cumprir prazos de vistoria, ligação nova e conexão à rede, distinguindo área urbana e rural quando a norma pedir",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4",
+      "ED-36",
+      "ED-84"
+    ],
+    "notes": "Motor de prazo por especificação na P3.4; fluxo encadeado da ligação nova (CAD-86) só como título na ED-36; distinção urbana e rural sem aceite."
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2017",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2017",
+    "obligation": "OBR-20 Ajustar a conta quando o intervalo de leitura foge da janela e faturar por média com teto de ciclos estimados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5"
+    ],
+    "notes": "Chaves `meter.average_months`, `meter.max_estimated_cycles` e `meter.after_cap_rule` em PARAMETROS; o aceite da P2.5 não as testa; ajuste proporcional por intervalo sem chave."
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2017",
+    "obligation": "OBR-21 Revisar consumo, conceder desconto por vazamento oculto e aferir hidrômetro com laudo",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.28",
+      "ED-23"
+    ],
+    "notes": "Perfis pré-carregados só para ARIS, AGIR e ARESC."
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2017",
+    "obligation": "OBR-23 Oferecer datas de vencimento (no mínimo seis para concessionária) e respeitar antecedência entre entrega e vencimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.20",
+      "P2.5"
+    ],
+    "notes": "`bill.due_date_options` e `bill.min_days_delivery_to_due` em PARAMETROS; sem aceite."
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2017",
+    "obligation": "OBR-24 Limitar a multa a 2% e não cobrar encargo sobre conta em revisão ou contestada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P0.20",
+      "P3.1",
+      "P2.20"
+    ],
+    "notes": "Multa acima de 2% só com aceite formal (P0.20); sem acréscimo sobre conta em revisão (P3.1, P2.20)."
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2017",
+    "obligation": "OBR-93 Limitar os juros de mora ao teto da agência e aplicar a taxa legal quando nada for pactuado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.20",
+      "P2.5"
+    ],
+    "notes": "Teto por dia da ERI (SC: 0,033%) e `fee.legal_rate_fallback` estão em PARAMETROS; o aceite da P0.20 é genérico (\"cada limite com norma e teste\") e a taxa legal deve vir da divulgação do BCB (decisoes-a-rever, lote 2, item 5)."
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2017",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "cisam-sul-rn-03-2017",
+    "obligation": "OBR-35 Religar nos prazos normal e de urgência, sem taxa quando o corte for indevido, com OS gerada pelo pagamento",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "sc-dec-1035-2008",
+    "obligation": "OBR-26 Cobrar esgoto pela regra do contrato e da agência (percentual, coleta sem tratamento, fonte alternativa) e não cobrar sem conexão",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5",
+      "ED-13"
+    ],
+    "notes": "Esgoto \"fora de uso\" e supressão por parâmetro (ED-13); fonte alternativa (CAD-69) só como título."
+  },
+  {
+    "norm_id": "sc-dec-1035-2008",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "sc-dec-2138-2009",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "sc-dec-2138-2009",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "sc-ima-portaria-009-2026",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "sc-lei-11959-2001",
+    "obligation": "OBR-36 Aplicar vedações estaduais de corte que vão além da lei federal (ponto facultativo, janela por horário)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4"
+    ],
+    "notes": "`cal.holidays` cobre feriados nacionais, estaduais e municipais; ponto facultativo e a janela das 8h da lei catarinense não estão no aceite; ver ADI 7.725 sobre leis estaduais."
+  },
+  {
+    "norm_id": "sc-lei-12465-2002",
+    "obligation": "OBR-88 Limitar e medir o tempo de espera no atendimento presencial",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-40"
+    ],
+    "notes": "Senha emitida; tempo de espera não medido."
+  },
+  {
+    "norm_id": "sc-lei-16673-2015",
+    "obligation": "OBR-15 Atender à fiscalização da agência: fornecer dados sob demanda e registrar autos, penalidades e compromissos de ajuste com prazo e evidência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-98",
+      "P2.25",
+      "ED-96"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Agenda com evidência (ED-98) e ocorrência com ação (P2.25) existem; não há registro de auto de infração recebido da agência nem de termo de ajuste."
+  },
+  {
+    "norm_id": "sc-lei-16673-2015",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "sc-lei-17780-2019",
+    "obligation": "OBR-36 Aplicar vedações estaduais de corte que vão além da lei federal (ponto facultativo, janela por horário)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4"
+    ],
+    "notes": "`cal.holidays` cobre feriados nacionais, estaduais e municipais; ponto facultativo e a janela das 8h da lei catarinense não estão no aceite; ver ADI 7.725 sobre leis estaduais."
+  },
+  {
+    "norm_id": "agenersa-in-103-2023",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "agenersa-in-122-2024",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "agenersa-in-148-2026",
+    "obligation": "OBR-29 Emitir a declaração anual de quitação de débitos e comprová-la quando a agência pedir",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.24"
+    ],
+    "notes": "A comprovação à agência do cumprimento da Lei 12.007 não tem aceite; a P2.24 só gera a declaração."
+  },
+  {
+    "norm_id": "ares-pcj-res-363-2020",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "ares-pcj-res-610-2025",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "ares-pcj-resolucao-198-2017",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "ares-pcj-resolucao-460-2022",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "ares-pcj-resolucao-50-2014",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "ares-pcj-resolucao-592-2024",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Categorias opcionais da NR 13 (CAD-88) só como título."
+  },
+  {
+    "norm_id": "ares-pcj-resolucao-649-2025",
+    "obligation": "OBR-12 Computar soluções alternativas nas metas de universalização e informá-las à agência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-88",
+      "ED-77"
+    ],
+    "notes": "A ED-88 cadastra fossa e sumidouro; a ED-77 calcula cobertura sem regra para solução alternativa."
+  },
+  {
+    "norm_id": "ares-pcj-resolucao-650-2025",
+    "obligation": "OBR-68 Apurar metas de universalização e indicadores de acesso por município, urbano e rural",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-77",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "ares-pcj-resolucao-723-2026",
+    "obligation": "OBR-69 Calcular os indicadores operacionais da NR 9 adotados pela agência, com fichas",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-77",
+      "ED-92",
+      "ED-48"
+    ],
+    "notes": "ED-92 é base de I-04 e I-05; catálogo completo da NR 9 (GES-03) só como título."
+  },
+  {
+    "norm_id": "aris-mg-resolucao-185-2025",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "arsae-resolucao-129-2019",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "arsae-resolucao-131-2019",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "arsae-resolucao-131-2019",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "arsae-resolucao-131-2019",
+    "obligation": "OBR-23 Oferecer datas de vencimento (no mínimo seis para concessionária) e respeitar antecedência entre entrega e vencimento",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.20",
+      "P2.5"
+    ],
+    "notes": "`bill.due_date_options` e `bill.min_days_delivery_to_due` em PARAMETROS; sem aceite."
+  },
+  {
+    "norm_id": "arsae-resolucao-140-2020",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "arsae-resolucao-151-2021",
+    "obligation": "OBR-03 Manter ouvidoria como segunda instância, com prazos da Lei 13.460/2017, identidade preservada e relatório anual",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-35"
+    ],
+    "notes": "Ajuste v2.15 da ED-35. Conferir se a RN ARIS 41/2024 mudou prazos (decisoes-a-rever, lote 5)."
+  },
+  {
+    "norm_id": "arsae-resolucao-156-2021",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "arsae-resolucao-165-2022",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "arsae-resolucao-179-2023",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "arsae-resolucao-184-2023",
+    "obligation": "OBR-22 Retificar conta sem apagar a anterior, devolver em dobro a cobrança indevida e tratar pagamento em duplicidade",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.20",
+      "P3.1",
+      "P3.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "arsae-resolucao-189-2024",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Categorias opcionais da NR 13 (CAD-88) só como título."
+  },
+  {
+    "norm_id": "arsae-resolucao-205-2025",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "arsae-resolucao-205-2025",
+    "obligation": "OBR-68 Apurar metas de universalização e indicadores de acesso por município, urbano e rural",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-77",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "arsae-resolucao-212-2025",
+    "obligation": "OBR-12 Computar soluções alternativas nas metas de universalização e informá-las à agência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-88",
+      "ED-77"
+    ],
+    "notes": "A ED-88 cadastra fossa e sumidouro; a ED-77 calcula cobertura sem regra para solução alternativa."
+  },
+  {
+    "norm_id": "arsae-resolucao-216-2025",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "arsae-resolucao-217-2025",
+    "obligation": "OBR-17 Carregar cada ato de reajuste ou revisão do prestador como nova versão tarifária com ato, data e vigência",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P2.29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "arsae-resolucao-227-2026",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Categorias opcionais da NR 13 (CAD-88) só como título."
+  },
+  {
+    "norm_id": "arsae-resolucao-94-2017",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "arsae-resolucao-94-2017",
+    "obligation": "OBR-86 Dar atendimento prioritário (idoso, PcD, TEA, gestante, acompanhante) nos canais presenciais e na fila",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-40"
+    ],
+    "notes": "Perfil de prioridade no cadastro (CAD-81) só como título."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-1029-2020",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-106-2009",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-1117-2021",
+    "obligation": "OBR-26 Cobrar esgoto pela regra do contrato e da agência (percentual, coleta sem tratamento, fonte alternativa) e não cobrar sem conexão",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5",
+      "ED-13"
+    ],
+    "notes": "Esgoto \"fora de uso\" e supressão por parâmetro (ED-13); fonte alternativa (CAD-69) só como título."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-1143-2021",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-1206-2021",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-1544-2024",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Situação no catálogo: PARCIALMENTE_REVOGADA. Categorias opcionais da NR 13 (CAD-88) só como título."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-1636-2025",
+    "obligation": "OBR-75 Manter base de ativos e bens reversíveis com dados para indenização de investimentos não amortizados",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-56"
+    ],
+    "notes": "Bens reversíveis e MCPSB cobertos; valoração regulatória sem aceite."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-1699-2025",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Categorias opcionais da NR 13 (CAD-88) só como título."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-1734-2025",
+    "obligation": "OBR-27 Cobrar o manejo de resíduos sólidos na fatura de água (cofaturamento) com isenção e repasse",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-25"
+    ],
+    "notes": "Cofaturamento (CAD-90) como título; a prestação do serviço de limpeza urbana está fora do escopo."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-1751-2025",
+    "obligation": "OBR-14 Receber redes de loteamentos e empreendimentos e tratar o ressarcimento ao empreendedor",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-84"
+    ],
+    "notes": "Recebimento coberto (NR 11, arts. 25 a 30); ressarcimento de investimento antecipado sem aceite."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-221-2011",
+    "obligation": "OBR-26 Cobrar esgoto pela regra do contrato e da agência (percentual, coleta sem tratamento, fonte alternativa) e não cobrar sem conexão",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.5",
+      "ED-13"
+    ],
+    "notes": "Esgoto \"fora de uso\" e supressão por parâmetro (ED-13); fonte alternativa (CAD-69) só como título."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-804-2018",
+    "obligation": "OBR-08 Cumprir prazos de vistoria, ligação nova e conexão à rede, distinguindo área urbana e rural quando a norma pedir",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4",
+      "ED-36",
+      "ED-84"
+    ],
+    "notes": "Motor de prazo por especificação na P3.4; fluxo encadeado da ligação nova (CAD-86) só como título na ED-36; distinção urbana e rural sem aceite."
+  },
+  {
+    "norm_id": "arsesp-deliberacao-809-2018",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "mg-copam-dn-232-2019",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "rj-conema-res-79-2018",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "sp-cetesb-dd-024-2022",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "sp-cetesb-dd-078-2025",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "sp-cetesb-dd-130-2022",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "sp-sima-res-27-2021",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "sp-ss-res-65-2016",
+    "obligation": "OBR-57 Controlar a qualidade da água (plano de amostragem, padrões, conformidade), enviar ao SISAGUA e informar o consumidor na conta e no relatório anual",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-50",
+      "P2.24",
+      "ED-79"
+    ],
+    "notes": "Até a ED-50, o bloco da conta vem de planilha do laboratório (P2.24)."
+  },
+  {
+    "norm_id": "agepar-res-3-2020",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "agepar-res-36-2025",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Categorias opcionais da NR 13 (CAD-88) só como título."
+  },
+  {
+    "norm_id": "agepar-res-38-2025",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "agepar-res-56-2026",
+    "obligation": "OBR-68 Apurar metas de universalização e indicadores de acesso por município, urbano e rural",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-77",
+      "ED-48"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "agepar-res-56-2026",
+    "obligation": "OBR-69 Calcular os indicadores operacionais da NR 9 adotados pela agência, com fichas",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-77",
+      "ED-92",
+      "ED-48"
+    ],
+    "notes": "ED-92 é base de I-04 e I-05; catálogo completo da NR 9 (GES-03) só como título."
+  },
+  {
+    "norm_id": "agergs-in-32-2026",
+    "obligation": "OBR-70 Enviar dados e indicadores no sistema e no formato da agência (SISARIS e equivalentes)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-97"
+    ],
+    "notes": "Aceite genérico \"saída por agência\"; leiaute e módulos de cada sistema não citados."
+  },
+  {
+    "norm_id": "agergs-red-892-2026",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Categorias opcionais da NR 13 (CAD-88) só como título."
+  },
+  {
+    "norm_id": "agergs-ren-37-2017",
+    "obligation": "OBR-09 Creditar compensação ao usuário por falha do prestador (corte indevido, atraso de religação, interrupção prolongada, não conformidade)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4",
+      "ED-22"
+    ],
+    "notes": "Corte indevido e atraso de religação cobertos (`rec.undue_cut_compensation`); não conformidade por `quality.noncompliance_compensation` (ED-22); interrupção de longa duração sem regra (a ED-92 só registra a ocorrência)."
+  },
+  {
+    "norm_id": "agergs-ren-74-2026",
+    "obligation": "OBR-13 Conduzir o ciclo da ligação obrigatória à rede e a cobrança por disponibilidade ou tarifa fixa de infraestrutura",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-88",
+      "P2.5"
+    ],
+    "notes": "Ciclo coberto na ED-88; cobrança por disponibilidade (CAD-87) só como título na P2.5; TFDI da ARESC sem aceite."
+  },
+  {
+    "norm_id": "agergs-rn-66-2022",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "rs-consema-res-355-2017",
+    "obligation": "OBR-59 Monitorar efluentes contra padrões de lançamento com vigência, automonitoramento e declaração de carga poluidora",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-80"
+    ],
+    "notes": "Catálogo de padrão de efluente com vigência futura; não codificar limites antes da publicação."
+  },
+  {
+    "norm_id": "rs-fepam-portaria-576-2026",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "arce-res-04-2022",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "arce-res-130-2010",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "adasa-res-06-2010",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Categorias opcionais da NR 13 (CAD-88) só como título. Bônus-desconto por redução de consumo: a ED-91 prevê tarifa sazonal e a ED-101 metas de consumo, sem bônus na conta."
+  },
+  {
+    "norm_id": "adasa-res-14-2011",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "adasa-res-14-2011",
+    "obligation": "OBR-34 Suspender por inadimplência só com aviso prévio entregue, fora das janelas vedadas, respeitando classes protegidas e teto de idade do débito, com revalidação na execução",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "P3.5",
+      "ED-20",
+      "ED-29"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "adasa-res-42-2024",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Categorias opcionais da NR 13 (CAD-88) só como título."
+  },
+  {
+    "norm_id": "adasa-res-59-2025",
+    "obligation": "OBR-69 Calcular os indicadores operacionais da NR 9 adotados pela agência, com fichas",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-77",
+      "ED-92",
+      "ED-48"
+    ],
+    "notes": "ED-92 é base de I-04 e I-05; catálogo completo da NR 9 (GES-03) só como título."
+  },
+  {
+    "norm_id": "adasa-res-65-2025",
+    "obligation": "OBR-15 Atender à fiscalização da agência: fornecer dados sob demanda e registrar autos, penalidades e compromissos de ajuste com prazo e evidência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "ED-98",
+      "P2.25",
+      "ED-96"
+    ],
+    "notes": "Agenda com evidência (ED-98) e ocorrência com ação (P2.25) existem; não há registro de auto de infração recebido da agência nem de termo de ajuste."
+  },
+  {
+    "norm_id": "agr-go-rn-09-2014",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "agr-go-rn-106-2017",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "agr-go-rn-186-2021",
+    "obligation": "OBR-32 Aplicar categorias sociais e subsídios definidos pela agência ou pelo ente (social II, vulnerável, subvenção) como parâmetros com vigência",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P1.5",
+      "ED-22"
+    ],
+    "notes": "Categorias opcionais da NR 13 (CAD-88) só como título."
+  },
+  {
+    "norm_id": "agr-go-rn-188-2022",
+    "obligation": "OBR-21 Revisar consumo, conceder desconto por vazamento oculto e aferir hidrômetro com laudo",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.28",
+      "ED-23"
+    ],
+    "notes": "Perfis pré-carregados só para ARIS, AGIR e ARESC. Sem perfil pré-carregado fora de SC; a P3.28 aceita valores próprios."
+  },
+  {
+    "norm_id": "agr-go-rn-196-2022",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "agr-go-rn-196-2022",
+    "obligation": "OBR-19 Emitir a fatura com o conteúdo mínimo da lei e da agência (prestador, histórico, leituras, tributos, mensagens legais, qualidade, canais, lacre) em modelo aprovado",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P2.8",
+      "P2.17",
+      "P2.24",
+      "P3.35",
+      "ED-79"
+    ],
+    "notes": "Bloco de qualidade (P2.24) e canais oficiais (P3.35) cobertos; motor de mensagens legais só na ED-79 (onda B) e CAD-96 como título; lista de campos por ERI sem teste."
+  },
+  {
+    "norm_id": "agr-go-rn-207-2023",
+    "obligation": "OBR-02 Registrar toda solicitação em protocolo único com prazo por tipo de serviço, contagem em dias úteis ou corridos com feriados locais e prorrogação justificada",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "P3.4",
+      "ED-35",
+      "P1.31"
+    ],
+    "notes": "Motor único de prazo, `cal.holidays` e prorrogação como evento no aceite da P3.4."
+  },
+  {
+    "norm_id": "agr-go-rn-80-2016",
+    "obligation": "OBR-01 Parametrizar o perfil da ERI do tenant (ato de condições gerais, prazos, avisos, encargos, média, religação) com vigência e validar o conjunto antes da produção",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P0.19",
+      "P0.20",
+      "P3.28",
+      "ED-97"
+    ],
+    "notes": "Chaves G1 e bifurcações estão em PARAMETROS-DO-TENANT; \"perfis por agência pré-carregados\" aparece só como mitigação de risco no §6; apenas a P3.28 pré-carrega ARIS, AGIR e ARESC, e só para vazamento e aferição."
+  },
+  {
+    "norm_id": "ibama-in-1-2013",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "ibama-in-12-2021",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "ibama-in-13-2012",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "ibama-in-13-2021",
+    "obligation": "OBR-63 Emitir MTR, CDF e DMR dos resíduos gerados pelo prestador nos sistemas estadual e federal",
+    "coverage": "SEM_TAREFA",
+    "task_ids": [],
+    "notes": "Só \"trilha GRS, 2028, sob demanda\" no P4, sem ID nem aceite; a P0.25 desliga a integração SINIR."
+  },
+  {
+    "norm_id": "conmetro-resolucao-8-2016",
+    "obligation": "OBR-64 Controlar o parque de hidrômetros pelo regulamento metrológico (modelo aprovado, classe, verificações, prazo de troca)",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-14"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "mte-portaria-mte-1419-2024",
+    "obligation": "OBR-91 Registrar entrega de EPI e apoiar o PGR com riscos psicossociais, sem meta punitiva automática",
+    "coverage": "COBERTA",
+    "task_ids": [
+      "ED-71",
+      "P3.31"
+    ],
+    "notes": ""
+  },
+  {
+    "norm_id": "stf-adi-7725-to-2025",
+    "obligation": "OBR-36 Aplicar vedações estaduais de corte que vão além da lei federal (ponto facultativo, janela por horário)",
+    "coverage": "PARCIAL",
+    "task_ids": [
+      "P3.4"
+    ],
+    "notes": "`cal.holidays` cobre feriados nacionais, estaduais e municipais; ponto facultativo e a janela das 8h da lei catarinense não estão no aceite; ver ADI 7.725 sobre leis estaduais."
+  }
+]

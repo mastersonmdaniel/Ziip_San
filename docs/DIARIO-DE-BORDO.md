@@ -1199,3 +1199,18 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - Contradições resolvidas em fonte oficial: débito automático (01/01/2027 para convênios de serviços públicos, Res. CMN 5.278/2025; 01/07/2027 para o novo regime, Res. BCB 565/2026) e MP 1.393/2026 (alcança dívidas com prestadores de serviços públicos).
 - Roteiro de 15 perguntas para parecer jurídico em docs/normas/questoes-para-parecer-juridico.md (não é parecer). Decisões a rever em docs/normas/decisoes-a-rever.md. Plano v2.21. Só documentação.
 - Pendências do dono: decidir sobre as premissas em decisoes-a-rever.md; obter o parecer jurídico; regenerar o catálogo com scripts/normas/consolidar-catalogo.js quando houver nova verificação.
+
+### 28/10/2026 — Revisão geral do projeto (23a a 23e)
+
+- Pedido do dono: revisar o projeto todo e apontar melhorias de campos, cadastros, funções e módulos.
+- Cinco frentes por agentes, sem repetir os achados 22a a 22d já incorporados: 23a coerência do plano (23 achados,
+  COE-01 a COE-23); 23b modelo de dados e cadastros campo a campo (28 entidades, 40 achados, DAD-01 a DAD-40);
+  23c código existente contra o plano (42 achados, COD-01 a COD-42); 23d módulos, funções e jornadas de 16 perfis
+  (120 jornadas, 39 achados, JOR-01 a JOR-39); 23e rastreabilidade de 326 normas obrigatórias contra as tarefas
+  (501 pares norma e obrigação: 47,5% cobertos, 47,7% parciais, 4,8% sem tarefa; 33 achados RAS).
+- Destaques: alteração de unidade grava fora de OS no código (DAD-01); a API descarta campos que a tela envia
+  (COD-10, DAD-02); regras de consumo duplicadas em billing e metering (COD-07); colisão de schema no provisionamento
+  (COD-02); 28 linhas do plano com coluna a mais que esconde ajustes (COE-01); entregas da onda B listadas na onda C
+  (COE-02); LGPD do titular só no pacote voluntário (JOR-15); CNPJ alfanumérico ausente (RAS-03); cashback de CBS e
+  IBS só como título (RAS-02).
+- Relatórios em docs/levantamento/revisao-geral. Plano e código não alterados. Decisões do dono a colher por cartão.
