@@ -23,7 +23,7 @@ Monólito modular: um artefato (imagem única, não-root, assinada) executado em
 | ClamAV | Varredura dos arquivos enviados (anexos de chamados e logos de tenant), junto do `worker`, com quarentena até a varredura; substituível pelo serviço da hospedagem (exceção do ADR-0010) |
 | `migrate` | Job antes de cada rollout; único detentor da credencial `sigsan_migrator` |
 | Keycloak 26.8 | 2+ réplicas, `start --optimized`, banco próprio; MFA conforme ADR-0007; realm `ziipsan` para backoffice e plataforma e realm `ziipsan-portal` para os consumidores do portal, com client e emissor próprios (ADR-0022); no portal, login por CPF/CNPJ ou e-mail e senha, sem SMS, com autenticador próprio que localiza a conta pelo índice cego do documento e eventos de login sem o identificador digitado |
-| PostgreSQL 17 + PostGIS 3.5 | RDS Multi-AZ: primário com standby síncrono, PITR e réplica de leitura para relatórios, SINISA e BI (ADR-0011, ADR-0013, ADR-0027); pooler PgBouncer em modo transaction (RDS Proxy só após teste de pinning, ADR-0011) |
+| PostgreSQL 17 + PostGIS 3.7.0 | RDS Multi-AZ: primário com standby síncrono, PITR e réplica de leitura para relatórios, SINISA e BI (ADR-0011, ADR-0013, ADR-0027); pooler PgBouncer em modo transaction (RDS Proxy só após teste de pinning, ADR-0011) |
 | Armazenamento de objetos | S3 com Object Lock; prefixo e chave por tenant; retenção imutável para documentos fiscais (XML autorizado servido como gravado, ADR-0022) |
 | Outbox | Tabela no PostgreSQL, workers com `SKIP LOCKED` (ADR-0014) |
 | Cofre/KMS | AWS KMS (KEK e DEK por tenant, R1) e Secrets Manager (segredos de execução) (ADR-0011) |
@@ -198,7 +198,7 @@ ensaio de implantação com dado sintético (plano LC.1), antes da implantação
 |---|---|---|---|
 | `api`, `worker`, `migrate` | mesma imagem da P0.5, no compose | ECS Fargate | — |
 | Keycloak | `start --optimized`, TLS local, 2 réplicas (plano P0.29) | ECS Fargate, 2+ réplicas (LC.6) | — |
-| PostgreSQL 17 + PostGIS 3.5 | contêiner, PgBouncer em modo transaction; réplica de leitura local opcional | RDS Multi-AZ com réplica de leitura (LC.3) | — |
+| PostgreSQL 17 + PostGIS 3.7.0 | contêiner, PgBouncer em modo transaction; réplica de leitura local opcional | RDS Multi-AZ com réplica de leitura (LC.3) | — |
 | Backup e PITR | arquivamento de WAL e backup em volume local; PITR ensaiado com tempo registrado, sem meta (P0.28) | backup automático e PITR do RDS, snapshots em outra conta, metas do RNF-14 e RNF-15 (LC.3) | — |
 | Objetos | emulador compatível com S3, com retenção imutável se suportada (exceção do ADR-0010) | S3 com Object Lock (LC.5) | armazenamento de objetos |
 | Chaves | KEK no cofre local; DEK por tenant guardada cifrada (P0.28) | AWS KMS (LC.4) | `TenantKeyProvider` |

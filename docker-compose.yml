@@ -4,6 +4,11 @@ services:
   # ========================================================================
 
   postgres-primary:
+    # PENDENTE (P0.4, decisao do dono 31/10/2026): trocar para PostGIS 3.7.0 quando
+    # existir imagem publicada. Verificado na API do Docker Hub em 31/10/2026:
+    # postgis/postgis:17-3.7 NAO existe (so RCs de 3.7 para PG18/19) — nenhuma tag
+    # inventada aqui, e 17-3.6 nao e substituto (contraria a decisao do dono).
+    # Ate la, a verificacao local vale via PGDG/host (PG17 + PostGIS 3.7.0, ci-linux).
     image: postgis/postgis:15-3.4
     container_name: sigsan-postgres-primary
     # Superusuario de bootstrap = "postgres" (so init e operacao). A aplicacao usa sigsan_app e as

@@ -46,3 +46,11 @@ suporte em novembro de 2027, poucos meses após o go-live piloto. Atualizar a ve
 | Rodar a suíte completa e os testes de RLS na nova versão | P0 |
 | Conferir PG 17, PostGIS 3.5 e `pg_partman` na hospedagem escolhida | P0 |
 | Habilitar `pg_stat_statements` e arquivamento de WAL em homologação | P0 |
+
+## Ajuste de 31/10/2026 (decisão do dono — supersede parcial, texto original acima preservado)
+
+- **Versão do PostGIS atualizada de 3.5 para 3.7.0.** Motivo: o repositório PGDG entrega PostGIS 3.7.0; a versão 3.5 não está disponível nele. O major do PostgreSQL segue 17, sem mudança.
+- **Verificação local:** PostgreSQL 17.11 + PostGIS 3.7.0 via PGDG/host, confirmado por `PostGIS_Full_Version()`; a verificação do ci-linux em instância dedicada PG17 passa a valer contra 3.7.0.
+- **Imagem Docker pendente:** `postgis/postgis:17-3.7` ainda NÃO publicada — verificado na API do Docker Hub em 31/10/2026 (consulta por `name=17-3.7` e `name=17-3.7.0`: 0 resultados; só RCs de 3.7 para PG18/19, nenhum para PG17). Nenhuma tag foi inventada; a troca da imagem no `docker-compose.yml` e no `scripts/reset-it-db.sh` (hoje `postgis/postgis:15-3.4`) fica PENDENTE até a tag existir, e a P0.4 quanto à imagem do compose não pode ser dada como cumprida antes disso. Não usar `17-3.6` como substituto: contraria a decisão do dono (3.7.0).
+- **Diferença 3.5 → 3.7.0 a observar:** a partir do PostGIS 3.7, `address_standardizer` e `postgis_tiger_geocoder` deixam de ser fornecidos pelo PostGIS. Nenhum teste/migration do projeto foi encontrado dependendo dessas extensões (verificação em 31/10/2026: suíte completa verde em PG17/3.7.0, 973 testes); se alguma dependência surgir, será registrada em vez de mascarada.
+- **Documentos atualizados por esta decisão:** plano canônico (P0.4 e § de decisões), `docs/arquitetura/ARQUITETURA-ALVO.md`, `scripts/ci-linux.sh` e este ADR (esta seção). Arquivos históricos (ADRs 0011/0024/0033/0034, levantamentos e `docs/plano-v3/`) mantêm o texto original com 3.5 e leem-se como supersedidos por esta seção.

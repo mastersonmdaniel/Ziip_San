@@ -1243,3 +1243,30 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   vigente com padrão sem titular e fatura retida (P1.41); pgRouting na roteirização de equipes só com ADR próprio (ED-36).
 - Seguem em aberto: "notas do tenant" na Central (P4.8) e alinhamento da instância dedicada (LC.15) ao ADR-0024.
 - Plano remontado por scripts/plano/montar-v3.js (286 tarefas, 0 erros). Só documentação.
+
+### 31/10/2026 — Decisão do dono: PostGIS 3.7.0 em vez de 3.5 (P0.4)
+
+- Decisão do dono (31/10/2026, registrada pelo coordenador em execução): atualizar o projeto para
+  PostGIS 3.7.0 — a versão entregue pelo PGDG — em vez da 3.5 do plano original. Motivo: 3.5 não está
+  disponível no repositório PGDG. O major do PostgreSQL segue 17, sem mudança.
+- Verificação local: PostgreSQL 17.11 online (cluster 17, porta 5433; cluster 16 em 5432 intocado) com
+  PostGIS 3.7.0 confirmado por `PostGIS_Full_Version()` (POSTGIS 3.7.0, PGSQL 170, GEOS 3.15.0). A
+  verificação do `scripts/ci-linux.sh` em instância dedicada PG17 (porta 55433) passa a valer contra
+  3.7.0: backend BUILD SUCCESS com 973 testes, 0 falhas, e frontend verde (vitest 134 passed + build),
+  com a etapa de portas vermelha como esperado até a P0.7.
+- Imagem Docker PENDENTE, sem tag inventada: verificado na API do Docker Hub em 31/10/2026
+  (`/v2/repositories/postgis/postgis/tags?name=17-3.7` e `name=17-3.7.0`: 0 resultados; na listagem
+  geral só RCs de 3.7 para PG18/19, nenhum para PG17). Logo `docker-compose.yml` e
+  `scripts/reset-it-db.sh` seguem com `postgis/postgis:15-3.4` até a tag existir, com comentário de
+  pendência no compose; a P0.4 quanto à imagem do compose NÃO está cumprida. `17-3.6` não foi usado
+  como substituto, pois contraria a decisão do dono.
+- Diferença 3.5 → 3.7.0 observada, não mascarada: a partir do PostGIS 3.7, `address_standardizer` e
+  `postgis_tiger_geocoder` deixam de ser fornecidos pelo PostGIS. Busca no projeto em 31/10/2026 não
+  encontrou nenhum teste/migration dependendo dessas extensões (só `CREATE EXTENSION postgis` em
+  `infra/postgres/init/sql/security.sql`, sem checagem de versão), e a suíte completa passou em
+  PG17/3.7.0 — nenhuma dependência de comportamento específico do 3.5 foi encontrada.
+- Documentos atualizados: plano canônico (P0.4 e seção de decisões), `docs/arquitetura/ARQUITETURA-ALVO.md`,
+  `scripts/ci-linux.sh` (cabeçalho), comentário de pendência no `docker-compose.yml` e seção de ajuste
+  no ADR-0013 (texto original preservado). Arquivos históricos (`docs/plano-v3/`, levantamentos e
+  ADRs 0011/0024/0033/0034) mantêm o texto com 3.5 e leem-se como supersedidos por esta decisão.
+- Nada mais foi alterado por conta desta decisão: major PG segue 17, nenhuma outra versão tocada.

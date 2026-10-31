@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Settings exclusivos do scripts/ci-linux.sh (não são settings globais do usuário).
+  Motivo: o repositório jboss-public-repository-group, herdado de um POM pai, NÃO
+  contém com/fasterxml/jackson/jackson-bom/2.18.5 (responde 404 após redirect) e o
+  Wagon do Maven ficava parado em leitura SSL ali por ~10 min sem timeout útil.
+  O mesmo artefato existe no Central; espelhar só esse id para o Central resolve
+  sem tocar em nenhum POM do projeto e sem alterar a resolução dos demais repos.
+-->
+<settings>
+  <mirrors>
+    <mirror>
+      <id>jboss-public-via-central</id>
+      <mirrorOf>jboss-public-repository-group</mirrorOf>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </mirror>
+  </mirrors>
+</settings>
