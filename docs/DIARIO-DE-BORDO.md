@@ -1270,3 +1270,25 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   no ADR-0013 (texto original preservado). Arquivos históricos (`docs/plano-v3/`, levantamentos e
   ADRs 0011/0024/0033/0034) mantêm o texto com 3.5 e leem-se como supersedidos por esta decisão.
 - Nada mais foi alterado por conta desta decisão: major PG segue 17, nenhuma outra versão tocada.
+
+### 31/10/2026 — Runtime de container desta VM: Podman (Docker daemon NÃO consertado)
+
+- O daemon Docker continua inutilizável nesta VM: pull EOF no registry e runc setns
+  operation not permitted, mesmo com --privileged e seccomp unconfined. NÃO afirmar que o Docker
+  foi consertado — ele não foi.
+- Caminho que funciona, verificado pelo agente principal e reconfirmado pelo coordenador:
+  Podman 4.9.3 + crun 1.14.1, sempre com `--storage-driver=vfs --runtime crun
+  --cgroups=disabled --network=host`. Provas do coordenador: hello-world OK; postgres:17 em
+  container aceitou conexões em 127.0.0.1:55444 (log 'database system is ready', pg_isready OK,
+  SELECT 1 OK), depois parado e removido, sem container restante. Pulls funcionam via
+  Podman/Skopeo, não via cliente do daemon.
+- Limitações desta VM: sem bridge (sem DNS de serviço `postgres-primary`/`keycloak` — usar
+  127.0.0.1 com portas distintas por serviço, definidas na configuração do serviço, não em
+  mapeamento `-p`, que é ignorado com `--network=host`); sem cgroups (limites de recursos do
+  compose não se aplicam); storage vfs (mais lento, mais disco); `podman-compose` não instalado.
+- Avaliação P0.27/P0.29: uma variante Podman local SERÁ necessária para verificar P0.27 (e P0.29,
+  com 2 réplicas do Keycloak em portas distintas) nesta VM, mas só como adaptação de ambiente, a
+  criar na hora da P0.27 — não agora e não substituindo o `docker-compose.yml` do PC normal
+  (forma recomendada: `scripts/dev-up-podman.sh` com `podman run` por serviço, ou instalar
+  `podman-compose`). O compose Docker segue intacto e canônico para o PC normal. Para P0.1–P0.25,
+  o Podman não é necessário: a verificação já é feita no host (Java + PG17 dedicado).
