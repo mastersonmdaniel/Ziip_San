@@ -1368,3 +1368,36 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   (incluindo o Vault); a P0.7 manda remover 5 e deixar só o SeaweedFS em
   perfil. Seguida a P0.7 (Vault removido); o ADR não foi alterado sem decisão
   do dono.
+
+### 01/11/2026 — P0.33 executada (turno 4; tag pre-rename antes, ci-linux total verde depois)
+- Tag `pre-rename` criada antes de qualquer renomeação, no commit 613a7f4
+  (P0.7 verde), sem branch aberto.
+- Renomeação mecânica sigsan/Sigsan/SIGSAN → ziipsan/Ziipsan/ZIIPSAN em
+  conteúdo e em caminhos (pacotes br.com.ziipsan, módulos, artifactIds,
+  roles ziipsan_app/ziipsan_migrator, realm ziipsan, env ZIIPSAN_*),
+  exceto docs/ e infra/_arquivado/ (arquivo congelado da P0.7, fora do
+  escopo da busca residual; o histórico do Git preserva o anterior).
+  Busca residual: zero "sigsan" fora de docs/_arquivado/target/node_modules
+  (antes: 1.743 ocorrências em 472 arquivos, fora docs/_arquivado).
+- Códigos de problema em inglês pela tabela da P0.33 e prefixo
+  urn:ziipsan:problem:; title/detail/mensagens seguem em português.
+  titleFor passa a tratar 401, 413 e 429 explicitamente.
+- HKDF de EnvDerivedTenantKeyProvider em ziipsan/enc/v1 e ziipsan/bidx/v1,
+  com teste de vetor fixo congelado (valores calculados por implementação
+  independente, RFC 5869, com chave mestra e tenant fixos do teste).
+- Novo ProblemCodeContractTest (app): varre o fonte e falha com código fora
+  da tabela, fora do formato, com prefixo/código antigo ou com "sigsan"
+  residual (o próprio arquivo do teste é excluído da varredura, pois lista
+  os códigos antigos como dados do teste).
+- Verificação: ci-linux total verde pós-P0.33 — backend 907 testes, 0
+  falhas (903 pós-P0.25 + 1 vetor HKDF congelado + 3 do teste de contrato),
+  frontend 134 passed + build, portas OK.
+- Incidente no meio da verificação (não é do código): /tmp (tmpfs de 512M)
+  encheu com o diretório temporário do frontend da execução anterior
+  (290M), porque o ci-linux saía antes do rm em caso de falha no
+  typecheck; o node_modules seguinte veio truncado (date-fns/lucide-react)
+  e o typecheck falhou. Resolvido limpando /tmp e corrigindo o ci-linux
+  para remover o FE no trap de limpeza, em qualquer saída.
+- Decisão registrada: infra/_arquivado/ não é renomeado (arquivo da P0.7,
+  congelado por definição); a busca residual da P0.33 o exclui junto com
+  docs/, target/ e node_modules.
