@@ -252,6 +252,47 @@ public class TenantProvisioningService {
     }
 
     /**
+     * Grava o registro de auditoria do provisionamento.
+     *
+     * public.audit_log tem RLS por tenant_id = current_tenant_id(), entao o INSERT precisa da
+     * GUC definida. O save pelo JPARepository abriria outra conexao, sem a GUC, e seria
+     * barrado. Por isso a escrita e explicita e transacional.
+     */
+    private void writeProvisioningAudit(UUID tenantId, String schemaName, String displayName) {
+        String payload = Json.write(Map.of("schemaName", schemaName, "displayName", displayName));
+
+        String sql = """
+            INSERT INTO public.audit_log
+                (tenant_id, entity_type, entity_id, action, new_values, success, created_at)
+            VALUES (?, 'Tenant', ?, 'CREATE', ?::jsonb, true, NOW())
+            """;
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                // P0.25: set_config por parametro, nao por concatenacao.
+                try (PreparedStatement st = conn.prepareStatement("SELECT set_config('app.current_tenant', ?, true)")) {
+                    st.setString(1, tenantId.toString());
+                    st.execute();
+                }
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setObject(1, tenantId);
+                    ps.setObject(2, tenantId);
+                    ps.setString(3, payload);
+                    ps.executeUpdate();
+                }
+                conn.commit();
+            } catch (Exception e) {
+                conn.rollback();
+                throw e;
+            }
+        } catch (SQLException e) {
+            log.error("Falha ao gravar auditoria do provisionamento", e);
+            throw new IllegalStateException("Falha ao gravar auditoria do provisionamento", e);
+        }
+    }
+
+    /**
      * Normaliza o nome do schema para um identificador Postgres seguro.
      *
      * O nome vem de entrada externa e é interpolado em DDL, então precisa ser filtrado. O
