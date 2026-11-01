@@ -19,6 +19,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- P0.13: catálogo de permissões recurso:ação (resolução perfil → permissão). -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>

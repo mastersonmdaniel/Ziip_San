@@ -2,6 +2,7 @@ package br.com.ziipsan.app.security;
 
 import br.com.ziipsan.app.config.ZiipsanProperties;
 import br.com.ziipsan.platform.security.JwtTenantFilter;
+import br.com.ziipsan.platform.security.PermissionResolver;
 import br.com.ziipsan.platform.security.ProblemResponses;
 import br.com.ziipsan.platform.tenant.TenantCatalog;
 import org.springframework.context.annotation.Bean;
@@ -96,14 +97,24 @@ public class SecurityConfig {
         return decoder;
     }
 
-    /** Papéis do realm (realm_access.roles) viram ROLE_*, para {@code hasRole(...)}. */
+    /**
+     * Papéis do realm (realm_access.roles) viram ROLE_* (compatibilidade, ex.: {@code /api/v1/me})
+     * e, pela P0.13, também as permissões {@code recurso:ação} do catálogo: perfil de fábrica
+     * expandido para suas permissões, permissão direta mantida como está. As rotas verificam as
+     * permissões com {@code hasAuthority(...)}, nunca mais os papéis.
+     */
     static JwtAuthenticationConverter jwtAuthenticationConverter() {
         Converter<Jwt, Collection<GrantedAuthority>> roles = jwt -> {
             List<GrantedAuthority> out = new ArrayList<>();
             Object realmAccess = jwt.getClaims().get("realm_access");
             if (realmAccess instanceof Map<?, ?> map && map.get("roles") instanceof Collection<?> list) {
+                List<String> roleNames = new ArrayList<>();
                 for (Object role : list) {
+                    roleNames.add(String.valueOf(role));
                     out.add(new SimpleGrantedAuthority("ROLE_" + role));
+                }
+                for (String permission : PermissionResolver.permissionsForRoles(roleNames)) {
+                    out.add(new SimpleGrantedAuthority(permission));
                 }
             }
             return out;
