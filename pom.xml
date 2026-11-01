@@ -36,6 +36,38 @@
                 <artifactId>jts-core</artifactId>
                 <version>${jts.version}</version>
             </dependency>
+            <!-- fix(build): Tomcat embarcado 11.0.27, acima do gerenciado pelo Boot 4.1.1
+                 (11.0.24). 11.0.24 acumula 9 achados CVSS >= 7 no OWASP (lote 2026-08-25,
+                 corrigido em 11.0.25: CVE-2026-65182, 65183, 65637, 65905, 65927, 66422,
+                 68525, 68569). 11.0.27 e a versao 11.0.x mais recente no Central e cobre
+                 tambem os lotes seguintes (11.0.26, 2026-09-15; 11.0.27, 2026-10-12).
+                 O 9o achado listado (CVE-2026-66873) nao tem registro publico (NVD e
+                 CVE.org: inexistente em 2026-11-01), logo nenhuma versao de fix pode ser
+                 atribuida a ele — a versao mais recente da linha 11.0.x e a escolha
+                 defensavel, sem subir o Boot.
+                 POR QUE ENTRADA EXPLICITA E NAO PROPERTY: o projeto importa
+                 spring-boot-dependencies via scope=import (nao usa parent). Verificado
+                 neste build: <tomcat.version>11.0.27</tomcat.version> no properties
+                 avalia para 11.0.27, mas a arvore continua resolvendo 11.0.24 — o
+                 dependencyManagement importado e interpolado com as properties do
+                 proprio BOM. Entradas explicitas no dependencyManagement do projeto
+                 tem precedencia sobre as importadas. Remover quando o Boot gerenciar
+                 >= 11.0.27. Nao suprimir, nao baixar o limiar CVSS, nao excluir do scan. -->
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>11.0.27</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-el</artifactId>
+                <version>11.0.27</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-websocket</artifactId>
+                <version>11.0.27</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
