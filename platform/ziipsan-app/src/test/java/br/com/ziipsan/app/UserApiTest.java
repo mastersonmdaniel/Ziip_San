@@ -52,7 +52,9 @@ class UserApiTest extends AppIntegrationTestBase {
                         .tenantId(TENANT_B)
                         .schemaName(SCHEMA_B)
                         .displayName("Tenant B da API de usuarios")
-                        .cnpj("11222333000181")
+                        // CNPJ distinto do tenant B do RegistryApiE2ETest (11222333000181):
+                        // tenant_catalog.cnpj e UNIQUE e os testes dividem uma JVM/banco no CI.
+                        .cnpj("33444555000181")
                         .email("b-users@teste.com.br")
                         .plan("PRO")
                         .build());
