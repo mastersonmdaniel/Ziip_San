@@ -206,10 +206,19 @@ class TenantProvisioningServiceTest {
         assertThat(result.schemaName()).isEqualTo(SCHEMA);
         assertThat(schemaExists()).isTrue();
 
+        // P0.25: a V1_1 reescrita cria só consumer_units e addresses (users/roles/
+        // documents/service_orders voltam em P0.13/P1.31); + flyway_schema_history = 3.
         int tables = count("SELECT count(*) FROM information_schema.tables WHERE table_schema = ?", SCHEMA);
         assertThat(tables)
-                .as("o template de tenant tem 8 tabelas; 0 significaria Flyway não achou migration")
-                .isGreaterThanOrEqualTo(8);
+                .as("o template de tenant tem consumer_units, addresses e flyway_schema_history; "
+                        + "0 significaria Flyway não achou migration")
+                .isGreaterThanOrEqualTo(3);
+        int consumerUnits = count("SELECT count(*) FROM information_schema.tables "
+                + "WHERE table_schema = ? AND table_name = 'consumer_units'", SCHEMA);
+        int addresses = count("SELECT count(*) FROM information_schema.tables "
+                + "WHERE table_schema = ? AND table_name = 'addresses'", SCHEMA);
+        assertThat(consumerUnits).as("consumer_units (raiz do cadastro) deve existir").isEqualTo(1);
+        assertThat(addresses).as("addresses deve existir").isEqualTo(1);
     }
 
     @Test
