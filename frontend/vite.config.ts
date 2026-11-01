@@ -47,7 +47,6 @@ export default defineConfig(({ mode }) => {
           manualChunks: {
             vendor: ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query', 'axios'],
             forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
-            auth: ['oidc-client-ts'],
           },
         },
       },

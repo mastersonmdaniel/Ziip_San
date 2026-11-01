@@ -1,39 +1,17 @@
-import { User } from 'oidc-client-ts'
-import { vi } from 'vitest'
-import { setAuthClientForTests, type AuthClient } from '@services/auth/oidc'
+/**
+ * Ajudantes de teste para o fluxo BFF (P0.14). Não há mais cliente OIDC falso: a
+ * sessão é um cookie HttpOnly do servidor, que o jsdom não consegue pôr (HttpOnly
+ * não existe aqui) — os testes de HTTP usam o adaptador falso do axios, e os
+ * testes do módulo de auth usam o cookie anti-CSRF (legível) e o `browser.assign`
+ * espionado. Nenhum token aparece em storage em nenhum teste.
+ */
 
-/** Usuário OIDC de mentira (token opaco, só para teste). */
-export function fakeOidcUser(overrides: { access_token?: string; expiresInSeconds?: number; state?: unknown } = {}): User {
-  return new User({
-    access_token: overrides.access_token ?? 'token-de-teste',
-    refresh_token: 'refresh-de-teste',
-    token_type: 'Bearer',
-    profile: { sub: 'user-1', iss: 'http://localhost:8080/realms/ziipsan', aud: 'ziipsan-web', exp: 0, iat: 0 },
-    expires_at: Math.floor(Date.now() / 1000) + (overrides.expiresInSeconds ?? 300),
-    userState: overrides.state,
-  })
+/** Põe o cookie anti-CSRF legível (o que o backend grava em /bff/csrf). */
+export function setXsrfCookie(token = 'csrf-de-teste'): void {
+  document.cookie = `XSRF-TOKEN=${encodeURIComponent(token)}; path=/`
 }
 
-export type FakeAuthClient = { [K in keyof AuthClient]: ReturnType<typeof vi.fn> } & AuthClient
-
-/** Cliente OIDC falso instalado no lugar do UserManager. Sem usuário = sem sessão. */
-export function installFakeAuth(user: User | null = null): FakeAuthClient {
-  let current = user
-  const fake = {
-    getUser: vi.fn(async () => current),
-    signinRedirect: vi.fn(async () => undefined),
-    signinCallback: vi.fn(async () => current ?? undefined),
-    signinSilent: vi.fn(async () => current),
-    signoutRedirect: vi.fn(async () => undefined),
-    removeUser: vi.fn(async () => {
-      current = null
-    }),
-  }
-  setAuthClientForTests(fake as unknown as AuthClient)
-  return fake as unknown as FakeAuthClient
-}
-
-/** Substitui o antigo localStorage.setItem('access_token', ...): entra com um usuário válido. */
-export function signInForTests(accessToken = 'token-de-teste'): FakeAuthClient {
-  return installFakeAuth(fakeOidcUser({ access_token: accessToken }))
+/** Apaga o cookie anti-CSRF. */
+export function clearXsrfCookie(): void {
+  document.cookie = 'XSRF-TOKEN=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
 }

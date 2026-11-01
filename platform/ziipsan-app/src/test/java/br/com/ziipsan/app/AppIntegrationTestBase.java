@@ -3,6 +3,7 @@ package br.com.ziipsan.app;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
  */
 @SpringBootTest(classes = ZiipsanApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
+@Import(BffTestClientConfig.class)
 abstract class AppIntegrationTestBase {
 
     @Autowired
@@ -37,6 +39,23 @@ abstract class AppIntegrationTestBase {
         registry.add("ziipsan.oidc.public-key", TestTokens::publicKeyBase64);
         registry.add("ziipsan.crypto.provider", () -> "dev-env");
         registry.add("ziipsan.crypto.dev-master-key", () -> DEV_MASTER_KEY);
+        // P0.14 (corrigido no turno 9): o client confidencial existe no contexto de teste
+        // via BffTestClientConfig (endpoints EXPLÍCITOS, sem discovery — o Boot 4.1 chama
+        // fromIssuerLocation sempre que issuer-uri != null, e "" explodia com
+        // "issuer cannot be empty"). As properties abaixo continuam existindo só para o
+        // binding de OAuth2ClientProperties não quebrar no placeholder ${ZIIPSAN_OIDC_ISSUER}
+        // do yml; o repositório usado é o bean, não o auto-config. O segredo é de teste.
+        registry.add("spring.security.oauth2.client.registration.ziipsan-bff.client-secret", () -> "test-bff-secret");
+        registry.add("spring.security.oauth2.client.provider.keycloak.issuer-uri", () -> "");
+        registry.add("spring.security.oauth2.client.provider.keycloak.authorization-uri",
+                () -> TestTokens.ISSUER + "/protocol/openid-connect/auth");
+        registry.add("spring.security.oauth2.client.provider.keycloak.token-uri",
+                () -> TestTokens.ISSUER + "/protocol/openid-connect/token");
+        registry.add("spring.security.oauth2.client.provider.keycloak.jwk-set-uri",
+                () -> TestTokens.ISSUER + "/protocol/openid-connect/certs");
+        registry.add("spring.security.oauth2.client.provider.keycloak.user-info-uri",
+                () -> TestTokens.ISSUER + "/protocol/openid-connect/userinfo");
+        registry.add("spring.security.oauth2.client.provider.keycloak.user-name-attribute", () -> "preferred_username");
     }
 
     /** Chave mestra de teste, gerada a cada JVM: nenhum dado cifrado aqui sobrevive ao teste nem vale fora dele. */

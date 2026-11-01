@@ -7,21 +7,22 @@ interface AuthContextType {
   user: AuthUser | null
   isAuthenticated: boolean
   loading: boolean
-  /** Falha ao carregar o usuário com um token válido (ex.: backend fora do ar). */
+  /** Falha ao carregar o usuário com uma sessão válida (ex.: backend fora do ar). 401 não é erro: é sem sessão. */
   error: string | null
-  /** Vai para o Keycloak; returnTo é o caminho interno para voltar depois. */
+  /** Vai para o login do backend (que leva ao Keycloak); returnTo é o caminho interno para voltar depois. */
   login: (returnTo?: string) => Promise<void>
-  /** Conclui o login em /auth/callback e devolve o caminho de volta. */
-  completeLogin: () => Promise<string>
+  /** Rota legada /auth/callback: carrega o usuário e devolve o caminho de volta. */
+  completeLogin: (url?: string) => Promise<string>
   logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 /**
- * Estado de autenticação da aplicação. Quem autentica é o Keycloak (oidc-client-ts); aqui só se
- * sabe se há token e quem é o usuário segundo o backend (GET /api/me). A senha nunca passa pelo
- * SPA: o formulário é o do Keycloak.
+ * Estado de autenticação da aplicação (P0.14, BFF). Quem autentica é o Keycloak, via
+ * o backend; aqui só se sabe se há sessão e quem é o usuário segundo o backend
+ * (GET /api/v1/me). Nenhum token passa pelo SPA: a sessão é um cookie HttpOnly do
+ * servidor. A senha nunca passa pelo SPA: o formulário é o do Keycloak.
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
@@ -35,16 +36,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(null)
     } catch (e) {
       setUser(null)
-      setError(errorMessage(e))
+      // 401 = sem sessão: o guarda de rota leva para /login; não é erro a exibir.
+      const status = (e as { response?: { status?: number } } | null)?.response?.status
+      setError(status === 401 ? null : errorMessage(e))
     }
   }, [])
 
   useEffect(() => {
     let cancelled = false
     async function init() {
-      // Em /auth/callback ainda não há token; quem carrega o usuário é o completeLogin.
-      if (window.location.pathname !== oidc.CALLBACK_PATH && (await oidc.getAccessToken())) {
-        if (!cancelled) await loadMe()
+      // Em /auth/callback ainda não se carrega o usuário; quem carrega é o completeLogin.
+      if (window.location.pathname !== oidc.CALLBACK_PATH) {
+        await loadMe()
       }
       if (!cancelled) setLoading(false)
     }
@@ -57,12 +60,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback((returnTo?: string) => oidc.startLogin(returnTo), [])
 
   // O StrictMode monta o callback duas vezes; as duas montagens dividem o mesmo processamento (e o
-  // mesmo GET /api/me).
+  // mesmo GET /api/v1/me).
   const completing = useRef<Promise<string> | null>(null)
-  const completeLogin = useCallback(() => {
+  const completeLogin = useCallback((url?: string) => {
     if (!completing.current) {
       completing.current = (async () => {
-        const returnTo = await oidc.completeLogin()
+        const returnTo = oidc.completeLogin(url)
         await loadMe()
         setLoading(false)
         return returnTo

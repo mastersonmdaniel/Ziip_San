@@ -1,13 +1,12 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { MemoryRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { axe } from 'vitest-axe'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
 import type { AxiosAdapter } from 'axios'
-import { AuthProvider } from '@hooks/useAuth'
+import { AuthProvider, useAuth } from '@hooks/useAuth'
 import { api } from '@services/api'
-import { ErrorResponse } from 'oidc-client-ts'
-import { fakeOidcUser, installFakeAuth } from '../test/auth'
+import { browser } from '@services/auth/oidc'
 import { TEST_USER } from '../test/fixtures'
 import { AuthCallback } from './AuthCallback'
 import { Login } from './Login'
@@ -25,6 +24,14 @@ function fakeMe(status = 200) {
   return adapter
 }
 
+/** Guarda igual ao PrivateRoute do App: sem usuário, /cadastro/clientes volta para /login. */
+function GuardedClientes() {
+  const { isAuthenticated, loading } = useAuth()
+  if (loading) return null
+  if (!isAuthenticated) return <Navigate to="/login" replace />
+  return <h1>Tela de clientes</h1>
+}
+
 function renderAt(route: string | { pathname: string; state?: unknown }) {
   return render(
     <MemoryRouter initialEntries={[route]}>
@@ -32,7 +39,7 @@ function renderAt(route: string | { pathname: string; state?: unknown }) {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route path="/cadastro/clientes" element={<h1>Tela de clientes</h1>} />
+          <Route path="/cadastro/clientes" element={<GuardedClientes />} />
           <Route path="/" element={<h1>Início</h1>} />
         </Routes>
       </AuthProvider>
@@ -40,9 +47,17 @@ function renderAt(route: string | { pathname: string; state?: unknown }) {
   )
 }
 
+let assign: MockInstance<[url: string], void>
+beforeEach(() => {
+  assign = vi.spyOn(browser, 'assign').mockImplementation(() => undefined)
+})
+afterEach(() => {
+  assign.mockRestore()
+})
+
 describe('tela de entrada (/login)', () => {
   it('só tem o botão Entrar: nada de empresa, usuário ou senha no SPA', async () => {
-    installFakeAuth(null)
+    fakeMe(401)
     const { container } = renderAt('/login')
     expect(await screen.findByRole('button', { name: 'Entrar' })).toBeEnabled()
     expect(screen.queryAllByRole('textbox')).toHaveLength(0)
@@ -50,17 +65,19 @@ describe('tela de entrada (/login)', () => {
     expect(await axe(container)).toHaveNoViolations()
   })
 
-  it('Entrar inicia o fluxo no Keycloak levando a tela de origem', async () => {
-    const auth = installFakeAuth(null)
+  it('Entrar vai para o login do backend levando a tela de origem', async () => {
+    fakeMe(401)
     const user = userEvent.setup()
     renderAt({ pathname: '/login', state: { from: '/cadastro/clientes' } })
     await user.click(await screen.findByRole('button', { name: 'Entrar' }))
-    expect(auth.signinRedirect).toHaveBeenCalledWith({ state: { returnTo: '/cadastro/clientes' } })
+    expect(assign).toHaveBeenCalledWith('/bff/login?returnTo=%2Fcadastro%2Fclientes')
   })
 
-  it('Keycloak fora do ar mostra erro e libera o botão', async () => {
-    const auth = installFakeAuth(null)
-    auth.signinRedirect.mockRejectedValue(new TypeError('Failed to fetch'))
+  it('login do backend fora do ar mostra erro e libera o botão', async () => {
+    fakeMe(401)
+    assign.mockImplementation(() => {
+      throw new TypeError('Failed to fetch')
+    })
     const user = userEvent.setup()
     renderAt('/login')
     await user.click(await screen.findByRole('button', { name: 'Entrar' }))
@@ -69,43 +86,33 @@ describe('tela de entrada (/login)', () => {
   })
 
   it('com sessão válida, /login segue direto para a aplicação', async () => {
-    installFakeAuth(fakeOidcUser())
     fakeMe()
     renderAt('/login')
     expect(await screen.findByRole('heading', { name: 'Início' })).toBeInTheDocument()
   })
 
-  it('token válido mas /api/me falhando: mostra o erro em vez de fingir que entrou', async () => {
-    installFakeAuth(fakeOidcUser())
+  it('sessão válida mas /api/me falhando: mostra o erro em vez de fingir que entrou', async () => {
     fakeMe(503)
     renderAt('/login')
     expect(await screen.findByRole('alert')).toHaveTextContent('Sua sessão não pôde ser carregada')
   })
 })
 
-describe('retorno do Keycloak (/auth/callback)', () => {
-  it('conclui o login, carrega /api/me e volta para a tela de origem', async () => {
-    const auth = installFakeAuth(null)
-    auth.signinCallback.mockImplementation(async () => {
-      const u = fakeOidcUser({ state: { returnTo: '/cadastro/clientes' } })
-      auth.getUser.mockResolvedValue(u)
-      return u
-    })
+describe('retorno legado (/auth/callback)', () => {
+  it('carrega /api/me e volta para a tela de origem', async () => {
     const me = fakeMe()
-    renderAt('/auth/callback?code=abc&state=xyz')
+    renderAt('/auth/callback?returnTo=/cadastro/clientes')
     expect(await screen.findByRole('heading', { name: 'Tela de clientes' })).toBeInTheDocument()
-    expect(auth.signinCallback).toHaveBeenCalledTimes(1)
     await waitFor(() => expect(me).toHaveBeenCalled())
     expect(me.mock.calls[0][0].url).toBe('/me')
-    expect(me.mock.calls[0][0].headers.Authorization).toBe('Bearer token-de-teste')
+    expect(me.mock.calls[0][0].headers.Authorization).toBeUndefined()
   })
 
-  it('erro devolvido pelo Keycloak aparece com a descrição e um caminho para tentar de novo', async () => {
-    const auth = installFakeAuth(null)
-    auth.signinCallback.mockRejectedValue(new ErrorResponse({ error: 'access_denied', error_description: 'Acesso negado pelo usuário' }))
-    const { container } = renderAt('/auth/callback?error=access_denied&state=xyz')
-    expect(await screen.findByRole('alert')).toHaveTextContent('Acesso negado pelo usuário')
-    expect(screen.getByRole('link', { name: 'Tentar de novo' })).toHaveAttribute('href', '/login')
+  it('/api/me falhando no callback termina na tela de entrada, com o erro e um caminho para tentar de novo', async () => {
+    fakeMe(503)
+    const { container } = renderAt('/auth/callback?returnTo=/cadastro/clientes')
+    expect(await screen.findByRole('alert')).toHaveTextContent('Sua sessão não pôde ser carregada')
+    expect(screen.getByRole('button', { name: 'Entrar' })).toBeInTheDocument()
     expect(await axe(container)).toHaveNoViolations()
   })
 })

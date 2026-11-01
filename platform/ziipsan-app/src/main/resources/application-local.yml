@@ -13,6 +13,12 @@ ziipsan:
   oidc:
     issuer: ${ZIIPSAN_OIDC_ISSUER:http://localhost:8080/realms/ziipsan}
     jwk-set-uri: ${ZIIPSAN_OIDC_JWK_SET_URI:http://localhost:8080/realms/ziipsan/protocol/openid-connect/certs}
+  # P0.14, EXCECAO EXPLICITA DO PERFIL LOCAL (sem TLS): o cookie de sessao perde
+  # o prefixo __Host- e o Secure, porque o navegador REJEITA __Host- sem Secure.
+  # Nunca copie isto para prod: la o padrao (__Host- + Secure) vale.
+  bff:
+    cookie-name: ziipsan-session
+    cookie-secure: false
   cors:
     allowed-origins: ${ZIIPSAN_CORS_ORIGINS:http://localhost:3000}
   # Chave mestra de desenvolvimento em ZIIPSAN_DEV_MASTER_KEY (openssl rand -base64 32), fora do repositório.

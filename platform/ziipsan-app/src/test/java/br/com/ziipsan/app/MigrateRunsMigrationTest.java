@@ -32,6 +32,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(classes = ZiipsanApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ActiveProfiles("migrate")
+// P0.14: sem o registro BFF explicito, o auto-config do Boot tentaria montar o
+// repositorio a partir das properties — e o issuer-uri vazio (override de teste
+// para evitar discovery) explode com "issuer cannot be empty". Ver BffTestClientConfig.
+@org.springframework.context.annotation.Import(BffTestClientConfig.class)
 class MigrateRunsMigrationTest extends MigrationProfileTestBase {
 
     @DynamicPropertySource

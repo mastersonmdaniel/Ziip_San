@@ -6,9 +6,10 @@ import { Button } from '@components/ui/Button'
 import { useAuth } from '@hooks/useAuth'
 
 /**
- * Entrada no sistema. Não há formulário aqui: o botão leva ao Keycloak (authorization code com
- * PKCE), que pede usuário e senha e devolve em /auth/callback. A empresa (tenant) não é digitada:
- * vem do cadastro do usuário no Keycloak, dentro do token.
+ * Entrada no sistema. Não há formulário aqui: o botão leva ao login do backend (BFF, P0.14),
+ * que leva ao Keycloak (authorization code), que pede usuário e senha e devolve o navegador
+ * para a tela de onde o usuário veio. A empresa (tenant) não é digitada: vem do cadastro
+ * do usuário no Keycloak, dentro do token guardado no servidor.
  */
 export function Login() {
   const { login, isAuthenticated, error } = useAuth()

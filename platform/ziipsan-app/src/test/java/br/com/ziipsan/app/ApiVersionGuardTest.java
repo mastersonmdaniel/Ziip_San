@@ -16,7 +16,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * <p>Varre os handler mappings em runtime (não regex sobre o código-fonte, que
  * aprovaria strings inocentes e reprovaria comentários). Allowlist explícita:
- * /error do Spring, /actuator/health e /v3/api-docs (permitidos sem token).
+ * /error do Spring, /actuator/health e /v3/api-docs (permitidos sem token) e
+ * /bff/** (P0.14: endpoints de INFRA do BFF — login, CSRF — deliberadamente
+ * fora de /api/v1 para não caírem no RoutePermissionTest, que exige permissão
+ * do catálogo para toda rota de negócio; não são rotas de negócio).
  * Qualquer controller novo fora de /api/v1 quebra este teste.
  */
 class ApiVersionGuardTest extends AppIntegrationTestBase {
@@ -26,7 +29,7 @@ class ApiVersionGuardTest extends AppIntegrationTestBase {
     private RequestMappingHandlerMapping handlerMapping;
 
     @Test
-    @DisplayName("toda rota mapeada é /api/v1/**, /error ou /actuator/health")
+    @DisplayName("toda rota mapeada é /api/v1/**, /bff/**, /error ou /actuator/health")
     void everyRouteIsVersioned() {
         List<String> offending = new ArrayList<>();
         handlerMapping.getHandlerMethods().forEach((info, method) -> {
@@ -36,7 +39,8 @@ class ApiVersionGuardTest extends AppIntegrationTestBase {
             }
             condition.getPatterns().forEach(pattern -> {
                 String path = pattern.getPatternString();
-                if (!path.startsWith("/api/v1") && !path.equals("/error")
+                if (!path.startsWith("/api/v1") && !path.startsWith("/bff/")
+                        && !path.equals("/error")
                         && !path.startsWith("/actuator/health")
                         && !path.startsWith("/v3/api-docs")) {
                     offending.add(path + " -> " + method);

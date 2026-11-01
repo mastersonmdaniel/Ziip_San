@@ -11,6 +11,29 @@ spring:
     enabled: false
   jpa:
     open-in-view: false
+  # P0.14 (BFF): sessao no PostgreSQL (spring-session-jdbc, tabelas core V5).
+  # No Boot 4.1 NAO ha auto-config de sessao: a propriedade spring.session.* e
+  # inerte, e a sessao e ligada por @EnableJdbcHttpSession em SecurityConfig
+  # (timeout 1800s, tabela SPRING_SESSION, sem DDL — quem cria e o job migrate
+  # da P0.6, e a api nao tem DDL). Nada de spring.session.* aqui para nao
+  # sugerir um mecanismo que nao existe.
+  # P0.14: client confidencial do BFF (realm ziipsan, ver infra/keycloak/realms).
+  # O segredo vem do ambiente/cofre, SEM valor padrao: sem ele a subida falha, em
+  # vez de subir um BFF que nao consegue trocar o codigo por token. Nunca no repo.
+  security:
+    oauth2:
+      client:
+        registration:
+          ziipsan-bff:
+            provider: keycloak
+            client-id: ziipsan-bff
+            client-secret: ${ZIIPSAN_BFF_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: openid, profile, email
+        provider:
+          keycloak:
+            issuer-uri: ${ZIIPSAN_OIDC_ISSUER}
   mvc:
     problemdetails:
       enabled: true

@@ -24,5 +24,18 @@ abstract class MigrationProfileTestBase {
         registry.add("ziipsan.oidc.issuer", () -> TestTokens.ISSUER);
         registry.add("ziipsan.oidc.audience", () -> TestTokens.AUDIENCE);
         registry.add("ziipsan.oidc.public-key", TestTokens::publicKeyBase64);
+        // P0.14 (BFF): mesmos overrides de AppIntegrationTestBase — endpoints explicitos,
+        // sem discovery do Keycloak, segredo de teste. Ver o comentario la.
+        registry.add("spring.security.oauth2.client.registration.ziipsan-bff.client-secret", () -> "test-bff-secret");
+        registry.add("spring.security.oauth2.client.provider.keycloak.issuer-uri", () -> "");
+        registry.add("spring.security.oauth2.client.provider.keycloak.authorization-uri",
+                () -> TestTokens.ISSUER + "/protocol/openid-connect/auth");
+        registry.add("spring.security.oauth2.client.provider.keycloak.token-uri",
+                () -> TestTokens.ISSUER + "/protocol/openid-connect/token");
+        registry.add("spring.security.oauth2.client.provider.keycloak.jwk-set-uri",
+                () -> TestTokens.ISSUER + "/protocol/openid-connect/certs");
+        registry.add("spring.security.oauth2.client.provider.keycloak.user-info-uri",
+                () -> TestTokens.ISSUER + "/protocol/openid-connect/userinfo");
+        registry.add("spring.security.oauth2.client.provider.keycloak.user-name-attribute", () -> "preferred_username");
     }
 }

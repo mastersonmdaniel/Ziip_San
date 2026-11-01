@@ -24,6 +24,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(classes = ZiipsanApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ActiveProfiles("worker")
+// P0.14: idem MigrateRunsMigrationTest — registro BFF explicito para o auto-config
+// do Boot nao tentar o discovery com o issuer-uri vazio de teste.
+@org.springframework.context.annotation.Import(BffTestClientConfig.class)
 class WorkerWithoutMigratorTest extends MigrationProfileTestBase {
 
     @DynamicPropertySource

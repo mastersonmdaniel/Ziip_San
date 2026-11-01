@@ -1,6 +1,6 @@
 /**
  * Preferências de interface (hoje só o tema) em localStorage. Nada de token, tenant ou dado
- * pessoal passa por aqui: a sessão é do oidc-client-ts, em sessionStorage.
+ * pessoal passa por aqui: a sessão é do servidor (BFF, P0.14), num cookie HttpOnly.
  */
 export function readPreference(key: string): string | null {
   try {

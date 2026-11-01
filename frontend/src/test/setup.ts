@@ -1,21 +1,18 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
-import { afterEach, beforeEach, expect } from 'vitest'
+import { afterEach, expect } from 'vitest'
 import * as axeMatchers from 'vitest-axe/matchers'
-import { installFakeAuth } from './auth'
-import { setAuthClientForTests } from '@services/auth/oidc'
+import { clearXsrfCookie } from './auth'
 
 expect.extend(axeMatchers)
 
-// Todo teste começa sem sessão e com um cliente OIDC falso: nenhum teste fala com um Keycloak de
-// verdade nem herda o login de outro. Quem precisa de sessão chama signInForTests().
-beforeEach(() => {
-  installFakeAuth(null)
-})
-
+// Todo teste começa sem sessão: no fluxo BFF (P0.14) não há cliente OIDC falso nem
+// token em storage — a sessão é um cookie HttpOnly do servidor, fora do alcance do
+// jsdom. Quem precisa de sessão usa o adaptador falso do axios (/api/me) ou o cookie
+// anti-CSRF legível (setXsrfCookie). Nenhum teste fala com um Keycloak de verdade.
 afterEach(() => {
   cleanup()
-  setAuthClientForTests(null)
+  clearXsrfCookie()
   sessionStorage.clear()
   localStorage.clear()
 })

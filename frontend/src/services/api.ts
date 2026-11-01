@@ -1,5 +1,5 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
-import { getAccessToken, goToLogin, renewAccessToken } from '@services/auth/oidc'
+import { ensureCsrf, getCsrfToken, goToLogin } from '@services/auth/oidc'
 import { resolveApiBaseUrl } from '@services/runtimeConfig'
 
 /**
@@ -7,11 +7,13 @@ import { resolveApiBaseUrl } from '@services/runtimeConfig'
  * Vite repassa para o backend; o prefixo NÃO é removido, porque o contrato do cadastro é
  * /api/v1/registry/...).
  *
- * Autenticação: só `Authorization: Bearer <access token do Keycloak>`. Não há cabeçalho de tenant
- * (X-Tenant-ID/X-Tenant-UUID): o tenant vem do claim tenant_id do token, e o backend responde 403
- * se receber um cabeçalho que diverge dele. O token fica com o oidc-client-ts (sessionStorage);
- * este módulo não grava nada em storage. Dados pessoais (CPF/CNPJ etc.) nunca vão para
- * localStorage/sessionStorage/URL.
+ * Autenticação (P0.14, BFF): NENHUM token no navegador. O navegador envia o cookie de
+ * sessão (withCredentials) e o anti-CSRF (XSRF-TOKEN -> X-XSRF-TOKEN, gerenciado pelo
+ * axios a partir do cookie). Nunca é enviado Authorization: Bearer, e qualquer
+ * Authorization que chegue a este cliente é removido antes de sair. Não há cabeçalho
+ * de tenant (X-Tenant-ID/X-Tenant-UUID): o tenant vem do claim tenant_id do token
+ * guardado no servidor, e o backend responde 403 se receber um cabeçalho que diverge
+ * dele. Dados pessoais (CPF/CNPJ etc.) nunca vão para localStorage/sessionStorage/URL.
  */
 /**
  * Fallback de build (VITE_API_BASE_URL ou /api/v1). O valor EFETIVO por requisição vem
@@ -24,6 +26,9 @@ export const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || '/api/v
 export const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
+  withCredentials: true,
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
   headers: { 'Content-Type': 'application/json' },
 })
 
@@ -31,29 +36,30 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   // P0.5: a base de runtime (se houver) vence o fallback de build em cada requisição,
   // sem recriar a instância. Sem config de runtime, resolveApiBaseUrl() devolve o fallback.
   config.baseURL = resolveApiBaseUrl()
-  const token = await getAccessToken()
-  if (token) config.headers.Authorization = `Bearer ${token}`
+  // Defesa: este cliente nunca envia Bearer, mesmo que algum código o tenha posto.
+  delete config.headers.Authorization
+  // POST/PUT/DELETE exigem o anti-CSRF do BFF; o GET do /bff/csrf grava o cookie.
+  // O cabeçalho é posto aqui (não só pelo adaptador xhr do axios), para valer com
+  // qualquer adaptador — inclusive o falso dos testes.
+  if (config.method && !['get', 'head', 'options'].includes(config.method.toLowerCase())) {
+    await ensureCsrf()
+    const csrf = getCsrfToken()
+    if (csrf) config.headers['X-XSRF-TOKEN'] = csrf
+  }
   return config
 })
 
-type RetriableConfig = InternalAxiosRequestConfig & { _retry?: boolean }
-
 /**
- * 401: o token venceu ou foi revogado. Renova UMA vez e repete a requisição; se a renovação falhar,
- * a sessão acabou e o usuário volta para a tela de entrada. Um segundo 401 com token novo não
- * renova de novo (evita laço) e sobe como erro para a tela.
+ * 401: a sessão acabou. Em chamada de negócio, volta para o login do backend (que
+ * depois devolve para a tela atual). Em GET /me, NÃO redireciona: quem decide é o
+ * guarda de rota (PrivateRoute -> /login), e o redirecionamento aqui tiraria o
+ * usuário da tela de entrada antes de ele clicar em Entrar.
  */
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const original = error.config as RetriableConfig | undefined
-    if (error.response?.status === 401 && original && !original._retry) {
-      original._retry = true
-      const token = await renewAccessToken()
-      if (token) {
-        original.headers.Authorization = `Bearer ${token}`
-        return api.request(original)
-      }
+    const original = error.config as InternalAxiosRequestConfig | undefined
+    if (error.response?.status === 401 && original && !original.url?.endsWith('/me')) {
       await goToLogin()
     }
     return Promise.reject(error)
@@ -61,8 +67,8 @@ api.interceptors.response.use(
 )
 
 /**
- * Usuário atual, como o backend devolve em GET /api/me (montado a partir do token validado:
- * sub, preferred_username, email, name, realm_access.roles e tenant_id).
+ * Usuário atual, como o backend devolve em GET /api/v1/me (montado a partir do token
+ * guardado no servidor: sub, preferred_username, email, name, realm_access.roles e tenant_id).
  */
 export interface AuthUser {
   id: string

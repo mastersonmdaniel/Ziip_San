@@ -1,29 +1,30 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Alert, Spinner } from '@components/ui/Alert'
 import { useAuth } from '@hooks/useAuth'
 
 /**
- * Volta do Keycloak (/auth/callback?code=...&state=...). Troca o código pelos tokens (com o
- * code_verifier guardado nesta aba) e segue para a tela de onde o usuário veio. A navegação usa
- * replace: o código (de uso único) não fica no histórico do navegador.
+ * Rota legada /auth/callback (fluxo antigo com oidc-client-ts). No fluxo BFF (P0.14)
+ * o backend já devolve o navegador direto para o caminho de volta, então ninguém
+ * deveria cair aqui; quem cair (link antigo com ?returnTo=...) só carrega o usuário
+ * e segue. Não há mais troca de código por token no navegador.
  */
 export function AuthCallback() {
   const { completeLogin } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
-    completeLogin()
+    // A URL vem do router (não de window.location): no teste com MemoryRouter a
+    // barra do navegador não muda, e em produção as duas coincidem.
+    completeLogin(`${window.location.origin}${location.pathname}${location.search}`)
       .then((returnTo) => {
         if (active) navigate(returnTo, { replace: true })
       })
-      .catch((e: unknown) => {
-        if (!active) return
-        // ErrorResponse do oidc-client-ts traz error_description do Keycloak (ex.: acesso negado).
-        const description = (e as { error_description?: unknown } | null)?.error_description
-        setError(typeof description === 'string' && description ? description : 'O login não foi concluído.')
+      .catch(() => {
+        if (active) setError('O login não foi concluído.')
       })
     return () => {
       active = false

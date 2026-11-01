@@ -15,7 +15,31 @@ import java.util.List;
  */
 @Validated
 @ConfigurationProperties("ziipsan")
-public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc, @Valid Cors cors) {
+public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc, @Valid Cors cors, Bff bff) {
+
+    /**
+     * Cookie de sessão do BFF (P0.14). Padrão: {@code __Host-ziipsan-session} com
+     * Secure (o prefixo __Host- EXIGE Secure + Path=/ + sem Domain). Sem TLS, o
+     * perfil {@code local} desliga o Secure E tira o prefixo (navegador rejeita
+     * __Host- sem Secure) — exceção explícita de perfil, nunca em produção.
+     */
+    public record Bff(String cookieName, Boolean cookieSecure) {
+        // Construtor compacto (mesmo padrão do Cors abaixo): um acessor de record
+        // NÃO pode mudar o tipo do componente, então o default vive aqui e o
+        // acessor gerado já devolve o valor normalizado.
+        public Bff {
+            if (cookieName == null || cookieName.isBlank()) {
+                cookieName = "__Host-ziipsan-session";
+            }
+            if (cookieSecure == null) {
+                cookieSecure = true;
+            }
+        }
+    }
+
+    public Bff bff() {
+        return bff == null ? new Bff(null, null) : bff;
+    }
 
     /**
      * Banco da aplicação (ziipsan_app, sem DDL, sujeita à RLS).

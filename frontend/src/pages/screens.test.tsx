@@ -21,7 +21,6 @@ import { App } from '../App'
 import { AuthProvider } from '@hooks/useAuth'
 import { ThemeProvider } from '@hooks/useTheme'
 import { ApiError } from '@services/registry/errors'
-import { signInForTests } from '../test/auth'
 import { fakeApi, renderWithProviders } from '../test/render'
 import {
   page,
@@ -185,7 +184,6 @@ describe('acessibilidade (axe) das telas principais', () => {
   })
 
   it('aplicação inteira com menu e marcos (landmarks)', async () => {
-    signInForTests()
     useApi({
       ...emptyCatalogs,
       'GET /me': TEST_USER,
@@ -214,7 +212,6 @@ describe('navegação honesta: o menu só aponta para telas que existem', () => 
   const hrefs = ['/cadastro/imoveis', '/cadastro/clientes', '/cadastro/territorio', '/cadastro/catalogos']
 
   it('cada item do menu abre uma tela real (nenhum cai em "Página não encontrada")', async () => {
-    signInForTests()
     useApi({ ...emptyCatalogs, 'GET /me': TEST_USER })
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     const user = userEvent.setup()
@@ -240,7 +237,6 @@ describe('navegação honesta: o menu só aponta para telas que existem', () => 
   })
 
   it('rotas removidas (dashboard, faturamento...) caem em "Página não encontrada"', async () => {
-    signInForTests()
     useApi({ 'GET /me': TEST_USER })
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     render(

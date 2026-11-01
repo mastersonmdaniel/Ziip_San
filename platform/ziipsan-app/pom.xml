@@ -86,6 +86,20 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security-oauth2-resource-server</artifactId>
         </dependency>
+        <!-- P0.14: BFF — login OIDC do navegador no processo api (client confidencial) e
+             sessao no PostgreSQL (core V5). O resource server Bearer continua existindo,
+             numa cadeia separada, para apps e integracoes maquina-a-maquina. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+        <dependency>
+            <!-- Coordenada certa: o BOM do Boot gerencia spring-session sob
+                 org.springframework.session, não org.springframework.boot
+                 (essa coordenada não existe e quebrava a leitura do POM). -->
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-jdbc</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>

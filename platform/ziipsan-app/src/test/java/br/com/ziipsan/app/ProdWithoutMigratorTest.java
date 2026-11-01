@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 // @TestConfiguration aninhada NÃO é auto-registrada pelo @SpringBootTest: o @Import
 // explícito é o que faz o stub entrar no contexto (sem ele, o FieldCipher falha por
 // falta de provider, como a primeira execução deste teste provou).
-@org.springframework.context.annotation.Import(ProdWithoutMigratorTest.StubKeyProvider.class)
+@org.springframework.context.annotation.Import({ProdWithoutMigratorTest.StubKeyProvider.class, BffTestClientConfig.class})
 class ProdWithoutMigratorTest extends MigrationProfileTestBase {
 
     @TestConfiguration
