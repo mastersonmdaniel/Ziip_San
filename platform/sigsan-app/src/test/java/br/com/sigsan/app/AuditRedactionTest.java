@@ -98,7 +98,7 @@ class AuditRedactionTest {
     }
 
     @Test
-    @DisplayName("usuário admin do provisionamento: e-mail e nome não vão para a auditoria")
+    @DisplayName("P0.25: o provisionamento não cria mais usuário admin, então não há trilha de users")
     void provisionedUserAuditHasNoPersonalData() throws SQLException {
         List<String> rows = new ArrayList<>();
         try (Connection c = asTenant(); PreparedStatement ps = c.prepareStatement(
@@ -110,9 +110,11 @@ class AuditRedactionTest {
                 }
             }
         }
-        assertThat(rows).as("o provisionamento cria um usuário admin").isNotEmpty();
-        assertThat(rows).allSatisfy(r -> assertThat(r)
-                .doesNotContain("admin@teste.com.br").doesNotContain("Administrador"));
+        // Antes da P0.25 o seed criava um admin e este teste provava que e-mail/nome
+        // dele não iam para a auditoria. Sem seed, a garantia correspondente é mais
+        // forte: não existe nenhuma linha de auditoria de users no provisionamento.
+        // Usuários voltam na P0.13 (catálogo de usuários); a redação deles volta junto.
+        assertThat(rows).as("sem seed de admin, nenhuma trilha de users no provisionamento").isEmpty();
     }
 
     @Test

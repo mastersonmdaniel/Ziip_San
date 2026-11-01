@@ -31,6 +31,8 @@ class AuditRedactionCoverageTest {
                     + ".*|^cep$|^name$|.*_name$");
 
     /** "tabela.coluna" que casa com o padrão mas não é dado pessoal, com o motivo. */
+    // P0.25: roles.* e service_orders.* sairam da V1_1 (voltam em P0.13/P1.31); as
+    // entradas correspondentes sairam daqui junto, para a allowlist nao ficar obsoleta.
     private static final Map<String, String> NOT_PERSONAL = Map.ofEntries(
             Map.entry("localities.name", "nome de localidade (território)"),
             Map.entry("commercial_sectors.name", "nome de setor comercial"),
@@ -39,7 +41,6 @@ class AuditRedactionCoverageTest {
             Map.entry("subcategories.name", "nome de subcategoria tarifária"),
             Map.entry("water_statuses.name", "nome de situação de água"),
             Map.entry("sewer_statuses.name", "nome de situação de esgoto"),
-            Map.entry("roles.name", "nome de papel de acesso"),
             Map.entry("tariffs.name", "nome de tarifa"),
             Map.entry("collection_agreements.name", "nome de convênio bancário"),
             Map.entry("collection_agreements.document_kind", "tipo de documento de cobrança do convênio"),
@@ -66,7 +67,6 @@ class AuditRedactionCoverageTest {
             Map.entry("waste_destination.address", "endereço de destinador"),
             Map.entry("consumer_units.coordinates", "localização da ligação (rede), usada pelo GIS"),
             Map.entry("consumer_units.address_id", "referência por id; o endereço é redigido em addresses"),
-            Map.entry("service_orders.address_id", "referência por id; o endereço é redigido em addresses"),
             Map.entry("waste_cdf.technician_id", "referência por id; o nome é redigido em technician_name"),
             Map.entry("customer_contacts.primary_contact", "booleano (contato principal ou não)"),
             Map.entry("lab_analysis_method.safety_notes", "nota técnica de segurança do método"),
