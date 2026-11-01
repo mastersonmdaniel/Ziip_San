@@ -48,6 +48,17 @@ class TenantProvisioningServiceTest {
      * recusa qualquer valor que não seja um bcrypt completo.
      */
 
+    /** Senha de teste sem valor padrao (P0.3): variavel ausente ou vazia falha explicita. */
+    private static String requireEnv(String name) {
+        String value = System.getenv(name);
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException(
+                    "Variavel " + name + " nao definida: exporte-a antes de rodar o teste "
+                            + "(scripts/ci-linux.sh gera uma senha efemera a cada execucao)");
+        }
+        return value;
+    }
+
     /** Impede que um DROP CASCADE atinja um schema que não é deste teste. */
     private static void assertTestSchema(String schema) {
         if (!schema.startsWith("itest_")) {
@@ -64,11 +75,12 @@ class TenantProvisioningServiceTest {
         appDataSource = new org.springframework.jdbc.datasource.DriverManagerDataSource(
                 url,
                 System.getenv().getOrDefault("ZIIPSAN_IT_DB_USER", "ziipsan_app"),
-                System.getenv().getOrDefault("ZIIPSAN_IT_DB_PASSWORD", "ziipsan_dev_password"));
+                // P0.3: senha sem valor padrao versionado (ver requireEnv abaixo).
+                requireEnv("ZIIPSAN_IT_DB_PASSWORD"));
         migratorDataSource = new org.springframework.jdbc.datasource.DriverManagerDataSource(
                 url,
                 System.getenv().getOrDefault("ZIIPSAN_IT_MIGRATOR_USER", "ziipsan_migrator"),
-                System.getenv().getOrDefault("ZIIPSAN_IT_MIGRATOR_PASSWORD", "ziipsan_migrator_password"));
+                requireEnv("ZIIPSAN_IT_MIGRATOR_PASSWORD"));
 
         // Migration de core real (idempotente), não uma cópia das tabelas: o teste precisa ver os
         // mesmos privilégios e a mesma RLS de public.audit_log que a produção.

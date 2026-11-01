@@ -1,0 +1,163 @@
+# Ziip SAN — CI (P0.3).
+#
+# O que este workflow prova em cada push/PR para main:
+#   backend  — mvn clean verify contra PostgreSQL de servico (abaixo) + frontend typecheck/lint/test/build
+#   frontend — typecheck, lint, vitest, build e npm audit BLOQUEANTE em severidade alta ou acima
+#   gitleaks — varredura de segredos (config em .gitleaks.toml)
+#   dependency-review — em PR: dependencias novas com vulnerabilidade alta ou acima barram o merge
+#   maven-vuln — OWASP Dependency-Check, bloqueando com CVSS >= 7 (alto)
+#
+# DIVERGENCIA REGISTRADA (nao mascarada): o servico de banco abaixo e postgis/postgis:15-3.4,
+# a mesma imagem do docker-compose.yml. NAO e PG17 + PostGIS 3.7.0: a tag postgis/postgis:17-3.7
+# NAO existe no Docker Hub (verificado na API em 31/10/2026; so RCs de 3.7 para PG18/19), e nenhuma
+# tag foi inventada aqui. A verificacao PG17 + PostGIS 3.7.0 (decisao do dono, 31/10/2026) e feita
+# localmente por scripts/ci-linux.sh, contra instancia dedicada PGDG em 127.0.0.1:55433 — o job
+# backend deste workflow NAO afirma conformidade PG17/3.7.0. Quando a tag 17-3.7 existir, trocar a
+# imagem do servico (e a do compose, P0.4) e remover este comentario.
+#
+# PENDENCIAS NAO-CODIGO (exigem acao no GitHub, fora do alcance de deploy key; ver STATUS.md):
+#   - branch main protegida (exigir este workflow + revisao antes do merge);
+#   - proveniencia/attestations de build (exige configuracao de Actions/attestations no repositorio).
+#
+# Maven NAO tem lockfile: as versoes sao fixadas em dependencyManagement/pom (sem ranges) e o
+# enforcer ativo (pom raiz) barra Java/Maven fora do alvo. O frontend usa package-lock.json + npm ci.
+# Todas as actions sao fixadas por hash de commit (o comentario ao lado indica a versao legivel).
+# Segredos: as senhas do banco de servico sao derivadas do run_id (descartaveis, so do CI); nenhum
+# segredo real ou de desenvolvimento aparece neste arquivo.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: backend (mvn verify + PostgreSQL de servico)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:15-3.4
+        env:
+          POSTGRES_DB: ziipsan
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci-service-${{ github.run_id }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d ziipsan"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      ZIIPSAN_IT_JDBC_URL: jdbc:postgresql://localhost:5432/ziipsan
+      ZIIPSAN_IT_DB_USER: ziipsan_app
+      ZIIPSAN_IT_DB_PASSWORD: ci-service-${{ github.run_id }}
+      ZIIPSAN_IT_MIGRATOR_USER: ziipsan_migrator
+      ZIIPSAN_IT_MIGRATOR_PASSWORD: ci-service-${{ github.run_id }}
+      JAVA_TOOL_OPTIONS: -Djava.net.preferIPv4Stack=true
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout@v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Instalar cliente PostgreSQL
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends postgresql-client
+      - name: Aplicar init de seguranca (roles + extensoes)
+        env:
+          PGPASSWORD: ci-service-${{ github.run_id }}
+        run: |
+          for i in $(seq 1 30); do
+            pg_isready -h localhost -p 5432 -U postgres && break
+            sleep 2
+          done
+          # O init cria as roles com as senhas do CI (app e migrador usam a mesma senha
+          # descartavel aqui; em qualquer ambiente real as senhas sao distintas e secretas).
+          # security.sql nao tem bloco Keycloak: o banco de integracao nao precisa dele.
+          psql -h localhost -p 5432 -U postgres -d ziipsan -v ON_ERROR_STOP=1 \
+            -v app_pw="ci-service-${{ github.run_id }}" \
+            -v migrator_pw="ci-service-${{ github.run_id }}" \
+            -f infra/postgres/init/sql/security.sql
+          psql -h localhost -p 5432 -U postgres -d ziipsan -tAc \
+            "select 1 from pg_proc where proname = 'current_tenant_id' and pg_get_userbyid(proowner) = 'ziipsan_owner'" \
+            | grep -q 1
+      - name: mvn clean verify
+        run: mvn -B -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 clean verify
+
+  frontend:
+    name: frontend (typecheck + lint + test + build + audit)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: npm ci (scripts de instalacao desabilitados por frontend/.npmrc)
+        run: npm ci --no-audit --no-fund --loglevel=error
+      - name: typecheck
+        run: npm run -s typecheck
+      - name: lint
+        run: npm run -s lint
+      - name: vitest
+        run: npx vitest run
+      - name: build
+        run: npm run -s build
+      - name: "npm audit (bloqueante: alto ou acima, dependencias de producao)"
+        run: npm audit --omit=dev --audit-level=high
+
+  gitleaks:
+    name: gitleaks (segredos)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+  dependency-review:
+    name: dependency-review (PR)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout@v4
+      - uses: actions/dependency-review-action@e58c696e52cac8e62d61cc21fda89565d71505d7 # actions/dependency-review-action@v4.3.1
+        with:
+          fail-on-severity: high
+
+  maven-vuln:
+    name: OWASP Dependency-Check (bloqueia CVSS >= 7)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout@v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      # Sem NVD_API_KEY o download da base NVD e mais lento, mas o job continua bloqueante.
+      # Nao roda no build padrao (pom): e um job separado para nao travar o ci-linux local
+      # quando a rede/NVD estiver indisponivel.
+      - name: OWASP Dependency-Check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          if [ -n "$NVD_API_KEY" ]; then NVD_ARG="-DnvdApiKey=$NVD_API_KEY"; else NVD_ARG=""; fi
+          mvn -B org.owasp:dependency-check-maven:13.0.0:check \
+            -DfailBuildOnCVSS=7 -Dformats=HTML $NVD_ARG

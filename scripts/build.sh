@@ -21,7 +21,15 @@
 #                      nao ser visivel ao Docker: aponte para uma pasta permitida.
 #   ZIIPSAN_IT_PORT     porta do PostgreSQL de integracao (padrao: 55433), ver scripts/reset-it-db.sh
 source "$(dirname "$0")/lib.sh"
-source "$(dirname "$0")/it-db.env"
+# P0.3: it-db.env e LOCAL e nao versionado (ver scripts/it-db.env.example). Sem ele,
+# as senhas precisam vir exportadas no ambiente; sem elas o container do Maven sobe
+# sem as variaveis e os testes de banco falham explicito, em vez de usar um padrao.
+if [ -f "$(dirname "$0")/it-db.env" ]; then
+  # shellcheck disable=SC1091
+  source "$(dirname "$0")/it-db.env"
+fi
+: "${ZIIPSAN_IT_DB_PASSWORD:?defina ZIIPSAN_IT_DB_PASSWORD (it-db.env local ou ambiente)}"
+: "${ZIIPSAN_IT_MIGRATOR_PASSWORD:?defina ZIIPSAN_IT_MIGRATOR_PASSWORD (it-db.env local ou ambiente)}"
 
 acquire_lock
 mirror

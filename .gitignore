@@ -8,6 +8,10 @@ node_modules/
 # Ambiente e segredos: so o exemplo e versionado
 .env
 .env.*
+# P0.3: senhas do banco descartavel de integracao (scripts/reset-it-db.sh). O arquivo
+# local continua existindo na maquina de quem ja o tinha (git rm --cached nao apaga o
+# arquivo), mas nao volta ao versionamento. Modelo em scripts/it-db.env.example.
+scripts/it-db.env
 !.env.example
 
 # Artefatos locais

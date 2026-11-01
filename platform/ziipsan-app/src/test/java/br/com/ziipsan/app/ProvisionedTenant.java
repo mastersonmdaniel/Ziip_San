@@ -46,10 +46,11 @@ final class ProvisionedTenant {
         }
         url = env("ZIIPSAN_IT_JDBC_URL", "jdbc:postgresql://host.docker.internal:55433/ziipsan");
         appUser = env("ZIIPSAN_IT_DB_USER", "ziipsan_app");
-        appPassword = env("ZIIPSAN_IT_DB_PASSWORD", "ziipsan_dev_password");
+        // P0.3: senhas sem valor padrao versionado (ci-linux.sh exporta efemeras).
+        appPassword = requireEnv("ZIIPSAN_IT_DB_PASSWORD");
         appDs = new DriverManagerDataSource(url, appUser, appPassword);
         migratorUser = env("ZIIPSAN_IT_MIGRATOR_USER", "ziipsan_migrator");
-        migratorPassword = env("ZIIPSAN_IT_MIGRATOR_PASSWORD", "ziipsan_migrator_password");
+        migratorPassword = requireEnv("ZIIPSAN_IT_MIGRATOR_PASSWORD");
         migratorDs = new DriverManagerDataSource(url, migratorUser, migratorPassword);
 
         // 1. Migration de core em banco virgem (cria public.tenant_catalog e public.audit_log).
@@ -95,5 +96,16 @@ final class ProvisionedTenant {
 
     private static String env(String name, String fallback) {
         return System.getenv().getOrDefault(name, fallback);
+    }
+
+    /** Senha de teste sem valor padrao (P0.3): variavel ausente ou vazia falha explicita. */
+    private static String requireEnv(String name) {
+        String value = System.getenv(name);
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException(
+                    "Variavel " + name + " nao definida: exporte-a antes de rodar o teste "
+                            + "(scripts/ci-linux.sh gera uma senha efemera a cada execucao)");
+        }
+        return value;
     }
 }

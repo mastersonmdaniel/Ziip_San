@@ -47,6 +47,17 @@ class TenantRlsIsolationTest {
     private static final String SCHEMA_A = "itest_rls_a_" + RUN_ID;
     private static final String SCHEMA_B = "itest_rls_b_" + RUN_ID;
 
+    /** Senha de teste sem valor padrao (P0.3): variavel ausente ou vazia falha explicita. */
+    private static String requireEnv(String name) {
+        String value = System.getenv(name);
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException(
+                    "Variavel " + name + " nao definida: exporte-a antes de rodar o teste "
+                            + "(scripts/ci-linux.sh gera uma senha efemera a cada execucao)");
+        }
+        return value;
+    }
+
     /** Impede que um DROP CASCADE atinja um schema que não é deste teste. */
     private static void assertTestSchema(String schema) {
         if (!schema.startsWith("itest_")) {
@@ -62,8 +73,9 @@ class TenantRlsIsolationTest {
         String url = System.getenv().getOrDefault(
                 "ZIIPSAN_IT_JDBC_URL", "jdbc:postgresql://host.docker.internal:55433/ziipsan");
         String user = System.getenv().getOrDefault("ZIIPSAN_IT_DB_USER", "ziipsan_app");
-        String password = System.getenv().getOrDefault(
-                "ZIIPSAN_IT_DB_PASSWORD", "ziipsan_dev_password");
+        // P0.3: senha sem valor padrao versionado. Quem roda o teste exporta a variavel
+        // (scripts/ci-linux.sh gera uma efemera a cada execucao); faltando, falha explicita.
+        String password = requireEnv("ZIIPSAN_IT_DB_PASSWORD");
 
         // A aplicacao conecta como ziipsan_app, que e NOSUPERUSER e NOBYPASSRLS. E assim que
         // a RLS precisa valer, porque e a role real em producao.
@@ -75,7 +87,7 @@ class TenantRlsIsolationTest {
         migratorDataSource = new org.springframework.jdbc.datasource.DriverManagerDataSource(
                 url,
                 System.getenv().getOrDefault("ZIIPSAN_IT_MIGRATOR_USER", "ziipsan_migrator"),
-                System.getenv().getOrDefault("ZIIPSAN_IT_MIGRATOR_PASSWORD", "ziipsan_migrator_password"));
+                requireEnv("ZIIPSAN_IT_MIGRATOR_PASSWORD"));
     }
 
     @BeforeEach

@@ -10,9 +10,17 @@
 # uma migration ja aplicada e depois alterada (checksum).
 #
 # Variaveis: ZIIPSAN_IT_PORT (padrao 55433), ZIIPSAN_IT_CONTAINER, ZIIPSAN_BUILD_DIR (ver lib.sh).
-# Senhas: scripts/it-db.env (so para este banco descartavel).
+# Senhas: scripts/it-db.env (arquivo LOCAL, NAO versionado desde a P0.3 — ver
+# scripts/it-db.env.example) ou as mesmas variaveis exportadas no ambiente. O arquivo
+# versionado antigo foi removido do git (git rm --cached); nunca commitar senhas aqui.
 source "$(dirname "$0")/lib.sh"
-source "$(dirname "$0")/it-db.env"
+if [ -f "$(dirname "$0")/it-db.env" ]; then
+  # shellcheck disable=SC1091
+  source "$(dirname "$0")/it-db.env"
+fi
+: "${ZIIPSAN_IT_SUPERUSER_PASSWORD:?defina ZIIPSAN_IT_SUPERUSER_PASSWORD (it-db.env local ou ambiente)}"
+: "${ZIIPSAN_IT_DB_PASSWORD:?defina ZIIPSAN_IT_DB_PASSWORD (it-db.env local ou ambiente)}"
+: "${ZIIPSAN_IT_MIGRATOR_PASSWORD:?defina ZIIPSAN_IT_MIGRATOR_PASSWORD (it-db.env local ou ambiente)}"
 
 acquire_lock
 
@@ -28,7 +36,9 @@ mkdir -p "$INIT_DIR"
 cp -rf "$SRC/infra/postgres/init/." "$INIT_DIR/"
 
 docker rm -f "$IT_CONTAINER" >/dev/null 2>&1 || true
-MSYS_NO_PATHCONV=1 docker run -d --name "$IT_CONTAINER" -p "${IT_PORT}:5432" \
+# P0.3: porta SO em 127.0.0.1 (antes, em todas as interfaces). O banco descartavel de
+# integracao nao pode ficar exposto na rede, mesmo sendo descartavel.
+MSYS_NO_PATHCONV=1 docker run -d --name "$IT_CONTAINER" -p "127.0.0.1:${IT_PORT}:5432" \
   -e POSTGRES_DB=ziipsan -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD="$ZIIPSAN_IT_SUPERUSER_PASSWORD" \
   -e ZIIPSAN_APP_PASSWORD="$ZIIPSAN_IT_DB_PASSWORD" \
   -e ZIIPSAN_MIGRATOR_PASSWORD="$ZIIPSAN_IT_MIGRATOR_PASSWORD" \

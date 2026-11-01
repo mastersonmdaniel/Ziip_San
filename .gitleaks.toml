@@ -1,0 +1,7 @@
+# Gitleaks (P0.3). Varre o repositorio inteiro; a unica allowlist de caminho e o
+# material arquivado, que ja teve seus segredos literais substituidos por REDACTED-ARQUIVADO
+# na P0.7. Nenhum outro diretorio e excluido: segredo em codigo, script ou workflow barra o CI.
+[allowlist]
+paths = [
+  '''infra/_arquivado/.*''',
+]
