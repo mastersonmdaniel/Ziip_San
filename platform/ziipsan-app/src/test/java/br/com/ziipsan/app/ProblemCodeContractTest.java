@@ -62,7 +62,12 @@ class ProblemCodeContractTest {
             if (Files.exists(pom)) {
                 try {
                     String content = Files.readString(pom, StandardCharsets.UTF_8);
-                    if (content.contains("<artifactId>ziipsan</artifactId>")) {
+                    // A raiz é o pom agregador: artifactId próprio ziipsan + packaging pom.
+                    // Só o artifactId não basta: o pom do módulo app tem ziipsan como
+                    // artifactId do PARENT, e repoRoot() parava no próprio módulo app,
+                    // varrendo só platform/ziipsan-app/** em vez do repositório inteiro.
+                    if (content.contains("<artifactId>ziipsan</artifactId>")
+                            && content.contains("<packaging>pom</packaging>")) {
                         return dir;
                     }
                 } catch (IOException ignored) {

@@ -57,7 +57,7 @@ class EnvDerivedTenantKeyProviderTest {
     void frozenVectorForZiipsanContexts() {
         // Vetor calculado por implementacao independente (HKDF-SHA256, RFC 5869) com a
         // chave mestra MASTER e o tenant TENANT_A. A partir da P0.33 estes valores sao
-        // congelados: qualquer mudanca de contexto (ex.: voltar a "sigsan/...") quebra
+        // congelados: qualquer mudanca de contexto (ex.: voltar ao contexto antigo) quebra
         // este teste de proposito, porque invalidaria todas as chaves ja derivadas.
         var provider = new EnvDerivedTenantKeyProvider(MASTER);
         HexFormat hex = HexFormat.of();
