@@ -151,7 +151,7 @@ export function buildSchema(fields: FieldMeta[]) {
 }
 
 /** Primeiro erro de cada campo, no formato { campo: mensagem }. */
-export function collectErrors(result: z.SafeParseReturnType<unknown, unknown>): Record<string, string> {
+export function collectErrors(result: z.ZodSafeParseResult<unknown>): Record<string, string> {
   const errors: Record<string, string> = {}
   if (result.success) return errors
   for (const issue of result.error.issues) {

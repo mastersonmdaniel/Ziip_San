@@ -1,6 +1,14 @@
 import { useEffect, useRef } from 'react'
-import maplibregl from 'maplibre-gl'
+import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+// O worker padrão da v6 é resolvido como ./maplibre-gl-worker.mjs relativo ao
+// import.meta.url do chunk — arquivo que o build do Vite NÃO emite em dist/assets,
+// então o mapa falharia ao criar o worker em produção (e no dev). Importar o
+// worker como asset (?url) faz o Vite emiti-lo com hash e apontar o worker para
+// a URL real, antes de qualquer Map ser construído.
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
+
+maplibregl.setWorkerUrl(maplibreWorkerUrl)
 import { BRAZIL_BOUNDS, isInsideBrazil, type LatLng } from '@utils/validators/geo'
 
 interface MapCanvasProps {

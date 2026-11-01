@@ -15,19 +15,19 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.3.4",
+    "@hookform/resolvers": "^5.9.2",
     "@tanstack/react-query": "^5.17.0",
     "axios": "^1.6.5",
     "clsx": "^2.1.0",
     "date-fns": "^3.2.0",
     "lucide-react": "^0.303.0",
-    "maplibre-gl": "^4.7.1",
+    "maplibre-gl": "^6.16.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.49.2",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.20.0",
-    "zod": "^3.22.4"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",
