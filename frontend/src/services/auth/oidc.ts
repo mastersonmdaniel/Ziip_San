@@ -1,7 +1,7 @@
 import { UserManager, WebStorageStateStore, type User, type UserManagerSettings } from 'oidc-client-ts'
 
 /**
- * Login OIDC no Keycloak (realm sigsan, client público sigsan-web): authorization code com PKCE
+ * Login OIDC no Keycloak (realm ziipsan, client público ziipsan-web): authorization code com PKCE
  * S256. O SPA não tem segredo; quem prova que a troca do código é legítima é o code_verifier, que
  * só existe nesta aba.
  *
@@ -13,8 +13,8 @@ import { UserManager, WebStorageStateStore, type User, type UserManagerSettings 
  * O tenant NÃO é escolhido aqui: vem do claim tenant_id do access token, que o administrador grava
  * no usuário do Keycloak. O frontend não envia cabeçalho de tenant.
  */
-export const OIDC_AUTHORITY: string = import.meta.env.VITE_OIDC_AUTHORITY || 'http://localhost:8080/realms/sigsan'
-export const OIDC_CLIENT_ID: string = import.meta.env.VITE_OIDC_CLIENT_ID || 'sigsan-web'
+export const OIDC_AUTHORITY: string = import.meta.env.VITE_OIDC_AUTHORITY || 'http://localhost:8080/realms/ziipsan'
+export const OIDC_CLIENT_ID: string = import.meta.env.VITE_OIDC_CLIENT_ID || 'ziipsan-web'
 export const CALLBACK_PATH = '/auth/callback'
 export const LOGIN_PATH = '/login'
 
@@ -35,7 +35,7 @@ export function oidcSettings(origin: string = window.location.origin): UserManag
     scope: 'openid profile email',
     userStore: store,
     stateStore: store,
-    // Renovação antes de expirar. Com refresh token (o Keycloak emite para o sigsan-web) a
+    // Renovação antes de expirar. Com refresh token (o Keycloak emite para o ziipsan-web) a
     // biblioteca chama o token endpoint direto; o iframe de /auth/callback é só o plano B.
     automaticSilentRenew: true,
     // O perfil vem do id token e de GET /api/me; não há por que chamar o userinfo.

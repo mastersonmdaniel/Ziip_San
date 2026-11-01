@@ -1,29 +1,29 @@
 #!/bin/bash
-# Funcoes comuns dos scripts do SIGSAN. Uso: source "$(dirname "$0")/lib.sh"
+# Funcoes comuns dos scripts do ZIIPSAN. Uso: source "$(dirname "$0")/lib.sh"
 #
 # - modo estrito (set -euo pipefail);
 # - SRC, BUILD_DIR, MIRROR, IT_PORT com os mesmos padroes em todos os scripts;
 # - trava (lock) que impede dois builds ou resets simultaneos: eles compartilham o espelho, o target/,
-#   o volume sigsan-m2 e o banco de integracao, e um derrubava o outro;
+#   o volume ziipsan-m2 e o banco de integracao, e um derrubava o outro;
 # - espelho do fonte (robocopy) que FALHA de verdade: antes, o exit code era forcado a 0 e, com o
 #   Drive offline, o Maven compilava um espelho velho sem aviso.
 set -euo pipefail
 
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BUILD_DIR="${SIGSAN_BUILD_DIR:-$(cygpath -u "$LOCALAPPDATA")/sigsan-build}"
-MIRROR="$BUILD_DIR/sigsan"
-IT_PORT="${SIGSAN_IT_PORT:-55433}"
+BUILD_DIR="${ZIIPSAN_BUILD_DIR:-$(cygpath -u "$LOCALAPPDATA")/ziipsan-build}"
+MIRROR="$BUILD_DIR/ziipsan"
+IT_PORT="${ZIIPSAN_IT_PORT:-55433}"
 # Nome do container do banco de integracao. Pipelines paralelos (outra copia de trabalho) usam
-# SIGSAN_IT_PORT, SIGSAN_IT_CONTAINER e SIGSAN_BUILD_DIR proprios e nao se enxergam.
-IT_CONTAINER="${SIGSAN_IT_CONTAINER:-sigsan-it-pg}"
+# ZIIPSAN_IT_PORT, ZIIPSAN_IT_CONTAINER e ZIIPSAN_BUILD_DIR proprios e nao se enxergam.
+IT_CONTAINER="${ZIIPSAN_IT_CONTAINER:-ziipsan-it-pg}"
 LOCK_DIR="$BUILD_DIR/.lock"
 
 die() { echo "ERRO: $*" >&2; exit 1; }
 
 # Trava exclusiva. mkdir e atomico; o PID gravado permite detectar trava de processo morto.
-# Um script chamado por outro que ja tem a trava (ex.: ci.sh) herda SIGSAN_LOCK_HELD=1.
+# Um script chamado por outro que ja tem a trava (ex.: ci.sh) herda ZIIPSAN_LOCK_HELD=1.
 acquire_lock() {
-  if [ "${SIGSAN_LOCK_HELD:-0}" = "1" ]; then
+  if [ "${ZIIPSAN_LOCK_HELD:-0}" = "1" ]; then
     return 0
   fi
   mkdir -p "$BUILD_DIR"
@@ -40,11 +40,11 @@ acquire_lock() {
       echo "outro build/reset em andamento (pid ${holder:-?}); aguardando..."
     fi
     waited=$((waited + 5))
-    [ "$waited" -le "${SIGSAN_LOCK_TIMEOUT:-3600}" ] || die "tempo esgotado esperando a trava $LOCK_DIR"
+    [ "$waited" -le "${ZIIPSAN_LOCK_TIMEOUT:-3600}" ] || die "tempo esgotado esperando a trava $LOCK_DIR"
     sleep 5
   done
   echo $$ > "$LOCK_DIR/pid"
-  export SIGSAN_LOCK_HELD=1
+  export ZIIPSAN_LOCK_HELD=1
   trap 'rm -rf "$LOCK_DIR"' EXIT
 }
 

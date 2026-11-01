@@ -1,5 +1,5 @@
 -- ========================================================================
--- SIGSAN - seguranca do PostgreSQL (roles, donos, privilegios)
+-- ZIIPSAN - seguranca do PostgreSQL (roles, donos, privilegios)
 -- ========================================================================
 --
 -- Executado por 00-roles.sh, como superusuario de bootstrap (POSTGRES_USER=postgres), no banco
@@ -9,21 +9,21 @@
 -- MODELO DE ROLES
 --
 --   postgres         superusuario de bootstrap. So init e operacao; NUNCA a aplicacao.
---   sigsan_owner     NOLOGIN. Dono do banco, do schema public e de current_tenant_id().
---   sigsan_migrator  LOGIN. DDL: cria tabelas em public (migration de core) e schemas de tenant.
---   sigsan_app       LOGIN. A aplicacao: le e escreve dados, sem CREATE em lugar nenhum.
+--   ziipsan_owner     NOLOGIN. Dono do banco, do schema public e de current_tenant_id().
+--   ziipsan_migrator  LOGIN. DDL: cria tabelas em public (migration de core) e schemas de tenant.
+--   ziipsan_app       LOGIN. A aplicacao: le e escreve dados, sem CREATE em lugar nenhum.
 --
--- Nenhuma role de login e membro de sigsan_owner.
+-- Nenhuma role de login e membro de ziipsan_owner.
 --
 -- POR QUE ASSIM (achado C1 do PDCA de 12/10/2026)
 --
--- Antes, sigsan_app era o POSTGRES_USER: criava o banco como superusuario e se rebaixava no fim do
+-- Antes, ziipsan_app era o POSTGRES_USER: criava o banco como superusuario e se rebaixava no fim do
 -- init. Com isso continuava DONA do banco, de public e de current_tenant_id(), e podia redefinir a
 -- funcao que as policies de RLS consultam (CREATE OR REPLACE FUNCTION, reproduzido em 12/10/2026)
 -- e fazer a RLS devolver o tenant que quisesse. Alem disso o cluster ficava sem nenhum
 -- superusuario, e o PostgreSQL 16+ recusa rebaixar o usuario de bootstrap.
 --
--- REGRA CRITICA: sigsan_app NAO pode ser superusuario nem ter BYPASSRLS. Superusuario ignora Row
+-- REGRA CRITICA: ziipsan_app NAO pode ser superusuario nem ter BYPASSRLS. Superusuario ignora Row
 -- Level Security; com isso as policies de tenant ficam inertes e um tenant le os dados de todos.
 -- ========================================================================
 
@@ -50,49 +50,49 @@ CREATE EXTENSION IF NOT EXISTS "postgis";
 -- As senhas chegam por variavel (00-roles.sh), nunca escritas aqui. \gexec porque variavel psql
 -- nao e interpolada dentro de bloco DO.
 
-SELECT 'CREATE ROLE sigsan_owner NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE'
-WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'sigsan_owner') \gexec
+SELECT 'CREATE ROLE ziipsan_owner NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE'
+WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_owner') \gexec
 
-SELECT format('CREATE ROLE sigsan_migrator LOGIN PASSWORD %L', :'migrator_pw')
-WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'sigsan_migrator') \gexec
+SELECT format('CREATE ROLE ziipsan_migrator LOGIN PASSWORD %L', :'migrator_pw')
+WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_migrator') \gexec
 
-SELECT format('CREATE ROLE sigsan_app LOGIN PASSWORD %L', :'app_pw')
-WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'sigsan_app') \gexec
+SELECT format('CREATE ROLE ziipsan_app LOGIN PASSWORD %L', :'app_pw')
+WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_app') \gexec
 
 -- Atributos impostos mesmo se a role ja existia.
-ALTER ROLE sigsan_owner NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
-ALTER ROLE sigsan_migrator LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
-ALTER ROLE sigsan_app LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
+ALTER ROLE ziipsan_owner NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
+ALTER ROLE ziipsan_migrator LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
+ALTER ROLE ziipsan_app LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 
 -- Sem isto, um tenant pode resolver funcoes de schemas de outros tenants.
-ALTER ROLE sigsan_app SET search_path = public;
+ALTER ROLE ziipsan_app SET search_path = public;
 
 -- ========================================================================
 -- 3. DONO DO BANCO E DO SCHEMA PUBLIC
 -- ========================================================================
 
-SELECT format('ALTER DATABASE %I OWNER TO sigsan_owner', current_database()) \gexec
-ALTER SCHEMA public OWNER TO sigsan_owner;
+SELECT format('ALTER DATABASE %I OWNER TO ziipsan_owner', current_database()) \gexec
+ALTER SCHEMA public OWNER TO ziipsan_owner;
 
 -- Nada por padrao para PUBLIC: cada role recebe so o que precisa.
 SELECT format('REVOKE ALL ON DATABASE %I FROM PUBLIC', current_database()) \gexec
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 
 -- Migracao: conecta, cria schemas de tenant (CREATE no banco) e tabelas em public.
-SELECT format('GRANT CONNECT, CREATE, TEMPORARY ON DATABASE %I TO sigsan_migrator', current_database()) \gexec
-GRANT USAGE, CREATE ON SCHEMA public TO sigsan_migrator;
+SELECT format('GRANT CONNECT, CREATE, TEMPORARY ON DATABASE %I TO ziipsan_migrator', current_database()) \gexec
+GRANT USAGE, CREATE ON SCHEMA public TO ziipsan_migrator;
 
 -- Aplicacao: conecta e resolve nomes em public. Sem CREATE e sem TEMPORARY. Os privilegios de
 -- tabela sao concedidos pelas migrations (core e tenant), tabela a tabela.
-SELECT format('GRANT CONNECT ON DATABASE %I TO sigsan_app', current_database()) \gexec
-GRANT USAGE ON SCHEMA public TO sigsan_app;
+SELECT format('GRANT CONNECT ON DATABASE %I TO ziipsan_app', current_database()) \gexec
+GRANT USAGE ON SCHEMA public TO ziipsan_app;
 
 -- ========================================================================
 -- 4. FUNCAO DE CONTEXTO DE TENANT
 -- ========================================================================
 --
 -- As policies RLS chamam current_tenant_id(), que le a GUC de sessao app.current_tenant. Fica em
--- public porque e compartilhada por todos os schemas de tenant. O dono e sigsan_owner: nem a
+-- public porque e compartilhada por todos os schemas de tenant. O dono e ziipsan_owner: nem a
 -- aplicacao nem o migrador podem redefini-la.
 
 CREATE OR REPLACE FUNCTION public.current_tenant_id() RETURNS UUID AS $fn$
@@ -110,9 +110,9 @@ EXCEPTION
 END;
 $fn$ LANGUAGE plpgsql STABLE;
 
-ALTER FUNCTION public.current_tenant_id() OWNER TO sigsan_owner;
+ALTER FUNCTION public.current_tenant_id() OWNER TO ziipsan_owner;
 REVOKE ALL ON FUNCTION public.current_tenant_id() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.current_tenant_id() TO sigsan_app, sigsan_migrator;
+GRANT EXECUTE ON FUNCTION public.current_tenant_id() TO ziipsan_app, ziipsan_migrator;
 
 -- ========================================================================
 -- 5. VERIFICACAO (aborta o init se algo estiver errado)
@@ -126,31 +126,31 @@ DECLARE
     r RECORD;
 BEGIN
     FOR r IN SELECT rolname, rolsuper, rolbypassrls, rolcreaterole, rolcreatedb
-             FROM pg_roles WHERE rolname IN ('sigsan_app', 'sigsan_migrator', 'sigsan_owner') LOOP
+             FROM pg_roles WHERE rolname IN ('ziipsan_app', 'ziipsan_migrator', 'ziipsan_owner') LOOP
         IF r.rolsuper OR r.rolbypassrls OR r.rolcreaterole OR r.rolcreatedb THEN
             RAISE EXCEPTION 'FALHA CRITICA: % tem SUPERUSER/BYPASSRLS/CREATEROLE/CREATEDB', r.rolname;
         END IF;
     END LOOP;
 
-    IF pg_has_role('sigsan_app', 'sigsan_owner', 'MEMBER')
-       OR pg_has_role('sigsan_migrator', 'sigsan_owner', 'MEMBER') THEN
-        RAISE EXCEPTION 'FALHA CRITICA: role de login e membro de sigsan_owner';
+    IF pg_has_role('ziipsan_app', 'ziipsan_owner', 'MEMBER')
+       OR pg_has_role('ziipsan_migrator', 'ziipsan_owner', 'MEMBER') THEN
+        RAISE EXCEPTION 'FALHA CRITICA: role de login e membro de ziipsan_owner';
     END IF;
 
     IF (SELECT pg_get_userbyid(proowner) FROM pg_proc
-        WHERE oid = 'public.current_tenant_id()'::regprocedure) <> 'sigsan_owner' THEN
-        RAISE EXCEPTION 'FALHA CRITICA: current_tenant_id() nao pertence a sigsan_owner';
+        WHERE oid = 'public.current_tenant_id()'::regprocedure) <> 'ziipsan_owner' THEN
+        RAISE EXCEPTION 'FALHA CRITICA: current_tenant_id() nao pertence a ziipsan_owner';
     END IF;
 
-    IF (SELECT pg_get_userbyid(datdba) FROM pg_database WHERE datname = current_database()) <> 'sigsan_owner'
-       OR (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'public') <> 'sigsan_owner' THEN
-        RAISE EXCEPTION 'FALHA CRITICA: banco ou schema public nao pertencem a sigsan_owner';
+    IF (SELECT pg_get_userbyid(datdba) FROM pg_database WHERE datname = current_database()) <> 'ziipsan_owner'
+       OR (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'public') <> 'ziipsan_owner' THEN
+        RAISE EXCEPTION 'FALHA CRITICA: banco ou schema public nao pertencem a ziipsan_owner';
     END IF;
 
-    IF has_schema_privilege('sigsan_app', 'public', 'CREATE')
-       OR has_database_privilege('sigsan_app', current_database(), 'CREATE')
-       OR has_database_privilege('sigsan_app', current_database(), 'TEMPORARY') THEN
-        RAISE EXCEPTION 'FALHA CRITICA: sigsan_app pode criar objetos';
+    IF has_schema_privilege('ziipsan_app', 'public', 'CREATE')
+       OR has_database_privilege('ziipsan_app', current_database(), 'CREATE')
+       OR has_database_privilege('ziipsan_app', current_database(), 'TEMPORARY') THEN
+        RAISE EXCEPTION 'FALHA CRITICA: ziipsan_app pode criar objetos';
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolsuper) THEN

@@ -1,0 +1,14 @@
+# Perfil local (SPRING_PROFILES_ACTIVE=local): PostgreSQL e Keycloak do docker-compose nesta máquina.
+# As senhas continuam vindo do ambiente (.env): ZIIPSAN_DB_APP_PASSWORD, ZIIPSAN_DB_MIGRATOR_PASSWORD.
+ziipsan:
+  db:
+    url: ${ZIIPSAN_DB_URL:jdbc:postgresql://localhost:5432/ziipsan}
+    migrate-on-startup: ${ZIIPSAN_DB_MIGRATE_ON_STARTUP:true}
+  oidc:
+    issuer: ${ZIIPSAN_OIDC_ISSUER:http://localhost:8080/realms/ziipsan}
+    jwk-set-uri: ${ZIIPSAN_OIDC_JWK_SET_URI:http://localhost:8080/realms/ziipsan/protocol/openid-connect/certs}
+  cors:
+    allowed-origins: ${ZIIPSAN_CORS_ORIGINS:http://localhost:3000}
+  # Chave mestra de desenvolvimento em ZIIPSAN_DEV_MASTER_KEY (openssl rand -base64 32), fora do repositório.
+  crypto:
+    provider: ${ZIIPSAN_CRYPTO_PROVIDER:dev-env}

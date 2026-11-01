@@ -10,21 +10,21 @@ services:
     # inventada aqui, e 17-3.6 nao e substituto (contraria a decisao do dono).
     # Ate la, a verificacao local vale via PGDG/host (PG17 + PostGIS 3.7.0, ci-linux).
     image: postgis/postgis:15-3.4
-    container_name: sigsan-postgres-primary
-    # Superusuario de bootstrap = "postgres" (so init e operacao). A aplicacao usa sigsan_app e as
-    # migrations usam sigsan_migrator, criadas por infra/postgres/init com as senhas abaixo. Sem
+    container_name: ziipsan-postgres-primary
+    # Superusuario de bootstrap = "postgres" (so init e operacao). A aplicacao usa ziipsan_app e as
+    # migrations usam ziipsan_migrator, criadas por infra/postgres/init com as senhas abaixo. Sem
     # valor padrao: defina no .env (ver .env.example); o compose recusa subir sem elas.
     environment:
-      POSTGRES_DB: sigsan
+      POSTGRES_DB: ziipsan
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_SUPERUSER_PASSWORD:?defina POSTGRES_SUPERUSER_PASSWORD no .env}
-      SIGSAN_APP_PASSWORD: ${SIGSAN_APP_PASSWORD:?defina SIGSAN_APP_PASSWORD no .env}
-      SIGSAN_MIGRATOR_PASSWORD: ${SIGSAN_MIGRATOR_PASSWORD:?defina SIGSAN_MIGRATOR_PASSWORD no .env}
+      ZIIPSAN_APP_PASSWORD: ${ZIIPSAN_APP_PASSWORD:?defina ZIIPSAN_APP_PASSWORD no .env}
+      ZIIPSAN_MIGRATOR_PASSWORD: ${ZIIPSAN_MIGRATOR_PASSWORD:?defina ZIIPSAN_MIGRATOR_PASSWORD no .env}
       KEYCLOAK_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?defina KEYCLOAK_DB_PASSWORD no .env}
       POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     volumes:
       - postgres-primary-data:/var/lib/postgresql/data
-      - ${SIGSAN_PG_INIT_DIR:-./infra/postgres/init}:/docker-entrypoint-initdb.d:ro
+      - ${ZIIPSAN_PG_INIT_DIR:-./infra/postgres/init}:/docker-entrypoint-initdb.d:ro
     ports:
       # So na maquina local: o banco nao fica exposto na rede.
       - "127.0.0.1:5432:5432"
@@ -43,7 +43,7 @@ services:
       -c min_wal_size=1GB
       -c max_wal_size=4GB
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d sigsan"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ziipsan"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -56,7 +56,7 @@ services:
 
   # postgres-replica: removido em 12/10/2026. Nao replicava nada (a imagem postgis ignora
   # PG_PRIMARY_*), nao recebia o init de seguranca e expunha na porta 5433 um PostgreSQL em que
-  # sigsan_app era superusuario. Replicacao real fica para a infraestrutura de producao.
+  # ziipsan_app era superusuario. Replicacao real fica para a infraestrutura de producao.
 
   # ========================================================================
   # CACHE & QUEUE
@@ -72,10 +72,10 @@ services:
     # 127.0.0.1 e a senha vem do .env, sem fallback literal.
     profiles: ["storage"]
     image: chrislusf/seaweedfs:3.60
-    container_name: sigsan-minio
+    container_name: ziipsan-minio
     command: server -dir=/data -filer=true -s3=true -s3.port=9000 -master.port=9333 -volume.port=8081 -filer.port=8888 -ip=127.0.0.1
     environment:
-      MINIO_ROOT_USER: sigsan
+      MINIO_ROOT_USER: ziipsan
       MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:?defina MINIO_PASSWORD no .env}
     volumes:
       - minio-data:/data
@@ -97,8 +97,8 @@ services:
   keycloak:
     # Tag exata (nao "latest" nem "26"): a imagem so muda quando este arquivo muda.
     image: quay.io/keycloak/keycloak:26.8.0
-    container_name: sigsan-keycloak
-    # --import-realm importa infra/keycloak/realms/sigsan-realm.json so se o realm ainda NAO existir
+    container_name: ziipsan-keycloak
+    # --import-realm importa infra/keycloak/realms/ziipsan-realm.json so se o realm ainda NAO existir
     # (estrategia IGNORE_EXISTING): mudar o JSON nao altera um realm ja criado; para reimportar,
     # apague o realm no console ou recrie o banco keycloak.
     command: start-dev --import-realm
@@ -109,12 +109,12 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?defina KEYCLOAK_ADMIN_PASSWORD no .env}
       KC_DB: postgres
       # Banco e role proprios (criados por infra/postgres/init/00-roles.sh). Antes o Keycloak usava o
-      # banco sigsan com a role da aplicacao, e suas tabelas ficavam em public ao lado de audit_log.
+      # banco ziipsan com a role da aplicacao, e suas tabelas ficavam em public ao lado de audit_log.
       KC_DB_URL: jdbc:postgresql://postgres-primary:5432/keycloak
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?defina KEYCLOAK_DB_PASSWORD no .env}
       # URL publica fixa (hostname v2 do Keycloak 26): o iss dos tokens e sempre
-      # http://localhost:8080/realms/sigsan, que e o emissor que o backend valida, mesmo quando o
+      # http://localhost:8080/realms/ziipsan, que e o emissor que o backend valida, mesmo quando o
       # backend chama o Keycloak pela rede interna (http://keycloak:8080, liberado pelo
       # BACKCHANNEL_DYNAMIC para o JWKS e o token endpoint).
       KC_HOSTNAME: http://localhost:8080
@@ -126,9 +126,9 @@ services:
       # KC_PROXY (edge) foi removido no Keycloak 26. Atras de um proxy reverso, o equivalente e
       # KC_PROXY_HEADERS: xforwarded (ou forwarded); em desenvolvimento nao ha proxy.
     volumes:
-      # O Docker Desktop nao enxerga o G: (Google Drive): o script de dev aponta SIGSAN_KC_IMPORT_DIR
-      # para uma copia local da pasta, como SIGSAN_PG_INIT_DIR faz com o init do PostgreSQL.
-      - ${SIGSAN_KC_IMPORT_DIR:-./infra/keycloak/realms}:/opt/keycloak/data/import:ro
+      # O Docker Desktop nao enxerga o G: (Google Drive): o script de dev aponta ZIIPSAN_KC_IMPORT_DIR
+      # para uma copia local da pasta, como ZIIPSAN_PG_INIT_DIR faz com o init do PostgreSQL.
+      - ${ZIIPSAN_KC_IMPORT_DIR:-./infra/keycloak/realms}:/opt/keycloak/data/import:ro
     ports:
       # So na maquina local.
       - "127.0.0.1:8080:8080"
@@ -146,7 +146,7 @@ services:
   # ========================================================================
 networks:
   default:
-    name: sigsan-network
+    name: ziipsan-network
     driver: bridge
 
 volumes:

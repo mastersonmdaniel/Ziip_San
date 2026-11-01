@@ -5,10 +5,10 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 export default defineConfig(({ mode }) => {
-  // SIGSAN_API_URL vem do ambiente ou de .env.local, sem prefixo VITE_: só o servidor de dev a lê,
+  // ZIIPSAN_API_URL vem do ambiente ou de .env.local, sem prefixo VITE_: só o servidor de dev a lê,
   // ela nunca vai para o pacote do navegador. Padrão: backend em 8090 (a 8080 é do Keycloak).
   const env = loadEnv(mode, process.cwd(), '')
-  const apiTarget = env.SIGSAN_API_URL || 'http://localhost:8090'
+  const apiTarget = env.ZIIPSAN_API_URL || 'http://localhost:8090'
 
   return {
     plugins: [react()],
@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      // A porta 3000 é a registrada no client sigsan-web do Keycloak (redirect URI e web origin).
+      // A porta 3000 é a registrada no client ziipsan-web do Keycloak (redirect URI e web origin).
       port: 3000,
       strictPort: true,
       // O contrato do cadastro é /api/registry/... (relatório 07, seção 6.2): o prefixo /api

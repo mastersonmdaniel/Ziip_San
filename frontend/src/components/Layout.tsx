@@ -58,7 +58,7 @@ export function Layout() {
         )}
       >
         <div className="flex h-16 items-center justify-between border-b px-4">
-          <span className="text-xl font-bold text-primary">SIGSAN</span>
+          <span className="text-xl font-bold text-primary">ZIIPSAN</span>
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMenuOpen(false)} aria-label="Fechar menu">
             <X className="h-5 w-5" aria-hidden="true" />
           </Button>

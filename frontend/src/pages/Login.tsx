@@ -37,7 +37,7 @@ export function Login() {
     <main className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
       <section className="w-full max-w-sm space-y-4 rounded-xl border bg-card p-6 shadow-sm" aria-labelledby="login-title">
         <h1 id="login-title" className="text-2xl font-bold text-primary">
-          SIGSAN
+          ZIIPSAN
         </h1>
         <p className="text-sm text-muted-foreground">Entre com a sua conta da empresa para continuar.</p>
         {startError ? <Alert tone="error">{startError}</Alert> : null}

@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>br.com.sigsan</groupId>
-    <artifactId>sigsan</artifactId>
+    <groupId>br.com.ziipsan</groupId>
+    <artifactId>ziipsan</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>SIGSAN - Sistema Integrado de Gestão de Saneamento</name>
+    <name>ZIIPSAN - Sistema Integrado de Gestão de Saneamento</name>
     <description>SaaS vertical multi-tenant para saneamento (agua/esgoto/residuos)</description>
 
     <properties>
@@ -40,19 +40,19 @@
     </dependencyManagement>
 
     <modules>
-        <module>shared/sigsan-core</module>
-        <module>shared/sigsan-security</module>
-        <module>platform/sigsan-platform</module>
-        <module>intelligence/sigsan-losses</module>
-        <module>intelligence/sigsan-quality</module>
-        <module>intelligence/sigsan-gis</module>
-        <module>grs/sigsan-mtr</module>
-        <module>compliance/sigsan-lgpd</module>
-        <module>commercial/sigsan-registry</module>
-        <module>commercial/sigsan-billing</module>
-        <module>operations/sigsan-metering</module>
-        <module>commercial/sigsan-collection</module>
-        <module>platform/sigsan-app</module>
+        <module>shared/ziipsan-core</module>
+        <module>shared/ziipsan-security</module>
+        <module>platform/ziipsan-platform</module>
+        <module>intelligence/ziipsan-losses</module>
+        <module>intelligence/ziipsan-quality</module>
+        <module>intelligence/ziipsan-gis</module>
+        <module>grs/ziipsan-mtr</module>
+        <module>compliance/ziipsan-lgpd</module>
+        <module>commercial/ziipsan-registry</module>
+        <module>commercial/ziipsan-billing</module>
+        <module>operations/ziipsan-metering</module>
+        <module>commercial/ziipsan-collection</module>
+        <module>platform/ziipsan-app</module>
     </modules>
 
     <build>

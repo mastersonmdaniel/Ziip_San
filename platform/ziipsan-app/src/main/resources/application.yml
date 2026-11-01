@@ -1,0 +1,61 @@
+# Configuração da aplicação ZIIPSAN. Nenhum segredo aqui: tudo que é senha, endereço ou chave vem de
+# variável de ambiente, SEM valor padrão (a subida falha listando o que falta). Ver .env.example.
+spring:
+  application:
+    name: ziipsan
+  main:
+    web-application-type: servlet
+  # O Flyway do Boot fica DESLIGADO: com flyway-core no classpath ele varreria db/migration de forma
+  # recursiva e aplicaria as migrations de tenant em public. Quem migra é o DatabaseMigrator (platform).
+  flyway:
+    enabled: false
+  jpa:
+    open-in-view: false
+  mvc:
+    problemdetails:
+      enabled: true
+  # O frontend envia campos que o cadastro ainda não modela (ex.: rg, motherName, costCenter); cada DTO
+  # lê só o que conhece, explicitamente. Recusar o corpo inteiro por um campo a mais travaria as telas.
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
+
+server:
+  port: ${ZIIPSAN_PORT:8090}
+  error:
+    include-stacktrace: never
+    include-message: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+
+ziipsan:
+  db:
+    url: ${ZIIPSAN_DB_URL}
+    app-user: ${ZIIPSAN_DB_APP_USER:ziipsan_app}
+    app-password: ${ZIIPSAN_DB_APP_PASSWORD}
+    migrator-user: ${ZIIPSAN_DB_MIGRATOR_USER:ziipsan_migrator}
+    migrator-password: ${ZIIPSAN_DB_MIGRATOR_PASSWORD}
+    # Produção: false (migrations num job separado antes da troca de versão). Local/teste: true.
+    migrate-on-startup: ${ZIIPSAN_DB_MIGRATE_ON_STARTUP:false}
+  oidc:
+    issuer: ${ZIIPSAN_OIDC_ISSUER}
+    jwk-set-uri: ${ZIIPSAN_OIDC_JWK_SET_URI:}
+    audience: ${ZIIPSAN_OIDC_AUDIENCE:ziipsan-api}
+  cors:
+    allowed-origins: ${ZIIPSAN_CORS_ORIGINS:}
+  # Provedor das chaves de cifra por tenant (CryptoConfig). Sem valor a aplicação não sobe. "dev-env"
+  # (chave mestra em ZIIPSAN_DEV_MASTER_KEY) só fora de produção; o do Vault ainda não existe.
+  crypto:
+    provider: ${ZIIPSAN_CRYPTO_PROVIDER:}
+  keycloak:
+    admin:
+      enabled: false

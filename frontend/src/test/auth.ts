@@ -8,7 +8,7 @@ export function fakeOidcUser(overrides: { access_token?: string; expiresInSecond
     access_token: overrides.access_token ?? 'token-de-teste',
     refresh_token: 'refresh-de-teste',
     token_type: 'Bearer',
-    profile: { sub: 'user-1', iss: 'http://localhost:8080/realms/sigsan', aud: 'sigsan-web', exp: 0, iat: 0 },
+    profile: { sub: 'user-1', iss: 'http://localhost:8080/realms/ziipsan', aud: 'ziipsan-web', exp: 0, iat: 0 },
     expires_at: Math.floor(Date.now() / 1000) + (overrides.expiresInSeconds ?? 300),
     userState: overrides.state,
   })

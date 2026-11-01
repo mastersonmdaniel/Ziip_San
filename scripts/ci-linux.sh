@@ -32,14 +32,14 @@
 set -euo pipefail
 
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-IT_PORT="${SIGSAN_IT_PORT:-55433}"
-IT_DATA="${SIGSAN_IT_DATA:-/tmp/sigsan-it-pg}"
+IT_PORT="${ZIIPSAN_IT_PORT:-55433}"
+IT_DATA="${ZIIPSAN_IT_DATA:-/tmp/ziipsan-it-pg}"
 # Major do Postgres da instancia dedicada (17 desde o turno 3, apos instalacao via PGDG;
 # antes era 16, por indisponibilidade no apt padrao). Binarios em /usr/lib/postgresql/$IT_PG/.
-IT_PG="${SIGSAN_IT_PG:-17}"
+IT_PG="${ZIIPSAN_IT_PG:-17}"
 PG_BIN="/usr/lib/postgresql/$IT_PG/bin"
-IT_LOG="${SIGSAN_IT_LOG:-/tmp/sigsan-it-pg.log}"
-LOCK_DIR="/tmp/sigsan-ci-linux.lock"
+IT_LOG="${ZIIPSAN_IT_LOG:-/tmp/ziipsan-it-pg.log}"
+LOCK_DIR="/tmp/ziipsan-ci-linux.lock"
 
 die() { echo "ERRO: $*" >&2; exit 1; }
 
@@ -72,10 +72,10 @@ command -v npm >/dev/null || die "npm nao encontrado"
 SUPER_PW="$(openssl rand -hex 16)"
 APP_PW="$(openssl rand -hex 16)"
 MIG_PW="$(openssl rand -hex 16)"
-echo "$SUPER_PW" > /tmp/sigsan-it-super.pw
-chown postgres:postgres /tmp/sigsan-it-super.pw
-chmod 600 /tmp/sigsan-it-super.pw
-trap 'rm -f /tmp/sigsan-it-super.pw; cleanup' EXIT
+echo "$SUPER_PW" > /tmp/ziipsan-it-super.pw
+chown postgres:postgres /tmp/ziipsan-it-super.pw
+chmod 600 /tmp/ziipsan-it-super.pw
+trap 'rm -f /tmp/ziipsan-it-super.pw; cleanup' EXIT
 
 echo "== (a) instancia dedicada PostgreSQL $IT_PG em 127.0.0.1:$IT_PORT (virgem)"
 su postgres -c "$PG_BIN/pg_ctl -D '$IT_DATA' -m fast stop" >/dev/null 2>&1 || true
@@ -83,7 +83,7 @@ rm -rf "$IT_DATA" "$IT_LOG"
 mkdir -p "$IT_DATA"
 chown postgres:postgres "$IT_DATA"
 chmod 700 "$IT_DATA"
-su postgres -c "$PG_BIN/initdb -D '$IT_DATA' -U postgres --pwfile=/tmp/sigsan-it-super.pw --auth=scram-sha-256" >>"$IT_LOG" 2>&1 \
+su postgres -c "$PG_BIN/initdb -D '$IT_DATA' -U postgres --pwfile=/tmp/ziipsan-it-super.pw --auth=scram-sha-256" >>"$IT_LOG" 2>&1 \
   || die "initdb falhou (ver $IT_LOG)"
 # PostGIS precisa estar disponivel no shared_preload? Nao: CREATE EXTENSION basta, com o pacote instalado.
 # O log do initdb acima e criado como root; o pg_ctl (como postgres) precisa do proprio arquivo.
@@ -96,21 +96,21 @@ for _ in $(seq 1 60); do
   sleep 2
 done
 pg_isready -h 127.0.0.1 -p "$IT_PORT" -U postgres >/dev/null 2>&1 || die "instancia dedicada nao ficou pronta"
-psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE sigsan;" >/dev/null
+psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE ziipsan;" >/dev/null
 # security.sql cria roles, extensoes (incl. postgis) e current_tenant_id(); pular o bloco Keycloak.
-psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d sigsan -v ON_ERROR_STOP=1 \
+psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d ziipsan -v ON_ERROR_STOP=1 \
   -v app_pw="$APP_PW" -v migrator_pw="$MIG_PW" \
   -f "$SRC/infra/postgres/init/sql/security.sql" >/dev/null
-OWNER_OK="$(psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d sigsan -tAc \
-  "select 1 from pg_proc where proname = 'current_tenant_id' and pg_get_userbyid(proowner) = 'sigsan_owner'")"
-[ "$OWNER_OK" = "1" ] || die "verificacao do init falhou: current_tenant_id nao pertence a sigsan_owner"
+OWNER_OK="$(psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d ziipsan -tAc \
+  "select 1 from pg_proc where proname = 'current_tenant_id' and pg_get_userbyid(proowner) = 'ziipsan_owner'")"
+[ "$OWNER_OK" = "1" ] || die "verificacao do init falhou: current_tenant_id nao pertence a ziipsan_owner"
 echo "banco virgem pronto em 127.0.0.1:$IT_PORT"
 
-export SIGSAN_IT_JDBC_URL="jdbc:postgresql://127.0.0.1:${IT_PORT}/sigsan"
-export SIGSAN_IT_DB_USER="sigsan_app"
-export SIGSAN_IT_DB_PASSWORD="$APP_PW"
-export SIGSAN_IT_MIGRATOR_USER="sigsan_migrator"
-export SIGSAN_IT_MIGRATOR_PASSWORD="$MIG_PW"
+export ZIIPSAN_IT_JDBC_URL="jdbc:postgresql://127.0.0.1:${IT_PORT}/ziipsan"
+export ZIIPSAN_IT_DB_USER="ziipsan_app"
+export ZIIPSAN_IT_DB_PASSWORD="$APP_PW"
+export ZIIPSAN_IT_MIGRATOR_USER="ziipsan_migrator"
+export ZIIPSAN_IT_MIGRATOR_PASSWORD="$MIG_PW"
 unset PGPASSWORD
 
 echo "== (b) backend (mvn clean verify)"
@@ -120,7 +120,7 @@ export JAVA_TOOL_OPTIONS="-Djava.net.preferIPv4Stack=true${JAVA_TOOL_OPTIONS:+ $
 (cd "$SRC" && mvn -B -s "$SRC/scripts/ci-linux-settings.xml" -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 clean verify)
 
 echo "== (c) frontend"
-FE="$(mktemp -d /tmp/sigsan-ci-frontend.XXXXXX)"
+FE="$(mktemp -d /tmp/ziipsan-ci-frontend.XXXXXX)"
 cp -a "$SRC/frontend/." "$FE/"
 rm -rf "$FE/node_modules" "$FE/dist" "$FE/coverage"
 (

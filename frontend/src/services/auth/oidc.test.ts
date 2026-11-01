@@ -12,7 +12,7 @@ import {
   startLogin,
 } from './oidc'
 
-const AUTHORITY = 'http://localhost:8080/realms/sigsan'
+const AUTHORITY = 'http://localhost:8080/realms/ziipsan'
 // Metadados fixos: o teste não busca o .well-known (não há Keycloak aqui).
 const metadata = {
   issuer: AUTHORITY,
@@ -22,10 +22,10 @@ const metadata = {
 }
 
 describe('configuração do oidc-client-ts', () => {
-  it('usa o realm sigsan, o client sigsan-web, code e o callback desta origem', () => {
+  it('usa o realm ziipsan, o client ziipsan-web, code e o callback desta origem', () => {
     const s = oidcSettings('http://localhost:3000')
     expect(s.authority).toBe(AUTHORITY)
-    expect(s.client_id).toBe('sigsan-web')
+    expect(s.client_id).toBe('ziipsan-web')
     expect(s.response_type).toBe('code')
     expect(s.redirect_uri).toBe('http://localhost:3000/auth/callback')
     expect(s.post_logout_redirect_uri).toBe('http://localhost:3000/login')
@@ -39,7 +39,7 @@ describe('configuração do oidc-client-ts', () => {
     const url = new URL(request.url)
     expect(url.origin + url.pathname).toBe(metadata.authorization_endpoint)
     expect(url.searchParams.get('response_type')).toBe('code')
-    expect(url.searchParams.get('client_id')).toBe('sigsan-web')
+    expect(url.searchParams.get('client_id')).toBe('ziipsan-web')
     expect(url.searchParams.get('redirect_uri')).toBe('http://localhost:3000/auth/callback')
     expect(url.searchParams.get('code_challenge_method')).toBe('S256')
     // S256 = base64url(SHA-256(verifier)): 43 caracteres, sem o verifier na URL.
@@ -57,7 +57,7 @@ describe('configuração do oidc-client-ts', () => {
   it('o UserManager guarda o usuário (tokens) em sessionStorage, nunca em localStorage', async () => {
     const manager = new UserManager({ ...oidcSettings('http://localhost:3000'), metadata, automaticSilentRenew: false })
     await manager.storeUser(fakeOidcUser({ access_token: 'token-guardado' }))
-    expect(sessionStorage.getItem(`oidc.user:${AUTHORITY}:sigsan-web`)).toContain('token-guardado')
+    expect(sessionStorage.getItem(`oidc.user:${AUTHORITY}:ziipsan-web`)).toContain('token-guardado')
     expect(localStorage.length).toBe(0)
     expect((await manager.getUser())?.access_token).toBe('token-guardado')
   })

@@ -3,7 +3,7 @@ import { useEffect, type ReactNode } from 'react'
 /** Cabeçalho de página: o ÚNICO h1 da tela, com descrição e ações opcionais. Atualiza o título da aba. */
 export function PageHeader({ title, description, actions }: { title: string; description?: ReactNode; actions?: ReactNode }) {
   useEffect(() => {
-    document.title = `${title} · SIGSAN`
+    document.title = `${title} · ZIIPSAN`
   }, [title])
 
   return (

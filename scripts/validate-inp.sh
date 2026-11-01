@@ -5,7 +5,7 @@
 # tempo sem unidade, no inexistente). Este script e a verificacao externa do InpWriter.
 #
 # Uso:
-#   scripts/build.sh -pl intelligence/sigsan-gis -am test -Dtest=InpWriterTest -Dsurefire.failIfNoSpecifiedTests=false
+#   scripts/build.sh -pl intelligence/ziipsan-gis -am test -Dtest=InpWriterTest -Dsurefire.failIfNoSpecifiedTests=false
 #   scripts/validate-inp.sh                      # valida as amostras geradas pelo teste
 #   scripts/validate-inp.sh caminho/arquivo.inp  # valida um arquivo especifico
 #
@@ -13,7 +13,7 @@
 source "$(dirname "$0")/lib.sh"
 
 WNTR_VERSION="1.5.0"
-SAMPLES="$MIRROR/intelligence/sigsan-gis/target/epanet-samples"
+SAMPLES="$MIRROR/intelligence/ziipsan-gis/target/epanet-samples"
 
 FILES=()
 if [ $# -gt 0 ]; then
