@@ -1350,3 +1350,21 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   pendente: o apt-get update está lento (em andamento desde 23:43) e o PG17 ainda não está
   instalado nesta instância; o CI completo em PG17 (segunda execução com contorno
   jackson-bom) ainda não foi revalidado aqui.
+
+### 31/10/2026 — P0.7 executada (turno 4)
+- Compose: removidos timescaledb, redis, kafka, zookeeper e vault dev; ficam
+  postgres-primary, keycloak (start-dev até a P0.29) e minio só no perfil
+  "storage", com portas em 127.0.0.1 e senha exigida no .env (sem fallback).
+  Imagem do Postgres segue 15-3.4 — isso é P0.4, não P0.7.
+- Blocos comentados e volumes órfãos removidos do arquivo ativo (ADR-0010).
+- Verificação de portas: scripts/check-compose-ports.py (lê o compose, ignora
+  comentários, falha com porta fora de 127.0.0.1, incluindo forma curta sem
+  host) + scripts/test-check-compose-ports.py (positivo + 3 negativos); o
+  ci-linux invoca o script na etapa (d).
+- infra/kubernetes e infra/terraform arquivados em infra/_arquivado/ com
+  LEIA-ME; segredos literais das cópias arquivadas substituídos por
+  REDACTED-ARQUIVADO (o original segue no histórico do Git).
+- Divergência P0.7 × ADR-0010 (Vault): o ADR mandava 6 serviços para profiles:
+  (incluindo o Vault); a P0.7 manda remover 5 e deixar só o SeaweedFS em
+  perfil. Seguida a P0.7 (Vault removido); o ADR não foi alterado sem decisão
+  do dono.
