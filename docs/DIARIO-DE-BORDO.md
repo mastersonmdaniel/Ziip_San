@@ -1401,3 +1401,32 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - Decisão registrada: infra/_arquivado/ não é renomeado (arquivo da P0.7,
   congelado por definição); a busca residual da P0.33 o exclui junto com
   docs/, target/ e node_modules.
+
+### 01/11/2026 — Gate P0.25/P0.7/P0.33: reprovação estreita dos 2 revisores e correção (turno 4)
+- Veredito dos 2 revisores independentes sobre o HEAD 977c40a: REPROVADO
+  para o gate, por um único item estreito (o resto aprovado: P0.25 e P0.7
+  cumpridas, números do CI turn4g conferem, nenhum segredo novo, nenhum
+  teste vermelho). O item: a guarda da P0.33 não cumpria o especificado.
+- Bloqueio 1: residual "sigsan" real num comentário
+  (EnvDerivedTenantKeyProviderTest.java:60, "voltar a sigsan/...") — a
+  afirmação "busca residual zero" da entrada anterior estava, portanto,
+  incorreta nesse ponto, e fica aqui corrigida, não mascarada.
+- Bloqueio 2: ProblemCodeContractTest.repoRoot() parava no próprio módulo
+  app, porque o pom do app tem "ziipsan" como artifactId do PARENT; a
+  varredura cobria só platform/ziipsan-app/**, e por isso passou no CI
+  com o residual presente em outro módulo (security).
+- Correção (commit 688c545, só 2 arquivos de teste, nenhum código de
+  produção): comentário reescrito sem "sigsan" ("voltar ao contexto
+  antigo"); repoRoot() agora exige artifactId ziipsan + packaging pom
+  (a raiz agregadora). Prova negativa: arquivo de prova com "sigsan" em
+  shared/ziipsan-core/ fez noSigsanRemainsInSource falhar apontando o
+  arquivo; a prova foi removida e não commitada. Após a correção, o grep
+  residual fora de docs/_arquivado só retorna o próprio teste de
+  contrato, que se autoexclui da varredura.
+- Verificação pós-correção: ci-linux total verde (log
+  /tmp/ci-linux-turn4h.log, exit 0) — backend 907 testes, 0 falhas
+  (core 36, security 29, platform 20, quality 2, losses 24, gis 31,
+  mtr 75, lgpd 15, registry 37, billing 185, metering 200, collection
+  165, app 88), frontend 134 passed + build, portas OK.
+- Push continua bloqueado até a re-revisão do gate corrigido aprovar;
+  nenhum push foi feito neste ponto.
