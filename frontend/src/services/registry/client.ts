@@ -3,7 +3,7 @@ import { api } from '@services/api'
 import { toApiError } from './errors'
 import type { FilterValue, ListParams, Page, Uuid, Versioned } from './types'
 
-/** Prefixo do cadastro. O baseURL do cliente HTTP já é /api, resultando em /api/registry/... */
+/** Prefixo do cadastro. O baseURL do cliente HTTP já é /api/v1, resultando em /api/v1/registry/... */
 export const REGISTRY_BASE = '/registry'
 
 export interface WriteOptions {

@@ -56,16 +56,16 @@ class SecurityIntegrationTest extends AppIntegrationTestBase {
     @Test
     @DisplayName("sem token: 401 em problem+json")
     void noTokenIs401() throws Exception {
-        mvc.perform(get("/api/me"))
+        mvc.perform(get("/api/v1/me"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentTypeCompatibleWith(PROBLEM))
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:unauthenticated"));
     }
 
     @Test
-    @DisplayName("token válido: /api/me devolve o tenant do token e os papéis")
+    @DisplayName("token válido: /api/v1/me devolve o tenant do token e os papéis")
     void validTokenSetsTenant() throws Exception {
-        mvc.perform(get("/api/me").header("Authorization", bearer(TestTokens.token(ProvisionedTenant.TENANT_ID, "VIEWER", "OPERATOR"))))
+        mvc.perform(get("/api/v1/me").header("Authorization", bearer(TestTokens.token(ProvisionedTenant.TENANT_ID, "VIEWER", "OPERATOR"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tenantId").value(ProvisionedTenant.TENANT_ID.toString()))
                 .andExpect(jsonPath("$.tenantSchema").value(ProvisionedTenant.SCHEMA))
@@ -77,7 +77,7 @@ class SecurityIntegrationTest extends AppIntegrationTestBase {
     @DisplayName("aud como string única (como o Keycloak emite) é aceito")
     void singleAudienceStringIsAccepted() throws Exception {
         String token = TestTokens.token(ProvisionedTenant.TENANT_ID, List.of("VIEWER"), b -> b.audience(TestTokens.AUDIENCE));
-        mvc.perform(get("/api/me").header("Authorization", bearer(token)))
+        mvc.perform(get("/api/v1/me").header("Authorization", bearer(token)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("usuario.teste"));
     }
@@ -94,7 +94,7 @@ class SecurityIntegrationTest extends AppIntegrationTestBase {
                         .issueTime(Date.from(Instant.now().minusSeconds(3600)))
                         .expirationTime(Date.from(Instant.now().minusSeconds(1800)))));
         for (String token : invalid) {
-            mvc.perform(get("/api/me").header("Authorization", bearer(token)))
+            mvc.perform(get("/api/v1/me").header("Authorization", bearer(token)))
                     .andExpect(status().isUnauthorized())
                     .andExpect(content().contentTypeCompatibleWith(PROBLEM));
         }
@@ -103,7 +103,7 @@ class SecurityIntegrationTest extends AppIntegrationTestBase {
     @Test
     @DisplayName("token sem tenant_id: 403 tenant-missing")
     void tokenWithoutTenantIs403() throws Exception {
-        mvc.perform(get("/api/me").header("Authorization", bearer(TestTokens.token(null, "VIEWER"))))
+        mvc.perform(get("/api/v1/me").header("Authorization", bearer(TestTokens.token(null, "VIEWER"))))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:tenant-missing"));
     }
@@ -111,7 +111,7 @@ class SecurityIntegrationTest extends AppIntegrationTestBase {
     @Test
     @DisplayName("tenant do token fora do catálogo: 403 tenant-inactive")
     void unknownTenantIs403() throws Exception {
-        mvc.perform(get("/api/me").header("Authorization", bearer(TestTokens.token(UUID.randomUUID(), "VIEWER"))))
+        mvc.perform(get("/api/v1/me").header("Authorization", bearer(TestTokens.token(UUID.randomUUID(), "VIEWER"))))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:tenant-inactive"));
     }
@@ -120,12 +120,12 @@ class SecurityIntegrationTest extends AppIntegrationTestBase {
     @DisplayName("cabeçalho de tenant diferente do token: 403; igual ao token: aceito")
     void legacyHeaderMustMatchToken() throws Exception {
         String token = bearer(TestTokens.token(ProvisionedTenant.TENANT_ID, "VIEWER"));
-        mvc.perform(get("/api/me").header("Authorization", token).header("X-Tenant-ID", "outro_tenant"))
+        mvc.perform(get("/api/v1/me").header("Authorization", token).header("X-Tenant-ID", "outro_tenant"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:tenant-mismatch"));
-        mvc.perform(get("/api/me").header("Authorization", token).header("X-Tenant-UUID", UUID.randomUUID().toString()))
+        mvc.perform(get("/api/v1/me").header("Authorization", token).header("X-Tenant-UUID", UUID.randomUUID().toString()))
                 .andExpect(status().isForbidden());
-        mvc.perform(get("/api/me").header("Authorization", token).header("X-Tenant-ID", ProvisionedTenant.SCHEMA))
+        mvc.perform(get("/api/v1/me").header("Authorization", token).header("X-Tenant-ID", ProvisionedTenant.SCHEMA))
                 .andExpect(status().isOk());
     }
 
@@ -133,16 +133,25 @@ class SecurityIntegrationTest extends AppIntegrationTestBase {
     @DisplayName("X-Request-ID: devolvido se bem formado, gerado se ausente")
     void requestIdIsEchoed() throws Exception {
         String token = bearer(TestTokens.token(ProvisionedTenant.TENANT_ID, "VIEWER"));
-        mvc.perform(get("/api/me").header("Authorization", token).header("X-Request-ID", "req-12345678"))
+        mvc.perform(get("/api/v1/me").header("Authorization", token).header("X-Request-ID", "req-12345678"))
                 .andExpect(header().string("X-Request-ID", "req-12345678"));
-        mvc.perform(get("/api/me").header("Authorization", token))
+        mvc.perform(get("/api/v1/me").header("Authorization", token))
                 .andExpect(header().exists("X-Request-ID"));
+    }
+
+    @Test
+    @DisplayName("P0.10: rota legada /api/me com token é negada (denyAll), não servida")
+    void legacyRouteIsDenied() throws Exception {
+        mvc.perform(get("/api/me").header("Authorization", bearer(TestTokens.token(ProvisionedTenant.TENANT_ID, "VIEWER"))))
+                .andExpect(status().isForbidden());
+        mvc.perform(get("/api/registry/customers").header("Authorization", bearer(TestTokens.token(ProvisionedTenant.TENANT_ID, "VIEWER"))))
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @DisplayName("rota inexistente com token: 404 em problem+json, sem detalhe interno")
     void unknownRouteIs404Problem() throws Exception {
-        mvc.perform(get("/api/nao-existe").header("Authorization", bearer(TestTokens.token(ProvisionedTenant.TENANT_ID, "VIEWER"))))
+        mvc.perform(get("/api/v1/nao-existe").header("Authorization", bearer(TestTokens.token(ProvisionedTenant.TENANT_ID, "VIEWER"))))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentTypeCompatibleWith(PROBLEM))
                 .andExpect(jsonPath("$.trace").doesNotExist());

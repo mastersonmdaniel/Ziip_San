@@ -2,8 +2,9 @@ import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { getAccessToken, goToLogin, renewAccessToken } from '@services/auth/oidc'
 
 /**
- * Cliente HTTP único. Base padrão: /api (o proxy do Vite repassa para o backend; o prefixo NÃO
- * é removido, porque o contrato do cadastro é /api/registry/...).
+ * Cliente HTTP único. Base padrão: /api/v1 (P0.10: rotas de negócio sob /api/v1; o proxy do
+ * Vite repassa para o backend; o prefixo NÃO é removido, porque o contrato do cadastro é
+ * /api/v1/registry/...).
  *
  * Autenticação: só `Authorization: Bearer <access token do Keycloak>`. Não há cabeçalho de tenant
  * (X-Tenant-ID/X-Tenant-UUID): o tenant vem do claim tenant_id do token, e o backend responde 403
@@ -11,7 +12,7 @@ import { getAccessToken, goToLogin, renewAccessToken } from '@services/auth/oidc
  * este módulo não grava nada em storage. Dados pessoais (CPF/CNPJ etc.) nunca vão para
  * localStorage/sessionStorage/URL.
  */
-export const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || '/api'
+export const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || '/api/v1'
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

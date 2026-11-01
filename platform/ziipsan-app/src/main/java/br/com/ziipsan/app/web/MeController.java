@@ -20,7 +20,7 @@ public class MeController {
                      List<String> roles) {
     }
 
-    @GetMapping("/api/me")
+    @GetMapping("/api/v1/me")
     public Me me(JwtAuthenticationToken auth) {
         var jwt = auth.getToken();
         List<String> roles = auth.getAuthorities().stream()

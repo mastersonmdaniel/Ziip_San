@@ -13,7 +13,8 @@ final class RegistryRoles {
     static final String WRITE = "hasAnyRole('OPERATOR','MANAGER','ADMIN')";
     static final String REVEAL_DOCUMENT = "hasRole('registry.reveal-document')";
 
-    static final String BASE = "/api/registry";
+    // P0.10: rotas de negócio sob /api/v1.
+    static final String BASE = "/api/v1/registry";
 
     private RegistryRoles() {
     }

@@ -60,12 +60,12 @@ describe('interceptor de requisição', () => {
     setItem.mockRestore()
   })
 
-  it('getMe chama GET /api/me', async () => {
+  it('getMe chama GET /api/v1/me', async () => {
     signInForTests()
     const { calls } = fakeServer(() => 200)
     await authApi.getMe()
     expect(calls[0].method).toBe('get')
-    expect(calls[0].baseURL).toBe('/api')
+    expect(calls[0].baseURL).toBe('/api/v1')
     expect(calls[0].url).toBe('/me')
   })
 })

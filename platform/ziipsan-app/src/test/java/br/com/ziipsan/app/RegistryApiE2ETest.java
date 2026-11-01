@@ -126,55 +126,55 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @DisplayName("território: localidade → setor → rota → quadra, com página no formato do frontend")
     void territory() throws Exception {
         // costCenter não existe no modelo: campo a mais do frontend é ignorado, não derruba o corpo.
-        localityId = id(send(post("/api/registry/localities"), operator, """
+        localityId = id(send(post("/api/v1/registry/localities"), operator, """
                 {"code": %d, "name": "Localidade E2E %d", "municipalityIbge": "3550308", "costCenter": "X"}"""
                 .formatted(CODE, CODE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.version").value(0))
                 .andExpect(jsonPath("$.blocked").value(false)));
 
-        sectorId = id(send(post("/api/registry/commercial-sectors"), operator, """
+        sectorId = id(send(post("/api/v1/registry/commercial-sectors"), operator, """
                 {"localityId": "%s", "code": 1, "name": "Setor E2E"}""".formatted(localityId))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.locality.id").value(localityId))
                 .andExpect(jsonPath("$.locality.code").value(CODE)));
 
-        routeId = id(send(post("/api/registry/reading-routes"), operator, """
+        routeId = id(send(post("/api/v1/registry/reading-routes"), operator, """
                 {"code": %d, "name": "Rota E2E"}""".formatted(CODE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.active").value(true)));
 
-        blockId = id(send(post("/api/registry/blocks"), operator, """
+        blockId = id(send(post("/api/v1/registry/blocks"), operator, """
                 {"sectorId": "%s", "code": 3, "readingRouteId": "%s", "hasWaterNetwork": true, "hasSewerNetwork": true}"""
                 .formatted(sectorId, routeId))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.localityId").value(localityId))
                 .andExpect(jsonPath("$.readingRoute.id").value(routeId)));
 
-        mvc.perform(get("/api/registry/localities").param("q", "Localidade E2E " + CODE).header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/localities").param("q", "Localidade E2E " + CODE).header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id").value(localityId))
                 .andExpect(jsonPath("$.page").value(0))
                 .andExpect(jsonPath("$.size").value(25))
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.totalPages").value(1));
-        mvc.perform(get("/api/registry/blocks").param("sectorId", sectorId).header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/blocks").param("sectorId", sectorId).header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.content[0].id").value(blockId));
 
         // código repetido na mesma localidade: 422 no campo
-        send(post("/api/registry/commercial-sectors"), operator, """
+        send(post("/api/v1/registry/commercial-sectors"), operator, """
                 {"localityId": "%s", "code": 1, "name": "Outro"}""".formatted(localityId))
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.errors[0].field").value("code"))
                 .andExpect(jsonPath("$.errors[0].code").value("CODE_IN_USE"));
         // leitura não grava
-        send(post("/api/registry/localities"), viewer, """
+        send(post("/api/v1/registry/localities"), viewer, """
                 {"code": %d, "name": "Sem permissão"}""".formatted(CODE + 1))
                 .andExpect(status().isForbidden());
         // sem coluna de exclusão lógica: 405 explícito
-        mvc.perform(delete("/api/registry/localities/" + localityId).header("Authorization", operator))
+        mvc.perform(delete("/api/v1/registry/localities/" + localityId).header("Authorization", operator))
                 .andExpect(status().isMethodNotAllowed())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:deletion-unavailable"));
     }
@@ -183,24 +183,24 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @Order(2)
     @DisplayName("catálogos: categoria, subcategoria e situações de água e de esgoto")
     void catalogs() throws Exception {
-        String categoryId = id(send(post("/api/registry/categories"), operator, """
+        String categoryId = id(send(post("/api/v1/registry/categories"), operator, """
                 {"code": "E2E%d", "name": "Residencial E2E"}""".formatted(CODE))
                 .andExpect(status().isCreated()));
-        subcategoryId = id(send(post("/api/registry/subcategories"), operator, """
+        subcategoryId = id(send(post("/api/v1/registry/subcategories"), operator, """
                 {"categoryId": "%s", "code": "E2E%d.1", "name": "Residencial padrão E2E"}""".formatted(categoryId, CODE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.category.id").value(categoryId)));
-        waterId = id(send(post("/api/registry/water-statuses"), operator, """
+        waterId = id(send(post("/api/v1/registry/water-statuses"), operator, """
                 {"code": "LIG%d", "name": "Ligado E2E", "billable": true, "requiresNetwork": true, "connected": true, "supplies": true}"""
                 .formatted(CODE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.billable").value(true))
                 .andExpect(jsonPath("$.requiresNetwork").value(true)));
-        sewerId = id(send(post("/api/registry/sewer-statuses"), operator, """
+        sewerId = id(send(post("/api/v1/registry/sewer-statuses"), operator, """
                 {"code": "LIG%d", "name": "Ligado E2E", "billable": true, "requiresNetwork": true, "connected": true}"""
                 .formatted(CODE))
                 .andExpect(status().isCreated()));
-        mvc.perform(get("/api/registry/subcategories").param("categoryId", categoryId).header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/subcategories").param("categoryId", categoryId).header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1));
     }
@@ -209,7 +209,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @Order(3)
     @DisplayName("cliente com CPF: só a máscara volta; documento repetido é recusado")
     void customer() throws Exception {
-        MvcResult created = send(post("/api/registry/customers"), operator, """
+        MvcResult created = send(post("/api/v1/registry/customers"), operator, """
                 {"personType": "PF", "name": "%s", "document": "%s", "birthDate": "1980-05-17",
                  "billing": {"dueDay": 10},
                  "emails": [{"address": "maria.e2e@exemplo.com.br"}],
@@ -226,17 +226,17 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
         customerId = JsonPath.read(created.getResponse().getContentAsString(), "$.id");
 
         // o mesmo CPF sem pontuação é o mesmo documento
-        send(post("/api/registry/customers"), operator, """
+        send(post("/api/v1/registry/customers"), operator, """
                 {"personType": "PF", "name": "Outra Pessoa", "document": "%s"}""".formatted(CPF_DIGITS))
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.errors[0].field").value("document"))
                 .andExpect(jsonPath("$.errors[0].code").value("DOCUMENT_IN_USE"));
-        send(post("/api/registry/customers"), operator, """
+        send(post("/api/v1/registry/customers"), operator, """
                 {"personType": "PF", "name": "Documento ruim", "document": "529.982.247-26"}""")
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.errors[0].code").value("DOCUMENT_INVALID"));
 
-        mvc.perform(get("/api/registry/customers/" + customerId).header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/customers/" + customerId).header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(CUSTOMER_NAME))
                 .andExpect(jsonPath("$.documentMasked").value("***.982.247-**"))
@@ -244,7 +244,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                 .andExpect(content().string(not(containsString(CPF_DIGITS))));
 
         // alteração sem documento mantém o atual; o telefone principal troca de linha sem violar o índice único
-        send(put("/api/registry/customers/" + customerId), operator, """
+        send(put("/api/v1/registry/customers/" + customerId), operator, """
                 {"personType": "PF", "name": "%s", "version": 0, "billing": {"dueDay": 15},
                  "emails": [{"address": "maria.e2e@exemplo.com.br"}],
                  "phones": [{"number": "+5511987654321", "type": "MOBILE", "primary": false},
@@ -258,7 +258,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                 .andExpect(jsonPath("$.phones[?(@.number == '+5511912345678')].primary", hasItem(true)))
                 .andExpect(jsonPath("$.phones[?(@.number == '+5511987654321')].primary", hasItem(false)));
         // mudar o tipo de pessoa sem reenviar o documento: 422
-        send(put("/api/registry/customers/" + customerId), operator, """
+        send(put("/api/v1/registry/customers/" + customerId), operator, """
                 {"personType": "PJ", "name": "%s", "version": 1}""".formatted(CUSTOMER_NAME))
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.errors[0].code").value("DOCUMENT_REQUIRED"));
@@ -269,20 +269,20 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @DisplayName("busca de cliente por documento via POST: com e sem pontuação acha o mesmo; na URL é 400")
     void customerSearch() throws Exception {
         for (String q : List.of(CPF, CPF_DIGITS)) {
-            send(post("/api/registry/customers/search"), viewer, "{\"q\": \"" + q + "\"}")
+            send(post("/api/v1/registry/customers/search"), viewer, "{\"q\": \"" + q + "\"}")
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.totalElements").value(1))
                     .andExpect(jsonPath("$.content[0].id").value(customerId))
                     .andExpect(jsonPath("$.content[0].documentMasked").value("***.982.247-**"));
         }
-        send(post("/api/registry/customers/search"), viewer, "{\"q\": \"ponta aponta\", \"nameMatch\": \"contains\"}")
+        send(post("/api/v1/registry/customers/search"), viewer, "{\"q\": \"ponta aponta\", \"nameMatch\": \"contains\"}")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[*].id", hasItem(customerId)));
 
-        mvc.perform(get("/api/registry/customers").param("q", CPF_DIGITS).header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/customers").param("q", CPF_DIGITS).header("Authorization", viewer))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:search-in-url"));
-        mvc.perform(get("/api/registry/customers").param("personType", "PF").header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/customers").param("personType", "PF").header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray());
     }
@@ -291,7 +291,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @Order(5)
     @DisplayName("imóvel: matrícula com DV, inscrição, categoria derivada, vínculos, histórico e aviso confirmável")
     void consumerUnit() throws Exception {
-        MvcResult created = send(post("/api/registry/consumer-units"), operator, unitBody(1, 1, null))
+        MvcResult created = send(post("/api/v1/registry/consumer-units"), operator, unitBody(1, 1, null))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.status").value("ACTIVE"))
                 .andExpect(jsonPath("$.locality.id").value(localityId))
@@ -310,48 +310,48 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
         assertThat(inscription).isEqualTo("%03d.001.003.0001.000".formatted(CODE));
 
         // a mesma inscrição em outro imóvel: 422 citando a matrícula que já a usa
-        send(post("/api/registry/consumer-units"), operator, unitBody(1, 1, null))
+        send(post("/api/v1/registry/consumer-units"), operator, unitBody(1, 1, null))
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.errors[0].field").value("lot"))
                 .andExpect(jsonPath("$.errors[0].code").value("INSCRIPTION_IN_USE"))
                 .andExpect(jsonPath("$.errors[0].message", containsString(registration + "-" + dv)));
 
         // economias acima do limite: só aviso; reenviado com o token, grava
-        MvcResult warned = send(post("/api/registry/consumer-units"), operator, unitBody(2, 60, null))
+        MvcResult warned = send(post("/api/v1/registry/consumer-units"), operator, unitBody(2, 60, null))
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:confirmation-required"))
                 .andExpect(jsonPath("$.errors").doesNotExist())
                 .andExpect(jsonPath("$.warnings[0].code").value("UNIT_ECONOMIES_OVER_LIMIT"))
                 .andReturn();
         String token = JsonPath.read(warned.getResponse().getContentAsString(), "$.warnings[0].confirmToken");
-        unit2Id = id(send(post("/api/registry/consumer-units"), operator, unitBody(2, 60, token))
+        unit2Id = id(send(post("/api/v1/registry/consumer-units"), operator, unitBody(2, 60, token))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.economies").value(60)));
 
-        send(post("/api/registry/consumer-units/search"), viewer, "{\"q\": \"" + inscription + "\"}")
+        send(post("/api/v1/registry/consumer-units/search"), viewer, "{\"q\": \"" + inscription + "\"}")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.content[0].id").value(unitId))
                 .andExpect(jsonPath("$.content[0].userName").value(CUSTOMER_NAME))
                 .andExpect(jsonPath("$.content[0].userDocumentMasked").value("***.982.247-**"))
                 .andExpect(jsonPath("$.content[0].waterStatusName").value("Ligado E2E"));
-        send(post("/api/registry/consumer-units/search"), viewer, "{\"q\": \"" + CPF_DIGITS + "\"}")
+        send(post("/api/v1/registry/consumer-units/search"), viewer, "{\"q\": \"" + CPF_DIGITS + "\"}")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(2));
-        mvc.perform(get("/api/registry/consumer-units").param("q", CPF_DIGITS).header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/consumer-units").param("q", CPF_DIGITS).header("Authorization", viewer))
                 .andExpect(status().isBadRequest());
 
-        mvc.perform(get("/api/registry/consumer-units/" + unitId + "/customers").header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/consumer-units/" + unitId + "/customers").header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].customerId").value(customerId))
                 .andExpect(jsonPath("$[0].relation").value("USER"))
                 .andExpect(jsonPath("$[0].showOnBill").value(true))
                 .andExpect(jsonPath("$[0].customerDocumentMasked").value("***.982.247-**"));
-        mvc.perform(get("/api/registry/consumer-units/" + unitId + "/history").header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/consumer-units/" + unitId + "/history").header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].type", hasItem("STATUS")))
                 .andExpect(jsonPath("$[*].title", hasItem("Imóvel cadastrado")));
-        mvc.perform(get("/api/registry/customers/" + customerId).header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/customers/" + customerId).header("Authorization", viewer))
                 .andExpect(jsonPath("$.unitCount").value(2));
     }
 
@@ -359,26 +359,26 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @Order(6)
     @DisplayName("concorrência: PUT com a versão atual grava; com a versão velha é 409 sem errors/warnings")
     void optimisticLocking() throws Exception {
-        send(put("/api/registry/localities/" + localityId), operator, """
+        send(put("/api/v1/registry/localities/" + localityId), operator, """
                 {"code": %d, "name": "Localidade E2E %d renomeada", "version": 0}""".formatted(CODE, CODE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.version").value(1));
-        send(put("/api/registry/localities/" + localityId), operator, """
+        send(put("/api/v1/registry/localities/" + localityId), operator, """
                 {"code": %d, "name": "Outra edição sobre versão velha", "version": 0}""".formatted(CODE))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:stale-version"))
                 .andExpect(jsonPath("$.errors").doesNotExist())
                 .andExpect(jsonPath("$.warnings").doesNotExist());
 
-        MvcResult unit = mvc.perform(get("/api/registry/consumer-units/" + unitId).header("Authorization", viewer))
+        MvcResult unit = mvc.perform(get("/api/v1/registry/consumer-units/" + unitId).header("Authorization", viewer))
                 .andReturn();
         Number version = JsonPath.read(unit.getResponse().getContentAsString(), "$.version");
         String update = unitBody(1, 2, null).replaceFirst("\\{", "{\"version\": " + version + ", \"notes\": \"Portão azul\", ");
-        send(put("/api/registry/consumer-units/" + unitId), operator, update)
+        send(put("/api/v1/registry/consumer-units/" + unitId), operator, update)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.version").value(version.intValue() + 1))
                 .andExpect(jsonPath("$.economies").value(2));
-        send(put("/api/registry/consumer-units/" + unitId), operator, update)
+        send(put("/api/v1/registry/consumer-units/" + unitId), operator, update)
                 .andExpect(status().isConflict());
     }
 
@@ -386,37 +386,37 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @Order(7)
     @DisplayName("exclusão lógica: some da lista, includeDeleted traz; cliente com vínculo vigente não sai")
     void logicalDelete() throws Exception {
-        send(delete("/api/registry/consumer-units/" + unit2Id), operator, "{\"reason\": \"Cadastro duplicado no teste\"}")
+        send(delete("/api/v1/registry/consumer-units/" + unit2Id), operator, "{\"reason\": \"Cadastro duplicado no teste\"}")
                 .andExpect(status().isNoContent());
-        mvc.perform(get("/api/registry/consumer-units").param("blockId", blockId).header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/consumer-units").param("blockId", blockId).header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.content[0].id").value(unitId));
-        mvc.perform(get("/api/registry/consumer-units").param("blockId", blockId).param("includeDeleted", "true")
+        mvc.perform(get("/api/v1/registry/consumer-units").param("blockId", blockId).param("includeDeleted", "true")
                         .header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(2))
                 .andExpect(jsonPath("$.content[?(@.id == '" + unit2Id + "')].deleted", hasItem(true)));
-        mvc.perform(get("/api/registry/consumer-units/" + unit2Id).header("Authorization", viewer))
+        mvc.perform(get("/api/v1/registry/consumer-units/" + unit2Id).header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.deletedAt").isNotEmpty());
-        send(delete("/api/registry/consumer-units/" + unit2Id), operator, "{\"reason\": \"de novo\"}")
+        send(delete("/api/v1/registry/consumer-units/" + unit2Id), operator, "{\"reason\": \"de novo\"}")
                 .andExpect(status().isConflict());
-        send(delete("/api/registry/customers/" + customerId), operator, "{\"reason\": \"teste\"}")
+        send(delete("/api/v1/registry/customers/" + customerId), operator, "{\"reason\": \"teste\"}")
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:customer-has-active-link"));
-        send(delete("/api/registry/customers/" + customerId), operator, "{}")
+        send(delete("/api/v1/registry/customers/" + customerId), operator, "{}")
                 .andExpect(status().isUnprocessableContent());
 
         // cliente sem vínculo: excluído some da busca e volta com includeDeleted
-        String other = id(send(post("/api/registry/customers"), operator, """
+        String other = id(send(post("/api/v1/registry/customers"), operator, """
                 {"personType": "PJ", "name": "Empresa Excluída E2E %d"}""".formatted(CODE))
                 .andExpect(status().isCreated()));
-        send(delete("/api/registry/customers/" + other), operator, "{\"reason\": \"Encerrou atividades\"}")
+        send(delete("/api/v1/registry/customers/" + other), operator, "{\"reason\": \"Encerrou atividades\"}")
                 .andExpect(status().isNoContent());
-        send(post("/api/registry/customers/search"), viewer, "{\"q\": \"Empresa Excluída E2E %d\"}".formatted(CODE))
+        send(post("/api/v1/registry/customers/search"), viewer, "{\"q\": \"Empresa Excluída E2E %d\"}".formatted(CODE))
                 .andExpect(jsonPath("$.totalElements").value(0));
-        send(post("/api/registry/customers/search"), viewer,
+        send(post("/api/v1/registry/customers/search"), viewer,
                 "{\"q\": \"Empresa Excluída E2E %d\", \"includeDeleted\": true}".formatted(CODE))
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.content[0].deleted").value(true));
@@ -427,12 +427,12 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @DisplayName("revelar documento: sem o papel 403; com o papel, CPF formatado e acesso registrado sem o valor")
     void revealDocument() throws Exception {
         String body = "{\"purpose\": \"" + PURPOSE + "\"}";
-        send(post("/api/registry/customers/" + customerId + "/reveal-document"), operator, body)
+        send(post("/api/v1/registry/customers/" + customerId + "/reveal-document"), operator, body)
                 .andExpect(status().isForbidden());
-        send(post("/api/registry/customers/" + customerId + "/reveal-document"), revealer, "{}")
+        send(post("/api/v1/registry/customers/" + customerId + "/reveal-document"), revealer, "{}")
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.errors[0].field").value("purpose"));
-        send(post("/api/registry/customers/" + customerId + "/reveal-document"), revealer, body)
+        send(post("/api/v1/registry/customers/" + customerId + "/reveal-document"), revealer, body)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.document").value(CPF))
                 .andExpect(jsonPath("$.expiresInSeconds").value(15));
@@ -447,28 +447,28 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @Order(9)
     @DisplayName("isolamento: o tenant B não enxerga o cliente nem o imóvel do A (404); cabeçalho do A com token do B é 403")
     void tenantIsolation() throws Exception {
-        mvc.perform(get("/api/registry/customers/" + customerId).header("Authorization", operatorB))
+        mvc.perform(get("/api/v1/registry/customers/" + customerId).header("Authorization", operatorB))
                 .andExpect(status().isNotFound());
-        mvc.perform(get("/api/registry/consumer-units/" + unitId).header("Authorization", operatorB))
+        mvc.perform(get("/api/v1/registry/consumer-units/" + unitId).header("Authorization", operatorB))
                 .andExpect(status().isNotFound());
-        send(put("/api/registry/customers/" + customerId), operatorB, """
+        send(put("/api/v1/registry/customers/" + customerId), operatorB, """
                 {"personType": "PF", "name": "Invasão", "version": 0}""")
                 .andExpect(status().isNotFound());
-        send(post("/api/registry/customers/" + customerId + "/reveal-document"), operatorB, "{\"purpose\": \"x\"}")
+        send(post("/api/v1/registry/customers/" + customerId + "/reveal-document"), operatorB, "{\"purpose\": \"x\"}")
                 .andExpect(status().isNotFound());
-        send(post("/api/registry/customers/search"), operatorB, "{\"q\": \"" + CPF + "\"}")
+        send(post("/api/v1/registry/customers/search"), operatorB, "{\"q\": \"" + CPF + "\"}")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(0));
-        mvc.perform(get("/api/registry/localities").header("Authorization", operatorB))
+        mvc.perform(get("/api/v1/registry/localities").header("Authorization", operatorB))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(0));
-        mvc.perform(get("/api/registry/customers/" + customerId).header("Authorization", operatorB)
+        mvc.perform(get("/api/v1/registry/customers/" + customerId).header("Authorization", operatorB)
                         .header("X-Tenant-ID", ProvisionedTenant.SCHEMA))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:tenant-mismatch"));
 
         // o mesmo CPF pode existir no tenant B: o índice cego é por tenant
-        send(post("/api/registry/customers"), operatorB, """
+        send(post("/api/v1/registry/customers"), operatorB, """
                 {"personType": "PF", "name": "Titular do tenant B", "document": "%s"}""".formatted(CPF))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.documentMasked").value("***.982.247-**"));

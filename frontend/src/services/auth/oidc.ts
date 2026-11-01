@@ -38,7 +38,7 @@ export function oidcSettings(origin: string = window.location.origin): UserManag
     // Renovação antes de expirar. Com refresh token (o Keycloak emite para o ziipsan-web) a
     // biblioteca chama o token endpoint direto; o iframe de /auth/callback é só o plano B.
     automaticSilentRenew: true,
-    // O perfil vem do id token e de GET /api/me; não há por que chamar o userinfo.
+    // O perfil vem do id token e de GET /api/v1/me; não há por que chamar o userinfo.
     loadUserInfo: false,
     // O iframe de verificação de sessão depende de cookie de terceiro e não é necessário: o logout
     // em outra aba aparece no próximo 401.
