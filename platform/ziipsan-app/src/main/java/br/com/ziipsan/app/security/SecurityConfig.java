@@ -1,8 +1,12 @@
 package br.com.ziipsan.app.security;
 
 import br.com.ziipsan.app.config.ZiipsanProperties;
+import br.com.ziipsan.platform.security.ContentLengthLimitFilter;
+import br.com.ziipsan.platform.security.JdbcRateLimitStore;
 import br.com.ziipsan.platform.security.JwtTenantFilter;
 import br.com.ziipsan.platform.security.MfaGateFilter;
+import br.com.ziipsan.platform.security.RateLimitFilter;
+import br.com.ziipsan.platform.security.RateLimitStore;
 import br.com.ziipsan.platform.security.PermissionResolver;
 import br.com.ziipsan.platform.security.ProblemResponses;
 import br.com.ziipsan.platform.tenant.TenantCatalog;
@@ -36,6 +40,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -46,6 +51,8 @@ import org.springframework.session.web.http.SessionRepositoryFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import javax.sql.DataSource;
 
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
@@ -94,13 +101,41 @@ import java.util.Map;
 @EnableJdbcHttpSession(maxInactiveIntervalInSeconds = 1800)
 public class SecurityConfig {
 
+    /** Store do rate limit (P0.16): tabela compartilhada entre réplicas, via DataSource da aplicação. */
+    @Bean
+    public RateLimitStore rateLimitStore(DataSource dataSource) {
+        return new JdbcRateLimitStore(dataSource);
+    }
+
+    private static RateLimitFilter rateLimitFilter(RateLimitStore store, ZiipsanProperties properties) {
+        ZiipsanProperties.RateLimit cfg = properties.rateLimit();
+        return new RateLimitFilter(store, cfg.enabled(), cfg.limitPerMinute(), cfg.windowSeconds());
+    }
+
+    private static ContentLengthLimitFilter bodyLimitFilter(ZiipsanProperties properties) {
+        return new ContentLengthLimitFilter(properties.bodyLimit().maxBytes());
+    }
+
+    /**
+     * Headers de superfície web (P0.16) nas duas cadeias: CSP estrita para
+     * respostas da API (não são documentos) + HSTS (só emitido em requisição
+     * segura; ver forward-headers-strategy em application.yml).
+     */
+    private static void webSurfaceHeaders(HttpSecurity http) throws Exception {
+        http.headers(h -> h
+                .contentSecurityPolicy(csp -> csp.policyDirectives(
+                        "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"))
+                .httpStrictTransportSecurity(hsts -> hsts
+                        .maxAgeInSeconds(31536000).includeSubDomains(true)));
+    }
+
     @Bean
     @Order(1)
     public SecurityFilterChain bffSecurity(HttpSecurity http, JwtDecoder jwtDecoder, TenantCatalog tenantCatalog,
                                            OAuth2AuthorizedClientRepository authorizedClients,
                                            ObjectProvider<OAuth2AuthorizedClientManager> authorizedClientManager,
                                            ClientRegistrationRepository clientRegistrations,
-                                           ZiipsanProperties properties) throws Exception {
+                                           ZiipsanProperties properties, RateLimitStore rateLimitStore) throws Exception {
         BffJwtReconstructionFilter reconstruction = new BffJwtReconstructionFilter(
                 authorizedClients, authorizedClientManager.getIfAvailable(), jwtDecoder, jwtAuthenticationConverter());
         JwtTenantFilter tenantFilter = new JwtTenantFilter(tenantCatalog);
@@ -142,13 +177,17 @@ public class SecurityConfig {
                 .exceptionHandling(e -> e.authenticationEntryPoint(bffEntryPoint).accessDeniedHandler(bffForbidden))
                 .addFilterAfter(reconstruction, OAuth2LoginAuthenticationFilter.class)
                 .addFilterAfter(new MfaGateFilter(), BffJwtReconstructionFilter.class)
-                .addFilterAfter(tenantFilter, MfaGateFilter.class);
+                .addFilterAfter(tenantFilter, MfaGateFilter.class)
+                .addFilterAfter(rateLimitFilter(rateLimitStore, properties), JwtTenantFilter.class)
+                .addFilterBefore(bodyLimitFilter(properties), CsrfFilter.class);
+        webSurfaceHeaders(http);
         return http.build();
     }
 
     @Bean
     @Order(2)
-    public SecurityFilterChain apiSecurity(HttpSecurity http, JwtDecoder jwtDecoder, TenantCatalog tenantCatalog)
+    public SecurityFilterChain apiSecurity(HttpSecurity http, JwtDecoder jwtDecoder, TenantCatalog tenantCatalog,
+                                           ZiipsanProperties properties, RateLimitStore rateLimitStore)
             throws Exception {
         AuthenticationEntryPoint unauthorized = (request, response, ex) -> ProblemResponses.write(
                 response, 401, "unauthenticated", "Não autenticado",
@@ -172,7 +211,10 @@ public class SecurityConfig {
                         .accessDeniedHandler(forbidden))
                 .exceptionHandling(e -> e.authenticationEntryPoint(unauthorized).accessDeniedHandler(forbidden))
                 .addFilterAfter(new MfaGateFilter(), BearerTokenAuthenticationFilter.class)
-                .addFilterAfter(new JwtTenantFilter(tenantCatalog), MfaGateFilter.class);
+                .addFilterAfter(new JwtTenantFilter(tenantCatalog), MfaGateFilter.class)
+                .addFilterAfter(rateLimitFilter(rateLimitStore, properties), JwtTenantFilter.class)
+                .addFilterBefore(bodyLimitFilter(properties), BearerTokenAuthenticationFilter.class);
+        webSurfaceHeaders(http);
         return http.build();
     }
 

@@ -5,6 +5,8 @@ import jakarta.persistence.TypedQuery;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import br.com.ziipsan.core.api.ApiException;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -57,6 +59,15 @@ public final class JpqlQuery {
     }
 
     public <T> PageResult<T> page(EntityManager em, Class<T> type, PageSpec spec, String orderBy) {
+        // P0.16: page*size em int estourava silenciosamente acima de page ≈ 21.474.836
+        // (size=100) e o setFirstResult recebia um valor enrolado. O teto é aqui, e
+        // não só em PageSpec.of, para cobrir construções diretas de PageSpec.
+        // Página acima do teto: 400 (ApiException.BadRequest), nunca 500.
+        long offset = (long) spec.page() * spec.size();
+        if (spec.page() < 0 || spec.size() < 1 || offset > Integer.MAX_VALUE) {
+            throw new ApiException.BadRequest("invalid-page",
+                    "A página pedida excede o limite suportado.");
+        }
         String whereSql = where.isEmpty() ? "" : " where " + String.join(" and ", where);
         TypedQuery<T> query = em.createQuery("select " + alias + " from " + from + whereSql + " order by " + orderBy, type);
         TypedQuery<Long> count = em.createQuery("select count(" + alias + ") from " + from + whereSql, Long.class);
@@ -64,7 +75,7 @@ public final class JpqlQuery {
             query.setParameter(k, v);
             count.setParameter(k, v);
         });
-        query.setFirstResult(spec.page() * spec.size());
+        query.setFirstResult((int) offset);
         query.setMaxResults(spec.size());
         return PageResult.of(query.getResultList(), spec, count.getSingleResult());
     }

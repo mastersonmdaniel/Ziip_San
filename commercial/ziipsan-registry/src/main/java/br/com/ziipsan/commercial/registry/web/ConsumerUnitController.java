@@ -10,8 +10,10 @@ import br.com.ziipsan.commercial.registry.application.ConsumerUnitService;
 import br.com.ziipsan.commercial.registry.application.DeleteRequest;
 import br.com.ziipsan.commercial.registry.application.PageResult;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,9 +31,14 @@ import java.util.UUID;
 /**
  * Imóveis (unidades consumidoras). Como em clientes, a busca livre (inscrição, matrícula, nome ou
  * documento do titular) é {@code POST /consumer-units/search}; o GET de lista só aceita os filtros por id.
+ *
+ * <p>P0.16: {@code @Validated} na classe para o {@code @Size} do parâmetro {@code q} do GET ser
+ * avaliado (mesma precedência que em clientes: q com mais de 200 caracteres dá 422 antes da recusa
+ * 400 de busca-na-URL).
  */
 @RestController
 @RequestMapping(RegistryRoles.BASE + "/consumer-units")
+@Validated
 @PreAuthorize(RegistryRoles.READ)
 public class ConsumerUnitController {
 
@@ -42,7 +49,7 @@ public class ConsumerUnitController {
     }
 
     @GetMapping
-    public PageResult<UnitSummary> list(@RequestParam(required = false) String q,
+    public PageResult<UnitSummary> list(@RequestParam(required = false) @Size(max = 200, message = "A busca aceita no máximo 200 caracteres.") String q,
                                         @RequestParam(required = false) UUID localityId,
                                         @RequestParam(required = false) UUID sectorId,
                                         @RequestParam(required = false) UUID blockId,
@@ -59,7 +66,7 @@ public class ConsumerUnitController {
     }
 
     @PostMapping("/search")
-    public PageResult<UnitSummary> search(@RequestBody UnitSearch search) {
+    public PageResult<UnitSummary> search(@Valid @RequestBody UnitSearch search) {
         return service.search(search);
     }
 

@@ -144,7 +144,7 @@ describe('acessibilidade (axe) das telas principais', () => {
   })
 
   it('S5 Hierarquia territorial', async () => {
-    useApi({ 'GET /registry/localities': page([{ id: 'loc-1', version: 1, code: 1, name: 'TESTE Localidade', costCenter: null, headquarters: true, computerized: false, blocked: false }]) })
+    useApi({ 'GET /registry/localities': page([{ id: 'loc-1', version: 1, code: 1, name: 'TESTE Localidade', headquarters: true, computerized: false, blocked: false }]) })
     const { container } = renderWithProviders(
       <Routes>
         <Route path="/cadastro/territorio/:nivel" element={<Territory />} />

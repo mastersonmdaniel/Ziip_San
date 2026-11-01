@@ -12,8 +12,10 @@ import br.com.ziipsan.commercial.registry.application.PageResult;
 import br.com.ziipsan.commercial.registry.application.PageSpec;
 import br.com.ziipsan.commercial.registry.domain.Customer.PersonType;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,9 +32,14 @@ import java.util.UUID;
 /**
  * Clientes. A busca livre (nome ou CPF/CNPJ) é {@code POST /customers/search}, com o texto no corpo: na
  * URL ele ficaria em log de servidor e de proxy. O GET de lista recusa {@code q} com 400.
+ *
+ * <p>P0.16: {@code @Validated} na classe para o {@code @Size} do parâmetro {@code q} do GET ser
+ * avaliado (sem ele, a anotação em parâmetro é ignorada). Precedência: {@code q} com mais de 200
+ * caracteres dá 422 de validação antes da recusa 400 de busca-na-URL.
  */
 @RestController
 @RequestMapping(RegistryRoles.BASE + "/customers")
+@Validated
 @PreAuthorize(RegistryRoles.READ)
 public class CustomerController {
 
@@ -43,7 +50,7 @@ public class CustomerController {
     }
 
     @GetMapping
-    public PageResult<CustomerSummary> list(@RequestParam(required = false) String q,
+    public PageResult<CustomerSummary> list(@RequestParam(required = false) @Size(max = 200, message = "A busca aceita no máximo 200 caracteres.") String q,
                                             @RequestParam(required = false) PersonType personType,
                                             @RequestParam(required = false) Boolean includeDeleted,
                                             @RequestParam(required = false) Integer page,
@@ -53,7 +60,7 @@ public class CustomerController {
     }
 
     @PostMapping("/search")
-    public PageResult<CustomerSummary> search(@RequestBody CustomerSearch search) {
+    public PageResult<CustomerSummary> search(@Valid @RequestBody CustomerSearch search) {
         return service.search(search);
     }
 

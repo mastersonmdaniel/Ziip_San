@@ -126,9 +126,10 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @Order(1)
     @DisplayName("território: localidade → setor → rota → quadra, com página no formato do frontend")
     void territory() throws Exception {
-        // costCenter não existe no modelo: campo a mais do frontend é ignorado, não derruba o corpo.
+        // P0.16: a tela não envia mais costCenter (campo removido). Um campo desconhecido
+        // qualquer continua sendo ignorado (fail-on-unknown-properties=false), sem derrubar o corpo.
         localityId = id(send(post("/api/v1/registry/localities"), operator, """
-                {"code": %d, "name": "Localidade E2E %d", "municipalityIbge": "3550308", "costCenter": "X"}"""
+                {"code": %d, "name": "Localidade E2E %d", "municipalityIbge": "3550308", "campoDesconhecido": "X"}"""
                 .formatted(CODE, CODE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.version").value(0))
@@ -215,7 +216,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                  "billing": {"dueDay": 10},
                  "emails": [{"address": "maria.e2e@exemplo.com.br"}],
                  "phones": [{"number": "+5511987654321", "type": "MOBILE", "primary": true}],
-                 "rg": "campo que o cadastro ainda não modela"}""".formatted(CUSTOMER_NAME, CPF))
+                 "campoDesconhecido": "campo que o cadastro não modela"}""".formatted(CUSTOMER_NAME, CPF))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.documentMasked").value("***.982.247-**"))
                 .andExpect(jsonPath("$.emails[0].primary").value(true))

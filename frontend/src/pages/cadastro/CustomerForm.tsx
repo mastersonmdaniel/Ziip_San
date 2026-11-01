@@ -19,7 +19,7 @@ import { PageHeader } from '@components/ui/PageHeader'
 import { ApiError, errorMessage, toFormPath } from '@services/registry/errors'
 import { customers } from '@services/registry/resources'
 import type { CustomerInput } from '@services/registry/types'
-import { PHONE_TYPE_LABEL, UF_LIST } from '@utils/labels'
+import { PHONE_TYPE_LABEL } from '@utils/labels'
 import {
   buildCustomerSchema,
   customerToForm,
@@ -210,32 +210,6 @@ function CustomerFormInner({ customerId, initial, initialVersion, currentDocumen
                 <Field label="Data de nascimento" hint="Opcional. Obrigatória só para tarifa social." error={errors.birthDate?.message}>
                   {(aria) => <Input {...aria} type="date" {...register('birthDate')} />}
                 </Field>
-                <Field label="Nome da mãe" hint="Opcional: serve só para diferenciar homônimos." error={errors.motherName?.message}>
-                  {(aria) => <Input {...aria} {...register('motherName')} maxLength={200} autoComplete="off" />}
-                </Field>
-                <details className="md:col-span-2 rounded-lg border p-3">
-                  <summary className="cursor-pointer text-sm font-medium">RG (use só se a pessoa não tem CPF)</summary>
-                  <div className="mt-3 grid gap-4 md:grid-cols-3">
-                    <Field label="RG" error={errors.rg?.message}>
-                      {(aria) => <Input {...aria} {...register('rg')} maxLength={20} autoComplete="off" />}
-                    </Field>
-                    <Field label="UF do RG" error={errors.rgState?.message}>
-                      {(aria) => (
-                        <Select {...aria} {...register('rgState')}>
-                          <option value="">—</option>
-                          {UF_LIST.map((uf) => (
-                            <option key={uf} value={uf}>
-                              {uf}
-                            </option>
-                          ))}
-                        </Select>
-                      )}
-                    </Field>
-                    <Field label="Data de emissão" error={errors.rgIssueDate?.message}>
-                      {(aria) => <Input {...aria} type="date" {...register('rgIssueDate')} />}
-                    </Field>
-                  </div>
-                </details>
               </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">

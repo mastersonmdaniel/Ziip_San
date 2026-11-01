@@ -38,6 +38,11 @@ class ProblemCodeContractTest {
             "invalid-request", "search-in-url",
             "filter-unavailable", "invalid-filter",
             "invalid-sort", "invalid-page", "invalid-inscription",
+            // P0.16: novos códigos dos filtros de superfície (429 do rate limit,
+            // 413 do limite de corpo). Não são mudança de mapeamento de status:
+            // o 422 de validação continua 422; estes são códigos novos, não
+            // re-mapeados.
+            "too-many-requests", "content-too-large",
             "validation", "confirmation-required", "internal-error");
 
     /** Códigos antigos da tabela (português) — nenhum pode restar no código. */

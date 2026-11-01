@@ -15,7 +15,8 @@ import java.util.List;
  */
 @Validated
 @ConfigurationProperties("ziipsan")
-public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc, @Valid Cors cors, Bff bff) {
+public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc, @Valid Cors cors, Bff bff,
+                                RateLimit rateLimit, BodyLimit bodyLimit) {
 
     /**
      * Cookie de sessão do BFF (P0.14). Padrão: {@code __Host-ziipsan-session} com
@@ -75,5 +76,43 @@ public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc
 
     public Cors cors() {
         return cors == null ? new Cors(List.of()) : cors;
+    }
+
+    /**
+     * Rate limit (P0.16). Padrão: ligado, 1000 requisições/minuto por chave
+     * (tenant, senão usuário, senão IP), janela fixa de 60 s. Os testes de
+     * integração desligam o limite na base ({@code AppIntegrationTestBase}),
+     * porque a suíte inteira compartilha o tenant de IT e estouraria qualquer
+     * teto baixo; o teste dedicado do limite é standalone.
+     */
+    public record RateLimit(Boolean enabled, Integer limitPerMinute, Integer windowSeconds) {
+        public RateLimit {
+            if (enabled == null) {
+                enabled = true;
+            }
+            if (limitPerMinute == null) {
+                limitPerMinute = 1000;
+            }
+            if (windowSeconds == null) {
+                windowSeconds = 60;
+            }
+        }
+    }
+
+    public RateLimit rateLimit() {
+        return rateLimit == null ? new RateLimit(null, null, null) : rateLimit;
+    }
+
+    /** Limite de corpo (P0.16). Padrão: 1 MiB. Só JSON hoje (nenhum multipart no código). */
+    public record BodyLimit(Long maxBytes) {
+        public BodyLimit {
+            if (maxBytes == null) {
+                maxBytes = 1048576L;
+            }
+        }
+    }
+
+    public BodyLimit bodyLimit() {
+        return bodyLimit == null ? new BodyLimit(null) : bodyLimit;
     }
 }

@@ -39,3 +39,18 @@ CREATE TABLE IF NOT EXISTS spring_session_attributes (
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON spring_session TO ziipsan_app;
 GRANT SELECT, INSERT, UPDATE, DELETE ON spring_session_attributes TO ziipsan_app;
+
+-- P0.16 — baldes do rate limit (uma linha por chave, janela fixa). Tabela do
+-- servidor, em public e sem RLS de tenant, como as de sessão: o limite é
+-- aplicado antes de qualquer decisão de tenant e vale entre réplicas (o
+-- compartilhamento é pelo banco, sem Redis). A janela antiga é sobrescrita
+-- pela própria instrução de incremento (INSERT ... ON CONFLICT), sem
+-- limpeza periódica. Entra pelo mesmo job migrate da P0.6.
+CREATE TABLE IF NOT EXISTS rate_limit_buckets (
+    bucket_key VARCHAR(200) NOT NULL,
+    window_start BIGINT NOT NULL,
+    request_count INT NOT NULL,
+    CONSTRAINT rate_limit_buckets_pk PRIMARY KEY (bucket_key)
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON rate_limit_buckets TO ziipsan_app;

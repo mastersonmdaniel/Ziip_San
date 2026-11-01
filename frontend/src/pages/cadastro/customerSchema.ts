@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { addressSchema, addressToApi, addressToForm, EMPTY_ADDRESS, type AddressFormValue } from '@components/registry/addressForm'
 import { refToLookupValue, type LookupValue } from '@components/registry/LookupField'
 import type { Customer, CustomerInput, PersonType, PhoneType } from '@services/registry/types'
-import { UF_LIST } from '@utils/labels'
 import { isValidDocument } from '@utils/validators/document'
 import { fromE164, isValidPhone, toE164 } from '@utils/validators/phone'
 import { dateField, integerField, lookupField, lookupValueSchema, textField, toIntOrNull, toTextOrNull } from '@utils/zodFields'
@@ -36,10 +35,6 @@ export interface CustomerFormValues {
   document: string
   documentExemptionReason: string
   birthDate: string
-  rg: string
-  rgState: string
-  rgIssueDate: string
-  motherName: string
   activityBranchId: LookupValue | null
   parentCustomerId: LookupValue | null
   emails: EmailFormValue[]
@@ -64,10 +59,6 @@ export function emptyCustomerForm(): CustomerFormValues {
     document: '',
     documentExemptionReason: '',
     birthDate: '',
-    rg: '',
-    rgState: '',
-    rgIssueDate: '',
-    motherName: '',
     activityBranchId: null,
     parentCustomerId: null,
     emails: [],
@@ -87,10 +78,6 @@ export function customerToForm(c: Customer): CustomerFormValues {
     document: '',
     documentExemptionReason: '',
     birthDate: c.birthDate ?? '',
-    rg: c.rg ?? '',
-    rgState: c.rgState ?? '',
-    rgIssueDate: c.rgIssueDate ?? '',
-    motherName: c.motherName ?? '',
     activityBranchId: refToLookupValue(c.activityBranch),
     parentCustomerId: refToLookupValue(c.parentCustomer),
     emails: c.emails.map((e) => ({ address: e.address, consentId: e.consentId ?? null })),
@@ -122,10 +109,6 @@ export function formToCustomerInput(v: CustomerFormValues): CustomerInput {
     tradeName: pf ? null : toTextOrNull(v.tradeName),
     customerTypeId: v.customerTypeId?.id ?? null,
     birthDate: pf ? toTextOrNull(v.birthDate) : null,
-    rg: pf ? toTextOrNull(v.rg) : null,
-    rgState: pf ? toTextOrNull(v.rgState) : null,
-    rgIssueDate: pf ? toTextOrNull(v.rgIssueDate) : null,
-    motherName: pf ? toTextOrNull(v.motherName) : null,
     activityBranchId: pf ? null : (v.activityBranchId?.id ?? null),
     parentCustomerId: pf ? null : (v.parentCustomerId?.id ?? null),
     emails: v.emails.map((e) => ({ address: e.address.trim(), consentId: e.consentId })),
@@ -167,10 +150,6 @@ export function buildCustomerSchema({ keepsExistingDocument }: CustomerSchemaOpt
       document: z.string(),
       documentExemptionReason: textField({ max: 300 }),
       birthDate: dateField({ notFuture: true }),
-      rg: textField({ max: 20 }),
-      rgState: z.string().refine((v) => v === '' || (UF_LIST as readonly string[]).includes(v), 'UF inválida.'),
-      rgIssueDate: dateField({ notFuture: true }),
-      motherName: textField({ max: 200 }),
       activityBranchId: lookupValueSchema.nullable(),
       parentCustomerId: lookupValueSchema.nullable(),
       emails: z.array(

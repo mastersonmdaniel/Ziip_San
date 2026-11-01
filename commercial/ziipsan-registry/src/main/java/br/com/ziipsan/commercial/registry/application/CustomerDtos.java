@@ -73,7 +73,7 @@ public final class CustomerDtos {
 
     /** Corpo de {@code POST /customers/search}. {@code q}: nome ou CPF/CNPJ (com ou sem pontuação). */
     public record CustomerSearch(
-            String q,
+            @Size(max = 200, message = "A busca aceita no máximo 200 caracteres.") String q,
             /* contains (padrão) ou startsWith */
             String nameMatch,
             PersonType personType,

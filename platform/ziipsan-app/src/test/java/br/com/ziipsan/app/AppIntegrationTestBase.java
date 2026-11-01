@@ -39,6 +39,10 @@ abstract class AppIntegrationTestBase {
         registry.add("ziipsan.oidc.public-key", TestTokens::publicKeyBase64);
         registry.add("ziipsan.crypto.provider", () -> "dev-env");
         registry.add("ziipsan.crypto.dev-master-key", () -> DEV_MASTER_KEY);
+        // P0.16: rate limit DESLIGADO na base — a suíte inteira compartilha o tenant
+        // de IT e estouraria qualquer teto baixo. O teste dedicado do limite é
+        // standalone (RateLimitIntegrationTest), com teto próprio.
+        registry.add("ziipsan.rate-limit.enabled", () -> "false");
         // P0.14 (corrigido no turno 9): o client confidencial existe no contexto de teste
         // via BffTestClientConfig (endpoints EXPLÍCITOS, sem discovery — o Boot 4.1 chama
         // fromIssuerLocation sempre que issuer-uri != null, e "" explodia com

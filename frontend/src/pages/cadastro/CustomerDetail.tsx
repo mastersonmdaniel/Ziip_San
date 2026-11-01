@@ -210,7 +210,6 @@ export function CustomerDetail() {
             </Item>
             {c.personType === 'PJ' ? <Item term="Nome fantasia">{orDash(c.tradeName)}</Item> : null}
             {c.personType === 'PF' ? <Item term="Data de nascimento">{formatDate(c.birthDate)}</Item> : null}
-            {c.personType === 'PF' ? <Item term="Nome da mãe">{orDash(c.motherName)}</Item> : null}
             {c.personType === 'PJ' ? <Item term="Ramo de atividade">{orDash(c.activityBranch?.name)}</Item> : null}
             {c.personType === 'PJ' ? <Item term="Responsável superior">{orDash(c.parentCustomer?.name)}</Item> : null}
             <Item term="Imóveis vinculados">{c.unitCount}</Item>

@@ -103,7 +103,7 @@ public final class ConsumerUnitDtos {
 
     /** Corpo de {@code POST /consumer-units/search}. {@code q}: inscrição formatada, matrícula, CPF/CNPJ ou nome. */
     public record UnitSearch(
-            String q,
+            @Size(max = 200, message = "A busca aceita no máximo 200 caracteres.") String q,
             UUID localityId,
             UUID sectorId,
             UUID blockId,

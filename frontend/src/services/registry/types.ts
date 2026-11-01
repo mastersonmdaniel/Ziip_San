@@ -161,7 +161,6 @@ export type NetworkCoverage = 'NONE' | 'PARTIAL' | 'FULL'
 export interface Locality extends Versioned {
   code: number
   name: string
-  costCenter: string | null
   headquarters: boolean
   computerized: boolean
   blocked: boolean
@@ -264,10 +263,6 @@ export interface Customer extends Versioned {
   customerType: Ref | null
   documentMasked: string | null
   birthDate: string | null
-  rg: string | null
-  rgState: string | null
-  rgIssueDate: string | null
-  motherName: string | null
   activityBranch: Ref | null
   parentCustomer: Ref | null
   emails: CustomerEmail[]
@@ -288,10 +283,6 @@ export interface CustomerInput {
   /** Motivo para cadastrar sem documento (a API decide se há permissão). */
   documentExemptionReason?: string | null
   birthDate: string | null
-  rg: string | null
-  rgState: string | null
-  rgIssueDate: string | null
-  motherName: string | null
   activityBranchId: Uuid | null
   parentCustomerId: Uuid | null
   emails: CustomerEmail[]

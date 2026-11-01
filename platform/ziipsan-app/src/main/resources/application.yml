@@ -37,14 +37,20 @@ spring:
   mvc:
     problemdetails:
       enabled: true
-  # O frontend envia campos que o cadastro ainda não modela (ex.: rg, motherName, costCenter); cada DTO
-  # lê só o que conhece, explicitamente. Recusar o corpo inteiro por um campo a mais travaria as telas.
+  # P0.16: a tela não envia mais rg/motherName/costCenter. Campos desconhecidos que cheguem
+  # (ex.: cliente antigo em cache) continuam ignorados; cada DTO lê só o que conhece, explicitamente.
+  # Recusar o corpo inteiro por um campo a mais travaria as telas.
   jackson:
     deserialization:
       fail-on-unknown-properties: false
 
 server:
   port: ${ZIIPSAN_PORT:8090}
+  # P0.16: honrar X-Forwarded-Proto/Host do proxy (o HSTS só é emitido quando a
+  # requisição é vista como segura). Premissa: o proxy de produção envia
+  # X-Forwarded-Proto; sem ele, atrás de um terminador TLS, a API veria HTTP
+  # e não emitiria HSTS. Não há proxy no repositório.
+  forward-headers-strategy: framework
   error:
     include-stacktrace: never
     include-message: never
@@ -86,3 +92,11 @@ ziipsan:
   keycloak:
     admin:
       enabled: false
+  # P0.16: rate limit e limite de corpo (valores padrão em ZiipsanProperties;
+  # aqui, explícitos para documentar os tetos em vigor).
+  rate-limit:
+    enabled: true
+    limit-per-minute: 1000
+    window-seconds: 60
+  body-limit:
+    max-bytes: 1048576

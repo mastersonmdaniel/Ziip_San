@@ -17,7 +17,6 @@ const networkOptions = [
 const localityFields: FieldMeta[] = [
   { kind: 'integer', name: 'code', label: 'Código', required: true, min: 1, max: 999, column: true, hint: 'De 1 a 999.' },
   { kind: 'text', name: 'name', label: 'Nome', required: true, maxLength: 60, column: true },
-  { kind: 'text', name: 'costCenter', label: 'Centro de custo', maxLength: 30 },
   { kind: 'boolean', name: 'headquarters', label: 'Sede', hint: 'Só uma localidade pode ser a sede.', column: true },
   { kind: 'boolean', name: 'computerized', label: 'Informatizada' },
   { kind: 'boolean', name: 'blocked', label: 'Bloqueada para inclusão de imóveis', column: true },

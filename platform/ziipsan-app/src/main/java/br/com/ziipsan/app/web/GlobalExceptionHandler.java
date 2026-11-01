@@ -3,6 +3,7 @@ package br.com.ziipsan.app.web;
 import br.com.ziipsan.core.api.ApiException;
 import br.com.ziipsan.platform.security.ProblemResponses;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
@@ -69,6 +70,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("Erro não tratado na API", ex);
         return respond(problem(500, "internal-error", "Erro interno",
                 "Ocorreu um erro inesperado. Informe o identificador da requisição ao suporte."));
+    }
+
+    /** Bean Validation de parâmetro (ex.: @Size em @RequestParam com @Validated): 422 no mesmo formato. */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ProblemDetail> handleConstraintViolation(ConstraintViolationException ex) {
+        List<ApiException.FieldError> errors = ex.getConstraintViolations().stream()
+                .map(v -> new ApiException.FieldError(
+                        v.getPropertyPath().toString(), "Size", v.getMessage()))
+                .toList();
+        ProblemDetail pd = problem(422, "validation", "Dados inválidos", "Há campos inválidos.");
+        pd.setProperty("errors", errors);
+        return respond(pd);
     }
 
     /** Bean Validation do corpo: 422 com um item em errors[] por campo. */
