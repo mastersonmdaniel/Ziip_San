@@ -84,8 +84,8 @@ data:
     timeout 0
     tcp-backlog 511
     databases 16
-    requirepass changeme
-    masterauth changeme
+    requirepass REDACTED-ARQUIVADO
+    masterauth REDACTED-ARQUIVADO
     cluster-require-full-coverage no
 ---
 apiVersion: v1

@@ -104,4 +104,4 @@ metadata:
 type: Opaque
 stringData:
   MINIO_ROOT_USER: "sigsan"
-  MINIO_ROOT_PASSWORD: "changeme"
+  MINIO_ROOT_PASSWORD: "REDACTED-ARQUIVADO"

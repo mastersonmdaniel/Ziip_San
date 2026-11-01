@@ -129,7 +129,7 @@ metadata:
 type: Opaque
 stringData:
   admin-username: "admin"
-  admin-password: "changeme"
+  admin-password: "REDACTED-ARQUIVADO"
 ---
 apiVersion: v1
 kind: Secret
@@ -139,4 +139,4 @@ metadata:
 type: Opaque
 stringData:
   username: "sigsan_app"
-  password: "changeme"
+  password: "REDACTED-ARQUIVADO"

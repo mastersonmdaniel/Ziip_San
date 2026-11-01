@@ -135,25 +135,7 @@ rm -rf "$FE/node_modules" "$FE/dist" "$FE/coverage"
 rm -rf "$FE"
 
 echo "== (d) portas publicadas do docker-compose.yml (todas devem ser 127.0.0.1)"
-python3 - "$SRC/docker-compose.yml" <<'PY'
-import re, sys
-bad = []
-for n, raw in enumerate(open(sys.argv[1]), 1):
-    line = raw.rstrip("\n")
-    if line.lstrip().startswith("#"):
-        continue
-    m = re.search(r'-\s*"?(\d+\.\d+\.\d+\.\d+|\$\{[^}]+\}):\d+', line)
-    if m and not line.strip().startswith("- \"127.0.0.1:") and not line.strip().startswith("- '127.0.0.1:"):
-        bad.append((n, line.strip()))
-    # forma curta sem host: "- 5432:5432" tambem publica em todas as interfaces
-    if re.search(r'-\s*"?\d+:\d+', line) and "127.0.0.1" not in line:
-        bad.append((n, line.strip()))
-if bad:
-    print("PORTAS EM TODAS AS INTERFACES (falha, esperado ate a P0.7):")
-    for n, l in sorted(set(bad)):
-        print(f"  linha {n}: {l}")
-    sys.exit(1)
-print("todas as portas publicadas estao em 127.0.0.1")
-PY
-
+# P0.7: verificacao extraida para scripts/check-compose-ports.py (com teste negativo
+# em scripts/test-check-compose-ports.py); o ci-linux apenas a invoca.
+python3 "$SRC/scripts/check-compose-ports.py" "$SRC/docker-compose.yml"
 echo "== OK"

@@ -90,5 +90,5 @@ metadata:
   namespace: sigsan
 type: Opaque
 stringData:
-  admin-password: "changeme"
-  secret-key: "changeme"
+  admin-password: "REDACTED-ARQUIVADO"
+  secret-key: "REDACTED-ARQUIVADO"
