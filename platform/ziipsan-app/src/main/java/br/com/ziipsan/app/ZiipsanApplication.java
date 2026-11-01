@@ -25,6 +25,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = {
         "br.com.ziipsan.core.audit",
         "br.com.ziipsan.commercial.registry.repository",
+        // P0.13: repositórios de usuários do tenant.
+        "br.com.ziipsan.platform.user",
 })
 @ConfigurationPropertiesScan("br.com.ziipsan.app")
 public class ZiipsanApplication {

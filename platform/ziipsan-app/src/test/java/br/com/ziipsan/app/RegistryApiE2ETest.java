@@ -83,8 +83,9 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
 
     private final String operator = bearer(TestTokens.token(TENANT_A, "OPERATOR"));
     private final String viewer = bearer(TestTokens.token(TENANT_A, "VIEWER"));
-    private final String revealer = bearer(TestTokens.token(TENANT_A, "VIEWER", "registry.reveal-document"));
-    private final String operatorB = bearer(TestTokens.token(TENANT_B, "OPERATOR", "registry.reveal-document"));
+    // P0.13: o formato da permissão direta é recurso:ação (antes, registry.reveal-document).
+    private final String revealer = bearer(TestTokens.token(TENANT_A, "VIEWER", "registry:reveal-document"));
+    private final String operatorB = bearer(TestTokens.token(TENANT_B, "OPERATOR", "registry:reveal-document"));
 
     @BeforeAll
     static void setUp() throws SQLException {
