@@ -2,6 +2,7 @@ package br.com.ziipsan.app.security;
 
 import br.com.ziipsan.app.config.ZiipsanProperties;
 import br.com.ziipsan.platform.security.JwtTenantFilter;
+import br.com.ziipsan.platform.security.MfaGateFilter;
 import br.com.ziipsan.platform.security.PermissionResolver;
 import br.com.ziipsan.platform.security.ProblemResponses;
 import br.com.ziipsan.platform.tenant.TenantCatalog;
@@ -140,7 +141,8 @@ public class SecurityConfig {
                         .logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrations)))
                 .exceptionHandling(e -> e.authenticationEntryPoint(bffEntryPoint).accessDeniedHandler(bffForbidden))
                 .addFilterAfter(reconstruction, OAuth2LoginAuthenticationFilter.class)
-                .addFilterAfter(tenantFilter, BffJwtReconstructionFilter.class);
+                .addFilterAfter(new MfaGateFilter(), BffJwtReconstructionFilter.class)
+                .addFilterAfter(tenantFilter, MfaGateFilter.class);
         return http.build();
     }
 
@@ -169,7 +171,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint(unauthorized)
                         .accessDeniedHandler(forbidden))
                 .exceptionHandling(e -> e.authenticationEntryPoint(unauthorized).accessDeniedHandler(forbidden))
-                .addFilterAfter(new JwtTenantFilter(tenantCatalog), BearerTokenAuthenticationFilter.class);
+                .addFilterAfter(new MfaGateFilter(), BearerTokenAuthenticationFilter.class)
+                .addFilterAfter(new JwtTenantFilter(tenantCatalog), MfaGateFilter.class);
         return http.build();
     }
 

@@ -382,7 +382,18 @@
         "ziipsan-api"
       ],
       "optionalClientScopes": [],
-      "protocolMappers": []
+      "protocolMappers": [
+        {
+          "name": "AMR",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-amr-mapper",
+          "consentRequired": false,
+          "config": {
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        }
+      ]
     }
   ],
   "scopeMappings": [
@@ -409,5 +420,161 @@
         }
       }
     ]
-  }
+  },
+  "otpPolicy": {
+    "algorithm": "HmacSHA1",
+    "digits": 6,
+    "lookAheadWindow": 1,
+    "period": 30
+  },
+  "webAuthnPolicy": {
+    "rpEntityName": "ZIIPSAN",
+    "rpId": "",
+    "signatureAlgorithms": [
+      "ES256",
+      "RS256"
+    ],
+    "attestationConveyancePreference": "none",
+    "authenticatorAttachment": "not specified",
+    "requireResidentKey": "not specified",
+    "userVerificationRequirement": "preferred",
+    "createTimeout": 0,
+    "avoidSameAuthenticatorRegister": false,
+    "acceptableAaguids": []
+  },
+  "requiredActions": [
+    {
+      "alias": "CONFIGURE_TOTP",
+      "name": "Configure OTP",
+      "providerId": "CONFIGURE_TOTP",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 10
+    },
+    {
+      "alias": "webauthn-register",
+      "name": "Register WebAuthn",
+      "providerId": "webauthn-register",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 20
+    }
+  ],
+  "authenticationFlows": [
+    {
+      "alias": "ziipsan-bff-browser",
+      "description": "BFF (P0.15): senha + MFA condicional (plataforma sempre, tenant por parametro).",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-cookie",
+          "authenticatorFlow": false,
+          "requirement": "ALTERNATIVE",
+          "priority": 10,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticator": "auth-username-password-form",
+          "authenticatorFlow": false,
+          "requirement": "REQUIRED",
+          "priority": 20,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticatorFlow": true,
+          "flowAlias": "ziipsan-platform-mfa",
+          "requirement": "CONDITIONAL",
+          "priority": 30,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticatorFlow": true,
+          "flowAlias": "ziipsan-tenant-mfa",
+          "requirement": "CONDITIONAL",
+          "priority": 40,
+          "userSetupAllowed": false
+        }
+      ]
+    },
+    {
+      "alias": "ziipsan-platform-mfa",
+      "description": "P0.15: usuario de plataforma (atributo ziipsan_user_type=platform) sempre com segundo fator.",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "conditional-user-attribute",
+          "authenticatorFlow": false,
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "userSetupAllowed": false,
+          "authenticatorConfig": "ziipsan-platform-condition"
+        },
+        {
+          "authenticator": "auth-otp-form",
+          "authenticatorFlow": false,
+          "requirement": "ALTERNATIVE",
+          "priority": 20,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticator": "webauthn-authenticator",
+          "authenticatorFlow": false,
+          "requirement": "ALTERNATIVE",
+          "priority": 30,
+          "userSetupAllowed": false
+        }
+      ]
+    },
+    {
+      "alias": "ziipsan-tenant-mfa",
+      "description": "P0.15: usuario de tenant com o atributo mfa_required=true (sincronizado do parametro security.mfa_required).",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "conditional-user-attribute",
+          "authenticatorFlow": false,
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "userSetupAllowed": false,
+          "authenticatorConfig": "ziipsan-tenant-condition"
+        },
+        {
+          "authenticator": "auth-otp-form",
+          "authenticatorFlow": false,
+          "requirement": "ALTERNATIVE",
+          "priority": 20,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticator": "webauthn-authenticator",
+          "authenticatorFlow": false,
+          "requirement": "ALTERNATIVE",
+          "priority": 30,
+          "userSetupAllowed": false
+        }
+      ]
+    }
+  ],
+  "authenticatorConfig": [
+    {
+      "alias": "ziipsan-platform-condition",
+      "config": {
+        "attribute": "ziipsan_user_type",
+        "value": "platform"
+      }
+    },
+    {
+      "alias": "ziipsan-tenant-condition",
+      "config": {
+        "attribute": "mfa_required",
+        "value": "true"
+      }
+    }
+  ]
 }
