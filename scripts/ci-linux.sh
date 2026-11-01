@@ -58,6 +58,10 @@ echo $$ > "$LOCK_DIR/pid"
 cleanup() {
   echo "== parada da instancia dedicada (porta $IT_PORT)"
   su postgres -c "$PG_BIN/pg_ctl -D '$IT_DATA' -m fast stop" >/dev/null 2>&1 || true
+  # O FE do frontend (mktemp em /tmp, tmpfs de 512M) tambem vai embora aqui: sem
+  # isso, uma falha no typecheck deixava 290M para tras e o /tmp seguinte enchia,
+  # truncando o node_modules da proxima execucao (turno 4, P0.33).
+  rm -rf "${FE:-}"
   rm -rf "$LOCK_DIR"
 }
 trap cleanup EXIT
