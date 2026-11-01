@@ -1,9 +1,15 @@
 # Perfil local (SPRING_PROFILES_ACTIVE=local): PostgreSQL e Keycloak do docker-compose nesta máquina.
 # As senhas continuam vindo do ambiente (.env): ZIIPSAN_DB_APP_PASSWORD, ZIIPSAN_DB_MIGRATOR_PASSWORD.
+#
+# P0.6: fluxo local em 2 passos (scripts/run-app.sh). A api local NAO migra na subida
+# (migrate-on-startup=false aqui): rode o job migrate antes (perfis local,migrate +
+# ZIIPSAN_DB_MIGRATE_ON_STARTUP=true) e so depois suba a api. A variavel de ambiente
+# continua podendo ligar a flag, mas o bean do migrador so existe no perfil migrate —
+# sem o perfil, a flag nao tem efeito nenhum.
 ziipsan:
   db:
     url: ${ZIIPSAN_DB_URL:jdbc:postgresql://localhost:5432/ziipsan}
-    migrate-on-startup: ${ZIIPSAN_DB_MIGRATE_ON_STARTUP:true}
+    migrate-on-startup: ${ZIIPSAN_DB_MIGRATE_ON_STARTUP:false}
   oidc:
     issuer: ${ZIIPSAN_OIDC_ISSUER:http://localhost:8080/realms/ziipsan}
     jwk-set-uri: ${ZIIPSAN_OIDC_JWK_SET_URI:http://localhost:8080/realms/ziipsan/protocol/openid-connect/certs}

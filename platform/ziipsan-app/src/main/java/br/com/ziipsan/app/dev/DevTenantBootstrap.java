@@ -13,7 +13,14 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 /**
- * SÓ NO PERFIL local: provisiona um tenant de desenvolvimento se ele ainda não existir.
+ * SÓ NO PERFIL migrate (P0.6, antes: só local): provisiona um tenant de desenvolvimento
+ * se ele ainda não existir.
+ *
+ * <p>Motivo: o provisionamento injeta TenantProvisioningService, que só existe no perfil
+ * migrate. Com o perfil antigo (só local), a api local falharia por bean ausente. O fluxo
+ * de dev agora é em 2 passos (scripts/run-app.sh): o job migrate roda com os perfis
+ * {@code local,migrate} (e provisiona o tenant de dev, se ZIIPSAN_DEV_TENANT_ID estiver
+ * definido) e só depois a api sobe com o perfil {@code local} sozinho.
  *
  * <p>Ainda não há API de provisionamento; sem tenant no catálogo, um banco de desenvolvimento novo não
  * atende nenhuma requisição (o JwtTenantFilter recusa tenant desconhecido). O tenant é sintético:
@@ -25,7 +32,7 @@ import java.util.UUID;
  */
 @Slf4j
 @Component
-@Profile("local")
+@Profile("migrate")
 @ConditionalOnProperty(name = "ziipsan.dev.tenant.id")
 @RequiredArgsConstructor
 public class DevTenantBootstrap implements ApplicationRunner {

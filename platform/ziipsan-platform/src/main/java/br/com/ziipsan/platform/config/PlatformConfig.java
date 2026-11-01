@@ -4,7 +4,6 @@ import br.com.ziipsan.platform.tenant.MultiTenantConnectionProvider;
 import br.com.ziipsan.platform.tenant.TenantSchemaResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -24,9 +23,11 @@ public class PlatformConfig {
     // O tenant da requisicao vem do token (JwtTenantFilter, na cadeia do Spring Security), nao mais de
     // um cabecalho enviado pelo cliente (achado C3 do PDCA de 12/10/2026).
     //
-    // DependsOn: as migrations (core e tenants) rodam antes de o JPA subir (DatabaseMigrator).
+    // P0.6: SEM @DependsOn("databaseMigrator"). O bean databaseMigrator só existe no
+    // perfil migrate; com o DependsOn, a api (sem o perfil) falharia por bean ausente.
+    // A ordem agora é externa: o job migrate roda ANTES da api (scripts/run-app.sh,
+    // entrypoint da imagem). A api assume o schema já migrado — ela nunca migra sozinha.
     @Bean
-    @DependsOn("databaseMigrator")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
             DataSource dataSource,
             MultiTenantConnectionProvider tenantConnectionProvider,

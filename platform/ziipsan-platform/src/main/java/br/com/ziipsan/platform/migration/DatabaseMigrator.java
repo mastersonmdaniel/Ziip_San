@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +15,14 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Migrations na subida da aplicação: core (schema public) e depois cada tenant ACTIVE do catálogo.
+ * Migrations do job {@code migrate}: core (schema public) e depois cada tenant ACTIVE do catálogo.
  *
- * <p>Roda antes do EntityManagerFactory ({@code @DependsOn} em PlatformConfig), então a aplicação não
- * atende requisição com schema desatualizado. Ligado por {@code ziipsan.db.migrate-on-startup}
- * (local e teste). Em produção as migrations rodam num job separado, antes de trocar a versão, e
- * aqui o bean só registra que não migrou (decisão D10 do plano).
+ * <p>P0.6: este bean só existe no perfil {@code migrate} (decisão D10 do plano, agora
+ * cumprida na forma: job separado antes da troca de versão). A api e o worker NÃO têm
+ * este bean e nunca migram: a ordem é externa (job migrate antes da api) e o
+ * {@code @DependsOn} em PlatformConfig foi removido junto. Ligado por
+ * {@code ziipsan.db.migrate-on-startup} (o entrypoint do job passa {@code true});
+ * desligado, o bean só registra que não migrou e o MigrateExitRunner sai do mesmo jeito.
  *
  * <p>Usa o DataSource de migração (ziipsan_migrator). O Flyway do Spring Boot fica desligado
  * ({@code spring.flyway.enabled=false}): com o flyway-core no classpath ele varreria
@@ -27,6 +30,7 @@ import java.util.UUID;
  */
 @Slf4j
 @Component("databaseMigrator")
+@Profile("migrate")
 public class DatabaseMigrator implements InitializingBean {
 
     private final DataSource migratorDataSource;

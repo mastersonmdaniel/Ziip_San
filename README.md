@@ -31,7 +31,7 @@ sem elas o `docker compose` e a aplicação recusam subir.
 |---|---|
 | `scripts/dev-up.sh` | Sobe PostgreSQL e Keycloak de desenvolvimento (`--reset` apaga os volumes) |
 | `scripts/kc-dev-user.sh <usuario> VIEWER OPERATOR` | Cria seu usuário no realm `ziipsan` |
-| `scripts/run-app.sh` | Gera o jar e roda a API (perfil `local`, porta 8090) |
+| `scripts/run-app.sh` | Migra (job `local,migrate`) e depois roda a API (perfil `local`, porta 8090) — P0.6: a API não migra sozinha |
 | `cd frontend && npm ci && npm run dev` | Frontend em http://localhost:3000 |
 | `scripts/reset-it-db.sh` | Recria o PostgreSQL descartável dos testes (porta 55433) |
 | `scripts/build.sh clean test` | Build e testes Java (precisa do banco de integração) |

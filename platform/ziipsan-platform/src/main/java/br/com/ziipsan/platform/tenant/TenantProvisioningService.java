@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * P0.6: este serviço só existe no perfil {@code migrate} — ele provisiona schemas com
+ * a role de migração (DDL). Fora do job de migração não há bean para injetar, e a api
+ * nunca provisiona tenant em runtime. (Construção manual em testes, fora do Spring,
+ * não é afetada pelo perfil.)
+ */
 @Service
+@Profile("migrate")
 @RequiredArgsConstructor
 @Slf4j
 public class TenantProvisioningService {

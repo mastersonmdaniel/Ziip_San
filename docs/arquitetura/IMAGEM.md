@@ -75,3 +75,10 @@ até existir a tag `postgis:17-3.7` (P0.4, tag inexistente — nenhuma tag inven
   de saúde do `migratorDataSource` falha (senha ausente). Com a senha, o health
   agregado fica UP e `/api/v1/me` sem token dá 401. Na P0.6 a api nem cria o
   `migratorDataSource`, então o sintoma desaparece junto com a exigência.
+
+## Verificação da P0.6 (01/11/2026, mesma receita Podman, PG17 dedicado 55447)
+
+- Job `migrate`: saiu sozinho com código 0 (`MigrateExitRunner`), core v1+v2
+  aplicada, `tenant_catalog` criado — sem precisar parar o container à mão.
+- Api SEM a senha do migrador: health agregado UP e `/api/v1/me` sem token 401.
+  O sintoma da P0.5 está fechado: a api não exige nem usa a credencial do migrador.

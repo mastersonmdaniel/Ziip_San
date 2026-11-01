@@ -6,7 +6,6 @@ import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 
 import java.time.Instant;
@@ -34,15 +33,14 @@ class SecurityIntegrationTest extends AppIntegrationTestBase {
     @Autowired
     private HikariDataSource dataSource;
 
-    @Autowired
-    @Qualifier("migratorDataSource")
-    private HikariDataSource migratorDataSource;
-
+    // P0.6: este teste roda SEM o perfil migrate, então não há migratorDataSource para
+    // injetar (a injeção antiga falharia). A prova dos dois DataSources com usuários
+    // distintos mudou para MigrateRunsMigrationTest, que roda COM o perfil migrate.
     @Test
-    @DisplayName("contexto: dois DataSources com usuários distintos, sem Flyway do Boot e sem runner de migração automático")
+    @DisplayName("contexto: só o DataSource da app, sem Flyway do Boot e sem runner de migração automático")
     void contextWiring() {
         assertThat(dataSource.getUsername()).isEqualTo(ProvisionedTenant.appUser);
-        assertThat(migratorDataSource.getUsername()).isEqualTo(ProvisionedTenant.migratorUser);
+        assertThat(context.getBeanNamesForType(HikariDataSource.class)).hasSize(1);
         assertThat(context.getBeanNamesForType(Flyway.class)).isEmpty();
         assertThat(context.getBeanNamesForType(CoreMigrationRunner.class)).isEmpty();
     }

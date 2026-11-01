@@ -18,14 +18,17 @@ import java.util.List;
 public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc, @Valid Cors cors) {
 
     /**
-     * Dois usuários de banco: a aplicação (ziipsan_app, sem DDL, sujeita à RLS) e a migração
-     * (ziipsan_migrator, só para Flyway e provisionamento).
+     * Banco da aplicação (ziipsan_app, sem DDL, sujeita à RLS).
+     *
+     * <p>P0.6: a senha do migrador NÃO está mais aqui. Este record é {@code @Validated} e
+     * todo processo (api, worker, migrate) o exige — se a senha do migrador ficasse aqui,
+     * a api/worker exigiriam uma credencial que nunca usam. Ela vive em
+     * {@link MigratorProperties} (sem validação, só lida quando o perfil {@code migrate}
+     * cria o {@code migratorDataSource}).
      */
     public record Db(@NotBlank String url,
                      @NotBlank String appUser,
                      @NotBlank String appPassword,
-                     @NotBlank String migratorUser,
-                     @NotBlank String migratorPassword,
                      boolean migrateOnStartup) {
     }
 

@@ -27,8 +27,10 @@ abstract class AppIntegrationTestBase {
         registry.add("ziipsan.db.url", () -> ProvisionedTenant.url);
         registry.add("ziipsan.db.app-user", () -> ProvisionedTenant.appUser);
         registry.add("ziipsan.db.app-password", () -> ProvisionedTenant.appPassword);
-        registry.add("ziipsan.db.migrator-user", () -> ProvisionedTenant.migratorUser);
-        registry.add("ziipsan.db.migrator-password", () -> ProvisionedTenant.migratorPassword);
+        // P0.6: prefixo do migrador mudou (ziipsan.migrator.*); as variaveis de ambiente
+        // dos testes continuam as mesmas (ProvisionedTenant as le de ZIIPSAN_IT_*).
+        registry.add("ziipsan.migrator.user", () -> ProvisionedTenant.migratorUser);
+        registry.add("ziipsan.migrator.password", () -> ProvisionedTenant.migratorPassword);
         registry.add("ziipsan.db.migrate-on-startup", () -> "false");
         registry.add("ziipsan.oidc.issuer", () -> TestTokens.ISSUER);
         registry.add("ziipsan.oidc.audience", () -> TestTokens.AUDIENCE);
