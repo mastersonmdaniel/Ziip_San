@@ -2,7 +2,6 @@ package br.com.sigsan.app;
 
 import br.com.sigsan.core.audit.AuditLogRepository;
 import br.com.sigsan.core.migration.CoreMigrationRunner;
-import br.com.sigsan.platform.tenant.KeycloakAdminService;
 import br.com.sigsan.platform.tenant.TenantProvisioningService;
 import org.mockito.Mockito;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -61,7 +60,6 @@ final class ProvisionedTenant {
                 appDs,
                 new JdbcTemplate(appDs),
                 Mockito.mock(AuditLogRepository.class),
-                Mockito.mock(KeycloakAdminService.class),
                 migratorDs);
 
         var result = service.provisionTenant(TenantProvisioningService.TenantProvisioningRequest.builder()
@@ -76,12 +74,7 @@ final class ProvisionedTenant {
                 // cast ::jsonb recusa. Os testes antigos passavam null e nunca exercitaram isso.
                 .address(java.util.Map.of("street", "Rua das Águas", "number", 100, "city", "Cidade \"Teste\""))
                 .settings(java.util.Map.of("timezone", "America/Sao_Paulo", "billing", java.util.Map.of("dueDay", 10)))
-                .adminUsername("admin")
-                .adminEmail("admin@teste.com.br")
-                .adminName("Administrador")
-                // Hash bcrypt real (custo 12) da senha de teste "senha-de-teste-sigsan", gerado com
-                // spring-security-crypto. O provisionamento recusa o que não for bcrypt completo.
-                .adminPasswordHash("$2a$12$XQ.OOBGIj7Rx81rNhJ11Wu6ZC5MGgdgkVG5VHomMqrv2kzOSgP5pC")
+                // P0.25: provisionamento sem seed de admin; usuario e papeis voltam na P0.13.
                 .build());
 
         assertThat(result.success())

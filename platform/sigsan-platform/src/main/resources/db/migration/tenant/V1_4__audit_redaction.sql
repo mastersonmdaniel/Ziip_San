@@ -53,21 +53,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog, public, pg_temp;
 
+-- P0.25: regras de users/documents/service_orders removidas junto com as tabelas na V1_1;
+-- voltam com as tabelas nas fases que as recriam. Ficam apenas as de addresses.
 INSERT INTO public.audit_redaction_rule (table_name, column_name, mode, reason) VALUES
-    ('users', 'username',  'REDACT', 'identificador de login, costuma ser nome ou e-mail'),
-    ('users', 'email',     'REDACT', 'e-mail do usuário'),
-    ('users', 'full_name', 'REDACT', 'nome do usuário'),
-    ('users', 'phone',     'REDACT', 'telefone do usuário'),
     ('addresses', 'cep',         'REDACT', 'endereço de pessoa ou imóvel vinculado a pessoa'),
     ('addresses', 'street',      'REDACT', 'endereço de pessoa ou imóvel vinculado a pessoa'),
     ('addresses', 'number',      'REDACT', 'endereço de pessoa ou imóvel vinculado a pessoa'),
     ('addresses', 'complement',  'REDACT', 'endereço de pessoa ou imóvel vinculado a pessoa'),
-    ('addresses', 'coordinates', 'OMIT',   'localização de residência'),
-    ('documents', 'file_name',   'REDACT', 'nome de arquivo costuma conter nome ou documento da pessoa'),
-    ('service_orders', 'description',         'REDACT', 'texto livre: pode conter dado pessoal'),
-    ('service_orders', 'resolution',          'REDACT', 'texto livre: pode conter dado pessoal'),
-    ('service_orders', 'cancellation_reason', 'REDACT', 'texto livre: pode conter dado pessoal'),
-    ('service_orders', 'form_data',           'REDACT', 'formulário de campo: pode conter dado pessoal'),
-    ('service_orders', 'photos',              'REDACT', 'referência a fotos de imóvel e pessoas'),
-    ('service_orders', 'gps_track',           'OMIT',   'trajeto do trabalhador de campo')
+    ('addresses', 'coordinates', 'OMIT',   'localização de residência')
 ON CONFLICT (table_name, column_name) DO NOTHING;

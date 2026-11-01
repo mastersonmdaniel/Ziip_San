@@ -1,6 +1,6 @@
 package br.com.sigsan.commercial.billing.bill;
 
-import br.com.sigsan.commercial.billing.tariff.EconomyGroup;
+import br.com.sigsan.commercial.billing.tariff.TariffGroup;
 import br.com.sigsan.commercial.billing.tariff.SewerParameters;
 import br.com.sigsan.commercial.billing.tariff.TariffSchedule;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * @param taxPolicy        retenção de impostos; {@code null} = a conta não retém (cliente sem retenção)
  */
 public record BillInput(TariffSchedule schedule, LocalDate periodFrom, LocalDate periodTo,
-                        List<EconomyGroup> groups, Integer waterConsumption, SewerBilling sewer,
+                        List<TariffGroup> groups, Integer waterConsumption, SewerBilling sewer,
                         List<DebitReceivable> debits, List<CreditReceivable> credits,
                         TaxWithholdingPolicy taxPolicy) {
 

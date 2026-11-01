@@ -9,14 +9,12 @@ import br.com.sigsan.grs.mtr.domain.WasteMtr;
 import br.com.sigsan.grs.mtr.domain.WasteMtr.MtrStatus;
 import br.com.sigsan.grs.mtr.domain.WasteTransporter;
 import br.com.sigsan.grs.mtr.integration.GovBrSignatureService;
-import br.com.sigsan.grs.mtr.integration.SinirIntegrationService;
 import br.com.sigsan.grs.mtr.repository.WasteCdfRepository;
 import br.com.sigsan.grs.mtr.repository.WasteClassRepository;
 import br.com.sigsan.grs.mtr.repository.WasteDestinationRepository;
 import br.com.sigsan.grs.mtr.repository.WasteGeneratorRepository;
 import br.com.sigsan.grs.mtr.repository.WasteMtrRepository;
 import br.com.sigsan.grs.mtr.repository.WasteTransporterRepository;
-import br.com.sigsan.grs.mtr.integration.SinirIntegrationService.PartyDocuments;
 import br.com.sigsan.grs.mtr.service.MtrDocumentProtection.Driver;
 import br.com.sigsan.grs.mtr.service.MtrService.CollectMtrRequest;
 import br.com.sigsan.grs.mtr.service.MtrService.CreateMtrRequest;
@@ -28,7 +26,7 @@ import br.com.sigsan.security.crypto.BlindIndex;
 import br.com.sigsan.security.crypto.FieldCipher;
 import br.com.sigsan.security.crypto.FieldProtector;
 import br.com.sigsan.security.crypto.dev.EnvDerivedTenantKeyProvider;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +34,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
@@ -72,7 +69,6 @@ class MtrServiceTest {
     private WasteClassRepository classRepo;
     private WasteCdfRepository cdfRepo;
     private MtrPdfGenerator pdf;
-    private SinirIntegrationService sinir;
     private MtrDocumentProtection documents;
     private MtrService service;
     /** Geradores "gravados", por índice cego: simula o índice único (tenant_id, document_hash). */
@@ -96,9 +92,7 @@ class MtrServiceTest {
         cdfRepo = mock(WasteCdfRepository.class);
         pdf = mock(MtrPdfGenerator.class);
 
-        // SINIR real, desligado: devolve PENDING com motivo, que é o comportamento de hoje. Espião só
-        // para conferir os documentos entregues.
-        sinir = Mockito.spy(new SinirIntegrationService("", false));
+        // P0.25: SINIR em modo assistido — sem serviço de integração e sem chamada ao SINIR.
         // Cifra real com chave de teste (EnvDerivedTenantKeyProvider é só para desenvolvimento e teste).
         byte[] master = new byte[32];
         for (int i = 0; i < master.length; i++) {
@@ -107,7 +101,7 @@ class MtrServiceTest {
         var keys = new EnvDerivedTenantKeyProvider(master);
         documents = new MtrDocumentProtection(new FieldProtector(new FieldCipher(keys), new BlindIndex(keys)));
         service = new MtrService(mtrRepo, generatorRepo, transporterRepo, destinationRepo, classRepo, cdfRepo,
-                sinir, mock(GovBrSignatureService.class), pdf, documents);
+                mock(GovBrSignatureService.class), pdf, documents);
 
         generator = entity(new WasteGenerator(), "00000000-0000-0000-0000-000000000001");
         documents.assignGeneratorDocument(generator, GENERATOR_CNPJ);
@@ -246,22 +240,6 @@ class MtrServiceTest {
         assertThat(h1).isNotEqualTo(h2);
         // o último elo é recalculável a partir do anterior e do conteúdo canônico atual
         assertThat(h2).isEqualTo(HashChain.next(h1, MtrCanonical.of(mtr, DRIVER_CPF)));
-    }
-
-    @Test
-    @DisplayName("o resultado da sincronização com o SINIR é gravado no MTR: PENDING, com o motivo")
-    void sinirResultIsStored() throws Exception {
-        WasteMtr mtr = create();
-        mtr.setId(UUID.randomUUID());
-        stored(mtr);
-
-        service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", DRIVER_CPF, null, null));
-
-        assertThat(mtr.getSinirSyncStatus()).isEqualTo(WasteMtr.SinirSyncStatus.PENDING);
-        assertThat(mtr.getSinirSyncAt()).isNotNull();
-        assertThat(mtr.getSinirProtocol()).isNull();
-        assertThat(new ObjectMapper().readTree(mtr.getSinirResponse()).get("reason").asText())
-                .contains("SINIR não configurado");
     }
 
     @Test
@@ -451,23 +429,28 @@ class MtrServiceTest {
     }
 
     @Test
-    @DisplayName("SINIR recebe os documentos decifrados; o PDF do CDF recebe o documento do gerador")
-    void sinirAndPdfReceiveTheDecryptedDocuments() {
+    @DisplayName("P0.25: coleta e destinação não chamam o SINIR; o PDF do CDF recebe o documento do gerador")
+    void noSinirCallAndPdfReceivesGeneratorDocument() {
         WasteMtr mtr = create();
         mtr.setId(UUID.randomUUID());
         stored(mtr);
+        // O status nasce PENDING por padrao da entidade (pendente de envio assistido);
+        // o que a P0.25 garante e que coleta/destinacao NAO o alteram nem preenchem
+        // protocolo, resposta ou data de tentativa: nenhuma sincronizacao foi tentada.
         service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", DRIVER_CPF, null, null));
-
-        ArgumentCaptor<PartyDocuments> sent = ArgumentCaptor.forClass(PartyDocuments.class);
-        Mockito.verify(sinir).syncMtr(eq(mtr), sent.capture());
-        assertThat(sent.getValue().generatorDocument()).isEqualTo(GENERATOR_CNPJ);
-        assertThat(sent.getValue().driverCpf()).isEqualTo(DRIVER_CPF);
-        assertThat(sent.getValue().toString()).doesNotContain(DRIVER_CPF).doesNotContain(GENERATOR_CNPJ);
+        assertThat(mtr.getSinirSyncStatus()).isEqualTo(WasteMtr.SinirSyncStatus.PENDING);
+        assertThat(mtr.getSinirSyncAt()).isNull();
+        assertThat(mtr.getSinirResponse()).isNull();
+        assertThat(mtr.getSinirProtocol()).isNull();
 
         service.receiveMtr(mtr.getId(), new ReceiveMtrRequest("destinador"));
         service.destinateMtr(mtr.getId(), new DestinateMtrRequest(destination.getId(),
                 WasteCdf.DestinationMethod.RECYCLING, Map.of(), null, "Fulana", "CREA-123", null));
         Mockito.verify(pdf).generateCdfPdf(any(), eq(mtr), eq(GENERATOR_CNPJ));
+        assertThat(mtr.getSinirSyncStatus()).isEqualTo(WasteMtr.SinirSyncStatus.PENDING);
+        assertThat(mtr.getSinirSyncAt()).isNull();
+        assertThat(mtr.getSinirResponse()).isNull();
+        assertThat(mtr.getSinirProtocol()).isNull();
     }
 
     @ParameterizedTest(name = "CPF do motorista [{0}] -> recusado, nenhum MTR")

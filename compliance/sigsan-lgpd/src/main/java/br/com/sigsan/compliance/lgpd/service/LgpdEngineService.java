@@ -59,7 +59,9 @@ public class LgpdEngineService {
             ConsentRecord existingConsent = existing.get();
             existingConsent.setStatus(ConsentRecord.ConsentStatus.GRANTED);
             existingConsent.setGrantedAt(OffsetDateTime.now());
-            existingConsent.setVersion(existingConsent.getVersion() + 1);
+            // P0.25: sem incremento manual de version — e @Version do JPA (BaseEntity);
+            // o Hibernate incrementa no flush. Incrementar aqui dobraria o salto e
+            // poderia gerar OptimisticLockException espuria em concorrencia.
             existingConsent.setConsentText(request.consentText());
             existingConsent.setConsentHash(hashConsentText(request.consentText()));
             existingConsent.setIpAddress(request.ipAddress());

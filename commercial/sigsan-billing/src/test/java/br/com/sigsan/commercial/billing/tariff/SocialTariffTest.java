@@ -138,7 +138,7 @@ class SocialTariffTest {
     @DisplayName("esgoto: o desconto social só vale se o tenant mandar (decisão não confirmada em norma)")
     void sewerFollowsTheSocialFlag() {
         TariffSchedule schedule = scheduleOf(t1WithSocial(social("0", band(0, 15, "50"))));
-        List<EconomyGroup> groups = List.of(socialRes(1, 1));
+        List<TariffGroup> groups = List.of(socialRes(1, 1));
         LocalDate from = LocalDate.of(2026, 9, 5);
         LocalDate to = LocalDate.of(2026, 10, 4);
 
@@ -193,8 +193,8 @@ class SocialTariffTest {
     @Test
     @DisplayName("economias sociais não podem exceder as economias do grupo")
     void socialEconomiesBoundedByEconomies() {
-        assertThatThrownBy(() -> new EconomyGroup(RES, null, 2, 3)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new EconomyGroup(RES, null, 2, -1)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new TariffGroup(RES, null, 2, 3)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new TariffGroup(RES, null, 2, -1)).isInstanceOf(IllegalArgumentException.class);
     }
 
 }

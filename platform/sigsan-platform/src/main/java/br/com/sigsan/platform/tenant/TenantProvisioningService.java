@@ -2,7 +2,6 @@ package br.com.sigsan.platform.tenant;
 
 import br.com.sigsan.core.json.Json;
 import br.com.sigsan.core.domain.TenantAwareEntity;
-import br.com.sigsan.core.tenant.TenantContextHolder;
 import br.com.sigsan.core.audit.AuditLog;
 import br.com.sigsan.core.audit.AuditLogRepository;
 import lombok.AllArgsConstructor;
@@ -19,14 +18,10 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -53,20 +48,10 @@ public class TenantProvisioningService {
             "pg_temp",
             "pg_toast_temp");
 
-    /**
-     * Hash bcrypt completo ({@code $2a$}, {@code $2b$} ou {@code $2y$}, custo com dois digitos, 22
-     * caracteres de sal e 31 de hash). A versao anterior prefixava "$2a$12$" ao valor recebido: um hash
-     * ja completo virava "$2a$12$$2a$12$...", que nenhum verificador aceita, e o admin do tenant
-     * nascia sem conseguir entrar.
-     */
-    private static final Pattern BCRYPT_HASH = Pattern.compile("^\\$2[aby]\\$\\d{2}\\$[./A-Za-z0-9]{53}$");
-
     private final DataSource dataSource;
     private final JdbcTemplate jdbcTemplate;
     private final AuditLogRepository auditLogRepository;
-    private final KeycloakAdminService keycloakAdminService;
 
-    private final Map<String, Boolean> schemaInitializedCache = new ConcurrentHashMap<>();
 
     /**
      * DDL de tenant (CREATE SCHEMA, migrations, GRANT) roda com a role de migracao.
@@ -93,16 +78,15 @@ public class TenantProvisioningService {
             // lido como erro de infra e tentaria rollback de um schema que nunca foi criado.
             throw e;
         }
-        // Validado antes de qualquer DDL, pelo mesmo motivo: hash invalido descoberto so no seed do
-        // admin deixaria schema, migrations e catalogo feitos para um tenant sem acesso.
-        requireBcryptHash(request.getAdminPasswordHash());
+        // P0.25: sem seed de usuario/admin e sem realm Keycloak no provisionamento. O tenant
+        // nasce com schema, migrations e catalogo; usuario e papeis voltam na P0.13 (catalogo
+        // de usuarios) e o acesso e pelo Keycloak do ambiente, nao por realm por tenant.
         UUID tenantId = request.getTenantId() != null ? request.getTenantId() : UUID.randomUUID();
 
         // O rollback so pode remover o que ESTA invocacao criou. Reprovisionar um tenant
-        // existente e operacao legitima, e Keycloak fora do ar no meio do caminho e rotina.
-        // Sem esta distincao, o catch executava DROP SCHEMA CASCADE sobre um tenant em
-        // producao com consumidores e ordens de servico, e devolvia "failure" como se fosse
-        // um erro recuperavel.
+        // existente e operacao legitima. Sem esta distincao, o catch executava DROP SCHEMA
+        // CASCADE sobre um tenant em producao com consumidores, e devolvia "failure" como
+        // se fosse um erro recuperavel.
         boolean schemaCreatedNow = false;
 
         try {
@@ -112,12 +96,6 @@ public class TenantProvisioningService {
             grantTenantTablePrivileges(schemaName);
 
             registerTenantInCatalog(tenantId, schemaName, request);
-
-            keycloakAdminService.createTenantRealm(tenantId, schemaName, request);
-
-            initializeTenantData(schemaName, tenantId, request);
-
-            schemaInitializedCache.put(schemaName, true);
 
             writeProvisioningAudit(tenantId, schemaName, request.getDisplayName());
 
@@ -246,8 +224,9 @@ public class TenantProvisioningService {
         try (Connection conn = dataSource.getConnection()) {
             conn.setAutoCommit(false);
             try {
-                try (Statement st = conn.createStatement()) {
-                    st.execute("SELECT set_config('app.current_tenant', '" + tenantId + "', true)");
+                try (PreparedStatement st = conn.prepareStatement("SELECT set_config('app.current_tenant', ?, true)")) {
+                    st.setString(1, tenantId.toString());
+                    st.execute();
                 }
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setObject(1, tenantId);
@@ -269,180 +248,6 @@ public class TenantProvisioningService {
         } catch (SQLException e) {
             log.error("Falha ao registrar tenant {} no catalogo", schemaName, e);
             throw new IllegalStateException("Falha ao registrar tenant no catalogo", e);
-        }
-    }
-
-    /**
-     * Semeia os dados iniciais do tenant (papeis, admin, metadata).
-     *
-     * Tudo numa transação unica e numa unica conexao, porque as policies RLS leem a GUC
-     * app.current_tenant. SET LOCAL vale so dentro da transacao, entao o contexto some no
-     * commit e nunca vaza para a proxima conexao do pool — que seria um tenant vazando para
-     * outro.
-     *
-     * O INSERT inicial e excecao controlada: uma linha cuja tenant_id difere do contexto viola
-     * a policy. Precisa do contexto correto, e nao de BYPASSRLS, que foi removido de proposito.
-     */
-    /**
-     * Grava o registro de auditoria do provisionamento.
-     *
-     * public.audit_log tem RLS por tenant_id = current_tenant_id(), entao o INSERT precisa da
-     * GUC definida. O save pelo JPARepository abriria outra conexao, sem a GUC, e seria
-     * barrado. Por isso a escrita e explicita e transacional.
-     */
-    private void writeProvisioningAudit(UUID tenantId, String schemaName, String displayName) {
-        String payload = Json.write(Map.of("schemaName", schemaName, "displayName", displayName));
-
-        String sql = """
-            INSERT INTO public.audit_log
-                (tenant_id, entity_type, entity_id, action, new_values, success, created_at)
-            VALUES (?, 'Tenant', ?, 'CREATE', ?::jsonb, true, NOW())
-            """;
-
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try {
-                try (Statement st = conn.createStatement()) {
-                    st.execute("SELECT set_config('app.current_tenant', '" + tenantId + "', true)");
-                }
-                try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setObject(1, tenantId);
-                    ps.setObject(2, tenantId);
-                    ps.setString(3, payload);
-                    ps.executeUpdate();
-                }
-                conn.commit();
-            } catch (Exception e) {
-                conn.rollback();
-                log.error("DEBUG audit falhou", e);
-                throw e;
-            }
-        } catch (SQLException e) {
-            log.error("Falha ao gravar auditoria do provisionamento", e);
-            throw new IllegalStateException("Falha ao gravar auditoria do provisionamento", e);
-        }
-    }
-
-    /**
-     * Semeia os dados iniciais do tenant (papeis, admin, metadata).
-     *
-     * Tudo numa transacao unica e numa unica conexao, porque as policies RLS leem a GUC
-     * app.current_tenant. SET LOCAL vale so dentro da transacao, entao o contexto some no
-     * commit e nunca vaza para a proxima conexao do pool — que seria um tenant vazando para
-     * outro.
-     */
-    private void initializeTenantData(String schemaName, UUID tenantId,
-                                      TenantProvisioningRequest request) {
-        TenantContextHolder.setTenant(schemaName);
-        TenantContextHolder.setTenantId(tenantId);
-
-        try (Connection conn = migratorDataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try {
-                try (Statement st = conn.createStatement()) {
-                    st.execute("SELECT set_config('app.current_tenant', '" + tenantId + "', true)");
-                }
-
-                seedRoles(conn, schemaName, tenantId);
-                seedAdminUser(conn, schemaName, tenantId, request);
-                seedTenantMetadata(conn, schemaName, tenantId, request);
-
-                conn.commit();
-                log.info("Dados iniciais do tenant {} semeados", schemaName);
-            } catch (Exception e) {
-                conn.rollback();
-                throw e;
-            }
-        } catch (SQLException e) {
-            throw new IllegalStateException("Falha ao semear dados do tenant " + schemaName, e);
-        } finally {
-            TenantContextHolder.clear();
-        }
-    }
-
-    private void seedRoles(Connection conn, String schemaName, UUID tenantId) throws SQLException {
-        String sql = String.format("""
-            INSERT INTO %s.roles (id, tenant_id, code, name, description, permissions, is_system, created_at, updated_at)
-            VALUES (uuid_generate_v4(), ?, 'ADMIN', 'Administrador', 'Acesso total ao sistema',
-                    '["*"]'::jsonb, true, NOW(), NOW()),
-                   (uuid_generate_v4(), ?, 'OPERATOR', 'Operador', 'Acesso operacional',
-                    '["consumer:read","consumer:write","service_order:read","service_order:write"]'::jsonb, false, NOW(), NOW()),
-                   (uuid_generate_v4(), ?, 'MANAGER', 'Gerente', 'Acesso gerencial',
-                    '["consumer:read","consumer:write","service_order:read","service_order:write","reports:read","billing:read"]'::jsonb, false, NOW(), NOW()),
-                   (uuid_generate_v4(), ?, 'VIEWER', 'Visualizador', 'Apenas leitura',
-                    '["consumer:read","service_order:read","reports:read"]'::jsonb, false, NOW(), NOW())
-            ON CONFLICT (tenant_id, code) DO UPDATE SET
-                name = EXCLUDED.name,
-                description = EXCLUDED.description,
-                permissions = EXCLUDED.permissions,
-                updated_at = NOW()
-            """, schemaName);
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, tenantId);
-            ps.setObject(2, tenantId);
-            ps.setObject(3, tenantId);
-            ps.setObject(4, tenantId);
-            ps.executeUpdate();
-        }
-    }
-
-    private void seedAdminUser(Connection conn, String schemaName, UUID tenantId,
-                               TenantProvisioningRequest request) throws SQLException {
-        String sql = String.format("""
-            INSERT INTO %s.users (id, tenant_id, username, email, full_name, password_hash, status, mfa_enabled, created_at, updated_at)
-            VALUES (uuid_generate_v4(), ?, ?, ?, ?, ?, 'ACTIVE', false, NOW(), NOW())
-            ON CONFLICT (tenant_id, username) DO NOTHING
-            """, schemaName);
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, tenantId);
-            ps.setString(2, request.getAdminUsername());
-            ps.setString(3, request.getAdminEmail());
-            ps.setString(4, request.getAdminName());
-            ps.setString(5, request.getAdminPasswordHash());
-            ps.executeUpdate();
-        }
-
-        String roleSql = String.format("""
-            INSERT INTO %s.user_roles (id, tenant_id, user_id, role_id, assigned_at, assigned_by)
-            SELECT uuid_generate_v4(), ?, u.id, r.id, NOW(), ?
-            FROM %s.users u, %s.roles r
-            WHERE u.tenant_id = ? AND u.username = ? AND r.tenant_id = ? AND r.code = 'ADMIN'
-            ON CONFLICT DO NOTHING
-            """, schemaName, schemaName, schemaName);
-
-        try (PreparedStatement ps = conn.prepareStatement(roleSql)) {
-            ps.setObject(1, tenantId);
-            ps.setObject(2, tenantId);
-            ps.setObject(3, tenantId);
-            ps.setString(4, request.getAdminUsername());
-            ps.setObject(5, tenantId);
-            ps.executeUpdate();
-        }
-    }
-
-    private void seedTenantMetadata(Connection conn, String schemaName, UUID tenantId,
-                                    TenantProvisioningRequest request) throws SQLException {
-        String sql = String.format("""
-            INSERT INTO %s.tenant_metadata (id, tenant_id, schema_name, display_name, cnpj, address, settings, status, created_at, updated_at)
-            VALUES (uuid_generate_v4(), ?, ?, ?, ?, ?::jsonb, ?::jsonb, 'ACTIVE', NOW(), NOW())
-            ON CONFLICT (tenant_id) DO UPDATE SET
-                display_name = EXCLUDED.display_name,
-                cnpj = EXCLUDED.cnpj,
-                address = EXCLUDED.address,
-                settings = EXCLUDED.settings,
-                updated_at = NOW()
-            """, schemaName);
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, tenantId);
-            ps.setString(2, schemaName);
-            ps.setString(3, request.getDisplayName());
-            ps.setString(4, request.getCnpj());
-            ps.setString(5, Json.orDefault(request.getAddress(), "{}"));
-            ps.setString(6, Json.orDefault(request.getSettings(), "{}"));
-            ps.executeUpdate();
         }
     }
 
@@ -483,29 +288,12 @@ public class TenantProvisioningService {
         return normalized;
     }
 
-    private static void requireBcryptHash(String hash) {
-        // A mensagem nao repete o valor: mesmo invalido, pode ser uma senha colada no campo errado.
-        if (hash == null || !BCRYPT_HASH.matcher(hash).matches()) {
-            throw new IllegalArgumentException("Hash de senha do administrador invalido: esperado bcrypt "
-                    + "completo ($2a$, $2b$ ou $2y$, custo e 53 caracteres de sal e hash)");
-        }
-    }
-
     private void dropSchema(String schemaName) {
         try {
             migratorJdbc().execute(String.format("DROP SCHEMA IF EXISTS %s CASCADE", schemaName));
         } catch (Exception e) {
             log.warn("Failed to drop schema {}", schemaName, e);
         }
-    }
-
-    public boolean isSchemaInitialized(String schemaName) {
-        return schemaInitializedCache.getOrDefault(schemaName, false);
-    }
-
-    public List<String> listInitializedSchemas() {
-        String sql = "SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('public', 'information_schema', 'pg_catalog', 'pg_toast')";
-        return jdbcTemplate.queryForList(sql, String.class);
     }
 
     // DTOs
@@ -522,10 +310,6 @@ public class TenantProvisioningService {
         private Map<String, Object> address;
         private String plan;
         private Map<String, Object> settings;
-        private String adminUsername;
-        private String adminEmail;
-        private String adminName;
-        private String adminPasswordHash;
     }
 
     public record TenantProvisioningResult(

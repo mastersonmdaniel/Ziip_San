@@ -47,7 +47,6 @@ class TenantProvisioningServiceTest {
      * spring-security-crypto (BCrypt.hashpw), que não está no classpath deste módulo. O provisionamento
      * recusa qualquer valor que não seja um bcrypt completo.
      */
-    static final String ADMIN_BCRYPT_HASH = "$2a$12$XQ.OOBGIj7Rx81rNhJ11Wu6ZC5MGgdgkVG5VHomMqrv2kzOSgP5pC";
 
     /** Impede que um DROP CASCADE atinja um schema que não é deste teste. */
     private static void assertTestSchema(String schema) {
@@ -94,7 +93,6 @@ class TenantProvisioningServiceTest {
                 appDataSource,
                 jdbc,
                 Mockito.mock(AuditLogRepository.class),
-                Mockito.mock(KeycloakAdminService.class),
                 migratorDataSource);
     }
 
@@ -115,11 +113,6 @@ class TenantProvisioningServiceTest {
     }
 
     private TenantProvisioningService.TenantProvisioningRequest request(UUID tenantId, String schema) {
-        return request(tenantId, schema, ADMIN_BCRYPT_HASH);
-    }
-
-    private TenantProvisioningService.TenantProvisioningRequest request(UUID tenantId, String schema,
-                                                                         String adminPasswordHash) {
         return TenantProvisioningService.TenantProvisioningRequest.builder()
                 .tenantId(tenantId)
                 .schemaName(schema)
@@ -130,10 +123,6 @@ class TenantProvisioningServiceTest {
                 .email("contato@teste.com.br")
                 .phone("11999999999")
                 .plan("PRO")
-                .adminUsername("admin")
-                .adminEmail("admin@teste.com.br")
-                .adminName("Administrador")
-                .adminPasswordHash(adminPasswordHash)
                 .build();
     }
 
@@ -182,43 +171,24 @@ class TenantProvisioningServiceTest {
     }
 
     /**
-     * Provisiona um tenant cujo Keycloak está fora do ar.
-     *
-     * Keycloak indisponível é rotina, não exceção rara. Foi exatamente esse cenário que
-     * expôs o rollback destrutivo: a falha no passo 4 disparava DROP SCHEMA CASCADE sobre um
-     * tenant que já existia em produção.
-     */
-    private TenantProvisioningService serviceComKeycloakQuebrado() {
-        KeycloakAdminService keycloakQuebrado = Mockito.mock(KeycloakAdminService.class);
-        Mockito.doThrow(new IllegalStateException("Keycloak indisponivel"))
-                .when(keycloakQuebrado)
-                .createTenantRealm(Mockito.any(), Mockito.any(), Mockito.any());
-        return new TenantProvisioningService(
-                appDataSource,
-                new JdbcTemplate(appDataSource),
-                Mockito.mock(AuditLogRepository.class),
-                keycloakQuebrado,
-                migratorDataSource);
-    }
-
-    /**
      * Insere uma ordem de serviço no schema, com o tenant como contexto.
      *
      * O commit e explicito: a GUC app.current_tenant e local a transacao, entao o INSERT tem
      * de ser confirmado para sobreviver. O rollbackso serve para descartar a GUC.
      */
-    private void seedOrder(String schema, UUID tenantId, String orderNumber) {
+    /** P0.25: service_orders sai da V1_1 (volta na P1.31); o seed de isolamento usa consumer_units. */
+    private void seedConsumerUnit(String schema, UUID tenantId, String matricula) {
         try (Connection conn = migratorDataSource.getConnection()) {
             conn.setAutoCommit(false);
             try (Statement st = conn.createStatement()) {
                 st.execute("SELECT set_config('app.current_tenant', '" + tenantId + "', true)");
                 st.execute("INSERT INTO " + schema
-                        + ".service_orders (tenant_id, order_number) VALUES ('" + tenantId
-                        + "', '" + orderNumber + "')");
+                        + ".consumer_units (tenant_id, matricula) VALUES ('" + tenantId
+                        + "', '" + matricula + "')");
             }
             conn.commit();
         } catch (SQLException e) {
-            throw new IllegalStateException("Falha ao semear ordem", e);
+            throw new IllegalStateException("Falha ao semear unidade consumidora", e);
         }
     }
 
@@ -266,56 +236,6 @@ class TenantProvisioningServiceTest {
     }
 
     @Test
-    @DisplayName("cria os quatro papéis padrão")
-    void createsDefaultRoles() {
-        UUID tenantId = UUID.randomUUID();
-        provisionOk(tenantId, SCHEMA);
-
-        int roles = countAsTenant(tenantId, "SELECT count(*) FROM " + SCHEMA + ".roles");
-        assertThat(roles)
-                .as("ADMIN, OPERATOR, MANAGER e VIEWER")
-                .isEqualTo(4);
-
-        int admin = countAsTenant(tenantId,
-                "SELECT count(*) FROM " + SCHEMA + ".roles WHERE code = 'ADMIN'");
-        assertThat(admin).isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("cria usuário admin e o vincula ao papel ADMIN")
-    void createsAdminUserWithAdminRole() {
-        UUID tenantId = UUID.randomUUID();
-        provisionOk(tenantId, SCHEMA);
-
-        int users = countAsTenant(tenantId,
-                "SELECT count(*) FROM " + SCHEMA + ".users WHERE username = 'admin'");
-        assertThat(users).isEqualTo(1);
-
-        int links = countAsTenant(tenantId, String.format("""
-                SELECT count(*)
-                FROM %1$s.user_roles ur
-                JOIN %1$s.users u ON u.id = ur.user_id
-                JOIN %1$s.roles r ON r.id = ur.role_id
-                WHERE u.username = 'admin' AND r.code = 'ADMIN'
-                """, SCHEMA));
-        assertThat(links)
-                .as("admin sem papel ADMIN ficaria sem acesso")
-                .isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("grava metadata do tenant no schema dele")
-    void writesTenantMetadata() {
-        UUID tenantId = UUID.randomUUID();
-        provisionOk(tenantId, SCHEMA);
-
-        int metadata = countAsTenant(tenantId,
-                "SELECT count(*) FROM " + SCHEMA + ".tenant_metadata WHERE tenant_id = ?",
-                tenantId);
-        assertThat(metadata).isEqualTo(1);
-    }
-
-    @Test
     @DisplayName("todas as tabelas de negócio têm RLS habilitada")
     void enablesRowLevelSecurityOnEveryTable() {
         provisionOk(UUID.randomUUID(), SCHEMA);
@@ -357,19 +277,19 @@ class TenantProvisioningServiceTest {
         // Duas ordens no MESMO schema, de dois tenant_id diferentes. Sem semear nada, o
         // resultado seria zero por ausência de dado, não por RLS — o teste passaria mesmo
         // com as policies removidas.
-        seedOrder(SCHEMA, tenantId, "ordem-do-dono");
-        seedOrder(SCHEMA, UUID.randomUUID(), "ordem-do-estranho");
+        seedConsumerUnit(SCHEMA, tenantId, "UC-DO-DONO");
+        seedConsumerUnit(SCHEMA, UUID.randomUUID(), "UC-DO-ESTRANHO");
 
-        assertThat(countAsTenant(tenantId, "SELECT count(*) FROM " + SCHEMA + ".service_orders"))
-                .as("o dono enxerga somente a própria ordem")
+        assertThat(countAsTenant(tenantId, "SELECT count(*) FROM " + SCHEMA + ".consumer_units"))
+                .as("o dono enxerga somente a própria unidade")
                 .isEqualTo(1);
 
         assertThat(countAsTenant(UUID.randomUUID(),
-                "SELECT count(*) FROM " + SCHEMA + ".service_orders"))
+                "SELECT count(*) FROM " + SCHEMA + ".consumer_units"))
                 .as("tenant que não é o dono não enxerga nada")
                 .isZero();
 
-        assertThat(count("SELECT count(*) FROM " + SCHEMA + ".service_orders"))
+        assertThat(count("SELECT count(*) FROM " + SCHEMA + ".consumer_units"))
                 .as("sem contexto de tenant, a RLS nega tudo")
                 .isZero();
     }
@@ -437,61 +357,27 @@ class TenantProvisioningServiceTest {
     }
 
     @Test
-    @DisplayName("hash de senha inválido é recusado antes de criar o schema")
-    void rejectsInvalidPasswordHashWithoutCreatingSchema() {
-        // Ausente, vazio, o valor antigo dos testes, o que o código antigo gravava ao prefixar "$2a$12$"
-        // a um hash completo, sal/hash curto demais e variante de bcrypt inexistente ($2x$).
-        String[] invalidos = {null, "", "hash-bcrypt-aqui", "$2a$12$" + ADMIN_BCRYPT_HASH,
-                ADMIN_BCRYPT_HASH.substring(0, 59), "$2x$12$" + ADMIN_BCRYPT_HASH.substring(7)};
-        for (String invalido : invalidos) {
-            var request = request(UUID.randomUUID(), SCHEMA, invalido);
-            assertThatThrownBy(() -> service().provisionTenant(request))
-                    .as("hash [%s]", invalido)
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Hash de senha do administrador invalido");
-            assertThat(schemaExists()).as("nenhum schema criado para hash [%s]", invalido).isFalse();
-        }
-        Integer catalogRows = new JdbcTemplate(migratorDataSource).queryForObject(
-                "SELECT count(*) FROM public.tenant_catalog WHERE schema_name = ?", Integer.class, SCHEMA);
-        assertThat(catalogRows).as("nada registrado no catálogo").isZero();
-    }
-
-    @Test
-    @DisplayName("o hash recebido é gravado sem alteração")
-    void storesPasswordHashUnchanged() {
-        UUID tenantId = UUID.randomUUID();
-        provisionOk(tenantId, SCHEMA);
-
-        int iguais = countAsTenant(tenantId,
-                "SELECT count(*) FROM " + SCHEMA + ".users WHERE username = 'admin' AND password_hash = ?",
-                ADMIN_BCRYPT_HASH);
-        assertThat(iguais).as("o código antigo gravava \"$2a$12$\" + hash").isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("falha no Keycloak não destrói tenant já existente")
-    void failedReprovisionKeepsExistingTenantData() {
+    @DisplayName("P0.25: reprovisionamento não destrói dado de tenant já existente")
+    void reprovisionKeepsExistingTenantData() {
         UUID tenantId = UUID.randomUUID();
 
         // 1. Tenant provisionado com sucesso, com dado de negócio.
         provisionOk(tenantId, SCHEMA);
-        seedOrder(SCHEMA, tenantId, "ordem-do-cliente");
+        seedConsumerUnit(SCHEMA, tenantId, "UC-DO-CLIENTE");
 
-        // 2. Reprovisionamento com Keycloak fora do ar — falha comum e rotineira.
-        TenantProvisioningService svcComFalha = serviceComKeycloakQuebrado();
+        // 2. Reprovisionamento do mesmo tenant (operação legítima, sem passo Keycloak desde P0.25).
         TenantProvisioningService.TenantProvisioningResult result =
-                svcComFalha.provisionTenant(request(tenantId, SCHEMA));
+                service().provisionTenant(request(tenantId, SCHEMA));
 
         assertThat(result.success())
-                .as("o reprovisionamento deve falhar por causa do Keycloak")
-                .isFalse();
+                .as("o reprovisionamento deve concluir: %s", result.error())
+                .isTrue();
 
-        // 3. O dado do cliente tem que continuar lá. A versão anterior executava
-        //    DROP SCHEMA CASCADE neste ponto e apagava tudo.
-        int pedidos = countAsTenant(tenantId,
-                "SELECT count(*) FROM " + SCHEMA + ".service_orders");
-        assertThat(pedidos)
-                .as("falha de Keycloak não pode destruir dado de tenant em produção")
+        // 3. O dado do cliente tem que continuar lá.
+        int unidades = countAsTenant(tenantId,
+                "SELECT count(*) FROM " + SCHEMA + ".consumer_units");
+        assertThat(unidades)
+                .as("reprovisionamento não pode destruir dado de tenant em produção")
                 .isEqualTo(1);
     }
 
@@ -573,7 +459,7 @@ class TenantProvisioningServiceTest {
                         + "OR new_values::text LIKE '%mfa_secret%'");
 
         assertThat(comSenha)
-                .as("o seed cria um usuário admin; o hash não pode ir para o audit_log")
+                .as("P0.25: sem seed de admin; nenhum hash ou segredo pode ir para o audit_log")
                 .isZero();
     }
 
@@ -583,18 +469,19 @@ class TenantProvisioningServiceTest {
         UUID tenantId = UUID.randomUUID();
         provisionOk(tenantId, SCHEMA);
 
-        int visible = countAsTenant(tenantId, "SELECT count(*) FROM " + SCHEMA + ".roles");
+        seedConsumerUnit(SCHEMA, tenantId, "UC-ISOLADA");
+        int visible = countAsTenant(tenantId, "SELECT count(*) FROM " + SCHEMA + ".consumer_units");
         assertThat(visible)
-                .as("com o próprio tenant no contexto, os 4 papéis devem aparecer")
-                .isEqualTo(4);
+                .as("com o próprio tenant no contexto, a unidade dele deve aparecer")
+                .isEqualTo(1);
 
-        int semContexto = count("SELECT count(*) FROM " + SCHEMA + ".roles");
+        int semContexto = count("SELECT count(*) FROM " + SCHEMA + ".consumer_units");
         assertThat(semContexto)
                 .as("sem contexto de tenant a RLS nega tudo")
                 .isZero();
 
         UUID outro = UUID.randomUUID();
-        assertThat(countAsTenant(outro, "SELECT count(*) FROM " + SCHEMA + ".roles"))
+        assertThat(countAsTenant(outro, "SELECT count(*) FROM " + SCHEMA + ".consumer_units"))
                 .as("tenant que não é o dono não vê nada")
                 .isZero();
     }

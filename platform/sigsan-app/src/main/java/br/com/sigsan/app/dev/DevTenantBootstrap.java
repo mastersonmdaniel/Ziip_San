@@ -8,7 +8,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -49,10 +48,6 @@ public class DevTenantBootstrap implements ApplicationRunner {
                 .displayName("Tenant de desenvolvimento (dados sintéticos)")
                 .email("dev@sigsan.invalid")
                 .plan("DEV")
-                .adminUsername("admin.local")
-                .adminEmail("admin.local@sigsan.invalid")
-                .adminName("Administrador local")
-                .adminPasswordHash(BCrypt.hashpw(UUID.randomUUID().toString(), BCrypt.gensalt(12)))
                 .build());
         if (!result.success()) {
             throw new IllegalStateException("Falha ao provisionar o tenant de desenvolvimento: " + result.error());

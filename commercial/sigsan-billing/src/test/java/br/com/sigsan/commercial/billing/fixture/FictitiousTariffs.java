@@ -2,7 +2,7 @@ package br.com.sigsan.commercial.billing.fixture;
 
 import br.com.sigsan.commercial.billing.tariff.CategoryRule;
 import br.com.sigsan.commercial.billing.tariff.DiscountBand;
-import br.com.sigsan.commercial.billing.tariff.EconomyGroup;
+import br.com.sigsan.commercial.billing.tariff.TariffGroup;
 import br.com.sigsan.commercial.billing.tariff.SocialTariffRule;
 import br.com.sigsan.commercial.billing.tariff.TariffBlock;
 import br.com.sigsan.commercial.billing.tariff.TariffSchedule;
@@ -88,15 +88,15 @@ public final class FictitiousTariffs {
         return new DiscountBand(from, to, d(pct));
     }
 
-    public static EconomyGroup res(int economies) {
-        return EconomyGroup.of(RES, economies);
+    public static TariffGroup res(int economies) {
+        return TariffGroup.of(RES, economies);
     }
 
-    public static EconomyGroup com(int economies) {
-        return EconomyGroup.of(COM, economies);
+    public static TariffGroup com(int economies) {
+        return TariffGroup.of(COM, economies);
     }
 
-    public static EconomyGroup socialRes(int economies, int social) {
-        return new EconomyGroup(RES, null, economies, social);
+    public static TariffGroup socialRes(int economies, int social) {
+        return new TariffGroup(RES, null, economies, social);
     }
 }

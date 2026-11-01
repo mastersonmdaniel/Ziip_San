@@ -3,7 +3,6 @@ package br.com.sigsan.app;
 import br.com.sigsan.commercial.registry.domain.Locality;
 import br.com.sigsan.core.audit.AuditLogRepository;
 import br.com.sigsan.core.tenant.TenantContextHolder;
-import br.com.sigsan.platform.tenant.KeycloakAdminService;
 import br.com.sigsan.platform.tenant.MultiTenantConnectionProvider;
 import br.com.sigsan.platform.tenant.TenantProvisioningService;
 import br.com.sigsan.platform.tenant.TenantSchemaResolver;
@@ -51,7 +50,6 @@ class TenantConnectionProviderTest {
     private static final String SCHEMA_B = "it_b_" + UUID.randomUUID().toString().replace("-", "").substring(0, 8);
 
     /** bcrypt válido de teste (não é senha de ninguém). */
-    private static final String TEST_BCRYPT = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
 
     private static HikariDataSource pool;
     private static SessionFactory sessionFactory;
@@ -64,7 +62,6 @@ class TenantConnectionProviderTest {
                 ProvisionedTenant.appDs,
                 new JdbcTemplate(ProvisionedTenant.appDs),
                 Mockito.mock(AuditLogRepository.class),
-                Mockito.mock(KeycloakAdminService.class),
                 ProvisionedTenant.migratorDs)
                 .provisionTenant(TenantProvisioningService.TenantProvisioningRequest.builder()
                         .tenantId(TENANT_B)
@@ -73,10 +70,6 @@ class TenantConnectionProviderTest {
                         .cnpj("98765432000110")
                         .email("b@teste.com.br")
                         .plan("PRO")
-                        .adminUsername("admin")
-                        .adminEmail("admin-b@teste.com.br")
-                        .adminName("Administrador B")
-                        .adminPasswordHash(TEST_BCRYPT)
                         .build());
         assertThat(result.success()).as("provisionamento do tenant B: %s", result.error()).isTrue();
 

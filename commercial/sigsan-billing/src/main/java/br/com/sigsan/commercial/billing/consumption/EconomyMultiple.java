@@ -1,7 +1,7 @@
 package br.com.sigsan.commercial.billing.consumption;
 
 import br.com.sigsan.commercial.billing.tariff.CategoryRule;
-import br.com.sigsan.commercial.billing.tariff.EconomyGroup;
+import br.com.sigsan.commercial.billing.tariff.TariffGroup;
 import br.com.sigsan.commercial.billing.tariff.TariffConfigurationException;
 import br.com.sigsan.commercial.billing.tariff.TariffEngine;
 import br.com.sigsan.commercial.billing.tariff.TariffVersion;
@@ -31,11 +31,11 @@ public final class EconomyMultiple {
     }
 
     /** Consumo faturado após o ajuste (divisões inteiras truncadas). */
-    public static int adjust(int consumption, TariffVersion version, List<EconomyGroup> groups) {
+    public static int adjust(int consumption, TariffVersion version, List<TariffGroup> groups) {
         if (consumption < 0) {
             throw new IllegalArgumentException("Consumo negativo: " + consumption);
         }
-        int economies = groups.stream().mapToInt(EconomyGroup::economies).sum();
+        int economies = groups.stream().mapToInt(TariffGroup::economies).sum();
         if (economies < 1) {
             throw new IllegalArgumentException("A unidade não tem economias");
         }
@@ -48,7 +48,7 @@ public final class EconomyMultiple {
         if (excess > 0) {
             int perEconomy = excess / economies;
             long adjusted = 0;
-            for (EconomyGroup g : groups) {
+            for (TariffGroup g : groups) {
                 CategoryRule rule = version.ruleFor(g.categoryId(), g.subcategoryId());
                 adjusted += (long) perEconomy * g.economies() + (long) rule.minConsumption() * g.economies();
             }

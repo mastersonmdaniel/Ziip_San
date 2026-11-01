@@ -2,7 +2,6 @@ package br.com.sigsan.app;
 
 import br.com.sigsan.commercial.registry.rules.Matricula;
 import br.com.sigsan.core.audit.AuditLogRepository;
-import br.com.sigsan.platform.tenant.KeycloakAdminService;
 import br.com.sigsan.platform.tenant.TenantProvisioningService;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.AfterAll;
@@ -94,7 +93,6 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                 ProvisionedTenant.appDs,
                 new JdbcTemplate(ProvisionedTenant.appDs),
                 Mockito.mock(AuditLogRepository.class),
-                Mockito.mock(KeycloakAdminService.class),
                 ProvisionedTenant.migratorDs)
                 .provisionTenant(TenantProvisioningService.TenantProvisioningRequest.builder()
                         .tenantId(TENANT_B)
@@ -103,10 +101,6 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                         .cnpj("11222333000181")
                         .email("b-api@teste.com.br")
                         .plan("PRO")
-                        .adminUsername("admin")
-                        .adminEmail("admin-b-api@teste.com.br")
-                        .adminName("Administrador B")
-                        .adminPasswordHash("$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy")
                         .build());
         assertThat(result.success()).as("provisionamento do tenant B: %s", result.error()).isTrue();
         try (Connection c = ProvisionedTenant.appDs.getConnection(); Statement st = c.createStatement();

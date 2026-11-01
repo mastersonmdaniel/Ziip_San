@@ -28,7 +28,7 @@ class TariffEngineTest {
     private static final LocalDate FROM = LocalDate.of(2026, 9, 5);
     private static final LocalDate TO = LocalDate.of(2026, 10, 4);
 
-    record Case(String id, List<EconomyGroup> groups, int consumption, String expectedValue,
+    record Case(String id, List<TariffGroup> groups, int consumption, String expectedValue,
                 List<Integer> expectedConsumptionPerCategory) {
         @Override
         public String toString() {
@@ -150,9 +150,9 @@ class TariffEngineTest {
         TariffVersion v = new TariffVersion(id(105), T1_FROM, null, List.of(t1Res(), r1), null);
 
         // com subcategoria R1: mín 8, 25,00; C=10: 25 + 2×3 = 31,00
-        CategoryCharge withSub = TariffEngine.categoriesFor(v, List.of(new EconomyGroup(RES, SUB_R1, 1, 0)), 10).get(0);
+        CategoryCharge withSub = TariffEngine.categoriesFor(v, List.of(new TariffGroup(RES, SUB_R1, 1, 0)), 10).get(0);
         // outra subcategoria sem regra: cai na da categoria (mín 10, 30,00): C=10 → 30,00
-        CategoryCharge other = TariffEngine.categoriesFor(v, List.of(new EconomyGroup(RES, id(12), 1, 0)), 10).get(0);
+        CategoryCharge other = TariffEngine.categoriesFor(v, List.of(new TariffGroup(RES, id(12), 1, 0)), 10).get(0);
 
         assertThat(withSub.net()).isEqualByComparingTo("31.00");
         assertThat(other.net()).isEqualByComparingTo("30.00");
@@ -165,7 +165,7 @@ class TariffEngineTest {
     @Test
     @DisplayName("categoria sem regra na tarifa é erro explícito")
     void missingRuleIsAnError() {
-        assertThatThrownBy(() -> TariffEngine.categoriesFor(t1(), List.of(EconomyGroup.of(id(99), 1)), 10))
+        assertThatThrownBy(() -> TariffEngine.categoriesFor(t1(), List.of(TariffGroup.of(id(99), 1)), 10))
                 .isInstanceOf(TariffConfigurationException.class)
                 .hasMessageContaining("Sem regra de tarifa");
     }
@@ -190,7 +190,7 @@ class TariffEngineTest {
                 .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> TariffEngine.categoriesFor(t1(), List.of(), 10))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> EconomyGroup.of(RES, 0)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> TariffGroup.of(RES, 0)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -215,7 +215,7 @@ class TariffEngineTest {
     @Test
     @DisplayName("N-01: sem hidrômetro, por tarifa: consumo = mín × economias = 10 × 3 = 30, valor 3 × 30,00 = 90,00")
     void nonMeteredByTariff() {
-        List<EconomyGroup> groups = List.of(res(3));
+        List<TariffGroup> groups = List.of(res(3));
 
         int consumption = TariffEngine.minimumConsumption(t1(), groups);
 

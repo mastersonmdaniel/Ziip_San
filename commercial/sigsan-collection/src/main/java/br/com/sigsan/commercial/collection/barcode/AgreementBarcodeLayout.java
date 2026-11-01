@@ -1,9 +1,7 @@
 package br.com.sigsan.commercial.collection.barcode;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import br.com.sigsan.core.json.Json;
+import tools.jackson.databind.JsonNode;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -83,21 +81,18 @@ public record AgreementBarcodeLayout(Segment segment, ValueIdentifier valueIdent
 
     /** JSON da coluna {@code barcode_layout} do convênio. */
     public String toJson() {
-        ObjectNode root = JSON.createObjectNode();
+        // P0.25: serializacao via Json do core (Jackson 3); sem ObjectMapper Jackson 2 aqui.
+        java.util.Map<String, Object> root = new java.util.LinkedHashMap<>();
         root.put("segment", segment.name());
         root.put("valueIdentifier", valueIdentifier.name());
         root.put("companyId", companyId);
-        try {
-            root.set("freeField", JSON.readTree(freeField.toJson()));
-            return JSON.writeValueAsString(root);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException(e);
-        }
+        root.put("freeField", Json.readTree(freeField.toJson()));
+        return Json.write(root);
     }
 
     public static AgreementBarcodeLayout fromJson(String json) {
         try {
-            JsonNode n = JSON.readTree(json);
+            JsonNode n = Json.readTree(json);
             if (n == null || !n.hasNonNull("segment") || !n.hasNonNull("valueIdentifier")
                     || !n.hasNonNull("companyId") || !n.hasNonNull("freeField")) {
                 throw new IllegalArgumentException(
@@ -105,13 +100,12 @@ public record AgreementBarcodeLayout(Segment segment, ValueIdentifier valueIdent
             }
             return new AgreementBarcodeLayout(Segment.valueOf(n.get("segment").asText()),
                     ValueIdentifier.valueOf(n.get("valueIdentifier").asText()), n.get("companyId").asText(),
-                    FreeFieldLayout.fromJson(JSON.writeValueAsString(n.get("freeField"))));
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("JSON de layout inválido: " + e.getOriginalMessage(), e);
+                    FreeFieldLayout.fromJson(Json.write(n.get("freeField"))));
+        } catch (IllegalStateException e) {
+            throw new IllegalArgumentException("JSON de layout inválido", e);
         }
     }
 
-    private static final ObjectMapper JSON = new ObjectMapper();
 
     private ParsedDocument interpret(CollectionBarcode code) {
         if (code.segment() != segment || code.valueIdentifier() != valueIdentifier

@@ -1292,3 +1292,61 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   (forma recomendada: `scripts/dev-up-podman.sh` com `podman run` por serviço, ou instalar
   `podman-compose`). O compose Docker segue intacto e canônico para o PC normal. Para P0.1–P0.25,
   o Podman não é necessário: a verificação já é feita no host (Java + PG17 dedicado).
+
+### 31/10/2026 — P0.25 executada (turno 4 do coordenador; CI completo ainda pendente de PG17 nesta VM)
+- Ordem segura seguida: ModuleRegistry/AuditListener → SINIR → SCADA → Keycloak → billing →
+  Jackson → V1_1/V1_4 + sementes → vetor comum. Suíte verde por módulo afetado exigida antes
+  de qualquer commit desta tarefa; o commit da P0.25 só sai com os testes dos módulos
+  afetados verdes (o CI completo em PG17 depende da reinstalação do PostgreSQL 17 nesta VM,
+  ver abaixo).
+- SINIR: SinirIntegrationService apagado; MtrService sem campo/chamadas/partyDocuments/
+  recordSinir; testes reescritos (coleta e destinação não tocam em sinir; o PDF do CDF segue
+  recebendo o documento do gerador, uso legítimo preservado; advanceChain segue decifrando
+  o CPF para o hash da cadeia). Campos sinir_* da entidade WasteMtr e da migration V2_4
+  permanecem, sem escrita em modo assistido — a V2_4 não é alvo da P0.25; nenhum novo status
+  foi inventado para eles.
+- SCADA: ScadaIntegrationService, ScadaTopic e os 2 testes apagados; Paho removido do pom da
+  quality (comentário P0.25, ED-17). ScadaDataPoint/ScadaTag e repositórios permanecem: o
+  plano só manda apagar IntegrationService + Topic + Paho.
+- Keycloak: KeycloakAdminService e KeycloakConfig apagados; keycloak-admin-client removido
+  do pom raiz e do platform; TenantProvisioningService sem campo, chamada, seeds
+  (seedRoles/seedAdminUser/seedTenantMetadata/initializeTenantData), sem
+  isSchemaInitialized/listInitializedSchemas e sem validação de hash bcrypt no request — os
+  campos admin saíram do TenantProvisioningRequest e de todos os chamadores
+  (ProvisionedTenant, RegistryApiE2ETest, TenantConnectionProviderTest, DevTenantBootstrap).
+  Usuário e papéis voltam na P0.13 (catálogo de usuários), não como seed; o acesso é pelo
+  Keycloak do ambiente, não por realm por tenant. set_config passou a ser por parâmetro em
+  registerTenantInCatalog e writeProvisioningAudit; a linha de log DEBUG em
+  writeProvisioningAudit foi removida.
+- Billing: as 3 cópias (NonMeteredConsumption, ExpectedReadingRange, CondominiumApportionment)
+  e seus testes do billing foram apagados; o metering é o único dono. A entrada da tarifa do
+  billing foi renomeada de EconomyGroup para TariffGroup (decisão de coordenador registrada:
+  migração verbatim para o tipo do metering perderia categoryId/subcategoryId UUID e as
+  economias sociais; um dono por nome resolve a colisão sem perda de informação).
+- Vetor comum metering × billing: novo MeteringBillingVectorTest no sigsan-app (único módulo
+  que depende dos dois; o billing não depende do metering). Vetores: não medido por tarifa
+  2 economias RES × mínimo 10 = 20 nos dois lados; faixa esperada 100–200; rateio de
+  condomínio macro 100, micros 30+30, a ratear 40, 20 por economia, alimentando o billing
+  com 50 m³ por micro.
+- Jackson: FreeFieldLayout e AgreementBarcodeLayout migrados para o Json do core (Jackson 3,
+  tools.jackson); jackson-databind (Jackson 2) removido do pom do core; 2 testes que usavam
+  ObjectMapper Jackson 2 migrados para tools.jackson. GIS mantém artefatos Jackson 2
+  (jackson-datatype-jsr310/jdk8) sem ObjectMapper próprio — fora do escopo literal da P0.25.
+- V1_1 reescrita: só consumer_units (sem owner_id/responsible_id, que referenciavam users)
+  e addresses, com RLS forçada e políticas só dessas tabelas. tenant_metadata, users, roles,
+  user_roles, documents e service_orders saíram (users/roles voltam na P0.13; service_orders
+  na P1.31/V9_1). V1_4: regras de redação de users/documents/service_orders removidas;
+  ficam as de addresses.
+- Decisões de coordenador registradas aqui: tenant_schema MANTIDO (V1_2/register_tenant_table
+  e V3/V4/V6 dependem dele; contexto explícito do tenant no worker, P1.9); grantConsent sem
+  incremento manual de version (version é @Version do JPA em BaseEntity — o Hibernate
+  incrementa no flush; o incremento manual dobraria o salto).
+- Ambiente do turno 4: esta instância de VM foi substituída e chegou sem Java/Maven/Postgres
+  17/Podman (só ~/workspace persistiu); o replay do sistema restaurou Java 21.0.12.1, Maven
+  3.8.7, PostgreSQL 16 (5432) e Podman, mas NÃO o PostgreSQL 17. Novo bloqueio encontrado e
+  resolvido: o truststore Java estava vazio (cacerts ausente; erro trustAnchors) e travava o
+  download do Maven Central — resolvido com update-ca-certificates -f (cacerts recriado,
+  incluindo o CA do proxy hatch-egress-ca). A instalação do PostgreSQL 17 via PGDG segue
+  pendente: o apt-get update está lento (em andamento desde 23:43) e o PG17 ainda não está
+  instalado nesta instância; o CI completo em PG17 (segunda execução com contorno
+  jackson-bom) ainda não foi revalidado aqui.

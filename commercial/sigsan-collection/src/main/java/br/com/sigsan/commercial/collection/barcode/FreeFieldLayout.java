@@ -1,10 +1,7 @@
 package br.com.sigsan.commercial.collection.barcode;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import br.com.sigsan.core.json.Json;
+import tools.jackson.databind.JsonNode;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -114,7 +111,6 @@ public final class FreeFieldLayout {
     }
 
     private static final DateTimeFormatter YYYYMMDD = DateTimeFormatter.BASIC_ISO_DATE;
-    private static final ObjectMapper JSON = new ObjectMapper();
 
     private final List<Field> fields;
     private final int length;
@@ -303,10 +299,10 @@ public final class FreeFieldLayout {
     // ---------------------------------------------------------------- JSON
 
     public String toJson() {
-        ObjectNode root = JSON.createObjectNode();
-        ArrayNode arr = root.putArray("fields");
+        // P0.25: serializacao via Json do core (Jackson 3); sem ObjectMapper Jackson 2 aqui.
+        java.util.List<java.util.Map<String, Object>> fieldsJson = new java.util.ArrayList<>();
         for (Field f : fields) {
-            ObjectNode n = arr.addObject();
+            java.util.Map<String, Object> n = new java.util.LinkedHashMap<>();
             n.put("name", f.name());
             n.put("kind", f.kind().name());
             switch (f.kind()) {
@@ -314,22 +310,18 @@ public final class FreeFieldLayout {
                 case CONSTANT -> n.put("value", f.constant());
                 case CHECK_DIGIT -> {
                     n.put("algorithm", f.algorithm().name());
-                    ArrayNode over = n.putArray("over");
-                    f.over().forEach(over::add);
+                    n.put("over", f.over());
                 }
                 case DUE_DATE -> { /* tamanho fixo */ }
             }
+            fieldsJson.add(n);
         }
-        try {
-            return JSON.writeValueAsString(root);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException(e);
-        }
+        return Json.write(java.util.Map.of("fields", fieldsJson));
     }
 
     public static FreeFieldLayout fromJson(String json) {
         try {
-            JsonNode root = JSON.readTree(json);
+            JsonNode root = Json.readTree(json);
             JsonNode arr = root == null ? null : root.get("fields");
             if (arr == null || !arr.isArray()) {
                 throw new IllegalArgumentException("JSON do layout sem a lista 'fields'");
@@ -355,8 +347,8 @@ public final class FreeFieldLayout {
                 }
             }
             return new FreeFieldLayout(list);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("JSON de layout inválido: " + e.getOriginalMessage(), e);
+        } catch (IllegalStateException e) {
+            throw new IllegalArgumentException("JSON de layout inválido", e);
         }
     }
 

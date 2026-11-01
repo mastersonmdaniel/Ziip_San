@@ -4,9 +4,6 @@ import br.com.sigsan.core.json.Json;
 import br.com.sigsan.core.tenant.TenantContextHolder;
 import br.com.sigsan.grs.mtr.domain.*;
 import br.com.sigsan.grs.mtr.integration.GovBrSignatureService;
-import br.com.sigsan.grs.mtr.integration.SinirIntegrationService;
-import br.com.sigsan.grs.mtr.integration.SinirIntegrationService.PartyDocuments;
-import br.com.sigsan.grs.mtr.integration.SinirIntegrationService.SinirSyncResult;
 import br.com.sigsan.grs.mtr.repository.WasteCdfRepository;
 import br.com.sigsan.grs.mtr.repository.WasteClassRepository;
 import br.com.sigsan.grs.mtr.repository.WasteDestinationRepository;
@@ -53,7 +50,8 @@ public class MtrService {
     private final WasteDestinationRepository destinationRepository;
     private final WasteClassRepository wasteClassRepository;
     private final WasteCdfRepository cdfRepository;
-    private final SinirIntegrationService sinirIntegration;
+    // P0.25: SINIR em modo assistido (ADR-0004) — SinirIntegrationService apagado e sem
+    // caminho de chamada ao SINIR em coleta/destinação; o MTR segue como rascunho operacional.
     private final GovBrSignatureService govBrSignature;
     private final MtrPdfGenerator pdfGenerator;
     private final MtrDocumentProtection documents;
@@ -152,7 +150,6 @@ public class MtrService {
         mtr.setTransporterSignature(request.transporterSignature());
         advanceChain(mtr);
 
-        recordSinir(mtr, sinirIntegration.syncMtr(mtr, partyDocuments(mtr)));
         return mtrRepository.save(mtr);
     }
 
@@ -204,7 +201,6 @@ public class MtrService {
         mtr.setDestinationSignature(request.destinationSignature());
         advanceChain(mtr);
 
-        recordSinir(mtr, sinirIntegration.syncMtr(mtr, partyDocuments(mtr)));
         mtrRepository.save(mtr);
         return cdf;
     }
@@ -241,11 +237,6 @@ public class MtrService {
         mtr.setHashChain(HashChain.next(mtr.getHashChain(), MtrCanonical.of(mtr, documents.revealDriverCpf(mtr))));
     }
 
-    /** Documentos em claro para o envio ao SINIR, que os exige completos. */
-    private PartyDocuments partyDocuments(WasteMtr mtr) {
-        return new PartyDocuments(documents.revealGeneratorDocument(mtr.getGenerator()), documents.revealDriverCpf(mtr));
-    }
-
     private static UUID requireTenant() {
         UUID tenantId = TenantContextHolder.getTenantId();
         if (tenantId == null) {
@@ -257,19 +248,6 @@ public class MtrService {
     private WasteMtr load(UUID mtrId) {
         return mtrRepository.findByIdAndTenantId(mtrId, TenantContextHolder.getTenantId())
                 .orElseThrow(() -> new IllegalArgumentException("MTR not found"));
-    }
-
-    /**
-     * Grava no MTR o resultado da tentativa de sincronização. A versão anterior descartava o
-     * retorno, então o MTR ficava sempre com o status inicial, sem registro do motivo da pendência.
-     */
-    private void recordSinir(WasteMtr mtr, SinirSyncResult result) {
-        mtr.setSinirSyncStatus(WasteMtr.SinirSyncStatus.valueOf(result.status().name()));
-        mtr.setSinirSyncAt(result.attemptedAt());
-        mtr.setSinirProtocol(result.protocol());
-        mtr.setSinirResponse(Json.write(Map.of(
-                "status", result.status().name(),
-                "reason", result.reason() == null ? "" : result.reason())));
     }
 
     /**

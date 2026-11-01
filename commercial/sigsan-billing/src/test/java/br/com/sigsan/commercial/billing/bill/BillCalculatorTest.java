@@ -2,7 +2,7 @@ package br.com.sigsan.commercial.billing.bill;
 
 import br.com.sigsan.commercial.billing.tariff.CategoryCharge;
 import br.com.sigsan.commercial.billing.tariff.ChargeLine;
-import br.com.sigsan.commercial.billing.tariff.EconomyGroup;
+import br.com.sigsan.commercial.billing.tariff.TariffGroup;
 import br.com.sigsan.commercial.billing.tariff.SewerFactorPolicy;
 import br.com.sigsan.commercial.billing.tariff.SewerParameters;
 import br.com.sigsan.commercial.billing.tariff.SliceCharge;
@@ -30,7 +30,7 @@ class BillCalculatorTest {
         return new SewerParameters(d("80"), d("100"), null, SewerFactorPolicy.EXACT, false);
     }
 
-    private static BillInput input(List<EconomyGroup> groups, Integer water, BillInput.SewerBilling sewer,
+    private static BillInput input(List<TariffGroup> groups, Integer water, BillInput.SewerBilling sewer,
                                    List<DebitReceivable> debits, List<CreditReceivable> credits, TaxWithholdingPolicy taxes) {
         return new BillInput(t1Schedule(), FROM, TO, groups, water, sewer, debits, credits, taxes);
     }
@@ -161,7 +161,7 @@ class BillCalculatorTest {
         TaxWithholdingPolicy taxes = illustrativeTaxes();
         for (int consumption = 0; consumption <= 90; consumption += 3) {
             for (int economies = 1; economies <= 4; economies++) {
-                List<EconomyGroup> groups = economies == 1 ? List.of(res(1)) : List.of(res(economies - 1), com(1));
+                List<TariffGroup> groups = economies == 1 ? List.of(res(1)) : List.of(res(economies - 1), com(1));
                 for (String creditTotal : new String[]{"0", "5.00", "250.00"}) {
                     List<CreditReceivable> credits = creditTotal.equals("0")
                             ? List.of() : List.of(credit(1, creditTotal, 3, 0, "0.00"));

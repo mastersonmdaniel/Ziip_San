@@ -1,7 +1,7 @@
 package br.com.sigsan.commercial.billing.consumption;
 
 import br.com.sigsan.commercial.billing.tariff.CategoryRule;
-import br.com.sigsan.commercial.billing.tariff.EconomyGroup;
+import br.com.sigsan.commercial.billing.tariff.TariffGroup;
 import br.com.sigsan.commercial.billing.tariff.TariffConfigurationException;
 import br.com.sigsan.commercial.billing.tariff.TariffEngine;
 import br.com.sigsan.commercial.billing.tariff.TariffVersion;
@@ -46,7 +46,7 @@ class EconomyMultipleTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("cases")
     @DisplayName("M-01..M-07: consumo faturado = consumo − resto")
-    void adjust(String id, List<EconomyGroup> groups, int consumption, int expected) {
+    void adjust(String id, List<TariffGroup> groups, int consumption, int expected) {
         assertThat(EconomyMultiple.adjust(consumption, t1(), groups)).isEqualTo(expected);
     }
 
@@ -67,7 +67,7 @@ class EconomyMultipleTest {
     void integerDivisionLosesCubicMeters() {
         // 35 m³ em 2 economias: sem o ajuste, a tarifa só enxerga 7 m³ por economia (15 DIV 2) e o 35º m³ some
         // em silêncio. O ajuste torna isso explícito: 34 faturados, 1 perdido.
-        List<EconomyGroup> groups = List.of(res(2));
+        List<TariffGroup> groups = List.of(res(2));
         assertThat(TariffEngine.categoriesFor(t1(), groups, 35).get(0).consumption()).isEqualTo(34);
         assertThat(TariffEngine.categoriesFor(t1(), groups, 34).get(0).net())
                 .isEqualByComparingTo(TariffEngine.categoriesFor(t1(), groups, 35).get(0).net());

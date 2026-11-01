@@ -61,7 +61,7 @@ public final class TariffEngine {
      *                                      sem regra na versão
      */
     public static TariffCharge calculate(TariffSchedule schedule, LocalDate from, LocalDate to,
-                                         List<EconomyGroup> groups, int consumption) {
+                                         List<TariffGroup> groups, int consumption) {
         List<TariffSchedule.PeriodSlice> periods = schedule.slices(from, to);
         int totalDays = (int) (ChronoUnit.DAYS.between(from, to) + 1);
         List<SliceCharge> slices = new ArrayList<>();
@@ -94,10 +94,10 @@ public final class TariffEngine {
      * multiplicado pelo fator de {@code pcesgoto}.
      */
     public static SewerCharge calculateSewer(TariffSchedule schedule, LocalDate from, LocalDate to,
-                                             List<EconomyGroup> groups, int baseVolume, SewerParameters parameters) {
+                                             List<TariffGroup> groups, int baseVolume, SewerParameters parameters) {
         requireGroups(groups);
         int volume = sewerVolume(baseVolume, parameters.collectionPct());
-        int totalEconomies = groups.stream().mapToInt(EconomyGroup::economies).sum();
+        int totalEconomies = groups.stream().mapToInt(TariffGroup::economies).sum();
 
         BigDecimal effectivePct = parameters.sewerPct();
         SewerParameters.AlternativeSewerPct alternative = parameters.alternative();
@@ -110,9 +110,9 @@ public final class TariffEngine {
             case EXACT -> effectivePct.movePointLeft(2);
         };
 
-        List<EconomyGroup> effectiveGroups = parameters.applySocialDiscount()
+        List<TariffGroup> effectiveGroups = parameters.applySocialDiscount()
                 ? groups
-                : groups.stream().map(g -> new EconomyGroup(g.categoryId(), g.subcategoryId(), g.economies(), 0)).toList();
+                : groups.stream().map(g -> new TariffGroup(g.categoryId(), g.subcategoryId(), g.economies(), 0)).toList();
         TariffCharge structure = calculate(schedule, from, to, effectiveGroups, volume);
 
         List<SliceCharge> scaled = new ArrayList<>();
@@ -144,10 +144,10 @@ public final class TariffEngine {
      * Consumo mínimo da ligação (UC0105): {@code Σ mín(c) × (fatorEconomias(c) ?? economias(c))}. O
      * fator, quando existe, <b>substitui</b> o número de economias. Total arredondado ao m³ (HALF_UP).
      */
-    public static int minimumConsumption(TariffVersion version, List<EconomyGroup> groups) {
+    public static int minimumConsumption(TariffVersion version, List<TariffGroup> groups) {
         requireGroups(groups);
         BigDecimal total = BigDecimal.ZERO;
-        for (EconomyGroup g : groups) {
+        for (TariffGroup g : groups) {
             CategoryRule rule = version.ruleFor(g.categoryId(), g.subcategoryId());
             BigDecimal economies = rule.economyFactor() != null
                     ? rule.economyFactor()
@@ -161,15 +161,15 @@ public final class TariffEngine {
      * Cálculo de uma única versão, sem rateio por dias: uma {@link CategoryCharge} por grupo.
      * O número de economias usado no excedente é o real (o fator de economias não entra aqui).
      */
-    public static List<CategoryCharge> categoriesFor(TariffVersion version, List<EconomyGroup> groups, int consumption) {
+    public static List<CategoryCharge> categoriesFor(TariffVersion version, List<TariffGroup> groups, int consumption) {
         requireGroups(groups);
         if (consumption < 0) {
             throw new IllegalArgumentException("Consumo negativo: " + consumption);
         }
-        int totalEconomies = groups.stream().mapToInt(EconomyGroup::economies).sum();
+        int totalEconomies = groups.stream().mapToInt(TariffGroup::economies).sum();
         List<CategoryRule> rules = new ArrayList<>();
         long propertyMinimum = 0;
-        for (EconomyGroup g : groups) {
+        for (TariffGroup g : groups) {
             if (g.socialEconomies() > 0 && version.socialRule() == null) {
                 throw new TariffConfigurationException("Há economias na tarifa social, mas a versão " + version.id()
                         + " não tem regra de tarifa social");
@@ -184,7 +184,7 @@ public final class TariffEngine {
 
         List<CategoryCharge> result = new ArrayList<>();
         for (int i = 0; i < groups.size(); i++) {
-            EconomyGroup g = groups.get(i);
+            TariffGroup g = groups.get(i);
             CategoryRule rule = rules.get(i);
             int minPerEconomy = rule.minConsumption();
             int minBilledPerEconomy;
@@ -201,7 +201,7 @@ public final class TariffEngine {
         return result;
     }
 
-    private static CategoryCharge categoryCharge(TariffVersion version, EconomyGroup g, CategoryRule rule,
+    private static CategoryCharge categoryCharge(TariffVersion version, TariffGroup g, CategoryRule rule,
                                                  int minBilledPerEconomy, int remaining) {
         int n = g.economies();
         int social = g.socialEconomies();
@@ -285,7 +285,7 @@ public final class TariffEngine {
         return value.movePointRight(2).longValueExact();
     }
 
-    private static void requireGroups(List<EconomyGroup> groups) {
+    private static void requireGroups(List<TariffGroup> groups) {
         if (groups == null || groups.isEmpty()) {
             throw new IllegalArgumentException("A unidade não tem economias");
         }
