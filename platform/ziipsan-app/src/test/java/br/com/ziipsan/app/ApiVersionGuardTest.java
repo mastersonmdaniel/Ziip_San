@@ -3,6 +3,7 @@ package br.com.ziipsan.app;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ApiVersionGuardTest extends AppIntegrationTestBase {
 
     @Autowired
+    @Qualifier("requestMappingHandlerMapping") // sem isto, o actuator injeta controllerEndpointHandlerMapping e a injeção por tipo fica ambígua
     private RequestMappingHandlerMapping handlerMapping;
 
     @Test

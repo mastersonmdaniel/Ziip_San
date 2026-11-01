@@ -40,33 +40,33 @@ class ProblemDetailsTest extends AppIntegrationTestBase {
         record Body(@NotBlank(message = "Informe o nome.") String name) {
         }
 
-        @GetMapping("/api/__test/validation")
+        @GetMapping("/api/v1/__test/validation")
         void validation() {
             throw ApiException.Validation.of(new ApiException.FieldError("lot", "RANGE", "Lote fora da faixa."));
         }
 
-        @GetMapping("/api/__test/warning")
+        @GetMapping("/api/v1/__test/warning")
         void warning() {
             throw new ApiException.Validation("Confirme para continuar.", List.of(),
                     List.of(new ApiException.Warning("SEQ", "Sequência ocupada.", "tok-1")));
         }
 
-        @GetMapping("/api/__test/not-found")
+        @GetMapping("/api/v1/__test/not-found")
         void notFound() {
             throw new ApiException.NotFound("Imóvel não encontrado.");
         }
 
-        @GetMapping("/api/__test/stale")
+        @GetMapping("/api/v1/__test/stale")
         void stale() {
             throw new OptimisticLockingFailureException("versão 3 esperada, encontrada 4");
         }
 
-        @GetMapping("/api/__test/boom")
+        @GetMapping("/api/v1/__test/boom")
         void boom() {
             throw new IllegalStateException("SELECT * FROM customers WHERE document = '52998224725'");
         }
 
-        @PostMapping("/api/__test/bean-validation")
+        @PostMapping("/api/v1/__test/bean-validation")
         void beanValidation(@Valid @RequestBody Body body) {
         }
     }
@@ -78,7 +78,7 @@ class ProblemDetailsTest extends AppIntegrationTestBase {
     @Test
     @DisplayName("validação: 422 com errors[] {field, code, message}")
     void validationProblem() throws Exception {
-        mvc.perform(get("/api/__test/validation").header("Authorization", token()))
+        mvc.perform(get("/api/v1/__test/validation").header("Authorization", token()))
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(content().contentTypeCompatibleWith("application/problem+json"))
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:validation"))
@@ -90,7 +90,7 @@ class ProblemDetailsTest extends AppIntegrationTestBase {
     @Test
     @DisplayName("aviso confirmável: 422 com warnings[] e confirmToken")
     void warningProblem() throws Exception {
-        mvc.perform(get("/api/__test/warning").header("Authorization", token()))
+        mvc.perform(get("/api/v1/__test/warning").header("Authorization", token()))
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:confirmation-required"))
                 .andExpect(jsonPath("$.warnings[0].confirmToken").value("tok-1"));
@@ -99,10 +99,10 @@ class ProblemDetailsTest extends AppIntegrationTestBase {
     @Test
     @DisplayName("404 e 409 (versão desatualizada) em problem+json")
     void notFoundAndConflict() throws Exception {
-        mvc.perform(get("/api/__test/not-found").header("Authorization", token()))
+        mvc.perform(get("/api/v1/__test/not-found").header("Authorization", token()))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.detail").value("Imóvel não encontrado."));
-        mvc.perform(get("/api/__test/stale").header("Authorization", token()))
+        mvc.perform(get("/api/v1/__test/stale").header("Authorization", token()))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:stale-version"))
                 .andExpect(content().string(not(containsString("versão 3"))));
@@ -111,7 +111,7 @@ class ProblemDetailsTest extends AppIntegrationTestBase {
     @Test
     @DisplayName("erro inesperado: 500 genérico, sem SQL, dado ou stack trace na resposta")
     void unexpectedErrorHidesInternals() throws Exception {
-        mvc.perform(get("/api/__test/boom").header("Authorization", token()))
+        mvc.perform(get("/api/v1/__test/boom").header("Authorization", token()))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:internal-error"))
                 .andExpect(content().string(not(containsString("SELECT"))))
@@ -122,7 +122,7 @@ class ProblemDetailsTest extends AppIntegrationTestBase {
     @Test
     @DisplayName("Bean Validation do corpo: 422 com o campo em errors[]")
     void beanValidationProblem() throws Exception {
-        mvc.perform(post("/api/__test/bean-validation").header("Authorization", token())
+        mvc.perform(post("/api/v1/__test/bean-validation").header("Authorization", token())
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\" \"}"))
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.errors[0].field").value("name"))
