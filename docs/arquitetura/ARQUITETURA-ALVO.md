@@ -107,8 +107,15 @@ assistida com janela.
 - Pools separados por processo e finalidade: `api` (20 por réplica), `ingestion` (webhook e sincronização, 5 por réplica,
   para não disputar com o backoffice), `worker` (10 por réplica). Todos com `connectionTimeout`, `maxLifetime` e
   métricas.
-- Roles: `sigsan_app` com `statement_timeout` de 5 s; `sigsan_worker` com 15 min; ambas com
+- Roles: `ziipsan_app` com `statement_timeout` de 5 s; `ziipsan_worker` com 15 min; ambas com
   `idle_in_transaction_session_timeout` de 30 s e sem BYPASSRLS.
+- P0.9 (implementado): `ziipsan_app` com `statement_timeout` 5 s e
+  `idle_in_transaction_session_timeout` 30 s em `infra/postgres/init/sql/security.sql`
+  (só na role da aplicação, nunca no migrador); pool da app 20 / mínimo 2 em
+  `DataSourceConfig.java`, migrador 2 / 0; soma por processo cabe no
+  `max_connections=200` do `postgres-primary` contando Keycloak e operação.
+  A role `ziipsan_worker` (15 min) ainda não existe: nasce com a separação de
+  processos da P0.5/P0.6.
 - Contexto transacional: `search_path`, `app.current_tenant` e `app.current_user` aplicados com
   `set_config(..., true)` no início de cada transação, o que torna o pooler em modo transaction seguro. Hoje o escopo é
   de sessão (`MultiTenantConnectionProvider.java:39-47`).

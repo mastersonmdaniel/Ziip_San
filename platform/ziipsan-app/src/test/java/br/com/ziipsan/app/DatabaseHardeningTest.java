@@ -83,6 +83,46 @@ class DatabaseHardeningTest {
     }
 
     @Test
+    @DisplayName("P0.18: current_tenant_id() vigente é SQL STABLE, não plpgsql")
+    void tenantFunctionIsSqlStable() throws SQLException {
+        assertThat(single("SELECT l.lanname FROM pg_proc p JOIN pg_language l ON l.oid = p.prolang "
+                + "WHERE p.oid = 'public.current_tenant_id()'::regprocedure")).isEqualTo("sql");
+        assertThat(single("SELECT provolatile FROM pg_proc "
+                + "WHERE oid = 'public.current_tenant_id()'::regprocedure")).isEqualTo("s");
+    }
+
+    @Test
+    @DisplayName("P0.18: current_tenant_id() devolve NULL com GUC ausente, vazia ou inválida, sem erro")
+    void tenantFunctionReturnsNullForMissingOrInvalidGuc() throws SQLException {
+        try (Connection c = ProvisionedTenant.appDs.getConnection();
+             Statement st = c.createStatement()) {
+            assertThat(queryOne(st, "SELECT current_tenant_id()")).isNull();
+            st.execute("SET app.current_tenant = ''");
+            assertThat(queryOne(st, "SELECT current_tenant_id()")).isNull();
+            st.execute("SET app.current_tenant = 'nao-um-uuid'");
+            assertThat(queryOne(st, "SELECT current_tenant_id()")).isNull();
+            st.execute("SET app.current_tenant = '" + ProvisionedTenant.TENANT_ID + "'");
+            assertThat(queryOne(st, "SELECT current_tenant_id()"))
+                    .isEqualTo(ProvisionedTenant.TENANT_ID.toString());
+        }
+    }
+
+    @Test
+    @DisplayName("P0.18: plano de execução de consulta RLS multi-linha executa sem erro (corroboração)")
+    void rlsMultiRowPlanRuns() throws SQLException {
+        // A prova dura é a asserção de catálogo acima (language=sql, sem EXCEPTION
+        // possível em SQL); o plano é a corroboração pedida pelo plano.
+        try (Connection c = ProvisionedTenant.appDs.getConnection();
+             Statement st = c.createStatement()) {
+            st.execute("SET app.current_tenant = '" + ProvisionedTenant.TENANT_ID + "'");
+            try (ResultSet rs = st.executeQuery("EXPLAIN SELECT * FROM "
+                    + ProvisionedTenant.SCHEMA + ".consumer_units")) {
+                assertThat(rs.next()).isTrue();
+            }
+        }
+    }
+
+    @Test
     @DisplayName("a função de auditoria (SECURITY DEFINER) tem search_path fixo")
     void auditFunctionHasFixedSearchPath() throws SQLException {
         String config = single("SELECT array_to_string(p.proconfig, ';') FROM pg_proc p "
@@ -94,6 +134,13 @@ class DatabaseHardeningTest {
     private static void exec(Connection connection, String sql) throws SQLException {
         try (Connection c = connection; Statement st = c.createStatement()) {
             st.execute(sql);
+        }
+    }
+
+    private static String queryOne(Statement st, String sql) throws SQLException {
+        try (ResultSet rs = st.executeQuery(sql)) {
+            assertThat(rs.next()).as("sem linha para: %s", sql).isTrue();
+            return rs.getString(1);
         }
     }
 

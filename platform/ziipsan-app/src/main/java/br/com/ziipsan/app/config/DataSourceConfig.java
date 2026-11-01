@@ -23,6 +23,13 @@ public class DataSourceConfig {
         ds.setJdbcUrl(properties.db().url());
         ds.setUsername(properties.db().appUser());
         ds.setPassword(properties.db().appPassword());
+        // P0.9: pool da aplicacao dimensionado por processo e registrado na
+        // ARQUITETURA-ALVO. Soma por processo (app 20 + migrador 2) cabe com folga
+        // no max_connections=200 do postgres-primary, contando Keycloak e operacao.
+        ds.setMaximumPoolSize(20);
+        ds.setMinimumIdle(2);
+        ds.setConnectionTimeout(30_000);
+        ds.setMaxLifetime(1_800_000);
         return ds;
     }
 

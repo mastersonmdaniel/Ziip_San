@@ -67,6 +67,13 @@ ALTER ROLE ziipsan_app LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 -- Sem isto, um tenant pode resolver funcoes de schemas de outros tenants.
 ALTER ROLE ziipsan_app SET search_path = public;
 
+-- P0.9: timeouts so na role da aplicacao (NUNCA no migrador: migrations e
+-- provisionamento sao longos e um timeout de app no meio cancelaria a migration).
+-- Valores decididos pelo coordenador no turno 5 e registrados na ARQUITETURA-ALVO:
+-- statement_timeout 5s, idle_in_transaction_session_timeout 30s (valores-alvo da ARQUITETURA-ALVO §4).
+ALTER ROLE ziipsan_app SET statement_timeout = '5s';
+ALTER ROLE ziipsan_app SET idle_in_transaction_session_timeout = '30s';
+
 -- ========================================================================
 -- 3. DONO DO BANCO E DO SCHEMA PUBLIC
 -- ========================================================================
@@ -95,20 +102,18 @@ GRANT USAGE ON SCHEMA public TO ziipsan_app;
 -- public porque e compartilhada por todos os schemas de tenant. O dono e ziipsan_owner: nem a
 -- aplicacao nem o migrador podem redefini-la.
 
-CREATE OR REPLACE FUNCTION public.current_tenant_id() RETURNS UUID AS $fn$
-DECLARE
-    tenant_text TEXT;
-BEGIN
-    tenant_text := current_setting('app.current_tenant', TRUE);
-    IF tenant_text IS NULL OR tenant_text = '' THEN
-        RETURN NULL;
-    END IF;
-    RETURN tenant_text::UUID;
-EXCEPTION
-    WHEN invalid_text_representation THEN
-        RETURN NULL;
-END;
-$fn$ LANGUAGE plpgsql STABLE;
+-- P0.18: SQL STABLE, sem bloco EXCEPTION. A versao plpgsql anterior criava uma
+-- subtransacao por invocacao (por linha, quando a RLS a avalia). O guarda regex
+-- substitui o EXCEPTION: GUC ausente, vazia ou invalida devolve NULL, sem erro.
+CREATE OR REPLACE FUNCTION public.current_tenant_id() RETURNS UUID
+LANGUAGE sql STABLE AS $fn$
+    SELECT CASE
+        WHEN current_setting('app.current_tenant', TRUE)
+             ~ '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        THEN current_setting('app.current_tenant', TRUE)::UUID
+        ELSE NULL
+    END
+$fn$;
 
 ALTER FUNCTION public.current_tenant_id() OWNER TO ziipsan_owner;
 REVOKE ALL ON FUNCTION public.current_tenant_id() FROM PUBLIC;
@@ -140,6 +145,25 @@ BEGIN
     IF (SELECT pg_get_userbyid(proowner) FROM pg_proc
         WHERE oid = 'public.current_tenant_id()'::regprocedure) <> 'ziipsan_owner' THEN
         RAISE EXCEPTION 'FALHA CRITICA: current_tenant_id() nao pertence a ziipsan_owner';
+    END IF;
+
+    -- P0.18: a funcao vigente tem de ser SQL STABLE (provolatile 's', linguagem sql).
+    -- Uma regressao para plpgsql recriaria a subtransacao por linha da RLS.
+    IF (SELECT l.lanname FROM pg_proc p JOIN pg_language l ON l.oid = p.prolang
+        WHERE p.oid = 'public.current_tenant_id()'::regprocedure) <> 'sql'
+       OR (SELECT provolatile FROM pg_proc
+        WHERE oid = 'public.current_tenant_id()'::regprocedure) <> 's' THEN
+        RAISE EXCEPTION 'FALHA CRITICA: current_tenant_id() nao e SQL STABLE';
+    END IF;
+
+    -- P0.9: timeouts da role da aplicacao conferidos no init (pg_db_role_setting
+    -- guarda os ALTER ROLE ... SET em setconfig; setdatabase = 0 = todas as bases).
+    IF NOT EXISTS (SELECT 1 FROM pg_db_role_setting s
+        WHERE s.setrole = (SELECT oid FROM pg_authid WHERE rolname = 'ziipsan_app')
+        AND s.setdatabase = 0
+        AND s.setconfig @> ARRAY['statement_timeout=5s',
+                                  'idle_in_transaction_session_timeout=30s']) THEN
+        RAISE EXCEPTION 'FALHA CRITICA: timeouts da ziipsan_app ausentes';
     END IF;
 
     IF (SELECT pg_get_userbyid(datdba) FROM pg_database WHERE datname = current_database()) <> 'ziipsan_owner'
