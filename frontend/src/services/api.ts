@@ -1,5 +1,6 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { getAccessToken, goToLogin, renewAccessToken } from '@services/auth/oidc'
+import { resolveApiBaseUrl } from '@services/runtimeConfig'
 
 /**
  * Cliente HTTP único. Base padrão: /api/v1 (P0.10: rotas de negócio sob /api/v1; o proxy do
@@ -12,6 +13,12 @@ import { getAccessToken, goToLogin, renewAccessToken } from '@services/auth/oidc
  * este módulo não grava nada em storage. Dados pessoais (CPF/CNPJ etc.) nunca vão para
  * localStorage/sessionStorage/URL.
  */
+/**
+ * Fallback de build (VITE_API_BASE_URL ou /api/v1). O valor EFETIVO por requisição vem
+ * de resolveApiBaseUrl() (P0.5: config de runtime carregada antes do app) e é aplicado
+ * no interceptor abaixo — a instância nasce com o fallback porque o módulo é avaliado
+ * antes de main.tsx aguardar loadRuntimeConfig().
+ */
 export const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || '/api/v1'
 
 export const api = axios.create({
@@ -21,6 +28,9 @@ export const api = axios.create({
 })
 
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+  // P0.5: a base de runtime (se houver) vence o fallback de build em cada requisição,
+  // sem recriar a instância. Sem config de runtime, resolveApiBaseUrl() devolve o fallback.
+  config.baseURL = resolveApiBaseUrl()
   const token = await getAccessToken()
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config

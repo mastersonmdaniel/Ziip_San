@@ -1,4 +1,5 @@
 import { UserManager, WebStorageStateStore, type User, type UserManagerSettings } from 'oidc-client-ts'
+import { resolveOidcAuthority, resolveOidcClientId } from '@services/runtimeConfig'
 
 /**
  * Login OIDC no Keycloak (realm ziipsan, client público ziipsan-web): authorization code com PKCE
@@ -12,6 +13,11 @@ import { UserManager, WebStorageStateStore, type User, type UserManagerSettings 
  *
  * O tenant NÃO é escolhido aqui: vem do claim tenant_id do access token, que o administrador grava
  * no usuário do Keycloak. O frontend não envia cabeçalho de tenant.
+ */
+/**
+ * Fallbacks de build. O valor EFETIVO é resolvido em oidcSettings() (P0.5: config de
+ * runtime carregada antes do app), porque o UserManager é criado sob demanda — nunca na
+ * avaliação do módulo, quando a config de runtime ainda não foi carregada.
  */
 export const OIDC_AUTHORITY: string = import.meta.env.VITE_OIDC_AUTHORITY || 'http://localhost:8080/realms/ziipsan'
 export const OIDC_CLIENT_ID: string = import.meta.env.VITE_OIDC_CLIENT_ID || 'ziipsan-web'
@@ -27,8 +33,9 @@ export type AuthClient = Pick<
 export function oidcSettings(origin: string = window.location.origin): UserManagerSettings {
   const store = new WebStorageStateStore({ store: window.sessionStorage })
   return {
-    authority: OIDC_AUTHORITY,
-    client_id: OIDC_CLIENT_ID,
+    // P0.5: runtime (janela ou /config.json) > VITE_* > padrão. Sem runtime, igual a antes.
+    authority: resolveOidcAuthority(),
+    client_id: resolveOidcClientId(),
     redirect_uri: `${origin}${CALLBACK_PATH}`,
     post_logout_redirect_uri: `${origin}${LOGIN_PATH}`,
     response_type: 'code',

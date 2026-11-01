@@ -139,6 +139,28 @@
 
     <build>
         <plugins>
+            <!-- P0.5: SBOM CycloneDX (target/bom.json), copiado para /app/sbom/bom.json
+                 na imagem. Inclui TODAS as dependencias do jar — inclusive os modulos
+                 fora do scan de componentes da app (quality, losses, gis, mtr, lgpd,
+                 billing, metering, collection), que entram no jar para migrations e
+                 entidades JPA. O SBOM lista dependencias; nao afirma que sao beans. -->
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>2.9.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>makeBom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputFormat>json</outputFormat>
+                    <outputName>bom</outputName>
+                </configuration>
+            </plugin>
             <plugin>
                 <!-- Jar executavel (java -jar): so este modulo e a aplicacao. -->
                 <groupId>org.springframework.boot</groupId>

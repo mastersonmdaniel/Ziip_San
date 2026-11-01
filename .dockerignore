@@ -1,0 +1,12 @@
+# O build da imagem so precisa dos POMs e do fonte Java. Fora: build local, node_modules,
+# git, docs, frontend (o SPA e deployado como estatico separado; a config de runtime dele
+# e frontend/public/config.json, substituida no deploy — ver docs/arquitetura/IMAGEM.md).
+**/target/
+**/node_modules/
+.git/
+.github/
+docs/
+frontend/
+*.log
+*.tmp
+.DS_Store
