@@ -28,13 +28,16 @@ class PermissionCatalogTest {
     }
 
     @Test
-    @DisplayName("ADMIN tem todas as permissões; todo perfil é subconjunto do catálogo")
-    void profilesAreSubsetsAndAdminHasAll() {
+    @DisplayName("todo perfil é subconjunto do catálogo; ADMIN tem tudo exceto revelar documento")
+    void profilesAreSubsetsAndAdminHasAllButReveal() {
         Set<String> all = PermissionCatalog.allNames();
         for (PermissionCatalog.FactoryProfile profile : PermissionCatalog.FactoryProfile.values()) {
             assertThat(all).containsAll(profile.permissions());
         }
-        assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions()).isEqualTo(all);
+        assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
+                .isEqualTo(Set.of("registry:read", "registry:write", "user:read", "user:write"));
+        assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
+                .doesNotContain("registry:reveal-document");
     }
 
     @Test

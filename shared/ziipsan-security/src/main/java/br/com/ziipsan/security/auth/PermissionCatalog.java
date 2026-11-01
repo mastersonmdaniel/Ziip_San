@@ -38,8 +38,12 @@ public final class PermissionCatalog {
 
     /** Perfis mínimos de fábrica da P0.13, compostos do catálogo (perfis por função: P1.37). */
     public enum FactoryProfile {
-        /** Todas as permissões do catálogo. */
-        ADMIN(Set.of("registry:read", "registry:write", "registry:reveal-document", "user:read", "user:write")),
+        /**
+         * Todas as permissões do catálogo, exceto {@code registry:reveal-document}: revelar o
+         * documento em claro continua exigindo concessão direta, como no modelo anterior — nenhum
+         * perfil de fábrica a inclui, nem o ADMIN.
+         */
+        ADMIN(Set.of("registry:read", "registry:write", "user:read", "user:write")),
         /** Cadastro (leitura e escrita) e leitura de usuários; não gerencia usuários. */
         MANAGER(Set.of("registry:read", "registry:write", "user:read")),
         /** Cadastro (leitura e escrita); sem acesso à gestão de usuários. */
