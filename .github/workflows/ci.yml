@@ -151,7 +151,12 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-      # Sem NVD_API_KEY o download da base NVD e mais lento, mas o job continua bloqueante.
+      # Sem NVD_API_KEY, a primeira run num runner limpo PODE falhar fechada na atualizacao
+      # da base NVD (exit 1) antes de qualquer veredicto de CVSS: sem base populada, o
+      # failOnError padrao aborta o goal e o gate de CVSS >= 7 sequer e avaliado. O job so
+      # avalia o gate depois de uma base populada com sucesso; por isso ele segue bloqueante
+      # (sem failOnError=false, sem continue-on-error, sem cache/retry neste arquivo) e a
+      # forma honesta de estabiliza-lo e cadastrar uma NVD_API_KEY real de repositorio.
       # Nao roda no build padrao (pom): e um job separado para nao travar o ci-linux local
       # quando a rede/NVD estiver indisponivel.
       - name: OWASP Dependency-Check
