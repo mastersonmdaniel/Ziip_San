@@ -66,6 +66,7 @@ class AuditRedactionCoverageTest {
             Map.entry("waste_destination.trade_name", "nome fantasia de destinador"),
             Map.entry("waste_destination.address", "endereço de destinador"),
             Map.entry("consumer_units.coordinates", "localização da ligação (rede), usada pelo GIS"),
+            Map.entry("consumer_units.pavement_street_id", "referência por id ao tipo de pavimentação da rua (catálogo pavements, ainda sem tabela própria); não é dado pessoal"),
             Map.entry("consumer_units.address_id", "referência por id; o endereço é redigido em addresses"),
             Map.entry("waste_cdf.technician_id", "referência por id; o nome é redigido em technician_name"),
             Map.entry("customer_contacts.primary_contact", "booleano (contato principal ou não)"),

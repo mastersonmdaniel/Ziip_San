@@ -114,7 +114,7 @@ class WebSurfaceIntegrationTest extends AppIntegrationTestBase {
         mvc.perform(post("/api/v1/registry/localities")
                         .header("Authorization", auth())
                         .contentType("application/json")
-                        .content("{\"code\": 987002, \"name\": \"Localidade campo desconhecido\", "
+                        .content("{\"code\": 991, \"name\": \"Localidade campo desconhecido\", "
                                 + "\"municipalityIbge\": \"3550308\", \"campoDesconhecido\": \"X\"}"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(PROBLEM))
@@ -129,7 +129,7 @@ class WebSurfaceIntegrationTest extends AppIntegrationTestBase {
         mvc.perform(post("/api/v1/registry/localities")
                         .header("Authorization", auth())
                         .contentType("application/json")
-                        .content("{\"code\": 987003, \"name\": "))
+                        .content("{\"code\": 992, \"name\": "))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(PROBLEM))
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:validation"))
@@ -143,9 +143,9 @@ class WebSurfaceIntegrationTest extends AppIntegrationTestBase {
         mvc.perform(post("/api/v1/registry/localities")
                         .header("Authorization", auth())
                         .contentType("application/json")
-                        .content("{\"code\": 987001, \"name\": \"Localidade payload válido\", "
+                        .content("{\"code\": 993, \"name\": \"Localidade payload válido\", "
                                 + "\"municipalityIbge\": \"3550308\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.code").value(987001));
+                .andExpect(jsonPath("$.code").value(993));
     }
 }
