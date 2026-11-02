@@ -3,6 +3,8 @@ package br.com.ziipsan.commercial.registry.domain;
 import br.com.ziipsan.core.domain.TenantAwareEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +39,20 @@ public class Block extends TenantAwareEntity {
 
     @Column(name = "has_sewer_network", nullable = false)
     private boolean hasSewerNetwork;
+
+    @Column(name = "water_network", nullable = false, length = 10)
+    @Enumerated(EnumType.STRING)
+    private NetworkCoverage waterNetwork;
+
+    @Column(name = "sewer_network", nullable = false, length = 10)
+    @Enumerated(EnumType.STRING)
+    private NetworkCoverage sewerNetwork;
+
+    @Column(name = "census_sector", length = 20)
+    private String censusSector;
+
+    @Column(name = "auto_increment_lot", nullable = false)
+    private boolean autoIncrementLot;
 
     @Column(name = "blocked", nullable = false)
     private boolean blocked;

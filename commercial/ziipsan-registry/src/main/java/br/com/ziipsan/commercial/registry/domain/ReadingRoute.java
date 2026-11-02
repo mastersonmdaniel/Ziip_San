@@ -7,6 +7,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 /**
  * Rota de leitura.
  *
@@ -23,6 +25,15 @@ public class ReadingRoute extends TenantAwareEntity {
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;
+
+    @Column(name = "locality_id")
+    private UUID localityId;
+
+    @Column(name = "sector_id")
+    private UUID sectorId;
+
+    @Column(name = "max_units")
+    private Integer maxUnits;
 
     @Column(name = "active", nullable = false)
     private boolean active;

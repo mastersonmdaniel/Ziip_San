@@ -27,6 +27,12 @@ public class Locality extends TenantAwareEntity {
     @Column(name = "municipality_ibge", length = 7)
     private String municipalityIbge;
 
+    @Column(name = "headquarters", nullable = false)
+    private boolean headquarters;
+
+    @Column(name = "computerized", nullable = false)
+    private boolean computerized;
+
     @Column(name = "blocked", nullable = false)
     private boolean blocked;
 

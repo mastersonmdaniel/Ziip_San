@@ -29,6 +29,9 @@ public class CommercialSector extends TenantAwareEntity {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Column(name = "alternative", nullable = false)
+    private boolean alternative;
+
     @Column(name = "blocked", nullable = false)
     private boolean blocked;
 

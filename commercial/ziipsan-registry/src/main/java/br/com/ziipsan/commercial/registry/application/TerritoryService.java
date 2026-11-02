@@ -11,6 +11,7 @@ import br.com.ziipsan.commercial.registry.application.TerritoryDtos.SectorView;
 import br.com.ziipsan.commercial.registry.domain.Block;
 import br.com.ziipsan.commercial.registry.domain.CommercialSector;
 import br.com.ziipsan.commercial.registry.domain.Locality;
+import br.com.ziipsan.commercial.registry.domain.NetworkCoverage;
 import br.com.ziipsan.commercial.registry.domain.ReadingRoute;
 import br.com.ziipsan.commercial.registry.repository.BlockRepository;
 import br.com.ziipsan.commercial.registry.repository.CommercialSectorRepository;
@@ -42,6 +43,14 @@ import static br.com.ziipsan.commercial.registry.application.JpqlQuery.exists;
  *
  * <p>O pai de um registro (localidade do setor, setor da quadra) não muda depois de criado: mudar
  * levaria junto as quadras e os imóveis, e a inscrição de todos eles mudaria em silêncio.
+ *
+ * <p>P0.16 (opção 1): os campos que a tela já enviava e o backend descartava em silêncio passam a
+ * ser modelados (V3_6), sem mudar as validações existentes e sem tornar obrigatório nada que era
+ * opcional: localidade {@code headquarters}/{@code computerized}, setor {@code alternative}, quadra
+ * {@code waterNetwork}/{@code sewerNetwork}/{@code censusSector}/{@code autoIncrementLot} e rota
+ * {@code localityId}/{@code sectorId}/{@code maxUnits}. A rota é o único caso em que o pai pode ser
+ * atribuído depois de criado: rotas anteriores à V3_6 não têm pai, então a primeira atribuição é
+ * aceita; depois de atribuído, o pai da rota é imutável como os demais.
  */
 @Service
 @Transactional(readOnly = true)
@@ -120,6 +129,8 @@ public class TerritoryService {
         l.setCode(in.code());
         l.setName(in.name().trim());
         l.setMunicipalityIbge(blankToNull(in.municipalityIbge()));
+        l.setHeadquarters(Boolean.TRUE.equals(in.headquarters()));
+        l.setComputerized(Boolean.TRUE.equals(in.computerized()));
         l.setBlocked(Boolean.TRUE.equals(in.blocked()));
     }
 
@@ -128,7 +139,8 @@ public class TerritoryService {
     }
 
     static LocalityView view(Locality l) {
-        return new LocalityView(l.getId(), l.getVersion(), l.getCode(), l.getName(), l.getMunicipalityIbge(), l.isBlocked());
+        return new LocalityView(l.getId(), l.getVersion(), l.getCode(), l.getName(), l.getMunicipalityIbge(),
+                l.isHeadquarters(), l.isComputerized(), l.isBlocked());
     }
 
     static Ref ref(Locality l) {
@@ -192,6 +204,7 @@ public class TerritoryService {
     private static void apply(CommercialSector s, SectorInput in) {
         s.setCode(in.code());
         s.setName(in.name().trim());
+        s.setAlternative(Boolean.TRUE.equals(in.alternative()));
         s.setBlocked(Boolean.TRUE.equals(in.blocked()));
     }
 
@@ -201,7 +214,7 @@ public class TerritoryService {
 
     private SectorView view(CommercialSector s) {
         return new SectorView(s.getId(), s.getVersion(), s.getLocalityId(), ref(em.find(Locality.class, s.getLocalityId())),
-                s.getCode(), s.getName(), s.isBlocked());
+                s.getCode(), s.getName(), s.isAlternative(), s.isBlocked());
     }
 
     static Ref ref(CommercialSector s) {
@@ -283,9 +296,31 @@ public class TerritoryService {
     private static void apply(Block b, BlockInput in) {
         b.setCode(in.code());
         b.setReadingRouteId(in.readingRouteId());
-        b.setHasWaterNetwork(Boolean.TRUE.equals(in.hasWaterNetwork()));
-        b.setHasSewerNetwork(Boolean.TRUE.equals(in.hasSewerNetwork()));
+        NetworkCoverage water = network(in.waterNetwork(), in.hasWaterNetwork());
+        NetworkCoverage sewer = network(in.sewerNetwork(), in.hasSewerNetwork());
+        b.setWaterNetwork(water);
+        b.setHasWaterNetwork(water != NetworkCoverage.NONE);
+        b.setSewerNetwork(sewer);
+        b.setHasSewerNetwork(sewer != NetworkCoverage.NONE);
+        b.setCensusSector(blankToNull(in.censusSector()));
+        b.setAutoIncrementLot(Boolean.TRUE.equals(in.autoIncrementLot()));
         b.setBlocked(Boolean.TRUE.equals(in.blocked()));
+    }
+
+    /**
+     * O enum é a fonte; o booleano legado só o alimenta quando o enum não vem. Sem nenhum dos dois
+     * (payload legado sem rede), a quadra fica sem rede, como antes: omitir o booleano já zerava o
+     * flag. {@code true} sem enum vira {@code FULL} — aproximação documentada em
+     * {@link NetworkCoverage}: booleano não distingue parcial de total.
+     */
+    private static NetworkCoverage network(NetworkCoverage value, Boolean legacy) {
+        if (value != null) {
+            return value;
+        }
+        if (legacy != null) {
+            return legacy ? NetworkCoverage.FULL : NetworkCoverage.NONE;
+        }
+        return NetworkCoverage.NONE;
     }
 
     Block block(UUID id) {
@@ -296,8 +331,15 @@ public class TerritoryService {
         CommercialSector s = em.find(CommercialSector.class, b.getSectorId());
         Locality l = s == null ? null : em.find(Locality.class, s.getLocalityId());
         ReadingRoute r = b.getReadingRouteId() == null ? null : em.find(ReadingRoute.class, b.getReadingRouteId());
+        // Linhas anteriores à V3_6 têm o enum preenchido pelo backfill; o fallback só cobre o caso
+        // de a coluna estar nula por qualquer outro caminho, para a resposta nunca omitir a rede.
+        NetworkCoverage water = b.getWaterNetwork() == null
+                ? (b.isHasWaterNetwork() ? NetworkCoverage.FULL : NetworkCoverage.NONE) : b.getWaterNetwork();
+        NetworkCoverage sewer = b.getSewerNetwork() == null
+                ? (b.isHasSewerNetwork() ? NetworkCoverage.FULL : NetworkCoverage.NONE) : b.getSewerNetwork();
         return new BlockView(b.getId(), b.getVersion(), b.getSectorId(), ref(s), l == null ? null : l.getId(), ref(l),
-                b.getCode(), b.getReadingRouteId(), ref(r), b.isHasWaterNetwork(), b.isHasSewerNetwork(), b.isBlocked());
+                b.getCode(), b.getReadingRouteId(), ref(r), b.isHasWaterNetwork(), b.isHasSewerNetwork(),
+                water, sewer, b.getCensusSector(), b.isAutoIncrementLot(), b.isBlocked());
     }
 
     static Ref ref(Block b) {
@@ -311,7 +353,7 @@ public class TerritoryService {
                 .where("r.tenantId = :t", "t", RegistryContext.tenantId())
                 .whereIfPresent("r.active = :active", "active", active);
         nameOrCode(query, "r", q);
-        return query.page(em, ReadingRoute.class, spec, spec.orderBy(ROUTE_SORT, "code", "r.id")).map(TerritoryService::view);
+        return query.page(em, ReadingRoute.class, spec, spec.orderBy(ROUTE_SORT, "code", "r.id")).map(this::view);
     }
 
     public RouteView getRoute(UUID id) {
@@ -322,6 +364,8 @@ public class TerritoryService {
     public RouteView createRoute(RouteInput in) {
         Checks checks = new Checks();
         checkRouteCode(checks, in.code(), NONE);
+        checkRouteLocality(checks, in.localityId());
+        checkRouteSector(checks, in.sectorId());
         checks.throwIfAny();
         ReadingRoute r = RegistryContext.forCreate(new ReadingRoute());
         apply(r, in);
@@ -334,6 +378,19 @@ public class TerritoryService {
         RegistryContext.checkVersion(r, in.version());
         Checks checks = new Checks();
         checkRouteCode(checks, in.code(), id);
+        // Pai da rota: imutável depois de atribuído; a primeira atribuição (rota pré-V3_6, sem pai)
+        // é aceita. Não há validação cruzada localidade × setor: a tela já filtra o setor pela
+        // localidade, e nenhum outro pai do serviço faz esse cruzamento.
+        if (r.getLocalityId() != null && !r.getLocalityId().equals(in.localityId())) {
+            checks.error("localityId", "IMMUTABLE", "A localidade de uma rota não muda depois de criada.");
+        } else {
+            checkRouteLocality(checks, in.localityId());
+        }
+        if (r.getSectorId() != null && !r.getSectorId().equals(in.sectorId())) {
+            checks.error("sectorId", "IMMUTABLE", "O setor de uma rota não muda depois de criado.");
+        } else {
+            checkRouteSector(checks, in.sectorId());
+        }
         checks.throwIfAny();
         apply(r, in);
         RegistryContext.touch(r);
@@ -347,9 +404,24 @@ public class TerritoryService {
         }
     }
 
+    private void checkRouteLocality(Checks checks, UUID localityId) {
+        if (localityId != null && localities.findById(localityId).filter(this::ofTenant).isEmpty()) {
+            checks.error("localityId", "NOT_FOUND", "Localidade não encontrada.");
+        }
+    }
+
+    private void checkRouteSector(Checks checks, UUID sectorId) {
+        if (sectorId != null && sectors.findById(sectorId).filter(this::ofTenant).isEmpty()) {
+            checks.error("sectorId", "NOT_FOUND", "Setor comercial não encontrado.");
+        }
+    }
+
     private static void apply(ReadingRoute r, RouteInput in) {
         r.setCode(in.code());
         r.setName(in.name().trim());
+        r.setLocalityId(in.localityId());
+        r.setSectorId(in.sectorId());
+        r.setMaxUnits(in.maxUnits());
         r.setActive(in.active() == null || in.active());
     }
 
@@ -357,8 +429,11 @@ public class TerritoryService {
         return RegistryContext.require(routes.findById(id), () -> "Rota de leitura não encontrada.");
     }
 
-    static RouteView view(ReadingRoute r) {
-        return new RouteView(r.getId(), r.getVersion(), r.getCode(), r.getName(), r.isActive());
+    private RouteView view(ReadingRoute r) {
+        Locality l = r.getLocalityId() == null ? null : em.find(Locality.class, r.getLocalityId());
+        CommercialSector s = r.getSectorId() == null ? null : em.find(CommercialSector.class, r.getSectorId());
+        return new RouteView(r.getId(), r.getVersion(), r.getLocalityId(), ref(l), r.getSectorId(), ref(s),
+                r.getCode(), r.getName(), r.getMaxUnits(), r.isActive());
     }
 
     static Ref ref(ReadingRoute r) {
