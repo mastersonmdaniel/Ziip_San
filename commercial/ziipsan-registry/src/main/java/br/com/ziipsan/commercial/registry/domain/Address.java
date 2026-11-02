@@ -62,6 +62,14 @@ public class Address extends TenantAwareEntity {
     @Column(name = "is_primary", nullable = false)
     private boolean primary;
 
+    /**
+     * P0.16 opcao 1: posicao do endereco na lista do cliente (0, 1, ...). So enderecos de
+     * cliente a usam; os de unidade ficam null. Sem ela, a ordem voltaria embaralhada:
+     * created_at e o inicio da transacao para todas as linhas do mesmo PUT.
+     */
+    @Column(name = "position")
+    private Integer position;
+
     public enum Type { PHYSICAL, BILLING, CORRESPONDENCE, ALTERNATIVE }
 
 }

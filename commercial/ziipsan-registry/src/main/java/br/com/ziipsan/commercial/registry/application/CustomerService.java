@@ -1,6 +1,9 @@
 package br.com.ziipsan.commercial.registry.application;
 
+import br.com.ziipsan.commercial.registry.application.CustomerDtos.AddressView;
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.Billing;
+import br.com.ziipsan.commercial.registry.application.CustomerDtos.CoordinatesView;
+import br.com.ziipsan.commercial.registry.application.CustomerDtos.CustomerAddressInput;
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.CustomerInput;
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.CustomerSearch;
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.CustomerSummary;
@@ -10,11 +13,16 @@ import br.com.ziipsan.commercial.registry.application.CustomerDtos.EmailView;
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.PhoneInput;
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.PhoneView;
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.RevealResult;
+import br.com.ziipsan.commercial.registry.domain.Address;
 import br.com.ziipsan.commercial.registry.domain.Customer;
 import br.com.ziipsan.commercial.registry.domain.Customer.PersonType;
 import br.com.ziipsan.commercial.registry.domain.CustomerContact;
+import br.com.ziipsan.commercial.registry.repository.AddressRepository;
 import br.com.ziipsan.commercial.registry.repository.CustomerContactRepository;
 import br.com.ziipsan.commercial.registry.repository.CustomerRepository;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
 import br.com.ziipsan.commercial.registry.service.CustomerDocumentService;
 import br.com.ziipsan.core.api.ApiException;
 import jakarta.persistence.EntityManager;
@@ -58,17 +66,26 @@ public class CustomerService {
     private static final Map<String, List<String>> SORT = Map.of(
             "name", List.of("c.name"), "createdAt", List.of("c.createdAt"));
 
+    /** entity_type da tabela polimorfica addresses para enderecos de cliente (cf. "consumer_units"). */
+    static final String CUSTOMER_ENTITY_TYPE = "customers";
+
+    /** Fabrica SIRGAS 2000 (EPSG:4674), o mesmo SRID da coluna addresses.coordinates. */
+    private static final GeometryFactory GEOMETRY_FACTORY =
+            new GeometryFactory(new PrecisionModel(), 4674);
+
     @PersistenceContext
     private EntityManager em;
 
     private final CustomerRepository customers;
     private final CustomerContactRepository contacts;
+    private final AddressRepository addresses;
     private final CustomerDocumentService documents;
 
     public CustomerService(CustomerRepository customers, CustomerContactRepository contacts,
-                           CustomerDocumentService documents) {
+                           AddressRepository addresses, CustomerDocumentService documents) {
         this.customers = customers;
         this.contacts = contacts;
+        this.addresses = addresses;
         this.documents = documents;
     }
 
@@ -81,26 +98,28 @@ public class CustomerService {
                     "A busca de clientes por nome ou documento vai no corpo de POST /api/registry/customers/search, "
                             + "nunca na URL.");
         }
-        return find(null, null, personType, includeDeleted, spec);
+        return find(null, null, personType, null, includeDeleted, spec);
     }
 
     public PageResult<CustomerSummary> search(CustomerSearch s) {
-        if (s.customerTypeId() != null) {
-            throw new ApiException.BadRequest("filter-unavailable",
-                    "O cadastro ainda não tem tipo de cliente: o filtro customerTypeId não é suportado.");
-        }
+        // P0.16 opcao 1: customerTypeId agora e coluna de customers, entao o filtro passa a
+        // funcionar (antes, filter-unavailable). O filtro city continua indisponivel: os
+        // enderecos sao gravados, mas a semantica do filtro (qual endereco? correspondencia?
+        // qualquer?) ainda nao foi decidida — nao inventada aqui.
         if (blankToNull(s.city()) != null) {
             throw new ApiException.BadRequest("filter-unavailable",
-                    "O endereço do cliente ainda não é gravado pela API: o filtro city não é suportado.");
+                    "O filtro city ainda não é suportado.");
         }
-        return find(s.q(), s.nameMatch(), s.personType(), s.includeDeleted(), PageSpec.of(s.page(), s.size(), s.sort()));
+        return find(s.q(), s.nameMatch(), s.personType(), s.customerTypeId(), s.includeDeleted(),
+                PageSpec.of(s.page(), s.size(), s.sort()));
     }
 
-    private PageResult<CustomerSummary> find(String q, String nameMatch, PersonType personType, Boolean includeDeleted,
-                                             PageSpec spec) {
+    private PageResult<CustomerSummary> find(String q, String nameMatch, PersonType personType, UUID customerTypeId,
+                                             Boolean includeDeleted, PageSpec spec) {
         JpqlQuery query = new JpqlQuery("c", "Customer c")
                 .where("c.tenantId = :t", "t", RegistryContext.tenantId())
-                .whereIfPresent("c.personType = :personType", "personType", personType);
+                .whereIfPresent("c.personType = :personType", "personType", personType)
+                .whereIfPresent("c.customerTypeId = :customerTypeId", "customerTypeId", customerTypeId);
         if (!Boolean.TRUE.equals(includeDeleted)) {
             query.where("c.deletedAt is null");
         }
@@ -139,10 +158,12 @@ public class CustomerService {
             assignDocument(checks, c, in.document());
         }
         checkContacts(checks, in);
+        checkAddresses(checks, in);
         checks.throwIfAny();
         apply(c, in);
         customers.saveAndFlush(c);
         replaceContacts(c, in);
+        replaceAddresses(c, in);
         return view(c);
     }
 
@@ -162,6 +183,7 @@ public class CustomerService {
             checks.error("document", "DOCUMENT_REQUIRED", "Ao mudar o tipo de pessoa, informe o documento de novo.");
         }
         checkContacts(checks, in);
+        checkAddresses(checks, in);
         checks.throwIfAny();
         apply(c, in);
         RegistryContext.touch(c);
@@ -169,6 +191,7 @@ public class CustomerService {
         c.setUpdatedAt(OffsetDateTime.now());
         customers.saveAndFlush(c);
         replaceContacts(c, in);
+        replaceAddresses(c, in);
         return view(c);
     }
 
@@ -219,9 +242,17 @@ public class CustomerService {
     private static void apply(Customer c, CustomerInput in) {
         c.setName(in.name().trim());
         c.setTradeName(blankToNull(in.tradeName()));
+        c.setCustomerTypeId(in.customerTypeId());
+        c.setActivityBranchId(in.activityBranchId());
+        c.setParentCustomerId(in.parentCustomerId());
+        c.setDocumentExemptionReason(blankToNull(in.documentExemptionReason()));
         c.setBirthDate(in.birthDate());
         Integer dueDay = in.billing() == null ? null : in.billing().dueDay();
         c.setDueDay(dueDay == null ? null : dueDay.shortValue());
+        // Flags ausentes leem false: payloads antigos sem billing/flags nao mudam de sentido.
+        c.setNextMonthDue(in.billing() != null && Boolean.TRUE.equals(in.billing().nextMonthDue()));
+        c.setAdvanceInvoice(in.billing() != null && Boolean.TRUE.equals(in.billing().advanceInvoice()));
+        c.setBlockNegativation(in.billing() != null && Boolean.TRUE.equals(in.billing().blockNegativation()));
     }
 
     private static void checkContacts(Checks checks, CustomerInput in) {
@@ -238,9 +269,25 @@ public class CustomerService {
         }
     }
 
-    private record DesiredContact(CustomerContact.Kind kind, String value, String label, boolean primary, UUID consentId) {
+    private record DesiredContact(CustomerContact.Kind kind, String value, String label, boolean primary, UUID consentId,
+                                  String extension, String contactName) {
         String key() {
             return kind + "|" + value;
+        }
+    }
+
+    /** Coordenada pela metade nao vale: o formulario exige as duas juntas ou nenhuma. */
+    private static void checkAddresses(Checks checks, CustomerInput in) {
+        if (in.addresses() == null) {
+            return;
+        }
+        for (int i = 0; i < in.addresses().size(); i++) {
+            CustomerAddressInput a = in.addresses().get(i);
+            if (a.address() != null && a.address().coordinates() != null
+                    && ((a.address().coordinates().lat() == null) != (a.address().coordinates().lng() == null))) {
+                checks.error("addresses[" + i + "].address.coordinates", "INCOMPLETE",
+                        "Informe latitude e longitude juntas, ou deixe as duas em branco.");
+            }
         }
     }
 
@@ -256,7 +303,7 @@ public class CustomerService {
             boolean first = true;
             for (EmailInput e : in.emails()) {
                 DesiredContact d = new DesiredContact(CustomerContact.Kind.EMAIL, e.address().trim().toLowerCase(Locale.ROOT),
-                        null, first, e.consentId());
+                        null, first, e.consentId(), null, null);
                 desired.put(d.key(), d);
                 first = false;
             }
@@ -265,7 +312,8 @@ public class CustomerService {
             touched.add(CustomerContact.Kind.PHONE);
             for (PhoneInput p : in.phones()) {
                 DesiredContact d = new DesiredContact(CustomerContact.Kind.PHONE, p.number().trim(),
-                        blankToNull(p.type()), Boolean.TRUE.equals(p.primary()), null);
+                        blankToNull(p.type()), Boolean.TRUE.equals(p.primary()), null,
+                        blankToNull(p.extension()), blankToNull(p.contactName()));
                 desired.put(d.key(), d);
             }
         }
@@ -305,9 +353,56 @@ public class CustomerService {
             cc.setLabel(d.label());
             cc.setPrimaryContact(d.primary());
             cc.setConsentId(d.consentId());
+            cc.setExtension(d.extension());
+            cc.setContactName(d.contactName());
             toSave.add(cc);
         }
         contacts.saveAllAndFlush(toSave);
+    }
+
+    /**
+     * Grava o conjunto de enderecos pedido, na ordem da lista. Lista nula mantem os atuais
+     * (mesma semantica dos contatos); lista vazia remove todos. Endereco e composicao do
+     * cliente: sai da lista, sai do banco (nenhum outro agregado referencia enderecos de
+     * cliente; os de unidade sao outras linhas, entity_type='consumer_units').
+     */
+    private void replaceAddresses(Customer c, CustomerInput in) {
+        if (in.addresses() == null) {
+            return;
+        }
+        UUID tenantId = RegistryContext.tenantId();
+        List<Address> existing =
+                addresses.findByTenantIdAndEntityTypeAndEntityIdOrderByPositionAsc(tenantId, CUSTOMER_ENTITY_TYPE,
+                        c.getId());
+        addresses.deleteAll(existing);
+        addresses.flush();
+        List<Address> toSave = new ArrayList<>();
+        for (int i = 0; i < in.addresses().size(); i++) {
+            CustomerAddressInput a = in.addresses().get(i);
+            Address row = RegistryContext.forCreate(new Address());
+            row.setEntityType(CUSTOMER_ENTITY_TYPE);
+            row.setEntityId(c.getId());
+            boolean correspondence = Boolean.TRUE.equals(a.correspondence());
+            row.setType(correspondence ? Address.Type.CORRESPONDENCE : Address.Type.ALTERNATIVE);
+            row.setPrimary(correspondence);
+            row.setPosition(i);
+            var addr = a.address();
+            row.setCep(addr.cep() == null ? null : addr.cep().replaceAll("\\D", ""));
+            row.setStreet(addr.streetName().trim());
+            row.setNumber(blankToNull(addr.number()));
+            row.setComplement(blankToNull(addr.complement()));
+            row.setNeighborhood(blankToNull(addr.neighborhood()));
+            row.setCity(blankToNull(addr.city()));
+            row.setState(addr.state() == null ? null : addr.state().toUpperCase(Locale.ROOT));
+            row.setCountry("BR");
+            if (addr.coordinates() != null && addr.coordinates().lat() != null && addr.coordinates().lng() != null) {
+                // JTS: X = longitude, Y = latitude.
+                row.setCoordinates(GEOMETRY_FACTORY.createPoint(
+                        new Coordinate(addr.coordinates().lng(), addr.coordinates().lat())));
+            }
+            toSave.add(row);
+        }
+        addresses.saveAllAndFlush(toSave);
     }
 
     /** Imóveis distintos com vínculo vigente, por cliente. */
@@ -335,12 +430,46 @@ public class CustomerService {
             if (cc.getKind() == CustomerContact.Kind.EMAIL) {
                 emails.add(new EmailView(cc.getValue(), cc.isPrimaryContact(), cc.getConsentId()));
             } else {
-                phones.add(new PhoneView(cc.getValue(), cc.getLabel(), cc.isPrimaryContact()));
+                phones.add(new PhoneView(cc.getValue(), cc.getLabel(), cc.isPrimaryContact(),
+                        cc.getExtension(), cc.getContactName()));
             }
+        }
+        List<AddressView> addressViews = new ArrayList<>();
+        for (Address a : addresses.findByTenantIdAndEntityTypeAndEntityIdOrderByPositionAsc(
+                RegistryContext.tenantId(), CUSTOMER_ENTITY_TYPE, c.getId())) {
+            CoordinatesView coordinates = a.getCoordinates() == null ? null
+                    : new CoordinatesView(a.getCoordinates().getY(), a.getCoordinates().getX());
+            addressViews.add(new AddressView(
+                    new CustomerDtos.AddressDetailView(a.getCep(), a.getStreet(), a.getNumber(), a.getComplement(),
+                            a.getNeighborhood(), a.getCity(), a.getState(), coordinates),
+                    a.isPrimary()));
         }
         long units = unitCounts(List.of(c.getId())).getOrDefault(c.getId(), 0L);
         return new CustomerView(c.getId(), c.getVersion(), c.getPersonType(), c.getName(), c.getTradeName(),
-                c.getDocumentMasked(), c.getBirthDate(), new Billing(c.getDueDay() == null ? null : (int) c.getDueDay()),
-                emails, phones, units, c.getDeletedAt(), c.getDeletedReason());
+                refOrNull(c.getCustomerTypeId()), c.getDocumentMasked(), c.getDocumentExemptionReason(),
+                c.getBirthDate(), refOrNull(c.getActivityBranchId()), parentRef(c),
+                new Billing(c.getDueDay() == null ? null : (int) c.getDueDay(), c.isNextMonthDue(),
+                        c.isAdvanceInvoice(), c.isBlockNegativation()),
+                emails, phones, addressViews, units, c.getDeletedAt(), c.getDeletedReason());
+    }
+
+    /**
+     * Referencia de catalogo: o id e devolvido, mas o nome ainda nao pode ser resolvido — a
+     * tabela de catalogo nao existe no backend. O frontend usa o id como rotulo ate a frente
+     * de catalogos resolver o nome (refToLookupValue cai para o id quando o nome e null).
+     */
+    private static Ref refOrNull(UUID id) {
+        return id == null ? null : new Ref(id, null, null);
+    }
+
+    /** Cliente superior: o nome vem da propria tabela customers, entao e resolvido de verdade. */
+    private Ref parentRef(Customer c) {
+        if (c.getParentCustomerId() == null) {
+            return null;
+        }
+        return customers.findById(c.getParentCustomerId())
+                .filter(p -> RegistryContext.tenantId().equals(p.getTenantId()))
+                .map(p -> new Ref(p.getId(), null, p.getName()))
+                .orElseGet(() -> new Ref(c.getParentCustomerId(), null, null));
     }
 }

@@ -35,6 +35,14 @@ public class CustomerContact extends TenantAwareEntity {
     @Column(name = "label", length = 50)
     private String label;
 
+    /** P0.16 opcao 1: ramal (telefone) e nome do contato. label continua sendo o tipo. */
+    @Column(name = "extension", length = 10)
+    private String extension;
+
+    /** Nome de terceiro: so se necessario (dica do formulario); redigido na auditoria. */
+    @Column(name = "contact_name", length = 100)
+    private String contactName;
+
     @Column(name = "primary_contact", nullable = false)
     private boolean primaryContact;
 

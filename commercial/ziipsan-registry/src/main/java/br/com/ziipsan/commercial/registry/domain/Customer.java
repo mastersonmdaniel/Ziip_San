@@ -42,8 +42,38 @@ public class Customer extends TenantAwareEntity {
     @Column(name = "birth_date")
     private java.time.LocalDate birthDate;
 
+    /**
+     * P0.16 opcao 1: campos que o frontend ja envia. customer_type_id e activity_branch_id
+     * sao UUIDs SEM FK: as tabelas de catalogo ainda nao existem no backend (a frente de
+     * catalogos as criara; ai a FK podera ser acrescentada). parent_customer_id TEM FK
+     * (auto-referencia composta por tenant, ver V3_4): a tabela referenciada existe.
+     */
+    @Column(name = "customer_type_id")
+    private java.util.UUID customerTypeId;
+
+    @Column(name = "activity_branch_id")
+    private java.util.UUID activityBranchId;
+
+    @Column(name = "parent_customer_id")
+    private java.util.UUID parentCustomerId;
+
+    /** Motivo para cadastrar sem documento (texto livre, max 300; redigido na auditoria). */
+    @Column(name = "document_exemption_reason", length = 300)
+    private String documentExemptionReason;
+
     @Column(name = "due_day")
     private Short dueDay;
+
+    /** Cobranca: vivem em customers, onde due_day ja vive (nao ha tabela de cobranca). */
+    @Column(name = "next_month_due", nullable = false)
+    private boolean nextMonthDue;
+
+    @Column(name = "advance_invoice", nullable = false)
+    private boolean advanceInvoice;
+
+    /** Apenas persistido: nenhuma regra de negativacao e aplicada por este flag aqui. */
+    @Column(name = "block_negativation", nullable = false)
+    private boolean blockNegativation;
 
     @Column(name = "deleted_at")
     private java.time.OffsetDateTime deletedAt;
