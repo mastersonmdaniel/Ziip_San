@@ -29,6 +29,18 @@ public class Subcategory extends TenantAwareEntity {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    /** Abreviacao do frontend (catalogDefinitions.ts); opcional no backend. */
+    @Column(name = "abbreviation", length = 20)
+    private String abbreviation;
+
+    /** Fator de fiscalizacao do frontend; opcional no backend. */
+    @Column(name = "inspection_factor")
+    private Integer inspectionFactor;
+
+    /** Abastecimento sazonal, do frontend. */
+    @Column(name = "seasonal_supply", nullable = false)
+    private boolean seasonalSupply;
+
     @Column(name = "active", nullable = false)
     private boolean active;
 

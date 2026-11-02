@@ -89,6 +89,10 @@ public class CatalogService {
     private static void apply(Category c, CategoryInput in) {
         c.setCode(in.code().trim());
         c.setName(in.name().trim());
+        c.setAbbreviation(trimOrNull(in.abbreviation()));
+        c.setMinimumConsumption(in.minimumConsumption());
+        c.setEconomiesSoftLimit(in.economiesSoftLimit());
+        c.setRequiresSpecialPermission(Boolean.TRUE.equals(in.requiresSpecialPermission()));
         c.setPublicEntity(Boolean.TRUE.equals(in.publicEntity()));
         c.setActive(in.active() == null || in.active());
     }
@@ -98,7 +102,9 @@ public class CatalogService {
     }
 
     static CategoryView view(Category c) {
-        return new CategoryView(c.getId(), c.getVersion(), c.getCode(), c.getName(), c.isPublicEntity(), c.isActive());
+        return new CategoryView(c.getId(), c.getVersion(), c.getCode(), c.getName(), c.getAbbreviation(),
+                c.getMinimumConsumption(), c.getEconomiesSoftLimit(), c.isRequiresSpecialPermission(),
+                c.isPublicEntity(), c.isActive());
     }
 
     static Ref ref(Category c) {
@@ -149,6 +155,9 @@ public class CatalogService {
         s.setCategoryId(in.categoryId());
         s.setCode(in.code().trim());
         s.setName(in.name().trim());
+        s.setAbbreviation(trimOrNull(in.abbreviation()));
+        s.setInspectionFactor(in.inspectionFactor());
+        s.setSeasonalSupply(Boolean.TRUE.equals(in.seasonalSupply()));
         s.setActive(in.active() == null || in.active());
     }
 
@@ -158,7 +167,8 @@ public class CatalogService {
 
     private SubcategoryView view(Subcategory s) {
         return new SubcategoryView(s.getId(), s.getVersion(), s.getCategoryId(), ref(em.find(Category.class, s.getCategoryId())),
-                s.getCode(), s.getName(), s.isActive());
+                s.getCode(), s.getName(), s.getAbbreviation(), s.getInspectionFactor(), s.isSeasonalSupply(),
+                s.isActive());
     }
 
     static Ref ref(Subcategory s) {
@@ -196,6 +206,10 @@ public class CatalogService {
     private static void apply(WaterStatus w, WaterStatusInput in) {
         w.setCode(in.code().trim());
         w.setName(in.name().trim());
+        w.setAbbreviation(trimOrNull(in.abbreviation()));
+        w.setMinimumBillingConsumption(in.minimumBillingConsumption());
+        w.setHasNetwork(Boolean.TRUE.equals(in.hasNetwork()));
+        w.setHasConnection(Boolean.TRUE.equals(in.hasConnection()));
         w.setBills(Boolean.TRUE.equals(in.billable()));
         w.setRequiresNetwork(Boolean.TRUE.equals(in.requiresNetwork()));
         w.setConnected(Boolean.TRUE.equals(in.connected()));
@@ -209,8 +223,9 @@ public class CatalogService {
     }
 
     static WaterStatusView view(WaterStatus w) {
-        return new WaterStatusView(w.getId(), w.getVersion(), w.getCode(), w.getName(), w.isBills(), w.isRequiresNetwork(),
-                w.isConnected(), w.isSupplies(), w.isMinimumConsumption(), w.isActive());
+        return new WaterStatusView(w.getId(), w.getVersion(), w.getCode(), w.getName(), w.getAbbreviation(),
+                w.getMinimumBillingConsumption(), w.isHasNetwork(), w.isHasConnection(), w.isBills(),
+                w.isRequiresNetwork(), w.isConnected(), w.isSupplies(), w.isMinimumConsumption(), w.isActive());
     }
 
     static Ref ref(WaterStatus w) {
@@ -248,6 +263,10 @@ public class CatalogService {
     private static void apply(SewerStatus s, SewerStatusInput in) {
         s.setCode(in.code().trim());
         s.setName(in.name().trim());
+        s.setAbbreviation(trimOrNull(in.abbreviation()));
+        s.setMinimumBillingVolume(in.minimumBillingVolume());
+        s.setHasNetwork(Boolean.TRUE.equals(in.hasNetwork()));
+        s.setHasConnection(Boolean.TRUE.equals(in.hasConnection()));
         s.setBills(Boolean.TRUE.equals(in.billable()));
         s.setRequiresNetwork(Boolean.TRUE.equals(in.requiresNetwork()));
         s.setConnected(Boolean.TRUE.equals(in.connected()));
@@ -260,8 +279,9 @@ public class CatalogService {
     }
 
     static SewerStatusView view(SewerStatus s) {
-        return new SewerStatusView(s.getId(), s.getVersion(), s.getCode(), s.getName(), s.isBills(), s.isRequiresNetwork(),
-                s.isConnected(), s.isMinimumConsumption(), s.isActive());
+        return new SewerStatusView(s.getId(), s.getVersion(), s.getCode(), s.getName(), s.getAbbreviation(),
+                s.getMinimumBillingVolume(), s.isHasNetwork(), s.isHasConnection(), s.isBills(),
+                s.isRequiresNetwork(), s.isConnected(), s.isMinimumConsumption(), s.isActive());
     }
 
     static Ref ref(SewerStatus s) {
@@ -269,6 +289,15 @@ public class CatalogService {
     }
 
     // ------------------------------------------------------------------ comum
+
+    /** Texto opcional: em branco vira null, como o frontend envia (toPayload manda null). */
+    private static String trimOrNull(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
 
     /** Lista de catálogo: {@code q} casa com código ou nome (contém, sem caixa). O nome da entidade é fixo. */
     private <T> PageResult<T> list(String entity, Class<T> type, String q, Boolean active, UUID categoryId, PageSpec spec) {

@@ -24,6 +24,22 @@ public class Category extends TenantAwareEntity {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    /** Abreviacao do frontend (catalogDefinitions.ts); opcional no backend. */
+    @Column(name = "abbreviation", length = 5)
+    private String abbreviation;
+
+    /** Consumo minimo (m3) do frontend; opcional no backend. */
+    @Column(name = "minimum_consumption")
+    private Integer minimumConsumption;
+
+    /** Limite de economias com confirmacao, do frontend; opcional no backend. */
+    @Column(name = "economies_soft_limit")
+    private Integer economiesSoftLimit;
+
+    /** Exige permissao especial, do frontend. */
+    @Column(name = "requires_special_permission", nullable = false)
+    private boolean requiresSpecialPermission;
+
     @Column(name = "public_entity", nullable = false)
     private boolean publicEntity;
 
