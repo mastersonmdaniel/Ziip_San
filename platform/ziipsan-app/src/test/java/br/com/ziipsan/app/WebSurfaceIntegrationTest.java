@@ -107,4 +107,45 @@ class WebSurfaceIntegrationTest extends AppIntegrationTestBase {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:invalid-page"));
     }
+
+    @Test
+    @DisplayName("P0.16 fase 2: propriedade desconhecida no corpo: 422 validation com o campo em errors[]")
+    void unknownPropertyIs422() throws Exception {
+        mvc.perform(post("/api/v1/registry/localities")
+                        .header("Authorization", auth())
+                        .contentType("application/json")
+                        .content("{\"code\": 987002, \"name\": \"Localidade campo desconhecido\", "
+                                + "\"municipalityIbge\": \"3550308\", \"campoDesconhecido\": \"X\"}"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(PROBLEM))
+                .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:validation"))
+                .andExpect(jsonPath("$.errors[0].field").value("campoDesconhecido"))
+                .andExpect(jsonPath("$.errors[0].code").value("UNKNOWN_PROPERTY"));
+    }
+
+    @Test
+    @DisplayName("P0.16 fase 2: corpo malformado: 422 validation, nunca 500")
+    void malformedBodyIs422() throws Exception {
+        mvc.perform(post("/api/v1/registry/localities")
+                        .header("Authorization", auth())
+                        .contentType("application/json")
+                        .content("{\"code\": 987003, \"name\": "))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(PROBLEM))
+                .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:validation"))
+                .andExpect(jsonPath("$.errors[0].field").value("body"))
+                .andExpect(jsonPath("$.errors[0].code").value("MALFORMED_BODY"));
+    }
+
+    @Test
+    @DisplayName("P0.16 fase 2: payload válido continua passando (201)")
+    void validPayloadStillPasses() throws Exception {
+        mvc.perform(post("/api/v1/registry/localities")
+                        .header("Authorization", auth())
+                        .contentType("application/json")
+                        .content("{\"code\": 987001, \"name\": \"Localidade payload válido\", "
+                                + "\"municipalityIbge\": \"3550308\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.code").value(987001));
+    }
 }

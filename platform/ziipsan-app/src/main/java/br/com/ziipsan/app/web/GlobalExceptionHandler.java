@@ -12,12 +12,14 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import tools.jackson.databind.exc.UnrecognizedPropertyException;
 
 import java.net.URI;
 import java.util.List;
@@ -96,7 +98,36 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(422).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(pd);
     }
 
-    /** Erros do próprio Spring MVC (404 de rota, 405, corpo ilegível...): mesmo formato, sem detalhe interno. */
+    /**
+     * P0.16 fase 2: corpo ilegível é 422, não 400. Sem este override, propriedade
+     * desconhecida (com {@code fail-on-unknown-properties=true}) caía no handler
+     * genérico com 400. Propriedade desconhecida vira um erro por campo em
+     * {@code errors[]} (o nome do campo é o que o próprio cliente enviou);
+     * corpo malformado ou com tipo incompatível vira um erro em {@code body}.
+     */
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
+                                                                  HttpStatusCode status, WebRequest request) {
+        Throwable cause = ex.getCause();
+        while (cause != null) {
+            if (cause instanceof UnrecognizedPropertyException unknown) {
+                List<ApiException.FieldError> errors = List.of(new ApiException.FieldError(
+                        unknown.getPropertyName(), "UNKNOWN_PROPERTY", "Campo desconhecido."));
+                ProblemDetail pd = problem(422, "validation", "Dados inválidos", "Há campos inválidos.");
+                pd.setProperty("errors", errors);
+                return ResponseEntity.status(422).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(pd);
+            }
+            cause = cause.getCause();
+        }
+        List<ApiException.FieldError> errors = List.of(new ApiException.FieldError(
+                "body", "MALFORMED_BODY", "Corpo da requisição inválido."));
+        ProblemDetail pd = problem(422, "validation", "Dados inválidos", "Há campos inválidos.");
+        pd.setProperty("errors", errors);
+        return ResponseEntity.status(422).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(pd);
+    }
+
+    /** Erros do próprio Spring MVC (404 de rota, 405...): mesmo formato, sem detalhe interno.
+     *  Corpo ilegível NÃO passa por aqui (fase 2: handleHttpMessageNotReadable acima). */
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
                                                              HttpStatusCode statusCode, WebRequest request) {

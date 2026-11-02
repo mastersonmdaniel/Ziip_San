@@ -126,8 +126,9 @@ definido em runtime):
   **422** no mesmo formato `validation`/`errors[]` (sem ele, violar `@Size` em
   parâmetro de GET cairia em 500 via `handleUnexpected`).
 - Nada disso muda o mapeamento de status: erros de validação continuam 422
-  pelo handler atual. A decisão 400 vs 422 do dono é o único item que impede o
-  fechamento da P0.16.
+  pelo handler atual. A decisão 400 vs 422 do dono foi fechada em 2026-11-01
+  (manter 422) e a fase 2 a aplica também ao corpo ilegível — o que fecha
+  este item da P0.16.
 
 ## 7. Campos removidos da tela (P0.16)
 
@@ -142,20 +143,27 @@ do esquema zod, das fixtures e dos testes:
 | `motherName` | Formulário de cliente ("Nome da mãe"), `CustomerFormValues`, `Customer`/`CustomerInput`, detalhe |
 | `costCenter` | Definição de campo da localidade, tipo `Locality` |
 
-- `RegistryApiE2ETest` atualizado: os dois corpos que cristalizavam o descarte
-  (localidade com `costCenter`, cliente com `rg`) agora enviam um campo
-  desconhecido genérico (`campoDesconhecido`) — a tolerância a campo
-  desconhecido continua sendo comportamento documentado, mas não está mais
-  atrelada a campos que a tela não envia.
+- `RegistryApiE2ETest` atualizado (fase 2): os dois corpos que cristalizavam o
+  descarte (localidade e cliente com `campoDesconhecido`) agora afirmam
+  primeiro a recusa 422 com o campo em `errors[]` e só depois fazem a
+  criação válida que alimenta o resto do fluxo — a tentativa recusada não
+  grava nada (o CPF da tentativa não é consumido).
 - Comentário em `application.yml` atualizado no mesmo sentido.
-- `fail-on-unknown-properties` segue `false` (decisão pré-existente, fora da
-  P0.16; mudá-lo travaria clientes antigos em cache).
+- `fail-on-unknown-properties` agora é `true` (fase 2, decisão do dono
+  opção 1: backend modela os campos). Propriedade desconhecida no corpo é
+  recusada com 422 `validation`/`errors[]` via
+  `GlobalExceptionHandler.handleHttpMessageNotReadable` (sem o override,
+  cairia no handler genérico com 400); corpo malformado também é 422
+  (`body`/`MALFORMED_BODY`). Cliente antigo em cache falha alto, em vez de
+  perder dado em silêncio. `WebSurfaceIntegrationTest` cobre: desconhecido
+  → 422, malformado → 422, payload válido → 201.
 
 ## Provas
 
 - `WebSurfaceIntegrationTest` (CSP em 200 e em 401; HSTS com requisição segura
   e ausente sem; 413 fast path e chunked; 422 em `q` longo no POST e no GET;
-  400 em página acima do teto).
+  400 em página acima do teto; fase 2: 422 em propriedade desconhecida e em
+  corpo malformado, 201 em payload válido).
 - `RateLimitIntegrationTest` (standalone, limite 3/min: 3 passam, 4ª é 429 com
   `Retry-After`; health isento) + `RateLimitFilterTest` (chave tenant/usuário/IP,
   fail-open).

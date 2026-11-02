@@ -37,12 +37,13 @@ spring:
   mvc:
     problemdetails:
       enabled: true
-  # P0.16: a tela não envia mais rg/motherName/costCenter. Campos desconhecidos que cheguem
-  # (ex.: cliente antigo em cache) continuam ignorados; cada DTO lê só o que conhece, explicitamente.
-  # Recusar o corpo inteiro por um campo a mais travaria as telas.
+  # P0.16 fase 2 (decisão do dono, opção 1: backend modela os campos; flag
+  # ligada): propriedade desconhecida no corpo é recusada com 422
+  # (GlobalExceptionHandler.handleHttpMessageNotReadable), em vez de
+  # descartada em silêncio. Cliente antigo em cache falha alto, não some dado.
   jackson:
     deserialization:
-      fail-on-unknown-properties: false
+      fail-on-unknown-properties: true
 
 server:
   port: ${ZIIPSAN_PORT:8090}

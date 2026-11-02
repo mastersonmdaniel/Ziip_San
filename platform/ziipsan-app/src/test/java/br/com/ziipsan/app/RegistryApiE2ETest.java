@@ -126,10 +126,15 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @Order(1)
     @DisplayName("território: localidade → setor → rota → quadra, com página no formato do frontend")
     void territory() throws Exception {
-        // P0.16: a tela não envia mais costCenter (campo removido). Um campo desconhecido
-        // qualquer continua sendo ignorado (fail-on-unknown-properties=false), sem derrubar o corpo.
-        localityId = id(send(post("/api/v1/registry/localities"), operator, """
+        // P0.16 fase 2: campo desconhecido é recusado com 422 (fail-on-unknown-properties=true),
+        // com o campo em errors[] — a criação válida segue abaixo para alimentar o fluxo.
+        send(post("/api/v1/registry/localities"), operator, """
                 {"code": %d, "name": "Localidade E2E %d", "municipalityIbge": "3550308", "campoDesconhecido": "X"}"""
+                .formatted(CODE, CODE))
+                .andExpect(status().isUnprocessableContent())
+                .andExpect(jsonPath("$.errors[0].field").value("campoDesconhecido"));
+        localityId = id(send(post("/api/v1/registry/localities"), operator, """
+                {"code": %d, "name": "Localidade E2E %d", "municipalityIbge": "3550308"}"""
                 .formatted(CODE, CODE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.version").value(0))
@@ -211,12 +216,21 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @Order(3)
     @DisplayName("cliente com CPF: só a máscara volta; documento repetido é recusado")
     void customer() throws Exception {
-        MvcResult created = send(post("/api/v1/registry/customers"), operator, """
+        // P0.16 fase 2: campo desconhecido é recusado com 422 antes de qualquer
+        // gravação (o CPF não é consumido); a criação válida segue abaixo.
+        send(post("/api/v1/registry/customers"), operator, """
                 {"personType": "PF", "name": "%s", "document": "%s", "birthDate": "1980-05-17",
                  "billing": {"dueDay": 10},
                  "emails": [{"address": "maria.e2e@exemplo.com.br"}],
                  "phones": [{"number": "+5511987654321", "type": "MOBILE", "primary": true}],
                  "campoDesconhecido": "campo que o cadastro não modela"}""".formatted(CUSTOMER_NAME, CPF))
+                .andExpect(status().isUnprocessableContent())
+                .andExpect(jsonPath("$.errors[0].field").value("campoDesconhecido"));
+        MvcResult created = send(post("/api/v1/registry/customers"), operator, """
+                {"personType": "PF", "name": "%s", "document": "%s", "birthDate": "1980-05-17",
+                 "billing": {"dueDay": 10},
+                 "emails": [{"address": "maria.e2e@exemplo.com.br"}],
+                 "phones": [{"number": "+5511987654321", "type": "MOBILE", "primary": true}]}""".formatted(CUSTOMER_NAME, CPF))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.documentMasked").value("***.982.247-**"))
                 .andExpect(jsonPath("$.emails[0].primary").value(true))
