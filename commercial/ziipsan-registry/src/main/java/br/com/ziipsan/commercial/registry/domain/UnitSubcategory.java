@@ -29,4 +29,10 @@ public class UnitSubcategory extends TenantAwareEntity {
     @Column(name = "economies", nullable = false)
     private int economies;
 
+    @Column(name = "private_units")
+    private Integer privateUnits;
+
+    @Column(name = "collective_units")
+    private Integer collectiveUnits;
+
 }

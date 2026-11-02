@@ -2,7 +2,10 @@ package br.com.ziipsan.commercial.registry.application;
 
 import br.com.ziipsan.commercial.registry.application.ConsumerUnitDtos.AddressInput;
 import br.com.ziipsan.commercial.registry.application.ConsumerUnitDtos.AddressView;
+import br.com.ziipsan.commercial.registry.application.ConsumerUnitDtos.CoordinatesView;
+import br.com.ziipsan.commercial.registry.application.ConsumerUnitDtos.ExternalIdsView;
 import br.com.ziipsan.commercial.registry.application.ConsumerUnitDtos.HistoryChange;
+import br.com.ziipsan.commercial.registry.application.ConsumerUnitDtos.PhysicalView;
 import br.com.ziipsan.commercial.registry.application.ConsumerUnitDtos.HistoryEvent;
 import br.com.ziipsan.commercial.registry.application.ConsumerUnitDtos.InscriptionView;
 import br.com.ziipsan.commercial.registry.application.ConsumerUnitDtos.SubcategoryInput;
@@ -26,11 +29,13 @@ import br.com.ziipsan.commercial.registry.domain.Subcategory;
 import br.com.ziipsan.commercial.registry.domain.UnitCustomer;
 import br.com.ziipsan.commercial.registry.domain.UnitStatusHistory;
 import br.com.ziipsan.commercial.registry.domain.UnitSubcategory;
+import br.com.ziipsan.commercial.registry.domain.UnitSubcategoryActivity;
 import br.com.ziipsan.commercial.registry.domain.WaterStatus;
 import br.com.ziipsan.commercial.registry.repository.AddressRepository;
 import br.com.ziipsan.commercial.registry.repository.ConsumerUnitRepository;
 import br.com.ziipsan.commercial.registry.repository.UnitCustomerRepository;
 import br.com.ziipsan.commercial.registry.repository.UnitStatusHistoryRepository;
+import br.com.ziipsan.commercial.registry.repository.UnitSubcategoryActivityRepository;
 import br.com.ziipsan.commercial.registry.repository.UnitSubcategoryRepository;
 import br.com.ziipsan.commercial.registry.rules.Inscription;
 import br.com.ziipsan.commercial.registry.rules.Matricula;
@@ -43,6 +48,9 @@ import br.com.ziipsan.core.domain.TenantAwareEntity;
 import br.com.ziipsan.core.json.Json;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -101,19 +109,25 @@ public class ConsumerUnitService {
     private final AddressRepository addresses;
     private final UnitCustomerRepository unitCustomers;
     private final UnitSubcategoryRepository unitSubcategories;
+    private final UnitSubcategoryActivityRepository unitSubcategoryActivities;
     private final UnitStatusHistoryRepository statusHistory;
     private final AuditLogRepository auditLog;
     private final CustomerDocumentService documents;
     private final RegistrySettingsService settings;
 
+    /** SIRGAS 2000 (EPSG:4674), o SRID das colunas de coordenadas (V1_1). x = longitude, y = latitude. */
+    private static final GeometryFactory GEOMETRY_4674 = new GeometryFactory(new PrecisionModel(), 4674);
+
     public ConsumerUnitService(ConsumerUnitRepository units, AddressRepository addresses,
                                UnitCustomerRepository unitCustomers, UnitSubcategoryRepository unitSubcategories,
+                               UnitSubcategoryActivityRepository unitSubcategoryActivities,
                                UnitStatusHistoryRepository statusHistory, AuditLogRepository auditLog,
                                CustomerDocumentService documents, RegistrySettingsService settings) {
         this.units = units;
         this.addresses = addresses;
         this.unitCustomers = unitCustomers;
         this.unitSubcategories = unitSubcategories;
+        this.unitSubcategoryActivities = unitSubcategoryActivities;
         this.statusHistory = statusHistory;
         this.auditLog = auditLog;
         this.documents = documents;
@@ -409,6 +423,29 @@ public class ConsumerUnitService {
         if (in.readingRouteId() != null && find(ReadingRoute.class, in.readingRouteId()) == null) {
             checks.error("readingRouteId", "NOT_FOUND", "Rota de leitura não encontrada.");
         }
+        // P0.16: estas tres referencias tem tabela e FK (V3_5), entao a existencia e
+        // checada como a da rota de leitura. As demais referencias novas (face de
+        // quadra, modo de envio, esgotamento, perfil, fonte, poco, pavimentos) nao
+        // tem catalogo no backend e sao aceitas como UUID, sem checagem, ate o
+        // catalogo existir; inventar um NOT_FOUND sem tabela para consultar seria
+        // recusar ids validos do frontend.
+        if (in.deliveryRouteId() != null && find(ReadingRoute.class, in.deliveryRouteId()) == null) {
+            checks.error("deliveryRouteId", "NOT_FOUND", "Rota de entrega não encontrada.");
+        }
+        if (in.altRouteId() != null && find(ReadingRoute.class, in.altRouteId()) == null) {
+            checks.error("altRouteId", "NOT_FOUND", "Rota alternativa não encontrada.");
+        }
+        if (in.parentUnitId() != null && find(ConsumerUnit.class, in.parentUnitId()) == null) {
+            checks.error("parentUnitId", "NOT_FOUND", "Imóvel principal não encontrado.");
+        }
+        // Coordenada incompleta (so lat ou so lng): o par e atomico no frontend
+        // (textToCoordinates so emite o par completo ou nulo). Faixa geografica ja
+        // vem do bean validation de CoordinatesInput; a caixa do Brasil nao e
+        // imposta (ver o DTO: limites "A CONFIRMAR com o IBGE").
+        if (in.address() != null && in.address().coordinates() != null
+                && ((in.address().coordinates().lat() == null) != (in.address().coordinates().lng() == null))) {
+            checks.error("address.coordinates", "INCOMPLETE", "Informe latitude e longitude juntas, ou deixe as duas em branco.");
+        }
         if (config.requireReadingSequence() && routeId != null && in.readingSequence() == null) {
             checks.error("readingSequence", "REQUIRED", "Informe a sequência de leitura na rota.");
         }
@@ -529,17 +566,48 @@ public class ConsumerUnitService {
         a.setCity(blankToNull(in.city()));
         a.setState(in.state() == null ? null : in.state().toUpperCase(java.util.Locale.ROOT));
         a.setCountry("BR");
+        // P0.16: coordenadas aninhadas (o AddressInput nao as tinha; a coluna ja
+        // existia desde V1_1). Nulo ou par nulo = sem coordenada; par parcial ja
+        // foi recusado em resolve(). x = longitude, y = latitude.
+        if (in.coordinates() == null || (in.coordinates().lat() == null && in.coordinates().lng() == null)) {
+            a.setCoordinates(null);
+        } else {
+            a.setCoordinates(GEOMETRY_4674.createPoint(
+                    new Coordinate(in.coordinates().lng(), in.coordinates().lat())));
+        }
     }
 
     private static void apply(ConsumerUnit u, UnitInput in, Resolved r) {
         u.setStatus(in.status() == null ? "ACTIVE" : in.status());
         u.setBlockId(in.blockId());
+        u.setBlockFaceId(in.blockFaceId());
         u.setLot(in.blockId() == null ? null : in.lot());
         u.setSublot(in.blockId() == null ? null : in.sublot());
         u.setReadingRouteId(r.routeId());
         u.setReadingSequence(in.readingSequence());
+        u.setLotFrontageM(in.lotFrontageM());
+        u.setDeliveryModeId(in.deliveryModeId());
         u.setWaterStatusId(in.waterStatusId());
         u.setSewerStatusId(in.sewerStatusId());
+        u.setSewerDischargeId(in.sewerDischargeId());
+        u.setProfileId(in.profileId());
+        u.setWaterSourceId(in.waterSourceId());
+        u.setWellTypeId(in.wellTypeId());
+        u.setPavementStreetId(in.pavementStreetId());
+        u.setPavementSidewalkId(in.pavementSidewalkId());
+        // Fisico: nulo no todo limpa as 4 colunas; objeto parcial guarda so o que veio.
+        u.setPhysicalGarden(in.physical() == null ? null : in.physical().garden());
+        u.setPhysicalLowerReservoirM3(in.physical() == null ? null : in.physical().lowerReservoirM3());
+        u.setPhysicalUpperReservoirM3(in.physical() == null ? null : in.physical().upperReservoirM3());
+        u.setPhysicalPoolM3(in.physical() == null ? null : in.physical().poolM3());
+        u.setUsagePoints(in.usagePoints());
+        u.setResidents(in.residents());
+        u.setExternalIptu(in.externalIds() == null ? null : blankToNull(in.externalIds().iptu()));
+        u.setDeliveryRouteId(in.deliveryRouteId());
+        u.setDeliverySequence(in.deliverySequence());
+        u.setAltRouteId(in.altRouteId());
+        u.setParentUnitId(in.parentUnitId());
+        u.setDraftId(in.draftId());
         u.setBuiltAreaM2(in.builtAreaM2());
         u.setDueDay(in.dueDay() == null ? null : in.dueDay().shortValue());
         u.setNotes(blankToNull(in.notes()));
@@ -564,8 +632,8 @@ public class ConsumerUnitService {
      * trilha registra o DELETE), a que fica tem as economias atualizadas, a nova é criada.
      */
     private void syncSubcategories(ConsumerUnit u, List<SubcategoryInput> wanted) {
-        Map<UUID, Integer> desired = new LinkedHashMap<>();
-        wanted.forEach(s -> desired.put(s.subcategoryId(), s.economies()));
+        Map<UUID, SubcategoryInput> desired = new LinkedHashMap<>();
+        wanted.forEach(s -> desired.put(s.subcategoryId(), s));
         Map<UUID, UnitSubcategory> kept = new HashMap<>();
         for (UnitSubcategory line : unitSubcategories.findByTenantIdAndUnitId(RegistryContext.tenantId(), u.getId())) {
             if (desired.containsKey(line.getSubcategoryId())) {
@@ -576,21 +644,61 @@ public class ConsumerUnitService {
         }
         unitSubcategories.flush();
         List<UnitSubcategory> toSave = new ArrayList<>();
-        desired.forEach((subId, economies) -> {
+        desired.forEach((subId, d) -> {
             UnitSubcategory line = kept.get(subId);
             if (line == null) {
                 line = RegistryContext.forCreate(new UnitSubcategory());
                 line.setUnitId(u.getId());
                 line.setSubcategoryId(subId);
-            } else if (line.getEconomies() == economies) {
+            } else if (line.getEconomies() == d.economies()
+                    && java.util.Objects.equals(line.getPrivateUnits(), d.privateUnits())
+                    && java.util.Objects.equals(line.getCollectiveUnits(), d.collectiveUnits())) {
                 return;
             } else {
                 RegistryContext.touch(line);
             }
-            line.setEconomies(economies);
+            line.setEconomies(d.economies());
+            line.setPrivateUnits(d.privateUnits());
+            line.setCollectiveUnits(d.collectiveUnits());
             toSave.add(line);
         });
         unitSubcategories.saveAllAndFlush(toSave);
+        // Ramos de atividade (P0.16): a lista faz parte da linha e nao tem identidade
+        // propria, entao o conjunto e substituido por inteiro quando muda (o frontend
+        // os trata como conjunto; ids repetidos na mesma linha colapsam pelo indice
+        // unico). Sem mudanca, nada e reescrito, para nao poluir a trilha de auditoria
+        // com DELETE+INSERT sem efeito a cada PUT.
+        java.util.Set<String> desiredBranches = new java.util.LinkedHashSet<>();
+        for (SubcategoryInput d : wanted) {
+            if (d.activityBranchIds() == null) {
+                continue;
+            }
+            for (UUID branchId : d.activityBranchIds()) {
+                if (branchId != null) {
+                    desiredBranches.add(d.subcategoryId() + "|" + branchId);
+                }
+            }
+        }
+        List<UnitSubcategoryActivity> existing =
+                unitSubcategoryActivities.findByTenantIdAndUnitId(RegistryContext.tenantId(), u.getId());
+        java.util.Set<String> currentBranches = new java.util.HashSet<>();
+        for (UnitSubcategoryActivity row : existing) {
+            currentBranches.add(row.getSubcategoryId() + "|" + row.getActivityBranchId());
+        }
+        if (!currentBranches.equals(desiredBranches)) {
+            unitSubcategoryActivities.deleteAll(existing);
+            unitSubcategoryActivities.flush();
+            List<UnitSubcategoryActivity> branchesToSave = new ArrayList<>();
+            for (String key : desiredBranches) {
+                String[] parts = key.split("\\|");
+                UnitSubcategoryActivity row = RegistryContext.forCreate(new UnitSubcategoryActivity());
+                row.setUnitId(u.getId());
+                row.setSubcategoryId(UUID.fromString(parts[0]));
+                row.setActivityBranchId(UUID.fromString(parts[1]));
+                branchesToSave.add(row);
+            }
+            unitSubcategoryActivities.saveAllAndFlush(branchesToSave);
+        }
     }
 
     /**
@@ -675,12 +783,20 @@ public class ConsumerUnitService {
         Subcategory main = null;
         int mainEconomies = -1;
         int total = 0;
+        // Ramos por subcategoria (P0.16), numa unica leitura para a unidade.
+        Map<UUID, List<UUID>> branchesBySubcategory = new HashMap<>();
+        for (UnitSubcategoryActivity row :
+                unitSubcategoryActivities.findByTenantIdAndUnitId(RegistryContext.tenantId(), u.getId())) {
+            branchesBySubcategory.computeIfAbsent(row.getSubcategoryId(), k -> new ArrayList<>())
+                    .add(row.getActivityBranchId());
+        }
         List<UnitSubcategory> rows = new ArrayList<>(unitSubcategories.findByTenantIdAndUnitId(RegistryContext.tenantId(), u.getId()));
         for (UnitSubcategory line : rows) {
             Subcategory sub = em.find(Subcategory.class, line.getSubcategoryId());
             Category cat = sub == null ? null : em.find(Category.class, sub.getCategoryId());
             lines.add(new UnitSubcategoryView(line.getSubcategoryId(), CatalogService.ref(sub), CatalogService.ref(cat),
-                    line.getEconomies()));
+                    line.getEconomies(), line.getPrivateUnits(), line.getCollectiveUnits(),
+                    branchesBySubcategory.getOrDefault(line.getSubcategoryId(), List.of())));
             total += line.getEconomies();
             if (sub != null && (line.getEconomies() > mainEconomies
                     || (line.getEconomies() == mainEconomies && sub.getCode().compareTo(main.getCode()) < 0))) {
@@ -694,8 +810,19 @@ public class ConsumerUnitService {
     }
 
     private static AddressView addressView(Address a) {
-        return a == null ? null : new AddressView(a.getCep(), a.getStreet(), a.getNumber(), a.getComplement(),
-                a.getNeighborhood(), a.getCity(), a.getState());
+        if (a == null) {
+            return null;
+        }
+        // P0.16: o ponto sai como (lat, lng); no JTS, x = longitude, y = latitude.
+        CoordinatesView coordinates = a.getCoordinates() == null ? null
+                : new CoordinatesView(a.getCoordinates().getY(), a.getCoordinates().getX());
+        return new AddressView(a.getCep(), a.getStreet(), a.getNumber(), a.getComplement(),
+                a.getNeighborhood(), a.getCity(), a.getState(), coordinates);
+    }
+
+    /** Ref sem nome para id de catalogo ainda inexistente (P0.16, ver UnitView): so o id. */
+    private static Ref pendingRef(UUID id) {
+        return id == null ? null : new Ref(id, null, null);
     }
 
     private static String addressText(Address a) {
@@ -726,15 +853,30 @@ public class ConsumerUnitService {
         Composition c = composition(u);
         Address a = u.getAddressId() == null ? null : em.find(Address.class, u.getAddressId());
         ReadingRoute route = u.getReadingRouteId() == null ? null : em.find(ReadingRoute.class, u.getReadingRouteId());
+        ReadingRoute deliveryRoute = u.getDeliveryRouteId() == null ? null : em.find(ReadingRoute.class, u.getDeliveryRouteId());
+        ReadingRoute altRoute = u.getAltRouteId() == null ? null : em.find(ReadingRoute.class, u.getAltRouteId());
         WaterStatus water = u.getWaterStatusId() == null ? null : em.find(WaterStatus.class, u.getWaterStatusId());
         SewerStatus sewer = u.getSewerStatusId() == null ? null : em.find(SewerStatus.class, u.getSewerStatusId());
+        // Fisico: nulo se as 4 colunas forem nulas; senao o objeto, mesmo parcial.
+        PhysicalView physical = u.getPhysicalGarden() == null && u.getPhysicalLowerReservoirM3() == null
+                && u.getPhysicalUpperReservoirM3() == null && u.getPhysicalPoolM3() == null ? null
+                : new PhysicalView(u.getPhysicalGarden(), u.getPhysicalLowerReservoirM3(),
+                        u.getPhysicalUpperReservoirM3(), u.getPhysicalPoolM3());
+        ExternalIdsView externalIds = u.getExternalIptu() == null ? null : new ExternalIdsView(u.getExternalIptu());
         return new UnitView(u.getId(), u.getVersion(), u.getMatricula(), u.getCheckDigit(), p.inscription(),
                 p.inscriptionText(), u.getStatus(), u.getDeletedAt(), u.getDeletedReason(),
                 TerritoryService.ref(p.locality()), TerritoryService.ref(p.sector()), TerritoryService.ref(p.block()),
-                u.getLot(), u.getSublot(), TerritoryService.ref(route), u.getReadingSequence(),
+                pendingRef(u.getBlockFaceId()),
+                u.getLot(), u.getSublot(), TerritoryService.ref(route), u.getReadingSequence(), u.getLotFrontageM(),
                 addressView(a), addressText(a), c.lines(), c.mainCategory(), c.mainSubcategory(), c.economies(),
                 u.getBuiltAreaM2(), CatalogService.ref(water), CatalogService.ref(sewer),
-                u.getDueDay() == null ? null : (int) u.getDueDay(), u.getNotes());
+                pendingRef(u.getSewerDischargeId()), pendingRef(u.getProfileId()), pendingRef(u.getWaterSourceId()),
+                pendingRef(u.getWellTypeId()), pendingRef(u.getPavementStreetId()), pendingRef(u.getPavementSidewalkId()),
+                physical,
+                u.getUsagePoints(), u.getResidents(), externalIds,
+                pendingRef(u.getDeliveryModeId()), TerritoryService.ref(deliveryRoute), u.getDeliverySequence(),
+                TerritoryService.ref(altRoute), pendingRef(u.getParentUnitId()),
+                u.getDueDay() == null ? null : (int) u.getDueDay(), u.getNotes(), u.getDraftId());
     }
 
     private UnitSummary summary(ConsumerUnit u) {
