@@ -12,14 +12,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Fronteira GIS-01 (P1.26): uma só entidade e um só repositório de distrito de
- * medição. A cópia de {@code DmaDistrictRepository} que existia em sigsan-gis
- * foi removida; o serviço do GIS injeta o repositório de sigsan-losses, dono
- * da entidade. Se alguém recriar a cópia, este teste quebra — é esse o ponto.
+ * medição. A cópia de {@code DmaDistrictRepository} que existia no módulo GIS
+ * antigo foi removida; o serviço do GIS injeta o repositório do módulo de
+ * perdas, dono da entidade. Se alguém recriar a cópia, este teste quebra — é
+ * esse o ponto. (Nomes antigos evitados aqui de propósito: o teste de contrato
+ * ProblemCodeContractTest recusa o literal do nome antigo no fonte.)
  */
 class DmaDistrictRepositoryBoundaryTest {
 
     @Test
-    @DisplayName("a copia do DmaDistrictRepository em sigsan-gis nao existe")
+    @DisplayName("a copia do DmaDistrictRepository no modulo GIS antigo nao existe")
     void gisCopyOfDmaDistrictRepositoryIsGone() {
         assertThatThrownBy(() -> Class.forName(
                 "br.com.ziipsan.intelligence.gis.repository.DmaDistrictRepository"))

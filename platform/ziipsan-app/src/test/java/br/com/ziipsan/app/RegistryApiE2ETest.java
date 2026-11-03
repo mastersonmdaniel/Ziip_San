@@ -424,8 +424,10 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                 .andExpect(jsonPath("$.totalElements").value(2))
                 .andExpect(jsonPath("$.content[?(@.id == '" + unit2Id + "')].deleted", hasItem(true)));
         mvc.perform(get("/api/v1/registry/consumer-units/" + unit2Id).header("Authorization", viewer))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.deletedAt").isNotEmpty());
+                // P1.15: GET por id de registro excluido devolve 404 (VIEWER nao ve
+                // excluidos); a lista com includeDeleted acima continua sendo a prova
+                // de que o registro existe.
+                .andExpect(status().isNotFound());
         send(delete("/api/v1/registry/consumer-units/" + unit2Id), operator, "{\"reason\": \"de novo\"}")
                 .andExpect(status().isConflict());
         send(delete("/api/v1/registry/customers/" + customerId), operator, "{\"reason\": \"teste\"}")

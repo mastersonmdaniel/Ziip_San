@@ -79,6 +79,13 @@ class FreshInstallTest {
      * e a geometria vira GeoJSON, mas Z desconhecido é NaN e NaN não é token JSON
      * válido — INSERT de feição com Z NaN (toda feição migrada do legado 2D) falha
      * no trigger. A trilha delas são as tabelas de histórico acima, não o audit_log.
+     *
+     * <p>P1-A (integracao): fiscal_documents_xml também não tem trigger de auditoria,
+     * por desenho da P1.8: a tabela é somente-inserção (UPDATE e DELETE recusados
+     * por trigger) e a auditoria do ciclo de vida do documento vive em
+     * fiscal_document_events — copiar o XML integral para o audit_log duplicaria
+     * conteúdo fiscal sensível. Sem mudança possível após o INSERT, não há estado
+     * posterior a auditar pela trilha genérica.
      */
     private static final Set<String> NOT_AUDITED_BY_DESIGN = Set.of(
             "tenant_metadata", "scada_data_point", "epanet_node_result", "epanet_link_result",
@@ -86,7 +93,8 @@ class FreshInstallTest {
             "gis_node_history", "gis_arc_history", "gis_connection_history",
             "gis_structure_history", "gis_zone_history", "gis_poi_history",
             "gis_node", "gis_arc", "gis_connection",
-            "gis_structure", "gis_zone", "gis_poi");
+            "gis_structure", "gis_zone", "gis_poi",
+            "fiscal_documents_xml");
 
     private static DataSource appDs;
     private static DataSource migratorDs;
