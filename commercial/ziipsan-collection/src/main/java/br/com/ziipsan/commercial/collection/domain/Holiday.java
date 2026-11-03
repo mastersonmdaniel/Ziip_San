@@ -43,7 +43,12 @@ public class Holiday extends TenantAwareEntity {
     @Column(name = "source", nullable = false, length = 300)
     private String source;
 
+    // P0.19 (V1_5): feriado ou ponto facultativo (cal.holidays).
+    @Enumerated(EnumType.STRING)
+    @Column(name = "kind", nullable = false, length = 20)
+    private BusinessCalendar.HolidayKind kind = BusinessCalendar.HolidayKind.HOLIDAY;
+
     public BusinessCalendar.HolidayEntry toEntry() {
-        return new BusinessCalendar.HolidayEntry(holidayDate, scope, stateCode, municipalityIbge);
+        return new BusinessCalendar.HolidayEntry(holidayDate, scope, stateCode, municipalityIbge, kind);
     }
 }

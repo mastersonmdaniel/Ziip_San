@@ -18,13 +18,30 @@ public final class BusinessCalendar {
     public enum Scope { NATIONAL, STATE, MUNICIPAL }
 
     /**
-     * Feriado cadastrado. {@code stateCode} (UF) é obrigatório no escopo estadual e
-     * {@code municipalityIbge} no municipal.
+     * Natureza do registro em {@code cal.holidays} (V1_5, P0.19). Ponto facultativo é
+     * registrado, mas por padrão NÃO conta como dia não útil: se o ponto facultativo
+     * vale para o calendário do tenant (corte, SLA) é decisão do tenant/ERI, aplicada
+     * nas fases que consomem o calendário (P2.15, P3.4), não travada aqui.
      */
-    public record HolidayEntry(LocalDate date, Scope scope, String stateCode, String municipalityIbge) {
+    public enum HolidayKind { HOLIDAY, OPTIONAL_POINT }
+
+    /**
+     * Feriado cadastrado. {@code stateCode} (UF) é obrigatório no escopo estadual e
+     * {@code municipalityIbge} no municipal. O construtor de 4 argumentos é o feriado
+     * de sempre (kind {@code HOLIDAY}); ponto facultativo usa o de 5 argumentos.
+     */
+    public record HolidayEntry(LocalDate date, Scope scope, String stateCode, String municipalityIbge,
+                               HolidayKind kind) {
+        public HolidayEntry(LocalDate date, Scope scope, String stateCode, String municipalityIbge) {
+            this(date, scope, stateCode, municipalityIbge, HolidayKind.HOLIDAY);
+        }
+
         public HolidayEntry {
             if (date == null || scope == null) {
                 throw new IllegalArgumentException("Data e escopo do feriado são obrigatórios");
+            }
+            if (kind == null) {
+                throw new IllegalArgumentException("A natureza do registro (feriado ou ponto facultativo) é obrigatória");
             }
             if (scope == Scope.STATE && (stateCode == null || stateCode.isBlank())) {
                 throw new IllegalArgumentException("Feriado estadual exige a UF");
@@ -48,10 +65,21 @@ public final class BusinessCalendar {
 
     /**
      * Calendário de um município: feriados nacionais, os da UF informada e os do município
-     * informado. Entradas de outros estados ou municípios são ignoradas.
+     * informado. Entradas de outros estados ou municípios são ignoradas. Pontos
+     * facultativos NÃO contam como dia não útil aqui (comportamento padrão da V1_5).
      */
     public static BusinessCalendar forMunicipality(Collection<HolidayEntry> entries, String stateCode,
                                                    String municipalityIbge) {
+        return forMunicipality(entries, stateCode, municipalityIbge, false);
+    }
+
+    /**
+     * Como {@link #forMunicipality(Collection, String, String)}, mas com
+     * {@code includeOptionalPoints = true} os pontos facultativos do município/UF
+     * também contam como dia não útil — a escolha do tenant para o seu calendário.
+     */
+    public static BusinessCalendar forMunicipality(Collection<HolidayEntry> entries, String stateCode,
+                                                   String municipalityIbge, boolean includeOptionalPoints) {
         Set<LocalDate> days = new HashSet<>();
         for (HolidayEntry e : entries) {
             boolean applies = switch (e.scope()) {
@@ -59,7 +87,7 @@ public final class BusinessCalendar {
                 case STATE -> e.stateCode().equalsIgnoreCase(stateCode);
                 case MUNICIPAL -> e.municipalityIbge().equals(municipalityIbge);
             };
-            if (applies) {
+            if (applies && (includeOptionalPoints || e.kind() == HolidayKind.HOLIDAY)) {
                 days.add(e.date());
             }
         }

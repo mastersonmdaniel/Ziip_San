@@ -5,6 +5,7 @@ import br.com.ziipsan.commercial.collection.surcharge.CorrectionRule;
 import br.com.ziipsan.commercial.collection.surcharge.FineRule;
 import br.com.ziipsan.commercial.collection.surcharge.IndexSeries;
 import br.com.ziipsan.commercial.collection.surcharge.InterestRule;
+import br.com.ziipsan.commercial.collection.surcharge.LegalLimits;
 import br.com.ziipsan.commercial.collection.surcharge.SurchargePolicy;
 import br.com.ziipsan.core.domain.TenantAwareEntity;
 import jakarta.persistence.Column;
@@ -32,7 +33,7 @@ import java.util.function.Function;
 @Setter
 public class CollectionPolicy extends TenantAwareEntity {
 
-    public enum InterestMode { NONE, SIMPLE_PER_DAY }
+    public enum InterestMode { NONE, SIMPLE_PER_DAY, DAILY_RATE }
 
     public enum CorrectionMode { NONE, BY_INDEX }
 
@@ -60,6 +61,22 @@ public class CollectionPolicy extends TenantAwareEntity {
     @Column(name = "fine_cap_justification", length = 300)
     private String fineCapJustification;
 
+    // P0.20 (V6_6): aceite reforçado do teto acima de 2%. NULL para tetos até 2%.
+    @Column(name = "fine_cap_norm_citation", length = 300)
+    private String fineCapNormCitation;
+
+    @Column(name = "fine_cap_proposed_by")
+    private java.util.UUID fineCapProposedBy;
+
+    @Column(name = "fine_cap_approved_by")
+    private java.util.UUID fineCapApprovedBy;
+
+    @Column(name = "fine_cap_acceptance_ref", length = 64)
+    private String fineCapAcceptanceRef;
+
+    @Column(name = "fine_cap_risk_alert_ack")
+    private Boolean fineCapRiskAlertAck;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "interest_mode", nullable = false, length = 20)
     private InterestMode interestMode;
@@ -72,6 +89,11 @@ public class CollectionPolicy extends TenantAwareEntity {
 
     @Column(name = "interest_cap_percent", precision = 7, scale = 4)
     private BigDecimal interestCapPercent;
+
+    // P0.20 (V6_6): taxa diaria de juros (DAILY_RATE). O teto da agencia (ex.: SC
+    // 0,033%/dia) e validado na camada de parametro, nao aparado aqui.
+    @Column(name = "interest_daily_percent", precision = 7, scale = 4)
+    private BigDecimal interestDailyPercent;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "correction_mode", nullable = false, length = 20)
@@ -103,10 +125,20 @@ public class CollectionPolicy extends TenantAwareEntity {
      * @param indexSeries resolve o código do índice na série do tenant (só chamado se a correção for por índice)
      */
     public SurchargePolicy toSurchargePolicy(Function<String, IndexSeries> indexSeries) {
-        FineRule fine = new FineRule(finePercent, fineCapPercent, fineCapJustification);
-        InterestRule interest = interestMode == InterestMode.SIMPLE_PER_DAY
-                ? InterestRule.simplePerDay(interestMonthlyPercent, interestMonthBasisDays, interestCapPercent)
-                : InterestRule.none();
+        FineRule fine = fineCapPercent != null
+                && fineCapPercent.compareTo(LegalLimits.MAX_FINE_PERCENT) > 0
+                ? FineRule.withAboveLegalCap(finePercent, fineCapPercent,
+                        new FineRule.FineCapApproval(fineCapNormCitation, fineCapProposedBy,
+                                fineCapApprovedBy, fineCapAcceptanceRef,
+                                Boolean.TRUE.equals(fineCapRiskAlertAck)))
+                : new FineRule(finePercent, fineCapPercent, fineCapJustification);
+        InterestRule interest = switch (interestMode) {
+            case SIMPLE_PER_DAY -> InterestRule.simplePerDay(
+                    interestMonthlyPercent, interestMonthBasisDays, interestCapPercent);
+            case DAILY_RATE -> InterestRule.dailyRate(interestDailyPercent, interestCapPercent);
+            case NONE -> InterestRule.none();
+            case null -> InterestRule.none();
+        };
         CorrectionRule correction = correctionMode == CorrectionMode.BY_INDEX
                 ? CorrectionRule.byIndex(indexSeries.apply(correctionIndexCode), correctionMinMonths,
                         correctionAllowNegative)

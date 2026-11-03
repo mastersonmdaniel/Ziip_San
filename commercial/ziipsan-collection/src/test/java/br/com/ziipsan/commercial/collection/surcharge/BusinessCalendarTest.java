@@ -74,6 +74,21 @@ class BusinessCalendarTest {
     }
 
     @Test
+    @DisplayName("cal.holidays: ponto facultativo é registrado, mas por padrão não tira o dia útil; com opt-in, tira")
+    void optionalPointDefaultsToBusinessDay() {
+        List<HolidayEntry> entries = List.of(
+                new HolidayEntry(LocalDate.of(2026, 6, 10), Scope.MUNICIPAL, "SC", "4205407",
+                        BusinessCalendar.HolidayKind.OPTIONAL_POINT),
+                new HolidayEntry(LocalDate.of(2026, 6, 11), Scope.MUNICIPAL, "SC", "4205407",
+                        BusinessCalendar.HolidayKind.HOLIDAY));
+        BusinessCalendar standard = BusinessCalendar.forMunicipality(entries, "SC", "4205407");
+        assertThat(standard.isBusinessDay(LocalDate.of(2026, 6, 10))).as("ponto facultativo, padrão").isTrue();
+        assertThat(standard.isBusinessDay(LocalDate.of(2026, 6, 11))).as("feriado").isFalse();
+        BusinessCalendar withOptional = BusinessCalendar.forMunicipality(entries, "SC", "4205407", true);
+        assertThat(withOptional.isBusinessDay(LocalDate.of(2026, 6, 10))).as("ponto facultativo, opt-in").isFalse();
+    }
+
+    @Test
     @DisplayName("feriado estadual sem UF, municipal sem IBGE, sem data ou sem escopo são recusados")
     void entryValidation() {
         assertThatThrownBy(() -> new HolidayEntry(MON_12_OCT, Scope.STATE, null, null))

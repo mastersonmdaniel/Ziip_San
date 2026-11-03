@@ -18,6 +18,27 @@ public final class LegalLimits {
      */
     public static final BigDecimal MAX_FINE_PERCENT = new BigDecimal("2.00");
 
+    /**
+     * Padrão de fábrica da multa moratória: 2% (convergência de 10 ERIs, PARAMETROS G5).
+     * É o valor aplicado quando o tenant não declara outro; a trava legal é a mesma, mas
+     * os conceitos são distintos: padrão ≠ teto.
+     */
+    public static final BigDecimal FACTORY_FINE_PERCENT = new BigDecimal("2.00");
+
+    /**
+     * Referência documentada, NÃO trava global: teto de juros de mora de Santa Catarina,
+     * 0,033% ao dia (classe d; os tetos por agência chegam nos perfis da P2.31).
+     */
+    public static final BigDecimal SC_INTEREST_DAILY_PERCENT = new BigDecimal("0.033");
+
+    /**
+     * Metodologia da taxa legal de fallback (P0.20, {@code fee.legal_rate_fallback}):
+     * Resolução CMN 5.171/2024, taxa divulgada mensalmente pelo BCB. Nenhum valor de
+     * taxa é fixado aqui — a carga mensal do BCB fica fora do P0.20.
+     */
+    public static final String LEGAL_RATE_METHODOLOGY =
+            "Resolução CMN 5.171/2024; taxa divulgada mensalmente pelo BCB";
+
     private LegalLimits() {
     }
 }

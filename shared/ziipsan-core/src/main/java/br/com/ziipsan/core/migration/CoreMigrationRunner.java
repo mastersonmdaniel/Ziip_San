@@ -46,6 +46,10 @@ public class CoreMigrationRunner implements ApplicationRunner {
                 .locations(CORE_MIGRATIONS_LOCATION)
                 .baselineOnMigrate(true)
                 .baselineVersion("0")
+                // P0.19: as versoes reservadas do core (V3, V4, ...) nao seguem a ordem
+                // de aplicacao — a V5 ja foi aplicada antes da V3 existir. Sem outOfOrder,
+                // um banco existente recusaria a V3. Mesma decisao do TenantMigrator (G10a).
+                .outOfOrder(true)
                 .table("flyway_schema_history")
                 .load();
 

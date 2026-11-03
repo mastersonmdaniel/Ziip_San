@@ -145,20 +145,33 @@ public final class SurchargeCalculator {
     }
 
     private BigDecimal interest(BigDecimal principal, long days) {
-        if (!(policy.interest() instanceof InterestRule.SimplePerDay rule)) {
-            return ZERO;
-        }
-        // principal x taxa/100 x dias / base, com uma única divisão e um único arredondamento.
-        BigDecimal numerator = principal.multiply(rule.monthlyPercent()).multiply(BigDecimal.valueOf(days));
-        BigDecimal denominator = HUNDRED.multiply(BigDecimal.valueOf(rule.monthBasisDays()));
-        BigDecimal interest = numerator.divide(denominator, 2, RoundingMode.HALF_UP);
-        if (rule.capPercent() != null) {
-            BigDecimal cap = principal.multiply(rule.capPercent()).divide(HUNDRED, 2, RoundingMode.HALF_UP);
-            if (interest.compareTo(cap) > 0) {
-                interest = cap;
+        BigDecimal interest;
+        if (policy.interest() instanceof InterestRule.SimplePerDay rule) {
+            // principal x taxa/100 x dias / base, com uma única divisão e um único arredondamento.
+            BigDecimal numerator = principal.multiply(rule.monthlyPercent()).multiply(BigDecimal.valueOf(days));
+            BigDecimal denominator = HUNDRED.multiply(BigDecimal.valueOf(rule.monthBasisDays()));
+            interest = numerator.divide(denominator, 2, RoundingMode.HALF_UP);
+            if (rule.capPercent() != null) {
+                BigDecimal cap = principal.multiply(rule.capPercent()).divide(HUNDRED, 2, RoundingMode.HALF_UP);
+                if (interest.compareTo(cap) > 0) {
+                    interest = cap;
+                }
             }
+            return interest;
         }
-        return interest;
+        if (policy.interest() instanceof InterestRule.DailyRate rule) {
+            // P0.20: juros simples por dia — principal x taxa diária/100 x dias.
+            interest = principal.multiply(rule.dailyPercent()).multiply(BigDecimal.valueOf(days))
+                    .divide(HUNDRED, 2, RoundingMode.HALF_UP);
+            if (rule.capPercent() != null) {
+                BigDecimal cap = principal.multiply(rule.capPercent()).divide(HUNDRED, 2, RoundingMode.HALF_UP);
+                if (interest.compareTo(cap) > 0) {
+                    interest = cap;
+                }
+            }
+            return interest;
+        }
+        return ZERO;
     }
 
     private BigDecimal correction(BigDecimal principal, LocalDate due, LocalDate evaluation) {

@@ -385,19 +385,62 @@ class SurchargeCalculatorTest {
     }
 
     @Test
-    @DisplayName("teto próprio acima de 2% exige a norma; abaixo de 2% não exige; multa acima do teto próprio é recusada")
+    @DisplayName("teto próprio até 2% não exige norma; acima de 2% só com aceite reforçado (P0.20, classe b)")
     void fineCapOverride() {
-        assertThat(FineRule.withCapOverride(d("5.00"), d("10.00"), "Contrato de concessão cl. 12").ratePercent())
-                .isEqualByComparingTo("5.00");
-        assertThatThrownBy(() -> FineRule.withCapOverride(d("5.00"), d("10.00"), null))
-                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("exige a norma");
-        assertThatThrownBy(() -> FineRule.withCapOverride(d("5.00"), d("10.00"), "  "))
-                .isInstanceOf(IllegalArgumentException.class);
         assertThat(FineRule.withCapOverride(d("1.00"), d("1.50"), null).ratePercent()).isEqualByComparingTo("1.00");
         assertThatThrownBy(() -> FineRule.withCapOverride(d("2.00"), d("1.50"), null))
                 .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> FineRule.withCapOverride(d("11.00"), d("10.00"), "Contrato"))
                 .isInstanceOf(IllegalArgumentException.class);
+        // Justificativa em texto livre, sozinha, NÃO basta mais acima de 2%.
+        assertThatThrownBy(() -> FineRule.withCapOverride(d("5.00"), d("10.00"), "Contrato de concessão cl. 12"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("withAboveLegalCap");
+        assertThatThrownBy(() -> new FineRule(d("5.00"), d("10.00"), "Contrato de concessão cl. 12"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("fee.fine_pct acima de 2%: aceite reforçado completo passa; cada requisito faltando é recusado")
+    void fineAboveLegalCapRequiresFullApproval() {
+        var proposer = java.util.UUID.randomUUID();
+        var approver = java.util.UUID.randomUUID();
+        var approval = new FineRule.FineCapApproval(
+                "Contrato de concessão cl. 12", proposer, approver, "aceite-0001", true);
+        assertThat(FineRule.withAboveLegalCap(d("5.00"), d("10.00"), approval).ratePercent())
+                .isEqualByComparingTo("5.00");
+        assertThatThrownBy(() -> FineRule.withAboveLegalCap(d("5.00"), d("10.00"), null))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new FineRule.FineCapApproval(
+                "  ", proposer, approver, "aceite-0001", true))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("norma citada");
+        assertThatThrownBy(() -> new FineRule.FineCapApproval(
+                "Contrato", proposer, proposer, "aceite-0001", true))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("não aprova");
+        assertThatThrownBy(() -> new FineRule.FineCapApproval(
+                "Contrato", proposer, approver, "  ", true))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("aceite formal");
+        assertThatThrownBy(() -> new FineRule.FineCapApproval(
+                "Contrato", proposer, approver, "aceite-0001", false))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("alerta de risco");
+        assertThatThrownBy(() -> FineRule.withAboveLegalCap(d("1.00"), d("1.50"), approval))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("fee.interest_mode DAILY_RATE_WITH_CAP: SC 0,033% ao dia, simples, 30 dias sobre 1000 = 9,90")
+    void interestDailyRateWithAgencyCap() {
+        assertThatThrownBy(() -> InterestRule.dailyRateWithAgencyCap(
+                d("0.034"), LegalLimits.SC_INTEREST_DAILY_PERCENT, null))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("teto da agência");
+        var policy = new SurchargePolicy(0, false, FineRule.none(),
+                InterestRule.dailyRateWithAgencyCap(
+                        LegalLimits.SC_INTEREST_DAILY_PERCENT, LegalLimits.SC_INTEREST_DAILY_PERCENT, null),
+                CorrectionRule.none());
+        var result = new SurchargeCalculator(policy, BusinessCalendar.of(java.util.List.of()))
+                .calculate(Request.of(d("1000"), MON_05_OCT, MON_05_OCT.plusDays(30)));
+        assertThat(result.interest()).isEqualByComparingTo("9.90");
+        assertThat(result.fine()).isEqualByComparingTo("0.00");
     }
 
     @Test
