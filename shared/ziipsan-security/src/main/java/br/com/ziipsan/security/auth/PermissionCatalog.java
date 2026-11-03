@@ -51,7 +51,22 @@ public final class PermissionCatalog {
             // P0.43: leitura do registro de implantação (platform.deployment), rota
             // GET /api/v1/platform/deployments. Papéis de plataforma que a têm:
             // PLATFORM_OWNER e PLATFORM_OPS (ver PlatformRole); SUPPORT e FINANCE, não.
-            new Permission("deployment:read", "plataforma", "deployment", "read", "P0.43"));
+            new Permission("deployment:read", "plataforma", "deployment", "read", "P0.43"),
+            // P1.6 (integracao P1-B): o console usava console:read/manage/suspend/
+            // delete nas rotas sem registra-las no catalogo, e o
+            // RoutePermissionTest recusava todas. Registradas aqui, sem entrar
+            // em nenhum perfil de fabrica de tenant: elas so existem via papel
+            // de plataforma (ver PlatformRole), como deployment:read.
+            new Permission("console:read", "console", "console", "read", "P1.6"),
+            new Permission("console:manage", "console", "console", "manage", "P1.6"),
+            new Permission("console:suspend", "console", "console", "suspend", "P1.6"),
+            new Permission("console:delete", "console", "console", "delete", "P1.6"),
+            // P1.6 (integracao P1-B): a tela de mudanca de parametro do tenant
+            // (/api/v1/tenant/parameters/*) nasceu sem permissao fina — a frente
+            // declarou a lacuna e o RoutePermissionTest recusava as 6 rotas.
+            // Concessao direta (nenhum perfil de fabrica), como registry:export:
+            // propor/aprovar/aceitar/ler valores exige a permissao direta.
+            new Permission("parameters:manage", "console", "parameters", "manage", "P1.6"));
 
     /** Perfis mínimos de fábrica da P0.13, compostos do catálogo (perfis por função: P1.37). */
     public enum FactoryProfile {

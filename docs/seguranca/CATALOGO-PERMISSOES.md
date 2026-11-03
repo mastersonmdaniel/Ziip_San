@@ -23,6 +23,11 @@ na aplicação, a partir do catálogo.
 | `deployment:read` | plataforma | deployment | read | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS) | P0.43 |
 | `gis:catalog-read` | gis | gis | catalog-read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.27 |
 | `gis:catalog-manage` | gis | gis | catalog-manage | (nenhum — só concessão direta; perfis por função na P1.37) | P1.27 |
+| `console:read` | console | console | read | (nenhum perfil de tenant — só papéis de plataforma: os 4 papéis) | P1.6 |
+| `console:manage` | console | console | manage | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS) | P1.6 |
+| `console:suspend` | console | console | suspend | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_FINANCE) | P1.6 |
+| `console:delete` | console | console | delete | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER) | P1.6 |
+| `parameters:manage` | console | parameters | manage | (nenhum — só concessão direta) | P1.6 |
 
 ## Regras
 
@@ -45,4 +50,12 @@ na aplicação, a partir do catálogo.
 - `deployment:read` não pertence a nenhum perfil de fábrica de tenant: ela só existe via
   papel de plataforma (PLATFORM_OWNER e PLATFORM_OPS, ver `PlatformRole`). Um token de tenant
   nunca a recebe, e um token de plataforma nunca recebe permissão de tenant.
+- `console:read/manage/suspend/delete` (P1.6) seguem a mesma regra: só existem via papel de
+  plataforma (ver `PlatformRole` — OWNER tem as 4, OPS tem read/manage, SUPPORT tem read,
+  FINANCE tem read/suspend). A matriz fina (FINANCE só com motivo inadimplência, eliminação
+  só OWNER) continua no serviço, não no catálogo.
+- `parameters:manage` (P1.6) cobre toda a tela de mudança de parâmetro do tenant
+  (`/api/v1/tenant/parameters/*`: propor, aprovar, aceitar, ler vigente e painel): é
+  concessão direta, como `registry:export` — nenhum perfil de fábrica a inclui. A separação
+  proponente ≠ aprovador continua no serviço, por ator, não por papel.
 - Perfis compostos pelo ADMIN do tenant e restrição negativa ficam na ED-06, sobre este catálogo.

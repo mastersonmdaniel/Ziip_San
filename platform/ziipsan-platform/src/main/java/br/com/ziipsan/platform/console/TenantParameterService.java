@@ -39,12 +39,13 @@ import java.util.UUID;
  *       so.deadline_hours_by_type) vivem no módulo dono (P1.31) e não são
  *       duplicadas aqui — o console confere o catálogo, não a semântica
  *       de cada parâmetro;</li>
- *   <li>permissão fina de tenant: o catálogo da P0.13 não tem permissão
- *       para "mudar parâmetro", por isso a rota exige token de tenant
- *       autenticado e a separação exigida (proponente ≠ aprovador) é a
- *       trava aplicada aqui. Criar uma permissão nova sem rota que a use
- *       seria superfície sem prova (regra da P0.13); a permissão fina é
- *       pendência declarada, não inventada.</li>
+ *   <li>permissão fina de tenant: resolvida na integração P1-B com
+ *       {@code parameters:manage} (concessão direta, nenhum perfil de
+ *       fábrica — como {@code registry:export}), exigida pelo
+ *       {@code @PreAuthorize} da classe do controller; a separação exigida
+ *       (proponente ≠ aprovador) continua sendo a trava aplicada aqui, por
+ *       ator. A trava fina por papel de tenant (perfis por função) fica
+ *       para a P1.37.</li>
  * </ul>
  */
 public class TenantParameterService {

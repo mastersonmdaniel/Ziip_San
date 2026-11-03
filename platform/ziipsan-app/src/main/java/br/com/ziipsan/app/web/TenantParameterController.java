@@ -5,6 +5,7 @@ import br.com.ziipsan.core.tenant.TenantContextHolder;
 import br.com.ziipsan.platform.console.PlatformConsoleService;
 import br.com.ziipsan.platform.console.TenantParameterService;
 import br.com.ziipsan.platform.tenant.TenantCatalog;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,14 +27,15 @@ import java.util.UUID;
  *
  * <p>Autenticação: token de tenant (o filtro já recusou token de plataforma
  * aqui e resolveu o schema pelo catálogo). A separação proponente ≠ aprovador
- * é conferida no serviço. Permissão fina de tenant para "mudar parâmetro"
- * não existe no catálogo da P0.13 — qualquer usuário autenticado do tenant
- * pode propor hoje, e isso está declarado como pendência em
- * {@code TenantParameterService}, não escondido atrás de uma permissão
- * inventada.
+ * é conferida no serviço, por ator. A permissão fina ("mudar parâmetro")
+ * chegou na integração P1-B como {@code parameters:manage} (concessão
+ * direta, nenhum perfil de fábrica — como {@code registry:export}): toda
+ * rota desta classe a exige. A trava fina por papel de tenant (perfis por
+ * função) fica para a P1.37, como as demais permissões diretas.
  */
 @RestController
 @RequestMapping("/api/v1/tenant/parameters")
+@PreAuthorize("hasAuthority('parameters:manage')")
 public class TenantParameterController {
 
     public record ProposeInput(String definitionKey, JsonNode value, LocalDate validFrom, LocalDate validTo) {

@@ -43,7 +43,9 @@ class PlatformConsoleTest extends AppIntegrationTestBase {
     }
 
     private static String tenantToken() {
-        return TestTokens.token(ProvisionedTenant.TENANT_ID, "ADMIN");
+        // ADMIN + a concessão direta parameters:manage (integracao P1-B):
+        // nenhum perfil de fabrica a inclui, como registry:export.
+        return TestTokens.token(ProvisionedTenant.TENANT_ID, "ADMIN", "parameters:manage");
     }
 
     private static String base(UUID tenantId) {
