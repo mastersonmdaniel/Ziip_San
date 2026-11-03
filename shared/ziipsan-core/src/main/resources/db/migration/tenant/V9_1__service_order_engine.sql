@@ -522,15 +522,36 @@ CREATE INDEX idx_pet_order ON service_order_entry_permits(tenant_id, order_id);
 -- do not exist yet. The backfill of a real orphan row is a data migration
 -- owned by the task that finds it, not an invented order id here.
 
-ALTER TABLE unit_status_history ADD CONSTRAINT fk_ush_service_order
-    FOREIGN KEY (tenant_id, service_order_id) REFERENCES service_orders(tenant_id, id);
-ALTER TABLE unit_status_history ALTER COLUMN service_order_id SET NOT NULL;
-CREATE INDEX idx_ush_service_order ON unit_status_history(tenant_id, service_order_id);
+-- LAYERING GUARD (integracao P1-B): esta migration vive no jar do core, mas
+-- estas duas tabelas pertencem a outros modulos (registry V3_1, billing V4_2).
+-- O provisionamento roda db/migration/tenant a partir do classpath: na montagem
+-- completa (modulo app, producao) as tabelas existem e os FKs aplicam; em
+-- contextos parciais (testes do modulo platform, sem registry/billing no
+-- classpath) elas nao existem e o ALTER quebraria o provisionamento — foi o
+-- que derrubou a rodada 2 do CI total (TenantProvisioningServiceTest). Cada
+-- bloco so aplica se a tabela existir (to_regclass respeita o search_path do
+-- schema do tenant). Em producao a montagem e sempre completa, entao o
+-- fail-closed do ADR-0039 item 6 vale integralmente onde importa; o
+-- ServiceOrderEngineIT (modulo app) prova o caminho com FK aplicada.
+DO $$
+BEGIN
+    IF to_regclass('unit_status_history') IS NOT NULL THEN
+        ALTER TABLE unit_status_history ADD CONSTRAINT fk_ush_service_order
+            FOREIGN KEY (tenant_id, service_order_id) REFERENCES service_orders(tenant_id, id);
+        ALTER TABLE unit_status_history ALTER COLUMN service_order_id SET NOT NULL;
+        CREATE INDEX idx_ush_service_order ON unit_status_history(tenant_id, service_order_id);
+    END IF;
+END $$;
 
-ALTER TABLE social_tariff_enrollments ADD CONSTRAINT fk_social_enroll_order
-    FOREIGN KEY (tenant_id, service_order_id) REFERENCES service_orders(tenant_id, id);
-ALTER TABLE social_tariff_enrollments ALTER COLUMN service_order_id SET NOT NULL;
-CREATE INDEX idx_social_enroll_order ON social_tariff_enrollments(tenant_id, service_order_id);
+DO $$
+BEGIN
+    IF to_regclass('social_tariff_enrollments') IS NOT NULL THEN
+        ALTER TABLE social_tariff_enrollments ADD CONSTRAINT fk_social_enroll_order
+            FOREIGN KEY (tenant_id, service_order_id) REFERENCES service_orders(tenant_id, id);
+        ALTER TABLE social_tariff_enrollments ALTER COLUMN service_order_id SET NOT NULL;
+        CREATE INDEX idx_social_enroll_order ON social_tariff_enrollments(tenant_id, service_order_id);
+    END IF;
+END $$;
 
 -- ========================================================================
 -- ISOLATION AND AUDIT
