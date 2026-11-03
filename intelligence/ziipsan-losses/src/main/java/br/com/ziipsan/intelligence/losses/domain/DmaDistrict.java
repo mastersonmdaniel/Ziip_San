@@ -7,6 +7,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 import org.locationtech.jts.geom.Polygon;
@@ -15,7 +16,11 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
-@Table(name = "dma_district", indexes = {
+@Table(name = "dma_district", uniqueConstraints = {
+        // Code unico por tenant, nunca global (GIS-01, V13_2): o UNIQUE de coluna
+        // caiu na migration; o mapeamento acompanha o banco em vez de mentir global.
+        @UniqueConstraint(name = "uq_dma_tenant_code", columnNames = {"tenant_id", "code"})
+}, indexes = {
         @Index(name = "idx_dma_code", columnList = "code"),
         @Index(name = "idx_dma_status", columnList = "status")
 })
@@ -23,7 +28,7 @@ import java.util.UUID;
 @Setter
 public class DmaDistrict extends TenantAwareEntity {
 
-    @Column(name = "code", nullable = false, length = 50, unique = true)
+    @Column(name = "code", nullable = false, length = 50)
     private String code;
 
     @Column(name = "name", nullable = false, length = 200)

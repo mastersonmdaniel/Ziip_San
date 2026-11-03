@@ -10,7 +10,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>ziipsan-gis</artifactId>
-    <name>ZIIPSAN GIS - PostGIS, QGIS Server, MapLibre, EPANET WASM</name>
+    <name>ZIIPSAN GIS - PostGIS e EPANET</name>
 
     <dependencies>
         <dependency>

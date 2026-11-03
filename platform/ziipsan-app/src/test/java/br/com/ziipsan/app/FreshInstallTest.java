@@ -66,10 +66,27 @@ class FreshInstallTest {
      * (P0.11) é o próprio registro de acesso: auditar cada linha dele em audit_log
      * duplicaria o armazenamento e espalharia o índice cego para mais um lugar. Toda adição
      * aqui precisa de justificativa equivalente.
+     *
+     * <p>GIS-01 (P1.26): as tabelas gis_*_history SÃO a trilha de auditoria das feições
+     * (cada linha guarda o estado anterior com valid_period, autor, papel e canal) e só
+     * são escritas pelo gatilho gis_write_history, nunca por usuário. Auditar cada linha
+     * delas em audit_log duplicaria a trilha — o mesmo argumento das séries acima, com
+     * o agravante de que a linha de histórico já é, por si, o registro de auditoria.
+     *
+     * <p>GIS-01 (P1.26): as próprias feições (gis_node, gis_arc, gis_connection,
+     * gis_structure, gis_zone, gis_poi) também não têm trigger de auditoria, pelo
+     * mesmo motivo e por um motivo técnico: audit_trigger_function faz to_jsonb(NEW)
+     * e a geometria vira GeoJSON, mas Z desconhecido é NaN e NaN não é token JSON
+     * válido — INSERT de feição com Z NaN (toda feição migrada do legado 2D) falha
+     * no trigger. A trilha delas são as tabelas de histórico acima, não o audit_log.
      */
     private static final Set<String> NOT_AUDITED_BY_DESIGN = Set.of(
             "tenant_metadata", "scada_data_point", "epanet_node_result", "epanet_link_result",
-            "personal_data_access_log");
+            "personal_data_access_log",
+            "gis_node_history", "gis_arc_history", "gis_connection_history",
+            "gis_structure_history", "gis_zone_history", "gis_poi_history",
+            "gis_node", "gis_arc", "gis_connection",
+            "gis_structure", "gis_zone", "gis_poi");
 
     private static DataSource appDs;
     private static DataSource migratorDs;

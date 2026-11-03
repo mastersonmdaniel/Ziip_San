@@ -227,6 +227,14 @@ entram neste grupo na P1.26.
 | Chave | Descrição | Tipo | Sug. | Limite | Cl. | Apr. | Fase | Código |
 |---|---|---|---|---|---|---|---|---|
 | `gis.public_aggregation_min_units` | mínimo de imóveis por célula de agregação (quadra ou setor) em toda publicação de dado de imóvel ou ligação fora do backoffice autenticado, inclusive temáticos de consumo e inadimplência; célula abaixo do mínimo não é publicada | int | 5 | piso 5, fixado pelo Ziip SAN (decisão do dono do produto, plano v2.11); só amplia | c | DPO | P3 | novo (core `V9_6`, P1.26; aplicado na P3.27 e na ED-67) |
+| `gis.work_srid` | SRID UTM de trabalho do tenant | enum | fuso da sede | só a lista do §3.9 (fusos 18S–25S, 18N–22N, 26S) | d | — | P1 | novo (core `V9_6`, P1.26) |
+| `gis.vertical_datum` | datum vertical do tenant | enum | Imbituba (Santana no AP) | Imbituba ou Santana | d | — | P1 | novo (core `V9_6`, P1.26) |
+| `gis.snap_tolerance_m` | tolerância de snap na edição, em metros | m | 0,10 | 0,01 a 1,00 — valor de referência a validar (normas da P1.28 não compradas) | b | — | P1 | novo (core `V9_6`, P1.26) |
+| `gis.import_snap_tolerance_m` | tolerância padrão de snap na importação em lote, em metros | m | 0,50 | 0,01 a 5,00 — valor de referência a validar; o lote pode reduzir | b | — | P1 | novo (core `V9_6`, P1.26) |
+| `gis.service_line_max_distance_m` | distância máxima do ramal automático, em metros | m | 100 | 1 a 300 | b | — | P1 | novo (core `V9_6`, P1.26) |
+| `gis.accuracy_targets` | meta de exatidão por classe | tabela | ±0,10 m H e ±0,05 m V | — | b | — | P1 | novo (core `V9_6`, P1.26) |
+| `gis.basemap_provider` | mapa base padrão | enum | OpenStreetMap | Google e Bing só com licença no contrato | d | — | P1 | novo (core `V9_6`, P1.26) |
+| `gis.style_profile` | perfil de simbologia | enum | padrão Ziip | override por tipo e estado | b | — | P1 | novo (core `V9_6`, P1.26) |
 
 ---
 

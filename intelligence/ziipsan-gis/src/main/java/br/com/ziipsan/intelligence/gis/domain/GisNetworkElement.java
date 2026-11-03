@@ -1,19 +1,33 @@
 package br.com.ziipsan.intelligence.gis.domain;
 
 import br.com.ziipsan.core.domain.TenantAwareEntity;
-import br.com.ziipsan.intelligence.losses.domain.DmaDistrict;
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.annotations.Immutable;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+/**
+ * Leitura da view de compatibilidade {@code gis_network_element} (GIS-01, M3).
+ *
+ * <p>A tabela antiga foi renomeada para {@code gis_network_element_legacy} na
+ * V13_2 e a view projeta as feições novas com as colunas antigas, para que o
+ * {@code EpanetSimulationService} continue funcionando só em leitura até a
+ * GIS-12 (M5) remover view e entidade. Por isso a entidade é imutável (nunca
+ * se escreve pela view) e não tem associação a {@code DmaDistrict}: views não
+ * têm FK, e o Hibernate recusaria validar a associação. O DMA vem como
+ * {@code dmaId}; o distrito em si é lido pelo repositório único de losses.
+ *
+ * <p>O {@code unique = true} antigo de {@code element_code} saiu junto: o code
+ * é único por tenant (UNIQUE em cada tabela de feição), nunca global.
+ */
 @Entity
+@Immutable
 @Table(name = "gis_network_element", indexes = {
         @Index(name = "idx_gis_elem_type", columnList = "element_type"),
-        @Index(name = "idx_gis_elem_coords", columnList = "geometry"),
         @Index(name = "idx_gis_elem_dma", columnList = "dma_id"),
         @Index(name = "idx_gis_elem_status", columnList = "status")
 })
@@ -21,7 +35,7 @@ import java.util.UUID;
 @Setter
 public class GisNetworkElement extends TenantAwareEntity {
 
-    @Column(name = "element_code", nullable = false, length = 50, unique = true)
+    @Column(name = "element_code", nullable = false, length = 50)
     private String elementCode;
 
     @Column(name = "name", length = 200)
@@ -34,9 +48,8 @@ public class GisNetworkElement extends TenantAwareEntity {
     @Column(name = "geometry", columnDefinition = "geometry(Geometry, 4674)", nullable = false)
     private org.locationtech.jts.geom.Geometry geometry;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dma_id")
-    private DmaDistrict dmaDistrict;
+    @Column(name = "dma_id")
+    private UUID dmaId;
 
     @Column(name = "material", length = 50)
     private String material;

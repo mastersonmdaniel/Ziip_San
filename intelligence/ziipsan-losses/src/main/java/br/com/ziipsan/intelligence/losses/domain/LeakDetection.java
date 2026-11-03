@@ -10,7 +10,10 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "leak_detection", indexes = {
+@Table(name = "leak_detection", uniqueConstraints = {
+        // Detection code unico por tenant, nunca global (GIS-01, V13_2).
+        @UniqueConstraint(name = "uq_leak_tenant_code", columnNames = {"tenant_id", "detection_code"})
+}, indexes = {
         @Index(name = "idx_leak_coords", columnList = "location"),
         @Index(name = "idx_leak_status", columnList = "status"),
         @Index(name = "idx_leak_detected", columnList = "detected_at"),
@@ -20,7 +23,7 @@ import java.util.UUID;
 @Setter
 public class LeakDetection extends TenantAwareEntity {
 
-    @Column(name = "detection_code", nullable = false, length = 50, unique = true)
+    @Column(name = "detection_code", nullable = false, length = 50)
     private String detectionCode;
 
     @Column(name = "location", columnDefinition = "geometry(Point, 4674)", nullable = false)

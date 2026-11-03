@@ -1,8 +1,8 @@
 package br.com.ziipsan.intelligence.gis.epanet;
 
 import br.com.ziipsan.intelligence.gis.domain.GisNetworkElement;
-import br.com.ziipsan.intelligence.gis.repository.DmaDistrictRepository;
 import br.com.ziipsan.intelligence.gis.repository.GisNetworkElementRepository;
+import br.com.ziipsan.intelligence.losses.repository.DmaDistrictRepository;
 import br.com.ziipsan.intelligence.losses.domain.DmaDistrict;
 import br.com.ziipsan.intelligence.losses.domain.PressureAnalysis;
 import br.com.ziipsan.intelligence.losses.domain.WaterBalance;
@@ -37,7 +37,7 @@ public class EpanetSimulationService {
         DmaDistrict dma = dmaRepository.findByIdAndTenantId(dmaId, TenantContextHolder.getTenantId())
                 .orElseThrow(() -> new IllegalArgumentException("DMA not found"));
 
-        List<GisNetworkElement> elements = networkElementRepository.findByDmaDistrictIdAndTenantId(dmaId, TenantContextHolder.getTenantId());
+        List<GisNetworkElement> elements = networkElementRepository.findByDmaIdAndTenantId(dmaId, TenantContextHolder.getTenantId());
 
         List<ElementSpec> specs = new ArrayList<>();
         int withoutHydraulicRole = 0;

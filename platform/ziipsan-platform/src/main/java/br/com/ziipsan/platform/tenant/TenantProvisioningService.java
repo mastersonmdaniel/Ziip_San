@@ -277,6 +277,29 @@ public class TenantProvisioningService {
                     ps.setString(11, isolationMode);
                     ps.executeUpdate();
                 }
+                // GIS-01 (P1.26): todo tenant nasce com o pacote sanitation ativo, como
+                // o backfill da core V6_1 (P0.47) fez para os tenants existentes. Sem
+                // isso, a gis_domain_visible da V13_1 devolveria vazio para tenants
+                // novos e o gate de pacote da V13_2 recusaria as classes do tenant.
+                // Idempotente (reprovisionar nao duplica). O savepoint existe porque
+                // qualquer erro no PostgreSQL aborta a transacao inteira: sem ele, uma
+                // platform.tenant_vertical ausente (core anterior a V6_1) derrubaria
+                // o registro do tenant junto; com ele, so a ativacao e desfeita e a
+                // ativacao fica para o backfill da V6_1.
+                java.sql.Savepoint activationPoint = conn.setSavepoint("gis_sanitation_activation");
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "INSERT INTO platform.tenant_vertical (tenant_id, vertical_id, state, activated_at)"
+                                + " VALUES (?, 'sanitation', 'ACTIVE', NOW())"
+                                + " ON CONFLICT (tenant_id, vertical_id) DO NOTHING")) {
+                    ps.setObject(1, tenantId);
+                    ps.executeUpdate();
+                    conn.releaseSavepoint(activationPoint);
+                } catch (SQLException activationEx) {
+                    conn.rollback(activationPoint);
+                    log.warn("Pacote sanitation nao ativado no provisionamento de {} "
+                            + "(platform.tenant_vertical ausente ou inacessivel); "
+                            + "a ativacao fica para o backfill da core V6_1", schemaName, activationEx);
+                }
                 conn.commit();
             } catch (Exception e) {
                 conn.rollback();

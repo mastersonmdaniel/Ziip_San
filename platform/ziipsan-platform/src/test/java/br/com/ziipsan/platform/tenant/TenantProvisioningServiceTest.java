@@ -94,6 +94,13 @@ class TenantProvisioningServiceTest {
             st.execute("DROP SCHEMA IF EXISTS " + SCHEMA + " CASCADE");
             assertTestSchema(SCHEMA_B);
             st.execute("DROP SCHEMA IF EXISTS " + SCHEMA_B + " CASCADE");
+            // GIS-01 (P1.26): o provisionamento ativa o pacote sanitation em
+            // platform.tenant_vertical, que referencia tenant_catalog(id) — a
+            // linha vertical precisa sair antes da linha do catálogo, senão o
+            // DELETE esbarra na FK tenant_vertical_tenant_id_fkey.
+            st.execute("DELETE FROM platform.tenant_vertical WHERE tenant_id IN ("
+                    + "SELECT id FROM public.tenant_catalog WHERE schema_name IN ('"
+                    + SCHEMA + "', '" + SCHEMA_B + "'))");
             st.execute("DELETE FROM public.tenant_catalog WHERE schema_name IN ('"
                     + SCHEMA + "', '" + SCHEMA_B + "')");
         }

@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 public interface GisNetworkElementRepository extends JpaRepository<GisNetworkElement, UUID> {
 
-    List<GisNetworkElement> findByDmaDistrictIdAndTenantId(UUID dmaDistrictId, UUID tenantId);
+    List<GisNetworkElement> findByDmaIdAndTenantId(UUID dmaId, UUID tenantId);
 }
