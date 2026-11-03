@@ -93,9 +93,32 @@ percentual e limite definidos pela agência/tabela; a concessão **não depende 
 assinatura do cálculo não recebe situação de pagamento); uma economia por família é cadastro, não
 cálculo.
 
-**Fora deste módulo (depende do cadastro, do importador e da mensageria):** classificação automática
-por CadÚnico/BPC, desempate de economia por família, aviso na fatura por 3 meses antes da perda,
-permanência de 3 meses, relatório anual, Índice de Tarifa Social (R-15), cashback de IBS/CBS (R41).
+**P1.5 (V4_2) — o que entrou neste módulo:** inscrição de tarifa social
+(`social_tariff_enrollments`, com `service_order_id` sem FK até a P1.31), base da lista
+oficial (`social_base_imports` / `social_base_records`, só índices cegos — nenhum CPF,
+NIS, código familiar ou renda em claro) e catálogo de motivos de fim
+(`social_tariff_end_reasons`, vazio por padrão). Domínio puro em `social/`:
+`SocialEligibility` (CadÚnico de 25 meses inelegível, limite 24), `SocialBenefitFloor`
+(benefício abaixo do piso federal de 50% até 15 m³ recusado), `SocialEnrollmentLifecycle`
+(aviso de perda ≥ 3 meses, graça GRACE_3M), `SocialFamilyTiebreak` (uma economia por
+família: responsável no CadÚnico, endereço, titular, ligação mais recente) e
+`SocialClassification` (cruzamento pelo titular e pelos membros; elegível sem unidade
+vai para a busca ativa). A concessão nunca consulta adimplência — não existe campo
+para isso em nenhuma tabela. A trava de coerência entre `social.list_source` e
+`reg.legal_nature` (Decreto 11.016/2022) é validação de parâmetros da plataforma, não
+regra de banco, e fica como pendência da integração.
+
+**P1.16 (V4_6, parte P1) — arredondamento e tributo:** regra única registrada na
+ADR-0047; `bills.tax_treatment` travado em `WITHHOLDING_ONLY` e CHECK nomeado do
+total (`total = água + esgoto + débitos − créditos − tributos retidos`); vetores
+compartilhados C# × Java em `src/test/resources/bill-rounding-vectors.txt` (o lado
+Java passa em `BillRoundingVectorsTest`; o lado C# é externo e pendente). Base de
+auditoria por lote: `bill_audit_batches` + `bills.audit_batch_id` (opcional em P1).
+O particionamento declarativo de `bills`/`bill_items` fica para a P2.3, no mesmo
+arquivo V4_6 reservado para P1–P2 (exige PK composta; ver ADR-0047 §5).
+
+**Fora deste módulo (depende do cadastro, do importador e da mensageria):** aviso na fatura por 3 meses antes da perda (texto pelo motor de mensagens legais da P2.32),
+relatório anual, Índice de Tarifa Social (R-15), cashback de IBS/CBS (R41).
 O prazo apontado pelo relatório (11/12/2026) é do prestador, não deste cálculo.
 
 **Depende de confirmação jurídica** (nada disto foi decidido por palavra do relatório):

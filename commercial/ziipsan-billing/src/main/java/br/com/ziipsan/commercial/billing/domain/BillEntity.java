@@ -110,4 +110,14 @@ public class BillEntity extends TenantAwareEntity {
 
     @Column(name = "completed", nullable = false)
     private boolean completed;
+
+    // V4_6 (P1.16): tratamento do tributo no total. So WITHHOLDING_ONLY existe: o
+    // total da conta subtrai apenas imposto retido; IBS/CBS nao entram no total ate a
+    // P2.6 decidir o regime (dentro ou fora do preco) em migration propria.
+    @Column(name = "tax_treatment", nullable = false, length = 20)
+    private String taxTreatment = "WITHHOLDING_ONLY";
+
+    // V4_6 (base para a P2.3): lote de auditoria da execucao que gerou a conta.
+    @Column(name = "audit_batch_id")
+    private UUID auditBatchId;
 }

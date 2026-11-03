@@ -1,0 +1,23 @@
+# Vetores compartilhados C# x Java da regra unica de arredondamento e tributo DA CONTA (P1.16, ADR-0047).
+# Formato: id|operacao|campos... (campos separados por |, listas por virgula). Sem dependencia de parser:
+# tanto o JUnit (BillRoundingVectorsTest) quanto o xUnit do Ziip Cloud leem este arquivo com split.
+# Todos os valores sao decimais em texto (nunca double) e todas as saidas tem escala 2, salvo ROUND_HALF_UP.
+# ATENCAO: estes vetores sao DA CONTA. O documento fiscal (NFS-e/NFAg-e, P1.8/P2.6) usa half-even
+# para PIS/Cofins (NT 007/2026) e regras proprias para IBS/CBS (NT 004): nao misturar, ver ADR-0047.
+# R-*: arredondamento HALF_UP da conta (tarifa, esgoto, rateio, multa, juros).
+# W-*: retencao: base truncada DOWN; cada tributo HALF_DOWN; total HALF_DOWN; o ultimo absorve o residuo.
+# B-*: total da conta = agua + esgoto + debitos - creditos - tributos retidos.
+# I-*: parcela truncada DOWN; centavos na ultima parcela.
+R-01|ROUND_HALF_UP|0.125|0.13
+R-02|ROUND_HALF_UP|2.675|2.68
+R-03|ROUND_HALF_UP|0.124|0.12
+W-01|WITHHOLD|1000.00|1.20,1.00,3.00,0.65|12.00,10.00,30.00,6.50|58.50
+W-02|WITHHOLD|333.33|1.20,1.00,3.00,0.65|4.00,3.33,10.00,2.17|19.50
+W-03|WITHHOLD|0.55|1.20,1.00,3.00,0.65|0.01,0.01,0.01,0.00|0.03
+W-04|WITHHOLD|7.00|2.50,2.50,2.50|0.17,0.17,0.18|0.52
+B-01|BILL_TOTAL|112.00|89.60|0.00|0.00|0.00|201.60
+B-02|BILL_TOTAL|102.00|0.00|0.00|0.00|0.00|102.00
+B-03|BILL_TOTAL|87.00|0.00|0.00|0.00|0.00|87.00
+B-04|BILL_TOTAL|112.00|89.60|10.00|5.00|12.00|194.60
+I-01|INSTALLMENT|100.00|3|0|33.33
+I-02|INSTALLMENT|100.00|3|2|33.34

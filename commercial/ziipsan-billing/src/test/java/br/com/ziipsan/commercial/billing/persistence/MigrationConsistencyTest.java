@@ -45,6 +45,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Guardas da migration {@code V4_1__create_billing_schema.sql} que NÃO precisam de banco.
+ * A V4_6 entra aqui so pelos ALTERs em bills (a entidade evoluiu com ela); as tabelas
+ * novas da V4_6 tem guarda propria em SocialMigrationConsistencyTest.
  *
  * <p>O projeto não permite rodar o banco de integração nesta fatia, e "build verde não prova nada"
  * (diário de bordo, seção 15): um nome de coluna errado numa entidade só quebraria no primeiro
@@ -82,6 +84,20 @@ class MigrationConsistencyTest {
             sql = new String(in.readAllBytes(), StandardCharsets.UTF_8).replace("\r\n", "\n");
         }
         tables = parseTables(sql);
+        // P1.16 (V4_6): a entidade bills ganhou tax_treatment e audit_batch_id por ALTER
+        // TABLE. O mapa da bills passa a refletir o schema final, nao so o da V4_1, para a
+        // guarda continuar valendo (coluna mapeada sem coluna no banco continua falhando).
+        try (InputStream in = MigrationConsistencyTest.class.getResourceAsStream("/db/migration/tenant/V4_6__bill_total_tax_check_and_batch_audit.sql")) {
+            assertThat(in).as("migration V4_6 no classpath").isNotNull();
+            String v46 = new String(in.readAllBytes(), StandardCharsets.UTF_8).replace("\r\n", "\n");
+            Matcher alter = Pattern.compile("ALTER TABLE bills ADD COLUMN IF NOT EXISTS ([a-z][a-z0-9_]*) +(UUID|VARCHAR\\((\\d+)\\))([^;]*);").matcher(v46);
+            while (alter.find()) {
+                String type = alter.group(2).replaceAll("\\(.*\\)", "");
+                tables.get("bills").put(alter.group(1), new SqlColumn(alter.group(1), type,
+                        alter.group(3) == null ? null : Integer.valueOf(alter.group(3)),
+                        null, null, alter.group(4).contains("NOT NULL")));
+            }
+        }
     }
 
     private static Map<String, Map<String, SqlColumn>> parseTables(String text) {
