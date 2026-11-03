@@ -73,6 +73,16 @@ public final class VerticalManifestValidator {
         for (String permission : manifest.permissions()) {
             checkPermission(permission, "pacote");
         }
+        if (manifest.onboardingSteps() != null) {
+            Set<String> stepKeys = new HashSet<>();
+            for (VerticalManifest.OnboardingStep step : manifest.onboardingSteps()) {
+                require(step.key() != null && step.key().matches("[a-z][a-z0-9_]*"),
+                        "A chave do passo de implantação deve ser minúscula: " + step.key());
+                require(step.title() != null && !step.title().isBlank(),
+                        "O título do passo de implantação é obrigatório: " + step.key());
+                require(stepKeys.add(step.key()), "Passo de implantação duplicado: " + step.key());
+            }
+        }
     }
 
     private static void checkPermission(String permission, String owner) {

@@ -29,6 +29,16 @@ import java.util.Set;
  * nem de financeiro. As demais capacidades do §2 ganham permissões próprias quando
  * as rotas que as usam existirem (P1.6/P1.17), e não antes: permissão sem rota é
  * superfície de autorização sem prova.
+ *
+ * <p>P1.6 (console): as rotas do console existem agora, e com elas as permissões
+ * {@code console:read} (ler perfil, jornada, ciclo de vida e auditoria — os quatro
+ * papéis, porque suporte e financeiro leem painéis do tenant), {@code console:manage}
+ * (planos, flags, jornada e holds de eliminação — OWNER e OPS), {@code console:suspend}
+ * (suspensão — OWNER e FINANCE; o motivo é conferido no serviço, porque a
+ * permissão sozinha não distingue inadimplência de outro motivo) e
+ * {@code console:delete} (exportação e eliminação — só OWNER). A matriz fina
+ * (FINANCE só com motivo inadimplência, eliminação só OWNER) continua no serviço
+ * e nos testes, não só na permissão.
  */
 public final class PlatformRole {
 
@@ -45,10 +55,10 @@ public final class PlatformRole {
      * papel desconhecido (ou de tenant) não concede permissão de plataforma nenhuma.
      */
     private static final Map<String, Set<String>> PERMISSIONS = Map.of(
-            OWNER, Set.of("deployment:read"),
-            OPS, Set.of("deployment:read"),
-            SUPPORT, Set.of(),
-            FINANCE, Set.of());
+            OWNER, Set.of("deployment:read", "console:read", "console:manage", "console:suspend", "console:delete"),
+            OPS, Set.of("deployment:read", "console:read", "console:manage"),
+            SUPPORT, Set.of("console:read"),
+            FINANCE, Set.of("console:read", "console:suspend"));
 
     private PlatformRole() {
     }

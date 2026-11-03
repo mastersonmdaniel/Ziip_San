@@ -40,6 +40,21 @@ class PlatformRoleTest {
     }
 
     @Test
+    @DisplayName("console (P1.6): OWNER tem tudo; OPS gerencia sem suspender nem eliminar; SUPPORT só lê; FINANCE lê e suspende")
+    void consoleMatrix() {
+        assertThat(PlatformRole.permissionsFor("PLATFORM_OWNER"))
+                .contains("console:read", "console:manage", "console:suspend", "console:delete");
+        assertThat(PlatformRole.permissionsFor("PLATFORM_OPS"))
+                .contains("console:read", "console:manage")
+                .doesNotContain("console:suspend", "console:delete");
+        assertThat(PlatformRole.permissionsFor("PLATFORM_SUPPORT"))
+                .containsExactly("console:read");
+        assertThat(PlatformRole.permissionsFor("PLATFORM_FINANCE"))
+                .contains("console:read", "console:suspend")
+                .doesNotContain("console:manage", "console:delete");
+    }
+
+    @Test
     @DisplayName("o conversor expande o papel de plataforma para a permissão do catálogo")
     void resolverExpandsPlatformRole() {
         assertThat(PermissionResolver.permissionsForRoles(java.util.List.of("PLATFORM_OPS")))

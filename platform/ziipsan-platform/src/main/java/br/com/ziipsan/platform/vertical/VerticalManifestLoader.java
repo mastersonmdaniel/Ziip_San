@@ -56,10 +56,16 @@ public final class VerticalManifestLoader {
                         domain.path("order").asInt(-1)));
             }
         }
+        List<VerticalManifest.OnboardingStep> onboardingSteps = new ArrayList<>();
+        for (JsonNode step : array(root, "onboarding")) {
+            onboardingSteps.add(new VerticalManifest.OnboardingStep(
+                    text(step, "key"), text(step, "title")));
+        }
         VerticalManifest manifest = new VerticalManifest(
                 text(root, "id"), text(root, "version"), text(root, "minPlatformVersion"),
                 text(root, "nameKey"), text(root, "descriptionKey"),
-                List.copyOf(modules), List.copyOf(domains), strings(root, "permissions"));
+                List.copyOf(modules), List.copyOf(domains), strings(root, "permissions"),
+                List.copyOf(onboardingSteps));
         VerticalManifestValidator.validate(manifest);
         return manifest;
     }

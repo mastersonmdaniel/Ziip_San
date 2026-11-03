@@ -21,7 +21,12 @@ public record VerticalManifest(
         String descriptionKey,
         List<ModuleManifest> modules,
         List<GisDomain> gisDomains,
-        List<String> permissions) {
+        List<String> permissions,
+        List<OnboardingStep> onboardingSteps) {
+
+    /** Um passo do checklist de implantação do pacote (P1.6, ADR-0037). */
+    public record OnboardingStep(String key, String title) {
+    }
 
     /** Um módulo de negócio habilitável do pacote. */
     public record ModuleManifest(

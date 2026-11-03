@@ -91,7 +91,7 @@ class VerticalManifestTest {
                 List.of(new VerticalManifest.MenuItem("B", "/x", "i", null)),
                 List.of(), List.of());
         VerticalManifest noCert = new VerticalManifest(
-                "sanitation", "0.1.0", "1.0.0-SNAPSHOT", "k", "d", List.of(a, b), List.of(), List.of());
+                "sanitation", "0.1.0", "1.0.0-SNAPSHOT", "k", "d", List.of(a, b), List.of(), List.of(), List.of());
         assertThrows(IllegalStateException.class, () -> VerticalManifestValidator.validate(noCert));
     }
 
