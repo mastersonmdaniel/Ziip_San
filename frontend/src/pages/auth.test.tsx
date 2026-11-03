@@ -13,7 +13,7 @@ import { Login } from './Login'
 
 /** /api/me responde com o usuário de teste (ou com o status informado). */
 function fakeMe(status = 200) {
-  const adapter = vi.fn<Parameters<AxiosAdapter>, ReturnType<AxiosAdapter>>(async (config) => {
+  const adapter = vi.fn<AxiosAdapter>(async (config) => {
     if (status !== 200) {
       const { AxiosError } = await import('axios')
       throw new AxiosError('erro', 'ERR_BAD_RESPONSE', config, null, { data: {}, status, statusText: '', headers: {}, config })
@@ -47,7 +47,7 @@ function renderAt(route: string | { pathname: string; state?: unknown }) {
   )
 }
 
-let assign: MockInstance<[url: string], void>
+let assign: MockInstance<(url: string) => void>
 beforeEach(() => {
   assign = vi.spyOn(browser, 'assign').mockImplementation(() => undefined)
 })

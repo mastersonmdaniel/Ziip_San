@@ -98,7 +98,7 @@ public class TenantProvisioningService {
         boolean schemaCreatedNow = false;
 
         try {
-            schemaCreatedNow = createSchema(schemaName);
+            schemaCreatedNow = ensureSchema(schemaName, tenantId);
 
             runTenantMigrations(schemaName, tenantId);
             grantTenantTablePrivileges(schemaName);
@@ -130,21 +130,36 @@ public class TenantProvisioningService {
     /**
      * Cria o schema do tenant e devolve true se ele foi criado agora.
      *
+     * P0.17: sem CREATE SCHEMA IF NOT EXISTS. Um CREATE silenciosamente pulado escondia a
+     * colisao de dois tenants no mesmo schema. Se o schema ja existe, so o proprio tenant
+     * (linha do catalogo com o mesmo id) pode seguir, e sem CREATE: o rollback nunca apaga
+     * dado alheio. Schema existente sem linha no catalogo (orfao) tambem e recusado, porque
+     * nao ha dono provado para autorizar o reuso. Reprovisionar o proprio tenant continua
+     * legitimo e idempotente (passos por tenant_id): o CREATE e pulado, as migrations rodam
+     * pelo Flyway e o catalogo e atualizado pela chave id.
+     *
      * A verificacao ANTES do CREATE e o que permite ao rollback saber se o schema e seguro de
-     * remover. Consultar depois nao serviria: um CREATE ... IF NOT EXISTS ja skipped.
+     * remover.
      */
-    private boolean createSchema(String schemaName) {
+    private boolean ensureSchema(String schemaName, UUID tenantId) {
         Integer existed = migratorJdbc().queryForObject(
                 "SELECT count(*) FROM information_schema.schemata WHERE schema_name = ?",
                 Integer.class, schemaName);
         boolean alreadyExisted = existed != null && existed > 0;
 
-        // IF NOT EXISTS porque reprovisionar um tenant existente e operacao legitima: o
-        // catalogo tem ON CONFLICT e o Flyway tem baseline. Sem isso, o segundo provisionamento
-        // do mesmo tenant falharia com "schema already exists".
-        String sql = String.format("CREATE SCHEMA IF NOT EXISTS %s AUTHORIZATION %s",
-                schemaName, MIGRATOR_ROLE);
-        migratorJdbc().execute(sql);
+        if (alreadyExisted) {
+            String owner = migratorJdbc().queryForObject(
+                    "SELECT id::text FROM public.tenant_catalog WHERE schema_name = ?",
+                    String.class, schemaName);
+            if (!tenantId.toString().equals(owner)) {
+                throw new IllegalStateException(
+                        "Schema " + schemaName + " ja existe e nao pertence a este tenant; "
+                                + "recusado para nao misturar dados de tenants distintos.");
+            }
+        } else {
+            migratorJdbc().execute(String.format("CREATE SCHEMA %s AUTHORIZATION %s",
+                    schemaName, MIGRATOR_ROLE));
+        }
 
         String[] grants = {
             // USAGE basta para a aplicacao resolver nomes. CREATE no schema permitiria a
@@ -211,10 +226,15 @@ public class TenantProvisioningService {
     }
 
     private void registerTenantInCatalog(UUID tenantId, String schemaName, TenantProvisioningRequest request) {
+        // P0.17: conflito resolvido pela chave id, nao por schema_name. Reprovisionar o
+        // mesmo tenant atualiza a linha dele (inclusive se o schema mudou); um segundo
+        // tenant tentando o mesmo schema_name esbarra no UNIQUE e falha, em vez de
+        // sobrescrever a linha alheia.
         String sql = """
             INSERT INTO public.tenant_catalog (id, schema_name, name, cnpj, email, phone, address, status, plan, settings, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?::jsonb, 'ACTIVE', ?, ?::jsonb, NOW(), NOW())
-            ON CONFLICT (schema_name) DO UPDATE SET
+            ON CONFLICT (id) DO UPDATE SET
+                schema_name = EXCLUDED.schema_name,
                 name = EXCLUDED.name,
                 cnpj = EXCLUDED.cnpj,
                 email = EXCLUDED.email,
@@ -225,11 +245,12 @@ public class TenantProvisioningService {
                 updated_at = NOW()
             """;
 
-        // public.tenant_catalog tem RLS por id = current_tenant_id(). O INSERT do proprio
-        // tenant satisfaz a policy desde que a GUC app.current_tenant esteja definida nesta
-        // conexao. Sem ela, o INSERT e barrado com "new row violates row-level security".
-        // A definicao e local a transacao, entao nao vaza para a proxima conexao do pool.
-        try (Connection conn = dataSource.getConnection()) {
+        // P0.17: a escrita do catalogo usa a conexao de migracao. Desde a core V4 a
+        // ziipsan_app so tem SELECT no catalogo, entao o DataSource da aplicacao nao pode
+        // mais registrar tenant. O catalogo nao tem RLS (cadastro global da plataforma,
+        // ver V1); a GUC abaixo e mantida por uniformidade com a auditoria e e local a
+        // transacao, entao nao vaza para a proxima conexao do pool.
+        try (Connection conn = migratorDataSource.getConnection()) {
             conn.setAutoCommit(false);
             try {
                 try (PreparedStatement st = conn.prepareStatement("SELECT set_config('app.current_tenant', ?, true)")) {
@@ -301,13 +322,20 @@ public class TenantProvisioningService {
     }
 
     /**
-     * Normaliza o nome do schema para um identificador Postgres seguro.
+     * Valida o nome do schema como identificador Postgres seguro.
      *
-     * O nome vem de entrada externa e é interpolado em DDL, então precisa ser filtrado. O
-     * TenantFilter valida o header com regex; esta é a segunda barreira, para o caminho de
-     * provisionamento.
+     * P0.17: o nome vem de entrada externa e é interpolado em DDL, e a normalizacao
+     * silenciosa antiga escondia colisoes: "tenant-a" e "tenant_a" viravam o mesmo schema,
+     * e um nome de 64 caracteres era truncado para 63 sem aviso. Agora, qualquer nome que
+     * MUDE na normalizacao (troca de caracteres, caixa ou truncamento em 63) e recusado
+     * com IllegalArgumentException, antes de qualquer DDL. O chamador deve enviar o nome
+     * ja normalizado. O TenantFilter valida o header com regex; esta e a segunda barreira,
+     * para o caminho de provisionamento.
      */
     private String sanitizeSchemaName(String schemaName) {
+        if (schemaName == null) {
+            throw new IllegalArgumentException("Nome de schema invalido: null");
+        }
         String sanitized = schemaName.toLowerCase(Locale.ROOT)
                 .replaceAll("[^a-z0-9_]", "_")
                 .replaceAll("_+", "_")
@@ -317,10 +345,15 @@ public class TenantProvisioningService {
             throw new IllegalArgumentException("Nome de schema invalido: " + schemaName);
         }
         if (sanitized.length() > 63) {
-            sanitized = sanitized.substring(0, 63);
+            throw new IllegalArgumentException(
+                    "Nome de schema excede 63 caracteres e seria truncado: " + schemaName);
+        }
+        if (!sanitized.equals(schemaName)) {
+            throw new IllegalArgumentException(
+                    "Nome de schema muda na normalizacao (troca de caracteres ou caixa): " + schemaName);
         }
         if (!sanitized.matches("^[a-z_][a-z0-9_]*$")) {
-            throw new IllegalArgumentException("Nome de schema invalido apos normalizacao: " + schemaName);
+            throw new IllegalArgumentException("Nome de schema invalido: " + schemaName);
         }
 
         // Denylist obrigatoria. Sem ela, provisionTenant("public") criaria as tabelas de tenant

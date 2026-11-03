@@ -316,41 +316,103 @@ class TenantProvisioningServiceTest {
     }
 
     @Test
-    @DisplayName("nome de schema com SQL injection é neutralizado e provisiona com nome seguro")
+    @DisplayName("P0.17: nome de schema com SQL injection é recusado antes de qualquer DDL")
     void rejectsSqlInjectionInSchemaName() {
+        // P0.17 supersede a normalização silenciosa: a versão anterior deste teste exigia
+        // que a entrada maliciosa fosse normalizada e provisionada. Normalizar em silêncio
+        // escondia colisões ("tenant-a" e "tenant_a" no mesmo schema), então agora o nome
+        // que muda na normalização é recusado — e nada é criado.
         String malicious = "evil; DROP TABLE users; --";
 
-        TenantProvisioningService.TenantProvisioningResult result =
-                service().provisionTenant(request(UUID.randomUUID(), malicious));
+        assertThatThrownBy(() -> service().provisionTenant(request(UUID.randomUUID(), malicious)))
+                .as("a entrada maliciosa deve ser recusada, não normalizada")
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("muda na normalizacao");
 
-        // A versão anterior deste teste afirmava apenas que schemaName não continha ";".
-        // Como TenantProvisioningResult.failure() devolve schemaName = null, QUALQUER falha
-        // satisfazia a asserção — inclusive a remoção total da sanitização. O teste era verde
-        // sem provar nada.
-        assertThat(result.success())
-                .as("a entrada maliciosa deve ser normalizada e o tenant provisionado: %s",
-                        result.error())
-                .isTrue();
-
-        String created = result.schemaName();
-        assertThat(created)
-                .as("o nome normalizado não pode conter ponto e vírgula nem espaço")
-                .doesNotContain(";")
-                .doesNotContain(" ")
-                .matches("^[a-z_][a-z0-9_]*$");
-
-        // O schema com o nome normalizado existe de fato.
-        assertThat(schemaExists(created))
-                .as("o tenant deve ter sido criado sob o nome sanitizado")
-                .isTrue();
+        // Nem o schema com o nome normalizado existe: nenhuma DDL rodou.
+        assertThat(schemaExists("evil_drop_table_users"))
+                .as("nenhum schema pode ser criado a partir da entrada maliciosa")
+                .isFalse();
 
         // E o mais importante: o catálogo público sobreviveu. Um bug de sanitização poderia
         // ter executado DROP TABLE users ou algo pior.
-        int catalogRows = new JdbcTemplate(migratorDataSource).queryForObject(
-                "SELECT count(*) FROM public.tenant_catalog WHERE schema_name = ?",
-                Integer.class, created);
-        assertThat(catalogRows)
-                .as("o tenant deve estar registrado")
+        int catalogTable = new JdbcTemplate(migratorDataSource).queryForObject(
+                "SELECT count(*) FROM information_schema.tables "
+                        + "WHERE table_schema='public' AND table_name='tenant_catalog'",
+                Integer.class);
+        assertThat(catalogTable)
+                .as("nenhuma tentativa pode derrubar a tabela do catálogo")
+                .isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("P0.17: nome que muda na normalização é recusado (troca de caracteres, caixa e truncamento em 63)")
+    void rejectsNamesThatChangeUnderNormalization() {
+        // Troca de caracteres ("-" viraria "_"), troca de caixa e truncamento em 63: os
+        // três jeitos de um nome mudar na normalização, cada um recusado antes de DDL.
+        String hyphen = "itest-traco-" + RUN_ID;
+        String upper = "Itest_Maiusculo_" + RUN_ID;
+        String tooLong = "itest_" + "x".repeat(60);
+
+        for (String bad : new String[]{hyphen, upper, tooLong}) {
+            assertThatThrownBy(() -> service().provisionTenant(request(UUID.randomUUID(), bad)))
+                    .as("nome %s deve ser recusado", bad)
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        // Nenhuma das formas normalizadas foi criada.
+        assertThat(schemaExists("itest_traco_" + RUN_ID)).isFalse();
+        assertThat(schemaExists("itest_maiusculo_" + RUN_ID)).isFalse();
+        assertThat(schemaExists("itest_" + "x".repeat(57))).isFalse();
+    }
+
+    @Test
+    @DisplayName("P0.17: schema existente de outro tenant é recusado, sem tocar no dado alheio")
+    void refusesSchemaOwnedByAnotherTenant() {
+        UUID tenantA = UUID.randomUUID();
+        provisionOk(tenantA, SCHEMA);
+        seedConsumerUnit(SCHEMA, tenantA, "UC-DO-DONO");
+
+        // Mesmo nome, tenant diferente: sem CREATE SCHEMA IF NOT EXISTS para esconder a
+        // colisão, o segundo provisionamento falha em vez de reusar o schema alheio.
+        TenantProvisioningService.TenantProvisioningResult result =
+                service().provisionTenant(request(UUID.randomUUID(), SCHEMA));
+
+        assertThat(result.success())
+                .as("o provisionamento do segundo tenant deve falhar: %s", result.error())
+                .isFalse();
+        assertThat(result.error()).contains("nao pertence a este tenant");
+
+        // O dado do dono continua intacto.
+        assertThat(countAsTenant(tenantA, "SELECT count(*) FROM " + SCHEMA + ".consumer_units"))
+                .as("a recusa não pode tocar no dado do tenant dono do schema")
+                .isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("P0.17: reprovisionamento do mesmo tenant é idempotente por tenant_id")
+    void reprovisioningSameTenantIdIsIdempotent() {
+        UUID tenantId = UUID.randomUUID();
+        provisionOk(tenantId, SCHEMA);
+        seedConsumerUnit(SCHEMA, tenantId, "UC-DO-CLIENTE");
+
+        // Duas entradas que normalizam para o mesmo nome, mesmo tenant_id: a segunda é
+        // atualização da linha do próprio tenant (conflito pela chave id), não duplicata
+        // nem reuso de schema alheio.
+        TenantProvisioningService.TenantProvisioningResult second =
+                service().provisionTenant(request(tenantId, SCHEMA));
+
+        assertThat(second.success())
+                .as("o reprovisionamento do próprio tenant deve concluir: %s", second.error())
+                .isTrue();
+
+        int byId = count("SELECT count(*) FROM public.tenant_catalog WHERE id = ?", tenantId);
+        assertThat(byId)
+                .as("o catálogo tem exatamente uma linha por tenant_id")
+                .isEqualTo(1);
+
+        assertThat(countAsTenant(tenantId, "SELECT count(*) FROM " + SCHEMA + ".consumer_units"))
+                .as("o dado do cliente tem que continuar lá")
                 .isEqualTo(1);
     }
 
@@ -416,7 +478,7 @@ class TenantProvisioningServiceTest {
 
         int catalog = count("SELECT count(*) FROM public.tenant_catalog WHERE schema_name = ?", SCHEMA);
         assertThat(catalog)
-                .as("ON CONFLICT (schema_name) deve atualizar, não duplicar")
+                .as("P0.17: ON CONFLICT (id) deve atualizar, não duplicar")
                 .isEqualTo(1);
     }
 

@@ -11,12 +11,16 @@ import java.util.UUID;
 
 /**
  * Usuário autenticado e tenant em uso, para o frontend montar a sessão. Contrato em
- * docs/frontend-cadastro.md §3.1: {id, username, email, fullName, roles, tenantId} (+ tenantSchema).
+ * docs/frontend-cadastro.md §3.1: {id, username, email, fullName, roles, tenantId}.
+ *
+ * P0.17: a resposta NÃO inclui o nome do schema do tenant. O schema é detalhe interno de
+ * infraestrutura (e o frontend nunca precisou dele para montar a sessão); expô-lo em toda
+ * resposta de /me entregava o layout do banco a qualquer token válido.
  */
 @RestController
 public class MeController {
 
-    public record Me(String id, String username, String fullName, String email, UUID tenantId, String tenantSchema,
+    public record Me(String id, String username, String fullName, String email, UUID tenantId,
                      List<String> roles) {
     }
 
@@ -30,6 +34,6 @@ public class MeController {
                 .sorted()
                 .toList();
         return new Me(jwt.getSubject(), jwt.getClaimAsString("preferred_username"), jwt.getClaimAsString("name"),
-                jwt.getClaimAsString("email"), TenantContextHolder.getTenantId(), TenantContextHolder.getTenant(), roles);
+                jwt.getClaimAsString("email"), TenantContextHolder.getTenantId(), roles);
     }
 }

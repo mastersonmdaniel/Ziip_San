@@ -7,7 +7,7 @@ import { clearXsrfCookie, setXsrfCookie } from '../test/auth'
 /** Servidor falso no lugar da rede: registra cada requisição e responde conforme `respond`. */
 function fakeServer(respond: (config: InternalAxiosRequestConfig, call: number) => number) {
   const calls: InternalAxiosRequestConfig[] = []
-  const adapter = vi.fn<Parameters<AxiosAdapter>, ReturnType<AxiosAdapter>>(async (config) => {
+  const adapter = vi.fn<AxiosAdapter>(async (config) => {
     calls.push({ ...config, headers: new AxiosHeaders(config.headers) })
     const status = respond(config, calls.length)
     const response = { data: { ok: true }, status, statusText: '', headers: {}, config }
@@ -24,7 +24,7 @@ function headerNames(config: InternalAxiosRequestConfig): string[] {
   return Object.keys(AxiosHeaders.from(config.headers).toJSON()).map((h) => h.toLowerCase())
 }
 
-let assign: MockInstance<[url: string], void>
+let assign: MockInstance<(url: string) => void>
 beforeEach(() => {
   assign = vi.spyOn(browser, 'assign').mockImplementation(() => undefined)
   clearXsrfCookie()

@@ -61,12 +61,13 @@ class SecurityIntegrationTest extends AppIntegrationTestBase {
     }
 
     @Test
-    @DisplayName("token válido: /api/v1/me devolve o tenant do token e os papéis")
+    @DisplayName("token válido: /api/v1/me devolve o tenant do token e os papéis, sem o nome do schema")
     void validTokenSetsTenant() throws Exception {
         mvc.perform(get("/api/v1/me").header("Authorization", bearer(TestTokens.token(ProvisionedTenant.TENANT_ID, "VIEWER", "OPERATOR"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tenantId").value(ProvisionedTenant.TENANT_ID.toString()))
-                .andExpect(jsonPath("$.tenantSchema").value(ProvisionedTenant.SCHEMA))
+                // P0.17: o nome do schema é detalhe interno e não vai mais na resposta.
+                .andExpect(jsonPath("$.tenantSchema").doesNotExist())
                 .andExpect(jsonPath("$.roles[0]").value("OPERATOR"))
                 .andExpect(jsonPath("$.roles[1]").value("VIEWER"));
     }

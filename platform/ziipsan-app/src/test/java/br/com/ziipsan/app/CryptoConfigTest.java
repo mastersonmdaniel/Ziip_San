@@ -69,6 +69,30 @@ class CryptoConfigTest {
     }
 
     @Test
+    @DisplayName("P0.17: dev-env é aceito só na lista fechada de perfis e recusado em qualquer outro")
+    void devEnvIsAllowedOnlyOnClosedProfileList() {
+        // A regra antiga recusava só perfil com "prod" no nome: staging, homologação ou um
+        // perfil novo qualquer passava. A allowlist fecha isso — só dev, local, test,
+        // migrate e worker (os perfis que o código de fato usa com dev-env) sobem.
+        for (String profile : new String[]{"dev", "local", "test", "migrate", "worker"}) {
+            runner.withPropertyValues("ziipsan.crypto.provider=dev-env", "ziipsan.crypto.dev-master-key=" + KEY)
+                    .withInitializer(ctx -> ctx.getEnvironment().setActiveProfiles(profile))
+                    .run(ctx -> assertThat(ctx).hasNotFailed()
+                            .hasSingleBean(TenantKeyProvider.class));
+        }
+        for (String profile : new String[]{"staging", "homolog", "qa", "production"}) {
+            runner.withPropertyValues("ziipsan.crypto.provider=dev-env", "ziipsan.crypto.dev-master-key=" + KEY)
+                    .withInitializer(ctx -> ctx.getEnvironment().setActiveProfiles(profile))
+                    .run(ctx -> {
+                        assertThat(ctx).hasFailed();
+                        assertThat(ctx.getStartupFailure()).rootCause()
+                                .isInstanceOf(IllegalStateException.class)
+                                .hasMessageContaining("recusado no perfil " + profile);
+                    });
+        }
+    }
+
+    @Test
     @DisplayName("sem provider (ou com um desconhecido): a aplicação não sobe e diz por quê")
     void noProviderFailsClosed() {
         runner.run(ctx -> {

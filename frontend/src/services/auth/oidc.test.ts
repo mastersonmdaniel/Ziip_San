@@ -13,7 +13,7 @@ import {
 } from './oidc'
 import { clearXsrfCookie, setXsrfCookie } from '../../test/auth'
 
-let assign: MockInstance<[url: string], void>
+let assign: MockInstance<(url: string) => void>
 beforeEach(() => {
   assign = vi.spyOn(browser, 'assign').mockImplementation(() => undefined)
   clearXsrfCookie()
@@ -69,7 +69,7 @@ describe('anti-CSRF e logout', () => {
 
   it('logout faz POST /bff/logout com CSRF e volta para /login', async () => {
     setXsrfCookie('csrf-de-teste')
-    const fetchMock = vi.fn<[string, RequestInit?], Promise<Response>>(async () => new Response('{}'))
+    const fetchMock = vi.fn<(input: string, init?: RequestInit) => Promise<Response>>(async () => new Response('{}'))
     vi.stubGlobal('fetch', fetchMock)
     await logout()
     expect(fetchMock).toHaveBeenCalledWith(

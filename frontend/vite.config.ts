@@ -133,6 +133,11 @@ export default defineConfig(({ mode }) => {
       setupFiles: ['./src/test/setup.ts'],
       css: false,
       include: ['src/**/*.test.{ts,tsx}'],
+      // P0.17: no Vitest 4 os testes com user-event ficam ~1,7x mais lentos que no
+      // Vitest 1 (PropertyWizard: ~3,1 s/teste no v1, ~5,2 s/teste no v4, mesmas versões
+      // de jsdom/testing-library/user-event), e o default de 5 s estourou. 10 s dá folga
+      // sem mascarar travamento (que continua falhando no teto).
+      testTimeout: 10000,
     },
   }
 })

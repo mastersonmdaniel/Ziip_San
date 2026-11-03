@@ -44,8 +44,14 @@ public class LgpdEngineService {
     // CONSENT MANAGEMENT
     // ========================================================================
 
+    // P0.17: a chave do cache é montada do TenantContextHolder, não de parâmetro — nem
+    // grantConsent nem getActiveConsent recebem tenantId. A chave antiga (#tenantId) não
+    // existia como parâmetro (e tinha forma diferente da leitura), então o evict nunca
+    // limpava a entrada lida, e dois tenants com mesmo subject+purpose colidiriam na
+    // mesma chave. Evict e leitura usam a MESMA chave: tenant + subject + purpose.
     @Transactional
-    @CacheEvict(value = "consents", key = "#tenantId + '_' + #subjectId")
+    @CacheEvict(value = "consents",
+            key = "T(br.com.ziipsan.core.tenant.TenantContextHolder).getTenantId() + '_' + #request.subjectId() + '_' + #request.purpose()")
     public ConsentRecord grantConsent(GrantConsentRequest request) {
         UUID tenantId = TenantContextHolder.getTenantId();
 
@@ -99,8 +105,12 @@ public class LgpdEngineService {
         return saved;
     }
 
+    // P0.17: evict pela mesma chave da leitura (tenant + subject + purpose do registro
+    // revogado), em vez de allEntries — revogar o consentimento de um titular não pode
+    // invalidar o cache de todos os outros titulares e tenants.
     @Transactional
-    @CacheEvict(value = "consents", allEntries = true)
+    @CacheEvict(value = "consents",
+            key = "T(br.com.ziipsan.core.tenant.TenantContextHolder).getTenantId() + '_' + #result.subjectId + '_' + #result.purpose")
     public ConsentRecord revokeConsent(UUID consentId, RevokeConsentRequest request) {
         ConsentRecord consent = consentRepository.findByIdAndTenantId(consentId, TenantContextHolder.getTenantId())
                 .orElseThrow(() -> new IllegalArgumentException("Consent not found"));
@@ -129,7 +139,8 @@ public class LgpdEngineService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "consents", key = "#tenantId + '_' + #subjectId + '_' + #purpose")
+    @Cacheable(value = "consents",
+            key = "T(br.com.ziipsan.core.tenant.TenantContextHolder).getTenantId() + '_' + #subjectId + '_' + #purpose")
     public Optional<ConsentRecord> getActiveConsent(UUID subjectId, String purpose) {
         return consentRepository.findByTenantIdAndSubjectIdAndPurposeAndStatus(
                 TenantContextHolder.getTenantId(), subjectId, purpose, ConsentRecord.ConsentStatus.GRANTED);

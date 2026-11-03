@@ -16,6 +16,7 @@ import org.springframework.core.env.Environment;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Cifra de campo (CPF/CNPJ e afins): chaves por tenant, cifra, índice cego e o serviço de documento.
@@ -23,7 +24,11 @@ import java.util.Locale;
  * <p>Falha fechada. Sem {@link TenantKeyProvider} a aplicação NÃO sobe: subir sem chave significaria
  * recusar todo cadastro com documento em produção, ou, pior, alguém "contornar" gravando em claro. O
  * único provider existente é o de desenvolvimento ({@code ziipsan.crypto.provider=dev-env}, chave mestra
- * única derivada por HKDF), que é recusado em qualquer perfil cujo nome contenha "prod". O provider de
+ * única derivada por HKDF), que é aceito SÓ numa lista fechada de perfis (P0.17): dev, local, test,
+ * migrate e worker — os perfis que o código de fato usa com dev-env em desenvolvimento e teste. Sem
+ * perfil ativo (contexto de teste unitário) também é aceito. Qualquer outro perfil (prod, staging,
+ * production-eu, ...) é recusado: a regra antiga ("só recusa perfil com prod no nome") aceitava
+ * dev-env em staging, homologação ou qualquer perfil novo por esquecimento. O provider de
  * produção (Vault, envelope com KEK) ainda não existe; ver {@link TenantKeyProvider}.
  *
  * <p>Chave do dev-env: {@code ziipsan.crypto.dev-master-key} (só em teste, gerada pelo próprio teste) ou a
@@ -36,13 +41,20 @@ public class CryptoConfig {
     public static final String DEV_MASTER_KEY_PROPERTY = "ziipsan.crypto.dev-master-key";
     public static final String DEV_ENV = "dev-env";
 
+    /** P0.17: lista fechada de perfis que podem usar o provider dev-env. */
+    static final Set<String> DEV_ENV_ALLOWED_PROFILES = Set.of("dev", "local", "test", "migrate", "worker");
+
     @Bean
     @ConditionalOnProperty(name = PROVIDER_PROPERTY, havingValue = DEV_ENV)
     public TenantKeyProvider devEnvTenantKeyProvider(Environment environment) {
         String[] profiles = environment.getActiveProfiles();
-        if (Arrays.stream(profiles).anyMatch(p -> p.toLowerCase(Locale.ROOT).contains("prod"))) {
+        String refused = Arrays.stream(profiles)
+                .filter(p -> !DEV_ENV_ALLOWED_PROFILES.contains(p.toLowerCase(Locale.ROOT)))
+                .findFirst()
+                .orElse(null);
+        if (refused != null) {
             throw new IllegalStateException("ziipsan.crypto.provider=dev-env é só para desenvolvimento e teste e foi "
-                    + "recusado no perfil " + String.join(",", profiles) + ": uma chave mestra única em variável de "
+                    + "recusado no perfil " + refused + ": uma chave mestra única em variável de "
                     + "ambiente não protege dado real. Produção exige o provider de chaves do Vault.");
         }
         String key = environment.getProperty(DEV_MASTER_KEY_PROPERTY);

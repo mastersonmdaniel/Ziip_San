@@ -44,6 +44,10 @@ public class CoreMigrationRunner implements ApplicationRunner {
                 .schemas("public")
                 .defaultSchema("public")
                 .locations(CORE_MIGRATIONS_LOCATION)
+                // P0.17: a V4 chega depois de bancos já estarem na V5. Sem outOfOrder o
+                // Flyway recusaria aplicá-la (mesmo precedente do TenantMigrator, que já
+                // usa outOfOrder para migrations de tenant que chegam fora de ordem).
+                .outOfOrder(true)
                 .baselineOnMigrate(true)
                 .baselineVersion("0")
                 // P0.19: as versoes reservadas do core (V3, V4, ...) nao seguem a ordem

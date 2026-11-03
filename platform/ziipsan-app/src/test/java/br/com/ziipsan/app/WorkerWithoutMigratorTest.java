@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * P0.6: o perfil {@code worker} sobe SEM o migrador e SEM a senha do migrador.
  *
  * <p>Mesma prova do teste de prod (um único DataSource funcional, nenhum dos três beans
- * do perfil migrate), mas sem o stub de cifra: "worker" não contém "prod", então o
- * provider dev-env de teste é aceito normalmente.
+ * do perfil migrate), mas sem o stub de cifra: "worker" está na lista fechada de perfis
+ * do dev-env (P0.17), então o provider dev-env de teste é aceito normalmente.
  */
 @SpringBootTest(classes = ZiipsanApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ActiveProfiles("worker")

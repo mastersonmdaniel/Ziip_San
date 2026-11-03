@@ -52,6 +52,43 @@ class DatabaseHardeningTest {
     }
 
     @Test
+    @DisplayName("P0.17: ziipsan_app só tem SELECT em public.tenant_catalog; a escrita é só da migração")
+    void appHasOnlySelectOnTenantCatalog() throws SQLException {
+        // Prova pelo catálogo de privilégios, não só pela tentativa (que também é feita
+        // abaixo): o estado concedido é exatamente SELECT para a aplicação.
+        assertThat(single("SELECT has_table_privilege('ziipsan_app', 'public.tenant_catalog', 'SELECT')::text"))
+                .isEqualTo("true");
+        for (String privilege : new String[]{"INSERT", "UPDATE", "DELETE"}) {
+            assertThat(single("SELECT has_table_privilege('ziipsan_app', 'public.tenant_catalog', '" + privilege + "')::text"))
+                    .as("a aplicação não pode ter %s no catálogo", privilege)
+                    .isEqualTo("false");
+        }
+        assertThat(single("SELECT has_table_privilege('ziipsan_migrator', 'public.tenant_catalog', 'INSERT')::text"))
+                .as("a role de migração (dona da tabela) mantém a escrita do catálogo")
+                .isEqualTo("true");
+
+        // E a tentativa confirma: INSERT/UPDATE/DELETE como app falham com 42501 antes de
+        // qualquer checagem de constraint (o WHERE false não salva: o privilégio é exigido
+        // mesmo sem linha afetada).
+        String probe = "itest_probe_" + Long.toHexString(System.nanoTime() & 0xFFFFF);
+        assertThatThrownBy(() -> exec(ProvisionedTenant.appDs.getConnection(),
+                "INSERT INTO public.tenant_catalog (schema_name, name) VALUES ('" + probe + "', 'Probe')"))
+                .isInstanceOf(SQLException.class)
+                .extracting(e -> ((SQLException) e).getSQLState())
+                .isEqualTo(INSUFFICIENT_PRIVILEGE);
+        assertThatThrownBy(() -> exec(ProvisionedTenant.appDs.getConnection(),
+                "UPDATE public.tenant_catalog SET name = 'Probe' WHERE false"))
+                .isInstanceOf(SQLException.class)
+                .extracting(e -> ((SQLException) e).getSQLState())
+                .isEqualTo(INSUFFICIENT_PRIVILEGE);
+        assertThatThrownBy(() -> exec(ProvisionedTenant.appDs.getConnection(),
+                "DELETE FROM public.tenant_catalog WHERE false"))
+                .isInstanceOf(SQLException.class)
+                .extracting(e -> ((SQLException) e).getSQLState())
+                .isEqualTo(INSUFFICIENT_PRIVILEGE);
+    }
+
+    @Test
     @DisplayName("a aplicação não cria tabela em public")
     void appCannotCreateInPublic() {
         assertThatThrownBy(() -> exec(ProvisionedTenant.appDs.getConnection(), "CREATE TABLE public.intruso (i int)"))
