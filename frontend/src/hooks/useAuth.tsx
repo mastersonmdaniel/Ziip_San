@@ -94,3 +94,12 @@ export function useAuth(): AuthContextType {
   }
   return context
 }
+
+/**
+ * P1.12: variante que não lança fora do provider. O gating de exibição por
+ * permissão (useCan) usa esta variante: telas renderizadas fora do shell
+ * (testes) não travam por falta de provider; o servidor continua negando.
+ */
+export function useAuthOptional(): AuthContextType | null {
+  return useContext(AuthContext) ?? null
+}

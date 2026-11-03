@@ -8,6 +8,7 @@ import { Badge } from '@components/ui/Badge'
 import { Button } from '@components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/Card'
 import { PageHeader } from '@components/ui/PageHeader'
+import { useCan } from '@hooks/usePermissions'
 import { errorMessage, toApiError } from '@services/registry/errors'
 import { customers } from '@services/registry/resources'
 import { formatDate, orDash, PERSON_TYPE_LABEL, PHONE_TYPE_LABEL } from '@utils/labels'
@@ -152,6 +153,7 @@ export function CustomerDetail() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [deleting, setDeleting] = useState(false)
+  const canWrite = useCan('registry:write')
   const query = useQuery({ queryKey: ['customer', id], queryFn: ({ signal }) => customers.get(id, signal), enabled: id !== '' })
 
   if (query.isLoading) return <Spinner label="Carregando cliente..." />
@@ -184,7 +186,7 @@ export function CustomerDetail() {
           </>
         }
         actions={
-          !deleted ? (
+          !deleted && canWrite ? (
             <>
               <Link to={`/cadastro/clientes/${c.id}/editar`} className="inline-flex h-10 items-center gap-2 rounded-lg border bg-background px-4 text-sm font-medium hover:bg-accent">
                 <Icon name="pencil" className="h-4 w-4" />

@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react'
+import { lazy, Suspense, type ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Layout } from '@components/Layout'
 import { VersionBanner } from '@components/VersionBanner'
 import { Spinner } from '@components/ui/Alert'
@@ -7,16 +8,23 @@ import { useAuth } from '@hooks/useAuth'
 import { AuthCallback } from '@pages/AuthCallback'
 import { Login } from '@pages/Login'
 import { NotFound } from '@pages/NotFound'
-import { Catalogs } from '@pages/cadastro/Catalogs'
-import { CustomerDetail } from '@pages/cadastro/CustomerDetail'
-import { CustomerForm } from '@pages/cadastro/CustomerForm'
-import { CustomerList } from '@pages/cadastro/CustomerList'
-import { PropertyDetail } from '@pages/cadastro/PropertyDetail'
-import { PropertySearch } from '@pages/cadastro/PropertySearch'
-import { PropertyWizard } from '@pages/cadastro/PropertyWizard'
-import { Territory } from '@pages/cadastro/Territory'
-import { GisCatalog } from '@pages/gis/GisCatalog'
-import { IconContactSheetPage } from '@pages/dev/IconContactSheetPage'
+
+// P1.12: code splitting por rota — cada tela do cadastro vira um chunk próprio,
+// carregado sob demanda, em vez de ir todo para o bundle inicial. Login e
+// callback continuam ansiosos (são o caminho de entrada).
+const Catalogs = lazy(() => import('@pages/cadastro/Catalogs').then((m) => ({ default: m.Catalogs })))
+const CustomerDetail = lazy(() => import('@pages/cadastro/CustomerDetail').then((m) => ({ default: m.CustomerDetail })))
+const CustomerForm = lazy(() => import('@pages/cadastro/CustomerForm').then((m) => ({ default: m.CustomerForm })))
+const CustomerList = lazy(() => import('@pages/cadastro/CustomerList').then((m) => ({ default: m.CustomerList })))
+const PropertyDetail = lazy(() => import('@pages/cadastro/PropertyDetail').then((m) => ({ default: m.PropertyDetail })))
+const PropertySearch = lazy(() => import('@pages/cadastro/PropertySearch').then((m) => ({ default: m.PropertySearch })))
+const PropertyWizard = lazy(() => import('@pages/cadastro/PropertyWizard').then((m) => ({ default: m.PropertyWizard })))
+const Territory = lazy(() => import('@pages/cadastro/Territory').then((m) => ({ default: m.Territory })))
+const GeneratedFiles = lazy(() => import('@pages/GeneratedFiles').then((m) => ({ default: m.GeneratedFiles })))
+const IconContactSheetPage = lazy(() =>
+  import('@pages/dev/IconContactSheetPage').then((m) => ({ default: m.IconContactSheetPage })),
+)
+const GisCatalog = lazy(() => import('@pages/gis/GisCatalog').then((m) => ({ default: m.GisCatalog })))
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -32,10 +40,15 @@ function PrivateRoute({ children }: { children: ReactNode }) {
  * porque as páginas nunca foram escritas. S7 (hidrômetros) e S8 (recadastramento) ficam para a P1.
  */
 export function App() {
+  const location = useLocation()
   return (
     <>
       {/* P0.39: aviso de recarga do SPA antigo (só aparece após o evento de versão). */}
       <VersionBanner />
+      {/* P1.12: a fronteira de erro envolve as rotas (navegar limpa o erro) e o
+          Suspense cobre o carregamento dos chunks lazy. */}
+      <ErrorBoundary resetKey={location.pathname}>
+      <Suspense fallback={<Spinner label="Carregando..." />}>
       <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
@@ -72,9 +85,15 @@ export function App() {
         <Route path="gis/catalogo" element={<GisCatalog />} />
         <Route path="cadastro/catalogos/:tipo" element={<Catalogs />} />
 
+        {/* P1.12: ponto de entrega das exportações assíncronas (e, no futuro, dos
+            relatórios agendados da P3.22 — só o item de entrega, não a P3.22). */}
+        <Route path="arquivos-gerados" element={<GeneratedFiles />} />
+
         <Route path="*" element={<NotFound />} />
       </Route>
       </Routes>
+      </Suspense>
+      </ErrorBoundary>
     </>
   )
 }

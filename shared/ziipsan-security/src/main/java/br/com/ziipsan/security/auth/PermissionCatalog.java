@@ -34,6 +34,10 @@ public final class PermissionCatalog {
             new Permission("registry:write", "cadastro", "registry", "write", "P0.13"),
             new Permission("registry:reveal-document", "cadastro", "registry", "reveal-document", "P0.13"),
             new Permission("registry:search-document", "cadastro", "registry", "search-document", "P0.11"),
+            // P1.12: exportação de listas, uma por recurso (`*:export` do plano).
+            // Como revelar e buscar por documento, não está em nenhum perfil de
+            // fábrica: exportar dado pessoal exige concessão direta.
+            new Permission("registry:export", "cadastro", "registry", "export", "P1.12"),
             new Permission("user:read", "plataforma", "user", "read", "P0.13"),
             new Permission("user:write", "plataforma", "user", "write", "P0.13"),
             // P1.27: catálogo GIS do tenant (GIS-CADASTRO-TECNICO §4.1 e §6.6, onde a

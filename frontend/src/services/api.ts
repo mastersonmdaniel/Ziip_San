@@ -116,6 +116,13 @@ export interface AuthUser {
   email: string
   fullName: string
   roles: string[]
+  /**
+   * P1.12: permissões `recurso:ação` expandidas pelo servidor em GET /api/v1/me.
+   * Ausente no backend anterior à P1.12 (que devolvia só `roles`): o gating de
+   * exibição trata a ausência como "informação desconhecida", sem esconder nada;
+   * o servidor continua sendo quem nega.
+   */
+  permissions?: string[]
   tenantId: string
 }
 

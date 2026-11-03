@@ -86,10 +86,15 @@ class FreshInstallTest {
      * fiscal_document_events — copiar o XML integral para o audit_log duplicaria
      * conteúdo fiscal sensível. Sem mudança possível após o INSERT, não há estado
      * posterior a auditar pela trilha genérica.
+     *
+     * <p>P1.12: generated_files também não tem trigger de auditoria: o conteúdo
+     * é o próprio artefato (CSV mascarado) e copiá-lo integral para o audit_log
+     * duplicaria o arquivo a cada mudança de estado. O pedido fica registrado
+     * em personal_data_access_log (tipo EXPORT) e o estado, na própria linha.
      */
     private static final Set<String> NOT_AUDITED_BY_DESIGN = Set.of(
             "tenant_metadata", "scada_data_point", "epanet_node_result", "epanet_link_result",
-            "personal_data_access_log",
+            "personal_data_access_log", "generated_files",
             "gis_node_history", "gis_arc_history", "gis_connection_history",
             "gis_structure_history", "gis_zone_history", "gis_poi_history",
             "gis_node", "gis_arc", "gis_connection",

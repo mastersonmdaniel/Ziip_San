@@ -113,6 +113,42 @@ public class PersonalDataAccessService {
                 null, null, PersonalDataAccessLog.Result.FOUND);
     }
 
+    /** Permissão própria da exportação de listas (P1.12, regra única `*:export` por recurso). */
+    public static final String EXPORT_PERMISSION = "registry:export";
+
+    /**
+     * P1.12: autoriza a exportação, no mesmo modelo do gate de busca por documento:
+     * sem {@code registry:export}, a negação fica registrada (DENIED) e a resposta é
+     * 403 — e a negação não vaza estado de mais nada. O serviço de exportação chama
+     * isto ANTES de qualquer consulta, para que uma exportação negada não conte
+     * linhas nem toque nos dados.
+     *
+     * @throws ApiException.Forbidden sem a permissão própria (403, evento DENIED registrado)
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW,
+            noRollbackFor = {ApiException.Forbidden.class})
+    public void authorizeExport(String resource) {
+        UUID tenantId = requireTenant();
+        if (!hasExportPermission()) {
+            save(tenantId, PersonalDataAccessLog.AccessType.EXPORT, resource, null,
+                    null, "export:" + resource, PersonalDataAccessLog.Result.DENIED);
+            throw new ApiException.Forbidden("A exportação de listas exige a permissão registry:export.");
+        }
+    }
+
+    /**
+     * P1.12: cada exportação concluída ou enfileirada deixa um registro EXPORT, com o
+     * recurso e a quantidade (ou {@code queued}, quando acima do limite síncrono e o
+     * arquivo ainda vai ser gerado pelo worker). O registro é feito uma vez, no pedido;
+     * a conclusão assíncrona não registra de novo. Sem documento em claro: o arquivo
+     * já sai mascarado, e o log não guarda nem a máscara.
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void recordExport(String resource, String outcome) {
+        save(requireTenant(), PersonalDataAccessLog.AccessType.EXPORT, resource, null,
+                null, "export:" + resource + " " + outcome, PersonalDataAccessLog.Result.FOUND);
+    }
+
     /** Revelação de documento em claro (além do registro já feito na trilha de auditoria). */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void recordDocumentReveal(String entityType, UUID entityId, String documentHash, String purpose) {
@@ -149,6 +185,12 @@ public class PersonalDataAccessService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth != null && auth.getAuthorities().stream()
                 .anyMatch(a -> SEARCH_DOCUMENT_PERMISSION.equals(a.getAuthority()));
+    }
+
+    private static boolean hasExportPermission() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> EXPORT_PERMISSION.equals(a.getAuthority()));
     }
 
     private static UUID requireTenant() {

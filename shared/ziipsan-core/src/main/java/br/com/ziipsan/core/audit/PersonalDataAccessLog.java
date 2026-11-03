@@ -47,7 +47,7 @@ public class PersonalDataAccessLog {
     @Column(name = "accessed_at", nullable = false, updatable = false)
     private Instant accessedAt;
 
-    /** DOCUMENT_SEARCH, PERSONAL_READ ou DOCUMENT_REVEAL. */
+    /** DOCUMENT_SEARCH, PERSONAL_READ, DOCUMENT_REVEAL ou EXPORT (P1.12). */
     @Column(name = "access_type", nullable = false, length = 20, updatable = false)
     private String accessType;
 
@@ -70,7 +70,9 @@ public class PersonalDataAccessLog {
     private String result;
 
     public enum AccessType {
-        DOCUMENT_SEARCH, PERSONAL_READ, DOCUMENT_REVEAL
+        DOCUMENT_SEARCH, PERSONAL_READ, DOCUMENT_REVEAL,
+        /** P1.12: exportação de lista (síncrona ou enfileirada); o recurso e as linhas vão em purpose. */
+        EXPORT
     }
 
     public enum Result {

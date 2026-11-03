@@ -1,6 +1,7 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { ExportButton } from '@components/ExportButton'
 import { Icon } from '@components/ui/Icon'
 import { CatalogSelect } from '@components/registry/CatalogSelect'
 import type { LookupValue } from '@components/registry/LookupField'
@@ -12,10 +13,13 @@ import { Field, Input, Select } from '@components/ui/Field'
 import { PageHeader } from '@components/ui/PageHeader'
 import { Pagination } from '@components/ui/Pagination'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@components/ui/Table'
-import { errorMessage } from '@services/registry/errors'
+import { useCan } from '@hooks/usePermissions'
+import { toExportFilters } from '@services/export'
+import { errorMessage, shouldOfferRetry } from '@services/registry/errors'
 import { customers } from '@services/registry/resources'
 import type { ListParams, PersonType } from '@services/registry/types'
 import { orDash, PERSON_TYPE_LABEL } from '@utils/labels'
+import { loadListState, saveListState } from '@utils/listState'
 
 interface Filters {
   q: string
@@ -44,9 +48,15 @@ function toParams(f: Filters, page: number): ListParams {
 
 /** S4: lista de clientes. Documento SEMPRE mascarado; revelar só na ficha, por ação explícita. */
 export function CustomerList() {
-  const [draft, setDraft] = useState<Filters>(EMPTY)
-  const [applied, setApplied] = useState<Filters>(EMPTY)
-  const [page, setPage] = useState(0)
+  // P1.12: o filtro aplicado e a página sobrevivem à ida à ficha (sessionStorage).
+  const saved = () => loadListState<{ applied: Filters; page: number }>('customers', { applied: EMPTY, page: 0 })
+  const [draft, setDraft] = useState<Filters>(() => saved().applied)
+  const [applied, setApplied] = useState<Filters>(() => saved().applied)
+  const [page, setPage] = useState(() => saved().page)
+  const canWrite = useCan('registry:write')
+  useEffect(() => {
+    saveListState('customers', { applied, page })
+  }, [applied, page])
   const params = toParams(applied, page)
   const list = useQuery({ queryKey: ['customers', params], queryFn: ({ signal }) => customers.search(params, signal) })
 
@@ -62,10 +72,15 @@ export function CustomerList() {
         title="Clientes"
         description="Pessoas físicas e jurídicas. CPF e CNPJ aparecem mascarados nas listas."
         actions={
-          <Link to="/cadastro/clientes/novo" className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-            <Icon name="plus" className="h-4 w-4" />
-            Cadastrar cliente
-          </Link>
+          <span className="inline-flex flex-wrap items-center gap-2">
+            {canWrite ? (
+              <Link to="/cadastro/clientes/novo" className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+                <Icon name="plus" className="h-4 w-4" />
+                Cadastrar cliente
+              </Link>
+            ) : null}
+            <ExportButton resource="customers" filters={toExportFilters(params)} />
+          </span>
         }
       />
 
@@ -122,9 +137,11 @@ export function CustomerList() {
             ) : list.isError ? (
               <Alert tone="error" title="Não foi possível carregar os clientes">
                 <p>{errorMessage(list.error)}</p>
-                <Button size="sm" variant="outline" className="mt-2" onClick={() => void list.refetch()}>
-                  Tentar novamente
-                </Button>
+                {shouldOfferRetry(list.error) ? (
+                  <Button size="sm" variant="outline" className="mt-2" onClick={() => void list.refetch()}>
+                    Tentar novamente
+                  </Button>
+                ) : null}
               </Alert>
             ) : list.data && list.data.content.length === 0 ? (
               <p className="py-8 text-center text-sm text-muted-foreground">Nenhum cliente encontrado.</p>
@@ -132,7 +149,7 @@ export function CustomerList() {
           </div>
           {list.data && list.data.content.length > 0 ? (
             <>
-              <Table caption="Clientes encontrados">
+              <Table caption="Clientes encontrados" mobileCards>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nome</TableHead>
@@ -147,7 +164,7 @@ export function CustomerList() {
                 <TableBody>
                   {list.data.content.map((c) => (
                     <TableRow key={c.id}>
-                      <TableCell>
+                      <TableCell label="Nome">
                         <Link to={`/cadastro/clientes/${c.id}`} className="font-medium text-primary underline underline-offset-4">
                           {c.name}
                         </Link>
@@ -157,16 +174,16 @@ export function CustomerList() {
                           </Badge>
                         ) : null}
                       </TableCell>
-                      <TableCell>{PERSON_TYPE_LABEL[c.personType]}</TableCell>
-                      <TableCell>{orDash(c.customerTypeName)}</TableCell>
-                      <TableCell className="font-mono text-xs">
+                      <TableCell label="Pessoa">{PERSON_TYPE_LABEL[c.personType]}</TableCell>
+                      <TableCell label="Tipo de cliente">{orDash(c.customerTypeName)}</TableCell>
+                      <TableCell label="Documento" className="font-mono text-xs">
                         <span className="sr-only">Documento mascarado: </span>
                         {orDash(c.documentMasked)}
                       </TableCell>
-                      <TableCell>{orDash(c.city)}</TableCell>
-                      <TableCell className="text-right">{c.unitCount}</TableCell>
-                      <TableCell className="text-right">
-                        {!c.deleted ? (
+                      <TableCell label="Município">{orDash(c.city)}</TableCell>
+                      <TableCell label="Imóveis" className="text-right">{c.unitCount}</TableCell>
+                      <TableCell label="Ações" className="text-right">
+                        {!c.deleted && canWrite ? (
                           <Link to={`/cadastro/clientes/${c.id}/editar`} aria-label={`Editar cliente ${c.name}`} className="inline-flex h-9 items-center rounded-md px-3 text-sm font-medium hover:bg-accent">
                             Editar
                           </Link>

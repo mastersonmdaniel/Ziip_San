@@ -8,6 +8,8 @@ import { AuthProvider } from '@hooks/useAuth'
 import { ThemeProvider } from '@hooks/useTheme'
 import { BrandProvider } from './brand/BrandProvider'
 import { loadRuntimeConfig } from '@services/runtimeConfig'
+import { queryRetry } from '@services/registry/errors'
+import { initWebVitals } from '@services/webVitals'
 import '@theme/palettes.css'
 import './index.css'
 
@@ -16,11 +18,16 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 1000 * 60,
       gcTime: 1000 * 60 * 10,
-      retry: false,
+      // P1.12: nova tentativa por tipo de erro — rede/timeout/5xx/429, até 3 vezes.
+      // Erro de validação, 403, 404 ou 409 não é tentado de novo.
+      retry: queryRetry,
       refetchOnWindowFocus: false,
     },
   },
 })
+
+// P1.12: Web Vitals medidos desde o arranque (LCP, CLS, INP; ver webVitals.ts).
+initWebVitals()
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('Elemento #root não encontrado')

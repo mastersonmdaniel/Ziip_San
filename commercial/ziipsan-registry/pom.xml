@@ -28,6 +28,13 @@
             <artifactId>ziipsan-security</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- P1.12: exportação usa a fila outbox (MessageQueue) e o catálogo de tenants (TenantCatalog)
+             da plataforma; a plataforma não depende do registry, então não há ciclo. -->
+        <dependency>
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-platform</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>

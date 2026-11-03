@@ -139,6 +139,51 @@ export function errorMessage(error: unknown): string {
   return toApiError(error).message
 }
 
+/**
+ * P1.12: nova tentativa por tipo de erro. Só vale a pena tentar de novo o que
+ * pode passar na próxima tentativa: falha de rede, timeout, erro 5xx e 429
+ * (cota/rate limit). Erro de validação, conflito, não encontrado, sem sessão
+ * ou sem permissão não muda tentando de novo — a tela mostra a mensagem e,
+ * quando for o caso, o caminho (corrigir, entrar de novo, pedir permissão).
+ */
+export function isRetryableError(error: unknown): boolean {
+  const apiError = toApiError(error)
+  if (apiError.kind === 'network' || apiError.kind === 'timeout' || apiError.kind === 'server') return true
+  return apiError.status === 429
+}
+
+/** O botão "Tentar novamente" só aparece para erro que pode passar na nova tentativa. */
+export function shouldOfferRetry(error: unknown): boolean {
+  return isRetryableError(error)
+}
+
+/** Política de retry do react-query: até 3 tentativas, só para erro retryable. */
+export function queryRetry(failureCount: number, error: unknown): boolean {
+  return failureCount < 3 && isRetryableError(error)
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/**
+ * Executa `fn` com nova tentativa só para erro retryable (backoff simples).
+ * Erro não retryable é lançado na primeira tentativa, sem espera inútil.
+ */
+export async function withRetry<T>(fn: () => Promise<T>, maxAttempts = 3, delayMs = 500): Promise<T> {
+  let lastError: unknown
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn()
+    } catch (error) {
+      lastError = error
+      if (attempt === maxAttempts || !isRetryableError(error)) throw error
+      await sleep(delayMs * attempt)
+    }
+  }
+  throw lastError
+}
+
 /** "customers[0].customerId" -> "customers.0.customerId" (caminho do react-hook-form). */
 export function toFormPath(field: string): string {
   return field.replace(/\[(\d+)\]/g, '.$1')

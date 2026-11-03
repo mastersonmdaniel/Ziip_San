@@ -17,6 +17,7 @@ na aplicação, a partir do catálogo.
 | `registry:write` | cadastro | registry | write | ADMIN, MANAGER, OPERATOR | P0.13 |
 | `registry:reveal-document` | cadastro | registry | reveal-document | (nenhum — só concessão direta) | P0.13 |
 | `registry:search-document` | cadastro | registry | search-document | (nenhum — só concessão direta) | P0.11 |
+| `registry:export` | cadastro | registry | export | (nenhum — só concessão direta) | P1.12 |
 | `user:read` | plataforma | user | read | ADMIN, MANAGER | P0.13 |
 | `user:write` | plataforma | user | write | ADMIN | P0.13 |
 | `deployment:read` | plataforma | deployment | read | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS) | P0.43 |
@@ -32,6 +33,11 @@ na aplicação, a partir do catálogo.
   buscar por documento completo exige a permissão direta, separada de leitura e de revelação.
   Sem ela, a busca por documento é 403; com ela, a busca é registrada em
   `personal_data_access_log` e conta na cota por usuário por hora (429 ao exceder).
+- `registry:export` (P1.12) também não está em nenhum perfil de fábrica: exportar uma
+  lista exige a permissão direta, separada de leitura. Sem ela, a exportação é 403 e a
+  negação fica registrada em `personal_data_access_log` (resultado DENIED); com ela, cada
+  exportação — síncrona ou enfileirada — é registrada ali (tipo EXPORT), com o recurso
+  e a quantidade de linhas, e o arquivo traz a mesma máscara da tela (ADR-0008).
 - Permissão nova entra no catálogo junto da rota que a usa; rota sem permissão declarada é
   recusada no CI. As únicas rotas de negócio sem permissão declarada são `GET /api/v1/me` (dados do
   próprio usuário autenticado, sem acesso a dado de terceiros) e `GET /api/v1/about` (P0.42:

@@ -13,6 +13,7 @@ final class RegistryRoles {
 
     static final String READ = "hasAuthority('registry:read')";
     static final String WRITE = "hasAuthority('registry:write')";
+    static final String EXPORT = "hasAuthority('registry:export')";
     static final String REVEAL_DOCUMENT = "hasAuthority('registry:reveal-document')";
     /**
      * Permissão própria da busca por documento (P0.11). Não é usada como {@code @PreAuthorize}

@@ -21,7 +21,7 @@ import java.util.UUID;
 public class MeController {
 
     public record Me(String id, String username, String fullName, String email, UUID tenantId,
-                     List<String> roles) {
+                     List<String> roles, List<String> permissions) {
     }
 
     @GetMapping("/api/v1/me")
@@ -33,7 +33,16 @@ public class MeController {
                 .map(a -> a.substring("ROLE_".length()))
                 .sorted()
                 .toList();
+        // P1.12: as permissões `recurso:ação` expandidas pelo conversor JWT
+        // (tudo que não é ROLE_*), para o frontend exibir ações por permissão.
+        // A exibição nunca é a segurança: cada rota continua conferindo a
+        // permissão no servidor.
+        List<String> permissions = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(a -> !a.startsWith("ROLE_"))
+                .sorted()
+                .toList();
         return new Me(jwt.getSubject(), jwt.getClaimAsString("preferred_username"), jwt.getClaimAsString("name"),
-                jwt.getClaimAsString("email"), TenantContextHolder.getTenantId(), roles);
+                jwt.getClaimAsString("email"), TenantContextHolder.getTenantId(), roles, permissions);
     }
 }

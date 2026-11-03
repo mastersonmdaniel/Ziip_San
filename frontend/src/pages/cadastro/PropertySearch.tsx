@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { ExportButton } from '@components/ExportButton'
 import { Icon } from '@components/ui/Icon'
 import { CatalogSelect } from '@components/registry/CatalogSelect'
 import { CepInput } from '@components/registry/CepInput'
@@ -14,12 +15,15 @@ import { Checkbox, Field, Input } from '@components/ui/Field'
 import { PageHeader } from '@components/ui/PageHeader'
 import { Pagination } from '@components/ui/Pagination'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@components/ui/Table'
-import { errorMessage } from '@services/registry/errors'
+import { useCan } from '@hooks/usePermissions'
+import { toExportFilters } from '@services/export'
+import { errorMessage, shouldOfferRetry } from '@services/registry/errors'
 import { blocks, commercialSectors, consumerUnits, localities, readingRoutes } from '@services/registry/resources'
 import type { ListParams } from '@services/registry/types'
 import { formatInscription, parseInscription } from '@utils/validators/inscription'
 import { formatMatricula } from '@utils/validators/matricula'
 import { orDash } from '@utils/labels'
+import { loadListState, saveListState } from '@utils/listState'
 
 interface Filters {
   q: string
@@ -84,9 +88,15 @@ export function toListParams(f: Filters, page: number): ListParams {
 
 /** S1: pesquisa de imóveis (substitui Consumers.tsx). Rota: /cadastro/imoveis */
 export function PropertySearch() {
-  const [draft, setDraft] = useState<Filters>(EMPTY)
-  const [applied, setApplied] = useState<Filters>(EMPTY)
-  const [page, setPage] = useState(0)
+  // P1.12: o filtro aplicado e a página sobrevivem à ida à ficha (sessionStorage).
+  const saved = () => loadListState<{ applied: Filters; page: number }>('consumer-units', { applied: EMPTY, page: 0 })
+  const [draft, setDraft] = useState<Filters>(() => saved().applied)
+  const [applied, setApplied] = useState<Filters>(() => saved().applied)
+  const [page, setPage] = useState(() => saved().page)
+  const canWrite = useCan('registry:write')
+  useEffect(() => {
+    saveListState('consumer-units', { applied, page })
+  }, [applied, page])
   const qRef = useRef<HTMLInputElement>(null)
 
   // Atalho "/" foca a busca (padrão de pesquisa), sem interferir quando já se está digitando.
@@ -131,14 +141,19 @@ export function PropertySearch() {
         title="Imóveis"
         description="Pesquise por matrícula, inscrição, nome, documento ou endereço. Use a tecla / para ir direto à busca."
         actions={
-          <Link
-            to="/cadastro/imoveis/novo"
-            data-tour="imoveis-new"
-            className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            <Icon name="plus" className="h-4 w-4" />
-            Cadastrar imóvel
-          </Link>
+          <span className="inline-flex flex-wrap items-center gap-2">
+            {canWrite ? (
+              <Link
+                to="/cadastro/imoveis/novo"
+                data-tour="imoveis-new"
+                className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                <Icon name="plus" className="h-4 w-4" />
+                Cadastrar imóvel
+              </Link>
+            ) : null}
+            <ExportButton resource="consumer-units" filters={toExportFilters(params)} />
+          </span>
         }
       />
 
@@ -236,9 +251,11 @@ export function PropertySearch() {
             ) : list.isError ? (
               <Alert tone="error" title="Não foi possível carregar os imóveis">
                 <p>{errorMessage(list.error)}</p>
-                <Button size="sm" variant="outline" className="mt-2" onClick={() => void list.refetch()}>
-                  Tentar novamente
-                </Button>
+                {shouldOfferRetry(list.error) ? (
+                  <Button size="sm" variant="outline" className="mt-2" onClick={() => void list.refetch()}>
+                    Tentar novamente
+                  </Button>
+                ) : null}
               </Alert>
             ) : list.data && list.data.content.length === 0 ? (
               <p className="py-8 text-center text-sm text-muted-foreground">Nenhum imóvel encontrado com estes filtros.</p>
@@ -246,7 +263,7 @@ export function PropertySearch() {
           </div>
           {list.data && list.data.content.length > 0 ? (
             <>
-              <Table caption="Imóveis encontrados">
+              <Table caption="Imóveis encontrados" mobileCards>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Matrícula</TableHead>
@@ -265,7 +282,7 @@ export function PropertySearch() {
                     const matricula = formatMatricula(u.registration, u.registrationDv)
                     return (
                       <TableRow key={u.id}>
-                        <TableCell className="whitespace-nowrap font-mono">
+                        <TableCell label="Matrícula" className="whitespace-nowrap font-mono">
                           <Link to={`/cadastro/imoveis/${u.id}`} className="font-semibold text-primary underline underline-offset-4">
                             {matricula}
                           </Link>
@@ -275,8 +292,8 @@ export function PropertySearch() {
                             </Badge>
                           ) : null}
                         </TableCell>
-                        <TableCell className="whitespace-nowrap font-mono">{formatInscription(u.inscription)}</TableCell>
-                        <TableCell>
+                        <TableCell label="Inscrição" className="whitespace-nowrap font-mono">{formatInscription(u.inscription)}</TableCell>
+                        <TableCell label="Usuário">
                           <span className="block">{orDash(u.userName)}</span>
                           {u.userDocumentMasked ? (
                             <span className="block font-mono text-xs text-muted-foreground">
@@ -285,12 +302,12 @@ export function PropertySearch() {
                             </span>
                           ) : null}
                         </TableCell>
-                        <TableCell>{u.addressText}</TableCell>
-                        <TableCell>{orDash(u.mainCategoryName)}</TableCell>
-                        <TableCell>{orDash(u.waterStatusName)}</TableCell>
-                        <TableCell>{orDash(u.sewerStatusName)}</TableCell>
-                        <TableCell className="text-right">{u.economies}</TableCell>
-                        <TableCell className="text-right">
+                        <TableCell label="Endereço">{u.addressText}</TableCell>
+                        <TableCell label="Categoria principal">{orDash(u.mainCategoryName)}</TableCell>
+                        <TableCell label="Água">{orDash(u.waterStatusName)}</TableCell>
+                        <TableCell label="Esgoto">{orDash(u.sewerStatusName)}</TableCell>
+                        <TableCell label="Economias" className="text-right">{u.economies}</TableCell>
+                        <TableCell label="Ações" className="text-right">
                           <div className="flex justify-end gap-1">
                             <Link
                               to={`/cadastro/imoveis/${u.id}`}
@@ -300,7 +317,7 @@ export function PropertySearch() {
                               <Icon name="eye" className="h-4 w-4" />
                               <span className="hidden xl:inline">Ficha</span>
                             </Link>
-                            {!u.deleted ? (
+                            {!u.deleted && canWrite ? (
                               <Link
                                 to={`/cadastro/imoveis/${u.id}/editar`}
                                 aria-label={`Editar imóvel ${matricula}`}

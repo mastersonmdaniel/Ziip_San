@@ -104,6 +104,13 @@ export default defineConfig(({ mode }) => {
       // A porta 3000 é a registrada no client ziipsan-web do Keycloak (redirect URI e web origin).
       port: 3000,
       strictPort: true,
+      // P1.12: o teste de contrato das abas da ficha (unitSheetTabs.test.ts) lê o
+      // manifesto do produto em packages/sanitation/vertical.json, fora da raiz do
+      // frontend; sem isto o Vite nega o import ("Denied ID"). Só afeta o
+      // servidor local de dev/teste, nunca o build.
+      fs: {
+        allow: [path.resolve(__dirname, '..')],
+      },
       // O contrato do cadastro é /api/registry/... (relatório 07, seção 6.2): o prefixo /api
       // NÃO é removido.
       proxy: {

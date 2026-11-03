@@ -11,20 +11,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/Card'
 import { PageHeader } from '@components/ui/PageHeader'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@components/ui/Table'
 import { Tabs } from '@components/ui/Tabs'
-import { errorMessage, toApiError } from '@services/registry/errors'
+import { useCan } from '@hooks/usePermissions'
+import { errorMessage, shouldOfferRetry, toApiError } from '@services/registry/errors'
 import { consumerUnits } from '@services/registry/resources'
 import type { ConsumerUnit, HistoryEvent, Ref, UnitCustomerLink } from '@services/registry/types'
 import { formatDate, formatNumber, orDash, RELATION_LABEL } from '@utils/labels'
 import { formatInscription } from '@utils/validators/inscription'
 import { formatMatricula } from '@utils/validators/matricula'
+import { UNIT_SHEET_TABS, unitSheetTabById } from './unitSheetTabs'
 
-type TabId = 'cadastro' | 'clientes' | 'historico'
+type TabId = string
 
-const TABS: Array<{ id: TabId; label: string }> = [
-  { id: 'cadastro', label: 'Cadastro' },
-  { id: 'clientes', label: 'Clientes' },
-  { id: 'historico', label: 'Histórico' },
-]
+// P1.12: as abas vêm da regra da P0.47 (unitSheetTabs.ts): Cadastro, Clientes e
+// Histórico são da própria ficha; Contas, Débitos, Qualidade e Documentos são
+// as abas declaradas no manifesto e aparecem com aviso até o módulo ter fonte.
+const TABS = UNIT_SHEET_TABS.map((tab) => ({ id: tab.id, label: tab.label }))
 
 function refText(ref: Ref | null | undefined): string {
   if (!ref) return '—'
@@ -262,6 +263,7 @@ export function PropertyDetail() {
   const queryClient = useQueryClient()
   const [tab, setTab] = useState<TabId>('cadastro')
   const [deleting, setDeleting] = useState(false)
+  const canWrite = useCan('registry:write')
 
   const query = useQuery({
     queryKey: ['consumer-unit', id],
@@ -278,9 +280,11 @@ export function PropertyDetail() {
         <Alert tone="error" title={err.kind === 'not-found' ? 'Imóvel não encontrado' : 'Não foi possível carregar o imóvel'}>
           <p>{err.message}</p>
           <div className="mt-2 flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => void query.refetch()}>
-              Tentar novamente
-            </Button>
+            {shouldOfferRetry(query.error) ? (
+              <Button size="sm" variant="outline" onClick={() => void query.refetch()}>
+                Tentar novamente
+              </Button>
+            ) : null}
             <Link to="/cadastro/imoveis" className="inline-flex h-9 items-center rounded-md px-3 text-sm font-medium underline underline-offset-4">
               Voltar à pesquisa
             </Link>
@@ -299,7 +303,7 @@ export function PropertyDetail() {
       <PageHeader
         title={`Imóvel ${matricula}`}
         actions={
-          !deleted ? (
+          !deleted && canWrite ? (
             <>
               <Link
                 to={`/cadastro/imoveis/${unit.id}/editar`}
@@ -350,6 +354,9 @@ export function PropertyDetail() {
         {tab === 'cadastro' ? <RegistrationTab unit={unit} /> : null}
         {tab === 'clientes' ? <CustomersTab unitId={unit.id} /> : null}
         {tab === 'historico' ? <HistoryTab unitId={unit.id} /> : null}
+        {unitSheetTabById(tab)?.available === false ? (
+          <p className="text-sm text-muted-foreground">{unitSheetTabById(tab)?.unavailableText}</p>
+        ) : null}
       </Tabs>
 
       {deleting ? (
