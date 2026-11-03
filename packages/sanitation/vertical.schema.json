@@ -176,6 +176,106 @@
         "pattern": "^[a-z]+:[a-z-]+$"
       }
     },
+    "serviceTypes": {
+      "type": "array",
+      "description": "Tipos de servico declarados pelo pacote (P1.31, mapa 23b §3.2).",
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "approvalByAnotherPerson",
+          "effectValidity",
+          "targetClasses",
+          "effectCode",
+          "declarableNow",
+          "originTask"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "approvalByAnotherPerson": {
+            "type": "boolean"
+          },
+          "effectValidity": {
+            "type": "string"
+          },
+          "targetClasses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "effectCode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "declarableNow": {
+            "type": "boolean"
+          },
+          "originTask": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "serviceTypesNote": {
+      "type": "string"
+    },
+    "operationalTypes": {
+      "type": "object",
+      "properties": {
+        "enabledBy": {
+          "type": "string"
+        },
+        "deadlineBy": {
+          "type": "string"
+        },
+        "effectCode": {
+          "type": "null"
+        },
+        "origins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "serviceOrderTargets": {
+      "type": "array",
+      "description": "Classes de alvo da OS com fonte da verdade e status do verificador (P1.31).",
+      "items": {
+        "type": "object",
+        "required": [
+          "class",
+          "sourceOfTruth",
+          "verifier"
+        ],
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "sourceOfTruth": {
+            "type": "string"
+          },
+          "verifier": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "events": {
       "type": "array",
       "description": "Catálogo único de eventos de negócio (P1.38, ADR-0037). A carga (payloadSchema) carrega só identificadores e códigos, sem dado pessoal.",

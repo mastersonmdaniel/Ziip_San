@@ -41,7 +41,13 @@ public class UnitStatusHistory extends TenantAwareEntity {
     @Column(name = "reason", length = 200)
     private String reason;
 
-    @Column(name = "service_order_id")
+    /**
+     * P1.31 (V9_1): FK para service_orders e NOT NULL (ADR-0039 item 6).
+     * Todo historico nasce da OS que causou a mudanca; a escrita direta sem
+     * OS e recusada pelo banco. A migracao do registro direto restante
+     * para OS e da P1.3 (V3_6).
+     */
+    @Column(name = "service_order_id", nullable = false)
     private UUID serviceOrderId;
 
     public enum ServiceKind { WATER, SEWER }

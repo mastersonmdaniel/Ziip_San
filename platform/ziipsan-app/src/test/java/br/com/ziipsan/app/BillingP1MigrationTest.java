@@ -164,17 +164,49 @@ class BillingP1MigrationTest {
         return id;
     }
 
+    // P1.31 (V9_1): a inscricao exige OS (FK + NOT NULL). O fixture cria um
+    // tipo e uma OS em DRAFT e a usa como causa da inscricao.
+    private static UUID insertServiceOrder(Connection c) throws SQLException {
+        UUID typeId = UUID.randomUUID();
+        try (PreparedStatement ps = c.prepareStatement(
+                "INSERT INTO " + SCHEMA + ".service_types (id, tenant_id, code, name, operation, effect_code, "
+                        + "indicator, target_classes) VALUES (?, ?, ?, 'Tipo de teste', 'TEST_OP', "
+                        + "'IT_EFFECT', 'INTERNAL', ARRAY['CONSUMER_UNIT'])")) {
+            ps.setObject(1, typeId);
+            ps.setObject(2, TENANT);
+            ps.setString(3, "IT-TYPE-" + UUID.randomUUID().toString().substring(0, 8));
+            ps.executeUpdate();
+        }
+        UUID orderId = UUID.randomUUID();
+        UUID creator = UUID.randomUUID();
+        try (PreparedStatement ps = c.prepareStatement(
+                "INSERT INTO " + SCHEMA + ".service_orders (id, tenant_id, service_type_id, origin, "
+                        + "execution_mode, created_by) VALUES (?, ?, ?, 'INTERNAL', 'INTERNAL', ?)")) {
+            ps.setObject(1, orderId);
+            ps.setObject(2, TENANT);
+            ps.setObject(3, typeId);
+            ps.setObject(4, creator);
+            ps.executeUpdate();
+        }
+        return orderId;
+    }
+
     private static void insertEnrollment(Connection c, UUID unit, UUID holder, String familyHash, String status) throws SQLException {
+        insertEnrollment(c, unit, holder, familyHash, status, insertServiceOrder(c));
+    }
+
+    private static void insertEnrollment(Connection c, UUID unit, UUID holder, String familyHash, String status, UUID orderId) throws SQLException {
         try (PreparedStatement ps = c.prepareStatement(
                 "INSERT INTO " + SCHEMA + ".social_tariff_enrollments (tenant_id, unit_id, holder_customer_id, "
                         + "family_code_hash, eligibility_basis, enrollment_source, cadunico_updated_on, valid_from, "
-                        + "status, legal_basis, social_economies) VALUES (?, ?, ?, ?, 'CADUNICO', 'OFFICIAL_LIST', "
-                        + "CURRENT_DATE, CURRENT_DATE, ?, 'Lei 14.898/2024', 1)")) {
+                        + "status, legal_basis, social_economies, service_order_id) VALUES (?, ?, ?, ?, 'CADUNICO', 'OFFICIAL_LIST', "
+                        + "CURRENT_DATE, CURRENT_DATE, ?, 'Lei 14.898/2024', 1, ?)")) {
             ps.setObject(1, TENANT);
             ps.setObject(2, unit);
             ps.setObject(3, holder);
             ps.setString(4, familyHash);
             ps.setString(5, status);
+            ps.setObject(6, orderId);
             ps.executeUpdate();
         }
     }
@@ -193,13 +225,14 @@ class BillingP1MigrationTest {
         try (PreparedStatement ps = c.prepareStatement(
                 "INSERT INTO " + SCHEMA + ".social_tariff_enrollments (tenant_id, unit_id, holder_customer_id, "
                         + "family_code_hash, eligibility_basis, enrollment_source, cadunico_updated_on, valid_from, "
-                        + "status, end_reason_code, legal_basis, social_economies) VALUES (?, ?, ?, ?, 'CADUNICO', "
-                        + "'OFFICIAL_LIST', CURRENT_DATE, CURRENT_DATE, 'ENDED', ?, 'Lei 14.898/2024', 1)")) {
+                        + "status, end_reason_code, legal_basis, social_economies, service_order_id) VALUES (?, ?, ?, ?, 'CADUNICO', "
+                        + "'OFFICIAL_LIST', CURRENT_DATE, CURRENT_DATE, 'ENDED', ?, 'Lei 14.898/2024', 1, ?)")) {
             ps.setObject(1, TENANT);
             ps.setObject(2, unit);
             ps.setObject(3, holder);
             ps.setString(4, familyHash);
             ps.setString(5, reason);
+            ps.setObject(6, insertServiceOrder(c));
             ps.executeUpdate();
         }
     }

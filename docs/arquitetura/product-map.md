@@ -11,6 +11,7 @@ Pacote: **sanitation** — versão 0.1.0 (plataforma mínima 1.0.0-SNAPSHOT)
 | Módulo | Nome | Status | Módulo Maven | Permissão | Tarefa de origem |
 |---|---|---|---|---|---|
 | registry | Cadastro comercial | active | `commercial/ziipsan-registry` | `registry:read` | P0.13/P0.16 |
+| service-order | Ordens de serviço | declared | `shared/ziipsan-core` | `— (sem permissão catalogada)` | P1.31 |
 | metering | Medição | declared | `operations/ziipsan-metering` | `— (sem permissão catalogada)` | P0 (módulo existente, sem rota HTTP nem menu até esta onda) |
 | billing | Faturamento | declared | `commercial/ziipsan-billing` | `— (sem permissão catalogada)` | P0 (módulo existente, sem rota HTTP nem menu até esta onda) |
 | collection | Arrecadação | declared | `commercial/ziipsan-collection` | `— (sem permissão catalogada)` | P0 (módulo existente, sem rota HTTP nem menu até esta onda) |
@@ -40,6 +41,15 @@ Pacote: **sanitation** — versão 0.1.0 (plataforma mínima 1.0.0-SNAPSHOT)
   - `/api/v1/registry/water-statuses`
   - `/api/v1/registry/sewer-statuses`
 - Abas da ficha da unidade: nenhuma.
+
+## Ordens de serviço (`service-order`) <!-- module: service-order -->
+
+- Status: `declared` · módulo Maven: `shared/ziipsan-core`
+- Permissão: `— (sem permissão catalogada)`
+- Tarefa de origem: P1.31
+- Itens de menu: nenhum até esta onda.
+- Rotas de API: nenhuma até esta onda.
+- Abas da ficha da unidade: `service-orders`
 
 ## Medição (`metering`) <!-- module: metering -->
 
@@ -141,4 +151,4 @@ Pacote: **sanitation** — versão 0.1.0 (plataforma mínima 1.0.0-SNAPSHOT)
 
 ## Regra das abas da ficha da unidade (P0.47)
 
-Cada tarefa que cria uma fonte da ficha da unidade (contas, débitos, OS, atendimentos, documentos, qualidade) acrescenta a aba correspondente ao manifesto do pacote (campo unitSheetTabs do módulo). A aplicação da regra no frontend é da P1.12, não desta onda. Abas já refletidas aqui: contas (billing), débitos (collection), documentos (mtr), qualidade (quality). O registry fornece a própria ficha, não uma aba. OS e atendimentos ainda não têm módulo nem aba — entram com as tarefas que os criarem.
+Cada tarefa que cria uma fonte da ficha da unidade (contas, débitos, OS, atendimentos, documentos, qualidade) acrescenta a aba correspondente ao manifesto do pacote (campo unitSheetTabs do módulo). A aplicação da regra no frontend é da P1.12, não desta onda. Abas já refletidas aqui: contas (billing), débitos (collection), OS (service-order, P1.31), documentos (mtr), qualidade (quality). O registry fornece a própria ficha, não uma aba. Atendimentos ainda não têm módulo nem aba — entram com a tarefa que os criar (P1.36).

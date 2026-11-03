@@ -66,6 +66,8 @@ final class PersonalDataColumns {
             Map.entry("lab_analysis_method.safety_notes", "nota técnica de segurança do método"),
             Map.entry("sampling_point.coordinates", "localização de ponto público de amostragem"),
             Map.entry("waste_destination.coordinates", "localização de destinador (pessoa jurídica)"),
+            // P1.31: nome de tipo de servico (catalogo, nao dado pessoal).
+            Map.entry("service_types.name", "nome de tipo de servico (catalogo)"),
             // P1-A (integracao): colunas novas da P1.8/P1.26 que casam com o padrao por
             // nome mas nao sao dado pessoal — mesmo precedente de payments.document_id,
             // payments.document_type, collection_agreements.document_kind e
