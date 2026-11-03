@@ -553,19 +553,17 @@ public class ConsumerUnitService {
     // ------------------------------------------------------------------ gravação (apoio)
 
     /**
-     * Próxima matrícula do tenant (maior numérica + 1). A trava consultiva da transação serializa a
-     * geração por tenant; o índice único (tenant_id, matricula) continua sendo a garantia final.
+     * Próxima matrícula do tenant, da sequência {@code registry_matricula_seq} do schema do
+     * tenant (V3_10, P1.4). nextval nunca bloqueia: dois lotes paralelos de inclusão não
+     * esperam um pelo outro (a trava consultiva anterior serializava a geração) e nunca
+     * recebem o mesmo valor; o índice único (tenant_id, matricula) continua sendo a
+     * garantia final. Ressalva: valor consumido por transação desfeita não é reutilizado,
+     * então um lote desfeito pode deixar um salto na numeração (ver V3_10).
      */
     private String nextMatricula() {
-        UUID tenantId = RegistryContext.tenantId();
-        em.createNativeQuery("SELECT 1 FROM (SELECT pg_advisory_xact_lock(hashtext(:k))) x")
-                .setParameter("k", "registry.matricula." + tenantId)
+        Number next = (Number) em.createNativeQuery("SELECT nextval('registry_matricula_seq')")
                 .getSingleResult();
-        Number max = (Number) em.createNativeQuery("SELECT COALESCE(MAX(CAST(matricula AS bigint)), 0) FROM consumer_units "
-                        + "WHERE tenant_id = :t AND matricula ~ '^[0-9]+$' AND length(matricula) <= 18")
-                .setParameter("t", tenantId)
-                .getSingleResult();
-        return Long.toString(max.longValue() + 1);
+        return Long.toString(next.longValue());
     }
 
     private static void apply(Address a, AddressInput in) {

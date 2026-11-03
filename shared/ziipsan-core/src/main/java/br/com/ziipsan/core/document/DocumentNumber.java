@@ -8,11 +8,12 @@ import java.util.Locale;
  * <h3>CNPJ alfanumérico</h3>
  * A Receita Federal passou a emitir CNPJ com letras (14 posições: 12 alfanuméricas + 2 dígitos
  * verificadores numéricos) a partir de julho de 2026, e os CNPJ numéricos existentes continuam
- * válidos. O cálculo do dígito é o módulo 11 de sempre, mas cada caractere vale o seu código ASCII
+ * válidos. Base normativa: IN RFB nº 2.119/2022, com a redação dada pela IN RFB nº 2.229/2024
+ * (art. 2º, parágrafo único, e Anexo XV), que estabelece o formato alfanumérico de quatorze
+ * posições. O cálculo do dígito é o módulo 11 de sempre, mas cada caractere vale o seu código ASCII
  * menos 48 ({@code '0'}=0 ... {@code '9'}=9, {@code 'A'}=17, {@code 'B'}=18 ...). Para um CNPJ
  * numérico isso reduz ao cálculo antigo. Conferido com o exemplo da documentação técnica
- * ({@code 12.ABC.345/01DE-35}) e com CNPJ numéricos conhecidos nos testes; a fonte normativa
- * (instrução normativa da Receita) deve ser confirmada pelo jurídico antes de produção.
+ * ({@code 12.ABC.345/01DE-35}) e com CNPJ numéricos conhecidos nos testes.
  *
  * <p>O documento não é cifrado aqui: esta classe só valida e formata. Quem grava é responsável por
  * cifrar e por calcular o índice cego sobre a forma normalizada.

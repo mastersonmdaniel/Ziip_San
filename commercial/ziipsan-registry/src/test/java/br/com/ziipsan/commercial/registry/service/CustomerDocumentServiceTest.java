@@ -177,4 +177,37 @@ class CustomerDocumentServiceTest {
         assertThatThrownBy(() -> service.findActiveByDocument(CPF)).isInstanceOf(IllegalStateException.class);
         verify(customers, never()).findByTenantIdAndDocumentHashAndDeletedAtIsNull(eq(TENANT), any());
     }
+
+    @Test
+    @DisplayName("P1.39: CNPJ alfanumérico é aceito para PJ, com máscara no formato alfanumérico")
+    void assignAcceptsAlphanumericCnpj() {
+        Customer c = customer(PersonType.PJ);
+        service.assign(c, "12.ABC.345/01DE-35");
+        assertThat(c.getDocumentHash()).hasSize(64).doesNotContain("12ABC34501DE35");
+        assertThat(c.getDocumentMasked()).isEqualTo("**.***.***/01DE-**");
+        assertThat(service.reveal(c, "atendimento: confirmar titularidade")).isEqualTo("12.ABC.345/01DE-35");
+    }
+
+    @Test
+    @DisplayName("P1.39: o mesmo CNPJ alfanumérico em minúsculas gera o mesmo índice cego")
+    void alphanumericCnpjLowercaseHashesLikeUppercase() {
+        Customer upper = customer(PersonType.PJ);
+        service.assign(upper, "12.ABC.345/01DE-35");
+        Customer lower = customer(PersonType.PJ);
+        service.assign(lower, "12.abc.345/01de-35");
+        assertThat(lower.getDocumentHash()).isEqualTo(upper.getDocumentHash());
+        assertThat(lower.getDocumentMasked()).isEqualTo(upper.getDocumentMasked());
+        when(customers.findByTenantIdAndDocumentHashAndDeletedAtIsNull(TENANT, upper.getDocumentHash()))
+                .thenReturn(Optional.of(upper));
+        assertThat(service.findActiveByDocument("12.abc.345/01de-35")).contains(upper);
+    }
+
+    @Test
+    @DisplayName("P1.39: CNPJ alfanumérico com dígito errado ou letra no DV é recusado")
+    void rejectsAlphanumericCnpjWithBadCheckDigits() {
+        assertThatThrownBy(() -> service.assign(customer(PersonType.PJ), "12.ABC.345/01DE-36"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.assign(customer(PersonType.PJ), "12.ABC.345/01DE-3A"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
