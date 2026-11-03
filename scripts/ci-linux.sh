@@ -157,6 +157,11 @@ cp -a "$SRC/frontend/." "$FE/"
 # branding/ no mesmo nivel, senao o typecheck quebra com TS2307. So aparece no CI:
 # na verificacao da frente o typecheck roda dentro do repo, onde o import resolve.
 cp -a "$SRC/branding" "$FE_ROOT/branding"
+# P1.12 (integracao P1-B): o mesmo para unitSheetTabs.test.ts, que importa
+# ../../../../packages/sanitation/vertical.json (o manifesto do pacote vive
+# fora de frontend/): sem o irmao packages/ o vitest quebra com "Failed to
+# resolve import ... Does the file exist?" — foi a unica falha da rodada 6.
+cp -a "$SRC/packages" "$FE_ROOT/packages"
 rm -rf "$FE/node_modules" "$FE/dist" "$FE/coverage"
 (
   cd "$FE"
