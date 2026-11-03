@@ -17,6 +17,16 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, UUID> {
     List<AuditLog> findByTenantIdAndUserIdOrderByCreatedAtDesc(
             UUID tenantId, UUID userId);
 
+    /**
+     * P1.7 — consulta da trilha por usuário com período (ver ED-06). Os
+     * limites de created_at são o que permite ao planejador podar as
+     * partições mensais: sem eles, a consulta varre todas as partições.
+     * Quem consulta a trilha por usuário deve sempre usar esta variante
+     * com período, nunca a sem período, em produção.
+     */
+    List<AuditLog> findByTenantIdAndUserIdAndCreatedAtBetween(
+            UUID tenantId, UUID userId, OffsetDateTime start, OffsetDateTime end);
+
     List<AuditLog> findByTenantIdAndCreatedAtBetween(
             UUID tenantId, OffsetDateTime start, OffsetDateTime end);
 

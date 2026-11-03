@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Index;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -75,5 +76,21 @@ public class AuditLog extends BaseEntity {
 
     public enum AuditAction {
         CREATE, READ, UPDATE, DELETE, LOGIN, LOGOUT, EXPORT, IMPORT, SIGN, VERIFY, ANONYMIZE;
+    }
+
+    /**
+     * P1.7: o id do audit_log é sempre UUIDv7 (core V14, PK (created_at, id)).
+     * Sobrescreve o onCreate de BaseEntity (UUIDv4) de propósito, e sem
+     * checar o valor prévio: a ordem de disparo dos callbacks da hierarquia
+     * (superclasse antes ou depois da subclasse) não pode decidir a versão
+     * do id — nos dois casos o resultado é v7. Nenhum chamador atual fixa o
+     * id de um AuditLog antes de salvar, então nada depende de um id
+     * pré-atribuído aqui; o caminho do trigger usa o default uuidv7() do
+     * banco, a mesma regra.
+     */
+    @Override
+    @PrePersist
+    protected void onCreate() {
+        setId(UuidV7.generate());
     }
 }
