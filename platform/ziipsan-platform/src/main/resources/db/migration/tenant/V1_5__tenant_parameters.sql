@@ -21,8 +21,13 @@
 -- vira no-op e ele so acrescenta as constraints e o indice com os nomes dele. Num banco
 -- onde o V6_1 ja foi aplicado, o CREATE IF NOT EXISTS aqui vira no-op e o bloco DO
 -- abaixo acrescenta a coluna kind e a CHECK de kind, sem tocar nas constraints do V6_1.
--- Por isso esta migration NAO cria constraints nem indice com os nomes do V6_1, e NAO
--- chama register_tenant_table('holidays'): o V6_1 ja o faz (uma vez, em qualquer ordem).
+-- Por isso esta migration NAO cria constraints nem indice com os nomes do V6_1. Mas ela
+-- SIM chama register_tenant_table('holidays') (correcao da integracao resto-do-P0): o
+-- registro tem de vir da migration que cria a tabela — depender do V6_1 (outro modulo)
+-- deixava holidays sem RLS em classpaths sem o modulo collection, e o teste
+-- enablesRowLevelSecurityOnEveryTable do platform (que roda so com as migrations do
+-- platform) pegou 8/9 tabelas com RLS. A chamada e idempotente (policy guardada por
+-- IF NOT EXISTS), entao o V6_1 continua registrando sem conflito em qualquer ordem.
 -- As tres tabelas novas seguem o padrao: register_tenant_table (RLS forcada + trilha).
 --
 -- NENHUM valor e semeado: perfis de agencia, feriados e valores de parametro sao dados
@@ -190,3 +195,4 @@ END $$;
 SELECT register_tenant_table('parameter_versions');
 SELECT register_tenant_table('parameter_acceptances');
 SELECT register_tenant_table('regulatory_profiles');
+SELECT register_tenant_table('holidays');
