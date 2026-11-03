@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -63,7 +64,7 @@ class UserIdempotencyConditionalTest extends AppIntegrationTestBase {
         mvc.perform(get("/api/v1/users").header("Authorization", ADMIN))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.keycloakSub == '" + sub + "')]").isArray())
-                .andExpect(jsonPath("$[?(@.keycloakSub == '" + sub + "')].length()").value(1));
+                .andExpect(jsonPath("$[?(@.keycloakSub == '" + sub + "')]", hasSize(1)));
     }
 
     @Test
