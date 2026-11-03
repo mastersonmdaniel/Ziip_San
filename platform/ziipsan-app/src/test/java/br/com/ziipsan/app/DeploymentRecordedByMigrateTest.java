@@ -18,12 +18,18 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * <p>O contexto sobe com o perfil {@code migrate} e {@code migrate-on-startup=true},
  * então o {@code DatabaseMigrator} já rodou antes do teste (como em
- * {@code MigrateRunsMigrationTest}). Sem build-info/git.properties no classpath de
- * teste, versão e ambiente caem nos fallbacks literais ({@code "dev"}); o que se
- * prova aqui é a GRAVAÇÃO — uma linha nova por execução do job — e não um valor
- * de artefato que o teste não tem. Linhas acumuladas no banco descartável de
- * integração são esperadas (uma por boot do perfil migrate); os demais testes
- * usam "mais recente" ou "contém", nunca contagem exata da tabela.
+ * {@code MigrateRunsMigrationTest}). O que se prova aqui é a GRAVAÇÃO — uma linha
+ * nova por execução do job — e não um valor de artefato. ATENÇÃO (correção da
+ * integração resto-do-P0): desde a P0.39 (F08) o goal build-info gera
+ * {@code META-INF/build-info.properties} antes dos testes, então o
+ * {@code BuildProperties} EXISTE no classpath de teste e a versão gravada é a
+ * versão do build ({@code 0.0.0-SNAPSHOT} no CI sem {@code -Drevision}, ou a da
+ * tag com {@code -Drevision}) — NÃO mais o fallback {@code "dev"} que este teste
+ * assumia. Por isso o filtro é só por ambiente ({@code "dev"}, que continua
+ * sendo o fallback de ambiente); filtrar por versão {@code "dev"} daria 0 linhas
+ * e quebraria o teste em qualquer build com build-info. Linhas acumuladas no
+ * banco descartável de integração são esperadas (uma por boot do perfil migrate);
+ * os demais testes usam "mais recente" ou "contém", nunca contagem exata da tabela.
  */
 @SpringBootTest(classes = ZiipsanApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ActiveProfiles("migrate")
@@ -59,12 +65,12 @@ class DeploymentRecordedByMigrateTest extends MigrationProfileTestBase {
                 "SELECT count(*) FROM information_schema.schemata WHERE schema_name = 'platform'", Integer.class);
         assertThat(schema).isOne();
         Integer rows = migrator.queryForObject(
-                "SELECT count(*) FROM platform.deployment WHERE version = 'dev' AND environment = 'dev'",
+                "SELECT count(*) FROM platform.deployment WHERE environment = 'dev'",
                 Integer.class);
         assertThat(rows).as("ao menos uma implantação gravada pelo job migrate").isGreaterThanOrEqualTo(1);
         Integer complete = migrator.queryForObject(
                 "SELECT count(*) FROM platform.deployment"
-                        + " WHERE version = 'dev' AND environment = 'dev'"
+                        + " WHERE environment = 'dev'"
                         + " AND started_at IS NOT NULL AND finished_at IS NOT NULL AND created_at IS NOT NULL",
                 Integer.class);
         assertThat(complete).isGreaterThanOrEqualTo(1);
