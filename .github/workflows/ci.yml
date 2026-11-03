@@ -94,7 +94,16 @@ jobs:
           psql -h localhost -p 5432 -U postgres -d ziipsan -v ON_ERROR_STOP=1 \
             -c "ALTER ROLE ziipsan_worker LOGIN PASSWORD 'ci-service-${{ github.run_id }}';"
       - name: mvn clean verify
-        run: mvn -B -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 -DfailIfNoTests=false clean verify failsafe:integration-test failsafe:verify
+        # ATENCAO (P1-A, rodadas 3-4): os goals do failsafe rodam em SEGUNDA invocacao,
+        # nunca na mesma que o verify. Na mesma invocacao, o repackage do spring-boot
+        # (fase package) ja trocou o artefato do app pelo jar executavel, e o fork do
+        # failsafe resolve as classes do app a partir dele — onde elas vivem sob
+        # BOOT-INF/classes/, invisiveis ao classloader padrao (TypeNotPresentException
+        # para ZiipsanApplication; 'Failed to find merged annotation for @BootstrapWith'
+        # em KeysetSearchIT/TrigramSearchIT). Em sessao nova o fork usa target/classes.
+        run: |
+          mvn -B -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 -DfailIfNoTests=false clean verify
+          mvn -B -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 -DfailIfNoTests=false -Dfailsafe.failIfNoSpecifiedTests=false test-compile failsafe:integration-test failsafe:verify
 
   frontend:
     name: frontend (typecheck + lint + test + build + audit)

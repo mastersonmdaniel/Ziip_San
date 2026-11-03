@@ -131,11 +131,21 @@ export JAVA_TOOL_OPTIONS="-Djava.net.preferIPv4Stack=true${JAVA_TOOL_OPTIONS:+ $
 # Timeouts do Wagon: sem eles, um repositorio lento/ausente (ex.: jboss-public, que
 # responde 404 para jackson-bom 2.18.5) deixa o Maven parado em leitura SSL indefinidamente.
 # P1-A (integracao): o failsafe so existe em pluginManagement, nenhum modulo o declara —
-# 'mvn verify' sozinho NUNCA executava os testes *IT. Os goals explicitos, na mesma
-# invocacao (deps inter-modulo resolvem no reator), rodam os ITs apos o verify; o
-# failsafe:verify reprova o build se algum IT falhar. -DfailIfNoTests=false evita que
-# modulos sem IT reprove, sem mascarar falha de IT existente.
-(cd "$SRC" && mvn -B -s "$SRC/scripts/ci-linux-settings.xml" -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 -DfailIfNoTests=false clean verify failsafe:integration-test failsafe:verify)
+# 'mvn verify' sozinho NUNCA executava os testes *IT. Os goals explicitos rodam os ITs
+# apos o verify; o failsafe:verify reprova o build se algum IT falhar.
+# -DfailIfNoTests=false evita que modulos sem IT reprovem, sem mascarar falha de IT
+# existente. -Dfailsafe.failIfNoSpecifiedTests=false faz o mesmo para o failsafe.
+# ATENCAO: os goals do failsafe rodam em SEGUNDA invocacao, nunca na mesma que o
+# verify. Na mesma invocacao, o repackage do spring-boot (fase package) ja trocou o
+# artefato do app pelo jar executavel, e o fork do failsafe resolve as classes do app
+# a partir dele — onde elas vivem sob BOOT-INF/classes/, invisiveis ao classloader
+# padrao. Resultado (rodadas 3 e 4 do CI total): TypeNotPresentException para
+# ZiipsanApplication ao introspectar @SpringBootTest, e 'Failed to find merged
+# annotation for @BootstrapWith' em KeysetSearchIT/TrigramSearchIT, enquanto os
+# mesmos ITs passam em invocacao separada (repros isolado, conjunto e sequencia).
+# Em sessao nova o artefato ainda nao foi empacotado e o fork usa target/classes.
+(cd "$SRC" && mvn -B -s "$SRC/scripts/ci-linux-settings.xml" -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 -DfailIfNoTests=false clean verify)
+(cd "$SRC" && mvn -B -s "$SRC/scripts/ci-linux-settings.xml" -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 -DfailIfNoTests=false -Dfailsafe.failIfNoSpecifiedTests=false test-compile failsafe:integration-test failsafe:verify)
 
 echo "== (c) frontend"
 FE_ROOT="$(mktemp -d /tmp/ziipsan-ci-frontend.XXXXXX)"
