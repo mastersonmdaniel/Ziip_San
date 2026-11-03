@@ -9,11 +9,12 @@ import { UNIT_SHEET_TABS } from './unitSheetTabs'
  * ficha (registry), não do manifesto.
  */
 describe('abas da ficha da unidade (P0.47)', () => {
-  it('bate com o vertical.json: bills, debts, quality, documents', () => {
+  it('bate com o vertical.json: service-orders, bills, debts, quality, documents', () => {
     const vertical = JSON.parse(verticalRaw) as { modules: Array<{ unitSheetTabs?: string[] }> }
     const declared = vertical.modules.flatMap((m) => m.unitSheetTabs ?? [])
-    // Ordem dos módulos no manifesto: billing, collection, quality, mtr.
-    expect(declared).toEqual(['bills', 'debts', 'quality', 'documents'])
+    // Ordem dos módulos no manifesto: service-order (P1.31), billing,
+    // collection, quality, mtr.
+    expect(declared).toEqual(['service-orders', 'bills', 'debts', 'quality', 'documents'])
     const manifestTabs = UNIT_SHEET_TABS.filter((t) => t.module !== 'registry').map((t) => t.id)
     expect(manifestTabs).toEqual(declared)
     expect(UNIT_SHEET_TABS.filter((t) => t.module === 'registry').map((t) => t.id)).toEqual([

@@ -5,9 +5,10 @@
  *
  * Regra da P0.47: cada tarefa que cria uma fonte da ficha acrescenta a aba ao
  * manifesto; o registry fornece a própria ficha, não uma aba. Abas já declaradas
- * no manifesto: contas (billing, `bills`), débitos (collection, `debts`),
- * documentos (mtr, `documents`), qualidade (quality, `quality`). OS e
- * atendimentos ainda não têm módulo nem aba — entram com as tarefas que os criarem.
+ * no manifesto: ordens de serviço (service-order, `service-orders`, P1.31),
+ * contas (billing, `bills`), débitos (collection, `debts`),
+ * documentos (mtr, `documents`), qualidade (quality, `quality`).
+ * Atendimentos ainda não têm módulo nem aba — entram com a tarefa que os criar.
  *
  * As abas declaradas aparecem na ficha, mas `available: false` enquanto o módulo
  * está `declared` sem rota de API: a ficha mostra um aviso, sem inventar dado
@@ -19,7 +20,7 @@ export interface UnitSheetTab {
   id: string
   label: string
   /** Módulo do manifesto que declarou a aba. */
-  module: 'registry' | 'billing' | 'collection' | 'mtr' | 'quality'
+  module: 'registry' | 'service-order' | 'billing' | 'collection' | 'mtr' | 'quality'
   /** Falso enquanto o módulo não tem rota de API para alimentar a aba. */
   available: boolean
   /** Texto exibido quando a aba ainda não tem fonte. */
@@ -30,6 +31,18 @@ export const UNIT_SHEET_TABS: UnitSheetTab[] = [
   { id: 'cadastro', label: 'Cadastro', module: 'registry', available: true },
   { id: 'clientes', label: 'Clientes', module: 'registry', available: true },
   { id: 'historico', label: 'Histórico', module: 'registry', available: true },
+  {
+    // Ordem do manifesto (vertical.json: service-order, billing, collection,
+    // quality, mtr) — a ficha segue a ordem do mapa do produto, não uma
+    // ordem inventada aqui. A aba de OS (P1.31) ainda não tem rota de API:
+    // aparece com o aviso, como as demais abas declaradas sem fonte.
+    id: 'service-orders',
+    label: 'Ordens de serviço',
+    module: 'service-order',
+    available: false,
+    unavailableText:
+      'O módulo de Ordens de serviço está declarado no mapa do produto, mas ainda não tem rota de API para alimentar esta aba. As ordens aparecem aqui quando a tarefa do módulo as criar.',
+  },
   {
     id: 'bills',
     label: 'Contas',
@@ -47,8 +60,6 @@ export const UNIT_SHEET_TABS: UnitSheetTab[] = [
       'O módulo de Arrecadação está declarado no mapa do produto, mas ainda não tem rota de API para alimentar esta aba. Os débitos aparecem aqui quando a tarefa do módulo os criar.',
   },
   {
-    // Ordem do manifesto (vertical.json: billing, collection, quality, mtr) — a
-    // ficha segue a ordem do mapa do produto, não uma ordem inventada aqui.
     id: 'quality',
     label: 'Qualidade',
     module: 'quality',
