@@ -24,6 +24,11 @@ cp -rf "$SRC/infra/postgres/init/." "$RUN_DIR/pg-init/"
 cp -rf "$SRC/infra/keycloak/realms/." "$RUN_DIR/kc-realms/"
 cp -f "$SRC/docker-compose.yml" "$RUN_DIR/docker-compose.yml"
 cp -f "$SRC/.env" "$RUN_DIR/.env"
+# P0.29: o compose monta ./infra/keycloak/certs (relativo ao compose copiado) para o
+# TLS do Keycloak. Gera o certificado local (se ainda nao existir) e copia a pasta.
+"$SRC/scripts/local-tls.sh" >/dev/null
+mkdir -p "$RUN_DIR/infra/keycloak"
+cp -rf "$SRC/infra/keycloak/certs" "$RUN_DIR/infra/keycloak/"
 
 export ZIIPSAN_PG_INIT_DIR="$(cygpath -m "$RUN_DIR/pg-init")"
 export ZIIPSAN_KC_IMPORT_DIR="$(cygpath -m "$RUN_DIR/kc-realms")"
