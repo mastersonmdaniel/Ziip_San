@@ -12,6 +12,10 @@
 --   ziipsan_owner     NOLOGIN. Dono do banco, do schema public e de current_tenant_id().
 --   ziipsan_migrator  LOGIN. DDL: cria tabelas em public (migration de core) e schemas de tenant.
 --   ziipsan_app       LOGIN. A aplicacao: le e escreve dados, sem CREATE em lugar nenhum.
+--   ziipsan_worker    NOLOGIN. O processo worker: le linhas de todos os tenants, mas SO na
+--                     tabela public.outbox (policy da core V8, P1.9/ADR-0014). O deploy do
+--                     worker concede LOGIN + senha fora deste init; aqui a role nasce sem
+--                     login para nenhum segredo novo entrar nas variaveis do init.
 --
 -- Nenhuma role de login e membro de ziipsan_owner.
 --
@@ -69,10 +73,15 @@ WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_migrator') \ge
 SELECT format('CREATE ROLE ziipsan_app LOGIN PASSWORD %L', :'app_pw')
 WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_app') \gexec
 
+-- P1.9: role do worker da outbox (sem login aqui; LOGIN + senha no deploy do processo).
+SELECT 'CREATE ROLE ziipsan_worker NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE'
+WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_worker') \gexec
+
 -- Atributos impostos mesmo se a role ja existia.
 ALTER ROLE ziipsan_owner NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 ALTER ROLE ziipsan_migrator LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 ALTER ROLE ziipsan_app LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
+ALTER ROLE ziipsan_worker NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 
 -- Sem isto, um tenant pode resolver funcoes de schemas de outros tenants.
 ALTER ROLE ziipsan_app SET search_path = public;
@@ -103,6 +112,11 @@ GRANT USAGE, CREATE ON SCHEMA public TO ziipsan_migrator;
 -- tabela sao concedidos pelas migrations (core e tenant), tabela a tabela.
 SELECT format('GRANT CONNECT ON DATABASE %I TO ziipsan_app', current_database()) \gexec
 GRANT USAGE ON SCHEMA public TO ziipsan_app;
+
+-- P1.9: o worker conecta e resolve nomes em public; os privilegios de tabela
+-- (SELECT, UPDATE só na outbox) vêm da core V8, não daqui.
+SELECT format('GRANT CONNECT ON DATABASE %I TO ziipsan_worker', current_database()) \gexec
+GRANT USAGE ON SCHEMA public TO ziipsan_worker;
 
 -- ========================================================================
 -- 4. FUNCAO DE CONTEXTO DE TENANT
@@ -169,14 +183,15 @@ DECLARE
     r RECORD;
 BEGIN
     FOR r IN SELECT rolname, rolsuper, rolbypassrls, rolcreaterole, rolcreatedb
-             FROM pg_roles WHERE rolname IN ('ziipsan_app', 'ziipsan_migrator', 'ziipsan_owner') LOOP
+             FROM pg_roles WHERE rolname IN ('ziipsan_app', 'ziipsan_migrator', 'ziipsan_owner', 'ziipsan_worker') LOOP
         IF r.rolsuper OR r.rolbypassrls OR r.rolcreaterole OR r.rolcreatedb THEN
             RAISE EXCEPTION 'FALHA CRITICA: % tem SUPERUSER/BYPASSRLS/CREATEROLE/CREATEDB', r.rolname;
         END IF;
     END LOOP;
 
     IF pg_has_role('ziipsan_app', 'ziipsan_owner', 'MEMBER')
-       OR pg_has_role('ziipsan_migrator', 'ziipsan_owner', 'MEMBER') THEN
+       OR pg_has_role('ziipsan_migrator', 'ziipsan_owner', 'MEMBER')
+       OR pg_has_role('ziipsan_worker', 'ziipsan_owner', 'MEMBER') THEN
         RAISE EXCEPTION 'FALHA CRITICA: role de login e membro de ziipsan_owner';
     END IF;
 
