@@ -110,6 +110,13 @@ psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d ziipsan -v ON_ERROR_STOP=1 \
 OWNER_OK="$(psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d ziipsan -tAc \
   "select 1 from pg_proc where proname = 'current_tenant_id' and pg_get_userbyid(proowner) = 'ziipsan_owner'")"
 [ "$OWNER_OK" = "1" ] || die "verificacao do init falhou: current_tenant_id nao pertence a ziipsan_owner"
+# P1.9 (integracao P1-A): a role ziipsan_worker nasce NOLOGIN no security.sql e os
+# ITs do outbox exigem LOGIN + a senha em ZIIPSAN_IT_WORKER_PASSWORD (sem ela eles
+# falham rapido nomeando a variavel). Senha efemera, so desta rodada.
+WORKER_PW="$(openssl rand -hex 16)"
+psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d ziipsan -v ON_ERROR_STOP=1 \
+  -c "ALTER ROLE ziipsan_worker LOGIN PASSWORD '$WORKER_PW';" >/dev/null
+export ZIIPSAN_IT_WORKER_PASSWORD="$WORKER_PW"
 echo "banco virgem pronto em 127.0.0.1:$IT_PORT"
 
 export ZIIPSAN_IT_JDBC_URL="jdbc:postgresql://127.0.0.1:${IT_PORT}/ziipsan"
@@ -119,11 +126,16 @@ export ZIIPSAN_IT_MIGRATOR_USER="ziipsan_migrator"
 export ZIIPSAN_IT_MIGRATOR_PASSWORD="$MIG_PW"
 unset PGPASSWORD
 
-echo "== (b) backend (mvn clean verify)"
+echo "== (b) backend (mvn clean verify + failsafe)"
 export JAVA_TOOL_OPTIONS="-Djava.net.preferIPv4Stack=true${JAVA_TOOL_OPTIONS:+ $JAVA_TOOL_OPTIONS}"
 # Timeouts do Wagon: sem eles, um repositorio lento/ausente (ex.: jboss-public, que
 # responde 404 para jackson-bom 2.18.5) deixa o Maven parado em leitura SSL indefinidamente.
-(cd "$SRC" && mvn -B -s "$SRC/scripts/ci-linux-settings.xml" -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 clean verify)
+# P1-A (integracao): o failsafe so existe em pluginManagement, nenhum modulo o declara —
+# 'mvn verify' sozinho NUNCA executava os testes *IT. Os goals explicitos, na mesma
+# invocacao (deps inter-modulo resolvem no reator), rodam os ITs apos o verify; o
+# failsafe:verify reprova o build se algum IT falhar. -DfailIfNoTests=false evita que
+# modulos sem IT reprove, sem mascarar falha de IT existente.
+(cd "$SRC" && mvn -B -s "$SRC/scripts/ci-linux-settings.xml" -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 -DfailIfNoTests=false clean verify failsafe:integration-test failsafe:verify)
 
 echo "== (c) frontend"
 FE_ROOT="$(mktemp -d /tmp/ziipsan-ci-frontend.XXXXXX)"

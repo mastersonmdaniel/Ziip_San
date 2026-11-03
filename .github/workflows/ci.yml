@@ -59,6 +59,7 @@ jobs:
       ZIIPSAN_IT_DB_PASSWORD: ci-service-${{ github.run_id }}
       ZIIPSAN_IT_MIGRATOR_USER: ziipsan_migrator
       ZIIPSAN_IT_MIGRATOR_PASSWORD: ci-service-${{ github.run_id }}
+      ZIIPSAN_IT_WORKER_PASSWORD: ci-service-${{ github.run_id }}
       JAVA_TOOL_OPTIONS: -Djava.net.preferIPv4Stack=true
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout@v4
@@ -87,8 +88,13 @@ jobs:
           psql -h localhost -p 5432 -U postgres -d ziipsan -tAc \
             "select 1 from pg_proc where proname = 'current_tenant_id' and pg_get_userbyid(proowner) = 'ziipsan_owner'" \
             | grep -q 1
+          # P1.9 (integracao P1-A): a role ziipsan_worker nasce NOLOGIN no security.sql;
+          # os ITs do outbox exigem LOGIN + ZIIPSAN_IT_WORKER_PASSWORD (mesma senha
+          # descartavel do CI aqui, como app/migrador acima).
+          psql -h localhost -p 5432 -U postgres -d ziipsan -v ON_ERROR_STOP=1 \
+            -c "ALTER ROLE ziipsan_worker LOGIN PASSWORD 'ci-service-${{ github.run_id }}';"
       - name: mvn clean verify
-        run: mvn -B -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 clean verify
+        run: mvn -B -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 -DfailIfNoTests=false clean verify failsafe:integration-test failsafe:verify
 
   frontend:
     name: frontend (typecheck + lint + test + build + audit)
