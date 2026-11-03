@@ -84,7 +84,7 @@ public class AnonymizationEngine {
         int pending = 0;
 
         List<ConsentRecord> revoked = consentRepository
-                .findByTenantIdAndStatus(tenantId, ConsentRecord.ConsentStatus.REVOKED);
+                .findByTenantIdAndStatusAndDeletedAtIsNull(tenantId, ConsentRecord.ConsentStatus.REVOKED);
 
         Set<UUID> touchedSubjects = new java.util.HashSet<>();
 
@@ -150,7 +150,7 @@ public class AnonymizationEngine {
             UUID subjectId = entry.getKey();
             for (String purpose : entry.getValue()) {
                 boolean outstanding = consentRepository
-                        .findByTenantIdAndSubjectIdAndPurposeAndStatus(
+                        .findByTenantIdAndSubjectIdAndPurposeAndStatusAndDeletedAtIsNull(
                                 tenantId, subjectId, purpose, ConsentRecord.ConsentStatus.REVOKED)
                         .filter(c -> c.getIpAddress() != null
                                 || c.getUserAgent() != null

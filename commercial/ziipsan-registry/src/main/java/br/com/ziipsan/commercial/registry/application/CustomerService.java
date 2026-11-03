@@ -236,8 +236,17 @@ public class CustomerService {
     }
 
     public CustomerView get(UUID id) {
+        // P1.15: registro excluído é 404 nesta leitura, como se não existisse — as
+        // listas já o escondem por padrão (deletedAt is null), mas o GET por id
+        // devolvia o cliente excluído com dado pessoal para qualquer perfil com
+        // registry:read (VIEWER). O helper customer(id) NÃO muda: update/delete/
+        // reveal precisam dele para os próprios erros de "já excluído".
+        Customer c = customer(id);
+        if (c.getDeletedAt() != null) {
+            throw new ApiException.NotFound("Cliente não encontrado.");
+        }
         // P0.11: leitura de cadastro com dado pessoal fica registrada (sem o documento em claro).
-        CustomerView view = view(customer(id));
+        CustomerView view = view(c);
         accessLog.recordPersonalRead("customers", id);
         return view;
     }

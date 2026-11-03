@@ -223,11 +223,11 @@ public class ConsumerUnitService {
     }
 
     public UnitView get(UUID id) {
-        return view(unit(id));
+        return view(unitForRead(id));
     }
 
     public List<UnitCustomerLink> customers(UUID id) {
-        ConsumerUnit u = unit(id);
+        ConsumerUnit u = unitForRead(id);
         return unitCustomers.findByTenantIdAndUnitIdOrderByStartDateDesc(RegistryContext.tenantId(), u.getId()).stream()
                 .map(link -> {
                     Customer c = em.find(Customer.class, link.getCustomerId());
@@ -243,7 +243,7 @@ public class ConsumerUnitService {
      * campo a campo. A trilha já vem redigida pelo banco (ex.: observações aparecem como [redacted]).
      */
     public List<HistoryEvent> history(UUID id) {
-        ConsumerUnit u = unit(id);
+        ConsumerUnit u = unitForRead(id);
         UUID tenantId = RegistryContext.tenantId();
         List<HistoryEvent> events = new ArrayList<>();
         for (UnitStatusHistory h : statusHistory.findByTenantIdAndUnitIdOrderByChangedAtDesc(tenantId, u.getId())) {
@@ -757,6 +757,21 @@ public class ConsumerUnitService {
 
     ConsumerUnit unit(UUID id) {
         return RegistryContext.require(units.findById(id), () -> "Imóvel não encontrado.");
+    }
+
+    /**
+     * P1.15: leitura por id (GET, GET /customers, GET /history — todos com
+     * registry:read, ou seja, alcançáveis pelo VIEWER). Imóvel excluído é 404,
+     * como se não existisse: as listas já o escondem por padrão, mas o GET por id
+     * o devolvia. O helper unit(id) NÃO muda: as escritas precisam dele para os
+     * próprios erros de "já excluído".
+     */
+    private ConsumerUnit unitForRead(UUID id) {
+        ConsumerUnit u = unit(id);
+        if (u.getDeletedAt() != null) {
+            throw new ApiException.NotFound("Imóvel não encontrado.");
+        }
+        return u;
     }
 
     /** Entidade do tenant pelo id, ou nulo (inexistente ou de outro tenant, que a RLS já esconde). */

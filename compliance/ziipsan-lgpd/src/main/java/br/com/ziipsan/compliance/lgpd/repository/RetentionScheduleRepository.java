@@ -11,7 +11,8 @@ import java.util.UUID;
 @Repository
 public interface RetentionScheduleRepository extends JpaRepository<RetentionSchedule, UUID> {
 
-    List<RetentionSchedule> findByTenantIdAndActiveTrue(UUID tenantId);
+    // P1.15: registros excluídos (V2_11) não aparecem nas leituras.
+    List<RetentionSchedule> findByTenantIdAndActiveTrueAndDeletedAtIsNull(UUID tenantId);
 
-    List<RetentionSchedule> findByTenantIdAndActiveTrueAndNextRunAtBefore(UUID tenantId, OffsetDateTime nextRunAt);
+    List<RetentionSchedule> findByTenantIdAndActiveTrueAndNextRunAtBeforeAndDeletedAtIsNull(UUID tenantId, OffsetDateTime nextRunAt);
 }

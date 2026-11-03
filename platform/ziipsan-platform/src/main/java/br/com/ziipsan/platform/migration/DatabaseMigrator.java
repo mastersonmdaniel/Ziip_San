@@ -2,6 +2,7 @@ package br.com.ziipsan.platform.migration;
 
 import br.com.ziipsan.core.migration.CoreMigrationRunner;
 import br.com.ziipsan.platform.deployment.DeploymentEnvironment;
+import br.com.ziipsan.platform.tenant.TenantMigrationRollout;
 import br.com.ziipsan.platform.tenant.TenantMigrator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -34,6 +35,14 @@ import java.util.UUID;
  * <p>Usa o DataSource de migração (ziipsan_migrator). O Flyway do Spring Boot fica desligado
  * ({@code spring.flyway.enabled=false}): com o flyway-core no classpath ele varreria
  * db/migration recursivamente e aplicaria as migrations de tenant em public.
+ *
+ * <p>P1.14: o laço sequencial sobre os tenants foi substituído pelo
+ * {@link TenantMigrationRollout} (canário + paralelismo limitado + quarentena).
+ * Esta classe só orquestra: lê o catálogo, delega, atualiza
+ * {@code tenant_schema_version} nos tenants que concluíram e só registra a
+ * implantação quando TODOS concluíram — a semântica da P0.42 está preservada.
+ * O paralelismo vem de {@code ziipsan.db.migration-parallelism} (padrão 2, igual
+ * ao pool do migrador; nunca configure acima dele, ver TenantMigrationRollout).
  */
 @Slf4j
 @Component("databaseMigrator")
@@ -42,6 +51,7 @@ public class DatabaseMigrator implements InitializingBean {
 
     private final DataSource migratorDataSource;
     private final boolean enabled;
+    private final int parallelism;
     private final ObjectProvider<BuildProperties> buildProperties;
     private final ObjectProvider<GitProperties> gitProperties;
     private final Environment environment;
@@ -49,12 +59,14 @@ public class DatabaseMigrator implements InitializingBean {
 
     public DatabaseMigrator(@Qualifier("migratorDataSource") DataSource migratorDataSource,
                             @Value("${ziipsan.db.migrate-on-startup:false}") boolean enabled,
+                            @Value("${ziipsan.db.migration-parallelism:2}") int parallelism,
                             ObjectProvider<BuildProperties> buildProperties,
                             ObjectProvider<GitProperties> gitProperties,
                             Environment environment,
                             @Value("${ziipsan.deployment.environment:}") String configuredEnvironment) {
         this.migratorDataSource = migratorDataSource;
         this.enabled = enabled;
+        this.parallelism = parallelism;
         this.buildProperties = buildProperties;
         this.gitProperties = gitProperties;
         this.environment = environment;
@@ -75,16 +87,50 @@ public class DatabaseMigrator implements InitializingBean {
                 "SELECT id, schema_name FROM public.tenant_catalog WHERE status = 'ACTIVE' ORDER BY schema_name",
                 (rs, i) -> new TenantRow(rs.getObject(1, UUID.class), rs.getString(2)));
         TenantMigrator migrator = new TenantMigrator(migratorDataSource);
-        for (TenantRow tenant : tenants) {
-            var result = migrator.migrate(tenant.schema(), tenant.id());
-            log.info("Tenant {}: {} migration(s) aplicada(s), versão {}",
-                    tenant.schema(), result.migrationsExecuted, result.targetSchemaVersion);
-            // P0.21: registra no catálogo a versão de tenant aplicada (base da P1.14:
-            // situação por tenant, quarentena e canário). Sem esta linha a coluna
-            // tenant_schema_version da core V7 ficaria sempre NULL.
-            new JdbcTemplate(migratorDataSource).update(
+        JdbcTemplate jdbc = new JdbcTemplate(migratorDataSource);
+        // P1.14: canário + paralelismo limitado + quarentena, com a situação gravada
+        // por tenant no catálogo (core V14_1). A versão aplicada (tenant_schema_version)
+        // continua sendo atualizada aqui, só nos tenants que concluíram — um tenant em
+        // quarentena mantém a versão antiga, como antes da P1.14.
+        TenantMigrationRollout rollout = new TenantMigrationRollout(jdbc,
+                (schema, tenantId) -> {
+                    var result = migrator.migrate(schema, tenantId);
+                    // P1.14: tenant já atualizado tem migrationsExecuted=0 e o
+                    // MigrateResult não traz targetSchemaVersion — sem o fallback o
+                    // catálogo ficaria NULL mesmo com o tenant atualizado (falha
+                    // observada no IT do rollout). A versão corrente via info()
+                    // é a versão Flyway do schema, na ordenação do próprio Flyway.
+                    String target = result.targetSchemaVersion != null
+                            ? result.targetSchemaVersion
+                            : migrator.currentVersion(schema, tenantId);
+                    return new TenantMigrationRollout.MigrationOutcome(
+                            result.migrationsExecuted, target);
+                },
+                parallelism);
+        TenantMigrationRollout.RolloutResult rolloutResult = rollout.run(
+                tenants.stream()
+                        .map(t -> new TenantMigrationRollout.Tenant(t.id(), t.schema()))
+                        .toList());
+        for (TenantMigrationRollout.TenantResult succeeded : rolloutResult.succeeded()) {
+            jdbc.update(
                     "UPDATE public.tenant_catalog SET tenant_schema_version = ? WHERE id = ?",
-                    result.targetSchemaVersion, tenant.id());
+                    succeeded.targetSchemaVersion(), succeeded.tenant().id());
+            log.info("Tenant {}: {} migration(s) aplicada(s), versão {}",
+                    succeeded.tenant().schemaName(), succeeded.migrationsExecuted(),
+                    succeeded.targetSchemaVersion());
+        }
+        if (!rolloutResult.quarantined().isEmpty() || rolloutResult.abortedAfterCanary()) {
+            // P0.42 preservada: implantação NÃO é registrada como concluída quando a
+            // onda não concluiu para todos. O job falha (exceção) para o operador ver,
+            // mas os tenants que concluíram ficam migrados — a falha de um não desfez
+            // nem bloqueou os demais, que é a garantia da P1.14.
+            String quarantined = rolloutResult.quarantined().stream()
+                    .map(r -> r.tenant().schemaName())
+                    .sorted()
+                    .collect(java.util.stream.Collectors.joining(", "));
+            throw new IllegalStateException("Rollout de migrations incompleto"
+                    + (rolloutResult.abortedAfterCanary() ? " (abortado após falha do canário)" : "")
+                    + ": tenant(s) em quarentena: " + quarantined);
         }
         // P0.42: cada execução bem-sucedida do job grava uma linha em
         // platform.deployment (core V5_1). Só aqui, e só no fim: se qualquer

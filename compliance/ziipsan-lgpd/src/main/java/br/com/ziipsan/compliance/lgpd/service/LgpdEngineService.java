@@ -57,7 +57,7 @@ public class LgpdEngineService {
 
         // Check for existing consent
         Optional<ConsentRecord> existing = consentRepository
-                .findByTenantIdAndSubjectIdAndPurposeAndStatus(
+                .findByTenantIdAndSubjectIdAndPurposeAndStatusAndDeletedAtIsNull(
                         TenantContextHolder.getTenantId(), request.subjectId(), request.purpose(), ConsentRecord.ConsentStatus.GRANTED);
 
         if (existing.isPresent()) {
@@ -112,8 +112,39 @@ public class LgpdEngineService {
     @CacheEvict(value = "consents",
             key = "T(br.com.ziipsan.core.tenant.TenantContextHolder).getTenantId() + '_' + #result.subjectId + '_' + #result.purpose")
     public ConsentRecord revokeConsent(UUID consentId, RevokeConsentRequest request) {
+        ConsentRecord consent = loadRevocableConsent(consentId);
+        return doRevoke(consent, request);
+    }
+
+    /**
+     * P1.15: revogação pelo próprio titular (o canal do titular da P3.40 chama esta
+     * sobrecarga, nunca a de operador). O consentId é conferido contra o titular:
+     * consentimento de outro titular é recusado com o MESMO erro de um id
+     * inexistente — a resposta não pode revelar que o consentimento existe e é de
+     * outra pessoa. Consentimento excluído (deletedAt) também é "não encontrado".
+     * Nada é alterado nem auditado no caminho recusado.
+     */
+    @Transactional
+    @CacheEvict(value = "consents",
+            key = "T(br.com.ziipsan.core.tenant.TenantContextHolder).getTenantId() + '_' + #result.subjectId + '_' + #result.purpose")
+    public ConsentRecord revokeConsent(UUID consentId, UUID subjectId, RevokeConsentRequest request) {
+        ConsentRecord consent = loadRevocableConsent(consentId);
+        if (!subjectId.equals(consent.getSubjectId())) {
+            throw new IllegalArgumentException("Consent not found");
+        }
+        return doRevoke(consent, request);
+    }
+
+    private ConsentRecord loadRevocableConsent(UUID consentId) {
         ConsentRecord consent = consentRepository.findByIdAndTenantId(consentId, TenantContextHolder.getTenantId())
                 .orElseThrow(() -> new IllegalArgumentException("Consent not found"));
+        if (consent.getDeletedAt() != null) {
+            throw new IllegalArgumentException("Consent not found");
+        }
+        return consent;
+    }
+
+    private ConsentRecord doRevoke(ConsentRecord consent, RevokeConsentRequest request) {
 
         if (consent.getStatus() == ConsentRecord.ConsentStatus.REVOKED) {
             throw new IllegalStateException("Consent already revoked");
@@ -133,7 +164,7 @@ public class LgpdEngineService {
             anonymizationEngine.scheduleAnonymization(consent.getSubjectId(), consent.getPurpose());
         }
 
-        auditLog(ConsentRecord.class.getSimpleName(), consentId, "REVOKE", oldValues, Json.write(ConsentSnapshot.of(saved)));
+        auditLog(ConsentRecord.class.getSimpleName(), consent.getId(), "REVOKE", oldValues, Json.write(ConsentSnapshot.of(saved)));
 
         return saved;
     }
@@ -142,13 +173,13 @@ public class LgpdEngineService {
     @Cacheable(value = "consents",
             key = "T(br.com.ziipsan.core.tenant.TenantContextHolder).getTenantId() + '_' + #subjectId + '_' + #purpose")
     public Optional<ConsentRecord> getActiveConsent(UUID subjectId, String purpose) {
-        return consentRepository.findByTenantIdAndSubjectIdAndPurposeAndStatus(
+        return consentRepository.findByTenantIdAndSubjectIdAndPurposeAndStatusAndDeletedAtIsNull(
                 TenantContextHolder.getTenantId(), subjectId, purpose, ConsentRecord.ConsentStatus.GRANTED);
     }
 
     @Transactional(readOnly = true)
     public List<ConsentRecord> getSubjectConsents(UUID subjectId) {
-        return consentRepository.findByTenantIdAndSubjectId(TenantContextHolder.getTenantId(), subjectId);
+        return consentRepository.findByTenantIdAndSubjectIdAndDeletedAtIsNull(TenantContextHolder.getTenantId(), subjectId);
     }
 
     // ========================================================================
@@ -213,7 +244,7 @@ public class LgpdEngineService {
     @Transactional(readOnly = true)
     public List<DpiaRecord> getDpiasRequiringReview() {
         OffsetDateTime now = OffsetDateTime.now();
-        return dpiaRepository.findByTenantIdAndStatusAndReviewDateBefore(
+        return dpiaRepository.findByTenantIdAndStatusAndReviewDateBeforeAndDeletedAtIsNull(
                 TenantContextHolder.getTenantId(), DpiaRecord.DpiaStatus.APPROVED, now);
     }
 
@@ -291,7 +322,7 @@ public class LgpdEngineService {
 
     @Transactional(readOnly = true)
     public List<DataSubjectRequest> getOverdueRequests() {
-        return dsrRepository.findByTenantIdAndDeadlineAtBeforeAndStatusNotIn(
+        return dsrRepository.findByTenantIdAndDeadlineAtBeforeAndStatusNotInAndDeletedAtIsNull(
                 TenantContextHolder.getTenantId(), OffsetDateTime.now(), List.of(
                         DataSubjectRequest.RequestStatus.COMPLETED,
                         DataSubjectRequest.RequestStatus.DENIED,

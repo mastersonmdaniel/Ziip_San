@@ -14,7 +14,8 @@ public interface DpiaRecordRepository extends JpaRepository<DpiaRecord, UUID> {
 
     Optional<DpiaRecord> findByIdAndTenantId(UUID id, UUID tenantId);
 
-    List<DpiaRecord> findByTenantIdAndStatusAndReviewDateBefore(UUID tenantId,
-                                                               DpiaRecord.DpiaStatus status,
-                                                               OffsetDateTime reviewDate);
+    // P1.15: registros excluídos (V2_11) não aparecem nas leituras.
+    List<DpiaRecord> findByTenantIdAndStatusAndReviewDateBeforeAndDeletedAtIsNull(UUID tenantId,
+                                                                                  DpiaRecord.DpiaStatus status,
+                                                                                  OffsetDateTime reviewDate);
 }

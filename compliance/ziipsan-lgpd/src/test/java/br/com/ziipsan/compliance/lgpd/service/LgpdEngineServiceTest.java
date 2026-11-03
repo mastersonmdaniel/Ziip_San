@@ -30,9 +30,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +65,7 @@ class LgpdEngineServiceTest {
         dsrRepo = mock(DataSubjectRequestRepository.class);
         auditRepo = mock(AuditLogRepository.class);
 
-        when(consentRepo.findByTenantIdAndSubjectIdAndPurposeAndStatus(any(), any(), any(), any()))
+        when(consentRepo.findByTenantIdAndSubjectIdAndPurposeAndStatusAndDeletedAtIsNull(any(), any(), any(), any()))
                 .thenReturn(Optional.empty());
         when(consentRepo.save(any())).thenAnswer(LgpdEngineServiceTest::withId);
         when(dpiaRepo.save(any())).thenAnswer(LgpdEngineServiceTest::withId);
@@ -176,5 +178,65 @@ class LgpdEngineServiceTest {
             assertThat(Json.readMap(audit.getMetadata())).containsKey("action");
         }
         assertThat(Json.readTree(audits().get(1).getNewValues()).get("status").asString()).isEqualTo("COMPLETED");
+    }
+
+    @Test
+    @DisplayName("P1.15: revogação com consentId de outro titular é recusada, sem alterar nem auditar nada")
+    void revokeConsentOfAnotherSubjectIsRefused() {
+        ConsentRecord saved = grant();
+        when(consentRepo.findByIdAndTenantId(saved.getId(), TENANT)).thenReturn(Optional.of(saved));
+
+        assertThatThrownBy(() -> service.revokeConsent(saved.getId(), UUID.randomUUID(),
+                new LgpdEngineService.RevokeConsentRequest("WEB", "quero revogar")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Consent not found");
+
+        assertThat(saved.getStatus()).isEqualTo(ConsentRecord.ConsentStatus.GRANTED);
+        // grant() salvou 1 vez; a tentativa recusada não salvou nem auditou de novo.
+        verify(consentRepo, times(1)).save(any());
+        assertThat(audits()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("P1.15: revogação pelo próprio titular conclui")
+    void revokeConsentByOwnSubjectSucceeds() {
+        ConsentRecord saved = grant();
+        when(consentRepo.findByIdAndTenantId(saved.getId(), TENANT)).thenReturn(Optional.of(saved));
+
+        ConsentRecord revoked = service.revokeConsent(saved.getId(), saved.getSubjectId(),
+                new LgpdEngineService.RevokeConsentRequest("WEB", "nao quero mais"));
+
+        assertThat(revoked.getStatus()).isEqualTo(ConsentRecord.ConsentStatus.REVOKED);
+    }
+
+    @Test
+    @DisplayName("P1.15: consentimento excluído não pode ser revogado (nem pela via do operador)")
+    void revokeDeletedConsentIsNotFound() {
+        ConsentRecord saved = grant();
+        saved.setDeletedAt(OffsetDateTime.now());
+        when(consentRepo.findByIdAndTenantId(saved.getId(), TENANT)).thenReturn(Optional.of(saved));
+
+        assertThatThrownBy(() -> service.revokeConsent(saved.getId(),
+                new LgpdEngineService.RevokeConsentRequest("WEB", "x")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Consent not found");
+        assertThat(saved.getStatus()).isEqualTo(ConsentRecord.ConsentStatus.GRANTED);
+    }
+
+    @Test
+    @DisplayName("P1.15: leituras de consentimento passam pelas consultas que excluem registros excluídos")
+    void consentReadsExcludeDeletedRecords() {
+        UUID subject = UUID.randomUUID();
+        when(consentRepo.findByTenantIdAndSubjectIdAndDeletedAtIsNull(TENANT, subject))
+                .thenReturn(List.of());
+        when(consentRepo.findByTenantIdAndSubjectIdAndPurposeAndStatusAndDeletedAtIsNull(
+                TENANT, subject, "avisos operacionais", ConsentRecord.ConsentStatus.GRANTED))
+                .thenReturn(Optional.empty());
+
+        assertThat(service.getSubjectConsents(subject)).isEmpty();
+        assertThat(service.getActiveConsent(subject, "avisos operacionais")).isEmpty();
+        verify(consentRepo).findByTenantIdAndSubjectIdAndDeletedAtIsNull(TENANT, subject);
+        verify(consentRepo).findByTenantIdAndSubjectIdAndPurposeAndStatusAndDeletedAtIsNull(
+                TENANT, subject, "avisos operacionais", ConsentRecord.ConsentStatus.GRANTED);
     }
 }

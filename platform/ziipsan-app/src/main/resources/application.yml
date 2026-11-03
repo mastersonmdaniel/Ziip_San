@@ -98,6 +98,9 @@ ziipsan:
     app-password: ${ZIIPSAN_DB_APP_PASSWORD}
     # Produção: false (migrations num job separado antes da troca de versão). Local/teste: true.
     migrate-on-startup: ${ZIIPSAN_DB_MIGRATE_ON_STARTUP:false}
+    # P1.14: paralelismo do rollout de migrations por tenant (canário + demais em
+    # paralelo limitado). Padrão 2 = pool do DataSource de migração; nunca acima dele.
+    migration-parallelism: ${ZIIPSAN_DB_MIGRATION_PARALLELISM:2}
   # P0.6: credenciais do migrador em prefixo proprio, SEM validacao. A api e o worker
   # nao exigem estas variaveis; so o perfil migrate as le (DataSourceConfig). As
   # variaveis de ambiente continuam as mesmas de antes (ZIIPSAN_DB_MIGRATOR_*).

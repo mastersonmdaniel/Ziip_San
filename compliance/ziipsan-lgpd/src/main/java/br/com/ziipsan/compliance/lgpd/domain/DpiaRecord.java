@@ -95,6 +95,10 @@ public class DpiaRecord extends TenantAwareEntity {
     @Column(name = "metadata", columnDefinition = "jsonb")
     private String metadata;
 
+    /** P1.15: exclusão lógica (V2_11) — linha excluída não aparece nas leituras do módulo. */
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
+
     public enum RiskLevel {
         NEGLIGIBLE, LOW, MEDIUM, HIGH, CRITICAL;
     }

@@ -14,16 +14,20 @@ public interface ConsentRecordRepository extends JpaRepository<ConsentRecord, UU
 
     Optional<ConsentRecord> findByIdAndTenantId(UUID id, UUID tenantId);
 
-    Optional<ConsentRecord> findByTenantIdAndSubjectIdAndPurposeAndStatus(UUID tenantId,
-                                                                       UUID subjectId,
-                                                                       String purpose,
-                                                                       ConsentRecord.ConsentStatus status);
+    // P1.15: todas as leituras por filtro excluem registros excluídos
+    // (deleted_at IS NULL, coluna da V2_11). A carga por id continua sem o filtro:
+    // quem carrega por id (revogação) verifica deletedAt explicitamente no serviço,
+    // para devolver o mesmo "não encontrado" de um id inexistente.
+    Optional<ConsentRecord> findByTenantIdAndSubjectIdAndPurposeAndStatusAndDeletedAtIsNull(UUID tenantId,
+                                                                                           UUID subjectId,
+                                                                                           String purpose,
+                                                                                           ConsentRecord.ConsentStatus status);
 
-    List<ConsentRecord> findByTenantIdAndSubjectId(UUID tenantId, UUID subjectId);
+    List<ConsentRecord> findByTenantIdAndSubjectIdAndDeletedAtIsNull(UUID tenantId, UUID subjectId);
 
-    List<ConsentRecord> findByTenantIdAndStatus(UUID tenantId, ConsentRecord.ConsentStatus status);
+    List<ConsentRecord> findByTenantIdAndStatusAndDeletedAtIsNull(UUID tenantId, ConsentRecord.ConsentStatus status);
 
-    List<ConsentRecord> findByTenantIdAndStatusAndExpiresAtBefore(UUID tenantId,
-                                                                  ConsentRecord.ConsentStatus status,
-                                                                  OffsetDateTime expiresAt);
+    List<ConsentRecord> findByTenantIdAndStatusAndExpiresAtBeforeAndDeletedAtIsNull(UUID tenantId,
+                                                                                   ConsentRecord.ConsentStatus status,
+                                                                                   OffsetDateTime expiresAt);
 }

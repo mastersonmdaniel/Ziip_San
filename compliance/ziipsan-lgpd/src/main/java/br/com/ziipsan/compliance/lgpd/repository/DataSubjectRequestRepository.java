@@ -14,7 +14,8 @@ public interface DataSubjectRequestRepository extends JpaRepository<DataSubjectR
 
     Optional<DataSubjectRequest> findByIdAndTenantId(UUID id, UUID tenantId);
 
-    List<DataSubjectRequest> findByTenantIdAndDeadlineAtBeforeAndStatusNotIn(
+    // P1.15: registros excluídos (V2_11) não aparecem nas leituras.
+    List<DataSubjectRequest> findByTenantIdAndDeadlineAtBeforeAndStatusNotInAndDeletedAtIsNull(
             UUID tenantId,
             OffsetDateTime deadlineAt,
             List<DataSubjectRequest.RequestStatus> status);

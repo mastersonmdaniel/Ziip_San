@@ -63,11 +63,11 @@ public class RetentionEngine {
         int requestsExpired = 0;
         int candidates = 0;
 
-        List<RetentionSchedule> schedules = scheduleRepository.findByTenantIdAndActiveTrue(tenantId);
+        List<RetentionSchedule> schedules = scheduleRepository.findByTenantIdAndActiveTrueAndDeletedAtIsNull(tenantId);
 
         // 1. Expire consents whose term elapsed. Expiry is a status change, not a deletion:
         //    the record stays as evidence of what was consented to.
-        List<ConsentRecord> elapsed = consentRepository.findByTenantIdAndStatusAndExpiresAtBefore(
+        List<ConsentRecord> elapsed = consentRepository.findByTenantIdAndStatusAndExpiresAtBeforeAndDeletedAtIsNull(
                 tenantId, ConsentRecord.ConsentStatus.GRANTED, now);
         for (ConsentRecord consent : elapsed) {
             consent.setStatus(ConsentRecord.ConsentStatus.EXPIRED);
@@ -78,7 +78,7 @@ public class RetentionEngine {
 
         // 2. Close data subject requests past the statutory deadline.
         List<DataSubjectRequest> overdue = dsrRepository
-                .findByTenantIdAndDeadlineAtBeforeAndStatusNotIn(tenantId, now, TERMINAL_DSR_STATUS);
+                .findByTenantIdAndDeadlineAtBeforeAndStatusNotInAndDeletedAtIsNull(tenantId, now, TERMINAL_DSR_STATUS);
         for (DataSubjectRequest request : overdue) {
             // Art. 18 §4: a request may not be refused outright. Flagging it as expired
             // closes the SLA clock; the breach remains visible for the controller to answer.

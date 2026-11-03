@@ -74,6 +74,15 @@ public class ConsentRecord extends TenantAwareEntity {
     @Column(name = "metadata", columnDefinition = "jsonb")
     private String metadata;
 
+    /**
+     * P1.15: exclusão lógica (migration V2_11). Linha excluída não aparece em
+     * nenhuma leitura do módulo (repositórios filtram deletedAt IS NULL); a linha
+     * sobrevive como prova, no mesmo padrão do cadastro (deletedAt em Customer).
+     * O fluxo que preenche esta coluna (pedido do titular) é da P3.40.
+     */
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
+
     public enum LegalBasis {
         CONSENT, // Consentimento (Art. 7º, I)
         CONTRACT, // Execução de contrato (Art. 7º, II)

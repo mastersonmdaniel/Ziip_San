@@ -26,6 +26,26 @@ public final class TenantMigrator {
     }
 
     public MigrateResult migrate(String schemaName, UUID tenantId) {
+        return flyway(schemaName, tenantId).migrate();
+    }
+
+    /**
+     * P1.14: versão Flyway corrente do schema (o que o {@code flyway info} imprime
+     * como "Schema version"), ou {@code null} se nenhuma migration versionada foi
+     * aplicada. O {@code DatabaseMigrator} usa como fallback quando
+     * {@code migrate()} não aplicou nada: nesse caso o {@code MigrateResult} não
+     * traz {@code targetSchemaVersion} (observado no IT: tenant atualizado saía
+     * com {@code tenant_schema_version} NULL mesmo com o rollout SUCCEEDED) e o
+     * catálogo ficaria sem a versão de um tenant atualizado. Só leitura do
+     * histórico — não valida checksums nem aplica nada — e só é chamado para
+     * tenants cuja migração concluiu.
+     */
+    public String currentVersion(String schemaName, UUID tenantId) {
+        var current = flyway(schemaName, tenantId).info().current();
+        return current == null || current.getVersion() == null ? null : current.getVersion().getVersion();
+    }
+
+    private Flyway flyway(String schemaName, UUID tenantId) {
         // defaultSchema define onde o Flyway cria a tabela de histórico. As extensões
         // (uuid-ossp, pgcrypto) vivem em public, e as migrations chamam uuid_generate_v4(),
         // então o search_path precisa incluir public junto do schema do tenant. Sem isso,
@@ -35,7 +55,7 @@ public final class TenantMigrator {
         // correto: dentro de uma migration não há contexto de tenant (a GUC app.current_tenant
         // está vazia), então current_tenant_id() devolve NULL. O checksum do Flyway é
         // calculado sobre o texto original, antes da substituição, então o valor não o altera.
-        Flyway flyway = Flyway.configure()
+        return Flyway.configure()
                 .dataSource(migratorDataSource)
                 .schemas(schemaName, "public")
                 .defaultSchema(schemaName)
@@ -51,6 +71,5 @@ public final class TenantMigrator {
                 .outOfOrder(true)
                 .table("flyway_schema_history")
                 .load();
-        return flyway.migrate();
     }
 }

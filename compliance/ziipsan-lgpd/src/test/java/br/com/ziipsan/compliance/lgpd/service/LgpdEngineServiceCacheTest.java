@@ -112,7 +112,7 @@ class LgpdEngineServiceCacheTest {
     @BeforeEach
     void setUp() {
         store.clear();
-        when(consentRepo.findByTenantIdAndSubjectIdAndPurposeAndStatus(any(), any(), any(), any()))
+        when(consentRepo.findByTenantIdAndSubjectIdAndPurposeAndStatusAndDeletedAtIsNull(any(), any(), any(), any()))
                 .thenAnswer(inv -> {
                     ConsentRecord found = store.get(key(inv.getArgument(0), inv.getArgument(1), inv.getArgument(2)));
                     return found != null && found.getStatus() == ConsentRecord.ConsentStatus.GRANTED
