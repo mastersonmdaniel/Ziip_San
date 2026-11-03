@@ -1,0 +1,1 @@
+{"description":"Id da DPS com CPF (porte secao 5): o CPF de 11 digitos e completado com zeros a esquerda ate 14 posicoes; tipo 1 para CPF.","expectedDpsId":"420540710001114447773500001000000000000002","ibge":"4205407","id":"dps-id-cpf","inscription":"11144477735","inscriptionKind":"CPF","kind":"dps-id","number":2,"series":"00001"}

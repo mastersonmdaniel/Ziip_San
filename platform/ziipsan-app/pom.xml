@@ -73,6 +73,14 @@
             <artifactId>ziipsan-collection</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- P1.8 (frente fiscal): a V4_5 e o servico fiscal precisam estar no classpath da
+             app para o provisionamento aplicar a migration e o IT prova-la. Sem esta
+             dependencia a migration existiria no modulo e nunca rodaria num tenant. -->
+        <dependency>
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-fiscal</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,0 +1,1 @@
+{"cases":[{"expected":"0.12","input":"0.125"},{"expected":"0.14","input":"0.135"}],"description":"Vetor de arredondamento half-even do porte (secao 5), escala 2.","id":"half-even","kind":"rounding"}

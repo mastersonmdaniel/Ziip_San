@@ -1,0 +1,1 @@
+{"description":"Vetor IBS/CBS do porte (secao 5) sobre R$ 10.000,00, com as aliquotas padrao de 2026.","expected":{"cbs":"90.00","csrf":"465.00","ibs":"10.00","irrf":"150.00","iss":"200.00","net":"9385.00"},"gross":"10000.00","id":"ibs-cbs-10000","kind":"tax-only","rates":{"cbs":"0.009","csrf":"0.0465","ibs":"0.001","irrf":"0.015","iss":"0.02"}}
