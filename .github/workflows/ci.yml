@@ -190,8 +190,11 @@ jobs:
           python3 scripts/test-third-party-licenses.py
           python3 scripts/test-check-changelog.py
           python3 scripts/test-check-no-hardcoded-version.py
+          python3 scripts/test-check-matriz-viva.py
       - name: Orçamento de séries (falha se a estimativa passar do teto)
         run: python3 scripts/check-metrics-budget.py
+      - name: Matriz viva (P1.25)
+        run: python3 scripts/check-matriz-viva.py
 
   version-check:
     name: P0.39 versão por tag (sem versão à mão + determinismo)
