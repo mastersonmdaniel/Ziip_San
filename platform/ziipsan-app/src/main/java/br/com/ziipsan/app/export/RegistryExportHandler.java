@@ -1,6 +1,5 @@
-package br.com.ziipsan.commercial.registry.service;
+package br.com.ziipsan.app.export;
 
-import br.com.ziipsan.commercial.registry.application.RegistryExportService;
 import br.com.ziipsan.commercial.registry.domain.GeneratedFile;
 import br.com.ziipsan.commercial.registry.repository.GeneratedFileRepository;
 import br.com.ziipsan.core.json.Json;

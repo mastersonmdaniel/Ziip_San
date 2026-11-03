@@ -1,4 +1,4 @@
-package br.com.ziipsan.commercial.registry.application;
+package br.com.ziipsan.app.export;
 
 import br.com.ziipsan.commercial.registry.domain.GeneratedFile;
 import br.com.ziipsan.commercial.registry.repository.GeneratedFileRepository;

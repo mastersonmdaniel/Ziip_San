@@ -1,6 +1,7 @@
-package br.com.ziipsan.commercial.registry.web;
+package br.com.ziipsan.app.web;
 
-import br.com.ziipsan.commercial.registry.application.RegistryExportService;
+import br.com.ziipsan.app.export.RegistryExportService;
+import br.com.ziipsan.commercial.registry.web.RegistryRoles;
 import br.com.ziipsan.core.api.ApiException;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
