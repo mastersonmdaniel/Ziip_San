@@ -81,6 +81,10 @@ class MaskRecalculationJobTest extends AppIntegrationTestBase {
         try (Connection c = ProvisionedTenant.migratorDs.getConnection(); Statement st = c.createStatement()) {
             if (SCHEMA.startsWith("it_f11_")) {
                 st.execute("DROP SCHEMA IF EXISTS " + SCHEMA + " CASCADE");
+                // Mesmo padrão das ITs da F21: sem apagar a linha do catálogo, o
+                // DatabaseMigrator do perfil migrate tentaria migrar um schema que
+                // não existe e quebraria qualquer teste migrate posterior da JVM.
+                st.execute("DELETE FROM public.tenant_catalog WHERE schema_name = '" + SCHEMA + "'");
             }
         }
     }

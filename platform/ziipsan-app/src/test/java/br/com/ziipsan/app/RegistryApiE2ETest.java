@@ -119,6 +119,10 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
         try (Connection c = ProvisionedTenant.migratorDs.getConnection(); Statement st = c.createStatement()) {
             if (SCHEMA_B.startsWith("it_b_")) {
                 st.execute("DROP SCHEMA IF EXISTS " + SCHEMA_B + " CASCADE");
+                // Apagar a linha do catálogo junto: o DatabaseMigrator do perfil
+                // migrate percorre todo tenant ACTIVE e roda Flyway no schema dele;
+                // deixar a linha sem o schema quebra teste migrate posterior.
+                st.execute("DELETE FROM public.tenant_catalog WHERE schema_name = '" + SCHEMA_B + "'");
             }
         }
     }
