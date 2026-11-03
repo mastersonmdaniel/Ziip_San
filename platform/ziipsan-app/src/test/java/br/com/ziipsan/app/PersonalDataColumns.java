@@ -65,7 +65,21 @@ final class PersonalDataColumns {
             Map.entry("customer_contacts.primary_contact", "booleano (contato principal ou não)"),
             Map.entry("lab_analysis_method.safety_notes", "nota técnica de segurança do método"),
             Map.entry("sampling_point.coordinates", "localização de ponto público de amostragem"),
-            Map.entry("waste_destination.coordinates", "localização de destinador (pessoa jurídica)"));
+            Map.entry("waste_destination.coordinates", "localização de destinador (pessoa jurídica)"),
+            // P1-A (integracao): colunas novas da P1.8/P1.26 que casam com o padrao por
+            // nome mas nao sao dado pessoal — mesmo precedente de payments.document_id,
+            // payments.document_type, collection_agreements.document_kind e
+            // gis_network_element.name acima.
+            Map.entry("fiscal_document_batch_items.document_id", "id interno do documento fiscal do item do lote"),
+            Map.entry("fiscal_document_batches.document_type", "tipo do documento fiscal do lote"),
+            Map.entry("fiscal_document_events.document_id", "id interno do documento fiscal do evento"),
+            Map.entry("fiscal_document_taxes.document_id", "id interno do documento fiscal do tributo"),
+            Map.entry("fiscal_documents.document_type", "tipo do documento fiscal"),
+            Map.entry("fiscal_issuers.document_kind", "tipo do documento do emitente (CPF/CNPJ)"),
+            Map.entry("fiscal_layout_versions.document_type", "tipo do documento fiscal do leiaute"),
+            Map.entry("fiscal_series.document_type", "tipo do documento fiscal da série"),
+            Map.entry("gis_attachment.document_id", "referência interna (UUID) ao documento anexado, não número de documento pessoal"),
+            Map.entry("gis_network_element_legacy.name", "nome de elemento de rede legado"));
 
     private PersonalDataColumns() {
     }
