@@ -6,3 +6,9 @@ logging:
   structured:
     format:
       console: ecs
+management:
+  tracing:
+    # P0.8: em prod a amostragem cai para 10% (o padrao 100% do application.yml e para
+    # volume baixo de homologacao/dev). Revisar com o SLO quando houver linha de base.
+    sampling:
+      probability: 0.1

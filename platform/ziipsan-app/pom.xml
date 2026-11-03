@@ -6,7 +6,7 @@
     <parent>
         <groupId>br.com.ziipsan</groupId>
         <artifactId>ziipsan</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>ziipsan-app</artifactId>
@@ -104,6 +104,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!-- P0.8: metricas HTTP + Hikari em /actuator/prometheus (Micrometer). O Boot ja
+             expoe http.server.requests e hikaricp.* quando o registry esta no classpath;
+             sem este starter, /actuator/prometheus nem existe. -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+        <!-- P0.8: traces (Brave) com tenant_id marcado em JwtTenantFilter. Sem o bridge,
+             nao ha Tracer no contexto e o span sai sem tenant (o filtro tolera a ausencia). -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -152,7 +165,45 @@
     </dependencies>
 
     <build>
+        <!-- P0.39: version.json GERADO no build (nunca versionado a mao): o template em
+             src/main/resources-filtered/version.json recebe project.version (via -Drevision),
+             commit abreviado e data do commit (nao o relogio da maquina: dois builds do mesmo
+             commit geram o mesmo version.json). O resto dos resources nao e filtrado. -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources-filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
+            <!-- P0.39: git.properties + propriedades git.* para o version.json e o build-info.
+                 Roda em initialize, antes do filtro de resources. Fora de um checkout git,
+                 nao falha o build (valores 'unknown' — o CI sempre roda num checkout). -->
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>9.0.1</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    <dateFormat>yyyy-MM-dd'T'HH:mm:ssXXX</dateFormat>
+                    <dateFormatTimeZone>America/Sao_Paulo</dateFormatTimeZone>
+                </configuration>
+            </plugin>
             <!-- P0.5: SBOM CycloneDX (target/bom.json), copiado para /app/sbom/bom.json
                  na imagem. Inclui TODAS as dependencias do jar — inclusive os modulos
                  fora do scan de componentes da app (quality, losses, gis, mtr, lgpd,
@@ -180,6 +231,15 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
+                    <!-- P0.39: build-info.properties (versao/commit/data) para o bean
+                         BuildProperties lido pelo VersionHeaderFilter. Fase padrao do goal:
+                         generate-resources, antes dos testes. -->
+                    <execution>
+                        <id>build-info</id>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
                     <execution>
                         <goals>
                             <goal>repackage</goal>

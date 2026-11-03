@@ -6,12 +6,17 @@
 
     <groupId>br.com.ziipsan</groupId>
     <artifactId>ziipsan</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
     <name>ZIIPSAN - Sistema Integrado de Gestão de Saneamento</name>
     <description>SaaS vertical multi-tenant para saneamento (agua/esgoto/residuos)</description>
 
     <properties>
+        <!-- P0.39: versao gerada pela tag e injetada por -Drevision (scripts/version-from-tag.sh).
+             Sem -Drevision, o padrao abaixo vale (build local/dev). NUNCA escreva uma versao
+             de release a mao aqui: o CI (check-no-hardcoded-version.py) barra versao literal
+             de release nos poms. -->
+        <revision>0.0.0-SNAPSHOT</revision>
         <java.version>21</java.version>
         <spring.boot.version>4.1.1</spring.boot.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -136,6 +141,38 @@
         </pluginManagement>
 
         <plugins>
+            <!-- P0.39: flatten resolve ${revision} no pom instalado/publicado, sem tocar
+                 no pom-fonte. Sem ele, um install/deploy publicaria a versao literal
+                 "${revision}" e quebraria quem depende do artefato (e o CycloneDX, que
+                 resolve o parent a partir do pom, ficaria procurando ${revision} nos
+                 repositorios remotos). updatePomFile=true e OBRIGATORIO aqui: o default
+                 do plugin so substitui o pom em projetos com packaging != pom — e o root
+                 e packaging pom, logo sem este flag o pom instalado continuava literal. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.7.3</version>
+                <configuration>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <updatePomFile>true</updatePomFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

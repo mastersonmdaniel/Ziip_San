@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Layout } from '@components/Layout'
+import { VersionBanner } from '@components/VersionBanner'
 import { Spinner } from '@components/ui/Alert'
 import { useAuth } from '@hooks/useAuth'
 import { AuthCallback } from '@pages/AuthCallback'
@@ -30,7 +31,10 @@ function PrivateRoute({ children }: { children: ReactNode }) {
  */
 export function App() {
   return (
-    <Routes>
+    <>
+      {/* P0.39: aviso de recarga do SPA antigo (só aparece após o evento de versão). */}
+      <VersionBanner />
+      <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       <Route
@@ -61,7 +65,8 @@ export function App() {
 
         <Route path="*" element={<NotFound />} />
       </Route>
-    </Routes>
+      </Routes>
+    </>
   )
 }
 

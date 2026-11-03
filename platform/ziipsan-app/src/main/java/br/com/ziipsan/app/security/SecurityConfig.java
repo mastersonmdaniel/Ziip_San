@@ -136,10 +136,11 @@ public class SecurityConfig {
                                            OAuth2AuthorizedClientRepository authorizedClients,
                                            ObjectProvider<OAuth2AuthorizedClientManager> authorizedClientManager,
                                            ClientRegistrationRepository clientRegistrations,
-                                           ZiipsanProperties properties, RateLimitStore rateLimitStore) throws Exception {
+                                           ZiipsanProperties properties, RateLimitStore rateLimitStore,
+                                           ObjectProvider<io.micrometer.tracing.Tracer> tracer) throws Exception {
         BffJwtReconstructionFilter reconstruction = new BffJwtReconstructionFilter(
                 authorizedClients, authorizedClientManager.getIfAvailable(), jwtDecoder, jwtAuthenticationConverter());
-        JwtTenantFilter tenantFilter = new JwtTenantFilter(tenantCatalog);
+        JwtTenantFilter tenantFilter = new JwtTenantFilter(tenantCatalog, tracer.getIfAvailable());
         // XHR para /api/v1 com sessão vencida recebe 401 em problem+json (o frontend
         // trata e vai para o login); navegação comum é redirecionada para /bff/login.
         AuthenticationEntryPoint bffEntryPoint = (request, response, ex) -> {
@@ -190,7 +191,8 @@ public class SecurityConfig {
     @Bean
     @Order(2)
     public SecurityFilterChain apiSecurity(HttpSecurity http, JwtDecoder jwtDecoder, TenantCatalog tenantCatalog,
-                                           ZiipsanProperties properties, RateLimitStore rateLimitStore)
+                                           ZiipsanProperties properties, RateLimitStore rateLimitStore,
+                                           ObjectProvider<io.micrometer.tracing.Tracer> tracer)
             throws Exception {
         AuthenticationEntryPoint unauthorized = (request, response, ex) -> ProblemResponses.write(
                 response, 401, "unauthenticated", "Não autenticado",
@@ -206,6 +208,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll()
+                        // P0.8: metricas e Prometheus existem, mas NAO sao publicos: exigem
+                        // autenticacao (o scrape interno usa credencial; health continua aberto).
+                        .requestMatchers("/actuator/metrics", "/actuator/metrics/**",
+                                "/actuator/prometheus").authenticated()
                         .requestMatchers("/v3/api-docs", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().denyAll())
@@ -216,7 +222,7 @@ public class SecurityConfig {
                 .exceptionHandling(e -> e.authenticationEntryPoint(unauthorized).accessDeniedHandler(forbidden))
                 .addFilterAfter(new MfaGateFilter(), BearerTokenAuthenticationFilter.class)
                 .addFilterAfter(new PlatformAccessFilter(), MfaGateFilter.class)
-                .addFilterAfter(new JwtTenantFilter(tenantCatalog), PlatformAccessFilter.class)
+                .addFilterAfter(new JwtTenantFilter(tenantCatalog, tracer.getIfAvailable()), PlatformAccessFilter.class)
                 .addFilterAfter(rateLimitFilter(rateLimitStore, properties), JwtTenantFilter.class)
                 .addFilterBefore(bodyLimitFilter(properties), BearerTokenAuthenticationFilter.class);
         webSurfaceHeaders(http);

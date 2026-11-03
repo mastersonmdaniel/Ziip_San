@@ -92,7 +92,9 @@ su postgres -c "$PG_BIN/initdb -D '$IT_DATA' -U postgres --pwfile=/tmp/ziipsan-i
 # PostGIS precisa estar disponivel no shared_preload? Nao: CREATE EXTENSION basta, com o pacote instalado.
 # O log do initdb acima e criado como root; o pg_ctl (como postgres) precisa do proprio arquivo.
 rm -f "$IT_LOG"; touch "$IT_LOG"; chown postgres:postgres "$IT_LOG"; chmod 600 "$IT_LOG"
-su postgres -c "$PG_BIN/pg_ctl -D '$IT_DATA' -l '$IT_LOG' -o '-p $IT_PORT -h 127.0.0.1 -k /tmp' start" \
+# P0.8: preload do pg_stat_statements na instancia dedicada (sem ele a extensao criada
+# pelo security.sql nao coleta; ver security.sql).
+su postgres -c "$PG_BIN/pg_ctl -D '$IT_DATA' -l '$IT_LOG' -o '-p $IT_PORT -h 127.0.0.1 -k /tmp -c shared_preload_libraries=pg_stat_statements' start" \
   || die "falha ao subir a instancia dedicada (ver $IT_LOG)"
 export PGPASSWORD="$SUPER_PW"
 for _ in $(seq 1 60); do

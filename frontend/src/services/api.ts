@@ -1,6 +1,12 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { ensureCsrf, getCsrfToken, goToLogin } from '@services/auth/oidc'
 import { resolveApiBaseUrl } from '@services/runtimeConfig'
+import {
+  VERSION_OUTDATED_EVENT,
+  getClientVersion,
+  isClientOutdated,
+  type VersionOutdatedDetail,
+} from '@services/versionInfo'
 
 /**
  * Cliente HTTP único. Base padrão: /api/v1 (P0.10: rotas de negócio sob /api/v1; o proxy do
@@ -55,9 +61,43 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
  * guarda de rota (PrivateRoute -> /login), e o redirecionamento aqui tiraria o
  * usuário da tela de entrada antes de ele clicar em Entrar.
  */
+/**
+ * P0.39: toda resposta traz Ziip-Version e Ziip-Min-Client-Version (VersionHeaderFilter).
+ * Se o mínimo do servidor está acima da versão deste build, dispara o evento que o
+ * VersionBanner escuta — uma única vez por versão mínima, para não reanunciar a cada
+ * requisição. Build dev nunca dispara (sem versão real para comparar).
+ */
+let lastNotifiedMinVersion: string | null = null
+
+function checkServerVersion(response: { headers?: unknown }): void {
+  const headers = response.headers as
+    | { get?: (name: string) => string | undefined; [key: string]: unknown }
+    | undefined
+  const minClient =
+    headers?.get?.('Ziip-Min-Client-Version') ??
+    (typeof headers?.['ziip-min-client-version'] === 'string'
+      ? (headers['ziip-min-client-version'] as string)
+      : undefined)
+  const serverVersion =
+    headers?.get?.('Ziip-Version') ??
+    (typeof headers?.['ziip-version'] === 'string' ? (headers['ziip-version'] as string) : 'desconhecida')
+  if (!minClient || minClient === lastNotifiedMinVersion) return
+  if (!isClientOutdated(getClientVersion(), minClient)) return
+  lastNotifiedMinVersion = minClient
+  if (typeof window !== 'undefined') {
+    const detail: VersionOutdatedDetail = { serverVersion, minClientVersion: minClient }
+    window.dispatchEvent(new CustomEvent(VERSION_OUTDATED_EVENT, { detail }))
+  }
+}
+
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    checkServerVersion(response)
+    return response
+  },
   async (error: AxiosError) => {
+    // Respostas de erro também trazem os cabeçalhos de versão (o filtro roda antes da segurança).
+    if (error.response) checkServerVersion(error.response)
     const original = error.config as InternalAxiosRequestConfig | undefined
     if (error.response?.status === 401 && original && !original.url?.endsWith('/me')) {
       await goToLogin()

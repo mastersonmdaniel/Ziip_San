@@ -6,7 +6,7 @@
     <parent>
         <groupId>br.com.ziipsan</groupId>
         <artifactId>ziipsan</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>ziipsan-platform</artifactId>
@@ -35,6 +35,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- P0.8: API de tracing (sem bridge: o bridge Brave vive so no modulo app).
+             JwtTenantFilter marca tenant_id no span quando ha Tracer no contexto. -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing</artifactId>
         </dependency>
         <dependency>
             <!-- Resource server JWT: o tenant da requisicao vem do token (JwtTenantFilter). -->

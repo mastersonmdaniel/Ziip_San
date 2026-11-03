@@ -1,0 +1,36 @@
+# P0.8 — Orçamento de séries ativas por serviço (verificado no CI por
+# scripts/check-metrics-budget.py, que falha quando a estimativa passa do orçamento).
+#
+# As estimativas são de PLANEJAMENTO, não contagens observadas: ainda não há Prometheus
+# em produção para contar séries reais. Quando a Central (P1.17) passar a coletar, estes
+# números devem ser substituídos pela contagem observada no scrape — e o orçamento
+# reajustado com base nela, nunca aumentado em silêncio para caber um estouro.
+#
+# Regra: qualquer medidor novo (ou grupo de rota novo, ou tenant além do teto) exige
+# atualizar este arquivo ANTES do merge; o CI barra a soma acima do orçamento.
+services:
+  ziipsan-app:
+    budget: 10000
+    components:
+      # JVM, processo, sistema e Tomcat: valores típicos do Boot com Micrometer.
+      - name: runtime
+        estimated_series: 400
+        basis: "jvm.* + process.* + system.* + tomcat.* observados em apps Boot 4 com actuator"
+      # http.server.requests: latência por rota SEM rótulo de tenant (TenantTagGuard).
+      # 100 combinações rota×método efetivamente atingidas × 5 status × ~6 séries
+      # (count, sum, max + buckets do histograma de percentis).
+      - name: http.server.requests
+        estimated_series: 3000
+        basis: "100 combos rota x metodo x 5 status x 6 series (incl. buckets)"
+      # Hikari: 2 pools (app + migrador, este só no perfil migrate) × ~20 medidores.
+      - name: hikaricp
+        estimated_series: 40
+        basis: "2 pools x 20 medidores (connections, idle, active, pending, timeouts...)"
+      # ÚNICO contador com rótulo de tenant (BusinessMetrics): 20 grupos de rota × 200 tenants.
+      # Acima de 200 tenants ou de 20 grupos, o orçamento deve ser revisto explicitamente.
+      - name: ziipsan_business_requests_total
+        estimated_series: 4000
+        basis: "20 grupos de rota x 200 tenants (teto declarado; ver metrics-catalog.md)"
+      - name: misc
+        estimated_series: 100
+        basis: "logback, micrometer misc e medidores de health agregados"

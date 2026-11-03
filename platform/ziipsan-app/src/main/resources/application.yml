@@ -60,12 +60,36 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        # P0.8: health (publico, ver SecurityConfig) + metrics + prometheus (autenticados).
+        # Sem metrics/prometheus aqui, os starters do pom nao expoem nada.
+        include: health,metrics,prometheus
   endpoint:
     health:
       show-details: never
       probes:
         enabled: true
+  metrics:
+    # P0.8: latencia por rota SEM rotulo de tenant (o guarda TenantTagGuard remove
+    # tenant/tenant_id de qualquer medidor fora da allowlist de negocio). Tags padrao do
+    # Boot: method, uri (template, nunca ID concreto), status, outcome, exception.
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+  tracing:
+    # P0.8: amostragem total fora de prod (trafego baixo; prod reduz em application-prod.yml).
+    # O span leva tenant_id via JwtTenantFilter; o trace_id correlaciona com o log (MDC).
+    sampling:
+      probability: 1.0
+
+logging:
+  # P0.8: logs JSON em todo perfil (prod usa ECS, ver application-prod.yml, que tambem e JSON).
+  # Formato "logstash": e o JSON estruturado do Boot (nao existe formato chamado "json" —
+  # os validos sao ecs, gelf, logstash ou uma classe qualificada; "json" derruba a subida).
+  # O MDC ja carrega requestId (RequestIdFilter) e tenant (JwtTenantFilter); o formato
+  # estruturado os inclui sem que nenhum log imprima corpo de requisicao ou dado pessoal.
+  structured:
+    format:
+      console: logstash
 
 ziipsan:
   db:

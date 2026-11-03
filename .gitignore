@@ -1,5 +1,6 @@
 # Build
 target/
+.flattened-pom.xml
 dist/
 coverage/
 node_modules/
@@ -34,3 +35,5 @@ infra/keycloak/certs/
 .ziipsan-vault/
 .ziipsan-mail/
 .ziipsan-backups/
+# Python bytecode (scripts de verificacao)
+__pycache__/

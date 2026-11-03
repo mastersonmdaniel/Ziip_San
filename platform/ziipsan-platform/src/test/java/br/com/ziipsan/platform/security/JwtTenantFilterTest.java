@@ -156,4 +156,19 @@ class JwtTenantFilterTest {
         String[] ctx = run(new MockHttpServletRequest(), new MockHttpServletResponse());
         assertThat(ctx).containsExactly(null, "null", "null");
     }
+
+    @Test
+    @DisplayName("P0.8: com Tracer, o span corrente ganha a tag tenant_id; sem Tracer, nada muda")
+    void spanGetsTenantIdTagWhenTracerPresent() throws Exception {
+        io.micrometer.tracing.Tracer tracer = mock(io.micrometer.tracing.Tracer.class);
+        io.micrometer.tracing.Span span = mock(io.micrometer.tracing.Span.class);
+        org.mockito.Mockito.when(tracer.currentSpan()).thenReturn(span);
+        JwtTenantFilter withTracer = new JwtTenantFilter(catalog, tracer);
+        authenticate(TENANT.toString());
+        java.util.concurrent.atomic.AtomicReference<String[]> seen = new java.util.concurrent.atomic.AtomicReference<>();
+        withTracer.doFilter(new MockHttpServletRequest(), new MockHttpServletResponse(),
+                (req, res) -> seen.set(new String[]{TenantContextHolder.getTenant()}));
+        assertThat(seen.get()).containsExactly(SCHEMA);
+        org.mockito.Mockito.verify(span).tag(JwtTenantFilter.TENANT_CLAIM, TENANT.toString());
+    }
 }

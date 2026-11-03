@@ -166,3 +166,105 @@ jobs:
           if [ -n "$NVD_API_KEY" ]; then NVD_ARG="-DnvdApiKey=$NVD_API_KEY"; else NVD_ARG=""; fi
           mvn -B org.owasp:dependency-check-maven:13.0.0:check \
             -DfailBuildOnCVSS=7 -Dformats=HTML $NVD_ARG
+
+  # ==========================================================================
+  # P0.8 + P0.39 + P0.40 + P0.41 (frente p0r-f08): jobs ADITIVOS. Nenhum job
+  # existente foi alterado; estes só acrescentam verificações. Todos falham
+  # fechado (sem continue-on-error) quando a regra que verificam é violada.
+  # ==========================================================================
+
+  observability-budget:
+    name: P0.8 orçamento de séries + testes dos scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout@v4
+      - name: Testes dos scripts (budget, licenças, changelog, versão)
+        run: |
+          python3 scripts/test-check-metrics-budget.py
+          python3 scripts/test-third-party-licenses.py
+          python3 scripts/test-check-changelog.py
+          python3 scripts/test-check-no-hardcoded-version.py
+      - name: Orçamento de séries (falha se a estimativa passar do teto)
+        run: python3 scripts/check-metrics-budget.py
+
+  version-check:
+    name: P0.39 versão por tag (sem versão à mão + determinismo)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Nenhuma versão de release escrita à mão
+        run: python3 scripts/check-no-hardcoded-version.py
+      - name: version-from-tag.sh devolve SemVer (tag) ou o padrão de dev (sem tag)
+        run: |
+          OUT="$(bash scripts/version-from-tag.sh)"
+          echo "version-from-tag: $OUT"
+          printf '%s' "$OUT" | grep -Eq '^([0-9]+\.[0-9]+\.[0-9]+|0\.0\.0-SNAPSHOT)$'
+      - name: Dois builds do mesmo commit dão a mesma versão
+        run: |
+          mvn -B -Drevision=9.9.9-test help:evaluate -Dexpression=project.version -q -DforceStdout > /tmp/v1.txt
+          mvn -B -Drevision=9.9.9-test help:evaluate -Dexpression=project.version -q -DforceStdout > /tmp/v2.txt
+          test "$(cat /tmp/v1.txt)" = "9.9.9-test"
+          diff /tmp/v1.txt /tmp/v2.txt
+
+  licenses:
+    name: P0.40 licenças de terceiros pelo SBOM (bloqueia fora da lista)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout@v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: SBOM Maven (cyclonedx, fase package, sem testes)
+        # Timeouts de wagon (como o job backend): sem eles, uma busca remota lenta
+        # (ex.: parent ${revision} procurado nos repos herdados de dependencias, como
+        # o osgeo do geotools) fica parada em leitura SSL por minutos sem falhar.
+        run: mvn -B -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 -DskipTests -pl platform/ziipsan-app -am package
+      - name: SBOM npm (CycloneDX)
+        working-directory: frontend
+        run: |
+          npm ci --no-audit --no-fund --loglevel=error
+          npm sbom --sbom-format=cyclonedx > /tmp/frontend-sbom.cdx.json
+      - name: Gerar e conferir third-party-licenses.json
+        run: |
+          python3 scripts/generate-third-party-licenses.py \
+            --sbom platform/ziipsan-app/target/bom.json \
+            --sbom /tmp/frontend-sbom.cdx.json \
+            --overrides third-party-licenses-overrides.json \
+            --out /tmp/third-party-licenses.json
+          python3 scripts/check-third-party-licenses.py \
+            --licenses /tmp/third-party-licenses.json \
+            --allowed third-party-licenses-allowed.json
+
+  changelog:
+    name: P0.41 changelog do cliente (esquema + regra de release)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validar release notes e a regra de release
+        run: |
+          # Em PR, o intervalo é base..HEAD; em push, só o commit do topo (o push para
+          # main passa pelo merge, e a regra vale para o que o PR trouxe — o job de PR
+          # é o que barra antes do merge).
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git log "${{ github.event.pull_request.base.sha }}..HEAD" --format='%H %s' > /tmp/commits.txt
+          else
+            git log -1 --format='%H %s' > /tmp/commits.txt
+          fi
+          python3 scripts/check-changelog.py --dir content/release-notes --commits-file /tmp/commits.txt

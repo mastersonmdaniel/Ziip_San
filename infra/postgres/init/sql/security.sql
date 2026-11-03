@@ -42,6 +42,12 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 CREATE EXTENSION IF NOT EXISTS "btree_gin";
 CREATE EXTENSION IF NOT EXISTS "btree_gist";
 CREATE EXTENSION IF NOT EXISTS "postgis";
+-- P0.8: pg_stat_statements ligado (estatisticas de consultas para a observabilidade).
+-- A extensao so coleta de fato com shared_preload_libraries='pg_stat_statements' no
+-- servidor (ver command do postgres-primary no docker-compose.yml e a instancia dedicada
+-- do ci-linux.sh, que deve ser subida com o mesmo parametro); sem o preload, a extensao
+-- existe mas a vista pg_stat_statements fica vazia — e isso e detectavel, nao silencioso.
+CREATE EXTENSION IF NOT EXISTS "pg_stat_statements";
 
 -- ========================================================================
 -- 2. ROLES

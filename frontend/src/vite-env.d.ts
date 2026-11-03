@@ -1,5 +1,10 @@
 /// <reference types="vite/client" />
 
+/** P0.39: defines injetados pelo build do Vite (vite.config.ts) a partir da tag git. */
+declare const __ZIIPSAN_VERSION__: string
+declare const __ZIIPSAN_COMMIT__: string
+declare const __ZIIPSAN_BUILD_DATE__: string
+
 interface ImportMetaEnv {
   /** Base da API. Padrão: /api. */
   readonly VITE_API_BASE_URL?: string

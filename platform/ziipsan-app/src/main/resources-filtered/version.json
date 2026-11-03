@@ -1,0 +1,5 @@
+{
+  "version": "${project.version}",
+  "commit": "${git.commit.id.abbrev}",
+  "buildDate": "${git.commit.time}"
+}

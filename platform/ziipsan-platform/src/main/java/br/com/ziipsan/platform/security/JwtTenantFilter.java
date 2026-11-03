@@ -2,6 +2,8 @@ package br.com.ziipsan.platform.security;
 
 import br.com.ziipsan.core.tenant.TenantContextHolder;
 import br.com.ziipsan.platform.tenant.TenantCatalog;
+import io.micrometer.tracing.Span;
+import io.micrometer.tracing.Tracer;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,9 +43,21 @@ public class JwtTenantFilter extends OncePerRequestFilter {
     static final String LEGACY_UUID_HEADER = "X-Tenant-UUID";
 
     private final TenantCatalog catalog;
+    private final Tracer tracer;
 
     public JwtTenantFilter(TenantCatalog catalog) {
+        this(catalog, null);
+    }
+
+    /**
+     * P0.8: com Tracer, o span corrente ganha a tag {@code tenant_id} — é assim que a visão
+     * por tenant dos traces existe sem rótulo de tenant nas métricas de latência. Sem Tracer
+     * (módulo sem bridge, ou teste unitário), o filtro comporta-se exatamente como antes:
+     * o MDC {@code tenant} continua existindo para os logs.
+     */
+    public JwtTenantFilter(TenantCatalog catalog, Tracer tracer) {
         this.catalog = catalog;
+        this.tracer = tracer;
     }
 
     @Override
@@ -98,6 +112,12 @@ public class JwtTenantFilter extends OncePerRequestFilter {
             TenantContextHolder.setTenantId(tenantId);
             TenantContextHolder.setUserId(parseUuid(jwt.getSubject()));
             MDC.put("tenant", tenantId.toString());
+            if (tracer != null) {
+                Span span = tracer.currentSpan();
+                if (span != null) {
+                    span.tag(TENANT_CLAIM, tenantId.toString());
+                }
+            }
             chain.doFilter(request, response);
         } finally {
             TenantContextHolder.clear();
