@@ -6,7 +6,7 @@
  * Padroes: branding/<$ZIIPSAN_BRAND|ziipsan> e frontend/.
  */
 import { readFileSync, writeFileSync, copyFileSync, mkdirSync, readdirSync } from 'node:fs'
-import { join, dirname } from 'node:path'
+import { join, dirname, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const args = Object.fromEntries(
@@ -21,7 +21,13 @@ const frontendDir = args['frontend-dir'] || join(root, 'frontend')
 const brand = JSON.parse(readFileSync(join(brandDir, 'brand.json'), 'utf8'))
 const texts = JSON.parse(readFileSync(join(brandDir, 'texts', 'pt-BR.json'), 'utf8'))
 
-const header = `// GERADO por scripts/brand/generate-frontend-brand.mjs a partir de ${brandDir}.\n// Nao edite a mao: troque o pacote branding/ e regenere.\n`
+// Correcao da integracao resto-do-P0: o cabecalho usava o caminho ABSOLUTO do
+// pacote (brandDir), entao a saida mudava a cada checkout (ex.: worktree da F34
+// vs clone main) e o check (c2) do ci-linux acusava o arquivo como desatualizado
+// mesmo com o conteudo identico. Caminho relativo ao repo quando possivel (o caso
+// normal); absoluto so quando --brand-dir aponta para fora do repo.
+const headerSource = brandDir.startsWith(root) ? relative(root, brandDir) : brandDir
+const header = `// GERADO por scripts/brand/generate-frontend-brand.mjs a partir de ${headerSource}.\n// Nao edite a mao: troque o pacote branding/ e regenere.\n`
 const generated = `${header}export const BRAND = ${JSON.stringify(
   {
     productName: brand.productName,

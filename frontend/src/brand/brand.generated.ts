@@ -1,4 +1,4 @@
-// GERADO por scripts/brand/generate-frontend-brand.mjs a partir de /home/hatch/workspace/ziip-san-p0r-f34/branding/ziipsan.
+// GERADO por scripts/brand/generate-frontend-brand.mjs a partir de branding/ziipsan.
 // Nao edite a mao: troque o pacote branding/ e regenere.
 export const BRAND = {
   "productName": "ZIIPSAN",
