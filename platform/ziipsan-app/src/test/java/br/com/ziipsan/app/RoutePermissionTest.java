@@ -25,7 +25,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * sobre o código-fonte). Allowlist explícita: {@code GET /api/v1/me} devolve só
  * dados do próprio usuário autenticado, e {@code GET /api/v1/about} (P0.42) devolve só
  * metadados da implantação, sem dado de tenant ou de usuário — nenhuma das duas acessa
- * dado de terceiros.
+ * dado de terceiros. {@code GET /api/v1/public/brand} (P0.34) entra na mesma allowlist
+ * (correção da integração resto-do-P0): é rota pública permitAll que devolve só
+ * metadados da marca do ambiente, sem dado de tenant, de usuário ou segredo — não há
+ * permissão de catálogo a declarar para ela, e um @PreAuthorize a quebraria.
  *
  * <p>O documento do catálogo também é conferido contra o código: toda permissão do catálogo
  * aparece nele.
@@ -50,7 +53,7 @@ class RoutePermissionTest extends AppIntegrationTestBase {
             condition.getPatterns().forEach(pattern -> {
                 String path = pattern.getPatternString();
                 if (!path.startsWith("/api/v1") || path.equals("/api/v1/me")
-                        || path.equals("/api/v1/about")) {
+                        || path.equals("/api/v1/about") || path.equals("/api/v1/public/brand")) {
                     return;
                 }
                 PreAuthorize auth = method.getMethodAnnotation(PreAuthorize.class);
