@@ -3,8 +3,10 @@ package br.com.ziipsan.commercial.registry.application;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.function.Function;
 import br.com.ziipsan.core.api.ApiException;
 
 import java.util.List;
@@ -80,6 +82,52 @@ public final class JpqlQuery {
         return PageResult.of(query.getResultList(), spec, count.getSingleResult());
     }
 
+    /**
+     * Paginação keyset (cursor) sobre uma ordenação fixa {@code sortPath asc, idPath asc}.
+     *
+     * <p>Por que keyset nas listas grandes (P0.22): a paginação por offset reexecuta o
+     * COUNT total e salta N linhas a cada página — custo que cresce com a página. O
+     * keyset pede "as próximas {@code size} linhas depois deste cursor" com UMA única
+     * consulta, sem COUNT, e o resultado é estável mesmo que linhas entrem no meio da
+     * navegação (o offset deslocaria tudo). O cursor é o par (valor da ordenação, id)
+     * da última linha da página anterior; a primeira página usa {@code cursor == null}.
+     *
+     * <p>O teto de página da P0.16 vale aqui também: {@code size} acima de
+     * {@link PageSpec#MAX_SIZE} é cortado para o teto, nunca rejeitado nem estourado.
+     * Busca-se {@code limit + 1} linhas para saber se há próxima página sem COUNT.
+     * Só ordenação crescente é suportada: o chamador que precisa de outra ordenação
+     * usa a paginação por offset ({@link #page}) e recebe 400 se tentar o keyset.
+     */
+    public <T> KeysetPage<T> pageAfter(EntityManager em, Class<T> type, int size, String sortPath,
+                                       String idPath, KeysetCursor cursor, Function<T, KeysetCursor> extractor) {
+        if (size < 1) {
+            throw new ApiException.BadRequest("invalid-page", "O tamanho da página deve ser ao menos 1.");
+        }
+        int limit = Math.min(size, PageSpec.MAX_SIZE);
+        List<String> clauses = new ArrayList<>(where);
+        if (cursor != null) {
+            clauses.add("(" + sortPath + " > :cursorSort or (" + sortPath + " = :cursorSort and "
+                    + idPath + " > :cursorId))");
+        }
+        String whereSql = clauses.isEmpty() ? "" : " where " + String.join(" and ", clauses);
+        TypedQuery<T> query = em.createQuery("select " + alias + " from " + from + whereSql
+                + " order by " + sortPath + " asc, " + idPath + " asc", type);
+        params.forEach(query::setParameter);
+        if (cursor != null) {
+            query.setParameter("cursorSort", cursor.sortValue());
+            query.setParameter("cursorId", cursor.id());
+        }
+        query.setMaxResults(limit + 1);
+        List<T> rows = query.getResultList();
+        boolean hasNext = rows.size() > limit;
+        List<T> content = hasNext ? rows.subList(0, limit) : rows;
+        KeysetCursor next = null;
+        if (hasNext && !content.isEmpty()) {
+            next = extractor.apply(content.get(content.size() - 1));
+        }
+        return new KeysetPage<>(List.copyOf(content), next, hasNext);
+    }
+
     /** Existe linha para a consulta de contagem? {@code namesAndValues} alterna nome e valor de parâmetro (não nulos). */
     public static boolean exists(EntityManager em, String countJpql, Object... namesAndValues) {
         TypedQuery<Long> query = em.createQuery(countJpql, Long.class);
@@ -104,8 +152,37 @@ public final class JpqlQuery {
         return escapeLike(text) + "%";
     }
 
+    /**
+     * Padrão de LIKE "contém" com dobra de acento (P0.22): o texto digitado perde os
+     * acentos antes de virar padrão, para casar com a consulta que usa
+     * {@code immutable_unaccent(lower(nome))} e o índice trigram da V3_9. NÃO substitui
+     * {@link #contains}: as listas de catálogo ainda consultam {@code lower(nome)} sem
+     * dobra, e dobrar só o texto digitado ali quebraria a busca acentuada delas
+     * ("joao" deixaria de casar "João").
+     */
+    public static String containsFolded(String text) {
+        return "%" + escapeLikeFolded(text) + "%";
+    }
+
+    /** Como {@link #containsFolded}, para o modo startsWith. */
+    public static String startsWithFolded(String text) {
+        return escapeLikeFolded(text) + "%";
+    }
+
+    /** Remove acentos (NFD + tira marcas combinantes) e passa para minúsculas. */
+    public static String foldAccents(String text) {
+        return Normalizer.normalize(text, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toLowerCase(Locale.ROOT);
+    }
+
     private static String escapeLike(String text) {
         return text.trim().toLowerCase(Locale.ROOT)
+                .replace("!", "!!").replace("%", "!%").replace("_", "!_");
+    }
+
+    private static String escapeLikeFolded(String text) {
+        return foldAccents(text.trim())
                 .replace("!", "!!").replace("%", "!%").replace("_", "!_");
     }
 

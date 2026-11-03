@@ -226,13 +226,17 @@ public class TenantProvisioningService {
     }
 
     private void registerTenantInCatalog(UUID tenantId, String schemaName, TenantProvisioningRequest request) {
-        // P0.17: conflito resolvido pela chave id, nao por schema_name. Reprovisionar o
-        // mesmo tenant atualiza a linha dele (inclusive se o schema mudou); um segundo
-        // tenant tentando o mesmo schema_name esbarra no UNIQUE e falha, em vez de
-        // sobrescrever a linha alheia.
+        // P0.17 + P0.21 (fusão na integração): conflito resolvido pela chave id, não por
+        // schema_name. Reprovisionar o mesmo tenant atualiza a linha dele (inclusive se o
+        // schema mudou); um segundo tenant com o mesmo schema_name NO MESMO cluster esbarra
+        // no UNIQUE (cluster_id, schema_name) e falha, em vez de sobrescrever a linha
+        // alheia; em cluster diferente o mesmo schema_name é aceito (UNIQUE revisto da
+        // core V7). O ON CONFLICT (id) já resolve a quebra que a forma antiga
+        // ON CONFLICT (schema_name) teria com o UNIQUE novo (o PK id continua existindo).
+        // cluster_id e isolation_mode entram no catálogo (P0.21).
         String sql = """
-            INSERT INTO public.tenant_catalog (id, schema_name, name, cnpj, email, phone, address, status, plan, settings, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?::jsonb, 'ACTIVE', ?, ?::jsonb, NOW(), NOW())
+            INSERT INTO public.tenant_catalog (id, schema_name, name, cnpj, email, phone, address, status, plan, settings, cluster_id, isolation_mode, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?::jsonb, 'ACTIVE', ?, ?::jsonb, ?, ?, NOW(), NOW())
             ON CONFLICT (id) DO UPDATE SET
                 schema_name = EXCLUDED.schema_name,
                 name = EXCLUDED.name,
@@ -242,21 +246,23 @@ public class TenantProvisioningService {
                 address = EXCLUDED.address,
                 plan = EXCLUDED.plan,
                 settings = EXCLUDED.settings,
+                isolation_mode = EXCLUDED.isolation_mode,
                 updated_at = NOW()
             """;
 
-        // P0.17: a escrita do catalogo usa a conexao de migracao. Desde a core V4 a
-        // ziipsan_app so tem SELECT no catalogo, entao o DataSource da aplicacao nao pode
-        // mais registrar tenant. O catalogo nao tem RLS (cadastro global da plataforma,
-        // ver V1); a GUC abaixo e mantida por uniformidade com a auditoria e e local a
-        // transacao, entao nao vaza para a proxima conexao do pool.
+        // P0.17 + P0.21 (fusão na integração): a escrita do catálogo usa a conexão de
+        // migração. Desde a core V4 (F17) a ziipsan_app só tem SELECT no catálogo, então
+        // o DataSource da aplicação não pode mais registrar tenant; a core V7 (F21)
+        // reafirma o SELECT-only. O catálogo não tem RLS (cadastro global da plataforma,
+        // ver V1); a GUC antiga era inócua aqui e some com a troca de conexão.
+        // migratorDataSource é o mesmo DataSource que migratorJdbc() embrulha.
+        String clusterId = request.getClusterId() == null || request.getClusterId().isBlank()
+                ? "default" : request.getClusterId();
+        String isolationMode = request.getIsolationMode() == null || request.getIsolationMode().isBlank()
+                ? "SCHEMA" : request.getIsolationMode();
         try (Connection conn = migratorDataSource.getConnection()) {
             conn.setAutoCommit(false);
             try {
-                try (PreparedStatement st = conn.prepareStatement("SELECT set_config('app.current_tenant', ?, true)")) {
-                    st.setString(1, tenantId.toString());
-                    st.execute();
-                }
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setObject(1, tenantId);
                     ps.setString(2, schemaName);
@@ -267,6 +273,8 @@ public class TenantProvisioningService {
                     ps.setString(7, Json.orDefault(request.getAddress(), "{}"));
                     ps.setString(8, request.getPlan());
                     ps.setString(9, Json.orDefault(request.getSettings(), "{}"));
+                    ps.setString(10, clusterId);
+                    ps.setString(11, isolationMode);
                     ps.executeUpdate();
                 }
                 conn.commit();
@@ -392,6 +400,10 @@ public class TenantProvisioningService {
         private Map<String, Object> address;
         private String plan;
         private Map<String, Object> settings;
+        /** P0.21: cluster do tenant; em branco = 'default'. */
+        private String clusterId;
+        /** P0.21: SCHEMA, SHARED ou DEDICATED; em branco = 'SCHEMA' (o CHECK do banco barra outro valor). */
+        private String isolationMode;
     }
 
     public record TenantProvisioningResult(

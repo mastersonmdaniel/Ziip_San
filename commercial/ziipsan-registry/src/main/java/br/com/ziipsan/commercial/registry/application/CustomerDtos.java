@@ -171,6 +171,14 @@ public final class CustomerDtos {
             String sort) {
     }
 
+    /**
+     * Resposta da paginação keyset (P0.22): sem total — contar o total anularia a
+     * vantagem do keyset. {@code nextCursor} opaco, a devolver na próxima chamada;
+     * nulo quando não há próxima página.
+     */
+    public record CustomerKeysetPage(java.util.List<CustomerSummary> content, String nextCursor, boolean hasNext) {
+    }
+
     public record RevealRequest(
             @NotBlank(message = "Informe a finalidade do acesso ao documento.") @Size(max = 200) String purpose) {
     }

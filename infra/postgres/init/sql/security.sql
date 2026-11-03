@@ -39,6 +39,10 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+-- P0.22: unaccent dobra acentos na busca por nome (índice trigram da V3_9 de
+-- tenant usa immutable_unaccent, que chama esta extensão). Criada aqui, como
+-- superusuário, porque a role de migração não pode criar extensão.
+CREATE EXTENSION IF NOT EXISTS "unaccent";
 CREATE EXTENSION IF NOT EXISTS "btree_gin";
 CREATE EXTENSION IF NOT EXISTS "btree_gist";
 CREATE EXTENSION IF NOT EXISTS "postgis";
@@ -125,6 +129,34 @@ ALTER FUNCTION public.current_tenant_id() OWNER TO ziipsan_owner;
 REVOKE ALL ON FUNCTION public.current_tenant_id() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.current_tenant_id() TO ziipsan_app, ziipsan_migrator;
 
+-- P0.22: wrapper de unaccent() para o índice trigram da tenant V3_9.
+--
+-- unaccent() não é IMMUTABLE (o dicionário pode mudar) e expressão de índice
+-- exige função IMMUTABLE. O wrapper fixa o dicionário padrão e o search_path.
+-- É também LEAKPROOF (a transformação é pura, sem erro para texto válido) —
+-- higiene, não a solução do plano: o bloqueador real do índice sob RLS é o
+-- operador textlike (~~), que NÃO é LEAKPROOF (ver o comentário da V3_9 e o
+-- teste TrigramSearchIT). Só superusuário pode criar função LEAKPROOF: por
+-- isso ela nasce AQUI, e não na migration de tenant (a role de migração
+-- receberia "only superuser can define a leakproof function"). A V3_9 só cria
+-- o índice e aborta com mensagem clara se esta função não existir.
+--
+-- Dono ziipsan_owner, pelo mesmo motivo de current_tenant_id(): nem a
+-- aplicação nem o migrador podem redefinir a função que o índice usa.
+CREATE OR REPLACE FUNCTION public.immutable_unaccent(text)
+RETURNS text
+LANGUAGE sql
+IMMUTABLE
+LEAKPROOF
+SET search_path = public
+AS $fn$
+    SELECT unaccent($1)
+$fn$;
+
+ALTER FUNCTION public.immutable_unaccent(text) OWNER TO ziipsan_owner;
+REVOKE ALL ON FUNCTION public.immutable_unaccent(text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.immutable_unaccent(text) TO ziipsan_app, ziipsan_migrator;
+
 -- ========================================================================
 -- 5. VERIFICACAO (aborta o init se algo estiver errado)
 -- ========================================================================
@@ -160,6 +192,18 @@ BEGIN
        OR (SELECT provolatile FROM pg_proc
         WHERE oid = 'public.current_tenant_id()'::regprocedure) <> 's' THEN
         RAISE EXCEPTION 'FALHA CRITICA: current_tenant_id() nao e SQL STABLE';
+    END IF;
+
+    -- P0.22: immutable_unaccent tem de ser IMMUTABLE ('i') e LEAKPROOF, e pertencer
+    -- a ziipsan_owner. (LEAKPROOF aqui é higiene da função, não a solução do
+    -- plano sob RLS — o bloqueador é textlike, não-leakproof; ver a V3_9.)
+    IF (SELECT pg_get_userbyid(proowner) FROM pg_proc
+        WHERE oid = 'public.immutable_unaccent(text)'::regprocedure) <> 'ziipsan_owner'
+       OR (SELECT provolatile FROM pg_proc
+        WHERE oid = 'public.immutable_unaccent(text)'::regprocedure) <> 'i'
+       OR NOT (SELECT proleakproof FROM pg_proc
+        WHERE oid = 'public.immutable_unaccent(text)'::regprocedure) THEN
+        RAISE EXCEPTION 'FALHA CRITICA: immutable_unaccent nao e IMMUTABLE LEAKPROOF de ziipsan_owner';
     END IF;
 
     -- P0.9: timeouts da role da aplicacao conferidos no init (pg_db_role_setting

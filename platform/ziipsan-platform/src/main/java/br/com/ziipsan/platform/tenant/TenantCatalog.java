@@ -21,6 +21,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class TenantCatalog {
 
+    /**
+     * P0.21: teto de schemas por cluster, registrado na ARQUITETURA-ALVO §3. É o
+     * número provado pelo teste de escala (300 schemas); acima dele o tenant vai
+     * para outro cluster. A APLICAÇÃO do teto (recusar provisionamento acima dele)
+     * é da P1.14, junto do rollout — aqui o teto é só o número registrado, e o
+     * teste de escala o usa como asserção, não como número solto no teste.
+     */
+    public static final int MAX_SCHEMAS_PER_CLUSTER = 300;
+
     /** Situação do tenant no catálogo. Só ACTIVE atende requisições. */
     public record Entry(UUID id, String schema, String status) {
         public boolean active() {

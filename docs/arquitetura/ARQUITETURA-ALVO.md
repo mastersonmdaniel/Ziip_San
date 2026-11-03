@@ -98,7 +98,9 @@ flowchart LR
 | Médio | 20–200 mil | Schema próprio no cluster compartilhado | Fila e janela de lote próprias |
 | Grande | acima de 200 mil | Cluster dedicado | Workers dedicados |
 
-O `tenant_catalog` ganha `size_tier` (porte), `shard_id` e `schema`. Cada shard tem pool próprio; o roteador resolve
+O `tenant_catalog` ganha `size_tier` (porte), `shard_id` e `schema`. P0.21 implementa
+o shard como `cluster_id` + `isolation_mode` (ver §4); `size_tier` fica para o porte
+na P1.14/P4.6. Teto: 300 schemas por cluster. Cada shard tem pool próprio; o roteador resolve
 `tenant → shard → schema` a partir do JWT, com cache em memória invalidado por evento. Mudança de porte é migração
 assistida com janela.
 
@@ -126,6 +128,50 @@ assistida com janela.
   pode alterá-la: usam role de login por tenant ou por usuário, com a restrição de linhas feita pela identidade da
   conexão (ADR-0027, ADR-0028).
 - `current_tenant_id()` reescrita como SQL `STABLE`.
+- P0.21 (shard no catálogo, core `V7` — a V4 foi ocupada pela P0.17 na integração): `tenant_catalog` ganha `cluster_id`
+  (padrão `'default'`, o cluster único atual), `isolation_mode` (`SCHEMA` próprio,
+  padrão do ADR-0005; `SHARED` compartilhado; `DEDICATED` dedicado — os dois
+  últimos só sob demanda, P4.6) e `tenant_schema_version` (versão Flyway de tenant
+  aplicada por último, gravada pelo job migrate; base da P1.14). O `UNIQUE` de
+  `schema_name` passa a `UNIQUE (cluster_id, schema_name)`: num modelo
+  multi-cluster o mesmo nome de schema pode existir em clusters diferentes. A
+  `ziipsan_app` fica só com `SELECT` no catálogo (a escrita é do job migrate,
+  via role de migração — o provisionamento foi movido para ela junto; o conflito
+  é resolvido pela chave `id` (P0.17), não pelo UNIQUE novo — a forma antiga
+  `ON CONFLICT (schema_name)` quebraria com ele).
+  Teto: 300 schemas por cluster (provado pelo teste de escala da P0.21, que mede
+  criação, tamanho do catálogo, vacuum, latência de lookup e pg_dump por schema;
+  pg_upgrade e migração completa × 300 ficam como pendência medida da frente).
+- P0.21 (instruções preparadas sob PgBouncer, testadas): PgBouncer 1.26.1 em modo
+  transaction com `max_prepared_statements = 100`, pgJDBC 42.7.13 (BOM do Spring
+  Boot 4.1.1). Regra: `prepareThreshold` NUNCA é definido como 0 — o defeito
+  conhecido é pgJDBC 42.7.8 com `prepareThreshold=0` (defeito 3896); aqui o driver
+  nem é o 42.7.8 e o padrão (5) é mantido, sem parâmetro na URL. O teste
+  `PgBouncerPreparedIT` sobe um PgBouncer real e executa 20 vezes a mesma
+  prepared statement sobre um pool de 2 conexões em modo transaction. Sem
+  `max_prepared_statements` (PgBouncer < 1.24) o teste é pulado, não verde falso.
+- P0.22 (busca e listas): índice GIN trigram da tenant `V3_9` (a `V3_4` do plano
+  já era a modelagem de cliente da P0.16 e a `V3_8` está reservada para a P1.41;
+  nenhuma migration existente foi renomeada) sobre
+  `immutable_unaccent(lower(name))` em `customers` — `unaccent()` sozinho não é
+  IMMUTABLE e não pode entrar em expressão de índice, por isso o wrapper
+  (LEAKPROOF, criado no init de segurança como `ziipsan_owner` porque só
+  superusuário cria função LEAKPROOF; a `V3_9` só cria o índice, abortando se
+  a função não existir). LIMITAÇÃO DE PLATAFORMA (PG 17.11, reproduzida em
+  2026-11-03): sob RLS forçada o planner NÃO USA o índice para LIKE/ILIKE,
+  porque `textlike`/`texticlike` não são LEAKPROOF — reproduzido até com índice
+  em coluna pura, a 5k e 100k linhas; FTS (`@@`) e similaridade (`%`) também
+  são não-leakproof, então não há busca por trecho em índice sob RLS forçada.
+  O índice fica (válido, usado sem RLS) e o teste trava os dois planos; a
+  busca em produção custa uma varredura por tenant (~15 ms a 5k linhas), e
+  aceitar isso em tenants grandes é decisão do dono (P1.14/P4.6). A
+  busca dobra acentos dos dois lados (`JOAO` casa `João`); as listas de catálogo
+  mantêm `lower(nome)` sem dobra (dobrar só o texto digitado ali quebraria a
+  busca acentuada delas). Listas com 3 consultas constantes (página + COUNT +
+  contagem de imóveis em lote via IN único), qualquer que seja o tamanho da
+  página; paginação keyset (`POST /customers/search/keyset`, ordem fixa nome
+  crescente, cursor opaco, sem COUNT) para as listas grandes; validação dos DTOs
+  de busca e teto de página (100) da P0.16 reutilizados nos dois caminhos.
 
 ## 5. Partição e retenção
 

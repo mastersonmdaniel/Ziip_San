@@ -79,6 +79,12 @@ public class DatabaseMigrator implements InitializingBean {
             var result = migrator.migrate(tenant.schema(), tenant.id());
             log.info("Tenant {}: {} migration(s) aplicada(s), versão {}",
                     tenant.schema(), result.migrationsExecuted, result.targetSchemaVersion);
+            // P0.21: registra no catálogo a versão de tenant aplicada (base da P1.14:
+            // situação por tenant, quarentena e canário). Sem esta linha a coluna
+            // tenant_schema_version da core V7 ficaria sempre NULL.
+            new JdbcTemplate(migratorDataSource).update(
+                    "UPDATE public.tenant_catalog SET tenant_schema_version = ? WHERE id = ?",
+                    result.targetSchemaVersion, tenant.id());
         }
         // P0.42: cada execução bem-sucedida do job grava uma linha em
         // platform.deployment (core V5_1). Só aqui, e só no fim: se qualquer

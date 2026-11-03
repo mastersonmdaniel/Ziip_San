@@ -46,16 +46,18 @@ import java.util.UUID;
 
 import static br.com.ziipsan.commercial.registry.application.JpqlQuery.LIKE_ESCAPE;
 import static br.com.ziipsan.commercial.registry.application.JpqlQuery.blankToNull;
-import static br.com.ziipsan.commercial.registry.application.JpqlQuery.contains;
-import static br.com.ziipsan.commercial.registry.application.JpqlQuery.startsWith;
+import static br.com.ziipsan.commercial.registry.application.JpqlQuery.containsFolded;
+import static br.com.ziipsan.commercial.registry.application.JpqlQuery.startsWithFolded;
 
 /**
  * Cadastro de clientes. O documento passa SEMPRE pelo {@link CustomerDocumentService} (cifra, índice
  * cego e máscara); esta classe nunca lê nem grava as colunas do documento por conta própria.
  *
  * <p>A busca livre aceita nome ou CPF/CNPJ: documento válido vira índice cego e casa por igualdade
- * (com ou sem pontuação dá o mesmo índice); o resto é busca por nome em {@code lower(name)}, que é o
- * índice de V3_1 (não há índice trigram: "contém" faz varredura no tenant, aceitável no volume do R0).
+ * (com ou sem pontuação dá o mesmo índice); o resto é busca por nome com dobra de acento em
+ * {@code immutable_unaccent(lower(name))}, servida pelo índice GIN trigram da V3_9 (P0.22) —
+ * "joao" casa "João" sem varrer o tenant. Antes da P0.22 a busca era {@code lower(name)} com o
+ * índice de V3_1 e o "contém" varria o tenant.
  */
 @Service
 @Transactional(readOnly = true)
@@ -120,6 +122,60 @@ public class CustomerService {
 
     private PageResult<CustomerSummary> find(String q, String nameMatch, PersonType personType, UUID customerTypeId,
                                              Boolean includeDeleted, PageSpec spec) {
+        Filtered filtered = filters(q, nameMatch, personType, customerTypeId, includeDeleted);
+        PageResult<Customer> page = filtered.query().page(em, Customer.class, spec, spec.orderBy(SORT, "name", "c.id"));
+        // P0.11: o resultado da busca por documento é registrado depois da consulta.
+        filtered.documentHash().ifPresent(hash -> accessLog.recordDocumentSearch(hash, !page.content().isEmpty()));
+        Map<UUID, Long> counts = unitCounts(page.content().stream().map(Customer::getId).toList());
+        return page.map(c -> new CustomerSummary(c.getId(), c.getName(), c.getPersonType(), c.getDocumentMasked(),
+                counts.getOrDefault(c.getId(), 0L), c.getDeletedAt() != null));
+    }
+
+    /**
+     * Paginação keyset (P0.22) sobre os mesmos filtros de {@link #search}: uma única
+     * consulta, sem COUNT, ordenada por {@code lower(name) asc, id asc}. Só essa
+     * ordenação é suportada — outra ordenação pedida em {@code sort} dá 400, e o
+     * cliente usa a paginação por offset. O cursor é opaco (base64url do nome em
+     * minúsculas + "." + id); cursor malformado dá 400, nunca 500. O teto de página
+     * da P0.16 vale aqui via {@link PageSpec#of}.
+     */
+    public CustomerDtos.CustomerKeysetPage searchAfter(CustomerSearch s, String cursor) {
+        if (blankToNull(s.city()) != null) {
+            throw new ApiException.BadRequest("filter-unavailable",
+                    "O filtro city ainda não é suportado.");
+        }
+        PageSpec spec = PageSpec.of(0, s.size(), s.sort());
+        if ((spec.sortKey() != null && !spec.sortKey().equals("name")) || !spec.ascending()) {
+            throw new ApiException.BadRequest("invalid-sort",
+                    "A paginação keyset ordena por nome crescente. Use a busca por offset para outra ordenação.");
+        }
+        Filtered filtered = filters(s.q(), s.nameMatch(), s.personType(), s.customerTypeId(), s.includeDeleted());
+        KeysetPage<Customer> page = filtered.query().pageAfter(em, Customer.class, spec.size(),
+                "lower(c.name)", "c.id", decodeCursor(cursor),
+                c -> new KeysetCursor(c.getName().toLowerCase(Locale.ROOT), c.getId()));
+        // P0.11: o resultado da busca por documento é registrado depois da consulta.
+        filtered.documentHash().ifPresent(hash -> accessLog.recordDocumentSearch(hash, !page.content().isEmpty()));
+        Map<UUID, Long> counts = unitCounts(page.content().stream().map(Customer::getId).toList());
+        List<CustomerSummary> content = page.content().stream()
+                .map(c -> new CustomerSummary(c.getId(), c.getName(), c.getPersonType(), c.getDocumentMasked(),
+                        counts.getOrDefault(c.getId(), 0L), c.getDeletedAt() != null))
+                .toList();
+        return new CustomerDtos.CustomerKeysetPage(content,
+                page.hasNext() ? encodeCursor(page.nextCursor()) : null, page.hasNext());
+    }
+
+    /**
+     * Mesmos filtros de {@link #find}, sem paginar: compartilhados pelo offset e pelo keyset.
+     * Devolve também o hash do documento quando a busca foi por documento, para o chamador
+     * registrar o resultado depois da consulta (regra P0.11) — o refactor da P0.22 separou
+     * os filtros da paginação, e o registro não pode ficar dentro daqui (a consulta ainda
+     * não executou).
+     */
+    private record Filtered(JpqlQuery query, Optional<String> documentHash) {
+    }
+
+    private Filtered filters(String q, String nameMatch, PersonType personType, UUID customerTypeId,
+                             Boolean includeDeleted) {
         JpqlQuery query = new JpqlQuery("c", "Customer c")
                 .where("c.tenantId = :t", "t", RegistryContext.tenantId())
                 .whereIfPresent("c.personType = :personType", "personType", personType)
@@ -142,15 +198,41 @@ public class CustomerService {
                 if (!match.equals("contains") && !match.equals("startsWith")) {
                     throw new ApiException.BadRequest("invalid-filter", "nameMatch aceita contains ou startsWith.");
                 }
-                query.where("lower(c.name) like :name" + LIKE_ESCAPE, "name",
-                        match.equals("startsWith") ? startsWith(text) : contains(text));
+                // P0.22: dobra de acento dos dois lados + índice trigram da V3_9.
+                // Chamada direta (não function()): a função está registrada no
+                // Hibernate com retorno String (ImmutableUnaccentFunctionContributor).
+                // function() a tiparia como Object e o LIKE falharia na validação
+                // semântica do Hibernate 7 com 500 em toda busca por nome.
+                query.where("immutable_unaccent(lower(c.name)) like :name" + LIKE_ESCAPE, "name",
+                        match.equals("startsWith") ? startsWithFolded(text) : containsFolded(text));
             }
         }
-        PageResult<Customer> page = query.page(em, Customer.class, spec, spec.orderBy(SORT, "name", "c.id"));
-        documentHash.ifPresent(hash -> accessLog.recordDocumentSearch(hash, !page.content().isEmpty()));
-        Map<UUID, Long> counts = unitCounts(page.content().stream().map(Customer::getId).toList());
-        return page.map(c -> new CustomerSummary(c.getId(), c.getName(), c.getPersonType(), c.getDocumentMasked(),
-                counts.getOrDefault(c.getId(), 0L), c.getDeletedAt() != null));
+        return new Filtered(query, documentHash);
+    }
+
+    /** Cursor opaco da API → par (nome minúsculo, id). Nulo = primeira página. */
+    static KeysetCursor decodeCursor(String cursor) {
+        if (cursor == null || cursor.isBlank()) {
+            return null;
+        }
+        int dot = cursor.lastIndexOf('.');
+        if (dot <= 0 || dot == cursor.length() - 1) {
+            throw new ApiException.BadRequest("invalid-cursor", "O cursor de paginação é inválido.");
+        }
+        try {
+            String sortValue = new String(java.util.Base64.getUrlDecoder().decode(cursor.substring(0, dot)),
+                    java.nio.charset.StandardCharsets.UTF_8);
+            UUID id = UUID.fromString(cursor.substring(dot + 1));
+            return new KeysetCursor(sortValue, id);
+        } catch (IllegalArgumentException e) {
+            throw new ApiException.BadRequest("invalid-cursor", "O cursor de paginação é inválido.");
+        }
+    }
+
+    static String encodeCursor(KeysetCursor cursor) {
+        return java.util.Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(cursor.sortValue().getBytes(java.nio.charset.StandardCharsets.UTF_8))
+                + "." + cursor.id();
     }
 
     public CustomerView get(UUID id) {

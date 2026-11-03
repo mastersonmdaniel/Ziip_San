@@ -1,6 +1,7 @@
 package br.com.ziipsan.commercial.registry.web;
 
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.CustomerInput;
+import br.com.ziipsan.commercial.registry.application.CustomerDtos.CustomerKeysetPage;
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.CustomerSearch;
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.CustomerSummary;
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.CustomerView;
@@ -62,6 +63,18 @@ public class CustomerController {
     @PostMapping("/search")
     public PageResult<CustomerSummary> search(@Valid @RequestBody CustomerSearch search) {
         return service.search(search);
+    }
+
+    /**
+     * Paginação keyset (P0.22) para as listas grandes: uma consulta, sem COUNT, com
+     * cursor opaco. Sem cursor, começa do início. A ordenação é fixa (nome crescente);
+     * outra ordenação dá 400 e o cliente usa {@code /search} por offset. A spec do
+     * OpenAPI é regenerada na integração (este arquivo não é tocado nesta frente).
+     */
+    @PostMapping("/search/keyset")
+    public CustomerKeysetPage searchKeyset(@Valid @RequestBody CustomerSearch search,
+                                           @RequestParam(required = false) String cursor) {
+        return service.searchAfter(search, cursor);
     }
 
     @GetMapping("/{id}")
