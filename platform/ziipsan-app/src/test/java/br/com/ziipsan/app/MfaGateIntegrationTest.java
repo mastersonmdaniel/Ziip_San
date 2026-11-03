@@ -10,9 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * P0.15: o gate de MFA na cadeia real, antes do filtro de tenant. Não existe
- * rota de plataforma ainda (é P0.43): a prova usa um caminho de plataforma
- * inexistente — o gate barra antes do 404, e passa antes do 404 quando há amr.
+ * P0.15: o gate de MFA na cadeia real, antes do filtro de tenant. A prova usa
+ * um caminho de plataforma inexistente — o gate barra antes do 404, e passa
+ * antes do 404 quando há amr. P0.43: depois do gate, o PlatformAccessFilter
+ * fiscaliza o prefixo (token com tenant é recusado) e o filtro de tenant
+ * isenta rotas de plataforma; a primeira rota real é
+ * GET /api/v1/platform/deployments (ver PlatformDeploymentAccessTest).
  */
 class MfaGateIntegrationTest extends AppIntegrationTestBase {
 
@@ -36,21 +39,30 @@ class MfaGateIntegrationTest extends AppIntegrationTestBase {
     }
 
     @Test
-    @DisplayName("plataforma com amr otp e tenant: passa no gate (404, porque a rota ainda não existe)")
-    void platformWithAmrPassesGate() throws Exception {
+    @DisplayName("P0.43: plataforma com amr mas COM tenant: passa no gate e cai em tenant-not-allowed (token de tenant não abre rota de plataforma)")
+    void platformWithAmrAndTenantIsTenantNotAllowed() throws Exception {
         String token = TestTokens.token(ProvisionedTenant.TENANT_ID, List.of("VIEWER"),
                 b -> b.claim("amr", List.of("otp")));
         mvc.perform(get("/api/v1/platform/qualquer").header("Authorization", bearer(token)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:tenant-not-allowed"));
     }
 
     @Test
-    @DisplayName("plataforma com amr mas sem tenant: passa no gate e cai em tenant-missing (interação P0.43)")
-    void platformWithAmrWithoutTenantFallsToTenantFilter() throws Exception {
+    @DisplayName("P0.43: plataforma com amr, sem tenant e sem papel PLATFORM_*: passa no gate e cai em access-denied (não mais tenant-missing)")
+    void platformWithAmrWithoutTenantWithoutPlatformRoleIsAccessDenied() throws Exception {
         String token = TestTokens.token(null, List.of("VIEWER"), b -> b.claim("amr", List.of("hwk")));
         mvc.perform(get("/api/v1/platform/qualquer").header("Authorization", bearer(token)))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:tenant-missing"));
+                .andExpect(jsonPath("$.type").value("urn:ziipsan:problem:access-denied"));
+    }
+
+    @Test
+    @DisplayName("P0.43: plataforma com amr, sem tenant e com papel PLATFORM_OPS: passa no gate, no acesso e no filtro de tenant (404, rota inexistente)")
+    void platformWithAmrWithoutTenantWithPlatformRolePassesTenantFilter() throws Exception {
+        String token = TestTokens.token(null, List.of("PLATFORM_OPS"), b -> b.claim("amr", List.of("hwk")));
+        mvc.perform(get("/api/v1/platform/qualquer").header("Authorization", bearer(token)))
+                .andExpect(status().isNotFound());
     }
 
     @Test

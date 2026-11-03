@@ -22,8 +22,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * P0.13: toda rota de negócio sob /api/v1 declara a permissão {@code recurso:ação} que
  * exige, e a permissão existe no catálogo. Varre os handler mappings em runtime (não regex
- * sobre o código-fonte). Allowlist explícita e única: {@code GET /api/v1/me} devolve só
- * dados do próprio usuário autenticado.
+ * sobre o código-fonte). Allowlist explícita: {@code GET /api/v1/me} devolve só
+ * dados do próprio usuário autenticado, e {@code GET /api/v1/about} (P0.42) devolve só
+ * metadados da implantação, sem dado de tenant ou de usuário — nenhuma das duas acessa
+ * dado de terceiros.
  *
  * <p>O documento do catálogo também é conferido contra o código: toda permissão do catálogo
  * aparece nele.
@@ -47,7 +49,8 @@ class RoutePermissionTest extends AppIntegrationTestBase {
             }
             condition.getPatterns().forEach(pattern -> {
                 String path = pattern.getPatternString();
-                if (!path.startsWith("/api/v1") || path.equals("/api/v1/me")) {
+                if (!path.startsWith("/api/v1") || path.equals("/api/v1/me")
+                        || path.equals("/api/v1/about")) {
                     return;
                 }
                 PreAuthorize auth = method.getMethodAnnotation(PreAuthorize.class);

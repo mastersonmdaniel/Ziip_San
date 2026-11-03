@@ -141,6 +141,16 @@ class JwtTenantFilterTest {
     }
 
     @Test
+    @DisplayName("P0.43: rota de plataforma é isenta — token sem tenant passa sem tenant-missing (quem fiscaliza é o PlatformAccessFilter)")
+    void platformPathIsExempt() throws Exception {
+        authenticate(null);
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/v1/platform/deployments");
+        request.setRequestURI("/api/v1/platform/deployments");
+        String[] ctx = run(request, new MockHttpServletResponse());
+        assertThat(ctx).containsExactly(null, "null", "null");
+    }
+
+    @Test
     @DisplayName("sem JWT (ex.: health): segue sem tenant")
     void noJwtPassesThrough() throws Exception {
         String[] ctx = run(new MockHttpServletRequest(), new MockHttpServletResponse());

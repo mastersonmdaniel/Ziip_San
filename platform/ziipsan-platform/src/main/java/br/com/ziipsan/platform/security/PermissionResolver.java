@@ -28,6 +28,11 @@ public final class PermissionResolver {
         }
         for (String role : roles) {
             out.addAll(PermissionCatalog.authoritiesForRole(role));
+            // P0.43: papéis de plataforma expandem para as permissões de plataforma
+            // (ex.: deployment:read para OWNER e OPS). Papel de tenant não ganha
+            // permissão de plataforma, e papel de plataforma não ganha permissão
+            // de tenant: os dois mundos não se misturam no conversor.
+            out.addAll(PlatformRole.permissionsFor(role));
         }
         return out;
     }

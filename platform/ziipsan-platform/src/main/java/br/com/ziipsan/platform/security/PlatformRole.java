@@ -1,0 +1,67 @@
+package br.com.ziipsan.platform.security;
+
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Papéis de plataforma (P0.43, CENTRAL-ZIIP §2, ADR-0018).
+ *
+ * <p>Os quatro papéis vivem no realm {@code ziipsan} (infra/keycloak/realms/ziipsan-realm.json)
+ * e NUNCA carregam {@code tenant_id}: o token de plataforma não abre rota de tenant
+ * ({@link PlatformAccessFilter} recusa token com tenant em rota de plataforma).
+ * Usuário de plataforma é marcado no realm pelo atributo {@code ziipsan_user_type=platform}
+ * (ver {@link MfaPolicy}), o que obriga o segundo fator no login; na API, o segundo
+ * fator é verificado no token ({@code amr}) pelo {@link MfaGateFilter}.
+ *
+ * <p>Matriz §2, na forma que a P0.43 fiscaliza em código (o console completo é P1.6):
+ * <ul>
+ *   <li>{@code PLATFORM_OWNER} — tudo; o único que elimina dados de tenant (P1.6, não aqui);</li>
+ *   <li>{@code PLATFORM_OPS} — painéis técnicos, alertas, implantação, migrações, flags de
+ *       rollout; revogação de sessão e bloqueio de dispositivo do app de campo (ADR-0030);</li>
+ *   <li>{@code PLATFORM_SUPPORT} — painéis do tenant, fila de chamados, pedido de acesso assistido;</li>
+ *   <li>{@code PLATFORM_FINANCE} — contratos, faturas, pagamentos, cotas; suspensão e bloqueio
+ *       só por inadimplência contratual (P1.6, não aqui).</li>
+ * </ul>
+ * <p>Permissão nova entra no catálogo junto da rota que a usa (regra da P0.13). Por isso,
+ * nesta tarefa, a única permissão de plataforma no catálogo é {@code deployment:read},
+ * usada por {@code GET /api/v1/platform/deployments}: OWNER e OPS a têm; SUPPORT e
+ * FINANCE, não — ler o registro de implantação é operação técnica, não de suporte
+ * nem de financeiro. As demais capacidades do §2 ganham permissões próprias quando
+ * as rotas que as usam existirem (P1.6/P1.17), e não antes: permissão sem rota é
+ * superfície de autorização sem prova.
+ */
+public final class PlatformRole {
+
+    public static final String OWNER = "PLATFORM_OWNER";
+    public static final String OPS = "PLATFORM_OPS";
+    public static final String SUPPORT = "PLATFORM_SUPPORT";
+    public static final String FINANCE = "PLATFORM_FINANCE";
+
+    /** Todos os papéis de plataforma, na ordem do §2. */
+    public static final Set<String> ALL = Set.of(OWNER, OPS, SUPPORT, FINANCE);
+
+    /**
+     * Permissões do catálogo concedidas a cada papel de plataforma. Negação por padrão:
+     * papel desconhecido (ou de tenant) não concede permissão de plataforma nenhuma.
+     */
+    private static final Map<String, Set<String>> PERMISSIONS = Map.of(
+            OWNER, Set.of("deployment:read"),
+            OPS, Set.of("deployment:read"),
+            SUPPORT, Set.of(),
+            FINANCE, Set.of());
+
+    private PlatformRole() {
+    }
+
+    public static boolean isPlatformRole(String role) {
+        return role != null && ALL.contains(role);
+    }
+
+    /** Permissões do catálogo para o papel dado; vazio quando não é papel de plataforma. */
+    public static Set<String> permissionsFor(String role) {
+        if (role == null) {
+            return Set.of();
+        }
+        return PERMISSIONS.getOrDefault(role, Set.of());
+    }
+}

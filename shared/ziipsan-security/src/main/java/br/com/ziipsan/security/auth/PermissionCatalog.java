@@ -35,7 +35,11 @@ public final class PermissionCatalog {
             new Permission("registry:reveal-document", "cadastro", "registry", "reveal-document", "P0.13"),
             new Permission("registry:search-document", "cadastro", "registry", "search-document", "P0.11"),
             new Permission("user:read", "plataforma", "user", "read", "P0.13"),
-            new Permission("user:write", "plataforma", "user", "write", "P0.13"));
+            new Permission("user:write", "plataforma", "user", "write", "P0.13"),
+            // P0.43: leitura do registro de implantação (platform.deployment), rota
+            // GET /api/v1/platform/deployments. Papéis de plataforma que a têm:
+            // PLATFORM_OWNER e PLATFORM_OPS (ver PlatformRole); SUPPORT e FINANCE, não.
+            new Permission("deployment:read", "plataforma", "deployment", "read", "P0.43"));
 
     /** Perfis mínimos de fábrica da P0.13, compostos do catálogo (perfis por função: P1.37). */
     public enum FactoryProfile {

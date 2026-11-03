@@ -19,6 +19,7 @@ na aplicação, a partir do catálogo.
 | `registry:search-document` | cadastro | registry | search-document | (nenhum — só concessão direta) | P0.11 |
 | `user:read` | plataforma | user | read | ADMIN, MANAGER | P0.13 |
 | `user:write` | plataforma | user | write | ADMIN | P0.13 |
+| `deployment:read` | plataforma | deployment | read | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS) | P0.43 |
 
 ## Regras
 
@@ -30,6 +31,10 @@ na aplicação, a partir do catálogo.
   Sem ela, a busca por documento é 403; com ela, a busca é registrada em
   `personal_data_access_log` e conta na cota por usuário por hora (429 ao exceder).
 - Permissão nova entra no catálogo junto da rota que a usa; rota sem permissão declarada é
-  recusada no CI. A única rota de negócio sem permissão declarada é `GET /api/v1/me` (dados do
-  próprio usuário autenticado, sem acesso a dado de terceiros).
+  recusada no CI. As únicas rotas de negócio sem permissão declarada são `GET /api/v1/me` (dados do
+  próprio usuário autenticado, sem acesso a dado de terceiros) e `GET /api/v1/about` (P0.42:
+  só metadados da implantação — versão, commit, ambiente e data — sem dado de tenant ou de usuário).
+- `deployment:read` não pertence a nenhum perfil de fábrica de tenant: ela só existe via
+  papel de plataforma (PLATFORM_OWNER e PLATFORM_OPS, ver `PlatformRole`). Um token de tenant
+  nunca a recebe, e um token de plataforma nunca recebe permissão de tenant.
 - Perfis compostos pelo ADMIN do tenant e restrição negativa ficam na ED-06, sobre este catálogo.

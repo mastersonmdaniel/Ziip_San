@@ -43,7 +43,9 @@ class ProblemCodeContractTest {
             // o 422 de validação continua 422; estes são códigos novos, não
             // re-mapeados.
             "too-many-requests", "content-too-large",
-            "validation", "confirmation-required", "internal-error");
+            "validation", "confirmation-required", "internal-error",
+            // P0.43: token com tenant_id em rota de plataforma (CENTRAL-ZIIP §2).
+            "tenant-not-allowed");
 
     /** Códigos antigos da tabela (português) — nenhum pode restar no código. */
     private static final List<String> OLD_CODES = List.of(

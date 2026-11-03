@@ -5,6 +5,7 @@ import br.com.ziipsan.platform.security.ContentLengthLimitFilter;
 import br.com.ziipsan.platform.security.JdbcRateLimitStore;
 import br.com.ziipsan.platform.security.JwtTenantFilter;
 import br.com.ziipsan.platform.security.MfaGateFilter;
+import br.com.ziipsan.platform.security.PlatformAccessFilter;
 import br.com.ziipsan.platform.security.RateLimitFilter;
 import br.com.ziipsan.platform.security.RateLimitStore;
 import br.com.ziipsan.platform.security.PermissionResolver;
@@ -178,7 +179,8 @@ public class SecurityConfig {
                 .exceptionHandling(e -> e.authenticationEntryPoint(bffEntryPoint).accessDeniedHandler(bffForbidden))
                 .addFilterAfter(reconstruction, OAuth2LoginAuthenticationFilter.class)
                 .addFilterAfter(new MfaGateFilter(), BffJwtReconstructionFilter.class)
-                .addFilterAfter(tenantFilter, MfaGateFilter.class)
+                .addFilterAfter(new PlatformAccessFilter(), MfaGateFilter.class)
+                .addFilterAfter(tenantFilter, PlatformAccessFilter.class)
                 .addFilterAfter(rateLimitFilter(rateLimitStore, properties), JwtTenantFilter.class)
                 .addFilterBefore(bodyLimitFilter(properties), CsrfFilter.class);
         webSurfaceHeaders(http);
@@ -213,7 +215,8 @@ public class SecurityConfig {
                         .accessDeniedHandler(forbidden))
                 .exceptionHandling(e -> e.authenticationEntryPoint(unauthorized).accessDeniedHandler(forbidden))
                 .addFilterAfter(new MfaGateFilter(), BearerTokenAuthenticationFilter.class)
-                .addFilterAfter(new JwtTenantFilter(tenantCatalog), MfaGateFilter.class)
+                .addFilterAfter(new PlatformAccessFilter(), MfaGateFilter.class)
+                .addFilterAfter(new JwtTenantFilter(tenantCatalog), PlatformAccessFilter.class)
                 .addFilterAfter(rateLimitFilter(rateLimitStore, properties), JwtTenantFilter.class)
                 .addFilterBefore(bodyLimitFilter(properties), BearerTokenAuthenticationFilter.class);
         webSurfaceHeaders(http);

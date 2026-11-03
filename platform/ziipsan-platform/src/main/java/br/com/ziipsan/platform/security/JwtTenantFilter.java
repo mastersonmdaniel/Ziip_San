@@ -49,6 +49,19 @@ public class JwtTenantFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+        // P0.43: rotas de plataforma NÃO passam por aqui. O token de plataforma
+        // legítimo não tem tenant_id e cairia em tenant-missing; quem fiscaliza
+        // o prefixo é o PlatformAccessFilter (que roda antes e recusa token com
+        // tenant e token sem papel PLATFORM_*). Sem esta isenção, a P0.15 já
+        // documentava o sintoma: plataforma com MFA caía em tenant-missing.
+        String uri = request.getRequestURI();
+        String context = request.getContextPath();
+        String path = context != null && !context.isEmpty() && uri.startsWith(context)
+                ? uri.substring(context.length()) : uri;
+        if (path.startsWith(PlatformAccessFilter.PLATFORM_PATH_PREFIX)) {
+            chain.doFilter(request, response);
+            return;
+        }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!(auth instanceof JwtAuthenticationToken jwtAuth)) {
             // Sem JWT (ex.: /actuator/health). Rotas protegidas já foram barradas pela autorização.

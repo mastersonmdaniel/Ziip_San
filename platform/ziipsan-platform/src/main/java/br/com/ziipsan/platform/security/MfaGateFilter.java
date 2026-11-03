@@ -28,11 +28,11 @@ import java.util.List;
  * de plataforma nem recusa token com tenant (isso é P0.43); ele só exige o
  * segundo fator onde a rota é de plataforma.
  *
- * <p>Interação documentada com o JwtTenantFilter: token de plataforma (sem
- * tenant_id) COM segundo fator passa no gate e depois cai em tenant-missing —
- * até a P0.43 isentar as rotas de plataforma do filtro de tenant. O gate não
- * está errado por isso; a rota de plataforma ainda não existe (só o gate, mais
- * rota de teste nos testes).
+ * <p>Interação com o JwtTenantFilter, resolvida na P0.43: o
+ * {@link PlatformAccessFilter} roda depois deste gate e antes do filtro de
+ * tenant, e o filtro de tenant isenta rotas de plataforma — então o token de
+ * plataforma (sem tenant_id) COM segundo fator passa nos dois e chega ao
+ * controller, em vez de cair em tenant-missing.
  */
 public class MfaGateFilter extends OncePerRequestFilter {
 

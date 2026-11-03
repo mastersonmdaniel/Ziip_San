@@ -102,6 +102,16 @@ class RealmMfaStructureTest {
     }
 
     @Test
+    @DisplayName("P0.43: os quatro papéis de plataforma do CENTRAL-ZIIP §2 existem no realm")
+    void platformRolesExistInRealm() {
+        List<String> roles = new ArrayList<>();
+        for (JsonNode role : realm.get("roles").get("realm")) {
+            roles.add(role.get("name").asText());
+        }
+        assertThat(roles).contains("PLATFORM_OWNER", "PLATFORM_OPS", "PLATFORM_SUPPORT", "PLATFORM_FINANCE");
+    }
+
+    @Test
     @DisplayName("políticas OTP/WebAuthn e required actions de enrolamento (definidas, não padrão)")
     void policiesAndRequiredActions() {
         assertThat(realm.get("otpPolicy").get("digits").asInt()).isEqualTo(6);

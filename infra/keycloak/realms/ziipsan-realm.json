@@ -73,6 +73,22 @@
       {
         "name": "registry.reveal-document",
         "description": "Pode revelar CPF/CNPJ completo no cadastro (acesso auditado)"
+      },
+      {
+        "name": "PLATFORM_OWNER",
+        "description": "Dono da plataforma (CENTRAL-ZIIP §2): tudo; unico que elimina dados de tenant"
+      },
+      {
+        "name": "PLATFORM_OPS",
+        "description": "Operacao da plataforma (CENTRAL-ZIIP §2): paineis tecnicos, alertas, implantacao, migracoes, flags"
+      },
+      {
+        "name": "PLATFORM_SUPPORT",
+        "description": "Suporte da plataforma (CENTRAL-ZIIP §2): paineis do tenant, fila de chamados, pedido de acesso assistido"
+      },
+      {
+        "name": "PLATFORM_FINANCE",
+        "description": "Financeiro da plataforma (CENTRAL-ZIIP §2): contratos, faturas, pagamentos, cotas; suspensao so por inadimplencia contratual"
       }
     ]
   },
