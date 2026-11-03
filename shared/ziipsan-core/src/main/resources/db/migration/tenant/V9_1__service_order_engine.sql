@@ -89,8 +89,11 @@
 --
 -- HISTORY TAB: service_order_history records every transition with actor,
 --   time, before and after; service_order_effects records every applied
---   effect; unit_status_history and the new histories carry service_order_id
---   NOT NULL (ADR-0039 item 6). The tab itself is a read over these tables
+--   effect; unit_status_history and the new histories carry service_order_id,
+--   nullable until P1.3 (the plan reserves the mandatory service_order_id
+--   for V3_6/P1.3, when every registry write routes through an internal OS;
+--   the FK below already enforces referential integrity for rows that carry
+--   an order). The tab itself is a read over these tables
 --   plus the version tables (parameter_versions, bill versions, tariff
 --   versions, gis_*_history) and the audit trail; the frontend tab is P1.12.
 --
@@ -510,17 +513,23 @@ ALTER TABLE service_order_entry_permits ADD CONSTRAINT uq_pet_order_code UNIQUE 
 CREATE INDEX idx_pet_order ON service_order_entry_permits(tenant_id, order_id);
 
 -- ========================================================================
--- HISTORY FK + NOT NULL: unit_status_history (V3_1) and the social tariff
--- enrollment (V4_2, P1.5). ADR-0039 item 6: no history row without the
--- order that caused it. The FK and the obligation were explicitly deferred
--- to this migration by the P1.5 header comment on V4_2.
+-- HISTORY FK (nullable until P1.3/V3_6): unit_status_history (V3_1) and
+-- the social tariff enrollment (V4_2, P1.5). ADR-0039 item 6 wants no
+-- history row without the order that caused it, but the plan reserves the
+-- MANDATORY service_order_id for V3_6/P1.3, when every registry write
+-- routes through an internal OS of P1.31. Enforcing NOT NULL here, in
+-- P1.31, breaks direct registry writes that P1.3 has not routed yet
+-- (creating a consumer unit writes its status history without an order
+-- and fails with 409 — proven by the P1-B total-CI round 3). So this
+-- migration enforces only the FK: a row that carries an order must
+-- reference a valid one; a row without an order is allowed until P1.3
+-- makes the column mandatory together with the routing. The V4_2 header
+-- comment anticipating the obligation in P1.31 is superseded by the
+-- plan's V3_6 reservation, not by this migration's preference.
 -- ========================================================================
 -- NOTE ON EXISTING ROWS: a tenant migrated out of order that already holds
--- history/enrollment rows without an order will fail here, loudly, instead
--- of silently keeping orphan history. That is the intended fail-closed
--- behavior: pre-production tenants are re-provisioned; production tenants
--- do not exist yet. The backfill of a real orphan row is a data migration
--- owned by the task that finds it, not an invented order id here.
+-- history/enrollment rows without an order keeps them: they are the
+-- direct writes P1.3 will route, not orphans to fail loudly here.
 
 -- LAYERING GUARD (integracao P1-B): esta migration vive no jar do core, mas
 -- estas duas tabelas pertencem a outros modulos (registry V3_1, billing V4_2).
@@ -531,14 +540,14 @@ CREATE INDEX idx_pet_order ON service_order_entry_permits(tenant_id, order_id);
 -- que derrubou a rodada 2 do CI total (TenantProvisioningServiceTest). Cada
 -- bloco so aplica se a tabela existir (to_regclass respeita o search_path do
 -- schema do tenant). Em producao a montagem e sempre completa, entao o
--- fail-closed do ADR-0039 item 6 vale integralmente onde importa; o
--- ServiceOrderEngineIT (modulo app) prova o caminho com FK aplicada.
+-- FK vale integralmente onde importa; a obrigatoriedade (NOT NULL) chega
+-- na P1.3/V3_6 com o roteamento. O ServiceOrderEngineIT (modulo app)
+-- prova o caminho com FK aplicada e NULL admitido ate a P1.3.
 DO $$
 BEGIN
     IF to_regclass('unit_status_history') IS NOT NULL THEN
         ALTER TABLE unit_status_history ADD CONSTRAINT fk_ush_service_order
             FOREIGN KEY (tenant_id, service_order_id) REFERENCES service_orders(tenant_id, id);
-        ALTER TABLE unit_status_history ALTER COLUMN service_order_id SET NOT NULL;
         CREATE INDEX idx_ush_service_order ON unit_status_history(tenant_id, service_order_id);
     END IF;
 END $$;
@@ -548,7 +557,6 @@ BEGIN
     IF to_regclass('social_tariff_enrollments') IS NOT NULL THEN
         ALTER TABLE social_tariff_enrollments ADD CONSTRAINT fk_social_enroll_order
             FOREIGN KEY (tenant_id, service_order_id) REFERENCES service_orders(tenant_id, id);
-        ALTER TABLE social_tariff_enrollments ALTER COLUMN service_order_id SET NOT NULL;
         CREATE INDEX idx_social_enroll_order ON social_tariff_enrollments(tenant_id, service_order_id);
     END IF;
 END $$;

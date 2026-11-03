@@ -130,13 +130,13 @@ class SocialMigrationConsistencyTest {
             SqlColumn col = columns.get(c.name());
             assertThat(col).as("%s.%s existe no SQL", table, c.name()).isNotNull();
             assertThat(typeMatches(f, c, col)).as("%s.%s: tipo Java %s x SQL %s", table, c.name(), f.getType().getSimpleName(), col).isTrue();
-            // P1.31: a V4_2 criou service_order_id sem NOT NULL e a V9_1 aperta
-            // depois (SET NOT NULL + FK). A nulabilidade efetiva e a da V9_1,
-            // nao a da V4_2, e e conferida pelo teste serviceOrderIdNotNullAndFkFromP131.
-            boolean v91NotNull = "social_tariff_enrollments".equals(table) && "service_order_id".equals(c.name())
-                    && v91.contains("ALTER TABLE social_tariff_enrollments ALTER COLUMN service_order_id SET NOT NULL");
+            // Integracao P1-B: a V4_2 criou service_order_id sem NOT NULL e a
+            // V9_1 acrescenta so o FK. O NOT NULL obrigatorio fica para a
+            // P1.3/V3_6 (reserva do plano, junto com o roteamento do registro
+            // direto por OS interna): ate la a coluna segue NULL e a
+            // entidade tambem. Conferido pelo teste serviceOrderIdFkFromP131.
             assertThat(!c.nullable()).as("%s.%s: nullable=false deve coincidir com NOT NULL", table, c.name())
-                    .isEqualTo(col.notNull() || v91NotNull);
+                    .isEqualTo(col.notNull());
         }
 
         Set<String> sqlOnly = new LinkedHashSet<>(columns.keySet());
@@ -237,7 +237,7 @@ class SocialMigrationConsistencyTest {
     }
 
     @Test
-    @DisplayName("service_order_id existe sem FK e sem NOT NULL na V4_2 (o aperto chega na P1.31)")
+    @DisplayName("service_order_id existe sem FK e sem NOT NULL na V4_2 (o FK chega na P1.31; o NOT NULL, na P1.3/V3_6)")
     void serviceOrderIdDeferredToP131() {
         assertThat(v42).contains("service_order_id UUID,");
         assertThat(v42).doesNotContain("REFERENCES service_orders");
@@ -245,11 +245,11 @@ class SocialMigrationConsistencyTest {
     }
 
     @Test
-    @DisplayName("P1.31 (V9_1): service_order_id da inscricao ganha FK e NOT NULL")
-    void serviceOrderIdNotNullAndFkFromP131() {
+    @DisplayName("P1.31 (V9_1): service_order_id da inscricao ganha FK (o NOT NULL so chega na P1.3/V3_6)")
+    void serviceOrderIdFkFromP131() {
         assertThat(v91).contains("ALTER TABLE social_tariff_enrollments ADD CONSTRAINT fk_social_enroll_order");
         assertThat(v91).contains("FOREIGN KEY (tenant_id, service_order_id) REFERENCES service_orders(tenant_id, id)");
-        assertThat(v91).contains("ALTER TABLE social_tariff_enrollments ALTER COLUMN service_order_id SET NOT NULL");
+        assertThat(v91).doesNotContain("ALTER TABLE social_tariff_enrollments ALTER COLUMN service_order_id SET NOT NULL");
         assertThat(v91).contains("ALTER TABLE service_orders ADD CONSTRAINT uq_service_orders_tenant_id UNIQUE (tenant_id, id)");
     }
 

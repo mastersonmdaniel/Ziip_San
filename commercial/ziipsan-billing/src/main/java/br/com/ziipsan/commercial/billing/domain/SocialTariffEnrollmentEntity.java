@@ -14,8 +14,11 @@ import lombok.Setter;
  * do codigo familiar, nunca o codigo em claro; nao ha coluna de CPF, NIS, renda nem de
  * adimplencia nesta entidade, por desenho (Lei 14.898/2024).
  *
- * <p>{@code serviceOrderId} tem FK para service_orders e e NOT NULL desde a P1.31
- * (V9_1, como o comentario da V4_2 antecipava). {@code status} guarda ACTIVE,
+ * <p>{@code serviceOrderId} tem FK para service_orders desde a P1.31 (V9_1)
+ * e segue NULL ate a P1.3: o plano reserva o service_order_id obrigatorio
+ * para a V3_6/P1.3, quando todo registro direto passa a rotear por OS
+ * interna (o comentario da V4_2 antecipava a obrigatoriedade na P1.31, mas
+ * a reserva do plano para a P1.3 prevalece). {@code status} guarda ACTIVE,
  * LOSS_NOTICE, GRACE ou ENDED.
  *
  * <p>Nao usar {@code @Builder}: o Lombok descarta os campos herdados de {@code BaseEntity}.
@@ -68,6 +71,6 @@ public class SocialTariffEnrollmentEntity extends TenantAwareEntity {
     @Column(name = "social_economies", nullable = false)
     private int socialEconomies;
 
-    @Column(name = "service_order_id", nullable = false)
+    @Column(name = "service_order_id")
     private UUID serviceOrderId;
 }
