@@ -66,5 +66,19 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <!-- P0.47: teste de fronteira (ArchUnit da P0.3) — o nucleo nao pode depender
+                 do pacote fiscal; escopo de teste, sem aresta de producao para o fiscal. -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-fiscal</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit-junit5</artifactId>
+            <version>1.5.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

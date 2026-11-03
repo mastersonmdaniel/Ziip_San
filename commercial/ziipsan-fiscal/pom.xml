@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>br.com.ziipsan</groupId>
+        <artifactId>ziipsan</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <artifactId>ziipsan-fiscal</artifactId>
+    <name>ZIIPSAN Fiscal - Motor tributario, DPS e emissao simulada</name>
+    <description>Esqueleto fiscal da P0.32 (FISCAL-PORTE-JAVA fase P0): motor tributario puro com os
+        vetores do motor C# do Ziip Cloud, Id da DPS, Id de evento, trava de producao e emissor
+        simulado. Sem emissao real, sem cofre de certificado (bloqueado ate o TenantKeyProvider
+        sobre o cofre local, P0.28), sem persistencia: as tabelas fiscais chegam na P1.8 (V4_5).</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

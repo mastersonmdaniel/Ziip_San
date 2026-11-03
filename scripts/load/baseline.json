@@ -1,0 +1,1 @@
+{"api_read_p95_ms":null,"keycloak_client_credentials_p95_ms":null,"keycloak_login_p95_ms":null,"keycloak_token_refresh_p95_ms":null,"note":"Baseline ainda nao estabelecida: nenhum p95 real foi medido nesta onda (ver scripts/load/README.md). Preencher somente com o p95 de uma execucao revisada, indicando escala, data e commit; nunca preencher a partir de estimativa."}

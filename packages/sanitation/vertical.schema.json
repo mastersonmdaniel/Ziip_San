@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ziipsan.local/schemas/vertical.schema.json",
+  "title": "Manifesto de pacote de vertical (P0.47)",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "minPlatformVersion",
+    "nameKey",
+    "descriptionKey",
+    "modules",
+    "gis"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "minPlatformVersion": {
+      "type": "string"
+    },
+    "nameKey": {
+      "type": "string"
+    },
+    "descriptionKey": {
+      "type": "string"
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "mavenModule",
+          "status",
+          "originTask",
+          "menu",
+          "apiRoutes",
+          "unitSheetTabs"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "mavenModule": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "declared",
+              "skeleton"
+            ]
+          },
+          "originTask": {
+            "type": "string"
+          },
+          "permission": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-z]+:[a-z-]+$"
+          },
+          "engine": {
+            "type": "string",
+            "enum": [
+              "core"
+            ]
+          },
+          "menu": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "label",
+                "route",
+                "icon"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "route": {
+                  "type": "string",
+                  "pattern": "^/"
+                },
+                "icon": {
+                  "type": "string"
+                },
+                "permission": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^[a-z]+:[a-z-]+$"
+                }
+              }
+            }
+          },
+          "apiRoutes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^/"
+            }
+          },
+          "unitSheetTabs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "gis": {
+      "type": "object",
+      "required": [
+        "domains"
+      ],
+      "properties": {
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "color",
+              "order"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[A-Z_]+$"
+              },
+              "label": {
+                "type": "string"
+              },
+              "color": {
+                "type": "string",
+                "pattern": "^map-[a-z]+$"
+              },
+              "order": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        },
+        "catalogNote": {
+          "type": "string"
+        }
+      }
+    },
+    "parameters": {
+      "type": "array"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z]+:[a-z-]+$"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "modules": {
+          "contains": {
+            "properties": {
+              "id": {
+                "const": "certification"
+              },
+              "engine": {
+                "const": "core"
+              }
+            },
+            "required": [
+              "id",
+              "engine"
+            ]
+          }
+        }
+      },
+      "required": [
+        "modules"
+      ]
+    }
+  ]
+}
