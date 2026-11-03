@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Controller, useFieldArray, type UseFormReturn } from 'react-hook-form'
-import { Plus, Trash2, X } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { AddressFields } from '@components/registry/AddressFields'
 import { CatalogSelect } from '@components/registry/CatalogSelect'
 import { LookupField, type LookupItem, type LookupValue } from '@components/registry/LookupField'
@@ -259,7 +259,7 @@ export function StepCustomers({ form }: StepProps) {
             </div>
             {rows.fields.length > 1 ? (
               <Button variant="outline" size="sm" onClick={() => rows.remove(index)}>
-                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                <Icon name="trash-2" className="h-4 w-4" />
                 Remover cliente {index + 1}
               </Button>
             ) : null}
@@ -268,7 +268,7 @@ export function StepCustomers({ form }: StepProps) {
       })}
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="outline" onClick={() => rows.append({ customerId: null, relation: 'OWNER', startDate: '', showOnBill: false })}>
-          <Plus className="h-4 w-4" aria-hidden="true" />
+          <Icon name="plus" className="h-4 w-4" />
           Adicionar cliente
         </Button>
         <a href="/cadastro/clientes/novo" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary underline underline-offset-4">
@@ -339,7 +339,7 @@ function MultiLookup({
                 aria-label={`Remover ${v.label}`}
                 className="rounded-full p-0.5 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <X className="h-3.5 w-3.5" aria-hidden="true" />
+                <Icon name="x" className="h-3.5 w-3.5" />
               </button>
             </li>
           ))}
@@ -396,7 +396,7 @@ export function StepCategories({ form }: StepProps) {
             />
             {rows.fields.length > 1 ? (
               <Button variant="outline" size="sm" onClick={() => rows.remove(index)}>
-                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                <Icon name="trash-2" className="h-4 w-4" />
                 Remover subcategoria {index + 1}
               </Button>
             ) : null}
@@ -404,7 +404,7 @@ export function StepCategories({ form }: StepProps) {
         )
       })}
       <Button variant="outline" onClick={() => rows.append({ subcategoryId: null, economies: '1', privateUnits: '', collectiveUnits: '', activityBranchIds: [] })}>
-        <Plus className="h-4 w-4" aria-hidden="true" />
+        <Icon name="plus" className="h-4 w-4" />
         Adicionar subcategoria
       </Button>
     </div>

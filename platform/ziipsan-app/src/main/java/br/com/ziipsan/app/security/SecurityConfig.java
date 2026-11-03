@@ -164,6 +164,7 @@ public class SecurityConfig {
                         .sessionFixation(fix -> fix.migrateSession()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/bff/login", "/oauth2/authorization/**", "/login/oauth2/code/**").permitAll()
+                        .requestMatchers("/api/v1/public/**").permitAll()
                         .requestMatchers("/bff/**", "/api/v1/**").authenticated()
                         .anyRequest().denyAll())
                 .oauth2Login(login -> login
@@ -202,6 +203,7 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
+                        .requestMatchers("/api/v1/public/**").permitAll()
                         .requestMatchers("/v3/api-docs", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().denyAll())

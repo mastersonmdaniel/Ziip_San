@@ -6,7 +6,9 @@ import { Toaster } from 'react-hot-toast'
 import { App } from './App'
 import { AuthProvider } from '@hooks/useAuth'
 import { ThemeProvider } from '@hooks/useTheme'
+import { BrandProvider } from './brand/BrandProvider'
 import { loadRuntimeConfig } from '@services/runtimeConfig'
+import '@theme/palettes.css'
 import './index.css'
 
 const queryClient = new QueryClient({
@@ -41,10 +43,12 @@ function render(): void {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ThemeProvider>
-          <AuthProvider>
-            <App />
-            <Toaster position="top-right" toastOptions={{ duration: 4000, style: { background: 'hsl(var(--card))', color: 'hsl(var(--card-foreground))', border: '1px solid hsl(var(--border))' } }} />
-          </AuthProvider>
+          <BrandProvider>
+            <AuthProvider>
+              <App />
+              <Toaster position="top-right" toastOptions={{ duration: 4000, style: { background: 'hsl(var(--card))', color: 'hsl(var(--card-foreground))', border: '1px solid hsl(var(--border))' } }} />
+            </AuthProvider>
+          </BrandProvider>
         </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>

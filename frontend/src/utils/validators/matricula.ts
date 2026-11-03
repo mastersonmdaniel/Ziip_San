@@ -3,7 +3,7 @@
  *
  * ATENÇÃO, A CONFIRMAR COM O BACKEND: o algoritmo abaixo vem do relatório 01 do levantamento
  * (comportamento do GSAN: módulo 11, pesos 2..9 da direita para a esquerda, repetindo; resto 0
- * ou 1 vira DV 0). O serviço `MatriculaDv` do ZIIPSAN é a autoridade. Por isso a interface NÃO
+ * ou 1 vira DV 0). O serviço `MatriculaDv` do sistema é a autoridade. Por isso a interface NÃO
  * bloqueia nem rejeita matrícula com base nesta função: ela existe para ser conferida contra o
  * serviço Java quando este existir.
  *

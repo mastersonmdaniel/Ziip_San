@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class',
+  // P0.36 (MARCA-E-TEMAS §4.3): o modo escuro segue data-mode no <html>,
+  // nao uma classe .dark — o script inline e o ThemeProvider gravam o atributo.
+  darkMode: ['selector', '[data-mode="dark"]'],
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -41,6 +43,33 @@ export default {
         warning: {
           DEFAULT: 'hsl(var(--warning))',
           foreground: 'hsl(var(--warning-foreground))',
+        },
+        success: {
+          DEFAULT: 'hsl(var(--success))',
+          foreground: 'hsl(var(--success-foreground))',
+        },
+        info: {
+          DEFAULT: 'hsl(var(--info))',
+          foreground: 'hsl(var(--info-foreground))',
+        },
+        danger: {
+          DEFAULT: 'hsl(var(--danger))',
+          foreground: 'hsl(var(--danger-foreground))',
+        },
+        chart: {
+          1: 'hsl(var(--chart-1))',
+          2: 'hsl(var(--chart-2))',
+          3: 'hsl(var(--chart-3))',
+          4: 'hsl(var(--chart-4))',
+          5: 'hsl(var(--chart-5))',
+          6: 'hsl(var(--chart-6))',
+        },
+        map: {
+          water: 'hsl(var(--map-water))',
+          sewer: 'hsl(var(--map-sewer))',
+          boundary: 'hsl(var(--map-boundary))',
+          selection: 'hsl(var(--map-selection))',
+          alert: 'hsl(var(--map-alert))',
         },
       },
       borderRadius: {

@@ -30,4 +30,11 @@ powershell.exe -NoProfile -Command "robocopy '$(cygpath -w "$SRC/frontend")' '$(
   # Relatado, nao bloqueante: as correcoes atuais exigem versao principal nova (ver diario).
   npm audit --omit=dev --audit-level=high || echo "AVISO: npm audit encontrou vulnerabilidades (ver acima)"
 )
+echo "== marca, temas e icones (P0.34/P0.35/P0.36/P0.46)"
+node "$SRC/scripts/brand/check-brand.mjs"
+bash "$SRC/scripts/brand/sync-brand-resources.sh" --check
+bash "$SRC/scripts/brand/check-brand-literals.sh" "$FE"
+bash "$SRC/scripts/icons/check-svg.sh" "$FE"
+node "$SRC/scripts/theme/check-theme-script-hash.mjs"
+node "$SRC/scripts/brand/test-brand-swap.mjs"
 echo "== OK"

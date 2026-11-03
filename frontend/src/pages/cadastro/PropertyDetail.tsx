@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { MapPin, Pencil, Trash2 } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { DeleteReasonDialog } from '@components/registry/DeleteReasonDialog'
 import { Timeline, type TimelineEntry } from '@components/registry/Timeline'
 import { Alert, Spinner } from '@components/ui/Alert'
@@ -305,11 +305,11 @@ export function PropertyDetail() {
                 to={`/cadastro/imoveis/${unit.id}/editar`}
                 className="inline-flex h-10 items-center gap-2 rounded-lg border bg-background px-4 text-sm font-medium hover:bg-accent"
               >
-                <Pencil className="h-4 w-4" aria-hidden="true" />
+                <Icon name="pencil" className="h-4 w-4" />
                 Editar
               </Link>
               <Button variant="outline" onClick={() => setDeleting(true)}>
-                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                <Icon name="trash-2" className="h-4 w-4" />
                 Excluir
               </Button>
             </>
@@ -335,7 +335,7 @@ export function PropertyDetail() {
           {deleted ? <Badge variant="destructive">Excluído</Badge> : null}
         </div>
         <p className="mt-2 flex items-start gap-1.5 text-sm text-muted-foreground">
-          <MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+          <Icon name="map-pin" className="mt-0.5 h-4 w-4 shrink-0" />
           {unit.addressText}
         </p>
       </section>

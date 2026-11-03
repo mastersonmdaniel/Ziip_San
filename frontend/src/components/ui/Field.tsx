@@ -1,5 +1,5 @@
 import { forwardRef, useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
-import { AlertCircle } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { cn } from '@utils/cn'
 
 /** Atributos de acessibilidade que o controle deve receber do Field. */
@@ -54,7 +54,7 @@ export function Field({ label, hint, error, required, id, className, children }:
       ) : null}
       {error ? (
         <p id={errorId} className="flex items-start gap-1.5 text-sm text-destructive">
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+          <Icon name="alert-circle" className="mt-0.5 h-4 w-4 shrink-0" />
           <span>{error}</span>
         </p>
       ) : null}

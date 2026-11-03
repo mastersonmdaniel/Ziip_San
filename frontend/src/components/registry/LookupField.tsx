@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { X } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { Field, Input } from '@components/ui/Field'
 import { useDebounced } from '@hooks/useDebounced'
 import { toApiError } from '@services/registry/errors'
@@ -214,7 +214,7 @@ export function LookupField<T extends LookupItem>({
                 aria-label="Limpar seleção"
                 className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <X className="h-4 w-4" aria-hidden="true" />
+                <Icon name="x" className="h-4 w-4" />
               </button>
             ) : null}
           </div>

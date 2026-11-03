@@ -1,0 +1,6 @@
+/* GERADO do pacote de marca: nao edite a mao. */
+:root { --brand-primary: #0369a0; }
+body { background-color: #f1f5f9; }
+a { color: var(--brand-primary); }
+button[type="submit"], input[type="submit"] { background-color: var(--brand-primary); border-color: var(--brand-primary); }
+#kc-header-wrapper { color: var(--brand-primary); }

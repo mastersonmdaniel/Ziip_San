@@ -24,6 +24,7 @@
       "@pages/*": ["src/pages/*"],
       "@hooks/*": ["src/hooks/*"],
       "@services/*": ["src/services/*"],
+      "@theme/*": ["src/theme/*"],
       "@utils/*": ["src/utils/*"],
       "@assets/*": ["src/assets/*"]
     }

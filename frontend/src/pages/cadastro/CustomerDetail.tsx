@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Eye, EyeOff, Pencil, Trash2 } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { DeleteReasonDialog } from '@components/registry/DeleteReasonDialog'
 import { Alert, Spinner } from '@components/ui/Alert'
 import { Badge } from '@components/ui/Badge'
@@ -94,7 +94,7 @@ export function RevealDocument({ customerId, masked }: { customerId: string; mas
         state.status === 'shown' ? (
           <div className="flex flex-wrap items-center gap-3">
             <Button size="sm" variant="outline" onClick={hide}>
-              <EyeOff className="h-4 w-4" aria-hidden="true" />
+              <Icon name="eye-off" className="h-4 w-4" />
               Ocultar agora
             </Button>
             <span className="text-xs text-muted-foreground" role="status">
@@ -125,7 +125,7 @@ export function RevealDocument({ customerId, masked }: { customerId: string; mas
               loading={state.status === 'loading'}
               disabled={purpose === ''}
             >
-              <Eye className="h-4 w-4" aria-hidden="true" />
+              <Icon name="eye" className="h-4 w-4" />
               Revelar documento
             </Button>
           </div>
@@ -187,11 +187,11 @@ export function CustomerDetail() {
           !deleted ? (
             <>
               <Link to={`/cadastro/clientes/${c.id}/editar`} className="inline-flex h-10 items-center gap-2 rounded-lg border bg-background px-4 text-sm font-medium hover:bg-accent">
-                <Pencil className="h-4 w-4" aria-hidden="true" />
+                <Icon name="pencil" className="h-4 w-4" />
                 Editar
               </Link>
               <Button variant="outline" onClick={() => setDeleting(true)}>
-                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                <Icon name="trash-2" className="h-4 w-4" />
                 Excluir
               </Button>
             </>

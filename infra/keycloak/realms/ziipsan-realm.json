@@ -1,6 +1,8 @@
 {
   "realm": "ziipsan",
   "displayName": "ZIIPSAN",
+  "loginTheme": "ziipsan",
+  "emailTheme": "ziipsan",
   "enabled": true,
   "sslRequired": "all",
   "registrationAllowed": false,

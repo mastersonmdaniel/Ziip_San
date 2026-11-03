@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react'
-import { Check } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
 import { cn } from '@utils/cn'
 
@@ -92,7 +92,7 @@ export function Wizard({
                     )}
                     aria-hidden="true"
                   >
-                    {done && index !== current ? <Check className="h-3.5 w-3.5" /> : index + 1}
+                    {done && index !== current ? <Icon name="check" className="h-3.5 w-3.5" /> : index + 1}
                   </span>
                   <span>
                     <span className="sr-only">Etapa {index + 1} de {steps.length}: </span>

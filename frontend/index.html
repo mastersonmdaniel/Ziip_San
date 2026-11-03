@@ -3,9 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ZIIPSAN - Sistema Integrado de Gestão de Saneamento" />
-    <meta name="theme-color" content="#0361a0" />
-    <title>ZIIPSAN - Sistema Integrado de Gestão de Saneamento</title>
+    <meta name="description" content="%BRAND_DESCRIPTION%" />
+    <meta name="theme-color" content="%BRAND_THEME_COLOR_LIGHT%" />
+    <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
+    <link rel="apple-touch-icon" href="/brand/icon-192.png" />
+    <title>%BRAND_TITLE%</title>
+    <script id="theme-init">
+      // P0.36 (MARCA-E-TEMAS §4.5): aplica o tema ANTES da primeira pintura, para
+      // nao piscar. Le o cache (chaves novas, com fallback para a chave legada
+      // 'theme'), resolve 'system' por matchMedia e grava data-mode, data-palette,
+      // color-scheme e theme-color. O hash SHA-256 deste script exato e conferido
+      // no CI (scripts/theme/check-theme-script-hash.mjs) para a CSP.
+      (function () {
+        try {
+          var mode = localStorage.getItem('theme-mode') || localStorage.getItem('theme') || 'system'
+          var palette = localStorage.getItem('theme-palette') || 'aqua-blue'
+          var resolved = mode
+          if (mode === 'system') {
+            resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+          }
+          var root = document.documentElement
+          root.setAttribute('data-mode', resolved)
+          root.setAttribute('data-palette', palette)
+          root.style.colorScheme = resolved
+          var themeColors = {
+            'aqua-blue': { light: '#0369a0', dark: '#0b111e' },
+            'aqua-green': { light: '#0a716a', dark: '#0b111e' },
+          }
+          var meta = document.querySelector('meta[name="theme-color"]')
+          if (meta && themeColors[palette]) meta.setAttribute('content', themeColors[palette][resolved])
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

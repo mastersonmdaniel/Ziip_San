@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import { LogIn } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { Alert } from '@components/ui/Alert'
 import { Button } from '@components/ui/Button'
 import { useAuth } from '@hooks/useAuth'
+import { useBrand } from '../brand/BrandProvider'
 
 /**
  * Entrada no sistema. Não há formulário aqui: o botão leva ao login do backend (BFF, P0.14),
@@ -13,6 +14,7 @@ import { useAuth } from '@hooks/useAuth'
  */
 export function Login() {
   const { login, isAuthenticated, error } = useAuth()
+  const brand = useBrand()
   const location = useLocation()
   const [busy, setBusy] = useState(false)
   const [startError, setStartError] = useState<string | null>(null)
@@ -38,7 +40,7 @@ export function Login() {
     <main className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
       <section className="w-full max-w-sm space-y-4 rounded-xl border bg-card p-6 shadow-sm" aria-labelledby="login-title">
         <h1 id="login-title" className="text-2xl font-bold text-primary">
-          ZIIPSAN
+          {brand.productName}
         </h1>
         <p className="text-sm text-muted-foreground">Entre com a sua conta da empresa para continuar.</p>
         {startError ? <Alert tone="error">{startError}</Alert> : null}
@@ -48,7 +50,7 @@ export function Login() {
           </Alert>
         ) : null}
         <Button type="button" className="w-full" loading={busy} onClick={() => void onLogin()}>
-          {busy ? null : <LogIn className="h-4 w-4" aria-hidden="true" />}
+          {busy ? null : <Icon name="log-in" className="h-4 w-4" />}
           Entrar
         </Button>
       </section>

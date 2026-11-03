@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { AlertTriangle } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
 import { ApiError, toApiError, type ConfirmableWarning } from '@services/registry/errors'
 
@@ -39,7 +39,7 @@ export function ConfirmWarning({
       className="space-y-3 rounded-lg border-l-4 border-warning bg-warning/10 p-4 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <p id="confirm-warning-title" className="flex items-center gap-2 font-semibold text-warning">
-        <AlertTriangle className="h-5 w-5" aria-hidden="true" />
+        <Icon name="alert-triangle" className="h-5 w-5" />
         {warnings.length === 1 ? 'Aviso: confirme para continuar' : 'Avisos: confirme para continuar'}
       </p>
       <ul id="confirm-warning-list" className="list-disc space-y-1 pl-5">

@@ -1,22 +1,28 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { Building2, ListChecks, LogOut, Map, Menu, Moon, Sun, User, Users, X } from 'lucide-react'
 import { Button } from '@components/ui/Button'
+import { Icon, type IconName } from '@components/ui/Icon'
 import { useAuth } from '@hooks/useAuth'
 import { useTheme } from '@hooks/useTheme'
+import { useBrand } from '../brand/BrandProvider'
+import { PALETTES, type PaletteId } from '@theme/palettes.generated'
 import { cn } from '@utils/cn'
 
-/** O menu só tem o que existe. Novas telas entram aqui quando forem implementadas. */
-const navigation = [
-  { name: 'Imóveis', href: '/cadastro/imoveis', icon: Building2 },
-  { name: 'Clientes', href: '/cadastro/clientes', icon: Users },
-  { name: 'Hierarquia territorial', href: '/cadastro/territorio', icon: Map },
-  { name: 'Catálogos', href: '/cadastro/catalogos', icon: ListChecks },
+/**
+ * O menu só tem o que existe. Novas telas entram aqui quando forem implementadas.
+ * Exportado para o teste de cobertura de icones (P0.46): todo item de menu tem icone.
+ */
+export const navigation: Array<{ name: string; href: string; icon: IconName }> = [
+  { name: 'Imóveis', href: '/cadastro/imoveis', icon: 'building-2' },
+  { name: 'Clientes', href: '/cadastro/clientes', icon: 'users' },
+  { name: 'Hierarquia territorial', href: '/cadastro/territorio', icon: 'map' },
+  { name: 'Catálogos', href: '/cadastro/catalogos', icon: 'list-checks' },
 ]
 
 export function Layout() {
   const { user, logout } = useAuth()
-  const { theme, toggleTheme } = useTheme()
+  const { theme, toggleTheme, palette, setPalette } = useTheme()
+  const brand = useBrand()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const mainRef = useRef<HTMLElement>(null)
@@ -58,9 +64,9 @@ export function Layout() {
         )}
       >
         <div className="flex h-16 items-center justify-between border-b px-4">
-          <span className="text-xl font-bold text-primary">ZIIPSAN</span>
+          <span className="text-xl font-bold text-primary">{brand.productName}</span>
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMenuOpen(false)} aria-label="Fechar menu">
-            <X className="h-5 w-5" aria-hidden="true" />
+            <Icon name="x" className="h-5 w-5" />
           </Button>
         </div>
 
@@ -78,7 +84,7 @@ export function Layout() {
                     )
                   }
                 >
-                  <item.icon className="mr-3 h-5 w-5" aria-hidden="true" />
+                  <Icon name={item.icon} className="mr-3 h-5 w-5" />
                   {item.name}
                 </NavLink>
               </li>
@@ -89,7 +95,7 @@ export function Layout() {
         <div className="border-t p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10" aria-hidden="true">
-              <User className="h-5 w-5 text-primary" />
+              <Icon name="user" className="h-5 w-5 text-primary" />
             </div>
             <div className="min-w-0">
               <p className="truncate text-sm font-medium">{user?.fullName || user?.username}</p>
@@ -97,7 +103,7 @@ export function Layout() {
             </div>
           </div>
           <Button variant="outline" size="sm" className="mt-3 w-full" onClick={() => void logout()}>
-            <LogOut className="h-4 w-4" aria-hidden="true" />
+            <Icon name="log-out" className="h-4 w-4" />
             Sair
           </Button>
         </div>
@@ -116,12 +122,29 @@ export function Layout() {
             aria-controls="menu-principal"
             aria-label="Abrir menu"
           >
-            <Menu className="h-6 w-6" aria-hidden="true" />
+            <Icon name="menu" className="h-6 w-6" />
           </Button>
-          <span className="hidden text-sm text-muted-foreground lg:inline">Sistema Integrado de Gestão de Saneamento</span>
-          <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Usar tema claro' : 'Usar tema escuro'}>
-            {theme === 'dark' ? <Sun className="h-5 w-5" aria-hidden="true" /> : <Moon className="h-5 w-5" aria-hidden="true" />}
-          </Button>
+          <span className="hidden text-sm text-muted-foreground lg:inline">{brand.description}</span>
+          <div className="flex items-center gap-2">
+            <label className="sr-only" htmlFor="palette-select">
+              Padrão de cores
+            </label>
+            <select
+              id="palette-select"
+              className="rounded-md border border-input bg-card px-2 py-1.5 text-sm"
+              value={palette}
+              onChange={(event) => setPalette(event.target.value as PaletteId)}
+            >
+              {Object.values(PALETTES).map((entry) => (
+                <option key={entry.id} value={entry.id}>
+                  {entry.label}
+                </option>
+              ))}
+            </select>
+            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Usar tema claro' : 'Usar tema escuro'}>
+              <Icon name={theme === 'dark' ? 'sun' : 'moon'} className="h-5 w-5" />
+            </Button>
+          </div>
         </header>
 
         <main id="conteudo" ref={mainRef} tabIndex={-1} className="p-4 focus:outline-none sm:p-6">

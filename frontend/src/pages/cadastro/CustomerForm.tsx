@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
 import { Controller, useFieldArray, useForm, type FieldPath } from 'react-hook-form'
-import { Plus, Trash2 } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { AddressFields } from '@components/registry/AddressFields'
 import { CatalogSelect } from '@components/registry/CatalogSelect'
 import { ConfirmWarning, useConfirmable } from '@components/registry/ConfirmWarning'
@@ -294,7 +294,7 @@ function CustomerFormInner({ customerId, initial, initialVersion, currentDocumen
                           if (wasCorrespondence) setTimeout(() => setValue('addresses.0.correspondence', true), 0)
                         }}
                       >
-                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        <Icon name="trash-2" className="h-4 w-4" />
                         Remover endereço {index + 1}
                       </Button>
                     ) : null}
@@ -303,7 +303,7 @@ function CustomerFormInner({ customerId, initial, initialVersion, currentDocumen
               )
             })}
             <Button variant="outline" onClick={() => addresses.append({ address: EMPTY_ADDRESS, correspondence: false })}>
-              <Plus className="h-4 w-4" aria-hidden="true" />
+              <Icon name="plus" className="h-4 w-4" />
               Adicionar outro endereço
             </Button>
           </CardContent>
@@ -327,13 +327,13 @@ function CustomerFormInner({ customerId, initial, initialVersion, currentDocumen
                     </Field>
                   </div>
                   <Button variant="outline" size="sm" onClick={() => emails.remove(index)}>
-                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                    <Icon name="trash-2" className="h-4 w-4" />
                     Remover e-mail {index + 1}
                   </Button>
                 </div>
               ))}
               <Button variant="outline" size="sm" onClick={() => emails.append({ address: '', consentId: null })}>
-                <Plus className="h-4 w-4" aria-hidden="true" />
+                <Icon name="plus" className="h-4 w-4" />
                 Adicionar e-mail
               </Button>
               <p className="text-xs text-muted-foreground">
@@ -388,7 +388,7 @@ function CustomerFormInner({ customerId, initial, initialVersion, currentDocumen
                         {e?.primary?.message ? <p className="mt-1 text-sm text-destructive">{e.primary.message}</p> : null}
                       </div>
                       <Button variant="outline" size="sm" onClick={() => phones.remove(index)}>
-                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        <Icon name="trash-2" className="h-4 w-4" />
                         Remover telefone {index + 1}
                       </Button>
                     </div>
@@ -396,7 +396,7 @@ function CustomerFormInner({ customerId, initial, initialVersion, currentDocumen
                 )
               })}
               <Button variant="outline" size="sm" onClick={() => phones.append({ ...EMPTY_PHONE, primary: phones.fields.length === 0 })}>
-                <Plus className="h-4 w-4" aria-hidden="true" />
+                <Icon name="plus" className="h-4 w-4" />
                 Adicionar telefone
               </Button>
             </section>

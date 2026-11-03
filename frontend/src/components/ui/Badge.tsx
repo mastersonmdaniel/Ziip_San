@@ -8,9 +8,9 @@ const variants: Record<BadgeVariant, string> = {
   secondary: 'border-transparent bg-secondary text-secondary-foreground',
   destructive: 'border-transparent bg-destructive text-destructive-foreground',
   outline: 'text-foreground',
-  success: 'border-transparent bg-green-100 text-green-900 dark:bg-green-900 dark:text-green-100',
-  warning: 'border-transparent bg-amber-100 text-amber-900 dark:bg-amber-900 dark:text-amber-100',
-  info: 'border-transparent bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100',
+  success: 'border-transparent bg-success text-success-foreground',
+  warning: 'border-transparent bg-warning text-warning-foreground',
+  info: 'border-transparent bg-info text-info-foreground',
 }
 
 /** O significado deve estar no TEXTO do selo, nunca só na cor. */

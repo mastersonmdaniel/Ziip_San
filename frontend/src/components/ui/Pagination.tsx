@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { Button } from './Button'
 
 interface PaginationProps {
@@ -20,12 +20,12 @@ export function Pagination({ page, totalPages, totalElements, onPageChange }: Pa
       </p>
       <div className="flex gap-2">
         <Button variant="outline" size="sm" disabled={page <= 0} onClick={() => onPageChange(page - 1)}>
-          <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          <Icon name="chevron-left" className="h-4 w-4" />
           Anterior
         </Button>
         <Button variant="outline" size="sm" disabled={page >= last} onClick={() => onPageChange(page + 1)}>
           Próxima
-          <ChevronRight className="h-4 w-4" aria-hidden="true" />
+          <Icon name="chevron-right" className="h-4 w-4" />
         </Button>
       </div>
     </nav>

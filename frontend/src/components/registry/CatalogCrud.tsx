@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { Alert, Spinner } from '@components/ui/Alert'
 import { Badge } from '@components/ui/Badge'
 import { Button } from '@components/ui/Button'
@@ -331,7 +331,7 @@ export function CatalogCrud({ meta }: { meta: CrudMeta }) {
           <Field label={`Buscar em ${meta.title.toLowerCase()}`}>
             {(aria) => (
               <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                <Icon name="search" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   {...aria}
                   type="search"
@@ -348,7 +348,7 @@ export function CatalogCrud({ meta }: { meta: CrudMeta }) {
           </Field>
         </div>
         <Button onClick={() => setEditing('new')}>
-          <Plus className="h-4 w-4" aria-hidden="true" />
+          <Icon name="plus" className="h-4 w-4" />
           Adicionar {meta.singular}
         </Button>
       </div>
@@ -396,11 +396,11 @@ export function CatalogCrud({ meta }: { meta: CrudMeta }) {
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
                           <Button size="sm" variant="ghost" onClick={() => setEditing(item)} aria-label={`Editar ${itemTitle(item)}`}>
-                            <Pencil className="h-4 w-4" aria-hidden="true" />
+                            <Icon name="pencil" className="h-4 w-4" />
                             <span className="hidden sm:inline">Editar</span>
                           </Button>
                           <Button size="sm" variant="ghost" onClick={() => setDeleting(item)} aria-label={`Excluir ${itemTitle(item)}`}>
-                            <Trash2 className="h-4 w-4" aria-hidden="true" />
+                            <Icon name="trash-2" className="h-4 w-4" />
                             <span className="hidden sm:inline">Excluir</span>
                           </Button>
                         </div>

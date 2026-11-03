@@ -1,5 +1,5 @@
 import { forwardRef, type ButtonHTMLAttributes } from 'react'
-import { Loader2 } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { cn } from '@utils/cn'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive'
@@ -47,7 +47,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       )}
       {...props}
     >
-      {loading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
+      {loading ? <Icon name="loader-2" className="h-4 w-4 animate-spin" /> : null}
       {children}
     </button>
   )

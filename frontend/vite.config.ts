@@ -3,6 +3,7 @@ import { loadEnv } from 'vite'
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { brandPlugin } from './vite-plugins/brand'
 
 export default defineConfig(({ mode }) => {
   // ZIIPSAN_API_URL vem do ambiente ou de .env.local, sem prefixo VITE_: só o servidor de dev a lê,
@@ -11,7 +12,7 @@ export default defineConfig(({ mode }) => {
   const apiTarget = env.ZIIPSAN_API_URL || 'http://localhost:8090'
 
   return {
-    plugins: [react()],
+    plugins: [react(), brandPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
@@ -19,6 +20,7 @@ export default defineConfig(({ mode }) => {
         '@pages': path.resolve(__dirname, './src/pages'),
         '@hooks': path.resolve(__dirname, './src/hooks'),
         '@services': path.resolve(__dirname, './src/services'),
+        '@theme': path.resolve(__dirname, './src/theme'),
         '@utils': path.resolve(__dirname, './src/utils'),
         '@assets': path.resolve(__dirname, './src/assets'),
       },

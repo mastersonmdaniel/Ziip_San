@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Plus, Search } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { CatalogSelect } from '@components/registry/CatalogSelect'
 import type { LookupValue } from '@components/registry/LookupField'
 import { Alert, Spinner } from '@components/ui/Alert'
@@ -63,7 +63,7 @@ export function CustomerList() {
         description="Pessoas físicas e jurídicas. CPF e CNPJ aparecem mascarados nas listas."
         actions={
           <Link to="/cadastro/clientes/novo" className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-            <Plus className="h-4 w-4" aria-hidden="true" />
+            <Icon name="plus" className="h-4 w-4" />
             Cadastrar cliente
           </Link>
         }
@@ -98,7 +98,7 @@ export function CustomerList() {
         </div>
         <div className="flex flex-wrap gap-2">
           <Button type="submit">
-            <Search className="h-4 w-4" aria-hidden="true" />
+            <Icon name="search" className="h-4 w-4" />
             Pesquisar
           </Button>
           <Button

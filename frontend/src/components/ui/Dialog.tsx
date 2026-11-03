@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { X } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { Button } from './Button'
 
 const FOCUSABLE =
@@ -79,7 +79,7 @@ export function Dialog({ open, onClose, title, description, children, footer }: 
             {title}
           </h2>
           <Button variant="ghost" size="icon" onClick={onClose} aria-label="Fechar">
-            <X className="h-5 w-5" aria-hidden="true" />
+            <Icon name="x" className="h-5 w-5" />
           </Button>
         </div>
         {description ? (

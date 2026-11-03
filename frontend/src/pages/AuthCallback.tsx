@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Alert, Spinner } from '@components/ui/Alert'
 import { useAuth } from '@hooks/useAuth'
+import { useBrand } from '../brand/BrandProvider'
 
 /**
  * Rota legada /auth/callback (fluxo antigo com oidc-client-ts). No fluxo BFF (P0.14)
@@ -11,6 +12,7 @@ import { useAuth } from '@hooks/useAuth'
  */
 export function AuthCallback() {
   const { completeLogin } = useAuth()
+  const brand = useBrand()
   const navigate = useNavigate()
   const location = useLocation()
   const [error, setError] = useState<string | null>(null)
@@ -43,7 +45,7 @@ export function AuthCallback() {
     <main className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
       <section className="w-full max-w-sm space-y-4 rounded-xl border bg-card p-6 shadow-sm" aria-labelledby="callback-title">
         <h1 id="callback-title" className="text-2xl font-bold text-primary">
-          ZIIPSAN
+          {brand.productName}
         </h1>
         <Alert tone="error" title="Não foi possível entrar">
           {error}

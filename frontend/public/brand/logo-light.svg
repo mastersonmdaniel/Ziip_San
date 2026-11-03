@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="64" viewBox="0 0 240 64" role="img" aria-label="ZIIPSAN">
+  <rect width="64" height="64" rx="14" fill="#0369a0"/>
+  <path d="M16 20 H48 L22 44 H48" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="76" y="42" font-family="sans-serif" font-size="28" font-weight="700" fill="#0f172a">ZIIPSAN</text>
+</svg>

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Eye, Pencil, Plus, Search } from 'lucide-react'
+import { Icon } from '@components/ui/Icon'
 import { CatalogSelect } from '@components/registry/CatalogSelect'
 import { CepInput } from '@components/registry/CepInput'
 import { InscriptionInput } from '@components/registry/InscriptionInput'
@@ -135,7 +135,7 @@ export function PropertySearch() {
             to="/cadastro/imoveis/novo"
             className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
-            <Plus className="h-4 w-4" aria-hidden="true" />
+            <Icon name="plus" className="h-4 w-4" />
             Cadastrar imóvel
           </Link>
         }
@@ -218,7 +218,7 @@ export function PropertySearch() {
 
         <div className="flex flex-wrap gap-2">
           <Button type="submit">
-            <Search className="h-4 w-4" aria-hidden="true" />
+            <Icon name="search" className="h-4 w-4" />
             Pesquisar
           </Button>
           <Button variant="outline" onClick={onClear}>
@@ -296,7 +296,7 @@ export function PropertySearch() {
                               aria-label={`Abrir ficha do imóvel ${matricula}`}
                               className="inline-flex h-9 items-center gap-1 rounded-md px-3 text-sm font-medium hover:bg-accent"
                             >
-                              <Eye className="h-4 w-4" aria-hidden="true" />
+                              <Icon name="eye" className="h-4 w-4" />
                               <span className="hidden xl:inline">Ficha</span>
                             </Link>
                             {!u.deleted ? (
@@ -305,7 +305,7 @@ export function PropertySearch() {
                                 aria-label={`Editar imóvel ${matricula}`}
                                 className="inline-flex h-9 items-center gap-1 rounded-md px-3 text-sm font-medium hover:bg-accent"
                               >
-                                <Pencil className="h-4 w-4" aria-hidden="true" />
+                                <Icon name="pencil" className="h-4 w-4" />
                                 <span className="hidden xl:inline">Editar</span>
                               </Link>
                             ) : null}

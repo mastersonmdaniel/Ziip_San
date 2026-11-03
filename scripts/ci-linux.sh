@@ -136,6 +136,22 @@ rm -rf "$FE/node_modules" "$FE/dist" "$FE/coverage"
   npm run -s build
   npm audit --omit=dev --audit-level=high || echo "AVISO: npm audit encontrou vulnerabilidades (ver acima)"
 )
+echo "== (c2) marca, temas e icones (P0.34/P0.35/P0.36/P0.46)"
+node "$SRC/scripts/brand/check-brand.mjs"
+bash "$SRC/scripts/brand/sync-brand-resources.sh" --check
+bash "$SRC/scripts/brand/check-brand-literals.sh" "$FE"
+bash "$SRC/scripts/icons/check-svg.sh" "$FE"
+node "$SRC/scripts/theme/check-theme-script-hash.mjs"
+node "$SRC/scripts/brand/test-brand-swap.mjs"
+# Arquivos gerados (palettes, marca do frontend) devem estar atualizados no commit.
+node "$SRC/scripts/theme/generate-palettes.mjs"
+node "$SRC/scripts/brand/generate-frontend-brand.mjs"
+if git -C "$SRC" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  if [ -n "$(git -C "$SRC" status --porcelain -- frontend/src/theme/palettes.css frontend/src/theme/palettes.generated.ts frontend/src/theme/palette-ids.json frontend/src/brand/brand.generated.ts frontend/brand.json frontend/public/brand)" ]; then
+    git -C "$SRC" status --porcelain -- frontend/src/theme frontend/src/brand frontend/brand.json frontend/public/brand >&2
+    die "arquivos gerados de marca/temas desatualizados: regenere e commite (scripts/theme/generate-palettes.mjs, scripts/brand/generate-frontend-brand.mjs)"
+  fi
+fi
 rm -rf "$FE"
 
 echo "== (d) portas publicadas do docker-compose.yml (todas devem ser 127.0.0.1)"
