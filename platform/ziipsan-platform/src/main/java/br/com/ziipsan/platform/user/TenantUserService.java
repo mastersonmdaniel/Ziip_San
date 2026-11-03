@@ -61,6 +61,13 @@ public class TenantUserService {
         return toView(require(id), tenantId());
     }
 
+    /** Versão otimista atual do usuário, para o ETag do GET e o {@code If-Match} do PUT (P1.11). */
+    @Transactional(readOnly = true)
+    public long versionOf(UUID id) {
+        Long version = require(id).getVersion();
+        return version == null ? 0L : version;
+    }
+
     public UserView create(CreateRequest req) {
         UUID tenantId = tenantId();
         List<String> granted = validatedProfiles(req.profiles());

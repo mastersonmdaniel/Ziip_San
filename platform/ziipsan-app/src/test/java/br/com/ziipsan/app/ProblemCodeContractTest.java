@@ -45,7 +45,9 @@ class ProblemCodeContractTest {
             "too-many-requests", "content-too-large",
             "validation", "confirmation-required", "internal-error",
             // P0.43: token com tenant_id em rota de plataforma (CENTRAL-ZIIP §2).
-            "tenant-not-allowed");
+            "tenant-not-allowed",
+            // P1.11: escrita condicional (428 sem If-Match, 412 com versão desatualizada).
+            "precondition-required", "precondition-failed");
 
     /** Códigos antigos da tabela (português) — nenhum pode restar no código. */
     private static final List<String> OLD_CODES = List.of(

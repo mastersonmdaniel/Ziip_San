@@ -134,7 +134,12 @@ class UserApiTest extends AppIntegrationTestBase {
                 .andReturn();
         String id = JsonPath.read(created.getResponse().getContentAsString(), "$.id");
 
+        // P1.11: PUT exige If-Match com o ETag do GET.
+        String etag = mvc.perform(get("/api/v1/users/" + id).header("Authorization", ADMIN_A))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getHeader("ETag");
         mvc.perform(put("/api/v1/users/" + id).header("Authorization", ADMIN_A)
+                        .header("If-Match", etag)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"displayName\":\"Beto Suspenso\",\"status\":\"SUSPENDED\",\"profiles\":[\"VIEWER\"]}"))
                 .andExpect(status().isOk())
@@ -143,7 +148,9 @@ class UserApiTest extends AppIntegrationTestBase {
 
         mvc.perform(get("/api/v1/users/" + id).header("Authorization", ADMIN_B))
                 .andExpect(status().isNotFound());
+        // P1.11: com If-Match: * a pré-condição passa e o 404 de outro tenant se mantém.
         mvc.perform(put("/api/v1/users/" + id).header("Authorization", ADMIN_B)
+                        .header("If-Match", "*")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"displayName\":\"X\",\"status\":\"ACTIVE\",\"profiles\":[]}"))
                 .andExpect(status().isNotFound());

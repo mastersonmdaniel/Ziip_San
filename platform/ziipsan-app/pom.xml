@@ -75,7 +75,9 @@
         </dependency>
         <!-- P1.8 (frente fiscal): a V4_5 e o servico fiscal precisam estar no classpath da
              app para o provisionamento aplicar a migration e o IT prova-la. Sem esta
-             dependencia a migration existiria no modulo e nunca rodaria num tenant. -->
+             dependencia a migration existiria no modulo e nunca rodaria num tenant.
+             Serve tambem a suite de fronteira da P1.13 (ModuleBoundaryTest importa as
+             classes do fiscal): a entrada test-only da plat-web e redundante com esta. -->
         <dependency>
             <groupId>br.com.ziipsan</groupId>
             <artifactId>ziipsan-fiscal</artifactId>

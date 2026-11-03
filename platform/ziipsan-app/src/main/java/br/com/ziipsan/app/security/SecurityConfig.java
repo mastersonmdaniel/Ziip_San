@@ -350,7 +350,11 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(properties.cors().allowedOrigins());
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Request-ID"));
+        // P1.11: o navegador precisa enviar Idempotency-Key e If-Match e ler o ETag
+        // de volta; sem isto, o preflight recusaria a escrita condicional/idempotente.
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Request-ID",
+                "Idempotency-Key", "If-Match", "If-None-Match"));
+        config.setExposedHeaders(List.of("ETag"));
         config.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/v1/**", config);

@@ -52,6 +52,20 @@ public abstract class ApiException extends RuntimeException {
         }
     }
 
+    /** 428 (P1.11): escrita condicional sem {@code If-Match}. */
+    public static class PreconditionRequired extends ApiException {
+        public PreconditionRequired(String message) {
+            super(428, "precondition-required", message);
+        }
+    }
+
+    /** 412 (P1.11): {@code If-Match} com versão diferente da atual. */
+    public static class PreconditionFailed extends ApiException {
+        public PreconditionFailed(String message) {
+            super(412, "precondition-failed", message);
+        }
+    }
+
     /** 409: versão desatualizada ou estado que impede a operação. */
     public static class Conflict extends ApiException {
         public Conflict(String code, String message) {

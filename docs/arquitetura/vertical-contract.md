@@ -68,3 +68,30 @@ manifestos sintéticos montados em `VerticalManifestTest` (validador rejeita rot
 duplicada e manifesto sem `certification`). Não há pacote `example-vertical`
 versionado no repositório — o teste sintético cumpre o papel sem carregar conteúdo
 regulatório fictício.
+
+## 5. P1.11 e P1.13 (frente plat-web): escrita condicional, idempotência e fronteiras de módulos
+
+P1.11, superfície v0 — só o recurso de usuários (`/api/v1/users`, o único PUT
+da app): GET único devolve `ETag: "v<version>"` (o `@Version` do `BaseEntity`);
+PUT sem `If-Match` é 428 (`precondition-required`), com versão diferente da
+atual é 412 (`precondition-failed`); `If-Match: *` aceita qualquer versão
+existente. POST de criação com `Idempotency-Key` devolve a resposta gravada
+(201, mesmo corpo) sem reexecutar, com escopo por tenant; sem a chave, o
+comportamento é o de antes, e erro nunca é gravado. Componentes reutilizáveis
+por outras frentes: `IdempotencyStore` e `ConditionalWrite` (módulo
+`ziipsan-platform`, pacote `web`), e os tipos `ApiException.PreconditionRequired`
+/ `PreconditionFailed`. Limites da v0: o store é em memória, por processo
+(entre réplicas a mesma chave pode executar duas vezes); a generalização do
+PUT condicional para os recursos do cadastro é das frentes donas de cada
+controller, não desta. CORS: `Idempotency-Key`/`If-Match` liberados e `ETag`
+exposto, sem os quais o navegador não usaria o contrato.
+
+P1.13, suíte `ModuleBoundaryTest` (ArchUnit da P0.3, Surefire): núcleo só
+depende de si; `platform` só do núcleo; domínio só do núcleo, de si e da
+própria família (`commercial`, `intelligence`, `operations`, `grs`,
+`compliance`); ninguém depende da `app`; nenhum nome de classe simples se
+repete entre `billing` e `metering` (as duplicatas citadas na P1.13, ver
+P0.25, não existem hoje — o teste falha se voltarem). A duplicata conhecida
+`DmaDistrictRepository` (gis × losses) fica fora desta suíte de propósito:
+ela é da P1.26, que a remove. A prova de violação proposital aplica a mesma
+forma de regra ao par real gis → losses e exige `AssertionError`.
