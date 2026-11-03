@@ -175,6 +175,93 @@
         "type": "string",
         "pattern": "^[a-z]+:[a-z-]+$"
       }
+    },
+    "events": {
+      "type": "array",
+      "description": "Catálogo único de eventos de negócio (P1.38, ADR-0037). A carga (payloadSchema) carrega só identificadores e códigos, sem dado pessoal.",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "version",
+          "description",
+          "payloadSchema",
+          "requiredPermission",
+          "consumers",
+          "originTask"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*)+$"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": {
+            "type": "string"
+          },
+          "payloadSchema": {
+            "type": "object"
+          },
+          "requiredPermission": {
+            "type": "string",
+            "pattern": "^[a-z]+:[a-z-]+$"
+          },
+          "consumers": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "originTask": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "eventsNote": {
+      "type": "string"
+    },
+    "declaredEventConsumers": {
+      "type": "array",
+      "description": "Consumidores declarados no catálogo (P1.38): só declarados, não construídos.",
+      "items": {
+        "type": "object",
+        "required": [
+          "task",
+          "name"
+        ],
+        "properties": {
+          "task": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "eventGaps": {
+      "type": "array",
+      "description": "Tipos que aparecem no código mas NÃO são eventos declarados (lacunas a resolver antes de qualquer publicação).",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "reason"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "allOf": [

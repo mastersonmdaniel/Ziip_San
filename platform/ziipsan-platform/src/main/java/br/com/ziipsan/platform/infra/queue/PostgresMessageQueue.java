@@ -1,5 +1,6 @@
 package br.com.ziipsan.platform.infra.queue;
 
+import br.com.ziipsan.platform.infra.events.BusinessEventCatalog;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.sql.DataSource;
@@ -43,6 +44,17 @@ import java.util.Objects;
  * <p>Partição: antes do INSERT, o publish garante a partição do dia (UTC)
  * via {@code outbox_ensure_partition}, porque a role da aplicação não tem
  * CREATE. Carga sem JSON válido é recusada pelo cast para jsonb.
+ *
+ * <p>P1.38 — catálogo de eventos: quando construída com um
+ * {@link BusinessEventCatalog}, a fila valida toda mensagem cujo tipo é um
+ * evento de negócio ANTES de qualquer escrita. Tipo versionado
+ * ({@code nome@vN}) tem de estar no catálogo, na versão declarada, com a
+ * carga dentro do esquema; tipo igual ao nome de um evento catalogado mas
+ * sem versão é recusado (a versão é parte do contrato: usa-se o
+ * {@code BusinessEventPublisher}). Tipos que não são eventos de negócio
+ * (transporte interno e testes de transporte) passam sem validação de
+ * catálogo. Sem catálogo (construtores antigos), a fila é só transporte:
+ * nenhum publicador de negócio deve ser construído assim.
  */
 public final class PostgresMessageQueue implements MessageQueue {
 
@@ -51,12 +63,22 @@ public final class PostgresMessageQueue implements MessageQueue {
 
     private final DataSource dataSource;
     private final String queue;
+    private final BusinessEventCatalog eventCatalog;
 
     public PostgresMessageQueue(DataSource dataSource) {
-        this(dataSource, DEFAULT_QUEUE);
+        this(dataSource, DEFAULT_QUEUE, null);
     }
 
     public PostgresMessageQueue(DataSource dataSource, String queue) {
+        this(dataSource, queue, null);
+    }
+
+    /** Fila validada pelo catálogo (P1.38): o construtor a usar para eventos de negócio. */
+    public PostgresMessageQueue(DataSource dataSource, BusinessEventCatalog eventCatalog) {
+        this(dataSource, DEFAULT_QUEUE, eventCatalog);
+    }
+
+    public PostgresMessageQueue(DataSource dataSource, String queue, BusinessEventCatalog eventCatalog) {
         if (dataSource == null) {
             throw new IllegalArgumentException("DataSource obrigatorio");
         }
@@ -65,11 +87,13 @@ public final class PostgresMessageQueue implements MessageQueue {
         }
         this.dataSource = dataSource;
         this.queue = queue;
+        this.eventCatalog = eventCatalog;
     }
 
     @Override
     public void publish(QueuedMessage message) {
         Objects.requireNonNull(message, "message e obrigatoria");
+        validateBusinessEvent(message);
         Connection connection;
         try {
             connection = DataSourceUtils.getConnection(dataSource);
@@ -109,6 +133,34 @@ public final class PostgresMessageQueue implements MessageQueue {
                 restoreAutoCommitQuietly(connection);
             }
             DataSourceUtils.releaseConnection(connection, dataSource);
+        }
+    }
+
+    /**
+     * Validação de catálogo (P1.38) antes de qualquer escrita. {@code nome@vN}
+     * valida nome, versão e carga; nome catalogado sem versão é recusado;
+     * qualquer outro tipo é transporte e passa direto.
+     */
+    private void validateBusinessEvent(QueuedMessage message) {
+        if (eventCatalog == null) {
+            return;
+        }
+        String type = message.type();
+        int at = type.lastIndexOf("@v");
+        if (at > 0) {
+            String name = type.substring(0, at);
+            int version;
+            try {
+                version = Integer.parseInt(type.substring(at + 2));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Versao invalida no tipo da mensagem: " + type, e);
+            }
+            eventCatalog.requirePublishable(name, version, message.payloadJson());
+            return;
+        }
+        if (eventCatalog.isCatalogued(type)) {
+            throw new IllegalArgumentException(
+                    "Evento de negocio sem versao na outbox (use BusinessEventPublisher): " + type);
         }
     }
 

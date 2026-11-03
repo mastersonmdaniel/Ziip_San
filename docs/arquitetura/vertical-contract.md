@@ -95,3 +95,29 @@ P0.25, não existem hoje — o teste falha se voltarem). A duplicata conhecida
 `DmaDistrictRepository` (gis × losses) fica fora desta suíte de propósito:
 ela é da P1.26, que a remove. A prova de violação proposital aplica a mesma
 forma de regra ao par real gis → losses e exige `AssertionError`.
+
+## 6. P1.38 — catálogo único de eventos de negócio
+
+A seção `events` do `vertical.json` é o catálogo único: cada evento tem nome,
+versão, esquema da carga (só identificadores e códigos, sem dado pessoal),
+permissão exigida de quem recebe (dentro do catálogo da P0.13) e consumidores
+declarados. Os consumidores declarados do pacote são `P3.36` (central de
+avisos), `P3.5` e `ED-41` (notificações ao consumidor), `P2.26` (webhooks de
+saída), `P2.28` (minhas tarefas) e `ED-07` (alertas do tenant) — só declarados,
+não construídos nesta onda. O documento `docs/arquitetura/business-event-catalog.md`
+é gerado por `scripts/generate-business-event-catalog.py` e conferido no CI por
+`BusinessEventCatalogDocTest` (marcadores por evento, consumidor e lacuna).
+
+Publicação: toda tarefa que publica eventos usa `BusinessEventPublisher`
+(pacote `platform.infra.events`), que valida catálogo, versão e carga antes
+de escrever na outbox da P1.9, com o tipo versionado (`nome@vN`); a
+`PostgresMessageQueue` construída com catálogo aplica a mesma validação a
+qualquer mensagem de evento, e recusa nome catalogado sem versão. Tipos que
+não são eventos passam como transporte. Mudança incompatível de carga exige
+nova versão do evento; a carga da versão nova é recusada na versão antiga.
+
+Estado nesta onda: nenhum evento de negócio em produção (a outbox da P1.9 não
+tem publicador em código de produção). O único tipo que aparece no código,
+`billing.invoice.issued`, existe só nos testes da P1.9 e está registrado como
+lacuna (`eventGaps`), não como evento — a tarefa que criar o publicador deve
+declará-lo primeiro.
