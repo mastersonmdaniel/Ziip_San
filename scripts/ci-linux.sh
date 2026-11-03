@@ -61,7 +61,7 @@ cleanup() {
   # O FE do frontend (mktemp em /tmp, tmpfs de 512M) tambem vai embora aqui: sem
   # isso, uma falha no typecheck deixava 290M para tras e o /tmp seguinte enchia,
   # truncando o node_modules da proxima execucao (turno 4, P0.33).
-  rm -rf "${FE:-}"
+  rm -rf "${FE_ROOT:-${FE:-}}"
   rm -rf "$LOCK_DIR"
 }
 trap cleanup EXIT
@@ -126,8 +126,15 @@ export JAVA_TOOL_OPTIONS="-Djava.net.preferIPv4Stack=true${JAVA_TOOL_OPTIONS:+ $
 (cd "$SRC" && mvn -B -s "$SRC/scripts/ci-linux-settings.xml" -Dmaven.wagon.http.connectionTimeout=30000 -Dmaven.wagon.http.readTimeout=60000 clean verify)
 
 echo "== (c) frontend"
-FE="$(mktemp -d /tmp/ziipsan-ci-frontend.XXXXXX)"
+FE_ROOT="$(mktemp -d /tmp/ziipsan-ci-frontend.XXXXXX)"
+FE="$FE_ROOT/frontend"
+mkdir -p "$FE"
 cp -a "$SRC/frontend/." "$FE/"
+# P0.34: axe-brand.test.tsx importa ../../../branding/ziipsan/brand.json (a fonte da
+# marca vive no repo, fora de frontend/): a copia temporaria precisa do irmao
+# branding/ no mesmo nivel, senao o typecheck quebra com TS2307. So aparece no CI:
+# na verificacao da frente o typecheck roda dentro do repo, onde o import resolve.
+cp -a "$SRC/branding" "$FE_ROOT/branding"
 rm -rf "$FE/node_modules" "$FE/dist" "$FE/coverage"
 (
   cd "$FE"
@@ -154,7 +161,7 @@ if git -C "$SRC" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     die "arquivos gerados de marca/temas desatualizados: regenere e commite (scripts/theme/generate-palettes.mjs, scripts/brand/generate-frontend-brand.mjs)"
   fi
 fi
-rm -rf "$FE"
+rm -rf "$FE_ROOT"
 
 echo "== (d) portas publicadas do docker-compose.yml (todas devem ser 127.0.0.1)"
 # P0.7: verificacao extraida para scripts/check-compose-ports.py (com teste negativo
