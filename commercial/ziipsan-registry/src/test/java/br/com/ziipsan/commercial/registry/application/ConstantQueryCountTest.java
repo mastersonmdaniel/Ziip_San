@@ -4,6 +4,7 @@ import br.com.ziipsan.commercial.registry.repository.AddressRepository;
 import br.com.ziipsan.commercial.registry.repository.CustomerContactRepository;
 import br.com.ziipsan.commercial.registry.repository.CustomerRepository;
 import br.com.ziipsan.commercial.registry.service.CustomerDocumentService;
+import br.com.ziipsan.commercial.registry.service.PersonalDataAccessService;
 import br.com.ziipsan.core.tenant.TenantContextHolder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -85,7 +86,8 @@ class ConstantQueryCountTest {
 
             CustomerService service = new CustomerService(
                     mock(CustomerRepository.class), mock(CustomerContactRepository.class),
-                    mock(AddressRepository.class), mock(CustomerDocumentService.class));
+                    mock(AddressRepository.class), mock(CustomerDocumentService.class),
+                    mock(PersonalDataAccessService.class));
             ReflectionTestUtils.setField(service, "em", em);
 
             List<UUID> ids = IntStream.range(0, n).mapToObj(i -> UUID.randomUUID()).toList();
