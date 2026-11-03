@@ -47,7 +47,12 @@ class ProblemCodeContractTest {
             // P0.43: token com tenant_id em rota de plataforma (CENTRAL-ZIIP §2).
             "tenant-not-allowed",
             // P1.11: escrita condicional (428 sem If-Match, 412 com versão desatualizada).
-            "precondition-required", "precondition-failed");
+            "precondition-required", "precondition-failed",
+            // P1.22 (integração): emitido em produção desde a P0.16 (CustomerService,
+            // paginação por cursor) e agora explicado no catálogo de erros; a tabela
+            // estava desatualizada, não o código. O teste de cobertura da P1.22 é o
+            // guarda mais forte daqui em diante (30/30 códigos explicados).
+            "invalid-cursor");
 
     /** Códigos antigos da tabela (português) — nenhum pode restar no código. */
     private static final List<String> OLD_CODES = List.of(
