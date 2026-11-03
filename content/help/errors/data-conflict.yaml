@@ -1,0 +1,12 @@
+# P1.21: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:data-conflict
+title: Conflito de dados
+explanation: A operação não pode ser concluída porque os dados mudaram ou já existe um registro com os mesmos dados.
+causes:
+  - Outro usuário alterou o mesmo registro enquanto você editava.
+  - Já existe um registro com o identificador informado.
+actions:
+  - Recarregue os dados e confira o que mudou antes de tentar de novo.
+  - Se o problema persistir, abra um chamado informando o que você tentava fazer.
+article: pesquisar-imoveis
+suggest_ticket: true

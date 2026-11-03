@@ -1,0 +1,11 @@
+# P1.21: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:confirmation-required
+title: Confirmação necessária
+explanation: A operação gerou avisos que precisam da sua confirmação antes de continuar. Nada foi salvo ainda.
+causes:
+  - Um ou mais avisos exigem confirmação explícita.
+actions:
+  - Leia os avisos com atenção.
+  - Confirme para prosseguir ou ajuste os dados e envie de novo.
+article: cadastrar-cliente
+suggest_ticket: false

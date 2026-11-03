@@ -1,0 +1,4 @@
+# P1.21: dicas por campo (AJUDA §3). A chave é estável e identifica o campo;
+# o componente <Hint id> do frontend a usa para exibir o texto.
+cadastro.property.search: Matrícula, nome, CPF/CNPJ ou endereço. O servidor reconhece o formato digitado.
+cadastro.property.inscription: A inscrição completa tem prioridade sobre a busca livre.

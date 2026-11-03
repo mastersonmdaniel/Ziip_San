@@ -1,0 +1,15 @@
+# P1.21: tour da tela de pesquisa de imóveis.
+# `route` é uma rota existente do frontend; cada `target` é um atributo
+# `data-tour` existente no código — nunca um seletor CSS (AJUDA §3).
+# O validador (scripts/validate-help-content.py) falha se um alvo não existir.
+id: cadastro-imoveis
+route: /cadastro/imoveis
+version: 1
+title: Pesquisar imóveis
+steps:
+  - target: imoveis-search
+    title: Busque o imóvel
+    text: Digite matrícula, nome, documento ou endereço. A tecla / leva direto a este campo.
+  - target: imoveis-new
+    title: Cadastre um imóvel novo
+    text: Use este botão quando o imóvel ainda não estiver no cadastro.

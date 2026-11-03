@@ -133,6 +133,7 @@ export function PropertySearch() {
         actions={
           <Link
             to="/cadastro/imoveis/novo"
+            data-tour="imoveis-new"
             className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
             <Icon name="plus" className="h-4 w-4" />
@@ -141,7 +142,7 @@ export function PropertySearch() {
         }
       />
 
-      <form onSubmit={onSubmit} role="search" aria-label="Pesquisar imóveis" className="space-y-4 rounded-xl border bg-card p-4">
+      <form onSubmit={onSubmit} role="search" aria-label="Pesquisar imóveis" data-tour="imoveis-search" className="space-y-4 rounded-xl border bg-card p-4">
         <div className="grid gap-4 md:grid-cols-2">
           <Field
             label="Busca livre"

@@ -1,0 +1,12 @@
+# P1.21: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:validation
+title: Campos inválidos
+explanation: "Alguns campos do formulário não passaram na validação. Nada foi salvo: corrija os campos indicados e envie de novo."
+causes:
+  - Um campo obrigatório ficou em branco.
+  - Um valor está fora do formato esperado (documento, data ou número).
+actions:
+  - Leia a mensagem de cada campo destacado no formulário.
+  - Corrija os campos e envie novamente.
+article: cadastrar-cliente
+suggest_ticket: false

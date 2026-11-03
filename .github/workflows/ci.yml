@@ -268,3 +268,7 @@ jobs:
             git log -1 --format='%H %s' > /tmp/commits.txt
           fi
           python3 scripts/check-changelog.py --dir content/release-notes --commits-file /tmp/commits.txt
+      - name: Validar conteúdo de ajuda e gerados (P1.21)
+        run: |
+          python3 scripts/validate-help-content.py
+          python3 scripts/help/generate-help-content.py --check

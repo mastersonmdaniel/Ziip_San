@@ -1,0 +1,15 @@
+# P1.21: erro explicado. `code` é o código EXATO do problem+json
+# (ADR-0020 decisão 2); os textos são em português. `article` é o slug de um
+# artigo existente em content/help/articles. A cobertura total do catálogo
+# (todo urn:ziipsan:problem:* do código) é da P1.22, não desta frente.
+code: urn:ziipsan:problem:not-found
+title: Registro não encontrado
+explanation: O item que você procurou não existe neste tenant ou foi removido. Por segurança, um item de outro tenant devolve a mesma resposta.
+causes:
+  - O endereço ou o identificador digitado está errado.
+  - O item foi excluído ou ainda não foi criado.
+actions:
+  - Confira o identificador e tente de novo.
+  - Volte à lista e pesquise pelo nome ou pelo endereço.
+article: pesquisar-imoveis
+suggest_ticket: false
