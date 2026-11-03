@@ -24,6 +24,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import br.com.ziipsan.commercial.registry.service.CustomerDocumentService;
+import br.com.ziipsan.commercial.registry.service.PersonalDataAccessService;
 import br.com.ziipsan.core.api.ApiException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -80,13 +81,16 @@ public class CustomerService {
     private final CustomerContactRepository contacts;
     private final AddressRepository addresses;
     private final CustomerDocumentService documents;
+    private final PersonalDataAccessService accessLog;
 
     public CustomerService(CustomerRepository customers, CustomerContactRepository contacts,
-                           AddressRepository addresses, CustomerDocumentService documents) {
+                           AddressRepository addresses, CustomerDocumentService documents,
+                           PersonalDataAccessService accessLog) {
         this.customers = customers;
         this.contacts = contacts;
         this.addresses = addresses;
         this.documents = documents;
+        this.accessLog = accessLog;
     }
 
     // ------------------------------------------------------------------ leitura
@@ -124,9 +128,14 @@ public class CustomerService {
             query.where("c.deletedAt is null");
         }
         String text = blankToNull(q);
+        Optional<String> documentHash = Optional.empty();
         if (text != null) {
             Optional<String> hash = documents.searchIndex(text);
             if (hash.isPresent()) {
+                // P0.11, ADR-0008: busca por documento exige a permissão própria e conta na
+                // cota; sem ela, 403. O resultado é registrado depois da consulta.
+                accessLog.authorizeDocumentSearch(hash.get());
+                documentHash = hash;
                 query.where("c.documentHash = :hash", "hash", hash.get());
             } else {
                 String match = nameMatch == null ? "contains" : nameMatch;
@@ -138,13 +147,17 @@ public class CustomerService {
             }
         }
         PageResult<Customer> page = query.page(em, Customer.class, spec, spec.orderBy(SORT, "name", "c.id"));
+        documentHash.ifPresent(hash -> accessLog.recordDocumentSearch(hash, !page.content().isEmpty()));
         Map<UUID, Long> counts = unitCounts(page.content().stream().map(Customer::getId).toList());
         return page.map(c -> new CustomerSummary(c.getId(), c.getName(), c.getPersonType(), c.getDocumentMasked(),
                 counts.getOrDefault(c.getId(), 0L), c.getDeletedAt() != null));
     }
 
     public CustomerView get(UUID id) {
-        return view(customer(id));
+        // P0.11: leitura de cadastro com dado pessoal fica registrada (sem o documento em claro).
+        CustomerView view = view(customer(id));
+        accessLog.recordPersonalRead("customers", id);
+        return view;
     }
 
     // ------------------------------------------------------------------ gravação
@@ -219,7 +232,10 @@ public class CustomerService {
         if (c.getDocumentCiphertext() == null) {
             throw new ApiException.Conflict("customer-without-document", "O cliente não tem documento cadastrado.");
         }
-        return new RevealResult(documents.reveal(c, purpose.trim()), REVEAL_SECONDS);
+        RevealResult result = new RevealResult(documents.reveal(c, purpose.trim()), REVEAL_SECONDS);
+        // P0.11: a revelação também entra no registro unificado de acesso a dado pessoal.
+        accessLog.recordDocumentReveal("customers", id, c.getDocumentHash(), purpose.trim());
+        return result;
     }
 
     // ------------------------------------------------------------------ apoio

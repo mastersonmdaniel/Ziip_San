@@ -38,6 +38,11 @@ class PermissionCatalogTest {
                 .isEqualTo(Set.of("registry:read", "registry:write", "user:read", "user:write"));
         assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
                 .doesNotContain("registry:reveal-document");
+        // P0.11: buscar por documento também é concessão direta, em nenhum perfil de fábrica.
+        assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
+                .doesNotContain("registry:search-document");
+        assertThat(PermissionCatalog.authoritiesForRole("registry:search-document"))
+                .containsExactly("registry:search-document");
     }
 
     @Test

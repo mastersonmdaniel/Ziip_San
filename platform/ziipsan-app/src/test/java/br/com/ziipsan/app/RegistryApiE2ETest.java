@@ -85,7 +85,10 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     private final String viewer = bearer(TestTokens.token(TENANT_A, "VIEWER"));
     // P0.13: o formato da permissão direta é recurso:ação (antes, registry.reveal-document).
     private final String revealer = bearer(TestTokens.token(TENANT_A, "VIEWER", "registry:reveal-document"));
-    private final String operatorB = bearer(TestTokens.token(TENANT_B, "OPERATOR", "registry:reveal-document"));
+    // P0.11: busca por documento exige a permissão própria, separada de leitura.
+    private final String searcher = bearer(TestTokens.token(TENANT_A, "VIEWER", "registry:search-document"));
+    private final String operatorB = bearer(TestTokens.token(TENANT_B, "OPERATOR", "registry:reveal-document",
+            "registry:search-document"));
 
     @BeforeAll
     static void setUp() throws SQLException {
@@ -232,7 +235,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                  "emails": [{"address": "maria.e2e@exemplo.com.br"}],
                  "phones": [{"number": "+5511987654321", "type": "MOBILE", "primary": true}]}""".formatted(CUSTOMER_NAME, CPF))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.documentMasked").value("***.982.247-**"))
+                .andExpect(jsonPath("$.documentMasked").value("***.***.247-**"))
                 .andExpect(jsonPath("$.emails[0].primary").value(true))
                 .andExpect(jsonPath("$.phones[0].primary").value(true))
                 .andExpect(jsonPath("$.billing.dueDay").value(10))
@@ -255,7 +258,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
         mvc.perform(get("/api/v1/registry/customers/" + customerId).header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(CUSTOMER_NAME))
-                .andExpect(jsonPath("$.documentMasked").value("***.982.247-**"))
+                .andExpect(jsonPath("$.documentMasked").value("***.***.247-**"))
                 .andExpect(jsonPath("$.unitCount").value(0))
                 .andExpect(content().string(not(containsString(CPF_DIGITS))));
 
@@ -268,7 +271,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                 .formatted(CUSTOMER_NAME))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.version").value(1))
-                .andExpect(jsonPath("$.documentMasked").value("***.982.247-**"))
+                .andExpect(jsonPath("$.documentMasked").value("***.***.247-**"))
                 .andExpect(jsonPath("$.billing.dueDay").value(15))
                 .andExpect(jsonPath("$.phones.length()").value(2))
                 .andExpect(jsonPath("$.phones[?(@.number == '+5511912345678')].primary", hasItem(true)))
@@ -285,11 +288,11 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @DisplayName("busca de cliente por documento via POST: com e sem pontuação acha o mesmo; na URL é 400")
     void customerSearch() throws Exception {
         for (String q : List.of(CPF, CPF_DIGITS)) {
-            send(post("/api/v1/registry/customers/search"), viewer, "{\"q\": \"" + q + "\"}")
+            send(post("/api/v1/registry/customers/search"), searcher, "{\"q\": \"" + q + "\"}")
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.totalElements").value(1))
                     .andExpect(jsonPath("$.content[0].id").value(customerId))
-                    .andExpect(jsonPath("$.content[0].documentMasked").value("***.982.247-**"));
+                    .andExpect(jsonPath("$.content[0].documentMasked").value("***.***.247-**"));
         }
         send(post("/api/v1/registry/customers/search"), viewer, "{\"q\": \"ponta aponta\", \"nameMatch\": \"contains\"}")
                 .andExpect(status().isOk())
@@ -349,9 +352,9 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.content[0].id").value(unitId))
                 .andExpect(jsonPath("$.content[0].userName").value(CUSTOMER_NAME))
-                .andExpect(jsonPath("$.content[0].userDocumentMasked").value("***.982.247-**"))
+                .andExpect(jsonPath("$.content[0].userDocumentMasked").value("***.***.247-**"))
                 .andExpect(jsonPath("$.content[0].waterStatusName").value("Ligado E2E"));
-        send(post("/api/v1/registry/consumer-units/search"), viewer, "{\"q\": \"" + CPF_DIGITS + "\"}")
+        send(post("/api/v1/registry/consumer-units/search"), searcher, "{\"q\": \"" + CPF_DIGITS + "\"}")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(2));
         mvc.perform(get("/api/v1/registry/consumer-units").param("q", CPF_DIGITS).header("Authorization", viewer))
@@ -362,7 +365,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                 .andExpect(jsonPath("$[0].customerId").value(customerId))
                 .andExpect(jsonPath("$[0].relation").value("USER"))
                 .andExpect(jsonPath("$[0].showOnBill").value(true))
-                .andExpect(jsonPath("$[0].customerDocumentMasked").value("***.982.247-**"));
+                .andExpect(jsonPath("$[0].customerDocumentMasked").value("***.***.247-**"));
         mvc.perform(get("/api/v1/registry/consumer-units/" + unitId + "/history").header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].type", hasItem("STATUS")))
@@ -487,7 +490,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
         send(post("/api/v1/registry/customers"), operatorB, """
                 {"personType": "PF", "name": "Titular do tenant B", "document": "%s"}""".formatted(CPF))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.documentMasked").value("***.982.247-**"));
+                .andExpect(jsonPath("$.documentMasked").value("***.***.247-**"));
     }
 
     @Test

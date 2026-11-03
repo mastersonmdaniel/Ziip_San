@@ -16,6 +16,7 @@ na aplicação, a partir do catálogo.
 | `registry:read` | cadastro | registry | read | ADMIN, MANAGER, OPERATOR, VIEWER | P0.13 |
 | `registry:write` | cadastro | registry | write | ADMIN, MANAGER, OPERATOR | P0.13 |
 | `registry:reveal-document` | cadastro | registry | reveal-document | (nenhum — só concessão direta) | P0.13 |
+| `registry:search-document` | cadastro | registry | search-document | (nenhum — só concessão direta) | P0.11 |
 | `user:read` | plataforma | user | read | ADMIN, MANAGER | P0.13 |
 | `user:write` | plataforma | user | write | ADMIN | P0.13 |
 
@@ -24,6 +25,10 @@ na aplicação, a partir do catálogo.
 - `registry:reveal-document` não está em nenhum perfil de fábrica, nem no ADMIN: revelar o
   documento em claro exige a permissão direta (papel do token com exatamente esse nome). Quem
   cadastra não precisa, em regra, ver o documento depois de gravado; o acesso fica na auditoria.
+- `registry:search-document` (P0.11, ADR-0008) também não está em nenhum perfil de fábrica:
+  buscar por documento completo exige a permissão direta, separada de leitura e de revelação.
+  Sem ela, a busca por documento é 403; com ela, a busca é registrada em
+  `personal_data_access_log` e conta na cota por usuário por hora (429 ao exceder).
 - Permissão nova entra no catálogo junto da rota que a usa; rota sem permissão declarada é
   recusada no CI. A única rota de negócio sem permissão declarada é `GET /api/v1/me` (dados do
   próprio usuário autenticado, sem acesso a dado de terceiros).

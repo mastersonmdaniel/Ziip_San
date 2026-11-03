@@ -101,4 +101,18 @@ public abstract class ApiException extends RuntimeException {
             super(400, code, message);
         }
     }
+
+    /** 403: o usuário autenticado não tem a permissão que a operação exige (ex.: busca por documento). */
+    public static class Forbidden extends ApiException {
+        public Forbidden(String message) {
+            super(403, "access-denied", message);
+        }
+    }
+
+    /** 429: cota excedida (ex.: cota de busca por documento por usuário por hora, P0.11). */
+    public static class TooManyRequests extends ApiException {
+        public TooManyRequests(String message) {
+            super(429, "too-many-requests", message);
+        }
+    }
 }

@@ -85,14 +85,30 @@ public final class DocumentNumber {
     }
 
     /**
-     * Máscara para listas e telas: mostra só o miolo. O CPF mostra os 6 dígitos do meio; o CNPJ
-     * mostra apenas a ordem do estabelecimento (as 4 posições depois da barra). Documento inválido
-     * não é exibido. Exemplos nos testes (um asterisco seguido de barra fecharia este comentário).
+     * Máscara para listas e telas com a política de fábrica (P0.11, ADR-0008): o CPF mostra no
+     * máximo os 3 últimos dígitos-base (ex.: {@code ***.***.247-**}), nunca dígito verificador;
+     * o CNPJ mostra apenas a ordem do estabelecimento (as 4 posições depois da barra).
+     * Documento inválido não é exibido. Exemplos nos testes (um asterisco seguido de barra
+     * fecharia este comentário).
+     *
+     * <p>Antes da P0.11 o CPF mostrava 6 dígitos do meio, o que deixava só 1.000 candidatos e
+     * permitia reconstruir o documento por enumeração: esse formato é recusado pelo teto e
+     * deve ser recalculado pelo job da P0.12, nunca mais gravado.
      */
     public static String mask(String raw) {
+        return mask(raw, MaskPolicy.DEFAULT);
+    }
+
+    /** Máscara com uma política explícita; a política já chega validada contra o teto. */
+    public static String mask(String raw, MaskPolicy policy) {
         String d = normalize(raw);
         if (isValidCpf(d)) {
-            return "***." + d.substring(3, 6) + "." + d.substring(6, 9) + "-**";
+            int visible = policy.visibleCpfBaseDigits();
+            StringBuilder base = new StringBuilder(9);
+            for (int i = 0; i < 9; i++) {
+                base.append(i >= 9 - visible ? d.charAt(i) : '*');
+            }
+            return base.substring(0, 3) + "." + base.substring(3, 6) + "." + base.substring(6, 9) + "-**";
         }
         if (isValidCnpj(d)) {
             return "**.***.***/" + d.substring(8, 12) + "-**";

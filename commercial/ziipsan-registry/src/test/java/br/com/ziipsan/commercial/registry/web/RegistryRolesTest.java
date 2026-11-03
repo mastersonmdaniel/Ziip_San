@@ -13,15 +13,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RegistryRolesTest {
 
     @Test
-    @DisplayName("READ, WRITE e REVEAL_DOCUMENT são hasAuthority de permissões do catálogo")
+    @DisplayName("READ, WRITE, REVEAL_DOCUMENT e SEARCH_DOCUMENT são hasAuthority de permissões do catálogo")
     void rolesAreCatalogAuthorities() {
         assertThat(RegistryRoles.READ).isEqualTo("hasAuthority('registry:read')");
         assertThat(RegistryRoles.WRITE).isEqualTo("hasAuthority('registry:write')");
         assertThat(RegistryRoles.REVEAL_DOCUMENT).isEqualTo("hasAuthority('registry:reveal-document')");
+        assertThat(RegistryRoles.SEARCH_DOCUMENT).isEqualTo("hasAuthority('registry:search-document')");
         assertThat(PermissionCatalog.isPermission("registry:read")).isTrue();
         assertThat(PermissionCatalog.isPermission("registry:write")).isTrue();
         assertThat(PermissionCatalog.isPermission("registry:reveal-document")).isTrue();
-        assertThat(RegistryRoles.READ + RegistryRoles.WRITE + RegistryRoles.REVEAL_DOCUMENT)
+        assertThat(PermissionCatalog.isPermission("registry:search-document")).isTrue();
+        assertThat(RegistryRoles.READ + RegistryRoles.WRITE + RegistryRoles.REVEAL_DOCUMENT + RegistryRoles.SEARCH_DOCUMENT)
                 .doesNotContain("hasAnyRole", "hasRole", "registry.reveal-document");
     }
 }

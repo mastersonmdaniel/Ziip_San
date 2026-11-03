@@ -41,6 +41,7 @@ import br.com.ziipsan.commercial.registry.rules.Inscription;
 import br.com.ziipsan.commercial.registry.rules.Matricula;
 import br.com.ziipsan.commercial.registry.rules.UnitConsistency;
 import br.com.ziipsan.commercial.registry.service.CustomerDocumentService;
+import br.com.ziipsan.commercial.registry.service.PersonalDataAccessService;
 import br.com.ziipsan.core.api.ApiException;
 import br.com.ziipsan.core.audit.AuditLog;
 import br.com.ziipsan.core.audit.AuditLogRepository;
@@ -114,6 +115,7 @@ public class ConsumerUnitService {
     private final AuditLogRepository auditLog;
     private final CustomerDocumentService documents;
     private final RegistrySettingsService settings;
+    private final PersonalDataAccessService accessLog;
 
     /** SIRGAS 2000 (EPSG:4674), o SRID das colunas de coordenadas (V1_1). x = longitude, y = latitude. */
     private static final GeometryFactory GEOMETRY_4674 = new GeometryFactory(new PrecisionModel(), 4674);
@@ -122,7 +124,8 @@ public class ConsumerUnitService {
                                UnitCustomerRepository unitCustomers, UnitSubcategoryRepository unitSubcategories,
                                UnitSubcategoryActivityRepository unitSubcategoryActivities,
                                UnitStatusHistoryRepository statusHistory, AuditLogRepository auditLog,
-                               CustomerDocumentService documents, RegistrySettingsService settings) {
+                               CustomerDocumentService documents, RegistrySettingsService settings,
+                               PersonalDataAccessService accessLog) {
         this.units = units;
         this.addresses = addresses;
         this.unitCustomers = unitCustomers;
@@ -132,6 +135,7 @@ public class ConsumerUnitService {
         this.auditLog = auditLog;
         this.documents = documents;
         this.settings = settings;
+        this.accessLog = accessLog;
     }
 
     // ------------------------------------------------------------------ leitura
@@ -169,18 +173,20 @@ public class ConsumerUnitService {
             query.where("exists (select 1 from Address a where a.id = u.addressId and a.cep = :cep)",
                     "cep", cep.replaceAll("\\D", ""));
         }
-        freeText(query, blankToNull(f.q()));
+        Optional<String> documentHash = freeText(query, blankToNull(f.q()));
         PageResult<ConsumerUnit> page = query.page(em, ConsumerUnit.class, spec, spec.orderBy(SORT, "inscription", "u.id"));
+        documentHash.ifPresent(hash -> accessLog.recordDocumentSearch(hash, !page.content().isEmpty()));
         return page.map(this::summary);
     }
 
     /**
      * Texto livre: inscrição formatada (com pontos), CPF/CNPJ válido do titular (índice cego), matrícula
-     * (dígitos, com ou sem DV) ou parte do nome de um titular vigente.
+     * (dígitos, com ou sem DV) ou parte do nome de um titular vigente. Devolve o índice cego
+     * quando o texto era um documento válido (para o registro da busca); vazio nos demais casos.
      */
-    private void freeText(JpqlQuery query, String text) {
+    private Optional<String> freeText(JpqlQuery query, String text) {
         if (text == null) {
-            return;
+            return Optional.empty();
         }
         if (text.contains(".") && text.matches("[0-9.]+")) {
             Inscription i;
@@ -192,12 +198,16 @@ public class ConsumerUnitService {
             query.where("l.code = :il and s.code = :is and b.code = :ib and u.lot = :lot and u.sublot = :sublot")
                     .param("il", i.locality()).param("is", i.sector()).param("ib", i.block())
                     .param("lot", i.lot()).param("sublot", i.sublot());
-            return;
+            return Optional.empty();
         }
         Optional<String> hash = documents.searchIndex(text);
         if (hash.isPresent()) {
+            // P0.11, ADR-0008: busca por documento do titular exige a permissão própria e
+            // conta na cota; sem ela, 403. O resultado é registrado depois da consulta.
+            accessLog.authorizeDocumentSearch(hash.get());
             query.where("exists (select 1 from UnitCustomer uc join Customer c on c.id = uc.customerId "
                     + "where uc.unitId = u.id and uc.endDate is null and c.documentHash = :hash)", "hash", hash.get());
+            return hash;
         } else if (text.matches("\\d{1,18}(-\\d)?")) {
             String[] parts = text.split("-");
             query.where("u.matricula = :matricula", "matricula", parts[0]);
@@ -209,6 +219,7 @@ public class ConsumerUnitService {
                     + "where uc.unitId = u.id and uc.endDate is null and lower(c.name) like :name" + LIKE_ESCAPE + ")",
                     "name", contains(text));
         }
+        return Optional.empty();
     }
 
     public UnitView get(UUID id) {

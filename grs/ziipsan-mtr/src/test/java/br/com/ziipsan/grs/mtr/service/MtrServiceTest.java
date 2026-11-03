@@ -348,7 +348,7 @@ class MtrServiceTest {
         assertNoPlainDocument(mtr, DRIVER_CPF);
         assertThat(mtr.getDriverCpfCiphertext()).isNotBlank();
         assertThat(mtr.getDriverCpfHash()).matches("[0-9a-f]{64}");
-        assertThat(mtr.getDriverCpfMasked()).isEqualTo("***.982.247-**");
+        assertThat(mtr.getDriverCpfMasked()).isEqualTo("***.***.247-**");
         assertThat(documents.revealDriverCpf(mtr)).isEqualTo(DRIVER_CPF);
 
         mtr.setId(UUID.randomUUID());
@@ -365,7 +365,7 @@ class MtrServiceTest {
         assertNoPlainDocument(pf, DRIVER_CPF);
         assertThat(pf.getTenantId()).isEqualTo(TENANT);
         assertThat(pf.getDocumentHash()).matches("[0-9a-f]{64}");
-        assertThat(pf.getDocumentMasked()).isEqualTo("***.982.247-**");
+        assertThat(pf.getDocumentMasked()).isEqualTo("***.***.247-**");
         assertThat(documents.revealGeneratorDocument(pf)).isEqualTo(DRIVER_CPF);
     }
 

@@ -69,8 +69,8 @@ class MtrPdfGeneratorTest {
         String content = text(pdf.generateMtrPdf(mtr("529.982.247-25"), CPF));
 
         assertThat(content).doesNotContain(CPF).doesNotContain("529.982.247-25");
-        assertThat(content).contains("Motorista: CPF ***.982.247-**");
-        assertThat(content).contains("CNPJ/CPF ***.982.247-**");
+        assertThat(content).contains("Motorista: CPF ***.***.247-**");
+        assertThat(content).contains("CNPJ/CPF ***.***.247-**");
     }
 
     @Test
@@ -81,7 +81,7 @@ class MtrPdfGeneratorTest {
         String content = text(pdf.generateCdfPdf(cdf, mtr(CPF), CNPJ));
 
         assertThat(content).contains("CNPJ/CPF 11.222.333/0001-81");
-        assertThat(content).doesNotContain(CPF).contains("Motorista: CPF ***.982.247-**");
+        assertThat(content).doesNotContain(CPF).contains("Motorista: CPF ***.***.247-**");
     }
 
     @Test

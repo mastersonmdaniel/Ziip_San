@@ -82,6 +82,41 @@ public class CustomerDocumentService {
         customer.setDocumentMasked(protectedValue.masked());
     }
 
+    /** Resultado do recálculo em lote da P0.12: quantos examinados, quantos regravados. */
+    public record RecalculationResult(int examined, int changed) {
+    }
+
+    /**
+     * P0.12: recalcula em lote as máscaras já gravadas com o teto vigente
+     * ({@link DocumentNumber#mask(String)}, política de fábrica do ADR-0008). Decifra cada
+     * documento, recalcula a máscara e regrava só o que mudou. Uma linha que não decifra
+     * aborta o job com o id do cliente (sem o valor): pular em silêncio deixaria uma
+     * máscara acima do teto gravada, e a varredura final a denunciaria de qualquer forma.
+     * Roda dentro da transação de quem chama (o job da P0.12).
+     */
+    public RecalculationResult recalculateMasks() {
+        UUID tenantId = requireTenant();
+        int examined = 0;
+        int changed = 0;
+        for (Customer customer : customers.findByTenantIdAndDocumentCiphertextIsNotNull(tenantId)) {
+            examined++;
+            String plain;
+            try {
+                plain = protector.reveal(tenantId, FIELD, customer.getDocumentCiphertext());
+            } catch (RuntimeException e) {
+                throw new IllegalStateException(
+                        "recálculo de máscara abortado: cliente " + customer.getId() + " não decifra", e);
+            }
+            String fresh = DocumentNumber.mask(plain);
+            if (!fresh.equals(customer.getDocumentMasked())) {
+                customer.setDocumentMasked(fresh);
+                customers.save(customer);
+                changed++;
+            }
+        }
+        return new RecalculationResult(examined, changed);
+    }
+
     /** Cliente ativo com o documento, pelo índice cego (nada é decifrado). Documento inválido: vazio. */
     public Optional<Customer> findActiveByDocument(String rawDocument) {
         UUID tenantId = requireTenant();

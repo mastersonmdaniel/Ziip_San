@@ -62,11 +62,14 @@ class FreshInstallTest {
     /**
      * Tabelas sem trigger de auditoria por desenho. tenant_metadata é configuração do próprio
      * tenant (V1_1); as demais são séries temporais de alto volume, reproduzíveis, onde auditar
-     * cada linha em JSONB duplicaria o armazenamento sem valor. Toda adição aqui precisa de
-     * justificativa equivalente.
+     * cada linha em JSONB duplicaria o armazenamento sem valor. personal_data_access_log
+     * (P0.11) é o próprio registro de acesso: auditar cada linha dele em audit_log
+     * duplicaria o armazenamento e espalharia o índice cego para mais um lugar. Toda adição
+     * aqui precisa de justificativa equivalente.
      */
     private static final Set<String> NOT_AUDITED_BY_DESIGN = Set.of(
-            "tenant_metadata", "scada_data_point", "epanet_node_result", "epanet_link_result");
+            "tenant_metadata", "scada_data_point", "epanet_node_result", "epanet_link_result",
+            "personal_data_access_log");
 
     private static DataSource appDs;
     private static DataSource migratorDs;

@@ -33,15 +33,18 @@ public final class PermissionCatalog {
             new Permission("registry:read", "cadastro", "registry", "read", "P0.13"),
             new Permission("registry:write", "cadastro", "registry", "write", "P0.13"),
             new Permission("registry:reveal-document", "cadastro", "registry", "reveal-document", "P0.13"),
+            new Permission("registry:search-document", "cadastro", "registry", "search-document", "P0.11"),
             new Permission("user:read", "plataforma", "user", "read", "P0.13"),
             new Permission("user:write", "plataforma", "user", "write", "P0.13"));
 
     /** Perfis mínimos de fábrica da P0.13, compostos do catálogo (perfis por função: P1.37). */
     public enum FactoryProfile {
         /**
-         * Todas as permissões do catálogo, exceto {@code registry:reveal-document}: revelar o
-         * documento em claro continua exigindo concessão direta, como no modelo anterior — nenhum
-         * perfil de fábrica a inclui, nem o ADMIN.
+         * Todas as permissões do catálogo, exceto {@code registry:reveal-document} e
+         * {@code registry:search-document}: revelar o documento em claro e buscar por
+         * documento continuam exigindo concessão direta, como no modelo anterior — nenhum
+         * perfil de fábrica as inclui, nem o ADMIN (P0.11, ADR-0008: a busca por documento
+         * é um papel próprio, separado de leitura e de revelação).
          */
         ADMIN(Set.of("registry:read", "registry:write", "user:read", "user:write")),
         /** Cadastro (leitura e escrita) e leitura de usuários; não gerencia usuários. */

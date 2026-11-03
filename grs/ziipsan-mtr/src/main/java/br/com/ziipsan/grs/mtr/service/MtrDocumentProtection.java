@@ -77,6 +77,22 @@ public class MtrDocumentProtection {
         mtr.setDriverCpfMasked(value.masked());
     }
 
+    /**
+     * P0.12: recalcula a máscara gravada do CPF do motorista com o teto vigente. Sem CPF
+     * cifrado, nada a fazer. Devolve verdadeiro quando regravou (quem chama persiste).
+     */
+    public boolean recalculateDriverCpfMask(WasteMtr mtr) {
+        if (mtr.getDriverCpfCiphertext() == null) {
+            return false;
+        }
+        String fresh = DocumentNumber.mask(revealDriverCpf(mtr));
+        if (fresh.equals(mtr.getDriverCpfMasked())) {
+            return false;
+        }
+        mtr.setDriverCpfMasked(fresh);
+        return true;
+    }
+
     /** CPF do motorista em claro (só dígitos), ou {@code null} se o MTR não tem motorista. */
     public String revealDriverCpf(WasteMtr mtr) {
         UUID tenantId = requireTenant();
@@ -110,6 +126,23 @@ public class MtrDocumentProtection {
     public String generatorDocumentHash(String rawDocument) {
         UUID tenantId = requireTenant();
         return protector.indexOf(tenantId, GENERATOR_DOCUMENT, requireValidDocument(rawDocument));
+    }
+
+    /**
+     * P0.12: recalcula a máscara gravada do documento do gerador com o teto vigente.
+     * Devolve verdadeiro quando regravou (quem chama persiste). A lista de motoristas do
+     * transportador não tem coluna de máscara (só cifra), então não entra no recálculo.
+     */
+    public boolean recalculateGeneratorDocumentMask(WasteGenerator generator) {
+        if (generator.getDocumentCiphertext() == null) {
+            return false;
+        }
+        String fresh = DocumentNumber.mask(revealGeneratorDocument(generator));
+        if (fresh.equals(generator.getDocumentMasked())) {
+            return false;
+        }
+        generator.setDocumentMasked(fresh);
+        return true;
     }
 
     /** CPF/CNPJ do gerador em claro (normalizado). */

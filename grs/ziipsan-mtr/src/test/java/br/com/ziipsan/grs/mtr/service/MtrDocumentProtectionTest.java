@@ -68,6 +68,27 @@ class MtrDocumentProtectionTest {
     }
 
     @Test
+    @DisplayName("P0.12: recálculo regrava a máscara antiga (6 dígitos) com o teto vigente e é idempotente")
+    void recalculateMasksRewritesOldMask() {
+        WasteMtr mtr = new WasteMtr();
+        documents.assignDriverCpf(mtr, CPF);
+        mtr.setDriverCpfMasked("***.982.247-**");
+        assertThat(documents.recalculateDriverCpfMask(mtr)).isTrue();
+        assertThat(mtr.getDriverCpfMasked()).isEqualTo("***.***.247-**");
+        assertThat(documents.recalculateDriverCpfMask(mtr)).isFalse();
+
+        WasteGenerator generator = new WasteGenerator();
+        documents.assignGeneratorDocument(generator, CPF);
+        generator.setDocumentMasked("***.982.247-**");
+        assertThat(documents.recalculateGeneratorDocumentMask(generator)).isTrue();
+        assertThat(generator.getDocumentMasked()).isEqualTo("***.***.247-**");
+        assertThat(documents.recalculateGeneratorDocumentMask(generator)).isFalse();
+
+        WasteMtr withoutDriver = new WasteMtr();
+        assertThat(documents.recalculateDriverCpfMask(withoutDriver)).isFalse();
+    }
+
+    @Test
     @DisplayName("CPF do motorista em branco limpa as três colunas (CHECK: cifra nula se e só se índice nulo)")
     void blankDriverCpfClears() {
         WasteMtr mtr = new WasteMtr();

@@ -87,9 +87,11 @@ class DocumentNumberTest {
     }
 
     @Test
-    @DisplayName("máscara: CPF mostra só o miolo; CNPJ mostra só o estabelecimento; inválido não é exibido")
+    @DisplayName("máscara (P0.11, ADR-0008): CPF mostra no máximo 3 dígitos-base; CNPJ só o estabelecimento")
     void mask() {
-        assertThat(DocumentNumber.mask("529.982.247-25")).isEqualTo("***.982.247-**");
+        assertThat(DocumentNumber.mask("529.982.247-25")).isEqualTo("***.***.247-**");
+        assertThat(DocumentNumber.mask("529.982.247-25", new MaskPolicy(0))).isEqualTo("***.***.***-**");
+        assertThat(DocumentNumber.mask("529.982.247-25", new MaskPolicy(1))).isEqualTo("***.***.**7-**");
         assertThat(DocumentNumber.mask("11.222.333/0001-81")).isEqualTo("**.***.***/0001-**");
         assertThat(DocumentNumber.mask("12.ABC.345/01DE-35")).isEqualTo("**.***.***/01DE-**");
         assertThat(DocumentNumber.mask("123")).isEqualTo("documento inválido");

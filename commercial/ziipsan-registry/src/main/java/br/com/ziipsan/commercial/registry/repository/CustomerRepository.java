@@ -11,4 +11,7 @@ import java.util.UUID;
 public interface CustomerRepository extends JpaRepository<Customer, UUID> {
     /** Cliente ativo com o documento (pelo indice cego), para detectar duplicidade sem decifrar. */
     Optional<Customer> findByTenantIdAndDocumentHashAndDeletedAtIsNull(UUID tenantId, String documentHash);
+
+    /** Clientes com documento cifrado (inclui excluídos: a máscara gravada também é recalculada). */
+    java.util.List<Customer> findByTenantIdAndDocumentCiphertextIsNotNull(UUID tenantId);
 }

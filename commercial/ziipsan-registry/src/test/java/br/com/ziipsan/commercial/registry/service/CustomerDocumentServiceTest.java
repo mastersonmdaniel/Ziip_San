@@ -38,6 +38,7 @@ class CustomerDocumentServiceTest {
 
     private CustomerRepository customers;
     private AuditLogRepository auditLog;
+    private FieldProtector protector;
     private CustomerDocumentService service;
 
     @BeforeEach
@@ -47,10 +48,11 @@ class CustomerDocumentServiceTest {
             master[i] = (byte) (i + 1);
         }
         var keys = new EnvDerivedTenantKeyProvider(master);
+        protector = new FieldProtector(new FieldCipher(keys), new BlindIndex(keys));
         customers = mock(CustomerRepository.class);
         auditLog = mock(AuditLogRepository.class);
         when(customers.findByTenantIdAndDocumentHashAndDeletedAtIsNull(any(), any())).thenReturn(Optional.empty());
-        service = new CustomerDocumentService(new FieldProtector(new FieldCipher(keys), new BlindIndex(keys)), customers, auditLog);
+        service = new CustomerDocumentService(protector, customers, auditLog);
         TenantContextHolder.setTenant("tenant_teste");
         TenantContextHolder.setTenantId(TENANT);
     }
@@ -76,7 +78,44 @@ class CustomerDocumentServiceTest {
         service.assign(c, CPF);
         assertThat(c.getDocumentCiphertext()).isNotBlank().doesNotContain("52998224725").doesNotContain("982");
         assertThat(c.getDocumentHash()).hasSize(64).doesNotContain("52998224725");
-        assertThat(c.getDocumentMasked()).isEqualTo("***.982.247-**");
+        assertThat(c.getDocumentMasked()).isEqualTo("***.***.247-**");
+    }
+
+    @Test
+    @DisplayName("P0.12: recálculo regrava só a máscara acima do teto, com o teto vigente")
+    void recalculateMasksRewritesOnlyOverCap() {
+        Customer over = customer(PersonType.PF);
+        var protectedOver = protector.protect(TENANT, CustomerDocumentService.FIELD, "52998224725", "***.982.247-**");
+        over.setDocumentCiphertext(protectedOver.ciphertext());
+        over.setDocumentHash(protectedOver.hash());
+        over.setDocumentMasked("***.982.247-**");
+        Customer ok = customer(PersonType.PF);
+        var protectedOk = protector.protect(TENANT, CustomerDocumentService.FIELD, "52998224725", "***.***.247-**");
+        ok.setDocumentCiphertext(protectedOk.ciphertext());
+        ok.setDocumentHash(protectedOk.hash());
+        ok.setDocumentMasked("***.***.247-**");
+        when(customers.findByTenantIdAndDocumentCiphertextIsNotNull(TENANT)).thenReturn(java.util.List.of(over, ok));
+
+        var result = service.recalculateMasks();
+
+        assertThat(result).isEqualTo(new CustomerDocumentService.RecalculationResult(2, 1));
+        assertThat(over.getDocumentMasked()).isEqualTo("***.***.247-**");
+        assertThat(ok.getDocumentMasked()).isEqualTo("***.***.247-**");
+        verify(customers).save(over);
+        verify(customers, never()).save(ok);
+    }
+
+    @Test
+    @DisplayName("P0.12: linha que não decifra aborta o recálculo, sem pular em silêncio")
+    void recalculateMasksAbortsOnUndecryptableRow() {
+        Customer broken = customer(PersonType.PF);
+        broken.setDocumentCiphertext("cifra-invalida");
+        broken.setDocumentMasked("***.982.247-**");
+        when(customers.findByTenantIdAndDocumentCiphertextIsNotNull(TENANT)).thenReturn(java.util.List.of(broken));
+
+        assertThatThrownBy(() -> service.recalculateMasks())
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining(broken.getId().toString());
     }
 
     @Test
