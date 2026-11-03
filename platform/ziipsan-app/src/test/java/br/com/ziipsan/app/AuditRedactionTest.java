@@ -190,7 +190,7 @@ class AuditRedactionTest {
         // teste migrate posterior da mesma JVM com "schema does not exist".
         try (Connection c = ProvisionedTenant.migratorDs.getConnection();
              Statement st = c.createStatement();
-             PreparedStatement delVertical = c.prepareStatement("DELETE FROM public.tenant_vertical WHERE tenant_id = ?");
+             PreparedStatement delVertical = c.prepareStatement("DELETE FROM platform.tenant_vertical WHERE tenant_id = ?");
              PreparedStatement del = c.prepareStatement("DELETE FROM public.tenant_catalog WHERE id = ?")) {
             for (Map.Entry<UUID, String> e : DISPOSABLE_TENANTS.entrySet()) {
                 if (e.getValue().startsWith("it_a_")) {

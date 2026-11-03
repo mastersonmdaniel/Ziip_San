@@ -131,7 +131,7 @@ class TrigramSearchIT extends AppIntegrationTestBase {
             // P1-A (integracao): tenant_vertical referencia o catalogo (FK) desde que o
             // provisionamento passou a ativar o pacote sanitation; apagar antes, senao o
             // DELETE do catalogo viola a FK e a linha orfa quebra o migrate posterior.
-            st.execute("DELETE FROM public.tenant_vertical WHERE tenant_id = (SELECT id FROM public.tenant_catalog WHERE schema_name = '" + SCHEMA + "')");
+            st.execute("DELETE FROM platform.tenant_vertical WHERE tenant_id = (SELECT id FROM public.tenant_catalog WHERE schema_name = '" + SCHEMA + "')");
             st.execute("DELETE FROM public.tenant_catalog WHERE schema_name = '" + SCHEMA + "'");
         }
     }
