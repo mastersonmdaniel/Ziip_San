@@ -15,18 +15,25 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  *
  * <p>As entidades de todos os módulos continuam mapeadas (PlatformConfig escaneia {@code br.com.ziipsan}
  * para o JPA), porque o schema do tenant é um só.
+ *
+ * <p>P1.27: o catálogo GIS entra aqui (só o subpacote {@code catalog}: serviço e
+ * API de tipos/itens). O resto do módulo GIS (ex.: EPANET) continua fora do
+ * contexto até ganhar serviço de aplicação e API próprios.
  */
 @SpringBootApplication(scanBasePackages = {
         "br.com.ziipsan.app",
         "br.com.ziipsan.core",
         "br.com.ziipsan.platform",
         "br.com.ziipsan.commercial.registry",
+        "br.com.ziipsan.intelligence.gis.catalog",
 })
 @EnableJpaRepositories(basePackages = {
         "br.com.ziipsan.core.audit",
         "br.com.ziipsan.commercial.registry.repository",
         // P0.13: repositórios de usuários do tenant.
         "br.com.ziipsan.platform.user",
+        // P1.27: repositórios do catálogo GIS.
+        "br.com.ziipsan.intelligence.gis.catalog.repository",
 })
 @ConfigurationPropertiesScan("br.com.ziipsan.app")
 public class ZiipsanApplication {

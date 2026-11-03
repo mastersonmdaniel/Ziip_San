@@ -36,6 +36,12 @@ public final class PermissionCatalog {
             new Permission("registry:search-document", "cadastro", "registry", "search-document", "P0.11"),
             new Permission("user:read", "plataforma", "user", "read", "P0.13"),
             new Permission("user:write", "plataforma", "user", "write", "P0.13"),
+            // P1.27: catálogo GIS do tenant (GIS-CADASTRO-TECNICO §4.1 e §6.6, onde a
+            // permissão aparece na forma pontuada gis.catalog.manage; aqui ela segue o
+            // formato único recurso:ação da P0.13). Nenhum perfil de fábrica as inclui
+            // ainda: perfis por função são da P1.37; hoje são concessão direta.
+            new Permission("gis:catalog-read", "gis", "catalog", "read", "P1.27"),
+            new Permission("gis:catalog-manage", "gis", "catalog", "manage", "P1.27"),
             // P0.43: leitura do registro de implantação (platform.deployment), rota
             // GET /api/v1/platform/deployments. Papéis de plataforma que a têm:
             // PLATFORM_OWNER e PLATFORM_OPS (ver PlatformRole); SUPPORT e FINANCE, não.

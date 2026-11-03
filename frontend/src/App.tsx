@@ -15,6 +15,7 @@ import { PropertyDetail } from '@pages/cadastro/PropertyDetail'
 import { PropertySearch } from '@pages/cadastro/PropertySearch'
 import { PropertyWizard } from '@pages/cadastro/PropertyWizard'
 import { Territory } from '@pages/cadastro/Territory'
+import { GisCatalog } from '@pages/gis/GisCatalog'
 import { IconContactSheetPage } from '@pages/dev/IconContactSheetPage'
 
 function PrivateRoute({ children }: { children: ReactNode }) {
@@ -67,6 +68,8 @@ export function App() {
         <Route path="cadastro/territorio/:nivel" element={<Territory />} />
 
         <Route path="cadastro/catalogos" element={<Catalogs />} />
+
+        <Route path="gis/catalogo" element={<GisCatalog />} />
         <Route path="cadastro/catalogos/:tipo" element={<Catalogs />} />
 
         <Route path="*" element={<NotFound />} />

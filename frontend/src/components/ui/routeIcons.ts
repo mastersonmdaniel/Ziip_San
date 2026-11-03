@@ -22,4 +22,5 @@ export const ROUTE_ICONS: Record<string, IconName> = {
   '/cadastro/territorio/:nivel': 'map',
   '/cadastro/catalogos': 'list-checks',
   '/cadastro/catalogos/:tipo': 'list-checks',
+  '/gis/catalogo': 'map',
 }

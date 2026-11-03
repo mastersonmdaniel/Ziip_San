@@ -17,6 +17,7 @@ export const navigation: Array<{ name: string; href: string; icon: IconName }> =
   { name: 'Clientes', href: '/cadastro/clientes', icon: 'users' },
   { name: 'Hierarquia territorial', href: '/cadastro/territorio', icon: 'map' },
   { name: 'Catálogos', href: '/cadastro/catalogos', icon: 'list-checks' },
+  { name: 'Catálogo GIS', href: '/gis/catalogo', icon: 'map' },
 ]
 
 export function Layout() {
