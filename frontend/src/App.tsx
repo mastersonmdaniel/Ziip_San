@@ -15,6 +15,7 @@ import { PropertyDetail } from '@pages/cadastro/PropertyDetail'
 import { PropertySearch } from '@pages/cadastro/PropertySearch'
 import { PropertyWizard } from '@pages/cadastro/PropertyWizard'
 import { Territory } from '@pages/cadastro/Territory'
+import { IconContactSheetPage } from '@pages/dev/IconContactSheetPage'
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -37,6 +38,11 @@ export function App() {
       <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
+      {/* P1.29: folha de contato, so em desenvolvimento; fora dele, login. */}
+      <Route
+        path="/dev/icones"
+        element={import.meta.env.DEV ? <IconContactSheetPage /> : <Navigate to="/login" replace />}
+      />
       <Route
         path="/"
         element={

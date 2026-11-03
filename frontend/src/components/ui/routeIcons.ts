@@ -9,6 +9,7 @@ import type { IconName } from './Icon'
 export const ROUTE_ICONS: Record<string, IconName> = {
   '/login': 'log-in',
   '/auth/callback': 'loader-2',
+  '/dev/icones': 'eye',
   '/cadastro/imoveis': 'building-2',
   '/cadastro/imoveis/novo': 'plus',
   '/cadastro/imoveis/:id': 'building-2',
