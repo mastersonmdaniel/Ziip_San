@@ -44,8 +44,10 @@ public final class PermissionCatalog {
             // permissão aparece na forma pontuada gis.catalog.manage; aqui ela segue o
             // formato único recurso:ação da P0.13). Nenhum perfil de fábrica as inclui
             // ainda: perfis por função são da P1.37; hoje são concessão direta.
-            new Permission("gis:catalog-read", "gis", "catalog", "read", "P1.27"),
-            new Permission("gis:catalog-manage", "gis", "catalog", "manage", "P1.27"),
+            // Recurso "gis", ação "catalog-read"/"catalog-manage": o nome tem de ser
+            // recurso:ação (contrato da P0.13, verificado pelo PermissionCatalogTest).
+            new Permission("gis:catalog-read", "gis", "gis", "catalog-read", "P1.27"),
+            new Permission("gis:catalog-manage", "gis", "gis", "catalog-manage", "P1.27"),
             // P0.43: leitura do registro de implantação (platform.deployment), rota
             // GET /api/v1/platform/deployments. Papéis de plataforma que a têm:
             // PLATFORM_OWNER e PLATFORM_OPS (ver PlatformRole); SUPPORT e FINANCE, não.

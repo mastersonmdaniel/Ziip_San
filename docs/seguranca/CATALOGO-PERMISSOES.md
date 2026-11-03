@@ -21,8 +21,8 @@ na aplicação, a partir do catálogo.
 | `user:read` | plataforma | user | read | ADMIN, MANAGER | P0.13 |
 | `user:write` | plataforma | user | write | ADMIN | P0.13 |
 | `deployment:read` | plataforma | deployment | read | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS) | P0.43 |
-| `gis:catalog-read` | gis | catalog | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.27 |
-| `gis:catalog-manage` | gis | catalog | manage | (nenhum — só concessão direta; perfis por função na P1.37) | P1.27 |
+| `gis:catalog-read` | gis | gis | catalog-read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.27 |
+| `gis:catalog-manage` | gis | gis | catalog-manage | (nenhum — só concessão direta; perfis por função na P1.37) | P1.27 |
 
 ## Regras
 
