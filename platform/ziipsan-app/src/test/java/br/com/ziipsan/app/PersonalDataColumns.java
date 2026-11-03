@@ -79,7 +79,11 @@ final class PersonalDataColumns {
             Map.entry("fiscal_layout_versions.document_type", "tipo do documento fiscal do leiaute"),
             Map.entry("fiscal_series.document_type", "tipo do documento fiscal da série"),
             Map.entry("gis_attachment.document_id", "referência interna (UUID) ao documento anexado, não número de documento pessoal"),
-            Map.entry("gis_network_element_legacy.name", "nome de elemento de rede legado"));
+            Map.entry("gis_network_element_legacy.name", "nome de elemento de rede legado"),
+            // P1.20 (V1_16): ids internos do pipeline de documentos — referência ao
+            // catálogo / ao documento anexo, não número de documento pessoal.
+            Map.entry("documents.document_type_id", "id interno do tipo de documento do catálogo"),
+            Map.entry("document_scan_events.document_id", "id interno do documento anexo do evento de varredura"));
 
     private PersonalDataColumns() {
     }
