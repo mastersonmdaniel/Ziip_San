@@ -1,5 +1,7 @@
 package br.com.ziipsan.app.export;
 
+import br.com.ziipsan.commercial.registry.application.ConsumerUnitDtos;
+import br.com.ziipsan.commercial.registry.application.CustomerDtos;
 import br.com.ziipsan.commercial.registry.domain.Customer;
 import br.com.ziipsan.core.api.ApiException;
 

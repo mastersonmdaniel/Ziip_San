@@ -9,21 +9,21 @@ package br.com.ziipsan.commercial.registry.web;
  * nenhum perfil de fábrica inclui: quem cadastra não precisa, em regra, ver o CPF depois de
  * gravado. Os perfis do token são expandidos para permissões pelo conversor JWT da aplicação.
  */
-final class RegistryRoles {
+public final class RegistryRoles {
 
-    static final String READ = "hasAuthority('registry:read')";
-    static final String WRITE = "hasAuthority('registry:write')";
-    static final String EXPORT = "hasAuthority('registry:export')";
-    static final String REVEAL_DOCUMENT = "hasAuthority('registry:reveal-document')";
+    public static final String READ = "hasAuthority('registry:read')";
+    public static final String WRITE = "hasAuthority('registry:write')";
+    public static final String EXPORT = "hasAuthority('registry:export')";
+    public static final String REVEAL_DOCUMENT = "hasAuthority('registry:reveal-document')";
     /**
      * Permissão própria da busca por documento (P0.11). Não é usada como {@code @PreAuthorize}
      * da rota de busca — a rota aceita nome e documento no mesmo corpo, e o gate por documento
      * é feito no serviço ({@code PersonalDataAccessService}), que distingue os dois casos.
      */
-    static final String SEARCH_DOCUMENT = "hasAuthority('registry:search-document')";
+    public static final String SEARCH_DOCUMENT = "hasAuthority('registry:search-document')";
 
     // P0.10: rotas de negócio sob /api/v1.
-    static final String BASE = "/api/v1/registry";
+    public static final String BASE = "/api/v1/registry";
 
     private RegistryRoles() {
     }
