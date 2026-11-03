@@ -52,7 +52,20 @@ class ProblemCodeContractTest {
             // paginação por cursor) e agora explicado no catálogo de erros; a tabela
             // estava desatualizada, não o código. O teste de cobertura da P1.22 é o
             // guarda mais forte daqui em diante (30/30 códigos explicados).
-            "invalid-cursor");
+            "invalid-cursor",
+            // P1-B (integração): 21 códigos da OS (P1.31), do console (P1.6), da
+            // exportação (P1.12) e do catálogo GIS (P1.27), emitidos em produção
+            // e explicados no catálogo de erros (51/51); a tabela estava
+            // desatualizada, não o código. Os 8 do GIS seguem em português
+            // como emitidos (observação para os revisores, não bloqueio).
+            "approval-required", "effects-pending", "inactive-type",
+            "invalid-resource", "invalid-transition",
+            "no-effect-handler", "no-verifier", "not-pending-approval",
+            "operational-types-disabled", "order-closed", "safety-gate",
+            "state-conflict", "targets-frozen",
+            "classe-inativa", "item-duplicado", "item-nao-aprovado",
+            "item-nao-pendente", "tipo-duplicado", "tipo-nao-aprovado",
+            "tipo-nao-pendente", "tipo-nao-usavel");
 
     /** Códigos antigos da tabela (português) — nenhum pode restar no código. */
     private static final List<String> OLD_CODES = List.of(
