@@ -1,0 +1,10 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:stale-version
+title: Versão desatualizada
+explanation: O registro foi alterado por outra pessoa depois que você o abriu. A gravação não foi aplicada, para não sobrescrever a alteração.
+causes:
+  - Outro usuário salvou o mesmo registro enquanto você editava.
+actions:
+  - Recarregue e confira o que mudou antes de tentar de novo.
+article: pesquisar-imoveis
+suggest_ticket: false

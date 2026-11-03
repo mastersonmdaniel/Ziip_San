@@ -1,0 +1,11 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:deletion-unavailable
+title: Exclusão indisponível
+explanation: O recurso não tem exclusão lógica no cadastro, então a exclusão não foi executada.
+causes:
+  - O tipo de registro não prevê exclusão lógica.
+actions:
+  - "Localidade, setor comercial e quadra: bloqueie com blocked=true."
+  - "Rota de leitura: desative com active=false."
+article: consultar-territorio
+suggest_ticket: false

@@ -1,0 +1,11 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:unauthenticated
+title: Não autenticado
+explanation: A sessão acabou ou a requisição não trouxe um token de acesso válido. Nada foi executado.
+causes:
+  - A sessão expirou.
+  - O token de acesso está ausente ou inválido.
+actions:
+  - Entre novamente.
+  - Em integração, envie um token de acesso válido no cabeçalho Authorization.
+suggest_ticket: false

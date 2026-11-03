@@ -1,0 +1,10 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:search-in-url
+title: Busca na URL
+explanation: A busca por texto vai no corpo da requisição de busca, nunca na URL.
+causes:
+  - O termo de busca foi enviado como parâmetro da lista (GET).
+actions:
+  - Use a busca da tela, que envia o termo no corpo da requisição.
+article: pesquisar-imoveis
+suggest_ticket: false

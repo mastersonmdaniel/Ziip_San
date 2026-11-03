@@ -1,0 +1,11 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:invalid-filter
+title: Filtro inválido
+explanation: Um filtro foi informado com valor fora do aceito, então a busca não foi executada.
+causes:
+  - nameMatch aceita apenas contains ou startsWith.
+  - "Na busca de quadras, o texto deve ser só o código (dígitos)."
+actions:
+  - Ajuste o filtro para um valor aceito e tente de novo.
+article: pesquisar-imoveis
+suggest_ticket: false

@@ -1,0 +1,10 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:record-already-deleted
+title: Registro já excluído
+explanation: O cliente ou imóvel já está excluído, então a exclusão não foi repetida.
+causes:
+  - O registro já passou por exclusão lógica.
+actions:
+  - Volte à lista e confira a situação do registro.
+article: pesquisar-imoveis
+suggest_ticket: false

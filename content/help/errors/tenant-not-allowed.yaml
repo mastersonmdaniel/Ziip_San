@@ -1,0 +1,9 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:tenant-not-allowed
+title: Token de tenant em rota de plataforma
+explanation: "Rotas de plataforma exigem um token sem tenant (papel PLATFORM_*); um token de tenant não é aceito nelas."
+causes:
+  - A requisição usou um token de tenant numa rota de plataforma.
+actions:
+  - Use um token de plataforma, sem tenant, para esta rota.
+suggest_ticket: false

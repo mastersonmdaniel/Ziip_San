@@ -1,0 +1,10 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:tenant-mismatch
+title: Tenant divergente
+explanation: O cabeçalho de tenant não corresponde ao tenant do token, então a requisição foi recusada. Nada foi executado.
+causes:
+  - O cabeçalho de tenant informa um tenant diferente do token.
+actions:
+  - Ajuste o cabeçalho de tenant para o tenant do token e tente de novo.
+  - Entre novamente se o token for de outro tenant.
+suggest_ticket: false

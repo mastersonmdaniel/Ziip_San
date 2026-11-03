@@ -1,0 +1,10 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:customer-without-document
+title: Cliente sem documento
+explanation: A operação exige o documento do cliente, e ele não está cadastrado.
+causes:
+  - Nenhum documento foi cadastrado para o cliente.
+actions:
+  - Cadastre o documento do cliente e tente de novo.
+article: cadastrar-cliente
+suggest_ticket: false

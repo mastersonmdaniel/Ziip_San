@@ -1,0 +1,10 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:invalid-inscription
+title: Inscrição inválida
+explanation: A inscrição informada não está no formato LLL.SSS.QQQ.LLLL.SSS.
+causes:
+  - A inscrição foi digitada fora do formato esperado.
+actions:
+  - Confira a inscrição e digite-a no formato LLL.SSS.QQQ.LLLL.SSS.
+article: pesquisar-imoveis
+suggest_ticket: false

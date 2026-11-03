@@ -1,0 +1,9 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:content-too-large
+title: Conteúdo muito grande
+explanation: O corpo da requisição excede o limite permitido e foi recusado antes de qualquer processamento.
+causes:
+  - O corpo enviado é maior que o limite.
+actions:
+  - Reduza o tamanho do corpo e envie de novo.
+suggest_ticket: false

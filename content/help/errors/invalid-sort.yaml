@@ -1,0 +1,13 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:invalid-sort
+title: Ordenação inválida
+explanation: A ordenação pedida não é suportada — a direção é asc ou desc e a chave precisa estar entre as suportadas pela lista.
+causes:
+  - A direção informada não é asc nem desc.
+  - A chave de ordenação não está entre as suportadas.
+  - A paginação keyset ordena por nome crescente.
+actions:
+  - Use uma ordenação suportada.
+  - Para outra ordenação, use a busca por offset.
+article: pesquisar-imoveis
+suggest_ticket: false

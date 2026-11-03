@@ -1,0 +1,12 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:invalid-page
+title: Página inválida
+explanation: A paginação pedida é inválida — a página começa em 0, o tamanho deve ser ao menos 1 e a página não pode exceder o limite suportado.
+causes:
+  - Página negativa.
+  - Tamanho de página menor que 1.
+  - A página pedida excede o limite suportado.
+actions:
+  - Ajuste a página e o tamanho e tente de novo.
+article: pesquisar-imoveis
+suggest_ticket: false

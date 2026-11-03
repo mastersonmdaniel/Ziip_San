@@ -1,0 +1,11 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:access-denied
+title: Acesso negado
+explanation: O usuário autenticado não tem a permissão — ou o papel — que a operação exige. A operação não foi executada.
+causes:
+  - O perfil do usuário não inclui a permissão da operação.
+  - A rota exige um papel de plataforma e o token não o tem.
+actions:
+  - Peça a um administrador do tenant para revisar o seu perfil.
+  - Se você deveria ter acesso, abra um chamado informando a operação tentada.
+suggest_ticket: false

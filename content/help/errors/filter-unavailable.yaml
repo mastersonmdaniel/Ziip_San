@@ -1,0 +1,11 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:filter-unavailable
+title: Filtro indisponível
+explanation: Um filtro informado ainda não tem suporte no cadastro, então a busca não foi executada.
+causes:
+  - "Imóveis: profileId, numberFrom e numberTo ainda não têm suporte."
+  - "Clientes: o filtro city ainda não é suportado."
+actions:
+  - Remova o filtro indisponível e tente de novo.
+article: pesquisar-imoveis
+suggest_ticket: false

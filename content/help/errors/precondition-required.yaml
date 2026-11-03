@@ -1,0 +1,9 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:precondition-required
+title: Pré-condição exigida
+explanation: A escrita exige o cabeçalho If-Match com o ETag atual do recurso, e ele não foi enviado. Nada foi alterado.
+causes:
+  - A requisição não trouxe o cabeçalho If-Match.
+actions:
+  - Recarregue o recurso, pegue o ETag atual e reenvie com If-Match.
+suggest_ticket: false

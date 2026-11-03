@@ -1,0 +1,9 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:tenant-inactive
+title: Tenant indisponível
+explanation: O tenant do token não existe ou não está ativo. Nenhum dado do tenant foi acessado.
+causes:
+  - O tenant foi desativado ou o identificador está errado.
+actions:
+  - Confirme com o administrador do tenant se o acesso está ativo.
+suggest_ticket: false

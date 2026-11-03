@@ -1,0 +1,10 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:tenant-missing
+title: Tenant ausente
+explanation: O token não identifica o tenant, então a requisição não pode ser atribuída a nenhum tenant. Nada foi executado.
+causes:
+  - O token não traz a identificação do tenant.
+actions:
+  - Entre novamente.
+  - Em integração, obtenha um token que identifique o tenant.
+suggest_ticket: false

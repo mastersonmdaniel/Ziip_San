@@ -1,0 +1,10 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:customer-has-active-link
+title: Cliente com vínculo vigente
+explanation: O cliente tem vínculo vigente com imóvel e não pode ser excluído antes de encerrar os vínculos.
+causes:
+  - Há pelo menos um vínculo vigente entre o cliente e um imóvel.
+actions:
+  - Encerre os vínculos do cliente antes de excluir.
+article: cadastrar-cliente
+suggest_ticket: false

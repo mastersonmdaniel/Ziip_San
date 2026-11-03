@@ -1,0 +1,9 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:precondition-failed
+title: Pré-condição não atendida
+explanation: O If-Match enviado não corresponde à versão atual — o recurso foi alterado por outra pessoa. Nada foi alterado.
+causes:
+  - Outro usuário alterou o recurso depois que você o abriu.
+actions:
+  - Recarregue o recurso e tente de novo com o ETag atual.
+suggest_ticket: false

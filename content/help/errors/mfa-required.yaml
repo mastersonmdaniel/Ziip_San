@@ -1,0 +1,9 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:mfa-required
+title: Segundo fator exigido
+explanation: Esta rota exige segundo fator (OTP ou WebAuthn) e a sessão atual não o tem. Nada foi executado.
+causes:
+  - A sessão foi aberta sem o segundo fator.
+actions:
+  - Entre novamente com o segundo fator.
+suggest_ticket: false

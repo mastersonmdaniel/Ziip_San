@@ -97,10 +97,37 @@ class SupportHelpMigrationTest {
                 "cadastrar-cliente", "consultar-territorio", "pesquisar-imoveis");
         List<String> codes = queryStrings(ProvisionedTenant.migratorDs,
                 "SELECT code FROM support.error_explanation ORDER BY code");
+        // P1.22: o catálogo passa a cobrir todos os códigos problem emitidos.
         assertThat(codes).containsExactly(
+                "urn:ziipsan:problem:access-denied",
                 "urn:ziipsan:problem:confirmation-required",
+                "urn:ziipsan:problem:content-too-large",
+                "urn:ziipsan:problem:customer-has-active-link",
+                "urn:ziipsan:problem:customer-without-document",
                 "urn:ziipsan:problem:data-conflict",
+                "urn:ziipsan:problem:deletion-unavailable",
+                "urn:ziipsan:problem:filter-unavailable",
+                "urn:ziipsan:problem:internal-error",
+                "urn:ziipsan:problem:invalid-cursor",
+                "urn:ziipsan:problem:invalid-filter",
+                "urn:ziipsan:problem:invalid-inscription",
+                "urn:ziipsan:problem:invalid-page",
+                "urn:ziipsan:problem:invalid-request",
+                "urn:ziipsan:problem:invalid-sort",
+                "urn:ziipsan:problem:mfa-required",
                 "urn:ziipsan:problem:not-found",
+                "urn:ziipsan:problem:precondition-failed",
+                "urn:ziipsan:problem:precondition-required",
+                "urn:ziipsan:problem:record-already-deleted",
+                "urn:ziipsan:problem:record-deleted",
+                "urn:ziipsan:problem:search-in-url",
+                "urn:ziipsan:problem:stale-version",
+                "urn:ziipsan:problem:tenant-inactive",
+                "urn:ziipsan:problem:tenant-mismatch",
+                "urn:ziipsan:problem:tenant-missing",
+                "urn:ziipsan:problem:tenant-not-allowed",
+                "urn:ziipsan:problem:too-many-requests",
+                "urn:ziipsan:problem:unauthenticated",
                 "urn:ziipsan:problem:validation");
         int versions = queryInt(ProvisionedTenant.migratorDs,
                 "SELECT count(*) FROM support.article_version v "

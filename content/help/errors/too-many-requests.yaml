@@ -1,0 +1,10 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:too-many-requests
+title: Muitas requisições
+explanation: O limite de requisições foi excedido. Aguarde antes de tentar de novo; nada foi executado.
+causes:
+  - Limite de requisições por minuto excedido.
+  - Cota de busca por documento por usuário por hora excedida.
+actions:
+  - Aguarde o tempo informado e tente novamente.
+suggest_ticket: false

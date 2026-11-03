@@ -1,0 +1,11 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:invalid-request
+title: Requisição inválida
+explanation: A requisição não pôde ser atendida pela rota chamada — rota inexistente, método não permitido ou outro erro da própria camada web.
+causes:
+  - A rota não existe.
+  - O método não é permitido para o recurso.
+actions:
+  - Confira o endereço e o método da requisição.
+  - Volte à lista e navegue a partir dela.
+suggest_ticket: false

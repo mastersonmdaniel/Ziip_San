@@ -1,0 +1,10 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:internal-error
+title: Erro interno
+explanation: Ocorreu um erro inesperado no servidor. Informe o identificador da requisição ao suporte.
+causes:
+  - Uma falha não tratada interrompeu a operação.
+actions:
+  - Tente novamente em instantes.
+  - Se o problema persistir, abra um chamado informando o identificador da requisição.
+suggest_ticket: true

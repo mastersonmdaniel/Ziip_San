@@ -1,0 +1,11 @@
+# P1.22: erro explicado (ver not-found.yaml para o formato).
+code: urn:ziipsan:problem:invalid-cursor
+title: Cursor inválido
+explanation: O cursor de paginação é inválido — ele não pôde ser decodificado como a próxima página da busca keyset.
+causes:
+  - O cursor não tem o formato esperado (valor codificado, ponto e identificador).
+  - O valor codificado não é base64 válido ou o identificador não é um UUID.
+actions:
+  - Volte à primeira página da busca e avance de novo a partir dela.
+article: pesquisar-imoveis
+suggest_ticket: false
