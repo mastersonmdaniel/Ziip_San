@@ -106,6 +106,9 @@ class MigrateRunsMigrationTest extends MigrationProfileTestBase {
             assertThat(status).isEqualTo("ACTIVE");
         } finally {
             migrator.execute("DROP SCHEMA IF EXISTS " + schema + " CASCADE");
+            // P1-A: apagar tenant_vertical antes (FK para o catálogo, desde que o
+            // provisionamento ativa o pacote sanitation), senao o DELETE viola a FK.
+            migrator.update("DELETE FROM public.tenant_vertical WHERE tenant_id = (SELECT id FROM public.tenant_catalog WHERE schema_name = ?)", schema);
             migrator.update("DELETE FROM public.tenant_catalog WHERE schema_name = ?", schema);
         }
     }

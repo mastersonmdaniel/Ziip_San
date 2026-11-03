@@ -109,6 +109,9 @@ class TenantConnectionProviderTest {
                 // Apagar a linha do catálogo junto: o DatabaseMigrator do perfil
                 // migrate percorre todo tenant ACTIVE e roda Flyway no schema dele;
                 // deixar a linha sem o schema quebra teste migrate posterior.
+                // P1-A: apagar tenant_vertical antes (FK para o catálogo, desde que o
+                // provisionamento ativa o pacote sanitation), senao o DELETE viola a FK.
+                st.execute("DELETE FROM public.tenant_vertical WHERE tenant_id = (SELECT id FROM public.tenant_catalog WHERE schema_name = '" + SCHEMA_B + "')");
                 st.execute("DELETE FROM public.tenant_catalog WHERE schema_name = '" + SCHEMA_B + "'");
             }
         }

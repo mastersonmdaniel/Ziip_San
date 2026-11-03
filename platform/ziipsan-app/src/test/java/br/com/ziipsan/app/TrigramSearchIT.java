@@ -128,6 +128,10 @@ class TrigramSearchIT extends AppIntegrationTestBase {
         try (Connection c = ProvisionedTenant.migratorDs.getConnection();
              Statement st = c.createStatement()) {
             st.execute("DROP SCHEMA IF EXISTS " + SCHEMA + " CASCADE");
+            // P1-A (integracao): tenant_vertical referencia o catalogo (FK) desde que o
+            // provisionamento passou a ativar o pacote sanitation; apagar antes, senao o
+            // DELETE do catalogo viola a FK e a linha orfa quebra o migrate posterior.
+            st.execute("DELETE FROM public.tenant_vertical WHERE tenant_id = (SELECT id FROM public.tenant_catalog WHERE schema_name = '" + SCHEMA + "')");
             st.execute("DELETE FROM public.tenant_catalog WHERE schema_name = '" + SCHEMA + "'");
         }
     }

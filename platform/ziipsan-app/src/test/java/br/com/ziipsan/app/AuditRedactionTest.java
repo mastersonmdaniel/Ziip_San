@@ -190,11 +190,18 @@ class AuditRedactionTest {
         // teste migrate posterior da mesma JVM com "schema does not exist".
         try (Connection c = ProvisionedTenant.migratorDs.getConnection();
              Statement st = c.createStatement();
+             PreparedStatement delVertical = c.prepareStatement("DELETE FROM public.tenant_vertical WHERE tenant_id = ?");
              PreparedStatement del = c.prepareStatement("DELETE FROM public.tenant_catalog WHERE id = ?")) {
             for (Map.Entry<UUID, String> e : DISPOSABLE_TENANTS.entrySet()) {
                 if (e.getValue().startsWith("it_a_")) {
                     st.execute("DROP SCHEMA IF EXISTS " + e.getValue() + " CASCADE");
                 }
+                // P1-A (integracao): o provisionamento ativa o pacote sanitation e
+                // grava tenant_vertical; sem apagar essas linhas antes, o DELETE do
+                // catalogo viola tenant_vertical_tenant_id_fkey e a linha orfa quebra
+                // o migrate posterior ("schema does not exist" no canario).
+                delVertical.setObject(1, e.getKey());
+                delVertical.executeUpdate();
                 del.setObject(1, e.getKey());
                 del.executeUpdate();
             }

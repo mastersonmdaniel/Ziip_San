@@ -81,6 +81,9 @@ class TenantMigrationRolloutIntegrationTest {
              Statement st = c.createStatement()) {
             for (Probe probe : probes) {
                 st.execute("DROP SCHEMA IF EXISTS \"" + probe.schema() + "\" CASCADE");
+                // P1-A: apagar tenant_vertical antes (FK para o catálogo, desde que o
+                // provisionamento ativa o pacote sanitation), senao o DELETE viola a FK.
+                st.execute("DELETE FROM public.tenant_vertical WHERE tenant_id = '" + probe.tenantId() + "'");
                 st.execute("DELETE FROM public.tenant_catalog WHERE id = '" + probe.tenantId() + "'");
             }
         }

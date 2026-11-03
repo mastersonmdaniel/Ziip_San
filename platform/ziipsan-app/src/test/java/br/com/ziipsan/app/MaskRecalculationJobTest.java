@@ -84,6 +84,9 @@ class MaskRecalculationJobTest extends AppIntegrationTestBase {
                 // Mesmo padrão das ITs da F21: sem apagar a linha do catálogo, o
                 // DatabaseMigrator do perfil migrate tentaria migrar um schema que
                 // não existe e quebraria qualquer teste migrate posterior da JVM.
+                // P1-A: apagar tenant_vertical antes (FK para o catálogo, desde que o
+                // provisionamento ativa o pacote sanitation), senao o DELETE viola a FK.
+                st.execute("DELETE FROM public.tenant_vertical WHERE tenant_id = (SELECT id FROM public.tenant_catalog WHERE schema_name = '" + SCHEMA + "')");
                 st.execute("DELETE FROM public.tenant_catalog WHERE schema_name = '" + SCHEMA + "'");
             }
         }
