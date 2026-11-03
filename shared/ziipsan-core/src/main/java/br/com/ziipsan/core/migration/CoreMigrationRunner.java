@@ -44,16 +44,15 @@ public class CoreMigrationRunner implements ApplicationRunner {
                 .schemas("public")
                 .defaultSchema("public")
                 .locations(CORE_MIGRATIONS_LOCATION)
-                // P0.17: a V4 chega depois de bancos já estarem na V5. Sem outOfOrder o
-                // Flyway recusaria aplicá-la (mesmo precedente do TenantMigrator, que já
-                // usa outOfOrder para migrations de tenant que chegam fora de ordem).
+                // P0.17 + P0.19 (fusão na integração — uma única chamada; a segunda
+                // era idempotente, mas redundante): as versões reservadas do core não
+                // seguem a ordem de aplicação — a V4 chega depois de bancos já estarem
+                // na V5, e a V5 já foi aplicada antes da V3 existir. Sem outOfOrder um
+                // banco existente recusaria a V3/V4. Mesmo precedente do TenantMigrator,
+                // que já usa outOfOrder para migrations de tenant fora de ordem (G10a).
                 .outOfOrder(true)
                 .baselineOnMigrate(true)
                 .baselineVersion("0")
-                // P0.19: as versoes reservadas do core (V3, V4, ...) nao seguem a ordem
-                // de aplicacao — a V5 ja foi aplicada antes da V3 existir. Sem outOfOrder,
-                // um banco existente recusaria a V3. Mesma decisao do TenantMigrator (G10a).
-                .outOfOrder(true)
                 .table("flyway_schema_history")
                 .load();
 
