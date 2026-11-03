@@ -1,0 +1,11 @@
+# P1.27: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:tipo-nao-aprovado
+title: Tipo fora do estado aprovado
+explanation: "Só é possível ativar ou desativar um tipo aprovado. Este tipo está em outro estado de aprovação."
+causes:
+  - O tipo ainda está pendente ou foi recusado.
+  - A aprovação ainda não aconteceu.
+actions:
+  - Aprove o tipo primeiro.
+  - Depois da aprovação, ative ou desative.
+suggest_ticket: false

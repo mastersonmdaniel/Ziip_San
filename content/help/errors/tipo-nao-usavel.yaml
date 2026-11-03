@@ -1,0 +1,11 @@
+# P1.27: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:tipo-nao-usavel
+title: Tipo não aprovado ou inativo
+explanation: "Um item só pode ser criado em um tipo aprovado e ativo. Este tipo está pendente, recusado ou desativado."
+causes:
+  - O tipo ainda não foi aprovado.
+  - O tipo foi desativado.
+actions:
+  - Aprove e ative o tipo primeiro.
+  - Depois disso, crie o item.
+suggest_ticket: false

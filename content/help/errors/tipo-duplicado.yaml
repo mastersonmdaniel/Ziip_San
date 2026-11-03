@@ -1,0 +1,11 @@
+# P1.27: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:tipo-duplicado
+title: Tipo já existe nesta classe
+explanation: "Já existe um tipo com este código nesta classe. O código do tipo é único dentro da classe."
+causes:
+  - O código já foi usado nesta classe.
+  - O tipo já foi criado antes.
+actions:
+  - Reaproveite o tipo existente.
+  - Use outro código para criar um novo tipo.
+suggest_ticket: false

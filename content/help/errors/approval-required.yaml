@@ -1,0 +1,11 @@
+# P1.31: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:approval-required
+title: Tipo exige aprovação por outra pessoa
+explanation: "Este tipo de serviço só executa depois que outra pessoa aprova a ordem. A execução foi recusada porque a aprovação ainda não aconteceu."
+causes:
+  - O tipo tem aprovação por outra pessoa ligada.
+  - A ordem ainda está aguardando aprovação.
+actions:
+  - Peça a outra pessoa que aprove a ordem.
+  - Depois da aprovação, execute de novo.
+suggest_ticket: false

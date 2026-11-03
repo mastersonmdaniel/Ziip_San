@@ -1,0 +1,11 @@
+# P1.31: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:order-closed
+title: Ordem encerrada não aceita mais registros
+explanation: "A ordem já foi encerrada e não aceita registro de segurança, equipe nem permissão de entrada. O encerramento congela a ordem."
+causes:
+  - A ordem foi encerrada antes do registro.
+  - O registro foi enviado duas vezes, depois do encerramento.
+actions:
+  - Confira se a ordem está mesmo encerrada.
+  - Para novos registros, abra uma nova ordem.
+suggest_ticket: false

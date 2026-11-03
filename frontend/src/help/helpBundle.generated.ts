@@ -140,6 +140,36 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:approval-required",
+      "title": "Tipo exige aprovação por outra pessoa",
+      "explanation": "Este tipo de serviço só executa depois que outra pessoa aprova a ordem. A execução foi recusada porque a aprovação ainda não aconteceu.",
+      "causes": [
+        "O tipo tem aprovação por outra pessoa ligada.",
+        "A ordem ainda está aguardando aprovação."
+      ],
+      "actions": [
+        "Peça a outra pessoa que aprove a ordem.",
+        "Depois da aprovação, execute de novo."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:classe-inativa",
+      "title": "Classe de feição desativada",
+      "explanation": "Não é possível criar um tipo em uma classe desativada. A classe precisa estar ativa para receber tipos.",
+      "causes": [
+        "A classe foi desativada no catálogo.",
+        "A classe expirou ou foi substituída."
+      ],
+      "actions": [
+        "Reative a classe ou escolha outra classe ativa.",
+        "Confira o catálogo antes de criar o tipo."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:confirmation-required",
       "title": "Confirmação necessária",
       "explanation": "A operação gerou avisos que precisam da sua confirmação antes de continuar. Nada foi salvo ainda.",
@@ -222,6 +252,21 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:effects-pending",
+      "title": "Efeitos pendentes impedem o encerramento",
+      "explanation": "Há alvos com efeito ainda não aplicado, por isso a ordem não pode ser encerrada como executada. Encerrar assim marcaria trabalho como feito sem aplicar o efeito.",
+      "causes": [
+        "Um ou mais alvos ainda não tiveram o efeito aplicado.",
+        "A aplicação foi interrompida antes de terminar."
+      ],
+      "actions": [
+        "Aplique os efeitos pendentes e tente encerrar de novo.",
+        "Se o trabalho não foi feito, encerre como não executada."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:filter-unavailable",
       "title": "Filtro indisponível",
       "explanation": "Um filtro informado ainda não tem suporte no cadastro, então a busca não foi executada.",
@@ -233,6 +278,21 @@ export const HELP_BUNDLE: HelpBundle = {
         "Remova o filtro indisponível e tente de novo."
       ],
       "article": "pesquisar-imoveis",
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:inactive-type",
+      "title": "Tipo de serviço inativo",
+      "explanation": "O tipo de serviço está inativo e não aceita novas ordens. Nada foi criado.",
+      "causes": [
+        "O tipo foi desativado no catálogo.",
+        "O tipo expirou ou foi substituído."
+      ],
+      "actions": [
+        "Reative o tipo ou escolha outro tipo ativo.",
+        "Confira o catálogo de tipos antes de criar a ordem."
+      ],
+      "article": null,
       "suggestTicket": false
     },
     {
@@ -321,6 +381,21 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:invalid-resource",
+      "title": "Recurso de exportação desconhecido",
+      "explanation": "O recurso pedido para exportar não existe. Só há exportação de clientes e de imóveis.",
+      "causes": [
+        "O nome do recurso veio errado ou não existe.",
+        "A rota de exportação mudou."
+      ],
+      "actions": [
+        "Exporte clientes ou imóveis.",
+        "Confira o nome do recurso na chamada."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:invalid-sort",
       "title": "Ordenação inválida",
       "explanation": "A ordenação pedida não é suportada — a direção é asc ou desc e a chave precisa estar entre as suportadas pela lista.",
@@ -337,6 +412,66 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:invalid-transition",
+      "title": "Passo fora da ordem da ordem de serviço",
+      "explanation": "A ordem está num estado que não permite este passo. Cada passo só acontece no seu estado: rascunho vira enviada, enviada vira programada, e assim por diante.",
+      "causes": [
+        "A ordem já avançou para outro estado.",
+        "O passo foi pedido fora da sequência."
+      ],
+      "actions": [
+        "Confira o estado atual da ordem.",
+        "Faça o passo permitido nesse estado e siga a sequência."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:item-duplicado",
+      "title": "Item já existe para este tipo",
+      "explanation": "Já existe um item igual para este tipo, com o mesmo material, diâmetro, ângulo, classe e seção. Não dá para cadastrar o mesmo item duas vezes.",
+      "causes": [
+        "O item já foi cadastrado para este tipo.",
+        "Os campos vieram iguais aos de um item existente."
+      ],
+      "actions": [
+        "Reaproveite o item existente.",
+        "Mude material, diâmetro, ângulo, classe ou seção para criar outro."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:item-nao-aprovado",
+      "title": "Item fora do estado aprovado",
+      "explanation": "Só é possível ativar ou desativar um item aprovado. Este item está em outro estado de aprovação.",
+      "causes": [
+        "O item ainda está pendente ou foi recusado.",
+        "A aprovação ainda não aconteceu."
+      ],
+      "actions": [
+        "Aprove o item primeiro.",
+        "Depois da aprovação, ative ou desative."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:item-nao-pendente",
+      "title": "Item fora do estado pendente",
+      "explanation": "Só é possível recusar um item pendente de aprovação. Este item já foi aprovado ou recusado.",
+      "causes": [
+        "O item já passou pela aprovação.",
+        "A recusa foi pedida duas vezes."
+      ],
+      "actions": [
+        "Confira o estado de aprovação do item.",
+        "Um item aprovado se ativa ou desativa; um recusado se corrige e reenvia."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:mfa-required",
       "title": "Segundo fator exigido",
       "explanation": "Esta rota exige segundo fator (OTP ou WebAuthn) e a sessão atual não o tem. Nada foi executado.",
@@ -345,6 +480,36 @@ export const HELP_BUNDLE: HelpBundle = {
       ],
       "actions": [
         "Entre novamente com o segundo fator."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:no-effect-handler",
+      "title": "Efeito sem execução registrada",
+      "explanation": "Nenhuma execução está registrada para este código de efeito, por isso a ordem foi recusada em vez de marcar o efeito como aplicado. Marcar sem executar mentiria o histórico.",
+      "causes": [
+        "O código de efeito não tem manipulador registrado.",
+        "O tipo foi declarado sem a execução correspondente."
+      ],
+      "actions": [
+        "Peça ao responsável que registre a execução deste efeito.",
+        "Enquanto isso, não marque o efeito como aplicado à mão."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:no-verifier",
+      "title": "Classe de alvo sem verificador",
+      "explanation": "A classe de alvo não tem verificador registrado, por isso não dá para confirmar que o alvo existe antes de declarar a ordem.",
+      "causes": [
+        "A classe ainda não ganhou verificador.",
+        "A classe foi digitada errada."
+      ],
+      "actions": [
+        "Use uma classe declaravel com verificador.",
+        "Peça ao responsável que registre o verificador da classe."
       ],
       "article": null,
       "suggestTicket": false
@@ -362,6 +527,51 @@ export const HELP_BUNDLE: HelpBundle = {
         "Volte à lista e pesquise pelo nome ou pelo endereço."
       ],
       "article": "pesquisar-imoveis",
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:not-pending-approval",
+      "title": "Ordem fora do estado de aprovação",
+      "explanation": "Só uma ordem aguardando aprovação pode ser aprovada. Esta ordem está em outro estado.",
+      "causes": [
+        "A ordem já foi aprovada, recusada ou avançou.",
+        "A aprovação foi pedida duas vezes."
+      ],
+      "actions": [
+        "Confira o estado atual da ordem.",
+        "Se ela voltou para rascunho, envie de novo para aprovação."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:operational-types-disabled",
+      "title": "Tipos operacionais desligados",
+      "explanation": "Os tipos operacionais estão desligados pelo parâmetro so.operational_types_enabled, por isso nenhum tipo operacional pode ser declarado agora.",
+      "causes": [
+        "O parâmetro so.operational_types_enabled está desligado.",
+        "O tenant optou por não usar tipos operacionais."
+      ],
+      "actions": [
+        "Ligue o parâmetro para voltar a usar tipos operacionais.",
+        "Ou declare um tipo não operacional."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:order-closed",
+      "title": "Ordem encerrada não aceita mais registros",
+      "explanation": "A ordem já foi encerrada e não aceita registro de segurança, equipe nem permissão de entrada. O encerramento congela a ordem.",
+      "causes": [
+        "A ordem foi encerrada antes do registro.",
+        "O registro foi enviado duas vezes, depois do encerramento."
+      ],
+      "actions": [
+        "Confira se a ordem está mesmo encerrada.",
+        "Para novos registros, abra uma nova ordem."
+      ],
+      "article": null,
       "suggestTicket": false
     },
     {
@@ -418,6 +628,21 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:safety-gate",
+      "title": "Portão de segurança bloqueia o passo",
+      "explanation": "A ordem não pode seguir sem os itens de segurança exigidos para este serviço (análise de risco, permissão, equipe mínima, treinamento). A mensagem lista o que falta.",
+      "causes": [
+        "Falta análise de risco, permissão ou treinamento exigido.",
+        "A equipe mínima para o risco não foi montada."
+      ],
+      "actions": [
+        "Complete os itens listados na mensagem.",
+        "Depois de completar, repita o passo."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:search-in-url",
       "title": "Busca na URL",
       "explanation": "A busca por texto vai no corpo da requisição de busca, nunca na URL.",
@@ -441,6 +666,36 @@ export const HELP_BUNDLE: HelpBundle = {
         "Recarregue e confira o que mudou antes de tentar de novo."
       ],
       "article": "pesquisar-imoveis",
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:state-conflict",
+      "title": "Registro em estado que impede a operação",
+      "explanation": "O registro mudou de estado ou está num estado que impede esta operação. Nada foi alterado.",
+      "causes": [
+        "Outro usuário alterou o registro antes.",
+        "A operação exige um estado diferente do atual."
+      ],
+      "actions": [
+        "Recarregue o registro e confira o estado atual.",
+        "Refaça a operação no estado permitido."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:targets-frozen",
+      "title": "Alvos só entram em rascunho ou aberta",
+      "explanation": "Alvos só podem ser incluídos enquanto a ordem está em rascunho ou aberta. Depois que ela avança, a lista de alvos congela.",
+      "causes": [
+        "A ordem já foi enviada, programada ou executada.",
+        "O alvo foi incluído depois do congelamento."
+      ],
+      "actions": [
+        "Inclua os alvos antes de enviar a ordem.",
+        "Para novos alvos, abra uma nova ordem."
+      ],
+      "article": null,
       "suggestTicket": false
     },
     {
@@ -493,6 +748,66 @@ export const HELP_BUNDLE: HelpBundle = {
       ],
       "actions": [
         "Use um token de plataforma, sem tenant, para esta rota."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:tipo-duplicado",
+      "title": "Tipo já existe nesta classe",
+      "explanation": "Já existe um tipo com este código nesta classe. O código do tipo é único dentro da classe.",
+      "causes": [
+        "O código já foi usado nesta classe.",
+        "O tipo já foi criado antes."
+      ],
+      "actions": [
+        "Reaproveite o tipo existente.",
+        "Use outro código para criar um novo tipo."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:tipo-nao-aprovado",
+      "title": "Tipo fora do estado aprovado",
+      "explanation": "Só é possível ativar ou desativar um tipo aprovado. Este tipo está em outro estado de aprovação.",
+      "causes": [
+        "O tipo ainda está pendente ou foi recusado.",
+        "A aprovação ainda não aconteceu."
+      ],
+      "actions": [
+        "Aprove o tipo primeiro.",
+        "Depois da aprovação, ative ou desative."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:tipo-nao-pendente",
+      "title": "Tipo fora do estado pendente",
+      "explanation": "Só é possível recusar um tipo pendente de aprovação. Este tipo já foi aprovado ou recusado.",
+      "causes": [
+        "O tipo já passou pela aprovação.",
+        "A recusa foi pedida duas vezes."
+      ],
+      "actions": [
+        "Confira o estado de aprovação do tipo.",
+        "Um tipo aprovado se ativa ou desativa; um recusado se corrige e reenvia."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:tipo-nao-usavel",
+      "title": "Tipo não aprovado ou inativo",
+      "explanation": "Um item só pode ser criado em um tipo aprovado e ativo. Este tipo está pendente, recusado ou desativado.",
+      "causes": [
+        "O tipo ainda não foi aprovado.",
+        "O tipo foi desativado."
+      ],
+      "actions": [
+        "Aprove e ative o tipo primeiro.",
+        "Depois disso, crie o item."
       ],
       "article": null,
       "suggestTicket": false

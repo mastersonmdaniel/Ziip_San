@@ -1,0 +1,11 @@
+# P1.12: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:invalid-resource
+title: Recurso de exportação desconhecido
+explanation: "O recurso pedido para exportar não existe. Só há exportação de clientes e de imóveis."
+causes:
+  - O nome do recurso veio errado ou não existe.
+  - A rota de exportação mudou.
+actions:
+  - Exporte clientes ou imóveis.
+  - Confira o nome do recurso na chamada.
+suggest_ticket: false

@@ -1,0 +1,11 @@
+# P1.31: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:inactive-type
+title: Tipo de serviço inativo
+explanation: "O tipo de serviço está inativo e não aceita novas ordens. Nada foi criado."
+causes:
+  - O tipo foi desativado no catálogo.
+  - O tipo expirou ou foi substituído.
+actions:
+  - Reative o tipo ou escolha outro tipo ativo.
+  - Confira o catálogo de tipos antes de criar a ordem.
+suggest_ticket: false

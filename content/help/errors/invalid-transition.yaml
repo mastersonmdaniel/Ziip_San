@@ -1,0 +1,11 @@
+# P1.31: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:invalid-transition
+title: Passo fora da ordem da ordem de serviço
+explanation: "A ordem está num estado que não permite este passo. Cada passo só acontece no seu estado: rascunho vira enviada, enviada vira programada, e assim por diante."
+causes:
+  - A ordem já avançou para outro estado.
+  - O passo foi pedido fora da sequência.
+actions:
+  - Confira o estado atual da ordem.
+  - Faça o passo permitido nesse estado e siga a sequência.
+suggest_ticket: false

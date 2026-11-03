@@ -1,0 +1,11 @@
+# P1.31: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:no-effect-handler
+title: Efeito sem execução registrada
+explanation: "Nenhuma execução está registrada para este código de efeito, por isso a ordem foi recusada em vez de marcar o efeito como aplicado. Marcar sem executar mentiria o histórico."
+causes:
+  - O código de efeito não tem manipulador registrado.
+  - O tipo foi declarado sem a execução correspondente.
+actions:
+  - Peça ao responsável que registre a execução deste efeito.
+  - Enquanto isso, não marque o efeito como aplicado à mão.
+suggest_ticket: false

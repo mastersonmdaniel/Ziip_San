@@ -1,0 +1,11 @@
+# P1.31: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:targets-frozen
+title: Alvos só entram em rascunho ou aberta
+explanation: "Alvos só podem ser incluídos enquanto a ordem está em rascunho ou aberta. Depois que ela avança, a lista de alvos congela."
+causes:
+  - A ordem já foi enviada, programada ou executada.
+  - O alvo foi incluído depois do congelamento.
+actions:
+  - Inclua os alvos antes de enviar a ordem.
+  - Para novos alvos, abra uma nova ordem.
+suggest_ticket: false

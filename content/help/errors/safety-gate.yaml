@@ -1,0 +1,11 @@
+# P1.31: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:safety-gate
+title: Portão de segurança bloqueia o passo
+explanation: "A ordem não pode seguir sem os itens de segurança exigidos para este serviço (análise de risco, permissão, equipe mínima, treinamento). A mensagem lista o que falta."
+causes:
+  - Falta análise de risco, permissão ou treinamento exigido.
+  - A equipe mínima para o risco não foi montada.
+actions:
+  - Complete os itens listados na mensagem.
+  - Depois de completar, repita o passo.
+suggest_ticket: false

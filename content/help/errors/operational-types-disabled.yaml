@@ -1,0 +1,11 @@
+# P1.31: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:operational-types-disabled
+title: Tipos operacionais desligados
+explanation: "Os tipos operacionais estão desligados pelo parâmetro so.operational_types_enabled, por isso nenhum tipo operacional pode ser declarado agora."
+causes:
+  - O parâmetro so.operational_types_enabled está desligado.
+  - O tenant optou por não usar tipos operacionais.
+actions:
+  - Ligue o parâmetro para voltar a usar tipos operacionais.
+  - Ou declare um tipo não operacional.
+suggest_ticket: false

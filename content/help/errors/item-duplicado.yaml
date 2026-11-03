@@ -1,0 +1,11 @@
+# P1.27: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:item-duplicado
+title: Item já existe para este tipo
+explanation: "Já existe um item igual para este tipo, com o mesmo material, diâmetro, ângulo, classe e seção. Não dá para cadastrar o mesmo item duas vezes."
+causes:
+  - O item já foi cadastrado para este tipo.
+  - Os campos vieram iguais aos de um item existente.
+actions:
+  - Reaproveite o item existente.
+  - Mude material, diâmetro, ângulo, classe ou seção para criar outro.
+suggest_ticket: false

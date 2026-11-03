@@ -1,0 +1,11 @@
+# P1.27: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:classe-inativa
+title: Classe de feição desativada
+explanation: "Não é possível criar um tipo em uma classe desativada. A classe precisa estar ativa para receber tipos."
+causes:
+  - A classe foi desativada no catálogo.
+  - A classe expirou ou foi substituída.
+actions:
+  - Reative a classe ou escolha outra classe ativa.
+  - Confira o catálogo antes de criar o tipo.
+suggest_ticket: false

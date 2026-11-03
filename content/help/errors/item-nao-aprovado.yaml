@@ -1,0 +1,11 @@
+# P1.27: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:item-nao-aprovado
+title: Item fora do estado aprovado
+explanation: "Só é possível ativar ou desativar um item aprovado. Este item está em outro estado de aprovação."
+causes:
+  - O item ainda está pendente ou foi recusado.
+  - A aprovação ainda não aconteceu.
+actions:
+  - Aprove o item primeiro.
+  - Depois da aprovação, ative ou desative.
+suggest_ticket: false

@@ -1,0 +1,11 @@
+# P1.31: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:no-verifier
+title: Classe de alvo sem verificador
+explanation: "A classe de alvo não tem verificador registrado, por isso não dá para confirmar que o alvo existe antes de declarar a ordem."
+causes:
+  - A classe ainda não ganhou verificador.
+  - A classe foi digitada errada.
+actions:
+  - Use uma classe declaravel com verificador.
+  - Peça ao responsável que registre o verificador da classe.
+suggest_ticket: false

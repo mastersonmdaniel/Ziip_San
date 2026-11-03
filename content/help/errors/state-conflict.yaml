@@ -1,0 +1,11 @@
+# P1.6: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:state-conflict
+title: Registro em estado que impede a operação
+explanation: "O registro mudou de estado ou está num estado que impede esta operação. Nada foi alterado."
+causes:
+  - Outro usuário alterou o registro antes.
+  - A operação exige um estado diferente do atual.
+actions:
+  - Recarregue o registro e confira o estado atual.
+  - Refaça a operação no estado permitido.
+suggest_ticket: false

@@ -1,0 +1,11 @@
+# P1.27: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:item-nao-pendente
+title: Item fora do estado pendente
+explanation: "Só é possível recusar um item pendente de aprovação. Este item já foi aprovado ou recusado."
+causes:
+  - O item já passou pela aprovação.
+  - A recusa foi pedida duas vezes.
+actions:
+  - Confira o estado de aprovação do item.
+  - Um item aprovado se ativa ou desativa; um recusado se corrige e reenvia.
+suggest_ticket: false

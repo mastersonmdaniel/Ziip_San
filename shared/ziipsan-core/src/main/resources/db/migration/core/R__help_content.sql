@@ -97,6 +97,24 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:approval-required
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:approval-required', NULL, 'Tipo exige aprovação por outra pessoa', 'Este tipo de serviço só executa depois que outra pessoa aprova a ordem. A execução foi recusada porque a aprovação ainda não aconteceu.', ARRAY['O tipo tem aprovação por outra pessoa ligada.', 'A ordem ainda está aguardando aprovação.']::text[], ARRAY['Peça a outra pessoa que aprove a ordem.', 'Depois da aprovação, execute de novo.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:classe-inativa
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:classe-inativa', NULL, 'Classe de feição desativada', 'Não é possível criar um tipo em uma classe desativada. A classe precisa estar ativa para receber tipos.', ARRAY['A classe foi desativada no catálogo.', 'A classe expirou ou foi substituída.']::text[], ARRAY['Reative a classe ou escolha outra classe ativa.', 'Confira o catálogo antes de criar o tipo.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:confirmation-required
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
@@ -151,10 +169,28 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:effects-pending
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:effects-pending', NULL, 'Efeitos pendentes impedem o encerramento', 'Há alvos com efeito ainda não aplicado, por isso a ordem não pode ser encerrada como executada. Encerrar assim marcaria trabalho como feito sem aplicar o efeito.', ARRAY['Um ou mais alvos ainda não tiveram o efeito aplicado.', 'A aplicação foi interrompida antes de terminar.']::text[], ARRAY['Aplique os efeitos pendentes e tente encerrar de novo.', 'Se o trabalho não foi feito, encerre como não executada.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:filter-unavailable
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:filter-unavailable', NULL, 'Filtro indisponível', 'Um filtro informado ainda não tem suporte no cadastro, então a busca não foi executada.', ARRAY['Imóveis: profileId, numberFrom e numberTo ainda não têm suporte.', 'Clientes: o filtro city ainda não é suportado.']::text[], ARRAY['Remova o filtro indisponível e tente de novo.']::text[], 'pesquisar-imoveis', FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:inactive-type
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:inactive-type', NULL, 'Tipo de serviço inativo', 'O tipo de serviço está inativo e não aceita novas ordens. Nada foi criado.', ARRAY['O tipo foi desativado no catálogo.', 'O tipo expirou ou foi substituído.']::text[], ARRAY['Reative o tipo ou escolha outro tipo ativo.', 'Confira o catálogo de tipos antes de criar a ordem.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
@@ -214,10 +250,55 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:invalid-resource
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:invalid-resource', NULL, 'Recurso de exportação desconhecido', 'O recurso pedido para exportar não existe. Só há exportação de clientes e de imóveis.', ARRAY['O nome do recurso veio errado ou não existe.', 'A rota de exportação mudou.']::text[], ARRAY['Exporte clientes ou imóveis.', 'Confira o nome do recurso na chamada.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:invalid-sort
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:invalid-sort', NULL, 'Ordenação inválida', 'A ordenação pedida não é suportada — a direção é asc ou desc e a chave precisa estar entre as suportadas pela lista.', ARRAY['A direção informada não é asc nem desc.', 'A chave de ordenação não está entre as suportadas.', 'A paginação keyset ordena por nome crescente.']::text[], ARRAY['Use uma ordenação suportada.', 'Para outra ordenação, use a busca por offset.']::text[], 'pesquisar-imoveis', FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:invalid-transition
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:invalid-transition', NULL, 'Passo fora da ordem da ordem de serviço', 'A ordem está num estado que não permite este passo. Cada passo só acontece no seu estado: rascunho vira enviada, enviada vira programada, e assim por diante.', ARRAY['A ordem já avançou para outro estado.', 'O passo foi pedido fora da sequência.']::text[], ARRAY['Confira o estado atual da ordem.', 'Faça o passo permitido nesse estado e siga a sequência.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:item-duplicado
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:item-duplicado', NULL, 'Item já existe para este tipo', 'Já existe um item igual para este tipo, com o mesmo material, diâmetro, ângulo, classe e seção. Não dá para cadastrar o mesmo item duas vezes.', ARRAY['O item já foi cadastrado para este tipo.', 'Os campos vieram iguais aos de um item existente.']::text[], ARRAY['Reaproveite o item existente.', 'Mude material, diâmetro, ângulo, classe ou seção para criar outro.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:item-nao-aprovado
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:item-nao-aprovado', NULL, 'Item fora do estado aprovado', 'Só é possível ativar ou desativar um item aprovado. Este item está em outro estado de aprovação.', ARRAY['O item ainda está pendente ou foi recusado.', 'A aprovação ainda não aconteceu.']::text[], ARRAY['Aprove o item primeiro.', 'Depois da aprovação, ative ou desative.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:item-nao-pendente
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:item-nao-pendente', NULL, 'Item fora do estado pendente', 'Só é possível recusar um item pendente de aprovação. Este item já foi aprovado ou recusado.', ARRAY['O item já passou pela aprovação.', 'A recusa foi pedida duas vezes.']::text[], ARRAY['Confira o estado de aprovação do item.', 'Um item aprovado se ativa ou desativa; um recusado se corrige e reenvia.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
@@ -232,10 +313,55 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:no-effect-handler
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:no-effect-handler', NULL, 'Efeito sem execução registrada', 'Nenhuma execução está registrada para este código de efeito, por isso a ordem foi recusada em vez de marcar o efeito como aplicado. Marcar sem executar mentiria o histórico.', ARRAY['O código de efeito não tem manipulador registrado.', 'O tipo foi declarado sem a execução correspondente.']::text[], ARRAY['Peça ao responsável que registre a execução deste efeito.', 'Enquanto isso, não marque o efeito como aplicado à mão.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:no-verifier
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:no-verifier', NULL, 'Classe de alvo sem verificador', 'A classe de alvo não tem verificador registrado, por isso não dá para confirmar que o alvo existe antes de declarar a ordem.', ARRAY['A classe ainda não ganhou verificador.', 'A classe foi digitada errada.']::text[], ARRAY['Use uma classe declaravel com verificador.', 'Peça ao responsável que registre o verificador da classe.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:not-found
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:not-found', NULL, 'Registro não encontrado', 'O item que você procurou não existe neste tenant ou foi removido. Por segurança, um item de outro tenant devolve a mesma resposta.', ARRAY['O endereço ou o identificador digitado está errado.', 'O item foi excluído ou ainda não foi criado.']::text[], ARRAY['Confira o identificador e tente de novo.', 'Volte à lista e pesquise pelo nome ou pelo endereço.']::text[], 'pesquisar-imoveis', FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:not-pending-approval
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:not-pending-approval', NULL, 'Ordem fora do estado de aprovação', 'Só uma ordem aguardando aprovação pode ser aprovada. Esta ordem está em outro estado.', ARRAY['A ordem já foi aprovada, recusada ou avançou.', 'A aprovação foi pedida duas vezes.']::text[], ARRAY['Confira o estado atual da ordem.', 'Se ela voltou para rascunho, envie de novo para aprovação.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:operational-types-disabled
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:operational-types-disabled', NULL, 'Tipos operacionais desligados', 'Os tipos operacionais estão desligados pelo parâmetro so.operational_types_enabled, por isso nenhum tipo operacional pode ser declarado agora.', ARRAY['O parâmetro so.operational_types_enabled está desligado.', 'O tenant optou por não usar tipos operacionais.']::text[], ARRAY['Ligue o parâmetro para voltar a usar tipos operacionais.', 'Ou declare um tipo não operacional.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:order-closed
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:order-closed', NULL, 'Ordem encerrada não aceita mais registros', 'A ordem já foi encerrada e não aceita registro de segurança, equipe nem permissão de entrada. O encerramento congela a ordem.', ARRAY['A ordem foi encerrada antes do registro.', 'O registro foi enviado duas vezes, depois do encerramento.']::text[], ARRAY['Confira se a ordem está mesmo encerrada.', 'Para novos registros, abra uma nova ordem.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
@@ -277,6 +403,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:safety-gate
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:safety-gate', NULL, 'Portão de segurança bloqueia o passo', 'A ordem não pode seguir sem os itens de segurança exigidos para este serviço (análise de risco, permissão, equipe mínima, treinamento). A mensagem lista o que falta.', ARRAY['Falta análise de risco, permissão ou treinamento exigido.', 'A equipe mínima para o risco não foi montada.']::text[], ARRAY['Complete os itens listados na mensagem.', 'Depois de completar, repita o passo.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:search-in-url
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
@@ -290,6 +425,24 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:stale-version', NULL, 'Versão desatualizada', 'O registro foi alterado por outra pessoa depois que você o abriu. A gravação não foi aplicada, para não sobrescrever a alteração.', ARRAY['Outro usuário salvou o mesmo registro enquanto você editava.']::text[], ARRAY['Recarregue e confira o que mudou antes de tentar de novo.']::text[], 'pesquisar-imoveis', FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:state-conflict
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:state-conflict', NULL, 'Registro em estado que impede a operação', 'O registro mudou de estado ou está num estado que impede esta operação. Nada foi alterado.', ARRAY['Outro usuário alterou o registro antes.', 'A operação exige um estado diferente do atual.']::text[], ARRAY['Recarregue o registro e confira o estado atual.', 'Refaça a operação no estado permitido.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:targets-frozen
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:targets-frozen', NULL, 'Alvos só entram em rascunho ou aberta', 'Alvos só podem ser incluídos enquanto a ordem está em rascunho ou aberta. Depois que ela avança, a lista de alvos congela.', ARRAY['A ordem já foi enviada, programada ou executada.', 'O alvo foi incluído depois do congelamento.']::text[], ARRAY['Inclua os alvos antes de enviar a ordem.', 'Para novos alvos, abra uma nova ordem.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
@@ -326,6 +479,42 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:tenant-not-allowed', NULL, 'Token de tenant em rota de plataforma', 'Rotas de plataforma exigem um token sem tenant (papel PLATFORM_*); um token de tenant não é aceito nelas.', ARRAY['A requisição usou um token de tenant numa rota de plataforma.']::text[], ARRAY['Use um token de plataforma, sem tenant, para esta rota.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:tipo-duplicado
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:tipo-duplicado', NULL, 'Tipo já existe nesta classe', 'Já existe um tipo com este código nesta classe. O código do tipo é único dentro da classe.', ARRAY['O código já foi usado nesta classe.', 'O tipo já foi criado antes.']::text[], ARRAY['Reaproveite o tipo existente.', 'Use outro código para criar um novo tipo.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:tipo-nao-aprovado
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:tipo-nao-aprovado', NULL, 'Tipo fora do estado aprovado', 'Só é possível ativar ou desativar um tipo aprovado. Este tipo está em outro estado de aprovação.', ARRAY['O tipo ainda está pendente ou foi recusado.', 'A aprovação ainda não aconteceu.']::text[], ARRAY['Aprove o tipo primeiro.', 'Depois da aprovação, ative ou desative.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:tipo-nao-pendente
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:tipo-nao-pendente', NULL, 'Tipo fora do estado pendente', 'Só é possível recusar um tipo pendente de aprovação. Este tipo já foi aprovado ou recusado.', ARRAY['O tipo já passou pela aprovação.', 'A recusa foi pedida duas vezes.']::text[], ARRAY['Confira o estado de aprovação do tipo.', 'Um tipo aprovado se ativa ou desativa; um recusado se corrige e reenvia.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:tipo-nao-usavel
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:tipo-nao-usavel', NULL, 'Tipo não aprovado ou inativo', 'Um item só pode ser criado em um tipo aprovado e ativo. Este tipo está pendente, recusado ou desativado.', ARRAY['O tipo ainda não foi aprovado.', 'O tipo foi desativado.']::text[], ARRAY['Aprove e ative o tipo primeiro.', 'Depois disso, crie o item.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,

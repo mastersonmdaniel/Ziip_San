@@ -1,0 +1,11 @@
+# P1.31: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:effects-pending
+title: Efeitos pendentes impedem o encerramento
+explanation: "Há alvos com efeito ainda não aplicado, por isso a ordem não pode ser encerrada como executada. Encerrar assim marcaria trabalho como feito sem aplicar o efeito."
+causes:
+  - Um ou mais alvos ainda não tiveram o efeito aplicado.
+  - A aplicação foi interrompida antes de terminar.
+actions:
+  - Aplique os efeitos pendentes e tente encerrar de novo.
+  - Se o trabalho não foi feito, encerre como não executada.
+suggest_ticket: false

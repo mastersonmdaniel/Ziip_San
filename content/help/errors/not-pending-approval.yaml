@@ -1,0 +1,11 @@
+# P1.31: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:not-pending-approval
+title: Ordem fora do estado de aprovação
+explanation: "Só uma ordem aguardando aprovação pode ser aprovada. Esta ordem está em outro estado."
+causes:
+  - A ordem já foi aprovada, recusada ou avançou.
+  - A aprovação foi pedida duas vezes.
+actions:
+  - Confira o estado atual da ordem.
+  - Se ela voltou para rascunho, envie de novo para aprovação.
+suggest_ticket: false

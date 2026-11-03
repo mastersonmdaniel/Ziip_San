@@ -1,0 +1,11 @@
+# P1.27: erro explicado (integracao P1-B: faltava no catalogo da P1.22).
+code: urn:ziipsan:problem:tipo-nao-pendente
+title: Tipo fora do estado pendente
+explanation: "Só é possível recusar um tipo pendente de aprovação. Este tipo já foi aprovado ou recusado."
+causes:
+  - O tipo já passou pela aprovação.
+  - A recusa foi pedida duas vezes.
+actions:
+  - Confira o estado de aprovação do tipo.
+  - Um tipo aprovado se ativa ou desativa; um recusado se corrige e reenvia.
+suggest_ticket: false
