@@ -25,7 +25,7 @@ import java.util.Set;
  */
 public final class ParameterLimits {
 
-    /** Piso de retenção do histórico de leitura e faturamento (NR 11, art. 22). */
+    /** Piso de retenção do histórico de leitura e cobrança (NR 11, art. 22). */
     public static final int BILLING_HISTORY_FLOOR_MONTHS = 120;
 
     /** Mínimo de dias de vencimento para concessionária (Lei 8.987, art. 7º-A). */
@@ -101,14 +101,14 @@ public final class ParameterLimits {
     }
 
     /**
-     * {@code bill.invoice_template}: o bloco do fornecedor é travado na fatura
+     * {@code bill.invoice_template}: o bloco do fornecedor é travado na cobrança
      * (CDC, art. 42-A). A emissão com o bloco é da P2.32; aqui fica a trava, para que
      * nenhum modelo sem o bloco seja aceito como válido.
      */
     public static void validateInvoiceHasSupplierBlock(boolean hasSupplierBlock) {
         if (!hasSupplierBlock) {
             throw new IllegalArgumentException(
-                    "bill.invoice_template: o bloco do fornecedor é travado na fatura (CDC, art. 42-A)");
+                    "bill.invoice_template: o bloco do fornecedor é travado na cobrança (CDC, art. 42-A)");
         }
     }
 

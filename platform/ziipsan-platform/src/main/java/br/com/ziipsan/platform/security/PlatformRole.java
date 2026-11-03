@@ -19,7 +19,7 @@ import java.util.Set;
  *   <li>{@code PLATFORM_OPS} — painéis técnicos, alertas, implantação, migrações, flags de
  *       rollout; revogação de sessão e bloqueio de dispositivo do app de campo (ADR-0030);</li>
  *   <li>{@code PLATFORM_SUPPORT} — painéis do tenant, fila de chamados, pedido de acesso assistido;</li>
- *   <li>{@code PLATFORM_FINANCE} — contratos, faturas, pagamentos, cotas; suspensão e bloqueio
+ *   <li>{@code PLATFORM_FINANCE} — contratos, cobranças, pagamentos, cotas; suspensão e bloqueio
  *       só por inadimplência contratual (P1.6, não aqui).</li>
  * </ul>
  * <p>Permissão nova entra no catálogo junto da rota que a usa (regra da P0.13). Por isso,
