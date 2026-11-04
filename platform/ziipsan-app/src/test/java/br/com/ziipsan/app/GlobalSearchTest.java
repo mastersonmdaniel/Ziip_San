@@ -146,12 +146,19 @@ class GlobalSearchTest extends AppIntegrationTestBase {
         String retentionId = UUID.randomUUID().toString();
         String cleanDocId = UUID.randomUUID().toString();
         String quarantinedDocId = UUID.randomUUID().toString();
+        String roleId = UUID.randomUUID().toString();
         sql(
-                "INSERT INTO " + SCHEMA + ".consumer_units (id, tenant_id, matricula, dv) VALUES ('"
+                // P1-C (integracao): a R2 renomeou matricula/dv para
+                // registration_number/check_digit, e unit_customers.role_id
+                // e NOT NULL com FK para relation_roles — sem a linha do
+                // papel, o INSERT do vinculo viola o NOT NULL.
+                "INSERT INTO " + SCHEMA + ".relation_roles (id, tenant_id, code, name, system_role, active) VALUES ('"
+                        + roleId + "', '" + TENANT + "', 'OWNER', 'Proprietário', 'OWNER', true)",
+                "INSERT INTO " + SCHEMA + ".consumer_units (id, tenant_id, registration_number, check_digit) VALUES ('"
                         + unitId + "', '" + TENANT + "', '" + MATRICULA + "', '0')",
-                "INSERT INTO " + SCHEMA + ".unit_customers (id, tenant_id, unit_id, customer_id, role, start_date, show_on_bill)"
+                "INSERT INTO " + SCHEMA + ".unit_customers (id, tenant_id, unit_id, customer_id, role, role_id, start_date, show_on_bill)"
                         + " VALUES ('" + UUID.randomUUID() + "', '" + TENANT + "', '" + unitId + "', '" + customerId
-                        + "', 'OWNER', CURRENT_DATE, true)",
+                        + "', 'OWNER', '" + roleId + "', CURRENT_DATE, true)",
                 "INSERT INTO " + SCHEMA + ".service_types (id, tenant_id, code, name, operation, effect_code, indicator, target_classes)"
                         + " VALUES ('" + typeId + "', '" + TENANT + "', 'GLOBALTEST', 'Serviço Global', 'GLOBAL_OP', 'GLOBAL_EFFECT', 'INTERNAL', ARRAY['CONSUMER_UNIT'])",
                 "INSERT INTO " + SCHEMA + ".service_orders (id, tenant_id, service_type_id, origin, execution_mode, priority, status, created_by)"

@@ -303,12 +303,12 @@ public class GlobalSearchService {
         return inTenantTransaction(tenantId, connection -> {
             List<Hit> hits = new ArrayList<>();
             try (PreparedStatement ps = connection.prepareStatement(
-                    "SELECT u.id, u.matricula, u.dv, c.name FROM consumer_units u"
+                    "SELECT u.id, u.registration_number, u.check_digit, c.name FROM consumer_units u"
                             + " JOIN unit_customers uc ON uc.unit_id = u.id AND uc.end_date IS NULL"
                             + " JOIN customers c ON c.id = uc.customer_id"
                             + " WHERE u.tenant_id = ? AND c.tenant_id = ? AND c.document_hash = ?"
                             + " AND u.deleted_at IS NULL AND c.deleted_at IS NULL"
-                            + " ORDER BY u.matricula LIMIT " + PER_TYPE_LIMIT)) {
+                            + " ORDER BY u.registration_number LIMIT " + PER_TYPE_LIMIT)) {
                 ps.setObject(1, tenantId);
                 ps.setObject(2, tenantId);
                 ps.setString(3, documentHash);
@@ -374,7 +374,7 @@ public class GlobalSearchService {
             return inTenantTransaction(tenantId, connection -> {
                 List<Hit> hits = new ArrayList<>();
                 try (PreparedStatement ps = connection.prepareStatement(
-                        "SELECT b.id, b.reference_month, b.status, b.due_date, u.matricula FROM bills b"
+                        "SELECT b.id, b.reference_month, b.status, b.due_date, u.registration_number FROM bills b"
                                 + " JOIN consumer_units u ON u.id = b.unit_id"
                                 + " WHERE b.tenant_id = ? AND b.id = ? LIMIT " + PER_TYPE_LIMIT)) {
                     ps.setObject(1, tenantId);
@@ -394,10 +394,10 @@ public class GlobalSearchService {
         String[] parts = q.split("-");
         return inTenantTransaction(tenantId, connection -> {
             List<Hit> hits = new ArrayList<>();
-            String sql = "SELECT b.id, b.reference_month, b.status, b.due_date, u.matricula FROM bills b"
+            String sql = "SELECT b.id, b.reference_month, b.status, b.due_date, u.registration_number FROM bills b"
                     + " JOIN consumer_units u ON u.id = b.unit_id"
-                    + " WHERE b.tenant_id = ? AND u.matricula = ?"
-                    + (parts.length > 1 ? " AND u.dv = ?" : "")
+                    + " WHERE b.tenant_id = ? AND u.registration_number = ?"
+                    + (parts.length > 1 ? " AND u.check_digit = ?" : "")
                     + " ORDER BY b.reference_month DESC LIMIT " + PER_TYPE_LIMIT;
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setObject(1, tenantId);
