@@ -32,6 +32,8 @@ está declarado, mas não concede nada até a liberação da ED-75.
 | `console:manage` | console | console | manage | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS) | P1.6 |
 | `console:suspend` | console | console | suspend | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_FINANCE) | P1.6 |
 | `console:delete` | console | console | delete | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER) | P1.6 |
+| `central:read` | central | central | read | (nenhum perfil de tenant — só papéis de plataforma: os 4 papéis) | P1.17 |
+| `central:manage` | central | central | manage | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS) | P1.17 |
 | `parameters:manage` | console | parameters | manage | ADMIN, GESTOR | P1.6 |
 | `protocol:read` | atendimento | protocol | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
 | `protocol:write` | atendimento | protocol | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
@@ -123,6 +125,9 @@ reconciliação atualiza as células das permissões novas ao atribuí-las.
   plataforma (ver `PlatformRole` — OWNER tem as 4, OPS tem read/manage, SUPPORT tem read,
   FINANCE tem read/suspend). A matriz fina (FINANCE só com motivo inadimplência, eliminação
   só OWNER) continua no serviço, não no catálogo.
+- `central:read/manage` (P1.17, registradas na integração P1-C pelo mesmo precedente)
+  seguem a mesma regra: só existem via papel de plataforma (OWNER e OPS têm as 2,
+  SUPPORT e FINANCE têm só `central:read`); nenhum perfil de fábrica de tenant as inclui.
 - `parameters:manage` (P1.6, P1.37) cobre toda a tela de mudança de parâmetro do tenant
   (`/api/v1/tenant/parameters/*`: propor, aprovar, aceitar, ler vigente e painel). MUDANÇA DE
   COMPORTAMENTO NA P1.37: ela deixa de ser só concessão direta e entra nos perfis de

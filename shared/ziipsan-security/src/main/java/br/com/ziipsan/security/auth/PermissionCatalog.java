@@ -91,6 +91,14 @@ public final class PermissionCatalog {
             new Permission("console:manage", "console", "console", "manage", "P1.6"),
             new Permission("console:suspend", "console", "console", "suspend", "P1.6"),
             new Permission("console:delete", "console", "console", "delete", "P1.6"),
+            // P1.17 (integracao P1-C): o mesmo caso do console — a Central usava
+            // central:read/central:manage nas rotas /api/v1/platform/central/*
+            // e /api/v1/platform/metrics/* sem registra-las no catalogo, e o
+            // RoutePermissionTest recusaria todas. Registradas aqui, sem entrar
+            // em nenhum perfil de fabrica de tenant: elas so existem via papel
+            // de plataforma (ver PlatformRole), como console:*.
+            new Permission("central:read", "central", "central", "read", "P1.17"),
+            new Permission("central:manage", "central", "central", "manage", "P1.17"),
             // P1.32: núcleo do módulo Certificações de qualidade (ADR-0041).
             // Nenhum perfil de fábrica as inclui ainda: perfis por função são
             // da P1.37; hoje são concessão direta, como gis:catalog-*.
@@ -284,6 +292,10 @@ public final class PermissionCatalog {
                 "Só papel de plataforma (P1.6): PLATFORM_OWNER e PLATFORM_FINANCE, nunca perfil de tenant.");
         exemptions.put("console:delete",
                 "Só papel de plataforma (P1.6): só PLATFORM_OWNER, nunca perfil de tenant.");
+        exemptions.put("central:read",
+                "Só papel de plataforma (P1.17): os 4 papéis de plataforma, nunca perfil de tenant.");
+        exemptions.put("central:manage",
+                "Só papel de plataforma (P1.17): PLATFORM_OWNER e PLATFORM_OPS, nunca perfil de tenant.");
         return Map.copyOf(exemptions);
     }
 
