@@ -603,6 +603,8 @@ class BillingPartitionP23IT {
             st.execute("ALTER TABLE " + SCHEMA + ".bill_items " + verb + " TRIGGER trg_bill_items_fill_month");
         }
     }
+
+    private static void insertVolumeUnits(Connection c, int count, String prefix) throws SQLException {
         int chunkSize = 10_000;
         int total = 0;
         for (int from = 1; from <= count; from += chunkSize) {
