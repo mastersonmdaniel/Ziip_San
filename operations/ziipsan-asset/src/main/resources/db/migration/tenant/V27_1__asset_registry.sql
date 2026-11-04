@@ -223,8 +223,16 @@ BEGIN
     IF NEW.parent_asset_id = NEW.id THEN
         RAISE EXCEPTION 'asset cannot be its own parent' USING ERRCODE = '23514';
     END IF;
-    SELECT hierarchy_level INTO v_parent_level FROM asset
-    WHERE tenant_id = NEW.tenant_id AND id = NEW.parent_asset_id;
+    -- P1-C (integracao): a consulta usa TG_TABLE_SCHEMA com SQL dinamico.
+    -- O corpo plpgsql resolve nomes na execucao, pelo search_path da
+    -- conexao — e o servico nao fixa search_path (so app.current_tenant).
+    -- 'FROM asset' sem qualificar quebrava todo INSERT com pai (42P01:
+    -- relation "asset" does not exist) fora da migracao. TG_TABLE_SCHEMA
+    -- e o schema da tabela que disparou o trigger, ou seja, o tenant.
+    EXECUTE format('SELECT hierarchy_level FROM %I.asset WHERE tenant_id = $1 AND id = $2',
+                   TG_TABLE_SCHEMA)
+        INTO v_parent_level
+        USING NEW.tenant_id, NEW.parent_asset_id;
     IF NOT FOUND THEN
         RAISE EXCEPTION 'asset parent % not found for tenant', NEW.parent_asset_id
             USING ERRCODE = '23503';
