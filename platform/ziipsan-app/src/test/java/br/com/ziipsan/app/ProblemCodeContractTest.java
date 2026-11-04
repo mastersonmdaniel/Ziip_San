@@ -71,7 +71,16 @@ class ProblemCodeContractTest {
             // fora da tabela — mesmo caso da P1.22 e da P1-B: a tabela estava
             // desatualizada, não o código.
             "activation-exists", "activation-state",
-            "clause-map-frozen", "evidence-link-exists");
+            "clause-map-frozen", "evidence-link-exists",
+            // P1-C (integracao): 9 códigos emitidos e explicados no catálogo
+            // de erros (YAMLs) que a regeneração do bundle gerado (64 erros)
+            // revelou fora do bundle commitado — o bundle anterior estava
+            // defasado, e o teste varre o bundle gerado: a tabela estava
+            // desatualizada, não o código. Os 5 primeiros são os próprios
+            // nomes de campo usados como código no contrato R2 ("400
+            // nomeando o campo").
+            "code", "draft-closed", "invalid-version", "name", "resource",
+            "step", "table", "saved-view-title-in-use", "user-required");
 
     /** Códigos antigos da tabela (português) — nenhum pode restar no código. */
     private static final List<String> OLD_CODES = List.of(
