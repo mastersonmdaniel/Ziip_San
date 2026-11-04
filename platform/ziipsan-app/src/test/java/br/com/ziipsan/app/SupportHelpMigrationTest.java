@@ -28,7 +28,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class SupportHelpMigrationTest {
 
     private static final List<String> TABLES = List.of(
-            "article", "article_version", "article_feedback", "tour_completion", "error_explanation");
+            "article", "article_version", "article_feedback", "tour_completion", "error_explanation",
+            // P1-C (integracao): o schema support ganhou as tabelas da fila de
+            // chamados (P1.23, V9_4) e o visto de release-notes (P1.24, V9_5).
+            // RLS forçada + policy continuam exigidas para todas (ver problems).
+            "release_note_view",
+            "ticket", "ticket_attachment", "ticket_event", "ticket_message", "ticket_number_counter");
 
     @BeforeAll
     static void installFromScratch() {
@@ -36,7 +41,7 @@ class SupportHelpMigrationTest {
     }
 
     @Test
-    @DisplayName("V9_3 cria as 5 tabelas do support com RLS forçada e policy")
+    @DisplayName("schema support tem as 11 tabelas com RLS forçada e policy")
     void supportTablesExistWithForcedRls() throws SQLException {
         String sql = """
                 SELECT c.relname, c.relrowsecurity, c.relforcerowsecurity,
@@ -99,6 +104,10 @@ class SupportHelpMigrationTest {
                 "SELECT code FROM support.error_explanation ORDER BY code");
         // P1.22 + integração P1-B: o catálogo passa a cobrir todos os códigos problem emitidos.
         // P1.32: +4 códigos do núcleo de Certificações (51 -> 55).
+        // P1-C (integração): +9 códigos revelados pela regeneração do bundle
+        // gerado (55 -> 64) — os 7 YAMLs novos da rodada 4 + saved-view-title-in-use
+        // e user-required, que tinham YAML desde a P1.33 mas estavam fora do bundle
+        // commitado. A lista continua exata: código novo exige YAML + bundle.
         assertThat(codes).containsExactly(
                 "urn:ziipsan:problem:access-denied",
                 "urn:ziipsan:problem:activation-exists",
@@ -106,12 +115,14 @@ class SupportHelpMigrationTest {
                 "urn:ziipsan:problem:approval-required",
                 "urn:ziipsan:problem:classe-inativa",
                 "urn:ziipsan:problem:clause-map-frozen",
+                "urn:ziipsan:problem:code",
                 "urn:ziipsan:problem:confirmation-required",
                 "urn:ziipsan:problem:content-too-large",
                 "urn:ziipsan:problem:customer-has-active-link",
                 "urn:ziipsan:problem:customer-without-document",
                 "urn:ziipsan:problem:data-conflict",
                 "urn:ziipsan:problem:deletion-unavailable",
+                "urn:ziipsan:problem:draft-closed",
                 "urn:ziipsan:problem:effects-pending",
                 "urn:ziipsan:problem:evidence-link-exists",
                 "urn:ziipsan:problem:filter-unavailable",
@@ -125,10 +136,12 @@ class SupportHelpMigrationTest {
                 "urn:ziipsan:problem:invalid-resource",
                 "urn:ziipsan:problem:invalid-sort",
                 "urn:ziipsan:problem:invalid-transition",
+                "urn:ziipsan:problem:invalid-version",
                 "urn:ziipsan:problem:item-duplicado",
                 "urn:ziipsan:problem:item-nao-aprovado",
                 "urn:ziipsan:problem:item-nao-pendente",
                 "urn:ziipsan:problem:mfa-required",
+                "urn:ziipsan:problem:name",
                 "urn:ziipsan:problem:no-effect-handler",
                 "urn:ziipsan:problem:no-verifier",
                 "urn:ziipsan:problem:not-found",
@@ -139,10 +152,14 @@ class SupportHelpMigrationTest {
                 "urn:ziipsan:problem:precondition-required",
                 "urn:ziipsan:problem:record-already-deleted",
                 "urn:ziipsan:problem:record-deleted",
+                "urn:ziipsan:problem:resource",
                 "urn:ziipsan:problem:safety-gate",
+                "urn:ziipsan:problem:saved-view-title-in-use",
                 "urn:ziipsan:problem:search-in-url",
                 "urn:ziipsan:problem:stale-version",
                 "urn:ziipsan:problem:state-conflict",
+                "urn:ziipsan:problem:step",
+                "urn:ziipsan:problem:table",
                 "urn:ziipsan:problem:targets-frozen",
                 "urn:ziipsan:problem:tenant-inactive",
                 "urn:ziipsan:problem:tenant-mismatch",
@@ -154,6 +171,7 @@ class SupportHelpMigrationTest {
                 "urn:ziipsan:problem:tipo-nao-usavel",
                 "urn:ziipsan:problem:too-many-requests",
                 "urn:ziipsan:problem:unauthenticated",
+                "urn:ziipsan:problem:user-required",
                 "urn:ziipsan:problem:validation");
         int versions = queryInt(ProvisionedTenant.migratorDs,
                 "SELECT count(*) FROM support.article_version v "
