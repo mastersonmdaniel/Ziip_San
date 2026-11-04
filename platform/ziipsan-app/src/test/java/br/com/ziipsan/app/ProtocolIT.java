@@ -78,7 +78,18 @@ class ProtocolIT {
         Connection c = ProvisionedTenant.appDs.getConnection();
         c.setAutoCommit(false);
         try (Statement st = c.createStatement()) {
-            st.execute("SELECT set_config('app.current_tenant', '" + TENANT + "', true)");
+            // P1-C (integracao): GUC em nivel de SESSAO, nao LOCAL. SET LOCAL
+            // morre no primeiro commit — e estes testes comitam as fixtures
+            // para os servicos enxergarem por outras conexoes, e depois usam
+            // a mesma conexao no finally (deletes) e em SELECTs. Com LOCAL,
+            // o commit apagava o tenant: os deletes do finally casavam 0
+            // linhas em silencio (RLS) e os parametros vazavam para os testes
+            // seguintes (conflito de exclusion + prazo BUSINESS onde se
+            // esperava CALENDAR). A conexao e so do teste (criada aqui,
+            // fechada no finally) e os servicos fixam o proprio LOCAL por
+            // transacao, que sombreia o da sessao — sem vazamento para a
+            // logica do servico.
+            st.execute("SELECT set_config('app.current_tenant', '" + TENANT + "', false)");
         }
         return c;
     }
