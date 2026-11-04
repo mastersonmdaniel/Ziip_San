@@ -51,6 +51,23 @@ describe('Layout: menu por papel + modal com axe limpo (P1.12)', () => {
     expect(within(nav).queryByRole('link')).not.toBeInTheDocument()
   })
 
+  it('P1.37: só com gis:catalog-read, o menu mostra só o Catálogo GIS', () => {
+    authUser.user = { fullName: 'TESTE Usuário', username: 'teste', email: 't@x.invalid', permissions: ['gis:catalog-read'] }
+    renderLayout()
+    const nav = screen.getByRole('navigation', { name: 'Principal' })
+    expect(within(nav).getByRole('link', { name: 'Catálogo GIS' })).toHaveAttribute('href', '/gis/catalogo')
+    expect(within(nav).queryByRole('link', { name: 'Imóveis' })).not.toBeInTheDocument()
+    expect(within(nav).queryByRole('link', { name: 'Arquivos gerados' })).not.toBeInTheDocument()
+  })
+
+  it('P1.37: com registry:read mas sem gis:catalog-read, o Catálogo GIS não aparece', () => {
+    authUser.user = { fullName: 'TESTE Usuário', username: 'teste', email: 't@x.invalid', permissions: ['registry:read'] }
+    renderLayout()
+    const nav = screen.getByRole('navigation', { name: 'Principal' })
+    expect(within(nav).getByRole('link', { name: 'Imóveis' })).toHaveAttribute('href', '/cadastro/imoveis')
+    expect(within(nav).queryByRole('link', { name: 'Catálogo GIS' })).not.toBeInTheDocument()
+  })
+
   it('Escape fecha o menu', async () => {
     const user = userEvent.setup()
     renderLayout()

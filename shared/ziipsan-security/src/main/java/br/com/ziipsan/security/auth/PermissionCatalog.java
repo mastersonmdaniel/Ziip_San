@@ -1,25 +1,49 @@
 package br.com.ziipsan.security.auth;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
- * Catálogo de permissões {@code recurso:ação} do produto (P0.13, ADR-0040).
+ * Catálogo de permissões {@code recurso:ação} do produto (P0.13, ADR-0040) e perfis de
+ * fábrica por função (P1.37, decisão do dono de 28/10/2026, JOR-01).
  *
  * <p>Formato único: um recurso, dois-pontos, uma ação, sem ponto ({@code registry:reveal-document},
  * nunca {@code registry.reveal-document}). A negação é o padrão: um papel ou permissão
  * desconhecida não concede nada ({@link #authoritiesForRole(String)} devolve vazio).
  *
  * <p>O Keycloak autentica e entrega identidade, tenant e perfis; a permissão fina é resolvida
- * na aplicação, a partir daqui. Um token pode carregar um perfil de fábrica (ex.: {@code OPERATOR},
+ * na aplicação, a partir daqui. Um token pode carregar um perfil de fábrica (ex.: {@code ATENDENTE},
  * expandido para as permissões do perfil) ou uma permissão direta do catálogo (ex.:
  * {@code registry:reveal-document}, que nenhum perfil de fábrica inclui de propósito: quem
  * cadastra não precisa, em regra, ver o documento depois de gravado).
  *
  * <p>Permissão nova entra aqui junto da rota que a usa; o documento em
- * {@code docs/seguranca/CATALOGO-PERMISSOES.md} é conferido contra esta lista no CI.
+ * {@code docs/seguranca/CATALOGO-PERMISSOES.md} é conferido contra esta lista no CI, e o
+ * teste do CI recusa permissão do catálogo que não esteja em nenhum perfil de fábrica nem
+ * na lista explícita de exceções ({@link #coverageExemptions()}): esquecer um perfil é
+ * falha de build, não concessão por omissão.
+ *
+ * <p>P1.37 — o que cabe nesta branch. O catálogo desta branch só tem 16 permissões: as de
+ * cadastro, gestão de usuários, catálogo GIS, plataforma e parâmetros. Os domínios ainda
+ * sem permissão catalogada não dão permissão a nenhum perfil — os
+ * perfis dessas funções nascem com o que o catálogo tem (em vários casos, só
+ * {@code registry:read} ou nada) e ganham as permissões do domínio na tarefa que as
+ * catalogar, inclusive nas frentes paralelas da camada C: a integração reconcilia o
+ * restante, e o teste de cobertura a obriga a fazê-lo (permissão nova sem perfil falha).
+ * Nenhuma permissão é inventada aqui para preencher esses perfis.
+ *
+ * <p>Versão: {@link #VERSION} acompanha a versão do pacote {@code sanitation} em
+ * {@code packages/sanitation/vertical.json} (o manifesto declara os mesmos perfis, e o
+ * teste de manifesto confere os dois lados). Página inicial: todo perfil declara
+ * {@code /inicio} — a página em si é construída pela P3.39, que a compõe por perfil; a
+ * P1.37 apenas a atribui. O menu de cada perfil deriva do mapa do produto da P0.47: o
+ * frontend só exibe o item cuja permissão o perfil tem (P1.12), e o servidor continua
+ * negando a rota sem a permissão.
  */
 public final class PermissionCatalog {
 
@@ -28,6 +52,12 @@ public final class PermissionCatalog {
     }
 
     private static final Pattern NAME = Pattern.compile("^[a-z][a-z0-9-]*:[a-z][a-z0-9-]*$");
+
+    /** Versão dos perfis de fábrica: a versão do pacote sanitation (P1.37). */
+    public static final String VERSION = "0.1.0";
+
+    /** Página inicial atribuída a todo perfil de fábrica; construída pela P3.39. */
+    public static final String HOME_PAGE = "/inicio";
 
     public static final List<Permission> ALL = List.of(
             new Permission("registry:read", "cadastro", "registry", "read", "P0.13"),
@@ -42,8 +72,8 @@ public final class PermissionCatalog {
             new Permission("user:write", "plataforma", "user", "write", "P0.13"),
             // P1.27: catálogo GIS do tenant (GIS-CADASTRO-TECNICO §4.1 e §6.6, onde a
             // permissão aparece na forma pontuada gis.catalog.manage; aqui ela segue o
-            // formato único recurso:ação da P0.13). Nenhum perfil de fábrica as inclui
-            // ainda: perfis por função são da P1.37; hoje são concessão direta.
+            // formato único recurso:ação da P0.13). Perfis por função na P1.37:
+            // editor do cadastro técnico gerencia, revisor só lê.
             // Recurso "gis", ação "catalog-read"/"catalog-manage": o nome tem de ser
             // recurso:ação (contrato da P0.13, verificado pelo PermissionCatalogTest).
             new Permission("gis:catalog-read", "gis", "gis", "catalog-read", "P1.27"),
@@ -75,8 +105,9 @@ public final class PermissionCatalog {
             // P1.6 (integracao P1-B): a tela de mudanca de parametro do tenant
             // (/api/v1/tenant/parameters/*) nasceu sem permissao fina — a frente
             // declarou a lacuna e o RoutePermissionTest recusava as 6 rotas.
-            // Concessao direta (nenhum perfil de fabrica), como registry:export:
-            // propor/aprovar/aceitar/ler valores exige a permissao direta.
+            // P1.37: deixa de ser concessão direta e entra nos perfis de fábrica
+            // pertinentes (ADMIN e GESTOR, abaixo). A separação proponente ≠
+            // aprovador continua no serviço, por ator, não por perfil.
             new Permission("parameters:manage", "console", "parameters", "manage", "P1.6"),
             // P1.36: protocolo de atendimento (NR 11, art. 52). Concessao
             // direta, como gis:catalog-* e parameters:manage: perfis por
@@ -112,46 +143,169 @@ public final class PermissionCatalog {
             new Permission("billing:read", "cobrança", "billing", "read", "P1.33"),
             new Permission("document:read", "documentos", "document", "read", "P1.33"));
 
-    /** Perfis mínimos de fábrica da P0.13, compostos do catálogo (perfis por função: P1.37). */
+    /**
+     * Perfis de fábrica (P0.13: os quatro mínimos; P1.37: os 22 por função, na ordem do
+     * plano). Código: estável, maiúsculo, até 20 caracteres (limite da coluna
+     * {@code user_profiles.profile} da V1_9 — ver TenantUserService). O rótulo é o nome
+     * da função no plano; o código abrevia quando o nome cheio passa de 20 caracteres
+     * (ex.: {@code RESP_TEC_QUALIDADE}).
+     *
+     * <p>Perfis desligados ({@code enabled = false}): auditor externo e regulador nascem
+     * desligados (plano, P1.37) e o mecanismo de liberação é da ED-75. Até lá, o perfil
+     * existe no catálogo e no manifesto, mas não expande para permissão nenhuma
+     * ({@link #authoritiesForRole(String)} devolve vazio) e a atribuição pelo
+     * administrador do tenant é recusada (TenantUserService). O conjunto declarado do
+     * perfil é o que a ED-75 ativará, sem redefinir permissões na hora da liberação.
+     */
     public enum FactoryProfile {
-        /**
-         * Todas as permissões do catálogo, exceto {@code registry:reveal-document} e
-         * {@code registry:search-document}: revelar o documento em claro e buscar por
-         * documento continuam exigindo concessão direta, como no modelo anterior — nenhum
-         * perfil de fábrica as inclui, nem o ADMIN (P0.11, ADR-0008: a busca por documento
-         * é um papel próprio, separado de leitura e de revelação).
-         */
-        ADMIN(Set.of("registry:read", "registry:write", "user:read", "user:write")),
+        // Perfis mínimos da P0.13. ADMIN: administra o tenant — cadastro, usuários,
+        // catálogo GIS e parâmetros. Continua sem revelar documento, buscar por
+        // documento e exportar: as três seguem concessão direta (ADR-0008).
+        ADMIN("Administrador do tenant", true, HOME_PAGE,
+                "registry:read", "registry:write", "user:read", "user:write",
+                "gis:catalog-read", "gis:catalog-manage", "parameters:manage"),
         /** Cadastro (leitura e escrita) e leitura de usuários; não gerencia usuários. */
-        MANAGER(Set.of("registry:read", "registry:write", "user:read")),
+        MANAGER("Gerente", true, HOME_PAGE,
+                "registry:read", "registry:write", "user:read"),
         /** Cadastro (leitura e escrita); sem acesso à gestão de usuários. */
-        OPERATOR(Set.of("registry:read", "registry:write")),
+        OPERATOR("Operador", true, HOME_PAGE,
+                "registry:read", "registry:write"),
         /** Só leitura do cadastro. */
-        VIEWER(Set.of("registry:read"));
+        VIEWER("Observador", true, HOME_PAGE,
+                "registry:read"),
+        // Perfis por função da P1.37. Permissões só do catálogo desta branch; o domínio
+        // de cada função ganha as suas na tarefa que o catalogar (ver javadoc da classe).
+        ATENDENTE("Atendente", true, HOME_PAGE,
+                "registry:read", "registry:write"),
+        SUPERVISOR_COMERCIAL("Supervisor comercial", true, HOME_PAGE,
+                "registry:read", "registry:write", "user:read"),
+        FATURISTA("Faturista", true, HOME_PAGE,
+                "registry:read"),
+        ANALISTA_ARRECADACAO("Analista de arrecadação", true, HOME_PAGE,
+                "registry:read"),
+        LEITURISTA("Leiturista", true, HOME_PAGE,
+                "registry:read"),
+        PROGRAMADOR_OS("Programador de OS", true, HOME_PAGE,
+                "registry:read"),
+        EXECUTOR_CAMPO("Executor de campo", true, HOME_PAGE,
+                "registry:read"),
+        /** Sem permissão catalogada nesta branch: as de estoque entram com o domínio. */
+        ALMOXARIFE("Almoxarife", true, HOME_PAGE),
+        /** Sem permissão catalogada nesta branch: as de estação entram com o domínio. */
+        OPERADOR_ESTACAO("Operador de estação", true, HOME_PAGE),
+        ANALISTA_PERDAS("Analista de perdas", true, HOME_PAGE,
+                "registry:read"),
+        /** Sem permissão catalogada nesta branch: as de qualidade entram com o domínio. */
+        LABORATORISTA("Laboratorista", true, HOME_PAGE),
+        /** Sem permissão catalogada nesta branch: as de qualidade/certificação entram com o domínio. */
+        RESP_TEC_QUALIDADE("Responsável técnico da qualidade", true, HOME_PAGE),
+        EDITOR_CAD_TECNICO("Editor do cadastro técnico", true, HOME_PAGE,
+                "gis:catalog-read", "gis:catalog-manage"),
+        REVISOR_CAD_TECNICO("Revisor do cadastro técnico", true, HOME_PAGE,
+                "gis:catalog-read"),
+        GESTOR("Gestor", true, HOME_PAGE,
+                "registry:read", "user:read", "parameters:manage"),
+        AUDITOR_INTERNO("Auditor interno", true, HOME_PAGE,
+                "registry:read", "gis:catalog-read", "user:read"),
+        OUVIDOR("Ouvidor", true, HOME_PAGE,
+                "registry:read"),
+        ENCARREGADO_DADOS("Encarregado de dados", true, HOME_PAGE,
+                "registry:read", "user:read"),
+        PROCURADOR("Procurador", true, HOME_PAGE,
+                "registry:read"),
+        CONTADOR("Contador", true, HOME_PAGE,
+                "registry:read"),
+        /** Desligado no nascimento (ED-75): o conjunto é o previsto para a liberação. */
+        AUDITOR_EXTERNO("Auditor externo", false, HOME_PAGE,
+                "registry:read", "gis:catalog-read", "user:read"),
+        /** Desligado no nascimento (ED-75): o conjunto é o previsto para a liberação. */
+        REGULADOR("Regulador", false, HOME_PAGE,
+                "registry:read", "gis:catalog-read");
 
+        private final String label;
+        private final boolean enabled;
+        private final String homePage;
         private final Set<String> permissions;
 
-        FactoryProfile(Set<String> permissions) {
-            this.permissions = Set.copyOf(permissions);
+        FactoryProfile(String label, boolean enabled, String homePage, String... permissions) {
+            this.label = label;
+            this.enabled = enabled;
+            this.homePage = homePage;
+            this.permissions = Set.copyOf(List.of(permissions));
         }
 
+        /** Rótulo da função, em português, como no plano. */
+        public String label() {
+            return label;
+        }
+
+        /** Falso só para auditor externo e regulador, desligados até a ED-75. */
+        public boolean enabled() {
+            return enabled;
+        }
+
+        /** Página inicial atribuída; construída pela P3.39. */
+        public String homePage() {
+            return homePage;
+        }
+
+        /** Permissões declaradas do perfil (o conjunto previsto, mesmo se desligado). */
         public Set<String> permissions() {
             return permissions;
         }
     }
 
-    private static final Map<String, Set<String>> BY_PROFILE = Map.of(
-            "ADMIN", FactoryProfile.ADMIN.permissions(),
-            "MANAGER", FactoryProfile.MANAGER.permissions(),
-            "OPERATOR", FactoryProfile.OPERATOR.permissions(),
-            "VIEWER", FactoryProfile.VIEWER.permissions());
+    private static final Map<String, Set<String>> BY_PROFILE = Stream.of(FactoryProfile.values())
+            .collect(Collectors.toUnmodifiableMap(Enum::name, FactoryProfile::permissions));
+
+    /**
+     * Permissões do catálogo deliberadamente fora de todo perfil de fábrica de tenant,
+     * com o motivo. A lista é fechada e conferida no CI: permissão nova só entra aqui
+     * por decisão explícita (código + motivo), nunca por esquecimento de perfil.
+     * As três de dado pessoal são concessão direta por desenho (ADR-0008); as cinco de
+     * plataforma só existem via papel de plataforma (PlatformRole), nunca via perfil
+     * de tenant — um token de tenant nunca as recebe.
+     */
+    public static Map<String, String> coverageExemptions() {
+        Map<String, String> exemptions = new LinkedHashMap<>();
+        exemptions.put("registry:reveal-document",
+                "Concessão direta (ADR-0008): revelar o documento em claro exige a permissão direta.");
+        exemptions.put("registry:search-document",
+                "Concessão direta (ADR-0008): buscar por documento completo exige a permissão direta.");
+        exemptions.put("registry:export",
+                "Concessão direta (P1.12, ADR-0008): exportar uma lista exige a permissão direta.");
+        exemptions.put("deployment:read",
+                "Só papel de plataforma (P0.43): PLATFORM_OWNER e PLATFORM_OPS, nunca perfil de tenant.");
+        exemptions.put("console:read",
+                "Só papel de plataforma (P1.6): os 4 papéis de plataforma, nunca perfil de tenant.");
+        exemptions.put("console:manage",
+                "Só papel de plataforma (P1.6): PLATFORM_OWNER e PLATFORM_OPS, nunca perfil de tenant.");
+        exemptions.put("console:suspend",
+                "Só papel de plataforma (P1.6): PLATFORM_OWNER e PLATFORM_FINANCE, nunca perfil de tenant.");
+        exemptions.put("console:delete",
+                "Só papel de plataforma (P1.6): só PLATFORM_OWNER, nunca perfil de tenant.");
+        return Map.copyOf(exemptions);
+    }
 
     private PermissionCatalog() {
     }
 
     /** Nomes de todas as permissões do catálogo. */
     public static Set<String> allNames() {
-        return ALL.stream().map(Permission::name).collect(java.util.stream.Collectors.toUnmodifiableSet());
+        return ALL.stream().map(Permission::name).collect(Collectors.toUnmodifiableSet());
+    }
+
+    /** Todos os perfis de fábrica, na ordem de declaração (mínimos, depois por função). */
+    public static List<FactoryProfile> factoryProfiles() {
+        return List.of(FactoryProfile.values());
+    }
+
+    /** Códigos dos perfis de fábrica que incluem a permissão (mesmo os desligados). */
+    public static List<String> profilesIncluding(String permission) {
+        return Stream.of(FactoryProfile.values())
+                .filter(p -> p.permissions().contains(permission))
+                .map(Enum::name)
+                .toList();
     }
 
     /** Verdadeiro se o nome está no catálogo e no formato {@code recurso:ação}. */
@@ -162,7 +316,8 @@ public final class PermissionCatalog {
     /**
      * Permissões concedidas por um papel do token: a expansão do perfil de fábrica, a própria
      * permissão quando o papel já é um nome do catálogo, ou vazio (negação por padrão) quando
-     * o papel não é nem perfil nem permissão.
+     * o papel não é nem perfil nem permissão. Perfil desligado (auditor externo, regulador)
+     * não expande para nada até a liberação da ED-75.
      */
     public static Set<String> authoritiesForRole(String role) {
         if (role == null) {
@@ -170,6 +325,13 @@ public final class PermissionCatalog {
         }
         Set<String> profile = BY_PROFILE.get(role);
         if (profile != null) {
+            try {
+                if (!FactoryProfile.valueOf(role).enabled()) {
+                    return Set.of();
+                }
+            } catch (IllegalArgumentException e) {
+                return Set.of();
+            }
             return profile;
         }
         return isPermission(role) ? Set.of(role) : Set.of();

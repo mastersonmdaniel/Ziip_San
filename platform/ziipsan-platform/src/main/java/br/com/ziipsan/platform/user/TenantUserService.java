@@ -26,6 +26,15 @@ import java.util.stream.Collectors;
  *
  * <p>Alterações nas tabelas {@code users} e {@code user_profiles} caem na trilha de auditoria
  * pelo trigger da V1_2, com autoria da GUC {@code app.current_user}.
+ *
+ * <p>P1.37: os perfis atribuíveis são todos os de fábrica do catálogo
+ * ({@code GET /api/v1/profiles}), exceto os desligados no nascimento (auditor externo e
+ * regulador, cuja liberação é da ED-75). BLOQUEADOR DE PERSISTÊNCIA: o CHECK da V1_9
+ * ({@code profile IN ('ADMIN','MANAGER','OPERATOR','VIEWER')}) ainda só aceita os quatro
+ * mínimos — a validação aqui aceita os 26 códigos, mas a gravação de um perfil novo no
+ * banco falha até a migration (versão a alocar pelo coordenador) alargar o CHECK. A
+ * resolução por token (papel do Keycloak → permissões) não depende dessa tabela e já
+ * funciona para os 26 perfis.
  */
 @Service
 @Transactional
@@ -151,11 +160,17 @@ public class TenantUserService {
         }
         Set<String> distinct = new LinkedHashSet<>();
         for (String name : requested) {
+            PermissionCatalog.FactoryProfile profile;
             try {
-                PermissionCatalog.FactoryProfile.valueOf(name);
+                profile = PermissionCatalog.FactoryProfile.valueOf(name);
             } catch (IllegalArgumentException | NullPointerException e) {
                 throw ApiException.Validation.of(new ApiException.FieldError("profiles", "invalid",
-                        "Perfil desconhecido: " + name + ". Use ADMIN, MANAGER, OPERATOR ou VIEWER."));
+                        "Perfil desconhecido: " + name + ". Veja os perfis de fábrica em GET /api/v1/profiles."));
+            }
+            // P1.37: auditor externo e regulador nascem desligados; a liberação é da ED-75.
+            if (!profile.enabled()) {
+                throw ApiException.Validation.of(new ApiException.FieldError("profiles", "disabled",
+                        "Perfil desligado: " + name + ". A liberação de auditor externo e regulador é da ED-75."));
             }
             distinct.add(name);
         }

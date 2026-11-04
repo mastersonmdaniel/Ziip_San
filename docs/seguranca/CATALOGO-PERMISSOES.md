@@ -1,4 +1,4 @@
-# Catálogo de permissões `recurso:ação` (P0.13, ADR-0040)
+# Catálogo de permissões `recurso:ação` (P0.13, ADR-0040; perfis de fábrica P1.37)
 
 Fonte: `shared/ziipsan-security/.../security/auth/PermissionCatalog.java`. Este documento é
 conferido contra o código no CI: toda permissão do código aparece aqui, e nenhuma linha aqui
@@ -9,25 +9,30 @@ Formato único: `recurso:ação`, sem ponto (`registry:reveal-document`, nunca
 nada. O Keycloak autentica e entrega identidade, tenant e perfis; a permissão fina é resolvida
 na aplicação, a partir do catálogo.
 
+Perfis de fábrica (P1.37, decisão do dono de 28/10/2026, JOR-01), versão `0.1.0` — a versão
+do pacote `sanitation`, declarada também em `packages/sanitation/vertical.json` (o teste de
+manifesto confere código e manifesto). `*` = perfil desligado no nascimento: o conjunto
+está declarado, mas não concede nada até a liberação da ED-75.
+
 ## Permissões
 
 | Permissão | Módulo | Recurso | Ação | Perfis de fábrica | Tarefa de origem |
 |---|---|---|---|---|---|
-| `registry:read` | cadastro | registry | read | ADMIN, MANAGER, OPERATOR, VIEWER | P0.13 |
-| `registry:write` | cadastro | registry | write | ADMIN, MANAGER, OPERATOR | P0.13 |
+| `registry:read` | cadastro | registry | read | ADMIN, MANAGER, OPERATOR, VIEWER, ATENDENTE, SUPERVISOR_COMERCIAL, FATURISTA, ANALISTA_ARRECADACAO, LEITURISTA, PROGRAMADOR_OS, EXECUTOR_CAMPO, ANALISTA_PERDAS, GESTOR, AUDITOR_INTERNO, OUVIDOR, ENCARREGADO_DADOS, PROCURADOR, CONTADOR, AUDITOR_EXTERNO*, REGULADOR* | P0.13 |
+| `registry:write` | cadastro | registry | write | ADMIN, MANAGER, OPERATOR, ATENDENTE, SUPERVISOR_COMERCIAL | P0.13 |
 | `registry:reveal-document` | cadastro | registry | reveal-document | (nenhum — só concessão direta) | P0.13 |
 | `registry:search-document` | cadastro | registry | search-document | (nenhum — só concessão direta) | P0.11 |
 | `registry:export` | cadastro | registry | export | (nenhum — só concessão direta) | P1.12 |
-| `user:read` | plataforma | user | read | ADMIN, MANAGER | P0.13 |
+| `user:read` | plataforma | user | read | ADMIN, MANAGER, SUPERVISOR_COMERCIAL, GESTOR, AUDITOR_INTERNO, ENCARREGADO_DADOS, AUDITOR_EXTERNO* | P0.13 |
 | `user:write` | plataforma | user | write | ADMIN | P0.13 |
 | `deployment:read` | plataforma | deployment | read | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS) | P0.43 |
-| `gis:catalog-read` | gis | gis | catalog-read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.27 |
-| `gis:catalog-manage` | gis | gis | catalog-manage | (nenhum — só concessão direta; perfis por função na P1.37) | P1.27 |
+| `gis:catalog-read` | gis | gis | catalog-read | ADMIN, EDITOR_CAD_TECNICO, REVISOR_CAD_TECNICO, AUDITOR_INTERNO, AUDITOR_EXTERNO*, REGULADOR* | P1.27 |
+| `gis:catalog-manage` | gis | gis | catalog-manage | ADMIN, EDITOR_CAD_TECNICO | P1.27 |
 | `console:read` | console | console | read | (nenhum perfil de tenant — só papéis de plataforma: os 4 papéis) | P1.6 |
 | `console:manage` | console | console | manage | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS) | P1.6 |
 | `console:suspend` | console | console | suspend | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_FINANCE) | P1.6 |
 | `console:delete` | console | console | delete | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER) | P1.6 |
-| `parameters:manage` | console | parameters | manage | (nenhum — só concessão direta) | P1.6 |
+| `parameters:manage` | console | parameters | manage | ADMIN, GESTOR | P1.6 |
 | `protocol:read` | atendimento | protocol | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
 | `protocol:write` | atendimento | protocol | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
 | `brand:manage` | console | brand | manage | (nenhum — só concessão direta) | P1.19 |
@@ -43,6 +48,47 @@ na aplicação, a partir do catálogo.
 | `service-order:read` | ordem de servico | service-order | read | (nenhum — só concessão direta) | P1.33 |
 | `billing:read` | cobrança | billing | read | (nenhum — só concessão direta) | P1.33 |
 | `document:read` | documentos | document | read | (nenhum — só concessão direta) | P1.33 |
+
+## Perfis de fábrica (P1.37)
+
+Página inicial de todos: `/inicio`, atribuída aqui e construída pela P3.39 (que a compõe
+por perfil). Menu de cada perfil: só os itens do mapa do produto (P0.47) cuja permissão o
+perfil tem — o frontend filtra por permissão (P1.12) e o servidor nega a rota sem ela.
+Perfis com conjunto vazio ou só `registry:read` aguardam o catálogo do seu domínio:
+nenhuma permissão foi inventada para preenchê-los; a tarefa que catalogar o domínio
+acrescenta as permissões aos perfis pertinentes, e o teste de cobertura a obriga.
+As permissões das frentes paralelas da camada C são reconciliadas na integração P1-C
+(ver commits de integração): a tabela abaixo reflete o estado da frente P1.37, e a
+reconciliação atualiza as células das permissões novas ao atribuí-las.
+
+| Código | Função | Ativo | Permissões |
+|---|---|---|---|
+| `ADMIN` | Administrador do tenant | sim | `registry:read`, `registry:write`, `user:read`, `user:write`, `gis:catalog-read`, `gis:catalog-manage`, `parameters:manage` |
+| `MANAGER` | Gerente | sim | `registry:read`, `registry:write`, `user:read` |
+| `OPERATOR` | Operador | sim | `registry:read`, `registry:write` |
+| `VIEWER` | Observador | sim | `registry:read` |
+| `ATENDENTE` | Atendente | sim | `registry:read`, `registry:write` |
+| `SUPERVISOR_COMERCIAL` | Supervisor comercial | sim | `registry:read`, `registry:write`, `user:read` |
+| `FATURISTA` | Faturista | sim | `registry:read` |
+| `ANALISTA_ARRECADACAO` | Analista de arrecadação | sim | `registry:read` |
+| `LEITURISTA` | Leiturista | sim | `registry:read` |
+| `PROGRAMADOR_OS` | Programador de OS | sim | `registry:read` |
+| `EXECUTOR_CAMPO` | Executor de campo | sim | `registry:read` |
+| `ALMOXARIFE` | Almoxarife | sim | (nenhuma catalogada nesta branch) |
+| `OPERADOR_ESTACAO` | Operador de estação | sim | (nenhuma catalogada nesta branch) |
+| `ANALISTA_PERDAS` | Analista de perdas | sim | `registry:read` |
+| `LABORATORISTA` | Laboratorista | sim | (nenhuma catalogada nesta branch) |
+| `RESP_TEC_QUALIDADE` | Responsável técnico da qualidade | sim | (nenhuma catalogada nesta branch) |
+| `EDITOR_CAD_TECNICO` | Editor do cadastro técnico | sim | `gis:catalog-read`, `gis:catalog-manage` |
+| `REVISOR_CAD_TECNICO` | Revisor do cadastro técnico | sim | `gis:catalog-read` |
+| `GESTOR` | Gestor | sim | `registry:read`, `user:read`, `parameters:manage` |
+| `AUDITOR_INTERNO` | Auditor interno | sim | `registry:read`, `gis:catalog-read`, `user:read` |
+| `OUVIDOR` | Ouvidor | sim | `registry:read` |
+| `ENCARREGADO_DADOS` | Encarregado de dados | sim | `registry:read`, `user:read` |
+| `PROCURADOR` | Procurador | sim | `registry:read` |
+| `CONTADOR` | Contador | sim | `registry:read` |
+| `AUDITOR_EXTERNO` | Auditor externo | não (ED-75) | `registry:read`, `gis:catalog-read`, `user:read` (previsto, sem efeito até a liberação) |
+| `REGULADOR` | Regulador | não (ED-75) | `registry:read`, `gis:catalog-read` (previsto, sem efeito até a liberação) |
 
 ## Regras
 
@@ -62,6 +108,14 @@ na aplicação, a partir do catálogo.
   recusada no CI. As únicas rotas de negócio sem permissão declarada são `GET /api/v1/me` (dados do
   próprio usuário autenticado, sem acesso a dado de terceiros) e `GET /api/v1/about` (P0.42:
   só metadados da implantação — versão, commit, ambiente e data — sem dado de tenant ou de usuário).
+- Regra da P1.37, conferida no CI: toda permissão do catálogo está em pelo menos um perfil
+  de fábrica ou na lista explícita de exceções do código (`coverageExemptions`), com motivo.
+  As exceções são só as três concessões diretas de dado pessoal acima e as cinco de
+  plataforma abaixo — permissão nova esquecida fora de todo perfil falha o build. As
+  permissões criadas por outras frentes da camada C em paralelo não estão nesta branch: a
+  integração as reconcilia, atribuindo cada uma aos perfis pertinentes (o teste de
+  cobertura a obriga a fazê-lo, e o ADMIN só ganha a permissão nova quando ela for de
+  administração do tenant — a integração decide caso a caso).
 - `deployment:read` não pertence a nenhum perfil de fábrica de tenant: ela só existe via
   papel de plataforma (PLATFORM_OWNER e PLATFORM_OPS, ver `PlatformRole`). Um token de tenant
   nunca a recebe, e um token de plataforma nunca recebe permissão de tenant.
@@ -69,10 +123,13 @@ na aplicação, a partir do catálogo.
   plataforma (ver `PlatformRole` — OWNER tem as 4, OPS tem read/manage, SUPPORT tem read,
   FINANCE tem read/suspend). A matriz fina (FINANCE só com motivo inadimplência, eliminação
   só OWNER) continua no serviço, não no catálogo.
-- `parameters:manage` (P1.6) cobre toda a tela de mudança de parâmetro do tenant
-  (`/api/v1/tenant/parameters/*`: propor, aprovar, aceitar, ler vigente e painel): é
-  concessão direta, como `registry:export` — nenhum perfil de fábrica a inclui. A separação
-  proponente ≠ aprovador continua no serviço, por ator, não por papel.
+- `parameters:manage` (P1.6, P1.37) cobre toda a tela de mudança de parâmetro do tenant
+  (`/api/v1/tenant/parameters/*`: propor, aprovar, aceitar, ler vigente e painel). MUDANÇA DE
+  COMPORTAMENTO NA P1.37: ela deixa de ser só concessão direta e entra nos perfis de
+  fábrica ADMIN e GESTOR — o ADMIN (e o GESTOR) passam a propor parâmetro sem a concessão
+  direta separada, e quem propõe sem ela continua levando 403. A separação
+  proponente ≠ aprovador continua no serviço, por ator, não por papel. A concessão direta
+  continua valendo por si só para qualquer outro ator.
 - `brand:manage` (P1.19) cobre toda a administração da marca do tenant
   (`/api/v1/tenant/brand/*`: ler, salvar, subir e remover logo): é concessão
   direta, como `parameters:manage` — nenhum perfil de fábrica a inclui. A
@@ -99,4 +156,17 @@ na aplicação, a partir do catálogo.
   organizacional ainda não existem: sem `org_units`, a busca global vale para o tenant
   inteiro (RLS) e a visão com `visibility=ORG_UNIT` só é listada ao próprio dono até a
   P3.30 — o compartilhamento é armazenado, não fingido.
-- Perfis compostos pelo ADMIN do tenant e restrição negativa ficam na ED-06, sobre este catálogo.
+- Auditor externo e regulador nascem desligados (P1.37): existem no catálogo, no manifesto
+  e em `GET /api/v1/profiles` com `enabled=false`, mas um token com esse papel não ganha
+  permissão nenhuma e a atribuição pelo administrador do tenant é recusada com erro de
+  validação. O mecanismo de liberação é da ED-75, que ativa o conjunto já declarado sem
+  redefinir permissões.
+- Perfis de fábrica versionados com o produto (versão do pacote) e atribuídos pelo
+  administrador do tenant (`POST/PUT /api/v1/users`, com `user:write`), com a atribuição
+  auditada pelo trigger da V1_2 sobre `user_profiles` e com a regra de que o ator só
+  concede o que possui. BLOQUEADOR DE PERSISTÊNCIA: o CHECK da V1_9
+  (`profile IN ('ADMIN','MANAGER','OPERATOR','VIEWER')`) ainda só aceita os quatro
+  mínimos — a gravação de um perfil novo em `user_profiles` falha até a migration (versão
+  a alocar pelo coordenador) alargar o CHECK. A resolução por token (papel do Keycloak →
+  permissões, menu e ações) já funciona para os 26 perfis e não depende dessa tabela.
+  Perfis compostos pelo ADMIN do tenant e restrição negativa ficam na ED-06, sobre este catálogo.

@@ -22,10 +22,25 @@ public record VerticalManifest(
         List<ModuleManifest> modules,
         List<GisDomain> gisDomains,
         List<String> permissions,
-        List<OnboardingStep> onboardingSteps) {
+        List<OnboardingStep> onboardingSteps,
+        List<FactoryProfileDef> factoryProfiles) {
 
     /** Um passo do checklist de implantação do pacote (P1.6, ADR-0037). */
     public record OnboardingStep(String key, String title) {
+    }
+
+    /**
+     * Um perfil de fábrica da P1.37 declarado no manifesto, espelhado de
+     * {@code PermissionCatalog} (a fonte única é o código; o teste de manifesto confere
+     * os dois lados). {@code enabled=false} só para auditor externo e regulador,
+     * desligados até a liberação da ED-75.
+     */
+    public record FactoryProfileDef(
+            String code,
+            String label,
+            String homePage,
+            boolean enabled,
+            List<String> permissions) {
     }
 
     /** Um módulo de negócio habilitável do pacote. */

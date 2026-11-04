@@ -42,13 +42,12 @@ export function Layout() {
   const menuRef = useRef<HTMLElement>(null)
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const firstRender = useRef(true)
-  // P1.12: o menu só mostra o que o papel do usuário permite ver.
-  // P1.23: o filtro passa a respeitar a permissão declarada em cada item
-  // (antes, todo item herdava registry:read, e o item do GIS aparecia para
-  // quem só tinha cadastro). Sem usuário ou sem lista de permissões, nada
-  // se esconde (fail-open da exibição; o servidor continua negando).
-  // Integração P1-C: o filtro por item da P1.23 é preservado — a forma
-  // tudo-ou-nada por registry:read da P1.33 regrediria os itens de GIS,
+  // P1.12 + P1.37: cada item do menu só aparece para quem tem a permissão do item.
+  // Antes, um único registry:read abria ou fechava o menu inteiro — o que escondia o
+  // Catálogo GIS de quem só tinha gis:catalog-read e o mostrava para quem só tinha
+  // registry:read. A exibição nunca é a segurança: o servidor nega a rota sem a permissão.
+  // Integração P1-C: o filtro por item (P1.23, ratificado na P1.37) é preservado — a
+  // forma tudo-ou-nada por registry:read da P1.33 regrediria os itens de GIS,
   // Central e Suporte, por isso não entra aqui.
   const visibleNavigation = navigation.filter((item) => hasPermission(user, item.permission))
   const canSearch = useCan('search:read')

@@ -1,6 +1,7 @@
 package br.com.ziipsan.platform.vertical;
 
 import br.com.ziipsan.core.json.Json;
+import br.com.ziipsan.security.auth.PermissionCatalog;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.JsonNode;
 
@@ -64,9 +65,17 @@ class VerticalManifestTest {
     void manifestPermissionsAreOnlyCataloguedOnes() {
         VerticalManifest manifest = VerticalManifestLoader.load(
                 repoRoot().resolve("packages/sanitation/vertical.json"));
-        Set<String> catalogued = Set.of("registry:read", "registry:write", "registry:reveal-document");
-        assertTrue(catalogued.containsAll(manifest.permissions()),
+        // P1.37: o manifesto declara as permissões de tenant do catálogo (nunca as de
+        // plataforma, que não pertencem ao pacote) e nada fora do catálogo.
+        assertTrue(PermissionCatalog.allNames().containsAll(manifest.permissions()),
                 "O manifesto nao pode inventar permissao fora do catalogo da P0.13");
+        assertTrue(manifest.permissions().containsAll(
+                List.of("registry:read", "registry:write", "registry:reveal-document",
+                        "registry:search-document", "registry:export", "user:read", "user:write",
+                        "gis:catalog-read", "gis:catalog-manage", "parameters:manage")));
+        assertTrue(manifest.permissions().stream()
+                .noneMatch(p -> p.startsWith("deployment:") || p.startsWith("console:")),
+                "O pacote nao declara permissao de plataforma");
     }
 
     @Test
@@ -91,7 +100,8 @@ class VerticalManifestTest {
                 List.of(new VerticalManifest.MenuItem("B", "/x", "i", null)),
                 List.of(), List.of());
         VerticalManifest noCert = new VerticalManifest(
-                "sanitation", "0.1.0", "1.0.0-SNAPSHOT", "k", "d", List.of(a, b), List.of(), List.of(), List.of());
+                "sanitation", "0.1.0", "1.0.0-SNAPSHOT", "k", "d", List.of(a, b), List.of(), List.of(), List.of(),
+                List.of());
         assertThrows(IllegalStateException.class, () -> VerticalManifestValidator.validate(noCert));
     }
 

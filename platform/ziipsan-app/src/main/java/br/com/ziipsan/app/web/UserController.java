@@ -30,7 +30,8 @@ import java.util.UUID;
  *
  * <p>O tenant nunca vem do corpo nem da URL: vem do token. O cadastro no Keycloak é manual;
  * aqui se vincula o registro ao {@code sub} do Keycloak ({@code keycloakSub}) e se atribuem
- * perfis de fábrica do catálogo, com vigência. Leitura exige {@code user:read}; escrita,
+ * perfis de fábrica do catálogo (P1.37: os 26 perfis, exceto os desligados — auditor
+ * externo e regulador, ED-75), com vigência. Leitura exige {@code user:read}; escrita,
  * {@code user:write} (só o ADMIN a possui entre os perfis de fábrica).
  */
 @RestController

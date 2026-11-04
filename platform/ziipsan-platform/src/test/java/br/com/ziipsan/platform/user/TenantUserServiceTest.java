@@ -1,5 +1,6 @@
 package br.com.ziipsan.platform.user;
 
+import br.com.ziipsan.core.api.ApiException;
 import br.com.ziipsan.core.tenant.TenantContextHolder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,5 +80,40 @@ class TenantUserServiceTest {
                 "sub-1", "Novo", null, List.of("OPERATOR")));
         assertThat(view.keycloakSub()).isEqualTo("sub-1");
         assertThat(view.profiles()).containsExactly("OPERATOR");
+    }
+
+    @Test
+    @DisplayName("P1.37: perfil de fábrica por função é atribuível por quem tem suas permissões")
+    void canGrantFactoryProfileByFunction() {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                "admin", null, List.of(
+                        new SimpleGrantedAuthority("user:write"),
+                        new SimpleGrantedAuthority("registry:read"),
+                        new SimpleGrantedAuthority("registry:write"))));
+        UserProfileAssignment assignment = new UserProfileAssignment();
+        assignment.setProfile("ATENDENTE");
+        assignment.setValidFrom(java.time.OffsetDateTime.now().minusHours(1));
+        assignment.setValidUntil(null);
+        when(profiles.findAllByUserIdAndTenantId(any(), any())).thenReturn(List.of(assignment));
+        TenantUserService.UserView view = service.create(new TenantUserService.CreateRequest(
+                "sub-2", "Atendente", null, List.of("ATENDENTE")));
+        assertThat(view.profiles()).containsExactly("ATENDENTE");
+    }
+
+    @Test
+    @DisplayName("P1.37: perfil desligado (auditor externo, regulador) é recusado até a ED-75")
+    void cannotGrantDisabledProfile() {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                "admin", null, List.of(
+                        new SimpleGrantedAuthority("user:write"),
+                        new SimpleGrantedAuthority("registry:read"),
+                        new SimpleGrantedAuthority("gis:catalog-read"))));
+        assertThatThrownBy(() -> service.create(new TenantUserService.CreateRequest(
+                        "sub-3", "Externo", null, List.of("AUDITOR_EXTERNO"))))
+                .isInstanceOfSatisfying(ApiException.Validation.class, v ->
+                        assertThat(v.errors()).anySatisfy(e -> assertThat(e.message()).contains("ED-75")));
+        assertThatThrownBy(() -> service.create(new TenantUserService.CreateRequest(
+                        "sub-4", "Regulador", null, List.of("REGULADOR"))))
+                .isInstanceOf(ApiException.Validation.class);
     }
 }

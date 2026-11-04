@@ -61,11 +61,22 @@ public final class VerticalManifestLoader {
             onboardingSteps.add(new VerticalManifest.OnboardingStep(
                     text(step, "key"), text(step, "title")));
         }
+        List<VerticalManifest.FactoryProfileDef> factoryProfiles = new ArrayList<>();
+        for (JsonNode profile : array(root, "factoryProfiles")) {
+            JsonNode enabledNode = profile.path("enabled");
+            if (!enabledNode.isBoolean()) {
+                throw new IllegalStateException("Campo enabled nao booleano em factoryProfiles: "
+                        + profile.path("code").asText("?"));
+            }
+            factoryProfiles.add(new VerticalManifest.FactoryProfileDef(
+                    text(profile, "code"), text(profile, "label"), text(profile, "homePage"),
+                    enabledNode.asBoolean(), strings(profile, "permissions")));
+        }
         VerticalManifest manifest = new VerticalManifest(
                 text(root, "id"), text(root, "version"), text(root, "minPlatformVersion"),
                 text(root, "nameKey"), text(root, "descriptionKey"),
                 List.copyOf(modules), List.copyOf(domains), strings(root, "permissions"),
-                List.copyOf(onboardingSteps));
+                List.copyOf(onboardingSteps), List.copyOf(factoryProfiles));
         VerticalManifestValidator.validate(manifest);
         return manifest;
     }

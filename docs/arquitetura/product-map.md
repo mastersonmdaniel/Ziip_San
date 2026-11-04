@@ -92,7 +92,8 @@ Pacote: **sanitation** — versão 0.1.0 (plataforma mínima 1.0.0-SNAPSHOT)
 - Status: `declared` · módulo Maven: `intelligence/ziipsan-gis`
 - Permissão: `— (sem permissão catalogada)`
 - Tarefa de origem: P0 (módulo existente, sem rota HTTP nem menu até esta onda)
-- Itens de menu: nenhum até esta onda.
+- Itens de menu:
+  - Catálogo GIS — rota `/gis/catalogo`, ícone `map`, permissão `gis:catalog-read`
 - Rotas de API: nenhuma até esta onda.
 - Abas da ficha da unidade: nenhuma.
 

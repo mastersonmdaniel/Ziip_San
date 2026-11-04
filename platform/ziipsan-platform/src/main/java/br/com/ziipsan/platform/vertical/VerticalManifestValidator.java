@@ -1,5 +1,7 @@
 package br.com.ziipsan.platform.vertical;
 
+import br.com.ziipsan.security.auth.PermissionCatalog;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -73,6 +75,26 @@ public final class VerticalManifestValidator {
         for (String permission : manifest.permissions()) {
             checkPermission(permission, "pacote");
         }
+        // P1.37: perfis de fábrica do manifesto — códigos únicos e curtos (coluna
+        // user_profiles.profile da V1_9), página inicial e permissões do catálogo.
+        if (manifest.factoryProfiles() != null) {
+            Set<String> profileCodes = new HashSet<>();
+            for (VerticalManifest.FactoryProfileDef profile : manifest.factoryProfiles()) {
+                require(profile.code() != null && profile.code().matches("[A-Z][A-Z0-9_]*"),
+                        "O codigo do perfil de fabrica deve ser maiusculo: " + profile.code());
+                require(profile.code().length() <= 20,
+                        "O codigo do perfil de fabrica passa de 20 caracteres: " + profile.code());
+                require(profileCodes.add(profile.code()),
+                        "Perfil de fabrica duplicado no manifesto: " + profile.code());
+                require(profile.label() != null && !profile.label().isBlank(),
+                        "O rotulo do perfil de fabrica e obrigatorio: " + profile.code());
+                require(profile.homePage() != null && profile.homePage().startsWith("/"),
+                        "A pagina inicial do perfil deve comecar com /: " + profile.code());
+                for (String permission : profile.permissions()) {
+                    checkPermission(permission, "perfil " + profile.code());
+                }
+            }
+        }
         if (manifest.onboardingSteps() != null) {
             Set<String> stepKeys = new HashSet<>();
             for (VerticalManifest.OnboardingStep step : manifest.onboardingSteps()) {
@@ -91,6 +113,8 @@ public final class VerticalManifestValidator {
         }
         require(permission.matches("[a-z]+:[a-z-]+"),
                 "Permissao fora do formato recurso:acao em " + owner + ": " + permission);
+        require(PermissionCatalog.isPermission(permission),
+                "Permissao fora do catalogo em " + owner + ": " + permission);
     }
 
     private static void require(boolean condition, String message) {

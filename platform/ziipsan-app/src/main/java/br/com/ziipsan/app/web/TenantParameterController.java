@@ -27,11 +27,10 @@ import java.util.UUID;
  *
  * <p>Autenticação: token de tenant (o filtro já recusou token de plataforma
  * aqui e resolveu o schema pelo catálogo). A separação proponente ≠ aprovador
- * é conferida no serviço, por ator. A permissão fina ("mudar parâmetro")
- * chegou na integração P1-B como {@code parameters:manage} (concessão
- * direta, nenhum perfil de fábrica — como {@code registry:export}): toda
- * rota desta classe a exige. A trava fina por papel de tenant (perfis por
- * função) fica para a P1.37, como as demais permissões diretas.
+ * é conferida no serviço, por ator. A permissão fina ("mudar parâmetro") é
+ * {@code parameters:manage}: desde a P1.37 ela está nos perfis de fábrica ADMIN e
+ * GESTOR (antes, só concessão direta) — quem propõe parâmetro sem ela continua
+ * levando 403, e a concessão direta continua valendo por si só.
  */
 @RestController
 @RequestMapping("/api/v1/tenant/parameters")

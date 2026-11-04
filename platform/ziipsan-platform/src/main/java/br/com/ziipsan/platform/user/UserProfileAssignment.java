@@ -25,7 +25,7 @@ public class UserProfileAssignment extends TenantAwareEntity {
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
-    /** Nome do perfil de fábrica (ADMIN, MANAGER, OPERATOR, VIEWER), validado no serviço. */
+    /** Nome do perfil de fábrica (os 26 do catálogo P1.37), validado no serviço. */
     @Column(name = "profile", nullable = false, length = 20)
     private String profile;
 
