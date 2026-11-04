@@ -196,7 +196,7 @@ DO $$
 BEGIN
     IF EXISTS (
         SELECT 1 FROM pg_constraint c
-        WHERE c.conrelid = 'consumer_units'::regclass
+        WHERE c.conrelid = to_regclass('consumer_units')
           AND c.contype IN ('u', 'p')
           AND (SELECT array_agg(a.attname::text ORDER BY k.ord)
                FROM unnest(c.conkey) WITH ORDINALITY AS k(attnum, ord)
@@ -212,7 +212,7 @@ DO $$
 BEGIN
     IF EXISTS (
         SELECT 1 FROM pg_constraint c
-        WHERE c.conrelid = 'customers'::regclass
+        WHERE c.conrelid = to_regclass('customers')
           AND c.contype IN ('u', 'p')
           AND (SELECT array_agg(a.attname::text ORDER BY k.ord)
                FROM unnest(c.conkey) WITH ORDINALITY AS k(attnum, ord)
