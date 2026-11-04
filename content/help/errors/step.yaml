@@ -1,0 +1,9 @@
+# P1-C (integracao): erro explicado (etapa de rascunho — RegistryDraftService).
+code: urn:ziipsan:problem:step
+title: Etapa de rascunho desconhecida
+explanation: "A etapa informada não existe no assistente de cadastro. O rascunho não avançou."
+causes:
+  - O número da etapa está fora do assistente.
+actions:
+  - Volte à etapa atual do assistente e avance por ela.
+suggest_ticket: false

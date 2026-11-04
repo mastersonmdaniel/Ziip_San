@@ -142,6 +142,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:code
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:code', NULL, 'Código do item do catálogo', 'O código do item do catálogo está ausente ou já existe. Cada item precisa de um código único dentro do catálogo. Nada foi salvo.', ARRAY['O código ficou em branco.', 'Outro item do mesmo catálogo já usa este código.']::text[], ARRAY['Informe um código para o item.', 'Se o código já existe, escolha outro.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:confirmation-required
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
@@ -191,6 +200,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:deletion-unavailable', NULL, 'Exclusão indisponível', 'O recurso não tem exclusão lógica no cadastro, então a exclusão não foi executada.', ARRAY['O tipo de registro não prevê exclusão lógica.']::text[], ARRAY['Localidade, setor comercial e quadra: bloqueie com blocked=true.', 'Rota de leitura: desative com active=false.']::text[], 'consultar-territorio', FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:draft-closed
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:draft-closed', NULL, 'Rascunho já encerrado', 'O rascunho já foi aplicado ou descartado e não aceita mais alterações. Nada foi alterado.', ARRAY['O rascunho já foi aplicado ao cadastro.', 'O rascunho já foi descartado.']::text[], ARRAY['Se precisar alterar de novo, crie um novo rascunho.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
@@ -313,6 +331,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:invalid-version
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:invalid-version', NULL, 'Versão inválida', 'A versão informada não segue o formato SemVer X.Y.Z (exemplo: 1.2.3). Nada foi salvo.', ARRAY['A versão está fora do formato X.Y.Z.']::text[], ARRAY['Informe a versão como X.Y.Z, por exemplo 1.2.3.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:item-duplicado
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
@@ -344,6 +371,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:mfa-required', NULL, 'Segundo fator exigido', 'Esta rota exige segundo fator (OTP ou WebAuthn) e a sessão atual não o tem. Nada foi executado.', ARRAY['A sessão foi aberta sem o segundo fator.']::text[], ARRAY['Entre novamente com o segundo fator.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:name
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:name', NULL, 'Nome do item do catálogo', 'O nome do item do catálogo está ausente. Todo item precisa de um nome. Nada foi salvo.', ARRAY['O nome ficou em branco.']::text[], ARRAY['Informe o nome do item e envie de novo.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
@@ -439,10 +475,28 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:resource
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:resource', NULL, 'Recurso de rascunho desconhecido', 'A rota de rascunhos só atende clientes (customers) e imóveis (consumer-units). Outro recurso não tem rascunho. Nada foi criado.', ARRAY['O caminho usado não é customers nem consumer-units.']::text[], ARRAY['Use customers para rascunho de cliente ou consumer-units para rascunho de imóvel.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:safety-gate
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:safety-gate', NULL, 'Portão de segurança bloqueia o passo', 'A ordem não pode seguir sem os itens de segurança exigidos para este serviço (análise de risco, permissão, equipe mínima, treinamento). A mensagem lista o que falta.', ARRAY['Falta análise de risco, permissão ou treinamento exigido.', 'A equipe mínima para o risco não foi montada.']::text[], ARRAY['Complete os itens listados na mensagem.', 'Depois de completar, repita o passo.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:saved-view-title-in-use
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:saved-view-title-in-use', NULL, 'Já existe uma visão salva com este título', 'Você já tem uma visão salva com este título. Cada usuário pode ter só uma visão com o mesmo título.', ARRAY['Outra visão sua já usa este título.']::text[], ARRAY['Reaproveite a visão existente.', 'Escolha outro título para a nova visão.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
@@ -470,6 +524,24 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:state-conflict', NULL, 'Registro em estado que impede a operação', 'O registro mudou de estado ou está num estado que impede esta operação. Nada foi alterado.', ARRAY['Outro usuário alterou o registro antes.', 'A operação exige um estado diferente do atual.']::text[], ARRAY['Recarregue o registro e confira o estado atual.', 'Refaça a operação no estado permitido.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:step
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:step', NULL, 'Etapa de rascunho desconhecida', 'A etapa informada não existe no assistente de cadastro. O rascunho não avançou.', ARRAY['O número da etapa está fora do assistente.']::text[], ARRAY['Volte à etapa atual do assistente e avance por ela.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:table
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:table', NULL, 'Catálogo desconhecido', 'A rota de catálogos recebeu um nome de tabela que não existe ou que não pode ser escrita por esta rota. Nada foi alterado.', ARRAY['O nome da tabela está errado.', 'A tabela é só leitura por esta rota.']::text[], ARRAY['Confira a lista de catálogos e use o nome exato da tabela.', 'Se a tabela é só leitura aqui, use a rota própria dela.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
@@ -569,6 +641,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:unauthenticated', NULL, 'Não autenticado', 'A sessão acabou ou a requisição não trouxe um token de acesso válido. Nada foi executado.', ARRAY['A sessão expirou.', 'O token de acesso está ausente ou inválido.']::text[], ARRAY['Entre novamente.', 'Em integração, envie um token de acesso válido no cabeçalho Authorization.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:user-required
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:user-required', NULL, 'Usuário não identificado', 'A operação exige um usuário autenticado com identificador, e a sessão atual não trouxe um.', ARRAY['A sessão expirou ou o token não carrega o identificador do usuário.']::text[], ARRAY['Entre novamente e repita a operação.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,

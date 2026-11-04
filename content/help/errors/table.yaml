@@ -1,0 +1,11 @@
+# P1-C (integracao): erro explicado (catálogo desconhecido — RegistryCatalogService).
+code: urn:ziipsan:problem:table
+title: Catálogo desconhecido
+explanation: "A rota de catálogos recebeu um nome de tabela que não existe ou que não pode ser escrita por esta rota. Nada foi alterado."
+causes:
+  - O nome da tabela está errado.
+  - A tabela é só leitura por esta rota.
+actions:
+  - Confira a lista de catálogos e use o nome exato da tabela.
+  - Se a tabela é só leitura aqui, use a rota própria dela.
+suggest_ticket: false

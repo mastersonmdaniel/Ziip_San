@@ -65,7 +65,13 @@ class ProblemCodeContractTest {
             "state-conflict", "targets-frozen",
             "classe-inativa", "item-duplicado", "item-nao-aprovado",
             "item-nao-pendente", "tipo-duplicado", "tipo-nao-aprovado",
-            "tipo-nao-pendente", "tipo-nao-usavel");
+            "tipo-nao-pendente", "tipo-nao-usavel",
+            // P1-C (integracao): 4 códigos da certificação (P1.32), emitidos
+            // e explicados no catálogo de erros (YAMLs + bundle gerado), mas
+            // fora da tabela — mesmo caso da P1.22 e da P1-B: a tabela estava
+            // desatualizada, não o código.
+            "activation-exists", "activation-state",
+            "clause-map-frozen", "evidence-link-exists");
 
     /** Códigos antigos da tabela (português) — nenhum pode restar no código. */
     private static final List<String> OLD_CODES = List.of(

@@ -219,6 +219,21 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:code",
+      "title": "Código do item do catálogo",
+      "explanation": "O código do item do catálogo está ausente ou já existe. Cada item precisa de um código único dentro do catálogo. Nada foi salvo.",
+      "causes": [
+        "O código ficou em branco.",
+        "Outro item do mesmo catálogo já usa este código."
+      ],
+      "actions": [
+        "Informe um código para o item.",
+        "Se o código já existe, escolha outro."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:confirmation-required",
       "title": "Confirmação necessária",
       "explanation": "A operação gerou avisos que precisam da sua confirmação antes de continuar. Nada foi salvo ainda.",
@@ -298,6 +313,20 @@ export const HELP_BUNDLE: HelpBundle = {
         "Rota de leitura: desative com active=false."
       ],
       "article": "consultar-territorio",
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:draft-closed",
+      "title": "Rascunho já encerrado",
+      "explanation": "O rascunho já foi aplicado ou descartado e não aceita mais alterações. Nada foi alterado.",
+      "causes": [
+        "O rascunho já foi aplicado ao cadastro.",
+        "O rascunho já foi descartado."
+      ],
+      "actions": [
+        "Se precisar alterar de novo, crie um novo rascunho."
+      ],
+      "article": null,
       "suggestTicket": false
     },
     {
@@ -491,6 +520,19 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:invalid-version",
+      "title": "Versão inválida",
+      "explanation": "A versão informada não segue o formato SemVer X.Y.Z (exemplo: 1.2.3). Nada foi salvo.",
+      "causes": [
+        "A versão está fora do formato X.Y.Z."
+      ],
+      "actions": [
+        "Informe a versão como X.Y.Z, por exemplo 1.2.3."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:item-duplicado",
       "title": "Item já existe para este tipo",
       "explanation": "Já existe um item igual para este tipo, com o mesmo material, diâmetro, ângulo, classe e seção. Não dá para cadastrar o mesmo item duas vezes.",
@@ -544,6 +586,19 @@ export const HELP_BUNDLE: HelpBundle = {
       ],
       "actions": [
         "Entre novamente com o segundo fator."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:name",
+      "title": "Nome do item do catálogo",
+      "explanation": "O nome do item do catálogo está ausente. Todo item precisa de um nome. Nada foi salvo.",
+      "causes": [
+        "O nome ficou em branco."
+      ],
+      "actions": [
+        "Informe o nome do item e envie de novo."
       ],
       "article": null,
       "suggestTicket": false
@@ -692,6 +747,19 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:resource",
+      "title": "Recurso de rascunho desconhecido",
+      "explanation": "A rota de rascunhos só atende clientes (customers) e imóveis (consumer-units). Outro recurso não tem rascunho. Nada foi criado.",
+      "causes": [
+        "O caminho usado não é customers nem consumer-units."
+      ],
+      "actions": [
+        "Use customers para rascunho de cliente ou consumer-units para rascunho de imóvel."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:safety-gate",
       "title": "Portão de segurança bloqueia o passo",
       "explanation": "A ordem não pode seguir sem os itens de segurança exigidos para este serviço (análise de risco, permissão, equipe mínima, treinamento). A mensagem lista o que falta.",
@@ -702,6 +770,20 @@ export const HELP_BUNDLE: HelpBundle = {
       "actions": [
         "Complete os itens listados na mensagem.",
         "Depois de completar, repita o passo."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:saved-view-title-in-use",
+      "title": "Já existe uma visão salva com este título",
+      "explanation": "Você já tem uma visão salva com este título. Cada usuário pode ter só uma visão com o mesmo título.",
+      "causes": [
+        "Outra visão sua já usa este título."
+      ],
+      "actions": [
+        "Reaproveite a visão existente.",
+        "Escolha outro título para a nova visão."
       ],
       "article": null,
       "suggestTicket": false
@@ -743,6 +825,34 @@ export const HELP_BUNDLE: HelpBundle = {
       "actions": [
         "Recarregue o registro e confira o estado atual.",
         "Refaça a operação no estado permitido."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:step",
+      "title": "Etapa de rascunho desconhecida",
+      "explanation": "A etapa informada não existe no assistente de cadastro. O rascunho não avançou.",
+      "causes": [
+        "O número da etapa está fora do assistente."
+      ],
+      "actions": [
+        "Volte à etapa atual do assistente e avance por ela."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:table",
+      "title": "Catálogo desconhecido",
+      "explanation": "A rota de catálogos recebeu um nome de tabela que não existe ou que não pode ser escrita por esta rota. Nada foi alterado.",
+      "causes": [
+        "O nome da tabela está errado.",
+        "A tabela é só leitura por esta rota."
+      ],
+      "actions": [
+        "Confira a lista de catálogos e use o nome exato da tabela.",
+        "Se a tabela é só leitura aqui, use a rota própria dela."
       ],
       "article": null,
       "suggestTicket": false
@@ -901,6 +1011,19 @@ export const HELP_BUNDLE: HelpBundle = {
       "actions": [
         "Entre novamente.",
         "Em integração, envie um token de acesso válido no cabeçalho Authorization."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:user-required",
+      "title": "Usuário não identificado",
+      "explanation": "A operação exige um usuário autenticado com identificador, e a sessão atual não trouxe um.",
+      "causes": [
+        "A sessão expirou ou o token não carrega o identificador do usuário."
+      ],
+      "actions": [
+        "Entre novamente e repita a operação."
       ],
       "article": null,
       "suggestTicket": false

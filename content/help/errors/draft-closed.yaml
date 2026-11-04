@@ -1,0 +1,10 @@
+# P1-C (integracao): erro explicado (rascunho encerrado — RegistryDraftService).
+code: urn:ziipsan:problem:draft-closed
+title: Rascunho já encerrado
+explanation: "O rascunho já foi aplicado ou descartado e não aceita mais alterações. Nada foi alterado."
+causes:
+  - O rascunho já foi aplicado ao cadastro.
+  - O rascunho já foi descartado.
+actions:
+  - Se precisar alterar de novo, crie um novo rascunho.
+suggest_ticket: false

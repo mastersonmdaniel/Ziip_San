@@ -1,0 +1,11 @@
+# P1-C (integracao): erro explicado (código do item — RegistryCatalogService).
+code: urn:ziipsan:problem:code
+title: Código do item do catálogo
+explanation: "O código do item do catálogo está ausente ou já existe. Cada item precisa de um código único dentro do catálogo. Nada foi salvo."
+causes:
+  - O código ficou em branco.
+  - Outro item do mesmo catálogo já usa este código.
+actions:
+  - Informe um código para o item.
+  - Se o código já existe, escolha outro.
+suggest_ticket: false

@@ -1,0 +1,9 @@
+# P1-C (integracao): erro explicado (recurso de rascunho — RegistryDraftService).
+code: urn:ziipsan:problem:resource
+title: Recurso de rascunho desconhecido
+explanation: "A rota de rascunhos só atende clientes (customers) e imóveis (consumer-units). Outro recurso não tem rascunho. Nada foi criado."
+causes:
+  - O caminho usado não é customers nem consumer-units.
+actions:
+  - Use customers para rascunho de cliente ou consumer-units para rascunho de imóvel.
+suggest_ticket: false

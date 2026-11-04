@@ -1,0 +1,9 @@
+# P1-C (integracao): erro explicado (versão inválida — ReleaseNotesController).
+code: urn:ziipsan:problem:invalid-version
+title: Versão inválida
+explanation: "A versão informada não segue o formato SemVer X.Y.Z (exemplo: 1.2.3). Nada foi salvo."
+causes:
+  - A versão está fora do formato X.Y.Z.
+actions:
+  - Informe a versão como X.Y.Z, por exemplo 1.2.3.
+suggest_ticket: false
