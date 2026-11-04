@@ -314,17 +314,60 @@ class BillingPartitionP23IT {
                     + ".bills (tenant_id, origin_reference_month, origin_bill_id)");
         }
         try (Connection c = asTenant()) {
+            // DELETEs em lotes de 5 mil por range de id: o DELETE unico
+            // de 100 mil contas estoura os 5 s mesmo com todos os indices
+            // — sao ~5 cheques de RI + manutencao de indice por linha
+            // (~0,25 ms por linha x 100 mil = ~25 s). Cada lote fica em
+            // ~1,5-2,5 s, com folga; o total segue assertado.
+            List<UUID> billIds = new ArrayList<>();
             try (PreparedStatement ps = c.prepareStatement(
-                    "DELETE FROM " + SCHEMA + ".bills WHERE tenant_id = ? AND audit_batch_id = ?")) {
+                    "SELECT id FROM " + SCHEMA + ".bills WHERE tenant_id = ? AND audit_batch_id = ? ORDER BY id")) {
                 ps.setObject(1, TENANT);
                 ps.setObject(2, batch);
-                assertThat(ps.executeUpdate()).isEqualTo(100_000);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        billIds.add((UUID) rs.getObject(1));
+                    }
+                }
             }
+            assertThat(billIds).hasSize(100_000);
+            int deletedBills = 0;
+            for (int from = 0; from < billIds.size(); from += 5_000) {
+                int to = Math.min(from + 5_000, billIds.size()) - 1;
+                String range = from == 0
+                        ? "id <= '" + billIds.get(to) + "'"
+                        : "id > '" + billIds.get(from - 1) + "' AND id <= '" + billIds.get(to) + "'";
+                try (PreparedStatement ps = c.prepareStatement(
+                        "DELETE FROM " + SCHEMA + ".bills WHERE tenant_id = ? AND reference_month = DATE '" + LOT_MONTH + "' AND " + range)) {
+                    ps.setObject(1, TENANT);
+                    deletedBills += ps.executeUpdate();
+                }
+            }
+            assertThat(deletedBills).isEqualTo(100_000);
+            List<UUID> unitIds = new ArrayList<>();
             try (PreparedStatement ps = c.prepareStatement(
-                    "DELETE FROM " + SCHEMA + ".consumer_units WHERE tenant_id = ? AND registration_number LIKE 'P23VOL-%'")) {
+                    "SELECT id FROM " + SCHEMA + ".consumer_units WHERE tenant_id = ? AND registration_number LIKE 'P23VOL-%' ORDER BY id")) {
                 ps.setObject(1, TENANT);
-                assertThat(ps.executeUpdate()).isEqualTo(100_000);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        unitIds.add((UUID) rs.getObject(1));
+                    }
+                }
             }
+            assertThat(unitIds).hasSize(100_000);
+            int deletedUnits = 0;
+            for (int from = 0; from < unitIds.size(); from += 5_000) {
+                int to = Math.min(from + 5_000, unitIds.size()) - 1;
+                String range = from == 0
+                        ? "id <= '" + unitIds.get(to) + "'"
+                        : "id > '" + unitIds.get(from - 1) + "' AND id <= '" + unitIds.get(to) + "'";
+                try (PreparedStatement ps = c.prepareStatement(
+                        "DELETE FROM " + SCHEMA + ".consumer_units WHERE tenant_id = ? AND " + range)) {
+                    ps.setObject(1, TENANT);
+                    deletedUnits += ps.executeUpdate();
+                }
+            }
+            assertThat(deletedUnits).isEqualTo(100_000);
             try (PreparedStatement ps = c.prepareStatement(
                     "DELETE FROM " + SCHEMA + ".bill_audit_batches WHERE tenant_id = ? AND id = ?")) {
                 ps.setObject(1, TENANT);
