@@ -57,13 +57,34 @@ class AboutP124IT extends AppIntegrationTestBase {
     }
 
     private void clean(JdbcTemplate migrator) {
-        migrator.update(
-                "DELETE FROM platform.document_acceptance WHERE tenant_id = ? AND document_code = 'terms'",
-                ProvisionedTenant.TENANT_ID);
-        migrator.update(
-                "DELETE FROM support.release_note_view WHERE tenant_id = ? AND version = '9.9.9'",
-                ProvisionedTenant.TENANT_ID);
-        migrator.update("DELETE FROM platform.document WHERE code = 'terms'");
+        // P1-C (integracao): document_acceptance tem RLS com FORCE e policy
+        // USING (tenant_id = current_tenant_id()) — sem app.current_tenant na
+        // conexao, o DELETE casa 0 linhas em silencio (a policy nao ve nada)
+        // e o DELETE do documento quebra na FK. Por isso as tres exclusoes
+        // rodam numa so transacao, com o GUC fixado antes: SET LOCAL so vale
+        // na transacao corrente, e um update() por chamada perderia o GUC
+        // entre as chamadas (pool).
+        migrator.execute((Connection c) -> {
+            boolean oldAutoCommit = c.getAutoCommit();
+            c.setAutoCommit(false);
+            try (Statement st = c.createStatement()) {
+                st.execute("SELECT set_config('app.current_tenant', '" + ProvisionedTenant.TENANT_ID + "', true)");
+                st.executeUpdate(
+                        "DELETE FROM platform.document_acceptance WHERE tenant_id = '" + ProvisionedTenant.TENANT_ID
+                                + "' AND document_code = 'terms'");
+                st.executeUpdate(
+                        "DELETE FROM support.release_note_view WHERE tenant_id = '" + ProvisionedTenant.TENANT_ID
+                                + "' AND version = '9.9.9'");
+                st.executeUpdate("DELETE FROM platform.document WHERE code = 'terms'");
+                c.commit();
+            } catch (SQLException e) {
+                c.rollback();
+                throw e;
+            } finally {
+                c.setAutoCommit(oldAutoCommit);
+            }
+            return null;
+        });
     }
 
     @Test
