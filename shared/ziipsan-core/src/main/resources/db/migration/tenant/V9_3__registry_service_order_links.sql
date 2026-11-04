@@ -15,24 +15,37 @@
 -- das duas tabelas referenciadas. Nenhuma migration existente foi tocada.
 -- ============================================================================
 
+-- Correção da integração P1-C (mesmo padrão da V8_1 e do precedente 42a0fb5
+-- da camada B): esta migration vive no módulo core, então ela ESTÁ no
+-- classpath do teste de provisionamento do platform — mas as tabelas que
+-- ela altera são do registry (e de metering), ausentes nesse classpath.
+-- Sem guarda de existência, o ALTER quebrava o provisionamento (42P01) e
+-- 13/16 testes caíam. Cada bloco agora exige as duas tabelas (alterada e
+-- referenciada); na montagem completa todas existem e as FKs aplicam.
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_ucust_opened_by_so') THEN
+    IF to_regclass('unit_customers') IS NOT NULL AND to_regclass('service_orders') IS NOT NULL
+        AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_ucust_opened_by_so') THEN
         ALTER TABLE unit_customers ADD CONSTRAINT fk_ucust_opened_by_so
             FOREIGN KEY (tenant_id, opened_by_service_order_id) REFERENCES service_orders(tenant_id, id);
-    END IF;    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_ucust_closed_by_so') THEN
+    END IF;
+    IF to_regclass('unit_customers') IS NOT NULL AND to_regclass('service_orders') IS NOT NULL
+        AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_ucust_closed_by_so') THEN
         ALTER TABLE unit_customers ADD CONSTRAINT fk_ucust_closed_by_so
             FOREIGN KEY (tenant_id, closed_by_service_order_id) REFERENCES service_orders(tenant_id, id);
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_unit_due_day_so') THEN
+    IF to_regclass('unit_due_days') IS NOT NULL AND to_regclass('service_orders') IS NOT NULL
+        AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_unit_due_day_so') THEN
         ALTER TABLE unit_due_days ADD CONSTRAINT fk_unit_due_day_so
             FOREIGN KEY (tenant_id, service_order_id) REFERENCES service_orders(tenant_id, id);
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_cadastral_change_so') THEN
+    IF to_regclass('cadastral_change_requests') IS NOT NULL AND to_regclass('service_orders') IS NOT NULL
+        AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_cadastral_change_so') THEN
         ALTER TABLE cadastral_change_requests ADD CONSTRAINT fk_cadastral_change_so
             FOREIGN KEY (tenant_id, service_order_id) REFERENCES service_orders(tenant_id, id);
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_alt_source_meter') THEN
+    IF to_regclass('unit_alternative_sources') IS NOT NULL AND to_regclass('meter_installations') IS NOT NULL
+        AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_alt_source_meter') THEN
         ALTER TABLE unit_alternative_sources ADD CONSTRAINT fk_alt_source_meter
             FOREIGN KEY (tenant_id, meter_installation_id) REFERENCES meter_installations(tenant_id, id);
     END IF;
@@ -43,7 +56,8 @@ BEGIN
     -- pela V9_1 para as duas colunas; a P1.3 entrega o que faltava, o
     -- NOT NULL (V3_12 histórico, V4_13 tarifa social). Não criar segunda
     -- FK com outro nome sobre a mesma coluna (duplicata sem valor).
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_ush_service_order') THEN
+    IF to_regclass('unit_status_history') IS NOT NULL AND to_regclass('service_orders') IS NOT NULL
+        AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_ush_service_order') THEN
         ALTER TABLE unit_status_history ADD CONSTRAINT fk_ush_service_order
             FOREIGN KEY (tenant_id, service_order_id) REFERENCES service_orders(tenant_id, id);
     END IF;
