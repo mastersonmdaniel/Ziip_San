@@ -111,6 +111,10 @@ class FreshInstallTest {
             "gis_structure_history", "gis_zone_history", "gis_poi_history",
             "gis_node", "gis_arc", "gis_connection",
             "gis_structure", "gis_zone", "gis_poi",
+            // P1-C (integracao): contador mecanico por ano da numeracao de
+            // protocolos (V8_1) — sem coluna id, o trigger de auditoria
+            // quebraria todo INSERT; e sem dado de negocio a auditar.
+            "service_protocol_sequences",
             "fiscal_documents_xml");
 
     private static DataSource appDs;

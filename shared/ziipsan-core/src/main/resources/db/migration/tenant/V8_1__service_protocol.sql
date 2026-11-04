@@ -246,7 +246,14 @@ END $$;
 SELECT register_tenant_table('service_protocol_specs');
 SELECT register_tenant_table('service_protocol_close_reasons');
 SELECT register_tenant_table('service_protocols');
-SELECT register_tenant_table('service_protocol_sequences');
+-- P1-C (integracao): a tabela de sequencias NAO tem coluna id (PK e
+-- (tenant_id, protocol_year), o travamento por linha que serializa as
+-- aberturas paralelas) e o trigger de auditoria assume NEW.id — com
+-- trigger, todo INSERT nela quebra ("record new has no field id").
+-- Contador mecanico por ano, sem dado de negocio: sem trigger, como
+-- import_rows e registry_drafts (ver NOT_AUDITED_BY_DESIGN no
+-- FreshInstallTest). RLS + policy continuam aplicadas.
+SELECT register_tenant_table('service_protocol_sequences', true, false);
 SELECT register_tenant_table('service_protocol_extensions');
 
 -- Free text that may carry personal data: requester name/contact and the
