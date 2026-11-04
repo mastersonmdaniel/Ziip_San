@@ -219,33 +219,57 @@ class BillingPartitionP23IT {
     @DisplayName("P2.3: 100 mil contas de um lote auditadas por run_id, trilha podada a particao do lote")
     void hundredThousandBillsAuditedByRunIdWithPrunedTrail() throws SQLException {
         UUID runId = UUID.randomUUID();
-        UUID batch;
+        UUID batch = null;
+        UUID category = null;
+        UUID tariffVersion = null;
         try (Connection m = migrator(); Statement st = m.createStatement()) {
             st.execute("SELECT " + SCHEMA + ".bills_create_partition(DATE '" + LOT_MONTH + "')");
         }
-        try (Connection c = asTenant()) {
-            try {
+        // Carga em DUAS transacoes, com ANALYZE entre elas — e nao em uma
+        // so. Motivo, provado com auto_explain na integracao P2A: o plano
+        // dos lotes de itens depende das estatisticas da tabela bills. Sem
+        // ANALYZE (tabelas recem-carregadas, reltuples = 0), o planner
+        // estima 1 linha para o range e escolhe o indice (tenant, mes,
+        // status) + filtro por id, visitando as 100 mil contas da particao
+        // por lote (~6,4 s por lote de 1 mil, acima dos 5 s do papel da
+        // app). ANALYZE so enxerga linhas commitadas — e nao roda dentro
+        // de um bloco de transacao — por isso a carga de unidades+contas
+        // faz COMMIT (tx 1) e os itens carregam depois (tx 2, com rollback
+        // no finally, como antes). As linhas commitadas sao seguras aqui:
+        // chaves exclusivas do teste (P23VOL-, P23-VOL-C/T, mes 2026-03) e
+        // schema descartado ao fim da classe. Nenhuma assercao muda: as
+        // contagens e somas finais leem as contas commitadas + os itens
+        // da tx 2, e o EXPLAIN da trilha roda depois, como antes.
+        disableAuditTriggers();
+        disableFillMonthTrigger();
+        try {
+            try (Connection c = asTenant()) {
                 batch = insertBatch(c, runId, LOT_MONTH);
-                UUID category = insertCategory(c, "P23-VOL-C");
-                UUID tariffVersion = insertTariffVersion(c, "P23-VOL-T");
-                disableAuditTriggers();
-                disableFillMonthTrigger();
-                try {
-                    insertVolumeUnits(c, 100_000, "P23VOL-");
-                    insertVolumeBills(c, batch);
-                    insertVolumeItems(c, batch, category, tariffVersion);
-                } finally {
-                    enableFillMonthTrigger();
-                    enableAuditTriggers();
-                }
-                // Auditoria por run_id: contagem e total do lote inteiro.
-                assertThat(countBillsOfBatch(c, batch)).isEqualTo(100_000);
-                assertThat(sumBillsOfBatch(c, batch)).isEqualTo("10000000.00");
-                assertThat(countItemsOfBatch(c, batch)).isEqualTo(100_000);
-                assertThat(countBillsOfRun(c, runId)).isEqualTo(100_000);
-            } finally {
-                c.rollback();
+                category = insertCategory(c, "P23-VOL-C");
+                tariffVersion = insertTariffVersion(c, "P23-VOL-T");
+                insertVolumeUnits(c, 100_000, "P23VOL-");
+                insertVolumeBills(c, batch);
+                c.commit();
             }
+            try (Connection m = migrator(); Statement st = m.createStatement()) {
+                st.execute("ANALYZE " + SCHEMA + ".bills");
+                st.execute("ANALYZE " + SCHEMA + ".bill_items");
+            }
+            try (Connection c = asTenant()) {
+                try {
+                    insertVolumeItems(c, batch, category, tariffVersion);
+                    // Auditoria por run_id: contagem e total do lote inteiro.
+                    assertThat(countBillsOfBatch(c, batch)).isEqualTo(100_000);
+                    assertThat(sumBillsOfBatch(c, batch)).isEqualTo("10000000.00");
+                    assertThat(countItemsOfBatch(c, batch)).isEqualTo(100_000);
+                    assertThat(countBillsOfRun(c, runId)).isEqualTo(100_000);
+                } finally {
+                    c.rollback();
+                }
+            }
+        } finally {
+            enableFillMonthTrigger();
+            enableAuditTriggers();
         }
         // Plano da trilha do lote: literais, nao parametros (a poda em tempo de
         // planejamento so acontece com constantes, como no AuditPartitionTest).
@@ -695,9 +719,16 @@ class BillingPartitionP23IT {
         int total = 0;
         for (int from = 0; from < billIds.size(); from += 1_000) {
             int to = Math.min(from + 1_000, billIds.size()) - 1;
+            // Limites do range como LITERAIS, nao parametros: com
+            // parametros, o plano generico estima 1 linha para o range e o
+            // planner nao tem como preferir a PK; com literais + ANALYZE,
+            // a estimativa e exata (1 mil linhas) e o range scan da PK
+            // vence o indice (tenant, mes, status) + filtro. Mesmo padrao
+            // do EXPLAIN da trilha abaixo. UUIDs gerados pelo proprio
+            // banco, formato estrito — sem risco de injecao.
             String rangePredicate = from == 0
-                    ? "b.id <= ?"
-                    : "b.id > ? AND b.id <= ?";
+                    ? "b.id <= '" + billIds.get(to) + "'"
+                    : "b.id > '" + billIds.get(from - 1) + "' AND b.id <= '" + billIds.get(to) + "'";
             try (PreparedStatement ps = c.prepareStatement(
                     "INSERT INTO " + SCHEMA + ".bill_items (tenant_id, bill_id, reference_month, service_kind, "
                             + "category_id, tariff_version_id, period_from, period_to, proration_factor, line_type, "
@@ -706,15 +737,10 @@ class BillingPartitionP23IT {
                             + "1.0000, 'MINIMUM', 1, 0, 0, 0, 100.00, 0, 100.00 "
                             + "FROM " + SCHEMA + ".bills b WHERE b.tenant_id = ? AND b.reference_month = DATE '" + LOT_MONTH + "' "
                             + "AND " + rangePredicate + " ORDER BY b.id")) {
-                int param = 1;
-                ps.setObject(param++, TENANT);
-                ps.setObject(param++, category);
-                ps.setObject(param++, tariffVersion);
-                ps.setObject(param++, TENANT);
-                if (from > 0) {
-                    ps.setObject(param++, billIds.get(from - 1));
-                }
-                ps.setObject(param, billIds.get(to));
+                ps.setObject(1, TENANT);
+                ps.setObject(2, category);
+                ps.setObject(3, tariffVersion);
+                ps.setObject(4, TENANT);
                 total += ps.executeUpdate();
             }
         }
