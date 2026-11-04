@@ -38,6 +38,16 @@ describe('Central (P1.17)', () => {
           },
         })
       }
+      if (path.endsWith('/contracts')) {
+        return Promise.resolve({
+          data: [{
+            tenantId: 't1', contractId: 'c1', contractNumber: 'CTR-TESTE', status: 'ACTIVE',
+            startsAt: '2026-01-01', endsAt: '2026-12-31', daysToExpiry: 20, commitmentBalance: 40000,
+            openInvoices: 1, openInvoicesTotal: 10000, overdueInvoices: 0, providerCostMonth: 6000,
+            invoicedMonth: 10000, margin: 0.4,
+          }],
+        })
+      }
       return Promise.resolve({ data: {} })
     })
   })
@@ -51,6 +61,15 @@ describe('Central (P1.17)', () => {
     // 'r1' aparece duas vezes: no alerta aberto e na regra — findByText
     // (singular) falharia por multiplos matches; conferir os dois.
     expect(await screen.findAllByText(/r1/)).toHaveLength(2)
+  })
+
+  it('aba Contratos mostra a linha do contrato com margem', async () => {
+    const user = userEvent.setup()
+    render(<Central />)
+    await user.click(screen.getByRole('tab', { name: 'Contratos' }))
+    await waitFor(() => expect(get).toHaveBeenCalledWith('/platform/central/contracts'))
+    expect(await screen.findByText(/CTR-TESTE/)).toBeInTheDocument()
+    expect(await screen.findByText(/40\.0%/)).toBeInTheDocument()
   })
 
   it('reconhecer um alerta chama o POST e recarrega', async () => {

@@ -2,6 +2,7 @@ package br.com.ziipsan.app.web;
 
 import br.com.ziipsan.platform.central.CentralCollectorService;
 import br.com.ziipsan.platform.central.CentralService;
+import br.com.ziipsan.platform.contract.SaaSContractService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -43,10 +44,13 @@ public class PlatformCentralController {
 
     private final CentralService central;
     private final CentralCollectorService collector;
+    private final SaaSContractService contracts;
 
-    public PlatformCentralController(CentralService central, CentralCollectorService collector) {
+    public PlatformCentralController(CentralService central, CentralCollectorService collector,
+                                     SaaSContractService contracts) {
         this.central = central;
         this.collector = collector;
+        this.contracts = contracts;
     }
 
     private static UUID actorId(JwtAuthenticationToken auth) {
@@ -89,6 +93,13 @@ public class PlatformCentralController {
     @PreAuthorize("hasAuthority('central:read')")
     public CentralService.AlertsTab alerts() {
         return central.alertsTab();
+    }
+
+    /** Aba Contratos da Central (P2.12, ADR-0019): uma linha por contrato, com margem realizada. */
+    @GetMapping("/contracts")
+    @PreAuthorize("hasAuthority('central:read')")
+    public java.util.List<SaaSContractService.ContractRow> contracts() {
+        return contracts.contractsTab();
     }
 
     @GetMapping("/watchdog")

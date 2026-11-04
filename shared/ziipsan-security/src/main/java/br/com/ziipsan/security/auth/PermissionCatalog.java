@@ -106,6 +106,20 @@ public final class PermissionCatalog {
             // de plataforma (ver PlatformRole), como console:*.
             new Permission("central:read", "central", "central", "read", "P1.17"),
             new Permission("central:manage", "central", "central", "manage", "P1.17"),
+            // P2.12 (integracao P2-A): o mesmo caso do console e da Central —
+            // contratos SaaS usam contract:read/manage/restrict nas rotas
+            // /api/v1/platform/contracts/* e na aba Contratos da Central, e
+            // o RoutePermissionTest recusaria todas sem registro. Registradas
+            // aqui, sem entrar em nenhum perfil de fabrica de tenant: elas
+            // so existem via papel de plataforma (ver PlatformRole), como
+            // console:* e central:*. Leitura: os quatro papeis; gestao:
+            // OWNER e FINANCE; restricao: OWNER e FINANCE, com a matriz
+            // fina (FINANCE so por inadimplencia, com fatura vencida e
+            // aviso) no servico, porque a permissao sozinha nao distingue
+            // o motivo nem a existencia dos elos.
+            new Permission("contract:read", "contratos", "contract", "read", "P2.12"),
+            new Permission("contract:manage", "contratos", "contract", "manage", "P2.12"),
+            new Permission("contract:restrict", "contratos", "contract", "restrict", "P2.12"),
             // P1.32: núcleo do módulo Certificações de qualidade (ADR-0041).
             // Nenhum perfil de fábrica as inclui ainda: perfis por função são
             // da P1.37; hoje são concessão direta, como gis:catalog-*.
@@ -338,6 +352,12 @@ public final class PermissionCatalog {
                 "Só papel de plataforma (P1.17): os 4 papéis de plataforma, nunca perfil de tenant.");
         exemptions.put("central:manage",
                 "Só papel de plataforma (P1.17): PLATFORM_OWNER e PLATFORM_OPS, nunca perfil de tenant.");
+        exemptions.put("contract:read",
+                "Só papel de plataforma (P2.12): os 4 papéis de plataforma, nunca perfil de tenant.");
+        exemptions.put("contract:manage",
+                "Só papel de plataforma (P2.12): PLATFORM_OWNER e PLATFORM_FINANCE, nunca perfil de tenant.");
+        exemptions.put("contract:restrict",
+                "Só papel de plataforma (P2.12): PLATFORM_OWNER e PLATFORM_FINANCE, nunca perfil de tenant.");
         exemptions.put("support:queue",
                 "Só papel de plataforma (P1.23): PLATFORM_OWNER, PLATFORM_OPS e PLATFORM_SUPPORT, nunca perfil de tenant.");
         exemptions.put("search:read",

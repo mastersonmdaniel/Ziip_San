@@ -44,6 +44,13 @@ import java.util.Set;
  * os quatro papéis) e {@code central:manage} (coleta manual, reconhecer
  * alerta, soneca e regras — OWNER e OPS; suporte e financeiro leem, mas
  * não operam a Central).
+ *
+ * <p>P2.12 (contratos SaaS, ADR-0019): {@code contract:read} (contratos,
+ * faturas, uso e custo — os quatro papéis), {@code contract:manage}
+ * (contrato, aditivo, empenho, reajuste, fatura, pagamento, uso e custo
+ * — OWNER e FINANCE) e {@code contract:restrict} (aviso previo e
+ * ativacao da restricao — OWNER e FINANCE; a matriz fina, com fatura
+ * vencida e aviso registrados, vive no servico).
  */
 public final class PlatformRole {
 
@@ -61,10 +68,13 @@ public final class PlatformRole {
      */
     private static final Map<String, Set<String>> PERMISSIONS = Map.of(
             OWNER, Set.of("deployment:read", "console:read", "console:manage", "console:suspend", "console:delete",
-                    "central:read", "central:manage", "support:queue"),
-            OPS, Set.of("deployment:read", "console:read", "console:manage", "central:read", "central:manage", "support:queue"),
-            SUPPORT, Set.of("console:read", "central:read", "support:queue"),
-            FINANCE, Set.of("console:read", "console:suspend", "central:read"));
+                    "central:read", "central:manage", "support:queue",
+                    "contract:read", "contract:manage", "contract:restrict"),
+            OPS, Set.of("deployment:read", "console:read", "console:manage", "central:read", "central:manage", "support:queue",
+                    "contract:read"),
+            SUPPORT, Set.of("console:read", "central:read", "support:queue", "contract:read"),
+            FINANCE, Set.of("console:read", "console:suspend", "central:read",
+                    "contract:read", "contract:manage", "contract:restrict"));
 
     private PlatformRole() {
     }

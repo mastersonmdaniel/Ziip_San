@@ -156,12 +156,16 @@ class PermissionCatalogTest {
         // global (P1.33). A lista continua exata: exceção nova exige justificativa.
         // Integração P1-C (2): entram asset:read/asset:manage (P1.35, concessão
         // direta designada pela própria frente, ver AssetRoles).
+        // P2.12: entram contract:read/manage/restrict — só existem via papel
+        // de plataforma (ver PlatformRole), como console:* e central:*; nenhum
+        // perfil de fábrica de tenant as inclui, por desenho (ADR-0019).
         assertThat(exempt).containsExactlyInAnyOrder(
                 "registry:reveal-document", "registry:search-document", "registry:export",
                 "deployment:read", "console:read", "console:manage", "console:suspend", "console:delete",
                 "central:read", "central:manage", "support:queue",
                 "search:read", "service-order:read", "billing:read", "document:read",
-                "asset:read", "asset:manage");
+                "asset:read", "asset:manage",
+                "contract:read", "contract:manage", "contract:restrict");
         for (String permission : PermissionCatalog.allNames()) {
             boolean inProfile = !PermissionCatalog.profilesIncluding(permission).isEmpty();
             assertThat(inProfile || exempt.contains(permission))

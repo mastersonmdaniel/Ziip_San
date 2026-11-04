@@ -6,13 +6,14 @@ import { PageHeader } from '@components/ui/PageHeader'
 import { api } from '@services/api'
 import { errorMessage } from '@services/registry/errors'
 
-type TabId = 'overview' | 'platform' | 'security' | 'alerts'
+type TabId = 'overview' | 'platform' | 'security' | 'alerts' | 'contracts'
 
 const TABS: Array<{ id: TabId; label: string; path: string }> = [
   { id: 'overview', label: 'Visão geral', path: '/platform/central/overview' },
   { id: 'platform', label: 'Plataforma', path: '/platform/central/platform' },
   { id: 'security', label: 'Segurança', path: '/platform/central/security' },
   { id: 'alerts', label: 'Alertas', path: '/platform/central/alerts' },
+  { id: 'contracts', label: 'Contratos', path: '/platform/central/contracts' },
 ]
 
 type HealthScore = {
@@ -32,8 +33,28 @@ type AlertView = {
   openedAt: string | null
 }
 
+type ContractRow = {
+  tenantId: string
+  contractId: string
+  contractNumber: string
+  status: string
+  startsAt: string
+  endsAt: string
+  daysToExpiry: number
+  commitmentBalance: number
+  openInvoices: number
+  openInvoicesTotal: number
+  overdueInvoices: number
+  providerCostMonth: number
+  invoicedMonth: number
+  margin: number | null
+}
+
 /**
  * Central Ziip v0 (P1.17): as 4 abas do plano, sobre o console v0 (P1.6).
+ * P2.12 acrescenta a aba Contratos (ADR-0019): uma linha por contrato
+ * SaaS, com vigencia, saldo de empenho, faturas em aberto, custo do
+ * provedor no mes e margem realizada — sem dado pessoal de tenant.
  * A tela só exibe o que a API devolve — contagens, scores e alertas, sem
  * nenhum dado pessoal de tenant (o tenant aparece só como UUID, o
  * `tenant_ref` do envelope da API de métricas). Sem o papel de plataforma
@@ -90,6 +111,7 @@ export function Central() {
     recentResolved?: AlertView[]
     rules?: Array<{ ruleKey: string; metricKey: string; severity: string; enabled: boolean }>
   } | null) : null
+  const contracts = tab === 'contracts' ? (data as ContractRow[] | null) : null
 
   return (
     <div className="space-y-6">
@@ -187,6 +209,29 @@ export function Central() {
                   <li key={r.ruleKey}>{r.ruleKey} ({r.metricKey}, {r.severity}) — {r.enabled ? 'ligada' : 'desligada'}</li>
                 ))}
               </ul>
+            </CardContent>
+          </Card>
+        </div>
+      ) : tab === 'contracts' && contracts ? (
+        <div className="space-y-6">
+          <Card>
+            <CardContent className="pt-6">
+              <h2 className="text-lg font-semibold">Contratos SaaS</h2>
+              {contracts.length ? (
+                <ul className="mt-2 space-y-2">
+                  {contracts.map((c) => (
+                    <li key={c.contractId}>
+                      {c.contractNumber} — {c.status} — vence em {c.daysToExpiry} dias —
+                      empenho {c.commitmentBalance} — faturas em aberto {c.openInvoices}
+                      ({c.openInvoicesTotal}, {c.overdueInvoices} vencidas) —
+                      custo no mês {c.providerCostMonth} — faturado no mês {c.invoicedMonth} —
+                      margem {c.margin === null ? '—' : `${(c.margin * 100).toFixed(1)}%`}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-2 text-sm">Nenhum contrato SaaS.</p>
+              )}
             </CardContent>
           </Card>
         </div>

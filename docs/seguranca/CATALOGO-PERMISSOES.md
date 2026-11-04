@@ -34,6 +34,9 @@ está declarado, mas não concede nada até a liberação da ED-75.
 | `console:delete` | console | console | delete | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER) | P1.6 |
 | `central:read` | central | central | read | (nenhum perfil de tenant — só papéis de plataforma: os 4 papéis) | P1.17 |
 | `central:manage` | central | central | manage | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS) | P1.17 |
+| `contract:read` | contratos | contract | read | (nenhum perfil de tenant — só papéis de plataforma: os 4 papéis) | P2.12 |
+| `contract:manage` | contratos | contract | manage | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_FINANCE) | P2.12 |
+| `contract:restrict` | contratos | contract | restrict | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_FINANCE) | P2.12 |
 | `parameters:manage` | console | parameters | manage | ADMIN, GESTOR | P1.6 |
 | `protocol:read` | atendimento | protocol | read | ATENDENTE, SUPERVISOR_COMERCIAL, OUVIDOR | P1.36 |
 | `protocol:write` | atendimento | protocol | write | ATENDENTE | P1.36 |
@@ -135,6 +138,10 @@ na administração do tenant, certificações na qualidade. A busca global e sua
 - `central:read/manage` (P1.17, registradas na integração P1-C pelo mesmo precedente)
   seguem a mesma regra: só existem via papel de plataforma (OWNER e OPS têm as 2,
   SUPPORT e FINANCE têm só `central:read`); nenhum perfil de fábrica de tenant as inclui.
+- `contract:read/manage/restrict` (P2.12, ADR-0019) seguem a mesma regra: só existem
+  via papel de plataforma (os 4 papéis leem; OWNER e FINANCE gerenciam e restringem);
+  nenhum perfil de fábrica de tenant as inclui. A matriz fina (FINANCE só por
+  inadimplência, com fatura vencida e aviso registrados) continua no serviço.
 - `parameters:manage` (P1.6, P1.37) cobre toda a tela de mudança de parâmetro do tenant
   (`/api/v1/tenant/parameters/*`: propor, aprovar, aceitar, ler vigente e painel). MUDANÇA DE
   COMPORTAMENTO NA P1.37: ela deixa de ser só concessão direta e entra nos perfis de
