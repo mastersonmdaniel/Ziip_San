@@ -16,6 +16,19 @@
 --                     tabela public.outbox (policy da core V8, P1.9/ADR-0014). O deploy do
 --                     worker concede LOGIN + senha fora deste init; aqui a role nasce sem
 --                     login para nenhum segredo novo entrar nas variaveis do init.
+--   ziipsan_batch     NOLOGIN. P2.2: o pool de lote (Spring Batch, P2.1): herda os
+--                     privilegios de ziipsan_app por MEMBERSHIP (GRANT ziipsan_app TO
+--                     ziipsan_batch), sem que nenhuma migration precise ser reescrita
+--                     para conceder tabela a tabela — e, por isso, continua sujeita
+--                     a RLS FORCE pelas policies de tenant (nunca membro de
+--                     ziipsan_worker, cuja policy *_worker_all veria todos os
+--                     tenants). LOGIN + senha so no deploy / no roteiro de IT,
+--                     como o worker. statement_timeout 15 min (lote e longo por
+--                     natureza; o teto de 5 s da app o mataria), idle 30 s.
+--   ziipsan_ingest    NOLOGIN. P2.2: o pool de ingestao (webhooks, sincronizacao,
+--                     cargas em lote): mesmo modelo do pool de lote — membro de
+--                     ziipsan_app, nunca de ziipsan_worker, LOGIN + senha so no
+--                     deploy / no roteiro de IT, statement_timeout 15 min, idle 30 s.
 --   ziipsan_central   NOLOGIN. A Central Ziip (P1.17): SELECT so nas tabelas da Central
 --                     e EXECUTE em platform_stats.* (core V9_1); NENHUM privilegio em
 --                     schema de tenant. LOGIN + senha so no deploy que a usar.
@@ -88,15 +101,25 @@ WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_worker') \gexe
 SELECT 'CREATE ROLE ziipsan_central NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE'
 WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_central') \gexec
 
+-- P2.2: roles dos pools por papel (sem login aqui, como o worker).
+SELECT 'CREATE ROLE ziipsan_batch NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE'
+WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_batch') \gexec
+SELECT 'CREATE ROLE ziipsan_ingest NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE'
+WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_ingest') \gexec
+
 -- Atributos impostos mesmo se a role ja existia.
 ALTER ROLE ziipsan_owner NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 ALTER ROLE ziipsan_migrator LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 ALTER ROLE ziipsan_app LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 ALTER ROLE ziipsan_worker NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 ALTER ROLE ziipsan_central NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
+ALTER ROLE ziipsan_batch NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
+ALTER ROLE ziipsan_ingest NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 
 -- Sem isto, um tenant pode resolver funcoes de schemas de outros tenants.
 ALTER ROLE ziipsan_app SET search_path = public;
+ALTER ROLE ziipsan_batch SET search_path = public;
+ALTER ROLE ziipsan_ingest SET search_path = public;
 
 -- P0.9: timeouts so na role da aplicacao (NUNCA no migrador: migrations e
 -- provisionamento sao longos e um timeout de app no meio cancelaria a migration).
@@ -104,6 +127,14 @@ ALTER ROLE ziipsan_app SET search_path = public;
 -- statement_timeout 5s, idle_in_transaction_session_timeout 30s (valores-alvo da ARQUITETURA-ALVO §4).
 ALTER ROLE ziipsan_app SET statement_timeout = '5s';
 ALTER ROLE ziipsan_app SET idle_in_transaction_session_timeout = '30s';
+
+-- P2.2: lote e ingestao sao longos por natureza (passo de Batch, carga em
+-- lote): 15 min, o valor que a ARQUITETURA-ALVO §4 ja previa para o worker,
+-- em vez dos 5 s da app. O idle continua 30 s, como na app.
+ALTER ROLE ziipsan_batch SET statement_timeout = '15min';
+ALTER ROLE ziipsan_batch SET idle_in_transaction_session_timeout = '30s';
+ALTER ROLE ziipsan_ingest SET statement_timeout = '15min';
+ALTER ROLE ziipsan_ingest SET idle_in_transaction_session_timeout = '30s';
 
 -- ========================================================================
 -- 3. DONO DO BANCO E DO SCHEMA PUBLIC
@@ -130,6 +161,19 @@ GRANT USAGE ON SCHEMA public TO ziipsan_app;
 SELECT format('GRANT CONNECT ON DATABASE %I TO ziipsan_worker', current_database()) \gexec
 GRANT USAGE ON SCHEMA public TO ziipsan_worker;
 
+-- P2.2: lote e ingestao conectam e resolvem nomes em public. Os privilegios
+-- de tabela vem da MEMBERSHIP em ziipsan_app (abaixo): toda migration que
+-- concede a ziipsan_app concede, por heranca, aos dois pools — sem reescrever
+-- nenhuma migration e sem duplicar GRANTs. A heranca nao afrouxa a RLS: as
+-- policies de tenant valem para qualquer role que nao seja dona, superusuario
+-- ou BYPASSRLS, e nenhum dos dois pools e membro de ziipsan_worker (a policy
+-- *_worker_all, TO ziipsan_worker, veria todos os tenants).
+SELECT format('GRANT CONNECT ON DATABASE %I TO ziipsan_batch', current_database()) \gexec
+GRANT USAGE ON SCHEMA public TO ziipsan_batch;
+SELECT format('GRANT CONNECT ON DATABASE %I TO ziipsan_ingest', current_database()) \gexec
+GRANT USAGE ON SCHEMA public TO ziipsan_ingest;
+GRANT ziipsan_app TO ziipsan_batch, ziipsan_ingest;
+
 -- ========================================================================
 -- 4. FUNCAO DE CONTEXTO DE TENANT
 -- ========================================================================
@@ -154,6 +198,9 @@ $fn$;
 ALTER FUNCTION public.current_tenant_id() OWNER TO ziipsan_owner;
 REVOKE ALL ON FUNCTION public.current_tenant_id() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.current_tenant_id() TO ziipsan_app, ziipsan_migrator;
+-- P2.2: direto (alem da heranca via ziipsan_app) para os pools por papel nao
+-- dependerem de heranca para a funcao que as policies de RLS consultam.
+GRANT EXECUTE ON FUNCTION public.current_tenant_id() TO ziipsan_batch, ziipsan_ingest;
 
 -- P0.22: wrapper de unaccent() para o índice trigram da tenant V3_9.
 --
@@ -182,6 +229,7 @@ $fn$;
 ALTER FUNCTION public.immutable_unaccent(text) OWNER TO ziipsan_owner;
 REVOKE ALL ON FUNCTION public.immutable_unaccent(text) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.immutable_unaccent(text) TO ziipsan_app, ziipsan_migrator;
+GRANT EXECUTE ON FUNCTION public.immutable_unaccent(text) TO ziipsan_batch, ziipsan_ingest;
 
 -- ========================================================================
 -- 5. VERIFICACAO (aborta o init se algo estiver errado)
@@ -195,7 +243,7 @@ DECLARE
     r RECORD;
 BEGIN
     FOR r IN SELECT rolname, rolsuper, rolbypassrls, rolcreaterole, rolcreatedb
-             FROM pg_roles WHERE rolname IN ('ziipsan_app', 'ziipsan_migrator', 'ziipsan_owner', 'ziipsan_worker', 'ziipsan_central') LOOP
+             FROM pg_roles WHERE rolname IN ('ziipsan_app', 'ziipsan_migrator', 'ziipsan_owner', 'ziipsan_worker', 'ziipsan_central', 'ziipsan_batch', 'ziipsan_ingest') LOOP
         IF r.rolsuper OR r.rolbypassrls OR r.rolcreaterole OR r.rolcreatedb THEN
             RAISE EXCEPTION 'FALHA CRITICA: % tem SUPERUSER/BYPASSRLS/CREATEROLE/CREATEDB', r.rolname;
         END IF;
@@ -203,8 +251,22 @@ BEGIN
 
     IF pg_has_role('ziipsan_app', 'ziipsan_owner', 'MEMBER')
        OR pg_has_role('ziipsan_migrator', 'ziipsan_owner', 'MEMBER')
-       OR pg_has_role('ziipsan_worker', 'ziipsan_owner', 'MEMBER') THEN
+       OR pg_has_role('ziipsan_worker', 'ziipsan_owner', 'MEMBER')
+       OR pg_has_role('ziipsan_batch', 'ziipsan_owner', 'MEMBER')
+       OR pg_has_role('ziipsan_ingest', 'ziipsan_owner', 'MEMBER') THEN
         RAISE EXCEPTION 'FALHA CRITICA: role de login e membro de ziipsan_owner';
+    END IF;
+
+    -- P2.2: lote e ingestao herdam de ziipsan_app, NUNCA de ziipsan_worker: a
+    -- policy *_worker_all (TO ziipsan_worker, USING true) daria a um membro do
+    -- worker visao de todos os tenants, anulando o isolamento por pool.
+    IF pg_has_role('ziipsan_batch', 'ziipsan_worker', 'MEMBER')
+       OR pg_has_role('ziipsan_ingest', 'ziipsan_worker', 'MEMBER') THEN
+        RAISE EXCEPTION 'FALHA CRITICA: pool de lote/ingestao e membro de ziipsan_worker';
+    END IF;
+    IF NOT pg_has_role('ziipsan_batch', 'ziipsan_app', 'MEMBER')
+       OR NOT pg_has_role('ziipsan_ingest', 'ziipsan_app', 'MEMBER') THEN
+        RAISE EXCEPTION 'FALHA CRITICA: pool de lote/ingestao nao herda ziipsan_app';
     END IF;
 
     IF (SELECT pg_get_userbyid(proowner) FROM pg_proc
@@ -241,6 +303,22 @@ BEGIN
         AND s.setconfig @> ARRAY['statement_timeout=5s',
                                   'idle_in_transaction_session_timeout=30s']) THEN
         RAISE EXCEPTION 'FALHA CRITICA: timeouts da ziipsan_app ausentes';
+    END IF;
+
+    -- P2.2: timeouts dos pools por papel (15 min de statement, 30 s de idle).
+    IF NOT EXISTS (SELECT 1 FROM pg_db_role_setting s
+        WHERE s.setrole = (SELECT oid FROM pg_authid WHERE rolname = 'ziipsan_batch')
+        AND s.setdatabase = 0
+        AND s.setconfig @> ARRAY['statement_timeout=15min',
+                                  'idle_in_transaction_session_timeout=30s']) THEN
+        RAISE EXCEPTION 'FALHA CRITICA: timeouts da ziipsan_batch ausentes';
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_db_role_setting s
+        WHERE s.setrole = (SELECT oid FROM pg_authid WHERE rolname = 'ziipsan_ingest')
+        AND s.setdatabase = 0
+        AND s.setconfig @> ARRAY['statement_timeout=15min',
+                                  'idle_in_transaction_session_timeout=30s']) THEN
+        RAISE EXCEPTION 'FALHA CRITICA: timeouts da ziipsan_ingest ausentes';
     END IF;
 
     IF (SELECT pg_get_userbyid(datdba) FROM pg_database WHERE datname = current_database()) <> 'ziipsan_owner'

@@ -101,6 +101,23 @@ ziipsan:
     # P1.14: paralelismo do rollout de migrations por tenant (canário + demais em
     # paralelo limitado). Padrão 2 = pool do DataSource de migração; nunca acima dele.
     migration-parallelism: ${ZIIPSAN_DB_MIGRATION_PARALLELISM:2}
+    # P2.2: pools por papel (RolePoolConfig). Desligado por padrão: sem a flag,
+    # nenhum bean novo é criado e nenhum contexto existente muda. Ligado, os
+    # pools de lote (teto 10) e de ingestão (teto 5) sobem com credencial
+    # própria (roles ziipsan_batch / ziipsan_ingest, criadas NOLOGIN no init
+    # de segurança; LOGIN + senha no deploy, como a ziipsan_worker da P1.9).
+    # Sem a senha, o bean falha rápido com mensagem clara, em vez de subir
+    # um pool que só falharia no primeiro uso.
+    pools:
+      enabled: ${ZIIPSAN_DB_POOLS_ENABLED:false}
+    batch:
+      user: ${ZIIPSAN_DB_BATCH_USER:ziipsan_batch}
+      password: ${ZIIPSAN_DB_BATCH_PASSWORD:}
+      max-pool-size: ${ZIIPSAN_DB_BATCH_MAX_POOL_SIZE:10}
+    ingest:
+      user: ${ZIIPSAN_DB_INGEST_USER:ziipsan_ingest}
+      password: ${ZIIPSAN_DB_INGEST_PASSWORD:}
+      max-pool-size: ${ZIIPSAN_DB_INGEST_MAX_POOL_SIZE:5}
   # P0.6: credenciais do migrador em prefixo proprio, SEM validacao. A api e o worker
   # nao exigem estas variaveis; so o perfil migrate as le (DataSourceConfig). As
   # variaveis de ambiente continuam as mesmas de antes (ZIIPSAN_DB_MIGRATOR_*).

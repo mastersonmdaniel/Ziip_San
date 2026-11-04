@@ -117,6 +117,18 @@ WORKER_PW="$(openssl rand -hex 16)"
 psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d ziipsan -v ON_ERROR_STOP=1 \
   -c "ALTER ROLE ziipsan_worker LOGIN PASSWORD '$WORKER_PW';" >/dev/null
 export ZIIPSAN_IT_WORKER_PASSWORD="$WORKER_PW"
+# P2.2: mesmo modelo para os pools por papel — ziipsan_batch e ziipsan_ingest
+# nascem NOLOGIN no security.sql e os ITs de pool exigem LOGIN + as senhas em
+# ZIIPSAN_IT_BATCH_PASSWORD / ZIIPSAN_IT_INGEST_PASSWORD. Senhas efemeras, so
+# desta rodada. Sem elas, os ITs de pool falham rapido nomeando a variavel.
+BATCH_PW="$(openssl rand -hex 16)"
+INGEST_PW="$(openssl rand -hex 16)"
+psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d ziipsan -v ON_ERROR_STOP=1 \
+  -c "ALTER ROLE ziipsan_batch LOGIN PASSWORD '$BATCH_PW';" >/dev/null
+psql -h 127.0.0.1 -p "$IT_PORT" -U postgres -d ziipsan -v ON_ERROR_STOP=1 \
+  -c "ALTER ROLE ziipsan_ingest LOGIN PASSWORD '$INGEST_PW';" >/dev/null
+export ZIIPSAN_IT_BATCH_PASSWORD="$BATCH_PW"
+export ZIIPSAN_IT_INGEST_PASSWORD="$INGEST_PW"
 echo "banco virgem pronto em 127.0.0.1:$IT_PORT"
 
 export ZIIPSAN_IT_JDBC_URL="jdbc:postgresql://127.0.0.1:${IT_PORT}/ziipsan"

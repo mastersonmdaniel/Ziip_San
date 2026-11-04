@@ -150,6 +150,43 @@ assistida com janela.
   `PgBouncerPreparedIT` sobe um PgBouncer real e executa 20 vezes a mesma
   prepared statement sobre um pool de 2 conexões em modo transaction. Sem
   `max_prepared_statements` (PgBouncer < 1.24) o teste é pulado, não verde falso.
+- P2.2 (pools por papel): tres pools, cada um com credencial e teto proprios
+  (`RoleDataSourceFactory` + `PoolRole`; beans de lote/ingestao em
+  `RolePoolConfig`, desligados por padrao por `ziipsan.db.pools.enabled`):
+  API `ziipsan_app` 20 (o pool existente), lote `ziipsan_batch` 10, ingestao
+  `ziipsan_ingest` 5. Soma por processo 35 (+ migrador 2), dentro do
+  `max_connections=200`. No PgBouncer em modo transaction o pool e por par
+  (usuario, banco): papeis distintos sao pools distintos tambem no pooler —
+  e por isso um lote que satura o pool de lote nao esgota o pool da API
+  (provado pelo IT de saturacao, direto e via PgBouncer). As roles de lote e
+  ingestao nascem NOLOGIN no init de seguranca (LOGIN + senha no deploy, como
+  o worker da P1.9) e herdam os privilegios de `ziipsan_app` por membership —
+  nenhuma migration precisa ser reescrita para concede-las —, sem nunca serem
+  membros de `ziipsan_worker` (a policy `*_worker_all` veria todos os tenants);
+  timeouts 15 min de statement / 30 s de idle (lote e ingestao sao longos por
+  natureza; o teto de 5 s da app os mataria). O contexto de tenant continua
+  LOCAL a transacao em todos os pools (`set_config(..., true)`; o helper
+  `TenantTransaction` generaliza o padrao da P2.1 para consumidores JDBC fora
+  do Hibernate); a regra de instrucao preparada da P0.21 vale nos tres pools
+  (a fabrica nunca define `prepareThreshold`, travado por teste) e o catalogo
+  (`cluster_id`, `isolation_mode`, `tenant_schema_version`) e legivel nos tres.
+  PENDENCIA DECLARADA: a variante via PgBouncer do IT (`RolePoolPgBouncerIT`)
+  pula sem o binario do PgBouncer no host (sem ele, nao ha verde falso) e
+  deve rodar no CI onde o binario existe, como o `PgBouncerPreparedIT`.
+- P2.2 (base do schema compartilhado, DOCUMENTADA — nao implementada): o modo
+  `SHARED` ja existe no catalogo (`tenant_catalog.isolation_mode`, P0.21) e e
+  a base, mas nenhum schema compartilhado foi criado nesta tarefa e nenhum
+  tenant provisionado em modo `SHARED`. O desenho documentado e: UM schema
+  (nome a decidir na frente que provisionar o primeiro tenant SHARED) com
+  `tenant_id` em toda tabela e RLS FORCE em todas elas (o modelo que as
+  tabelas publicas `job_runs` etc. ja usam), sem troca de `search_path` por
+  tenant — o isolamento vem da GUC `app.current_tenant`, nao do schema —,
+  migrations aplicadas UMA vez no schema (nao uma vez por tenant), e os mesmos
+  tres pools por papel (o pool nao muda com o modo de isolamento; muda so a
+  resolucao tenant → schema). Pontos em aberto para a P4.6 (sob demanda, como
+  o plano ja previa): quais tabelas/entidades vivem no schema compartilhado,
+  o teto de tenants por schema compartilhado, e a migracao assistida de um
+  tenant `SCHEMA` para `SHARED` (e a volta).
 - P0.22 (busca e listas): índice GIN trigram da tenant `V3_9` (a `V3_4` do plano
   já era a modelagem de cliente da P0.16 e a `V3_8` está reservada para a P1.41;
   nenhuma migration existente foi renomeada) sobre

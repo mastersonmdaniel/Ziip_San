@@ -226,6 +226,9 @@ services:
     # P0.28: PgBouncer em modo transaction. A lista de usuarios e GERADA NA SUBIDA
     # pelo entrypoint a partir das senhas do .env (nunca versionada, nunca na imagem).
     # O modo transaction exige contexto local a transacao (ver MultiTenantConnectionProvider).
+    # P2.2: as senhas dos pools por papel (lote, ingestao) sao OPCIONAIS aqui
+    # (sem :? ): sem elas os papeis ficam fora da userlist e o PgBouncer os
+    # recusa, em vez de quebrar os ambientes que ainda nao os usam.
     profiles: ["pool"]
     build:
       context: ./infra/pgbouncer
@@ -235,6 +238,8 @@ services:
     environment:
       ZIIPSAN_APP_PASSWORD: ${ZIIPSAN_APP_PASSWORD:?defina ZIIPSAN_APP_PASSWORD no .env}
       ZIIPSAN_MIGRATOR_PASSWORD: ${ZIIPSAN_MIGRATOR_PASSWORD:?defina ZIIPSAN_MIGRATOR_PASSWORD no .env}
+      ZIIPSAN_BATCH_PASSWORD: ${ZIIPSAN_BATCH_PASSWORD:-}
+      ZIIPSAN_INGEST_PASSWORD: ${ZIIPSAN_INGEST_PASSWORD:-}
     ports:
       - "127.0.0.1:6432:6432"
     depends_on:

@@ -7,6 +7,11 @@
 #   ZIIPSAN_MIGRATOR_PASSWORD   role ziipsan_migrator (migrations)
 #   KEYCLOAK_DB_PASSWORD       opcional: cria role e banco proprios do Keycloak
 #
+# P2.2: as roles ziipsan_batch e ziipsan_ingest nascem NOLOGIN em
+# sql/security.sql, como a ziipsan_worker da P1.9: LOGIN + senha sao
+# concedidos pelo deploy (ou pelo roteiro de IT, scripts/ci-linux.sh), e
+# nenhum segredo novo entra nas variaveis deste init.
+#
 # O SQL fica em sql/ (subdiretorio) para o entrypoint nao executa-lo sozinho: ele precisa das
 # variaveis psql passadas aqui.
 #
