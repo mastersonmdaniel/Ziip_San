@@ -27,7 +27,7 @@ import java.util.UUID;
  * Cobranca do SaaS por contrato (P2.12, ADR-0019, core V10_1).
  *
  * <p>O que este servico faz: contrato com aditivos, empenhos, reajuste
- * (proposta ate haver apostilamento ou aditivo), faturas e pagamentos
+ * (proposta ate haver apostilamento ou aditivo), cobranças e pagamentos
  * conciliados, registro de uso mensal sem dado pessoal, fotografia
  * mensal de ligacoes ativas com hash, relatorio entregue ao cliente
  * com janela de contestacao, custo do provedor por tenant e aba
@@ -35,11 +35,11 @@ import java.util.UUID;
  *
  * <p>O que este servico NAO faz, por desenho (ADR-0019, item 5): nenhum
  * metodo aqui suspende, bloqueia ou restringe um tenant sozinho.
- * Emitir fatura, vencer fatura, estourar cota, vencer contrato ou
+ * Emitir cobrança, vencer cobrança, estourar cota, vencer contrato ou
  * avaliar alertas nunca escreve em {@code tenant_lifecycle}. A unica
  * restricao passa por {@link #requestRestrictionNotice} +
  * {@link #activateRestriction}: manual, por uma pessoa com MFA (filtro)
- * e step-up confirmado, com justificativa, fatura vencida e aviso
+ * e step-up confirmado, com justificativa, cobrança vencida e aviso
  * previo registrados — e recusada sem qualquer um deles. A reativacao
  * apos a restricao nao existe nesta tarefa (a P1.6 tambem nao a tem):
  * ponto de extensao documentado no relatorio da P2.12.
@@ -50,14 +50,14 @@ import java.util.UUID;
  *       ({@code sla_policy_key}): {@code support.sla_policy} nasceu na
  *       P2.15 (core V10_2), que promoveu a coluna a FK — criar contrato
  *       com chave desconhecida e 422, antes do banco recusar.</li>
- *   <li>As referencias de documento da fatura e da NFS-e sao texto: o
+ *   <li>As referencias de documento da cobrança e da NFS-e sao texto: o
  *       documento em si chega na P2.13 (motor fiscal) e na P2.14 (area
  *       do tenant), que resolvem as referencias.</li>
  *   <li>O registro de uso do mes e um valor substituido a cada
  *       gravacao (nao um acumulado de eventos): quem mede informa o
  *       total do mes. A fotografia de ligacoes tambem alimenta o
  *       ledger, para a cota medir o mesmo registro.</li>
- *   <li>O numero da fatura vem de uma sequencia global
+ *   <li>O numero da cobrança vem de uma sequencia global
  *       ({@code saas_invoice_seq}): unico sob concorrencia, sem
  *       promessa de sequencia por contrato (a P2.13 pode numerar por
  *       serie fiscal quando o motor entrar).</li>
@@ -127,7 +127,7 @@ public class SaaSContractService {
                            String basis, BigDecimal amount) {
     }
 
-    /** Linha da aba Contratos da Central: vigencia, empenho, faturas, custo e margem. */
+    /** Linha da aba Contratos da Central: vigencia, empenho, cobranças, custo e margem. */
     public record ContractRow(UUID tenantId, UUID contractId, String contractNumber, String status,
                               LocalDate startsAt, LocalDate endsAt, Long daysToExpiry,
                               BigDecimal commitmentBalance, int openInvoices, BigDecimal openInvoicesTotal,
@@ -374,7 +374,7 @@ public class SaaSContractService {
     }
 
     // ------------------------------------------------------------------
-    // Faturas e pagamentos conciliados
+    // Cobranças e pagamentos conciliados
     // ------------------------------------------------------------------
 
     @Transactional
@@ -385,17 +385,17 @@ public class SaaSContractService {
             throw validation("A competencia precisa estar no formato AAAA-MM.");
         }
         if (total == null || total.compareTo(BigDecimal.ZERO) < 0) {
-            throw validation("O total da fatura nao pode ser negativo.");
+            throw validation("O total da cobrança nao pode ser negativo.");
         }
         if (dueDate == null) {
-            throw validation("A data de vencimento da fatura e obrigatoria.");
+            throw validation("A data de vencimento da cobrança e obrigatoria.");
         }
         if (commitmentId != null) {
             List<UUID> owner = jdbc.query(
                     "SELECT contract_id FROM platform.saas_commitment WHERE id = ?",
                     (rs, i) -> rs.getObject(1, UUID.class), commitmentId);
             if (owner.isEmpty() || !owner.get(0).equals(contractId)) {
-                throw validation("O empenho precisa ser do mesmo contrato da fatura.");
+                throw validation("O empenho precisa ser do mesmo contrato da cobrança.");
             }
         }
         Long seq = jdbc.queryForObject("SELECT nextval('platform.saas_invoice_seq')", Long.class);
@@ -416,9 +416,9 @@ public class SaaSContractService {
     }
 
     /**
-     * Resolve a referencia da NFS-e da fatura (P2.13): apos a emissao pelo motor fiscal, a
-     * fatura passa a apontar para o Id da DPS autorizada. Recusada se a fatura ja apontar
-     * para outro documento — a NFS-e de uma fatura e unica, e a segunda emissao devolve a
+     * Resolve a referencia da NFS-e da cobrança (P2.13): apos a emissao pelo motor fiscal, a
+     * cobrança passa a apontar para o Id da DPS autorizada. Recusada se a cobrança ja apontar
+     * para outro documento — a NFS-e de uma cobrança e unica, e a segunda emissao devolve a
      * existente em vez de vincular outra. Auditoria SAAS_NFSE_LINKED na mesma transacao.
      */
     @Transactional
@@ -429,7 +429,7 @@ public class SaaSContractService {
             throw validation("A referencia da NFS-e e obrigatoria.");
         }
         if (current.nfseDocumentRef() != null && !current.nfseDocumentRef().equals(dpsRef)) {
-            throw conflict("A fatura ja tem outra NFS-e vinculada.");
+            throw conflict("A cobrança ja tem outra NFS-e vinculada.");
         }
         jdbc.update("UPDATE platform.saas_invoice SET nfse_document_ref = ?, updated_at = NOW() WHERE id = ?",
                 dpsRef, invoiceId);
@@ -442,7 +442,7 @@ public class SaaSContractService {
         return invoice(invoiceId);
     }
 
-    /** Registra um pagamento informado (ordem bancaria); sem fatura, fica sem conciliar — nunca inventa fatura. */
+    /** Registra um pagamento informado (ordem bancaria); sem cobrança, fica sem conciliar — nunca inventa cobrança. */
     @Transactional
     public PaymentView recordPayment(UUID tenantId, UUID invoiceId, BigDecimal amount, LocalDate paidAt,
                                      String bankOrderRef, UUID actorId, String actorRole) {
@@ -457,7 +457,7 @@ public class SaaSContractService {
             InvoiceView invoice = invoice(invoiceId);
             ContractView contract = contract(invoice.contractId());
             if (!contract.tenantId().equals(tenantId)) {
-                throw validation("O pagamento precisa ser do mesmo tenant da fatura.");
+                throw validation("O pagamento precisa ser do mesmo tenant da cobrança.");
             }
         }
         UUID id = UUID.randomUUID();
@@ -472,7 +472,7 @@ public class SaaSContractService {
         return payment(id);
     }
 
-    /** Reconcilia a fatura: soma os pagamentos vinculados e atualiza pago e status. */
+    /** Reconcilia a cobrança: soma os pagamentos vinculados e atualiza pago e status. */
     @Transactional
     public InvoiceView reconcileInvoice(UUID invoiceId, UUID actorId, String actorRole) {
         InvoiceView current = invoice(invoiceId);
@@ -510,7 +510,7 @@ public class SaaSContractService {
                 },
                 invoiceId);
         if (rows.isEmpty()) {
-            throw new ApiException.NotFound("A fatura nao existe.");
+            throw new ApiException.NotFound("A cobrança nao existe.");
         }
         return rows.get(0);
     }
@@ -547,8 +547,8 @@ public class SaaSContractService {
     /**
      * Aviso previo de restricao por inadimplencia. Exige: papel OWNER ou
      * FINANCE com motivo inadimplencia, step-up confirmado, justificativa,
-     * vigencia futura — e fatura vencida do contrato do tenant. Sem
-     * fatura vencida, sem aviso: recusado. O aviso deixa o ciclo de vida
+     * vigencia futura — e cobrança vencida do contrato do tenant. Sem
+     * cobrança vencida, sem aviso: recusado. O aviso deixa o ciclo de vida
      * em SUSPENSION_NOTICE (backoffice ainda opera); so a ativacao, apos
      * o prazo, torna a restricao vigente.
      */
@@ -576,10 +576,10 @@ public class SaaSContractService {
         }
         InvoiceView invoice = invoice(invoiceId);
         if (!invoice.contractId().equals(contractId)) {
-            throw validation("A fatura precisa ser do contrato.");
+            throw validation("A cobrança precisa ser do contrato.");
         }
         if (!invoice.overdue()) {
-            throw validation("A restricao exige fatura vencida e nao paga.");
+            throw validation("A restricao exige cobrança vencida e nao paga.");
         }
         UUID id = UUID.randomUUID();
         jdbc.update("INSERT INTO platform.saas_restriction_notice (id, tenant_id, contract_id, invoice_id,"
@@ -601,7 +601,7 @@ public class SaaSContractService {
         return restrictionNotice(id);
     }
 
-    /** Ativa a restricao: aviso com prazo vencido, fatura ainda vencida, mesmo papel e step-up. */
+    /** Ativa a restricao: aviso com prazo vencido, cobrança ainda vencida, mesmo papel e step-up. */
     @Transactional
     public RestrictionNoticeView activateRestriction(UUID noticeId, boolean stepUpConfirmed,
                                                      String role, UUID actorId) {
@@ -621,7 +621,7 @@ public class SaaSContractService {
         }
         InvoiceView invoice = invoice(notice.invoiceId());
         if (!invoice.overdue()) {
-            throw conflict("A fatura nao esta mais vencida e nao paga; a restricao nao pode vigorar.");
+            throw conflict("A cobrança nao esta mais vencida e nao paga; a restricao nao pode vigorar.");
         }
         jdbc.update("UPDATE platform.saas_restriction_notice SET status = 'EFFECTIVE', activated_at = NOW()"
                 + " WHERE id = ?", noticeId);
@@ -888,7 +888,7 @@ public class SaaSContractService {
     // Aba Contratos da Central
     // ------------------------------------------------------------------
 
-    /** Uma linha por contrato: vigencia, saldo de empenho, faturas, custo do mes e margem realizada. */
+    /** Uma linha por contrato: vigencia, saldo de empenho, cobranças, custo do mes e margem realizada. */
     public List<ContractRow> contractsTab() {
         LocalDate today = today();
         LocalDate month = today.withDayOfMonth(1);

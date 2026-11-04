@@ -21,16 +21,16 @@ import java.util.UUID;
 /**
  * Avaliacao dos alertas do item 7 da ADR-0019 (P2.12): contrato a
  * vencer em 180, 90 e 30 dias; saldo de empenho abaixo de duas
- * faturas; cota em 80% e 100%; fatura vencida; pagamento sem fatura
+ * cobranças; cota em 80% e 100%; cobrança vencida; pagamento sem cobrança
  * correspondente. Os eventos vivem em {@code platform.alert_event}
  * (tabela da V9_1), com as regras semeadas na V10_1.
  *
  * <p>Garantia de nao-bloqueio: este servico so escreve em
  * {@code alert_event}. Ele nunca toca {@code tenant_lifecycle},
  * {@code saas_contract.status} ou qualquer flag de acesso — contrato
- * vencido, cota estourada e fatura em atraso geram alerta e aviso, e
+ * vencido, cota estourada e cobrança em atraso geram alerta e aviso, e
  * so a restricao manual (outro servico, outra rota) restringe. O
- * teste de integracao prova isso: apos avaliar sobre fatura vencida,
+ * teste de integracao prova isso: apos avaliar sobre cobrança vencida,
  * contrato vencido e cota estourada, o ciclo de vida continua
  * intocado.
  *
@@ -97,7 +97,7 @@ public class SaaSContractAlerts {
         resolved += resolveCleared("saas.contract.expiring", expiring.keySet());
         alarming.addAll(expiring.keySet());
 
-        // -- Saldo de empenho abaixo de duas faturas --
+        // -- Saldo de empenho abaixo de duas cobranças --
         Set<UUID> commitmentLow = new HashSet<>();
         List<Map<String, Object>> balances = jdbc.queryForList(
                 "SELECT c.tenant_id, c.monthly_value, COALESCE(SUM(m.balance), 0) AS balance"
@@ -157,7 +157,7 @@ public class SaaSContractAlerts {
         alarming.addAll(quota80);
         alarming.addAll(quota100);
 
-        // -- Fatura vencida --
+        // -- Cobrança vencida --
         Set<UUID> overdue = new HashSet<>(jdbc.query(
                 "SELECT DISTINCT c.tenant_id FROM platform.saas_invoice i"
                         + " JOIN platform.saas_contract c ON c.id = i.contract_id"
@@ -169,7 +169,7 @@ public class SaaSContractAlerts {
         resolved += resolveCleared("saas.invoice.overdue", overdue);
         alarming.addAll(overdue);
 
-        // -- Pagamento sem fatura correspondente --
+        // -- Pagamento sem cobrança correspondente --
         Set<UUID> unmatched = new HashSet<>(jdbc.query(
                 "SELECT DISTINCT tenant_id FROM platform.saas_payment WHERE invoice_id IS NULL",
                 (rs, i) -> rs.getObject(1, UUID.class)));

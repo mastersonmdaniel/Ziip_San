@@ -49,7 +49,7 @@ class PlatformRoleTest {
                 .contains("console:read", "console:manage", "central:read", "central:manage")
                 .doesNotContain("console:suspend", "console:delete");
         assertThat(PlatformRole.permissionsFor("PLATFORM_SUPPORT"))
-                .containsExactlyInAnyOrder("console:read", "central:read", "support:queue");
+                .containsExactlyInAnyOrder("console:read", "central:read", "support:queue", "contract:read");
         assertThat(PlatformRole.permissionsFor("PLATFORM_FINANCE"))
                 .contains("console:read", "console:suspend", "central:read")
                 .doesNotContain("console:manage", "console:delete", "central:manage");

@@ -46,10 +46,10 @@ import java.util.Set;
  * não operam a Central).
  *
  * <p>P2.12 (contratos SaaS, ADR-0019): {@code contract:read} (contratos,
- * faturas, uso e custo — os quatro papéis), {@code contract:manage}
- * (contrato, aditivo, empenho, reajuste, fatura, pagamento, uso e custo
+ * cobranças, uso e custo — os quatro papéis), {@code contract:manage}
+ * (contrato, aditivo, empenho, reajuste, cobrança, pagamento, uso e custo
  * — OWNER e FINANCE) e {@code contract:restrict} (aviso previo e
- * ativacao da restricao — OWNER e FINANCE; a matriz fina, com fatura
+ * ativacao da restricao — OWNER e FINANCE; a matriz fina, com cobrança
  * vencida e aviso registrados, vive no servico).
  */
 public final class PlatformRole {

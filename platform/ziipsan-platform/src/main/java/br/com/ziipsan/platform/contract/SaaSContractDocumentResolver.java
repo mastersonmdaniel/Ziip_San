@@ -3,7 +3,7 @@ package br.com.ziipsan.platform.contract;
 import java.util.Optional;
 
 /**
- * Resolucao das referencias de documento da fatura SaaS (P2.14, ADR-0022).
+ * Resolucao das referencias de documento da cobrança SaaS (P2.14, ADR-0022).
  *
  * <p>A P2.12 guarda nas colunas {@code invoice_document_ref} e
  * {@code nfse_document_ref} apenas referencias (texto), nao o documento:

@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  *
  * <p>Regra de ouro, em codigo: nenhum metodo desta classe suspende,
  * bloqueia ou restringe um tenant. A restricao so existe como ato
- * manual do servico ({@code SaaSContractService}), com fatura vencida,
+ * manual do servico ({@code SaaSContractService}), com cobrança vencida,
  * aviso previo, MFA, step-up e justificativa — e a avaliacao de
  * alertas nao escreve em {@code tenant_lifecycle} em nenhum caminho.
  */
@@ -39,7 +39,7 @@ public final class SaaSContractRules {
     public static final BigDecimal QUOTA_WARN = new BigDecimal("0.8");
     public static final BigDecimal QUOTA_CRITICAL = BigDecimal.ONE;
 
-    /** Limiar de saldo de empenho (ADR-0019, item 7): abaixo de 2 faturas. */
+    /** Limiar de saldo de empenho (ADR-0019, item 7): abaixo de 2 cobranças. */
     public static final BigDecimal COMMITMENT_LOW_INVOICES = new BigDecimal("2");
 
     /** Chaves de metrica do usage_ledger, sem dado pessoal (so contagens). */
@@ -68,7 +68,7 @@ public final class SaaSContractRules {
         return PlatformRole.OWNER.equals(role) || PlatformRole.FINANCE.equals(role);
     }
 
-    /** Fatura vencida: nao paga (OPEN ou PARTIALLY_PAID) e vencimento passado. */
+    /** Cobrança vencida: nao paga (OPEN ou PARTIALLY_PAID) e vencimento passado. */
     public static boolean isOverdue(String invoiceStatus, LocalDate dueDate, LocalDate today) {
         if (dueDate == null || today == null) {
             return false;
@@ -119,7 +119,7 @@ public final class SaaSContractRules {
     }
 
     /**
-     * Saldo do empenho em faturas mensais. Valor mensal zero: saldo
+     * Saldo do empenho em cobranças mensais. Valor mensal zero: saldo
      * positivo e folga (sem alerta) e saldo zero ou negativo e alerta —
      * nunca divisao por zero.
      */
@@ -139,7 +139,7 @@ public final class SaaSContractRules {
                 && balanceInInvoices.compareTo(COMMITMENT_LOW_INVOICES) < 0;
     }
 
-    /** Margem realizada: (faturado - custo) / faturado; null sem faturamento. */
+    /** Margem realizada: (cobrado - custo) / cobrado; null sem cobrança. */
     public static BigDecimal margin(BigDecimal invoiced, BigDecimal providerCost) {
         if (invoiced == null || invoiced.compareTo(BigDecimal.ZERO) <= 0 || providerCost == null) {
             return null;
@@ -147,7 +147,7 @@ public final class SaaSContractRules {
         return invoiced.subtract(providerCost).divide(invoiced, 4, RoundingMode.HALF_UP);
     }
 
-    /** Status da fatura apos conciliar: pago quando o pago cobre o total. */
+    /** Status da cobrança apos conciliar: pago quando o pago cobre o total. */
     public static String reconciledStatus(BigDecimal total, BigDecimal paidAmount) {
         if (paidAmount == null || paidAmount.compareTo(BigDecimal.ZERO) <= 0) {
             return "OPEN";

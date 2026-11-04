@@ -65,7 +65,7 @@ public class SaaSFiscalRegistry {
     public record NfseTaxView(String taxCode, BigDecimal rate, BigDecimal amount, boolean informative) {
     }
 
-    /** Leitura da NFS-e de uma fatura, para a emissao e para a area do tenant (P2.14). */
+    /** Leitura da NFS-e de uma cobrança, para a emissao e para a area do tenant (P2.14). */
     public record NfseView(UUID id, UUID invoiceId, UUID tenantId, String series, long number,
                            String dpsId, String accessKey, String protocol, String status,
                            String environment, BigDecimal gross, BigDecimal net,

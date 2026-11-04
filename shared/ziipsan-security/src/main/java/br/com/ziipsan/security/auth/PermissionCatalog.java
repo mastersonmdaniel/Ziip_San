@@ -114,7 +114,7 @@ public final class PermissionCatalog {
             // so existem via papel de plataforma (ver PlatformRole), como
             // console:* e central:*. Leitura: os quatro papeis; gestao:
             // OWNER e FINANCE; restricao: OWNER e FINANCE, com a matriz
-            // fina (FINANCE so por inadimplencia, com fatura vencida e
+            // fina (FINANCE so por inadimplencia, com cobrança vencida e
             // aviso) no servico, porque a permissao sozinha nao distingue
             // o motivo nem a existencia dos elos.
             new Permission("contract:read", "contratos", "contract", "read", "P2.12"),

@@ -26,10 +26,10 @@ import java.util.UUID;
  * Area do tenant: contrato com o Ziip (P2.14, ADR-0022).
  *
  * <p>Tudo aqui e filtrado pelo tenant do token, nunca por parametro:
- * contrato, fatura ou pagamento de outro tenant responde 404 com a
+ * contrato, cobrança ou pagamento de outro tenant responde 404 com a
  * mesma mensagem do inexistente (sem oraculo). As leituras reutilizam
  * o {@link SaaSContractService} da P2.12 (contratos por tenant,
- * fatura, pagamentos sem conciliar, relatorio de uso); as listas por
+ * cobrança, pagamentos sem conciliar, relatorio de uso); as listas por
  * contrato sao consultas novas, no mesmo padrao de mapeamento.
  *
  * <p>Auditoria: cada acesso servido insere uma linha em
@@ -38,7 +38,7 @@ import java.util.UUID;
  * {@code SAAS_MYCONTRACT_DOCUMENT_DOWNLOADED} para os downloads, com
  * o hash conferido no detalhe; recusa por hash divergente tambem
  * audita ({@code SAAS_MYCONTRACT_DOCUMENT_REFUSED}), sem servir byte
- * nenhum. A fatura em PDF so e servida quando PAID; a NFS-e, quando
+ * nenhum. A cobrança em PDF so e servida quando PAID; a NFS-e, quando
  * ha referencia resolvida. O XML baixado e conferido: quando a
  * referencia carrega o hash da autorizacao, o SHA-256 dos bytes lidos
  * precisa bater, ou o download e recusado (fail-closed, 500
@@ -53,7 +53,7 @@ import java.util.UUID;
 @Service
 public class TenantSaaSContractService {
 
-    /** Tipo de documento da fatura: a propria fatura ou a NFS-e dela. */
+    /** Tipo de documento da cobrança: a propria cobrança ou a NFS-e dela. */
     public enum DocumentKind {
         INVOICE, NFSE
     }
@@ -185,7 +185,7 @@ public class TenantSaaSContractService {
     }
 
     // ------------------------------------------------------------------
-    // Download de documento da fatura
+    // Download de documento da cobrança
     // ------------------------------------------------------------------
 
     /**
@@ -203,18 +203,18 @@ public class TenantSaaSContractService {
         if (kind == DocumentKind.INVOICE) {
             if (!"PAID".equals(invoice.status())) {
                 throw new ApiException.Conflict("state-conflict",
-                        "A fatura so pode ser baixada depois de paga.");
+                        "A cobrança so pode ser baixada depois de paga.");
             }
             ref = invoice.invoiceDocumentRef();
         } else {
             ref = invoice.nfseDocumentRef();
         }
         if (ref == null || ref.isBlank()) {
-            throw new ApiException.NotFound("O documento ainda nao esta disponivel para esta fatura.");
+            throw new ApiException.NotFound("O documento ainda nao esta disponivel para esta cobrança.");
         }
         ResolvedDocument resolved = resolver.resolve(ref)
                 .orElseThrow(() -> new ApiException.NotFound(
-                        "O documento ainda nao esta disponivel para esta fatura."));
+                        "O documento ainda nao esta disponivel para esta cobrança."));
         if (!mediaMatches(resolved.contentType(), format)) {
             throw new ApiException.NotFound("O documento nao esta disponivel neste formato.");
         }
@@ -248,7 +248,7 @@ public class TenantSaaSContractService {
         InvoiceView row = contracts.invoice(invoiceId);
         ContractView contract = contracts.contract(row.contractId());
         if (!contract.tenantId().equals(tenantId)) {
-            throw new ApiException.NotFound("A fatura nao existe.");
+            throw new ApiException.NotFound("A cobrança nao existe.");
         }
         return row;
     }
