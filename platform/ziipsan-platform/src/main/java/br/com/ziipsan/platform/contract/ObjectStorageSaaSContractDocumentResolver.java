@@ -115,7 +115,7 @@ public final class ObjectStorageSaaSContractDocumentResolver implements SaaSCont
     /**
      * Ponte P2-A: referencia da NFS-e na forma Id da DPS (P2.13). O
      * escopo do tenant ja foi conferido antes de chegar aqui (o
-     * servico so resolve a referencia da fatura do proprio tenant),
+     * servico so resolve a referencia da cobrança do proprio tenant),
      * por isso a busca e so pela DPS — e, por defesa, so serve XML
      * de NFS-e {@code AUTHORIZED} com gzip presente. O hash devolvido
      * e o {@code xml_sha256} registrado na autorizacao; o servico o
