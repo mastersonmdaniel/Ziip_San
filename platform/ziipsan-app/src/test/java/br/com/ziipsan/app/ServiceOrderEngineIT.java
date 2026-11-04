@@ -254,6 +254,44 @@ class ServiceOrderEngineIT {
         }
     }
 
+    /**
+     * P1-C (integracao): protocolo real para a OS externa — a FK
+     * fk_orders_protocol (V8_1 + repetivel) recusa protocolo inexistente, e
+     * o teste passava UUID aleatorio (na camada B nao havia FK). Numero
+     * fixo alto para nao colidir com a sequencia do ProtocolIT no mesmo
+     * tenant (que abre a partir de 1).
+     */
+    private UUID protocolFixture() throws SQLException {
+        Connection c = asTenant();
+        try {
+            UUID spec = UUID.randomUUID();
+            UUID protocol = UUID.randomUUID();
+            try (PreparedStatement ps = c.prepareStatement(
+                    "INSERT INTO " + SCHEMA + ".service_protocol_specs (id, tenant_id, code, description, deadline_days, required_documents) VALUES (?, ?, ?, ?, ?, '[]'::jsonb)")) {
+                ps.setObject(1, spec);
+                ps.setObject(2, TENANT);
+                ps.setString(3, uniq("IT-SPEC"));
+                ps.setString(4, "Especificação de fixture");
+                ps.setInt(5, 10);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = c.prepareStatement(
+                    "INSERT INTO " + SCHEMA + ".service_protocols (id, tenant_id, protocol_year, protocol_number, channel, spec_id, location_text, requester_name, requester_contact, requester_role, opened_date, original_due_date, current_due_date, status, created_by) VALUES (?, ?, 2026, 987654321, 'COUNTER', ?, 'Rua Fixture', 'Solicitante', 'solicitante@teste', 'THIRD_PARTY', CURRENT_DATE, CURRENT_DATE + 30, CURRENT_DATE + 30, 'OPEN', ?)")) {
+                ps.setObject(1, protocol);
+                ps.setObject(2, TENANT);
+                ps.setObject(3, spec);
+                ps.setObject(4, UUID.randomUUID());
+                ps.executeUpdate();
+            }
+            commit(c);
+            return protocol;
+        } catch (SQLException e) {
+            c.rollback();
+            c.close();
+            throw e;
+        }
+    }
+
     // ------------------------------------------------------------------
     // Migration and history constraints
     // ------------------------------------------------------------------
@@ -510,7 +548,7 @@ class ServiceOrderEngineIT {
                 .isInstanceOf(ApiException.Validation.class);
         var external = service.createOrder(new ServiceOrderService.OrderInput(
                 internal, ServiceOrderEnums.Origin.EXTERNAL, ServiceOrderEnums.ExecutionMode.INTERNAL,
-                ServiceOrderEnums.Priority.NORMAL, creator, UUID.randomUUID(), null, null, null));
+                ServiceOrderEnums.Priority.NORMAL, creator, protocolFixture(), null, null, null));
         assertThat(external.protocolId()).isNotNull();
         var contractor = service.createOrder(new ServiceOrderService.OrderInput(
                 field, ServiceOrderEnums.Origin.INTERNAL, ServiceOrderEnums.ExecutionMode.CONTRACTOR,
