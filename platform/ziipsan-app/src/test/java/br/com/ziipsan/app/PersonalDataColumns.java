@@ -132,7 +132,23 @@ final class PersonalDataColumns {
             Map.entry("service_protocol_specs.requires_address", "booleano (protocolo exige endereço ou não)"),
             Map.entry("sewer_discharges.name", "nome de tipo de esgotamento (catálogo)"),
             Map.entry("street_names.name", "nome de logradouro (catálogo)"),
-            Map.entry("unit_link_end_reasons.name", "nome de motivo de fim de vínculo (catálogo)"));
+            Map.entry("unit_link_end_reasons.name", "nome de motivo de fim de vínculo (catálogo)"),
+            // P2-A (integracao): colunas novas da P2.25/P2.26 que casam com o
+            // padrao por nome mas nao sao dado pessoal — mesmo precedente de
+            // payments.document_id, generated_documents.document_id e
+            // service_types.name acima. O padrao casa por substring: 'addressed'
+            // contem 'address', e 'name'/'document' casam sozinhos.
+            Map.entry("api_clients.name", "nome da aplicação cliente OAuth (integração), não de pessoa"),
+            Map.entry("cert_document_acknowledgement.document_id",
+                    "id interno (UUID) do documento controlado da P2.25, não número de documento pessoal"),
+            Map.entry("cert_inspection_finding.addressed_at",
+                    "carimbo de tempo do atendimento da constatação, não endereço (o padrão casa por 'address' em 'addressed')"),
+            Map.entry("cert_inspection_finding.addressed_evidence_ref",
+                    "referência à evidência do atendimento (identificador, não conteúdo nem endereço)"),
+            Map.entry("cert_occurrence_link.document_id",
+                    "id interno (UUID) do documento vinculado à ocorrência, não número de documento pessoal"),
+            Map.entry("webhook_deliveries.event_name",
+                    "código do tipo de evento do webhook (catálogo de negócio), não nome de pessoa"));
 
     private PersonalDataColumns() {
     }

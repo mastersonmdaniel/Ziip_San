@@ -115,6 +115,12 @@ class FreshInstallTest {
             // protocolos (V8_1) — sem coluna id, o trigger de auditoria
             // quebraria todo INSERT; e sem dado de negocio a auditar.
             "service_protocol_sequences",
+            // P2-A (integracao): baldes de taxa e nonces da P2.26 (V7_1) —
+            // contadores mecanicos por janela e registros efemeros de
+            // replay-protection, sem dado de negocio a auditar; auditar cada
+            // incremento de contador / cada autenticacao inundaria o audit_log.
+            // O acesso em si e auditado em api_access_tokens.
+            "api_rate_buckets", "api_assertion_jtis",
             "fiscal_documents_xml");
 
     private static DataSource appDs;

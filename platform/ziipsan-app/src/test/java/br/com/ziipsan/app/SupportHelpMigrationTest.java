@@ -33,7 +33,10 @@ class SupportHelpMigrationTest {
             // chamados (P1.23, V9_4) e o visto de release-notes (P1.24, V9_5).
             // RLS forçada + policy continuam exigidas para todas (ver problems).
             "release_note_view",
-            "ticket", "ticket_attachment", "ticket_event", "ticket_message", "ticket_number_counter");
+            "ticket", "ticket_attachment", "ticket_event", "ticket_message", "ticket_number_counter",
+            // P2-A (integracao): SLA e CSAT da P2.15 (core V10_2) — mesmas
+            // exigencias (RLS forçada + policy) para as 5 tabelas novas.
+            "sla_policy", "sla_policy_target", "sla_severity_matrix", "ticket_sla_pause", "csat_response");
 
     @BeforeAll
     static void installFromScratch() {
@@ -41,7 +44,7 @@ class SupportHelpMigrationTest {
     }
 
     @Test
-    @DisplayName("schema support tem as 11 tabelas com RLS forçada e policy")
+    @DisplayName("schema support tem as 16 tabelas com RLS forçada e policy")
     void supportTablesExistWithForcedRls() throws SQLException {
         String sql = """
                 SELECT c.relname, c.relrowsecurity, c.relforcerowsecurity,
