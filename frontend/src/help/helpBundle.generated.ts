@@ -345,6 +345,23 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:document-state",
+      "title": "Documento em estado que impede a operação",
+      "explanation": "O documento controlado está num estado que impede esta operação. Cada passo do ciclo exige o estado anterior: só o rascunho vai para revisão, só o documento em revisão pode ser aprovado, só o aprovado pode ser publicado e só o publicado ganha nova versão ou registra ciência. Nada foi alterado.",
+      "causes": [
+        "O documento já passou deste passo do ciclo.",
+        "O documento foi substituído por uma nova versão.",
+        "O documento ainda não chegou ao passo exigido."
+      ],
+      "actions": [
+        "Recarregue o documento e confira o estado atual.",
+        "Refaça a operação no estado permitido.",
+        "Para um documento substituído, trabalhe sobre a versão vigente."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:draft-closed",
       "title": "Rascunho já encerrado",
       "explanation": "O rascunho já foi aplicado ou descartado e não aceita mais alterações. Nada foi alterado.",
@@ -747,6 +764,23 @@ export const HELP_BUNDLE: HelpBundle = {
       "actions": [
         "Confira o estado atual da ordem.",
         "Se ela voltou para rascunho, envie de novo para aprovação."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:occurrence-state",
+      "title": "Ocorrência ou ação em estado que impede a operação",
+      "explanation": "A ocorrência, a ação, a constatação ou o vínculo está num estado que impede esta operação. Cada passo do ciclo exige o estado anterior, e o vínculo duplicado ou a constatação já atendida não se repetem. Nada foi alterado.",
+      "causes": [
+        "A ocorrência já foi encerrada ou cancelada.",
+        "A ação já foi concluída ou já teve a eficácia verificada.",
+        "A constatação já foi atendida ou o vínculo já existe."
+      ],
+      "actions": [
+        "Recarregue a ocorrência e confira o estado atual.",
+        "Refaça a operação no estado permitido.",
+        "Para um vínculo já existente, consulte o vínculo registrado em vez de criar outro."
       ],
       "article": null,
       "suggestTicket": false

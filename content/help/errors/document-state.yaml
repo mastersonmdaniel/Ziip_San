@@ -1,0 +1,13 @@
+# P2.25: erro explicado (informação documentada, ADR-0041).
+code: urn:ziipsan:problem:document-state
+title: Documento em estado que impede a operação
+explanation: "O documento controlado está num estado que impede esta operação. Cada passo do ciclo exige o estado anterior: só o rascunho vai para revisão, só o documento em revisão pode ser aprovado, só o aprovado pode ser publicado e só o publicado ganha nova versão ou registra ciência. Nada foi alterado."
+causes:
+  - O documento já passou deste passo do ciclo.
+  - O documento foi substituído por uma nova versão.
+  - O documento ainda não chegou ao passo exigido.
+actions:
+  - Recarregue o documento e confira o estado atual.
+  - Refaça a operação no estado permitido.
+  - Para um documento substituído, trabalhe sobre a versão vigente.
+suggest_ticket: false

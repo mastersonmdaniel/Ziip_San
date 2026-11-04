@@ -1,0 +1,13 @@
+# P2.25: erro explicado (ocorrência e ação, ADR-0041).
+code: urn:ziipsan:problem:occurrence-state
+title: Ocorrência ou ação em estado que impede a operação
+explanation: "A ocorrência, a ação, a constatação ou o vínculo está num estado que impede esta operação. Cada passo do ciclo exige o estado anterior, e o vínculo duplicado ou a constatação já atendida não se repetem. Nada foi alterado."
+causes:
+  - A ocorrência já foi encerrada ou cancelada.
+  - A ação já foi concluída ou já teve a eficácia verificada.
+  - A constatação já foi atendida ou o vínculo já existe.
+actions:
+  - Recarregue a ocorrência e confira o estado atual.
+  - Refaça a operação no estado permitido.
+  - Para um vínculo já existente, consulte o vínculo registrado em vez de criar outro.
+suggest_ticket: false

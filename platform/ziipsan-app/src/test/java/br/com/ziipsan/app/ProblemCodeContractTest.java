@@ -86,6 +86,10 @@ class ProblemCodeContractTest {
             // gerado) — mesmo caso da P1.22, da P1-B e da P1-C: a tabela
             // estava desatualizada, não o código.
             "alert-not-pending", "customer-deleted",
+            // P2.25: 2 códigos da informação documentada e da ocorrência
+            // (documento e ocorrência/ação em estado que impede a operação),
+            // emitidos e explicados no catálogo de erros (YAMLs).
+            "document-state", "occurrence-state",
             "merge-not-applied", "merge-reverse-missing", "merge-reverse-pending",
             "not-pending",
             "split-link-changed", "split-not-applied",

@@ -149,7 +149,7 @@ public class CertificationService {
 
     public record EvidenceLinkView(UUID id, UUID clauseMapId, EvidenceKind evidenceKind,
                                    UUID evidenceId, String evidenceRef, UUID linkedBy,
-                                   OffsetDateTime linkedAt) {
+                                   OffsetDateTime linkedAt, boolean active) {
     }
 
     public record ActivateInput(String standardCode, String scopeStatement, String edition) {
@@ -760,7 +760,7 @@ public class CertificationService {
                 throw new IllegalStateException("Failed to link evidence: " + e.getMessage(), e);
             }
             try (PreparedStatement ps = c.prepareStatement(
-                    "SELECT id, clause_map_id, evidence_kind, evidence_id, evidence_ref, linked_by, linked_at"
+                    "SELECT id, clause_map_id, evidence_kind, evidence_id, evidence_ref, linked_by, linked_at, active"
                             + " FROM " + t("cert_evidence_link") + " WHERE tenant_id = ? AND id = ?")) {
                 ps.setObject(1, tenantId);
                 ps.setObject(2, id);
@@ -769,13 +769,13 @@ public class CertificationService {
                     return new EvidenceLinkView(uuid(rs, "id"), uuid(rs, "clause_map_id"),
                             EvidenceKind.from(rs.getString("evidence_kind")), uuid(rs, "evidence_id"),
                             rs.getString("evidence_ref"), uuidOrNull(rs, "linked_by"),
-                            timestamp(rs, "linked_at"));
+                            timestamp(rs, "linked_at"), rs.getBoolean("active"));
                 }
             }
         });
     }
 
-    /** Evidence links of one clause-map row, in link order. */
+    /** Evidence links of one clause-map row, in link order — deactivated links included, never hidden. */
     public List<EvidenceLinkView> listEvidence(UUID clauseMapId) {
         if (clauseMapId == null) {
             throw new ApiException.NotFound("A linha do mapa não existe para este tenant.");
@@ -784,7 +784,7 @@ public class CertificationService {
             loadClauseMapRow(c, clauseMapId);
             List<EvidenceLinkView> out = new ArrayList<>();
             try (PreparedStatement ps = c.prepareStatement(
-                    "SELECT id, clause_map_id, evidence_kind, evidence_id, evidence_ref, linked_by, linked_at"
+                    "SELECT id, clause_map_id, evidence_kind, evidence_id, evidence_ref, linked_by, linked_at, active"
                             + " FROM " + t("cert_evidence_link")
                             + " WHERE tenant_id = ? AND clause_map_id = ? ORDER BY linked_at, id")) {
                 ps.setObject(1, tenantId);
@@ -794,11 +794,68 @@ public class CertificationService {
                         out.add(new EvidenceLinkView(uuid(rs, "id"), uuid(rs, "clause_map_id"),
                                 EvidenceKind.from(rs.getString("evidence_kind")), uuid(rs, "evidence_id"),
                                 rs.getString("evidence_ref"), uuidOrNull(rs, "linked_by"),
-                                timestamp(rs, "linked_at")));
+                                timestamp(rs, "linked_at"), rs.getBoolean("active")));
                     }
                 }
             }
             return out;
+        });
+    }
+
+    /**
+     * Corrects a wrong evidence link with a logical deactivation (P2.25,
+     * delivering the V21_1 promise): the row is never deleted, it only
+     * stops being active, and it stays queryable through
+     * {@link #listEvidence} with {@code active = false}. A link that is
+     * already inactive is a conflict, not a silent no-op.
+     */
+    public EvidenceLinkView deactivateEvidenceLink(UUID linkId, UUID actor) {
+        if (linkId == null || actor == null) {
+            throw new ApiException.Validation("O vínculo e quem o desativa são obrigatórios.",
+                    List.of(new ApiException.FieldError("linkId", "required",
+                            "O vínculo e quem o desativa são obrigatórios.")), List.of());
+        }
+        return inTx(c -> {
+            boolean active;
+            try (PreparedStatement ps = c.prepareStatement(
+                    "SELECT active FROM " + t("cert_evidence_link") + " WHERE tenant_id = ? AND id = ?")) {
+                ps.setObject(1, tenantId);
+                ps.setObject(2, linkId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (!rs.next()) {
+                        throw new ApiException.NotFound("O vínculo de evidência não existe para este tenant.");
+                    }
+                    active = rs.getBoolean(1);
+                }
+            }
+            if (!active) {
+                throw new ApiException.Conflict("evidence-link-exists",
+                        "O vínculo de evidência já está desativado.");
+            }
+            try (PreparedStatement ps = c.prepareStatement(
+                    "UPDATE " + t("cert_evidence_link")
+                            + " SET active = FALSE, deactivated_at = NOW(), deactivated_by = ?,"
+                            + " updated_at = NOW(), updated_by = ?"
+                            + " WHERE tenant_id = ? AND id = ?")) {
+                ps.setObject(1, actor);
+                ps.setObject(2, actor);
+                ps.setObject(3, tenantId);
+                ps.setObject(4, linkId);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = c.prepareStatement(
+                    "SELECT id, clause_map_id, evidence_kind, evidence_id, evidence_ref, linked_by, linked_at, active"
+                            + " FROM " + t("cert_evidence_link") + " WHERE tenant_id = ? AND id = ?")) {
+                ps.setObject(1, tenantId);
+                ps.setObject(2, linkId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    rs.next();
+                    return new EvidenceLinkView(uuid(rs, "id"), uuid(rs, "clause_map_id"),
+                            EvidenceKind.from(rs.getString("evidence_kind")), uuid(rs, "evidence_id"),
+                            rs.getString("evidence_ref"), uuidOrNull(rs, "linked_by"),
+                            timestamp(rs, "linked_at"), rs.getBoolean("active"));
+                }
+            }
         });
     }
 
@@ -814,7 +871,8 @@ public class CertificationService {
                             + " m.map_status, m.frozen_at FROM " + t("cert_clause_map") + " m"
                             + " JOIN " + t("cert_evidence_link") + " l"
                             + " ON l.tenant_id = m.tenant_id AND l.clause_map_id = m.id"
-                            + " WHERE m.tenant_id = ? AND l.evidence_id = ? ORDER BY m.clause_number")) {
+                            + " WHERE m.tenant_id = ? AND l.evidence_id = ? AND l.active = TRUE"
+                            + " ORDER BY m.clause_number")) {
                 ps.setObject(1, tenantId);
                 ps.setObject(2, evidenceId);
                 try (ResultSet rs = ps.executeQuery()) {

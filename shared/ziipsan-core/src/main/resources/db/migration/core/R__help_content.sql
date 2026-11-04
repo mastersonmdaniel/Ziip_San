@@ -223,6 +223,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:document-state
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:document-state', NULL, 'Documento em estado que impede a operação', 'O documento controlado está num estado que impede esta operação. Cada passo do ciclo exige o estado anterior: só o rascunho vai para revisão, só o documento em revisão pode ser aprovado, só o aprovado pode ser publicado e só o publicado ganha nova versão ou registra ciência. Nada foi alterado.', ARRAY['O documento já passou deste passo do ciclo.', 'O documento foi substituído por uma nova versão.', 'O documento ainda não chegou ao passo exigido.']::text[], ARRAY['Recarregue o documento e confira o estado atual.', 'Refaça a operação no estado permitido.', 'Para um documento substituído, trabalhe sobre a versão vigente.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:draft-closed
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
@@ -470,6 +479,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:not-pending-approval', NULL, 'Ordem fora do estado de aprovação', 'Só uma ordem aguardando aprovação pode ser aprovada. Esta ordem está em outro estado.', ARRAY['A ordem já foi aprovada, recusada ou avançou.', 'A aprovação foi pedida duas vezes.']::text[], ARRAY['Confira o estado atual da ordem.', 'Se ela voltou para rascunho, envie de novo para aprovação.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:occurrence-state
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:occurrence-state', NULL, 'Ocorrência ou ação em estado que impede a operação', 'A ocorrência, a ação, a constatação ou o vínculo está num estado que impede esta operação. Cada passo do ciclo exige o estado anterior, e o vínculo duplicado ou a constatação já atendida não se repetem. Nada foi alterado.', ARRAY['A ocorrência já foi encerrada ou cancelada.', 'A ação já foi concluída ou já teve a eficácia verificada.', 'A constatação já foi atendida ou o vínculo já existe.']::text[], ARRAY['Recarregue a ocorrência e confira o estado atual.', 'Refaça a operação no estado permitido.', 'Para um vínculo já existente, consulte o vínculo registrado em vez de criar outro.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,

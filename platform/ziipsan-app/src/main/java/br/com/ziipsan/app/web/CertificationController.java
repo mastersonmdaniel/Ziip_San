@@ -83,7 +83,7 @@ public class CertificationController {
     }
 
     public record EvidenceResponse(UUID id, UUID clauseMapId, String evidenceKind, UUID evidenceId,
-                                   String evidenceRef, String disclaimer) {
+                                   String evidenceRef, boolean active, String disclaimer) {
     }
 
     public record DisclaimerResponse(String disclaimer) {
@@ -199,7 +199,7 @@ public class CertificationController {
     public List<EvidenceResponse> listEvidence(@PathVariable UUID id, @PathVariable UUID mapId) {
         return service().listEvidence(mapId).stream()
                 .map(e -> new EvidenceResponse(e.id(), e.clauseMapId(), e.evidenceKind().name(),
-                        e.evidenceId(), e.evidenceRef(), CertificationService.DISCLAIMER))
+                        e.evidenceId(), e.evidenceRef(), e.active(), CertificationService.DISCLAIMER))
                 .toList();
     }
 
@@ -250,6 +250,14 @@ public class CertificationController {
                         CertificationService.EvidenceKind.from(in.evidenceKind()), in.evidenceId(), in.evidenceRef()),
                 actorId(auth));
         return new EvidenceResponse(view.id(), view.clauseMapId(), view.evidenceKind().name(),
-                view.evidenceId(), view.evidenceRef(), CertificationService.DISCLAIMER);
+                view.evidenceId(), view.evidenceRef(), view.active(), CertificationService.DISCLAIMER);
+    }
+
+    @PostMapping("/evidence/{linkId}/deactivate")
+    @PreAuthorize("hasAuthority('cert:write')")
+    public EvidenceResponse deactivateEvidenceLink(@PathVariable UUID linkId, JwtAuthenticationToken auth) {
+        CertificationService.EvidenceLinkView view = service().deactivateEvidenceLink(linkId, actorId(auth));
+        return new EvidenceResponse(view.id(), view.clauseMapId(), view.evidenceKind().name(),
+                view.evidenceId(), view.evidenceRef(), view.active(), CertificationService.DISCLAIMER);
     }
 }
