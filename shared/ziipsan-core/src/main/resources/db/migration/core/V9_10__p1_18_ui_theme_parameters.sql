@@ -1,4 +1,5 @@
--- Core Migration — Version: 9.8
+-- Core Migration — Version: 9.10 (integracao P1-C: a V9_8 ja era da P1.32,
+-- core V9_8__cert_standard_catalog.sql; a V9_10 e a primeira livre apos a V9_9)
 -- Description: P1.18 — definicoes dos parametros ui.* / theme.* no catalogo
 -- global (public.parameter_definitions).
 --
