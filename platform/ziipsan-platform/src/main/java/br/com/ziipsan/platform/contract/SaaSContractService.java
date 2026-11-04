@@ -381,6 +381,33 @@ public class SaaSContractService {
         return invoice(id);
     }
 
+    /**
+     * Resolve a referencia da NFS-e da fatura (P2.13): apos a emissao pelo motor fiscal, a
+     * fatura passa a apontar para o Id da DPS autorizada. Recusada se a fatura ja apontar
+     * para outro documento — a NFS-e de uma fatura e unica, e a segunda emissao devolve a
+     * existente em vez de vincular outra. Auditoria SAAS_NFSE_LINKED na mesma transacao.
+     */
+    @Transactional
+    public InvoiceView linkNfse(UUID invoiceId, String dpsRef, String takerCnpj,
+                                UUID actorId, String actorRole) {
+        InvoiceView current = invoice(invoiceId);
+        if (dpsRef == null || dpsRef.isBlank()) {
+            throw validation("A referencia da NFS-e e obrigatoria.");
+        }
+        if (current.nfseDocumentRef() != null && !current.nfseDocumentRef().equals(dpsRef)) {
+            throw conflict("A fatura ja tem outra NFS-e vinculada.");
+        }
+        jdbc.update("UPDATE platform.saas_invoice SET nfse_document_ref = ?, updated_at = NOW() WHERE id = ?",
+                dpsRef, invoiceId);
+        ContractView contract = contract(current.contractId());
+        boolean divergent = contract.contractorCnpj() != null
+                && takerCnpj != null && !contract.contractorCnpj().equals(takerCnpj);
+        audit(contract.tenantId(), actorId, actorRole, "SAAS_NFSE_LINKED",
+                Map.of("invoice_number", current.invoiceNumber(), "nfse_dps_id", dpsRef,
+                        "tomador_do_perfil", divergent ? "diverge_do_contrato" : "igual_ao_contrato"));
+        return invoice(invoiceId);
+    }
+
     /** Registra um pagamento informado (ordem bancaria); sem fatura, fica sem conciliar — nunca inventa fatura. */
     @Transactional
     public PaymentView recordPayment(UUID tenantId, UUID invoiceId, BigDecimal amount, LocalDate paidAt,

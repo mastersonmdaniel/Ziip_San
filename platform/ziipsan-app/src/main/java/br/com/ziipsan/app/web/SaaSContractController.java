@@ -1,7 +1,9 @@
 package br.com.ziipsan.app.web;
 
+import br.com.ziipsan.app.fiscal.SaaSNfseService;
 import br.com.ziipsan.platform.contract.SaaSContractAlerts;
 import br.com.ziipsan.platform.contract.SaaSContractService;
+import br.com.ziipsan.platform.contract.SaaSFiscalRegistry;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -33,7 +35,11 @@ import java.util.UUID;
  * {@code contract:restrict} (OWNER e FINANCE, com a matriz fina no
  * servico: so por inadimplencia, com fatura vencida e aviso previo
  * registrados). A aba Contratos da Central vive em
- * {@code PlatformCentralController} ({@code central:read}).
+ * {@code PlatformCentralController} ({@code central:read}). A NFS-e da
+ * fatura (P2.13) e o contexto fiscal da plataforma usam as mesmas
+ * permissoes reutilizadas ({@code contract:read}/{@code contract:manage});
+ * nenhuma permissao nova foi criada, portanto nenhum perfil de fabrica
+ * precisou mudar (padrao P1.37).
  */
 @RestController
 @RequestMapping("/api/v1/platform")
@@ -94,12 +100,27 @@ public class SaaSContractController {
                             @NotNull BigDecimal amount, String notes) {
     }
 
+    public record FiscalContextInput(@NotBlank String legalName, @NotBlank String cnpj,
+                                     @NotBlank String municipalityIbge, String series,
+                                     String environment, String taxRegime,
+                                     String certificateVaultRef, Boolean testOnly) {
+    }
+
+    public record FiscalTaxRateInput(@NotBlank String taxCode, @NotBlank String validFrom,
+                                     String validTo, @NotNull BigDecimal rate, String legalBasis) {
+    }
+
     private final SaaSContractService contracts;
     private final SaaSContractAlerts alerts;
+    private final SaaSFiscalRegistry fiscalRegistry;
+    private final SaaSNfseService nfse;
 
-    public SaaSContractController(SaaSContractService contracts, SaaSContractAlerts alerts) {
+    public SaaSContractController(SaaSContractService contracts, SaaSContractAlerts alerts,
+                                 SaaSFiscalRegistry fiscalRegistry, SaaSNfseService nfse) {
         this.contracts = contracts;
         this.alerts = alerts;
+        this.fiscalRegistry = fiscalRegistry;
+        this.nfse = nfse;
     }
 
     private static UUID actorId(JwtAuthenticationToken auth) {
@@ -302,5 +323,54 @@ public class SaaSContractController {
                                                           JwtAuthenticationToken auth) {
         return contracts.recordProviderCost(in.tenantId(), in.periodMonth(), in.costKey(), in.basis(),
                 in.amount(), in.notes(), actorId(auth), platformRole(auth));
+    }
+
+    // ------------------------------------------------------------------
+    // NFS-e da venda SaaS (P2.13). Permissoes reutilizadas da P2.12
+    // (contract:read/manage, OWNER e FINANCE): nenhuma permissao nova,
+    // portanto nenhum perfil de fabrica a atualizar (padrao P1.37).
+    // ------------------------------------------------------------------
+
+    @PostMapping("/contracts/invoices/{invoiceId}/nfse")
+    @PreAuthorize("hasAuthority('contract:manage')")
+    public SaaSFiscalRegistry.NfseView issueNfse(@PathVariable UUID invoiceId,
+                                                 JwtAuthenticationToken auth) {
+        return nfse.issueNfse(invoiceId, actorId(auth), platformRole(auth));
+    }
+
+    @GetMapping("/contracts/invoices/{invoiceId}/nfse")
+    @PreAuthorize("hasAuthority('contract:read')")
+    public SaaSFiscalRegistry.NfseView nfseForInvoice(@PathVariable UUID invoiceId) {
+        return nfse.nfseForInvoice(invoiceId);
+    }
+
+    @PostMapping("/fiscal-contexts")
+    @PreAuthorize("hasAuthority('contract:manage')")
+    public SaaSFiscalRegistry.ContextView registerFiscalContext(@Valid @RequestBody FiscalContextInput in,
+                                                                JwtAuthenticationToken auth) {
+        return fiscalRegistry.registerContext(new SaaSFiscalRegistry.ContextInput(
+                in.legalName(), in.cnpj(), in.municipalityIbge(), in.series(), in.environment(),
+                in.taxRegime(), in.certificateVaultRef(), in.testOnly()),
+                actorId(auth), platformRole(auth));
+    }
+
+    @GetMapping("/fiscal-contexts/active")
+    @PreAuthorize("hasAuthority('contract:read')")
+    public SaaSFiscalRegistry.ContextView activeFiscalContext() {
+        SaaSFiscalRegistry.ContextView context = fiscalRegistry.activeContext();
+        if (context == null) {
+            throw new br.com.ziipsan.core.api.ApiException.NotFound(
+                    "O contexto fiscal da plataforma nao esta registrado.");
+        }
+        return context;
+    }
+
+    @PostMapping("/fiscal-contexts/tax-rates")
+    @PreAuthorize("hasAuthority('contract:manage')")
+    public SaaSFiscalRegistry.TaxRateView registerFiscalTaxRate(@Valid @RequestBody FiscalTaxRateInput in,
+                                                               JwtAuthenticationToken auth) {
+        return fiscalRegistry.registerTaxRate(new SaaSFiscalRegistry.TaxRateInput(
+                in.taxCode(), in.validFrom(), in.validTo(), in.rate(), in.legalBasis()),
+                actorId(auth), platformRole(auth));
     }
 }
