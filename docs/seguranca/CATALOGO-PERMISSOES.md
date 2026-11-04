@@ -28,6 +28,8 @@ na aplicação, a partir do catálogo.
 | `console:suspend` | console | console | suspend | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_FINANCE) | P1.6 |
 | `console:delete` | console | console | delete | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER) | P1.6 |
 | `parameters:manage` | console | parameters | manage | (nenhum — só concessão direta) | P1.6 |
+| `protocol:read` | atendimento | protocol | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
+| `protocol:write` | atendimento | protocol | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
 
 ## Regras
 

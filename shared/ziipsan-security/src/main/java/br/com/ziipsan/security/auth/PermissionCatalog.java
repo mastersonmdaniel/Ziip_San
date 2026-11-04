@@ -66,7 +66,13 @@ public final class PermissionCatalog {
             // declarou a lacuna e o RoutePermissionTest recusava as 6 rotas.
             // Concessao direta (nenhum perfil de fabrica), como registry:export:
             // propor/aprovar/aceitar/ler valores exige a permissao direta.
-            new Permission("parameters:manage", "console", "parameters", "manage", "P1.6"));
+            new Permission("parameters:manage", "console", "parameters", "manage", "P1.6"),
+            // P1.36: protocolo de atendimento (NR 11, art. 52). Concessao
+            // direta, como gis:catalog-* e parameters:manage: perfis por
+            // funcao (atendente, supervisor, ouvidor) sao da P1.37; ate la,
+            // ler e escrever protocolos exige a permissao direta.
+            new Permission("protocol:read", "atendimento", "protocol", "read", "P1.36"),
+            new Permission("protocol:write", "atendimento", "protocol", "write", "P1.36"));
 
     /** Perfis mínimos de fábrica da P0.13, compostos do catálogo (perfis por função: P1.37). */
     public enum FactoryProfile {
