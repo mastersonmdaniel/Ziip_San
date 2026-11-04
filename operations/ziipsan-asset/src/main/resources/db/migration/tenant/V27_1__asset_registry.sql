@@ -233,7 +233,13 @@ BEGIN
                    TG_TABLE_SCHEMA)
         INTO v_parent_level
         USING NEW.tenant_id, NEW.parent_asset_id;
-    IF NOT FOUND THEN
+    -- P1-C (integracao): o teste de ausencia e IS NULL, nao NOT FOUND.
+    -- Provado em PG 17.11 (repro isolada): EXECUTE ... INTO atribui o
+    -- valor (v=1, ROW_COUNT=1) mas deixa FOUND=false, enquanto SELECT
+    -- INTO estatico poe FOUND=true. Como hierarchy_level e NOT NULL,
+    -- NULL aqui significa exatamente "nenhuma linha" — sem depender da
+    -- semantica de FOUND apos EXECUTE.
+    IF v_parent_level IS NULL THEN
         RAISE EXCEPTION 'asset parent % not found for tenant', NEW.parent_asset_id
             USING ERRCODE = '23503';
     END IF;
