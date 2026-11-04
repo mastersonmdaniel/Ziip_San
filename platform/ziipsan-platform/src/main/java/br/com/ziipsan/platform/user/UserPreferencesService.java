@@ -26,7 +26,7 @@ import java.util.UUID;
  *
  * <p>Precedência do valor efetivo (testada em {@code UserPreferencesServiceTest}
  * e na IT): escolha do usuário, se permitida; senão o padrão do tenant;
- * senão Azul Água no modo do sistema. "Permitida" para o padrão é pertencer
+ * senão o padrão de fábrica (aqua-blue) no modo do sistema. "Permitida" para o padrão é pertencer
  * à lista do tenant ({@code theme.allowed_palettes}); para o modo não há
  * restrição de tenant no plano — só o padrão é restrito. A escolha guardada
  * NUNCA é apagada porque saiu da lista: o efetivo cai para o padrão do

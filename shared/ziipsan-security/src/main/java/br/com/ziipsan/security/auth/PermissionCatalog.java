@@ -322,7 +322,7 @@ public final class PermissionCatalog {
         exemptions.put("service-order:read",
                 "Concessão direta (P1.33, precedente registry:export): leitura de OS via busca exige a permissão direta até a superfície de OS catalogá-la em perfis.");
         exemptions.put("billing:read",
-                "Concessão direta (P1.33, precedente registry:export): leitura de conta via busca exige a permissão direta até a superfície de faturamento catalogá-la em perfis.");
+                "Concessão direta (P1.33, precedente registry:export): leitura de conta via busca exige a permissão direta até que a superfície de contas a inclua em perfis.");
         exemptions.put("document:read",
                 "Concessão direta (P1.33, precedente registry:export): leitura de documento via busca exige a permissão direta até a superfície de documentos catalogá-la em perfis.");
         return Map.copyOf(exemptions);
