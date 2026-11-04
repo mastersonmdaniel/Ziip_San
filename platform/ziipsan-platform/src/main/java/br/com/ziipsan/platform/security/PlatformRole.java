@@ -61,9 +61,9 @@ public final class PlatformRole {
      */
     private static final Map<String, Set<String>> PERMISSIONS = Map.of(
             OWNER, Set.of("deployment:read", "console:read", "console:manage", "console:suspend", "console:delete",
-                    "central:read", "central:manage"),
-            OPS, Set.of("deployment:read", "console:read", "console:manage", "central:read", "central:manage"),
-            SUPPORT, Set.of("console:read", "central:read"),
+                    "central:read", "central:manage", "support:queue"),
+            OPS, Set.of("deployment:read", "console:read", "console:manage", "central:read", "central:manage", "support:queue"),
+            SUPPORT, Set.of("console:read", "central:read", "support:queue"),
             FINANCE, Set.of("console:read", "console:suspend", "central:read"));
 
     private PlatformRole() {

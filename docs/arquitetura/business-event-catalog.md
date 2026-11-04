@@ -12,12 +12,50 @@ Pacote: **sanitation** — versão 0.1.0 (plataforma mínima 1.0.0-SNAPSHOT)
 
 ## Eventos
 
-Nenhum evento de negócio registrado até esta onda.
+### `support.ticket.created` v1 <!-- event: support.ticket.created@v1 -->
 
-Nenhum evento de negócio publicado em produção até esta onda (P1.38): a outbox da P1.9 não tem publicador de produção — o único tipo que aparece no código é billing.invoice.issued, só nos testes da P1.9, sem carga estável e sem publicador, e por isso NÃO está registrado como evento (ver a seção de lacunas do catálogo gerado). Toda tarefa que passar a publicar eventos declara o evento aqui antes de publicar: nome, versão, esquema da carga (só identificadores e códigos, sem dado pessoal), permissão exigida de quem recebe e consumidores declarados. Mudança incompatível de carga exige nova versão do evento; a versão antiga continua declarada.
+- Descrição: Chamado de suporte aberto pelo tenant (P1.23). A carga leva só identificadores e códigos; o e-mail de aviso leva protocolo, estado e link, sem conteúdo nem anexo (ADR-0020 decisão 5).
+- Permissão exigida de quem recebe: `support:queue`
+- Consumidores declarados: P1.17
+- Tarefa de origem: P1.23
+- Carga (só identificadores e códigos):
+  - `ticketId` (string, obrigatório)
+  - `ticketNumber` (string, obrigatório)
+  - `tenantId` (string, obrigatório)
+  - `status` (string, obrigatório)
+  - `category` (string, obrigatório)
+  - `severity` (string, obrigatório)
+
+### `support.ticket.message` v1 <!-- event: support.ticket.message@v1 -->
+
+- Descrição: Mensagem nova num chamado de suporte (P1.23). Sem corpo na carga: o consumidor busca a conversa pela API, com a visibilidade devida (nota interna nunca vai ao tenant).
+- Permissão exigida de quem recebe: `support:queue`
+- Consumidores declarados: P1.17
+- Tarefa de origem: P1.23
+- Carga (só identificadores e códigos):
+  - `ticketId` (string, obrigatório)
+  - `ticketNumber` (string, obrigatório)
+  - `tenantId` (string, obrigatório)
+  - `messageId` (string, obrigatório)
+  - `authorType` (string, obrigatório)
+  - `visibility` (string, obrigatório)
+
+### `support.ticket.status` v1 <!-- event: support.ticket.status@v1 -->
+
+- Descrição: Estado do chamado alterado pelo agente ou pelo solicitante (P1.23). A carga leva só os estados anterior e novo, em código.
+- Permissão exigida de quem recebe: `support:queue`
+- Consumidores declarados: P1.17
+- Tarefa de origem: P1.23
+- Carga (só identificadores e códigos):
+  - `ticketId` (string, obrigatório)
+  - `ticketNumber` (string, obrigatório)
+  - `tenantId` (string, obrigatório)
+  - `fromStatus` (string, obrigatório)
+  - `toStatus` (string, obrigatório)
 
 ## Consumidores declarados (só declarados, não construídos)
 
+- Central Ziip — fila de chamados (`P1.17`) <!-- consumer: P1.17 -->
 - Central de avisos (`P3.36`) <!-- consumer: P3.36 -->
 - Notificações ao consumidor (`P3.5`) <!-- consumer: P3.5 -->
 - Notificações ao consumidor (`ED-41`) <!-- consumer: ED-41 -->

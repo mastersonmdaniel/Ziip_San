@@ -87,7 +87,17 @@ public final class PermissionCatalog {
             // P1.19: administracao da marca do tenant (/api/v1/tenant/brand).
             // Concessao direta, como parameters:manage: nenhum perfil de
             // fabrica a inclui; perfis por funcao sao da P1.37.
-            new Permission("brand:manage", "console", "brand", "manage", "P1.19"));
+            new Permission("brand:manage", "console", "brand", "manage", "P1.19"),
+            // P1.23: chamados de suporte do tenant ao Ziip (ADR-0020). Concessao
+            // direta, como registry:export — perfis por função são da P1.37.
+            // read: ver os próprios chamados; write: abrir e responder os
+            // próprios; manage: ver todos os do tenant (equivalente a admin
+            // do tenant na v0); queue: fila da Central (só via papel de
+            // plataforma, ver PlatformRole — token de tenant nunca a recebe).
+            new Permission("support:read", "suporte", "support", "read", "P1.23"),
+            new Permission("support:write", "suporte", "support", "write", "P1.23"),
+            new Permission("support:manage", "suporte", "support", "manage", "P1.23"),
+            new Permission("support:queue", "suporte", "support", "queue", "P1.23"));
 
     /** Perfis mínimos de fábrica da P0.13, compostos do catálogo (perfis por função: P1.37). */
     public enum FactoryProfile {

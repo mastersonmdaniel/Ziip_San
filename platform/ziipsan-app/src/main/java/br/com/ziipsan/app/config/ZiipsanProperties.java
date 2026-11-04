@@ -16,7 +16,8 @@ import java.util.List;
 @Validated
 @ConfigurationProperties("ziipsan")
 public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc, @Valid Cors cors, Bff bff,
-                                RateLimit rateLimit, BodyLimit bodyLimit, Clamav clamav) {
+                                RateLimit rateLimit, BodyLimit bodyLimit, Clamav clamav, Storage storage,
+                                Scanner scanner) {
 
     /**
      * Cookie de sessão do BFF (P0.14). Padrão: {@code __Host-ziipsan-session} com
@@ -139,7 +140,48 @@ public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc
         }
     }
 
+    /**
+     * Armazenamento de objetos dos anexos de chamado (P1.23, pipeline da
+     * P1.20). Só o backend local existe nesta frente: sem
+     * {@code local-root}, cai em {@code <tmp>/ziipsan-objects}; o S3 da
+     * homologação (perfil {@code storage} do compose) é outra frente e não
+     * é fingido aqui.
+     */
+    public record Storage(String localRoot, String bucket) {
+        public Storage {
+            if (bucket == null || bucket.isBlank()) {
+                bucket = "ziipsan";
+            }
+        }
+    }
+
     public Clamav clamav() {
         return clamav == null ? new Clamav(null, null, null, null) : clamav;
+    }
+
+    public Storage storage() {
+        return storage == null ? new Storage(null, null) : storage;
+    }
+
+    /**
+     * Varredor de anexos (P1.23, pipeline da P1.20). Sem host do clamd, o
+     * varredor é "indisponível": o anexo fica NOT_SCANNED, nunca CLEAN
+     * (fail-closed da P1.20). O daemon ClamAV junto do worker é operação,
+     * não configuração inventada aqui.
+     */
+    public record Scanner(String clamavHost, Integer clamavPort, Integer timeoutMillis) {
+        public Scanner {
+            if (clamavPort == null) {
+                clamavPort = 3310;
+            }
+            if (timeoutMillis == null) {
+                timeoutMillis = 30_000;
+            }
+        }
+    }
+
+    public Scanner scanner() {
+        return scanner == null ? new Scanner(null, null, null) : scanner;
+    }
     }
 }

@@ -3,7 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Button } from '@components/ui/Button'
 import { Icon, type IconName } from '@components/ui/Icon'
 import { useAuth } from '@hooks/useAuth'
-import { useCan } from '@hooks/usePermissions'
+import { hasPermission } from '@hooks/usePermissions'
 import { useTheme } from '@hooks/useTheme'
 import { useBrand } from '../brand/BrandProvider'
 import { t } from '@i18n/messages'
@@ -27,6 +27,7 @@ export const navigation: Array<{ name: string; href: string; icon: IconName; per
   { name: t('nav.about'), href: '/about', icon: 'info', permission: 'registry:read' },
   { name: t('nav.imports'), href: '/importacoes', icon: 'upload', permission: 'registry:read' },
   { name: t('nav.central'), href: '/platform/central', icon: 'gauge', permission: 'central:read' },
+  { name: t('nav.support'), href: '/support', icon: 'life-buoy', permission: 'support:read' },
 ]
 
 export function Layout() {
@@ -40,8 +41,11 @@ export function Layout() {
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const firstRender = useRef(true)
   // P1.12: o menu só mostra o que o papel do usuário permite ver.
-  const canRead = useCan('registry:read')
-  const visibleNavigation = navigation.filter(() => canRead)
+  // P1.23: o filtro passa a respeitar a permissão declarada em cada item
+  // (antes, todo item herdava registry:read, e o item do GIS aparecia para
+  // quem só tinha cadastro). Sem usuário ou sem lista de permissões, nada
+  // se esconde (fail-open da exibição; o servidor continua negando).
+  const visibleNavigation = navigation.filter((item) => hasPermission(user, item.permission))
 
   // Ao trocar de tela, fecha o menu e leva o foco ao conteúdo (leitor de tela anuncia a mudança).
   useEffect(() => {

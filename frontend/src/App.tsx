@@ -23,6 +23,7 @@ const PropertyWizard = lazy(() => import('@pages/cadastro/PropertyWizard').then(
 const Territory = lazy(() => import('@pages/cadastro/Territory').then((m) => ({ default: m.Territory })))
 const GeneratedFiles = lazy(() => import('@pages/GeneratedFiles').then((m) => ({ default: m.GeneratedFiles })))
 const Importacoes = lazy(() => import('@pages/Importacoes').then((m) => ({ default: m.Importacoes })))
+const Support = lazy(() => import('@pages/Support').then((m) => ({ default: m.Support })))
 const IconContactSheetPage = lazy(() =>
   import('@pages/dev/IconContactSheetPage').then((m) => ({ default: m.IconContactSheetPage })),
 )
@@ -100,6 +101,7 @@ export function App() {
         <Route path="importacoes" element={<Importacoes />} />
         {/* P1.17: Central Ziip v0 — Visão geral, Plataforma, Segurança e Alertas. */}
         <Route path="platform/central" element={<Central />} />
+        <Route path="support" element={<Support />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>

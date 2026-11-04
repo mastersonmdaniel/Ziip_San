@@ -205,14 +205,18 @@ class BusinessEventCatalogTest {
     }
 
     @Test
-    @DisplayName("manifesto real carrega com catálogo vazio, consumidores declarados e a lacuna da P1.9")
+    @DisplayName("manifesto real carrega com os eventos de chamado da P1.23, consumidores declarados e a lacuna da P1.9")
     void realManifestLoadsWithEmptyCatalogAndGap() {
         Path root = repoRoot();
         BusinessEventCatalog real = BusinessEventCatalogLoader.load(
                 root.resolve("packages/sanitation/vertical.json"));
-        assertThat(real.events()).isEmpty();
+        // P1.23: o catálogo vazio acabou — os três eventos de chamado são os
+        // primeiros eventos de negócio publicados em produção.
+        assertThat(real.events().stream().map(BusinessEventCatalog.BusinessEvent::name))
+                .containsExactlyInAnyOrder("support.ticket.created", "support.ticket.message",
+                        "support.ticket.status");
         assertThat(real.declaredConsumers().stream().map(BusinessEventCatalog.DeclaredConsumer::task))
-                .containsExactlyInAnyOrder("P3.36", "P3.5", "ED-41", "P2.26", "P2.28", "ED-07");
+                .containsExactlyInAnyOrder("P1.17", "P3.36", "P3.5", "ED-41", "P2.26", "P2.28", "ED-07");
         assertThat(real.gaps().stream().map(BusinessEventCatalog.CatalogGap::name))
                 .contains("billing.invoice.issued");
         assertThat(real.isCatalogued("billing.invoice.issued")).isFalse();

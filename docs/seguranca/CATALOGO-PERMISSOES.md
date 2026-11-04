@@ -35,6 +35,10 @@ na aplicação, a partir do catálogo.
 | `cert:write` | certificacao | cert | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.32 |
 | `cert:approve` | certificacao | cert | approve | (nenhum — só concessão direta; perfis por função na P1.37) | P1.32 |
 | `cert:audit` | certificacao | cert | audit | (nenhum — só concessão direta; perfis por função na P1.37) | P1.32 |
+| `support:read` | suporte | support | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.23 |
+| `support:write` | suporte | support | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.23 |
+| `support:manage` | suporte | support | manage | (nenhum — só concessão direta; perfis por função na P1.37) | P1.23 |
+| `support:queue` | suporte | support | queue | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS, PLATFORM_SUPPORT) | P1.23 |
 
 ## Regras
 
