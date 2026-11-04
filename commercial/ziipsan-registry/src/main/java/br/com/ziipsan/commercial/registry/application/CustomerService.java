@@ -647,14 +647,21 @@ public class CustomerService {
     /**
      * Grava o conjunto de enderecos pedido, na ordem da lista. Lista nula mantem os atuais
      * (mesma semantica dos contatos); lista vazia remove todos. Endereco e composicao do
-     * cliente: sai da lista, sai do banco (nenhum outro agregado referencia enderecos de
-     * cliente; os de unidade sao outras linhas, entity_type='consumer_units').
+     * cliente: sai da lista, sai do banco.
+     *
+     * <p>P1-C (integracao): a ordem importa desde a R2. A tabela propria
+     * {@code customer_addresses} referencia {@code addresses} pela FK
+     * {@code fk_custaddr_address} — os vinculos tem de sair ANTES das linhas de
+     * endereco, senao o DELETE viola a FK (23503) e o PUT volta 409 data-conflict.
+     * (O javadoc antigo dizia que nenhum outro agregado referenciava enderecos de
+     * cliente; a R2 criou esse vinculo.)
      */
     private void replaceAddresses(Customer c, CustomerInput in) {
         if (in.addresses() == null) {
             return;
         }
         UUID tenantId = RegistryContext.tenantId();
+        deleteCustomerAddressLinks(c, tenantId);
         List<Address> existing =
                 addresses.findByTenantIdAndEntityTypeAndEntityIdOrderByPositionAsc(tenantId, CUSTOMER_ENTITY_TYPE,
                         c.getId());
@@ -693,20 +700,28 @@ public class CustomerService {
             toSave.add(row);
         }
         addresses.saveAllAndFlush(toSave);
-        syncCustomerAddresses(c, toSave);
+        insertCustomerAddressLinks(c, toSave);
     }
 
     /**
-     * P1.3: vínculos novos na tabela própria customer_addresses (a linha polimórfica
-     * continua existindo para as linhas legadas). Sem wiring, nada é feito aqui.
+     * P1.3: vinculos novos na tabela propria customer_addresses (a linha polimorfica
+     * continua existindo para as linhas legadas). Sem wiring, nada e feito aqui.
+     * A exclusao e separada da insercao porque roda ANTES do DELETE das linhas de
+     * endereco (ver replaceAddresses): a FK fk_custaddr_address proibe apagar o
+     * endereco com o vinculo ainda apontando para ele.
      */
-    private void syncCustomerAddresses(Customer c, List<Address> saved) {
+    private void deleteCustomerAddressLinks(Customer c, UUID tenantId) {
         if (customerAddresses == null) {
             return;
         }
-        UUID tenantId = RegistryContext.tenantId();
         customerAddresses.deleteAll(customerAddresses.findByTenantIdAndCustomerIdOrderByValidFromAsc(tenantId, c.getId()));
         customerAddresses.flush();
+    }
+
+    private void insertCustomerAddressLinks(Customer c, List<Address> saved) {
+        if (customerAddresses == null) {
+            return;
+        }
         List<CustomerAddress> toSave = new ArrayList<>();
         for (Address row : saved) {
             CustomerAddress link = RegistryContext.forCreate(new CustomerAddress());
