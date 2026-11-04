@@ -163,7 +163,11 @@ class RegistryR2IT {
                 UUID order = insertServiceOrder(c);
                 insertEnrollment(c, unit, holder, "hash-familia-r2-01", order);
                 savepoint = c.setSavepoint();
-                assertThatThrownBy(() -> insertEnrollment(c, unit, holder, "hash-familia-r2-02", UUID.randomUUID()))
+                // P1-C (integracao): a sonda de FK precisa de outra unidade —
+                // idx_social_enroll_unit_active (uma inscricao ativa por
+                // imovel) dispara 23505 antes da FK se a unidade for a mesma.
+                UUID unit2 = insertUnit(c, "IT-R2-TAR2");
+                assertThatThrownBy(() -> insertEnrollment(c, unit2, holder, "hash-familia-r2-02", UUID.randomUUID()))
                         .isInstanceOf(SQLException.class)
                         .satisfies(e -> assertThat(((SQLException) e).getSQLState()).isEqualTo("23503"));
                 c.rollback(savepoint);
