@@ -27,4 +27,11 @@ export const ROUTE_ICONS: Record<string, IconName> = {
   '/arquivos-gerados': 'download',
   // P1.33: visões salvas da busca global.
   '/busca/visoes-salvas': 'search',
+  // P1-C (integracao): as 4 rotas novas da camada C usam o icone do
+  // proprio item de menu (Layout.tsx) — sem elas, icon.test.tsx quebra
+  // em 'rota sem icone' na primeira que encontra (/about).
+  '/about': 'info',
+  '/importacoes': 'upload',
+  '/platform/central': 'gauge',
+  '/support': 'life-buoy',
 }
