@@ -80,7 +80,16 @@ class ProblemCodeContractTest {
             // nomes de campo usados como código no contrato R2 ("400
             // nomeando o campo").
             "code", "draft-closed", "invalid-version", "name", "resource",
-            "step", "table", "saved-view-title-in-use", "user-required");
+            "step", "table", "saved-view-title-in-use", "user-required",
+            // P1-D (integracao): 10 códigos das situações do titular (P1.41),
+            // emitidos e explicados no catálogo de erros (YAMLs + bundle
+            // gerado) — mesmo caso da P1.22, da P1-B e da P1-C: a tabela
+            // estava desatualizada, não o código.
+            "alert-not-pending", "customer-deleted",
+            "merge-not-applied", "merge-reverse-missing", "merge-reverse-pending",
+            "not-pending",
+            "split-link-changed", "split-not-applied",
+            "split-reverse-missing", "split-reverse-pending");
 
     /** Códigos antigos da tabela (português) — nenhum pode restar no código. */
     private static final List<String> OLD_CODES = List.of(
