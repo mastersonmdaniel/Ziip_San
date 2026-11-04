@@ -39,8 +39,10 @@ import java.util.UUID;
  * {@code Cache-Control: immutable}, {@code nosniff} e CSP
  * {@code default-src 'none'} (§3.2). Só logo CLEAN é servido; qualquer
  * outro caso é 404, sem revelar existência ou estado da varredura.
- * Domínio próprio do tenant é P2.27 e NÃO entra aqui: o slug é só o
- * subdomínio na base do produto.
+ * Domínio próprio do tenant é P2.27: o controller resolve primeiro
+ * pelo domínio próprio VERIFIED (função da V10_2_1) e só então pelo
+ * slug — sem essa ordem, um host como {@code portal.cliente.example}
+ * cairia no slug {@code portal} de outro tenant.
  */
 @RestController
 public class PublicTenantBrandController {
@@ -60,8 +62,9 @@ public class PublicTenantBrandController {
 
     @GetMapping("/api/v1/public/tenant-brand")
     public ResponseEntity<TenantBrandResponse> tenantBrand(HttpServletRequest request) {
-        TenantBrandResponse response = SlugResolver.extractSlug(request.getHeader("Host"))
-                .flatMap(service::resolveBySlug)
+        String host = request.getHeader("Host");
+        TenantBrandResponse response = service.resolveByHost(host)
+                .or(() -> SlugResolver.extractSlug(host).flatMap(service::resolveBySlug))
                 .map(brand -> new TenantBrandResponse(
                         brand.displayName(),
                         brand.shortName(),

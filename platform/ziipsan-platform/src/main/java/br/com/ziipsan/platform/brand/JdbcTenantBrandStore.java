@@ -63,7 +63,9 @@ public final class JdbcTenantBrandStore implements TenantBrandStore {
                 JsonNode node = Json.readTree(json);
                 return Optional.of(new TenantBrand(
                         UUID.fromString(node.get("tenantId").asString()),
-                        node.get("slug").asString(),
+                        // textOrNull, não asString: tenant com domínio próprio
+                        // pode não ter slug — NullNode.asString() daria "null".
+                        textOrNull(node, "slug"),
                         textOrNull(node, "displayName"),
                         textOrNull(node, "shortName"),
                         textOrNull(node, "color"),
@@ -73,6 +75,40 @@ public final class JdbcTenantBrandStore implements TenantBrandStore {
             }
         } catch (SQLException e) {
             throw new IllegalStateException("Falha ao resolver a marca pelo slug.", e);
+        }
+    }
+
+    @Override
+    public Optional<TenantBrand> resolveByHost(String host) {
+        if (host == null || host.isBlank()) {
+            return Optional.empty();
+        }
+        try (Connection c = dataSource.getConnection();
+             PreparedStatement ps = c.prepareStatement("SELECT public.tenant_brand_by_host(?)")) {
+            ps.setString(1, host);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+                String json = rs.getString(1);
+                if (json == null) {
+                    return Optional.empty();
+                }
+                JsonNode node = Json.readTree(json);
+                return Optional.of(new TenantBrand(
+                        UUID.fromString(node.get("tenantId").asString()),
+                        // textOrNull, como em resolveBySlug: tenant sem slug
+                        // (só domínio próprio) não pode virar a string "null".
+                        textOrNull(node, "slug"),
+                        textOrNull(node, "displayName"),
+                        textOrNull(node, "shortName"),
+                        textOrNull(node, "color"),
+                        node.get("contact"),
+                        logoRefOrNull(node, "logo"),
+                        logoRefOrNull(node, "logoDark")));
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Falha ao resolver a marca pelo domínio próprio.", e);
         }
     }
 

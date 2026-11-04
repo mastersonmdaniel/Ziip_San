@@ -17,7 +17,21 @@ import java.util.List;
 @ConfigurationProperties("ziipsan")
 public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc, @Valid Cors cors, Bff bff,
                                 RateLimit rateLimit, BodyLimit bodyLimit, Clamav clamav, Storage storage,
-                                Scanner scanner) {
+                                Scanner scanner, Domains domains) {
+
+    /**
+     * Domínio próprio do tenant (P2.27). Opcional: sem borda
+     * configurada, o pedido e a verificação de domínio próprio falham
+     * com mensagem clara, e o resto da aplicação sobe normalmente — a
+     * borda é definida pela LC.2. O valor é o CNAME esperado (ex.:
+     * o host da borda do Ziip), nunca um segredo.
+     */
+    public record Domains(String edgeHost) {
+    }
+
+    public Domains domains() {
+        return domains == null ? new Domains(null) : domains;
+    }
 
     /**
      * Cookie de sessão do BFF (P0.14). Padrão: {@code __Host-ziipsan-session} com

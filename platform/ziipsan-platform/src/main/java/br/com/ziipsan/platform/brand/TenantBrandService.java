@@ -93,6 +93,15 @@ public final class TenantBrandService {
         return store.resolveBySlug(slug);
     }
 
+    /**
+     * Marca pré-login pelo domínio próprio VERIFIED (P2.27, função da
+     * V10_2_1). O controller a tenta ANTES do slug: é ela que impede
+     * um host de domínio próprio de cair no slug de outro tenant.
+     */
+    public Optional<TenantBrand> resolveByHost(String host) {
+        return store.resolveByHost(host);
+    }
+
     /** Bytes do logo CLEAN do tenant do slug. */
     public Optional<LogoBytes> logoBytes(String slug, UUID assetId) {
         return store.logoBytes(slug, assetId);

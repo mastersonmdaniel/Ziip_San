@@ -70,6 +70,15 @@ public interface TenantBrandStore {
     /** Marca pré-login do slug, ou vazio quando o slug é desconhecido/inativo. */
     Optional<TenantBrand> resolveBySlug(String slug);
 
+    /**
+     * Marca pré-login pelo domínio próprio VERIFIED (P2.27, função da
+     * V10_2_1). Default vazio para os falsos antigos: só o JDBC a
+     * implementa; o controller tenta o domínio antes do slug.
+     */
+    default Optional<TenantBrand> resolveByHost(String host) {
+        return Optional.empty();
+    }
+
     /** Bytes do logo CLEAN do tenant do slug, ou vazio em qualquer outro caso. */
     Optional<LogoBytes> logoBytes(String slug, UUID assetId);
 
