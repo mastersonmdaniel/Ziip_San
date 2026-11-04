@@ -465,7 +465,7 @@ public class AssetService {
                         + " lifecycle_status, location_text, created_via_order_id, updated_via_order_id,"
                         + " created_by, updated_by)"
                         + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
-                        + " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?")) {
+                        + " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             int i = 0;
             ps.setObject(++i, id);
             ps.setObject(++i, tenantId);
