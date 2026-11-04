@@ -120,6 +120,17 @@ public final class PermissionCatalog {
             new Permission("contract:read", "contratos", "contract", "read", "P2.12"),
             new Permission("contract:manage", "contratos", "contract", "manage", "P2.12"),
             new Permission("contract:restrict", "contratos", "contract", "restrict", "P2.12"),
+            // P2.14: o outro lado do contrato — o tenant le o PROPRIO
+            // contrato (rotas /api/v1/tenant/my-contract/*), nunca o de
+            // outro tenant (o servico responde 404 fora do escopo). Ao
+            // contrario das tres de plataforma acima, esta ENTRA nos
+            // perfis de fabrica (ADMIN, GESTOR, CONTADOR e
+            // AUDITOR_INTERNO): sem perfil, o teste de cobertura a
+            // recusaria, e sem ela nenhum perfil de tenant abriria a
+            // area do contrato. Acao "read-own": leitura restrita ao
+            // proprio tenant, distinguivel de contract:read (plataforma,
+            // qualquer tenant).
+            new Permission("contract:read-own", "contratos", "contract", "read-own", "P2.14"),
             // P1.32: núcleo do módulo Certificações de qualidade (ADR-0041).
             // Nenhum perfil de fábrica as inclui ainda: perfis por função são
             // da P1.37; hoje são concessão direta, como gis:catalog-*.
@@ -217,7 +228,8 @@ public final class PermissionCatalog {
                 "registry:read", "registry:write", "user:read", "user:write",
                 "gis:catalog-read", "gis:catalog-manage", "parameters:manage",
                 "brand:manage", "support:read", "support:write", "support:manage",
-                "template:read", "template:write", "template:approve"),
+                "template:read", "template:write", "template:approve",
+                "contract:read-own"),
         /** Cadastro (leitura e escrita) e leitura de usuários; não gerencia usuários. */
         MANAGER("Gerente", true, HOME_PAGE,
                 "registry:read", "registry:write", "user:read"),
@@ -268,9 +280,11 @@ public final class PermissionCatalog {
         GESTOR("Gestor", true, HOME_PAGE,
                 "registry:read", "user:read", "parameters:manage",
                 "support:read", "support:write",
-                "template:read", "template:write", "template:approve"),
+                "template:read", "template:write", "template:approve",
+                "contract:read-own"),
         AUDITOR_INTERNO("Auditor interno", true, HOME_PAGE,
-                "registry:read", "gis:catalog-read", "user:read", "cert:audit", "template:read"),
+                "registry:read", "gis:catalog-read", "user:read", "cert:audit", "template:read",
+                "contract:read-own"),
         OUVIDOR("Ouvidor", true, HOME_PAGE,
                 "registry:read", "protocol:read", "support:read"),
         ENCARREGADO_DADOS("Encarregado de dados", true, HOME_PAGE,
@@ -278,7 +292,7 @@ public final class PermissionCatalog {
         PROCURADOR("Procurador", true, HOME_PAGE,
                 "registry:read"),
         CONTADOR("Contador", true, HOME_PAGE,
-                "registry:read"),
+                "registry:read", "contract:read-own"),
         /** Desligado no nascimento (ED-75): o conjunto é o previsto para a liberação. */
         AUDITOR_EXTERNO("Auditor externo", false, HOME_PAGE,
                 "registry:read", "gis:catalog-read", "user:read"),

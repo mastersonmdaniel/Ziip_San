@@ -42,10 +42,12 @@ class PermissionCatalogTest {
         // Integração P1-C: a marca do tenant (P1.19) e os chamados de suporte (P1.23)
         // entram no ADMIN; a busca global e suas leituras (P1.33) continuam fora de
         // qualquer perfil, por decisão explícita da frente P1.33 (concessão direta).
+        // P2.14: a leitura do próprio contrato (contract:read-own) entra no ADMIN.
         assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
                 .containsExactlyInAnyOrder("registry:read", "registry:write", "user:read", "user:write",
                         "gis:catalog-read", "gis:catalog-manage", "parameters:manage",
-                        "brand:manage", "support:read", "support:write", "support:manage");
+                        "brand:manage", "support:read", "support:write", "support:manage",
+                        "contract:read-own");
         assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
                 .doesNotContain("registry:reveal-document");
         // P0.11: buscar por documento também é concessão direta, em nenhum perfil de fábrica.

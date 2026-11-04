@@ -37,6 +37,7 @@ está declarado, mas não concede nada até a liberação da ED-75.
 | `contract:read` | contratos | contract | read | (nenhum perfil de tenant — só papéis de plataforma: os 4 papéis) | P2.12 |
 | `contract:manage` | contratos | contract | manage | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_FINANCE) | P2.12 |
 | `contract:restrict` | contratos | contract | restrict | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_FINANCE) | P2.12 |
+| `contract:read-own` | contratos | contract | read-own | ADMIN, GESTOR, CONTADOR, AUDITOR_INTERNO | P2.14 |
 | `parameters:manage` | console | parameters | manage | ADMIN, GESTOR | P1.6 |
 | `protocol:read` | atendimento | protocol | read | ATENDENTE, SUPERVISOR_COMERCIAL, OUVIDOR | P1.36 |
 | `protocol:write` | atendimento | protocol | write | ATENDENTE | P1.36 |
@@ -75,7 +76,7 @@ na administração do tenant, certificações na qualidade. A busca global e sua
 
 | Código | Função | Ativo | Permissões |
 |---|---|---|---|
-| `ADMIN` | Administrador do tenant | sim | `registry:read`, `registry:write`, `user:read`, `user:write`, `gis:catalog-read`, `gis:catalog-manage`, `parameters:manage`, `brand:manage`, `support:read`, `support:write`, `support:manage`, `template:read`, `template:write`, `template:approve` |
+| `ADMIN` | Administrador do tenant | sim | `registry:read`, `registry:write`, `user:read`, `user:write`, `gis:catalog-read`, `gis:catalog-manage`, `parameters:manage`, `brand:manage`, `support:read`, `support:write`, `support:manage`, `template:read`, `template:write`, `template:approve`, `contract:read-own` |
 | `MANAGER` | Gerente | sim | `registry:read`, `registry:write`, `user:read` |
 | `OPERATOR` | Operador | sim | `registry:read`, `registry:write` |
 | `VIEWER` | Observador | sim | `registry:read` |
@@ -93,12 +94,12 @@ na administração do tenant, certificações na qualidade. A busca global e sua
 | `RESP_TEC_QUALIDADE` | Responsável técnico da qualidade | sim | `cert:read`, `cert:write`, `cert:approve`, `cert:audit` |
 | `EDITOR_CAD_TECNICO` | Editor do cadastro técnico | sim | `gis:catalog-read`, `gis:catalog-manage` |
 | `REVISOR_CAD_TECNICO` | Revisor do cadastro técnico | sim | `gis:catalog-read` |
-| `GESTOR` | Gestor | sim | `registry:read`, `user:read`, `parameters:manage`, `support:read`, `support:write`, `template:read`, `template:write`, `template:approve` |
-| `AUDITOR_INTERNO` | Auditor interno | sim | `registry:read`, `gis:catalog-read`, `user:read`, `cert:audit`, `template:read` |
+| `GESTOR` | Gestor | sim | `registry:read`, `user:read`, `parameters:manage`, `support:read`, `support:write`, `template:read`, `template:write`, `template:approve`, `contract:read-own` |
+| `AUDITOR_INTERNO` | Auditor interno | sim | `registry:read`, `gis:catalog-read`, `user:read`, `cert:audit`, `template:read`, `contract:read-own` |
 | `OUVIDOR` | Ouvidor | sim | `registry:read`, `protocol:read`, `support:read` |
 | `ENCARREGADO_DADOS` | Encarregado de dados | sim | `registry:read`, `user:read` |
 | `PROCURADOR` | Procurador | sim | `registry:read` |
-| `CONTADOR` | Contador | sim | `registry:read` |
+| `CONTADOR` | Contador | sim | `registry:read`, `contract:read-own` |
 | `AUDITOR_EXTERNO` | Auditor externo | não (ED-75) | `registry:read`, `gis:catalog-read`, `user:read` (previsto, sem efeito até a liberação) |
 | `REGULADOR` | Regulador | não (ED-75) | `registry:read`, `gis:catalog-read` (previsto, sem efeito até a liberação) |
 
