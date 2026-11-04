@@ -88,6 +88,7 @@
         <module>commercial/ziipsan-registry</module>
         <module>commercial/ziipsan-billing</module>
         <module>operations/ziipsan-metering</module>
+        <module>operations/ziipsan-asset</module>
         <module>commercial/ziipsan-collection</module>
         <module>commercial/ziipsan-fiscal</module>
         <module>platform/ziipsan-app</module>

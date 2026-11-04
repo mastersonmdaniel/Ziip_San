@@ -73,6 +73,13 @@
             <artifactId>ziipsan-collection</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- P1.35 (frente assets): a V27_1 e o servico de ativos precisam estar no
+             classpath da app para o provisionamento aplicar a migration e o IT prova-la. -->
+        <dependency>
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-asset</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- P1.8 (frente fiscal): a V4_5 e o servico fiscal precisam estar no classpath da
              app para o provisionamento aplicar a migration e o IT prova-la. Sem esta
              dependencia a migration existiria no modulo e nunca rodaria num tenant.

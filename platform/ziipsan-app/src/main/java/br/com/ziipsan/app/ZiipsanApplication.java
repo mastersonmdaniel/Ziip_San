@@ -19,6 +19,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * <p>P1.27: o catálogo GIS entra aqui (só o subpacote {@code catalog}: serviço e
  * API de tipos/itens). O resto do módulo GIS (ex.: EPANET) continua fora do
  * contexto até ganhar serviço de aplicação e API próprios.
+ *
+ * <p>P1.35: o cadastro de ativos entra aqui (serviço e API). A spec OpenAPI
+ * é regenerada pela integração; este front só declara as rotas.
  */
 @SpringBootApplication(scanBasePackages = {
         "br.com.ziipsan.app",
@@ -26,6 +29,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "br.com.ziipsan.platform",
         "br.com.ziipsan.commercial.registry",
         "br.com.ziipsan.intelligence.gis.catalog",
+        "br.com.ziipsan.operations.asset",
 })
 @EnableJpaRepositories(basePackages = {
         "br.com.ziipsan.core.audit",
