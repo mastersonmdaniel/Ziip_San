@@ -35,18 +35,18 @@ está declarado, mas não concede nada até a liberação da ED-75.
 | `central:read` | central | central | read | (nenhum perfil de tenant — só papéis de plataforma: os 4 papéis) | P1.17 |
 | `central:manage` | central | central | manage | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS) | P1.17 |
 | `parameters:manage` | console | parameters | manage | ADMIN, GESTOR | P1.6 |
-| `protocol:read` | atendimento | protocol | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
-| `protocol:write` | atendimento | protocol | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
-| `brand:manage` | console | brand | manage | (nenhum — só concessão direta) | P1.19 |
-| `cert:read` | certificacao | cert | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.32 |
-| `cert:write` | certificacao | cert | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.32 |
-| `cert:approve` | certificacao | cert | approve | (nenhum — só concessão direta; perfis por função na P1.37) | P1.32 |
-| `cert:audit` | certificacao | cert | audit | (nenhum — só concessão direta; perfis por função na P1.37) | P1.32 |
-| `support:read` | suporte | support | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.23 |
-| `support:write` | suporte | support | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.23 |
-| `support:manage` | suporte | support | manage | (nenhum — só concessão direta; perfis por função na P1.37) | P1.23 |
+| `protocol:read` | atendimento | protocol | read | ATENDENTE, SUPERVISOR_COMERCIAL, OUVIDOR | P1.36 |
+| `protocol:write` | atendimento | protocol | write | ATENDENTE | P1.36 |
+| `brand:manage` | console | brand | manage | ADMIN | P1.19 |
+| `cert:read` | certificacao | cert | read | RESP_TEC_QUALIDADE, LABORATORISTA | P1.32 |
+| `cert:write` | certificacao | cert | write | RESP_TEC_QUALIDADE | P1.32 |
+| `cert:approve` | certificacao | cert | approve | RESP_TEC_QUALIDADE | P1.32 |
+| `cert:audit` | certificacao | cert | audit | RESP_TEC_QUALIDADE, AUDITOR_INTERNO | P1.32 |
+| `support:read` | suporte | support | read | ADMIN, ATENDENTE, GESTOR, OUVIDOR | P1.23 |
+| `support:write` | suporte | support | write | ADMIN, ATENDENTE, GESTOR | P1.23 |
+| `support:manage` | suporte | support | manage | ADMIN | P1.23 |
 | `support:queue` | suporte | support | queue | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS, PLATFORM_SUPPORT) | P1.23 |
-| `search:read` | busca | search | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.33 |
+| `search:read` | busca | search | read | (nenhum — só concessão direta, decisão P1.33 confirmada na integração P1-C) | P1.33 |
 | `service-order:read` | ordem de servico | service-order | read | (nenhum — só concessão direta) | P1.33 |
 | `billing:read` | cobrança | billing | read | (nenhum — só concessão direta) | P1.33 |
 | `document:read` | documentos | document | read | (nenhum — só concessão direta) | P1.33 |
@@ -59,33 +59,35 @@ perfil tem — o frontend filtra por permissão (P1.12) e o servidor nega a rota
 Perfis com conjunto vazio ou só `registry:read` aguardam o catálogo do seu domínio:
 nenhuma permissão foi inventada para preenchê-los; a tarefa que catalogar o domínio
 acrescenta as permissões aos perfis pertinentes, e o teste de cobertura a obriga.
-As permissões das frentes paralelas da camada C são reconciliadas na integração P1-C
-(ver commits de integração): a tabela abaixo reflete o estado da frente P1.37, e a
-reconciliação atualiza as células das permissões novas ao atribuí-las.
+As permissões das frentes paralelas da camada C foram reconciliadas na integração P1-C
+(a tabela abaixo já reflete a reconciliação): protocolo no atendimento, marca e suporte
+na administração do tenant, certificações na qualidade. A busca global e suas leituras
+(P1.33) ficam fora de qualquer perfil, por decisão explícita da frente P1.33
+(concessão direta, como `registry:export`).
 
 | Código | Função | Ativo | Permissões |
 |---|---|---|---|
-| `ADMIN` | Administrador do tenant | sim | `registry:read`, `registry:write`, `user:read`, `user:write`, `gis:catalog-read`, `gis:catalog-manage`, `parameters:manage` |
+| `ADMIN` | Administrador do tenant | sim | `registry:read`, `registry:write`, `user:read`, `user:write`, `gis:catalog-read`, `gis:catalog-manage`, `parameters:manage`, `brand:manage`, `support:read`, `support:write`, `support:manage` |
 | `MANAGER` | Gerente | sim | `registry:read`, `registry:write`, `user:read` |
 | `OPERATOR` | Operador | sim | `registry:read`, `registry:write` |
 | `VIEWER` | Observador | sim | `registry:read` |
-| `ATENDENTE` | Atendente | sim | `registry:read`, `registry:write` |
-| `SUPERVISOR_COMERCIAL` | Supervisor comercial | sim | `registry:read`, `registry:write`, `user:read` |
+| `ATENDENTE` | Atendente | sim | `registry:read`, `registry:write`, `protocol:read`, `protocol:write`, `support:read`, `support:write` |
+| `SUPERVISOR_COMERCIAL` | Supervisor comercial | sim | `registry:read`, `registry:write`, `user:read`, `protocol:read` |
 | `FATURISTA` | Faturista | sim | `registry:read` |
 | `ANALISTA_ARRECADACAO` | Analista de arrecadação | sim | `registry:read` |
 | `LEITURISTA` | Leiturista | sim | `registry:read` |
 | `PROGRAMADOR_OS` | Programador de OS | sim | `registry:read` |
 | `EXECUTOR_CAMPO` | Executor de campo | sim | `registry:read` |
-| `ALMOXARIFE` | Almoxarife | sim | (nenhuma catalogada nesta branch) |
-| `OPERADOR_ESTACAO` | Operador de estação | sim | (nenhuma catalogada nesta branch) |
+| `ALMOXARIFE` | Almoxarife | sim | (nenhuma catalogada) |
+| `OPERADOR_ESTACAO` | Operador de estação | sim | (nenhuma catalogada) |
 | `ANALISTA_PERDAS` | Analista de perdas | sim | `registry:read` |
-| `LABORATORISTA` | Laboratorista | sim | (nenhuma catalogada nesta branch) |
-| `RESP_TEC_QUALIDADE` | Responsável técnico da qualidade | sim | (nenhuma catalogada nesta branch) |
+| `LABORATORISTA` | Laboratorista | sim | `cert:read` |
+| `RESP_TEC_QUALIDADE` | Responsável técnico da qualidade | sim | `cert:read`, `cert:write`, `cert:approve`, `cert:audit` |
 | `EDITOR_CAD_TECNICO` | Editor do cadastro técnico | sim | `gis:catalog-read`, `gis:catalog-manage` |
 | `REVISOR_CAD_TECNICO` | Revisor do cadastro técnico | sim | `gis:catalog-read` |
-| `GESTOR` | Gestor | sim | `registry:read`, `user:read`, `parameters:manage` |
-| `AUDITOR_INTERNO` | Auditor interno | sim | `registry:read`, `gis:catalog-read`, `user:read` |
-| `OUVIDOR` | Ouvidor | sim | `registry:read` |
+| `GESTOR` | Gestor | sim | `registry:read`, `user:read`, `parameters:manage`, `support:read`, `support:write` |
+| `AUDITOR_INTERNO` | Auditor interno | sim | `registry:read`, `gis:catalog-read`, `user:read`, `cert:audit` |
+| `OUVIDOR` | Ouvidor | sim | `registry:read`, `protocol:read`, `support:read` |
 | `ENCARREGADO_DADOS` | Encarregado de dados | sim | `registry:read`, `user:read` |
 | `PROCURADOR` | Procurador | sim | `registry:read` |
 | `CONTADOR` | Contador | sim | `registry:read` |
@@ -169,9 +171,9 @@ reconciliação atualiza as células das permissões novas ao atribuí-las.
 - Perfis de fábrica versionados com o produto (versão do pacote) e atribuídos pelo
   administrador do tenant (`POST/PUT /api/v1/users`, com `user:write`), com a atribuição
   auditada pelo trigger da V1_2 sobre `user_profiles` e com a regra de que o ator só
-  concede o que possui. BLOQUEADOR DE PERSISTÊNCIA: o CHECK da V1_9
-  (`profile IN ('ADMIN','MANAGER','OPERATOR','VIEWER')`) ainda só aceita os quatro
-  mínimos — a gravação de um perfil novo em `user_profiles` falha até a migration (versão
-  a alocar pelo coordenador) alargar o CHECK. A resolução por token (papel do Keycloak →
-  permissões, menu e ações) já funciona para os 26 perfis e não depende dessa tabela.
+  concede o que possui. A V1_18 (integração P1-C) alargou o CHECK da V1_9 para os 26
+  códigos, então a gravação de um perfil novo em `user_profiles` funciona (provada em
+  FactoryProfileMeTest com GESTOR atribuído pelo ADMIN). A resolução por token (papel do
+  Keycloak → permissões, menu e ações) já funcionava para os 26 perfis e não depende
+  dessa tabela.
   Perfis compostos pelo ADMIN do tenant e restrição negativa ficam na ED-06, sobre este catálogo.

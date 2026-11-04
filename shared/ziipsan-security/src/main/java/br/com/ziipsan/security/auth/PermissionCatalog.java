@@ -44,6 +44,13 @@ import java.util.stream.Stream;
  * P1.37 apenas a atribui. O menu de cada perfil deriva do mapa do produto da P0.47: o
  * frontend só exibe o item cuja permissão o perfil tem (P1.12), e o servidor continua
  * negando a rota sem a permissão.
+ *
+ * <p>Integração P1-C: a reconciliação das frentes paralelas atribui protocolo (P1.36),
+ * marca (P1.19), certificações (P1.32) e suporte (P1.23) aos perfis pertinentes, e
+ * registra central:* (P1.17) e support:queue (P1.23) como permissões de papel de
+ * plataforma. A busca global e suas leituras (P1.33) NÃO entram em perfis, por decisão
+ * explícita da frente P1.33 (concessão direta, com teste): ficam nas exceções de
+ * cobertura, como registry:export. O manifesto espelha os 26 perfis exatamente.
  */
 public final class PermissionCatalog {
 
@@ -169,9 +176,12 @@ public final class PermissionCatalog {
         // Perfis mínimos da P0.13. ADMIN: administra o tenant — cadastro, usuários,
         // catálogo GIS e parâmetros. Continua sem revelar documento, buscar por
         // documento e exportar: as três seguem concessão direta (ADR-0008).
+        // Integração P1-C: a marca do tenant (P1.19) e os chamados de suporte
+        // (P1.23, manage = equivalente a admin do tenant na v0) entram no ADMIN.
         ADMIN("Administrador do tenant", true, HOME_PAGE,
                 "registry:read", "registry:write", "user:read", "user:write",
-                "gis:catalog-read", "gis:catalog-manage", "parameters:manage"),
+                "gis:catalog-read", "gis:catalog-manage", "parameters:manage",
+                "brand:manage", "support:read", "support:write", "support:manage"),
         /** Cadastro (leitura e escrita) e leitura de usuários; não gerencia usuários. */
         MANAGER("Gerente", true, HOME_PAGE,
                 "registry:read", "registry:write", "user:read"),
@@ -183,10 +193,16 @@ public final class PermissionCatalog {
                 "registry:read"),
         // Perfis por função da P1.37. Permissões só do catálogo desta branch; o domínio
         // de cada função ganha as suas na tarefa que o catalogar (ver javadoc da classe).
+        // Integração P1-C: os domínios catalogados nas frentes paralelas da camada C
+        // entram aqui — protocolo (P1.36) no atendimento, certificações (P1.32) na
+        // qualidade, suporte (P1.23) no atendimento e na gestão. A busca global e
+        // suas leituras de OS, conta e documento (P1.33) ficam de fora de propósito:
+        // são concessão direta, como registry:export (ver o teste da P1.33).
         ATENDENTE("Atendente", true, HOME_PAGE,
-                "registry:read", "registry:write"),
+                "registry:read", "registry:write",
+                "protocol:read", "protocol:write", "support:read", "support:write"),
         SUPERVISOR_COMERCIAL("Supervisor comercial", true, HOME_PAGE,
-                "registry:read", "registry:write", "user:read"),
+                "registry:read", "registry:write", "user:read", "protocol:read"),
         FATURISTA("Faturista", true, HOME_PAGE,
                 "registry:read"),
         ANALISTA_ARRECADACAO("Analista de arrecadação", true, HOME_PAGE,
@@ -203,20 +219,23 @@ public final class PermissionCatalog {
         OPERADOR_ESTACAO("Operador de estação", true, HOME_PAGE),
         ANALISTA_PERDAS("Analista de perdas", true, HOME_PAGE,
                 "registry:read"),
-        /** Sem permissão catalogada nesta branch: as de qualidade entram com o domínio. */
-        LABORATORISTA("Laboratorista", true, HOME_PAGE),
-        /** Sem permissão catalogada nesta branch: as de qualidade/certificação entram com o domínio. */
-        RESP_TEC_QUALIDADE("Responsável técnico da qualidade", true, HOME_PAGE),
+        /** Integração P1-C: o domínio de qualidade foi catalogado (P1.32) — lê o catálogo. */
+        LABORATORISTA("Laboratorista", true, HOME_PAGE,
+                "cert:read"),
+        /** Integração P1-C: o domínio de qualidade/certificação foi catalogado (P1.32). */
+        RESP_TEC_QUALIDADE("Responsável técnico da qualidade", true, HOME_PAGE,
+                "cert:read", "cert:write", "cert:approve", "cert:audit"),
         EDITOR_CAD_TECNICO("Editor do cadastro técnico", true, HOME_PAGE,
                 "gis:catalog-read", "gis:catalog-manage"),
         REVISOR_CAD_TECNICO("Revisor do cadastro técnico", true, HOME_PAGE,
                 "gis:catalog-read"),
         GESTOR("Gestor", true, HOME_PAGE,
-                "registry:read", "user:read", "parameters:manage"),
+                "registry:read", "user:read", "parameters:manage",
+                "support:read", "support:write"),
         AUDITOR_INTERNO("Auditor interno", true, HOME_PAGE,
-                "registry:read", "gis:catalog-read", "user:read"),
+                "registry:read", "gis:catalog-read", "user:read", "cert:audit"),
         OUVIDOR("Ouvidor", true, HOME_PAGE,
-                "registry:read"),
+                "registry:read", "protocol:read", "support:read"),
         ENCARREGADO_DADOS("Encarregado de dados", true, HOME_PAGE,
                 "registry:read", "user:read"),
         PROCURADOR("Procurador", true, HOME_PAGE,
@@ -296,6 +315,16 @@ public final class PermissionCatalog {
                 "Só papel de plataforma (P1.17): os 4 papéis de plataforma, nunca perfil de tenant.");
         exemptions.put("central:manage",
                 "Só papel de plataforma (P1.17): PLATFORM_OWNER e PLATFORM_OPS, nunca perfil de tenant.");
+        exemptions.put("support:queue",
+                "Só papel de plataforma (P1.23): PLATFORM_OWNER, PLATFORM_OPS e PLATFORM_SUPPORT, nunca perfil de tenant.");
+        exemptions.put("search:read",
+                "Concessão direta (P1.33, precedente registry:export): o portão da busca global exige a permissão direta; nenhum perfil de fábrica a inclui.");
+        exemptions.put("service-order:read",
+                "Concessão direta (P1.33, precedente registry:export): leitura de OS via busca exige a permissão direta até a superfície de OS catalogá-la em perfis.");
+        exemptions.put("billing:read",
+                "Concessão direta (P1.33, precedente registry:export): leitura de conta via busca exige a permissão direta até a superfície de faturamento catalogá-la em perfis.");
+        exemptions.put("document:read",
+                "Concessão direta (P1.33, precedente registry:export): leitura de documento via busca exige a permissão direta até a superfície de documentos catalogá-la em perfis.");
         return Map.copyOf(exemptions);
     }
 

@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,9 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * O endpoint de perfis e a mudança de comportamento de parameters:manage (ADMIN e
  * GESTOR sem concessão direta) também são provados aqui.
  *
- * <p>Não testa a gravação da atribuição em user_profiles: o CHECK da V1_9 ainda só
- * aceita os quatro mínimos, e a migration que o alarga é da integração (versão a
- * alocar pelo coordenador). A validação do serviço (aceita os 26, recusa os
+ * <p>A gravação da atribuição em user_profiles é provada aqui: a V1_18
+ * (integração P1-C) alargou o CHECK da V1_9 para os 26 perfis — sem ela, o
+ * teste abaixo falharia no banco. A validação do serviço (aceita os 26, recusa os
  * desligados) está em TenantUserServiceTest, sem banco.
  */
 class FactoryProfileMeTest extends AppIntegrationTestBase {
@@ -87,6 +88,29 @@ class FactoryProfileMeTest extends AppIntegrationTestBase {
                         .header("Authorization", viewer)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("V1_18: ADMIN atribui GESTOR (perfil por função) e a gravação persiste em user_profiles")
+    void adminAssignsFactoryProfileAndItPersists() throws Exception {
+        // GESTOR é atribuível pelo ADMIN (o ator só concede o que possui: ADMIN tem
+        // registry:read, user:read, parameters:manage, support:read e support:write).
+        // Antes da V1_18, esta escrita falhava no CHECK da V1_9 (só os 4 mínimos).
+        String sub = "sub-" + UUID.randomUUID();
+        MvcResult created = mvc.perform(post("/api/v1/users")
+                        .header("Authorization", bearer(TestTokens.token(TENANT, "ADMIN")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"keycloakSub\":\"" + sub + "\",\"displayName\":\"Gestor Teste\","
+                                + "\"email\":\"gestor@teste.com.br\",\"profiles\":[\"GESTOR\"]}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.profiles[0]").value("GESTOR"))
+                .andReturn();
+        String id = JsonPath.read(created.getResponse().getContentAsString(), "$.id");
+        mvc.perform(get("/api/v1/users/" + id)
+                        .header("Authorization", bearer(TestTokens.token(TENANT, "ADMIN")))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.profiles[0]").value("GESTOR"));
     }
 
     @Test

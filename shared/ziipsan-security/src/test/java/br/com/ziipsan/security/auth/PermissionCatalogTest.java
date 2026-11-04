@@ -39,9 +39,13 @@ class PermissionCatalogTest {
         }
         // P1.37: ADMIN administra o tenant (cadastro, usuários, catálogo GIS, parâmetros).
         // parameters:manage deixa de ser concessão direta e entra no ADMIN e no GESTOR.
+        // Integração P1-C: a marca do tenant (P1.19) e os chamados de suporte (P1.23)
+        // entram no ADMIN; a busca global e suas leituras (P1.33) continuam fora de
+        // qualquer perfil, por decisão explícita da frente P1.33 (concessão direta).
         assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
                 .containsExactlyInAnyOrder("registry:read", "registry:write", "user:read", "user:write",
-                        "gis:catalog-read", "gis:catalog-manage", "parameters:manage");
+                        "gis:catalog-read", "gis:catalog-manage", "parameters:manage",
+                        "brand:manage", "support:read", "support:write", "support:manage");
         assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
                 .doesNotContain("registry:reveal-document");
         // P0.11: buscar por documento também é concessão direta, em nenhum perfil de fábrica.
@@ -135,18 +139,26 @@ class PermissionCatalogTest {
     @Test
     @DisplayName("P1.37: perfis sem permissão catalogada são só os de domínio ainda sem catálogo")
     void emptyProfilesAreOnlyPendingDomainOnes() {
+        // Integração P1-C: o domínio de qualidade foi catalogado (P1.32), então
+        // LABORATORISTA e RESP_TEC_QUALIDADE deixam a lista; estoque e estação
+        // continuam sem domínio catalogado.
         assertThat(PermissionCatalog.factoryProfiles().stream()
                 .filter(p -> p.permissions().isEmpty()).map(Enum::name).toList())
-                .containsExactly("ALMOXARIFE", "OPERADOR_ESTACAO", "LABORATORISTA", "RESP_TEC_QUALIDADE");
+                .containsExactly("ALMOXARIFE", "OPERADOR_ESTACAO");
     }
 
     @Test
     @DisplayName("P1.37: toda permissão está em algum perfil ou na lista explícita de exceções")
     void everyPermissionIsInAProfileOrAnExplicitExemption() {
         Set<String> exempt = PermissionCatalog.coverageExemptions().keySet();
+        // Integração P1-C: entram as permissões de papel de plataforma da Central
+        // (P1.17) e da fila de suporte (P1.23), e as de concessão direta da busca
+        // global (P1.33). A lista continua exata: exceção nova exige justificativa.
         assertThat(exempt).containsExactlyInAnyOrder(
                 "registry:reveal-document", "registry:search-document", "registry:export",
-                "deployment:read", "console:read", "console:manage", "console:suspend", "console:delete");
+                "deployment:read", "console:read", "console:manage", "console:suspend", "console:delete",
+                "central:read", "central:manage", "support:queue",
+                "search:read", "service-order:read", "billing:read", "document:read");
         for (String permission : PermissionCatalog.allNames()) {
             boolean inProfile = !PermissionCatalog.profilesIncluding(permission).isEmpty();
             assertThat(inProfile || exempt.contains(permission))
