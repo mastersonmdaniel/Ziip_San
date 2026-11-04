@@ -33,6 +33,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * allowlist pelo mesmo motivo: marca pré-login pública (só nome, logos, cor
  * e contato; só logo CLEAN), com slug desconhecido devolvendo a marca do
  * produto — não há permissão de catálogo a declarar para elas.
+ * P1.24 estende a allowlist com o resto do Sobre, pelo mesmo motivo (só dado
+ * global do produto ou dado DO PRÓPRIO usuário, nunca de terceiros):
+ * {@code GET /api/v1/about/licenses} (licenças de terceiros, metadado global),
+ * {@code GET /api/v1/release-notes} (notas globais + visto do próprio usuário),
+ * {@code POST /api/v1/release-notes/{version}/view} e
+ * {@code POST /api/v1/about/documents/{code}/accept} (só escrevem estado do
+ * próprio usuário; tenant e usuário vêm do token, nunca do corpo).
  *
  * <p>O documento do catálogo também é conferido contra o código: toda permissão do catálogo
  * aparece nele.
@@ -59,7 +66,11 @@ class RoutePermissionTest extends AppIntegrationTestBase {
                 if (!path.startsWith("/api/v1") || path.equals("/api/v1/me")
                         || path.equals("/api/v1/about") || path.equals("/api/v1/public/brand")
                         || path.equals("/api/v1/public/tenant-brand")
-                        || path.equals("/api/v1/public/tenant-brand/{slug}/logo/{assetId}")) {
+                        || path.equals("/api/v1/public/tenant-brand/{slug}/logo/{assetId}")
+                        || path.equals("/api/v1/about/licenses")
+                        || path.equals("/api/v1/release-notes")
+                        || path.equals("/api/v1/release-notes/{version}/view")
+                        || path.equals("/api/v1/about/documents/{code}/accept")) {
                     return;
                 }
                 PreAuthorize auth = method.getMethodAnnotation(PreAuthorize.class);

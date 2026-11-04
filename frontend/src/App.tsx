@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Layout } from '@components/Layout'
 import { VersionBanner } from '@components/VersionBanner'
+import { WhatsNew } from '@components/WhatsNew'
 import { Spinner } from '@components/ui/Alert'
 import { useAuth } from '@hooks/useAuth'
 import { AuthCallback } from '@pages/AuthCallback'
@@ -25,6 +26,7 @@ const IconContactSheetPage = lazy(() =>
   import('@pages/dev/IconContactSheetPage').then((m) => ({ default: m.IconContactSheetPage })),
 )
 const GisCatalog = lazy(() => import('@pages/gis/GisCatalog').then((m) => ({ default: m.GisCatalog })))
+const About = lazy(() => import('@pages/About').then((m) => ({ default: m.About })))
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -62,6 +64,7 @@ export function App() {
         element={
           <PrivateRoute>
             <Layout />
+            <WhatsNew />
           </PrivateRoute>
         }
       >
@@ -88,6 +91,9 @@ export function App() {
         {/* P1.12: ponto de entrega das exportações assíncronas (e, no futuro, dos
             relatórios agendados da P3.22 — só o item de entrega, não a P3.22). */}
         <Route path="arquivos-gerados" element={<GeneratedFiles />} />
+
+        {/* P1.24: Sobre completo. */}
+        <Route path="about" element={<About />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>

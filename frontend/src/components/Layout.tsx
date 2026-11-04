@@ -23,6 +23,7 @@ export const navigation: Array<{ name: string; href: string; icon: IconName; per
   { name: 'Catálogos', href: '/cadastro/catalogos', icon: 'list-checks', permission: 'registry:read' },
   { name: 'Catálogo GIS', href: '/gis/catalogo', icon: 'map', permission: 'gis:catalog-read' },
   { name: 'Arquivos gerados', href: '/arquivos-gerados', icon: 'download', permission: 'registry:read' },
+  { name: 'Sobre', href: '/about', icon: 'info', permission: 'registry:read' },
 ]
 
 export function Layout() {
