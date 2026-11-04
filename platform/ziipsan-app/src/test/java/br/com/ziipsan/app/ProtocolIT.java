@@ -228,10 +228,10 @@ class ProtocolIT {
     @DisplayName("migracao: V8_1 e o repetivel aplicados, FK da OS presente, parametros sac.* definidos")
     void migrationAppliedWithOrderFkAndSacParameters() throws Exception {
         assertThat(countMigrator(
-                "SELECT COUNT(*) FROM " + SCHEMA + ".flyway_schema_history WHERE installed_script = ?",
+                "SELECT COUNT(*) FROM " + SCHEMA + ".flyway_schema_history WHERE script = ?",
                 "V8_1__service_protocol.sql")).isEqualTo(1);
         assertThat(countMigrator(
-                "SELECT COUNT(*) FROM " + SCHEMA + ".flyway_schema_history WHERE installed_script = ?",
+                "SELECT COUNT(*) FROM " + SCHEMA + ".flyway_schema_history WHERE script = ?",
                 "R__service_protocol_order_fk.sql")).isEqualTo(1);
         assertThat(constraintExists("fk_orders_protocol")).isTrue();
         // V9_9 grants SELECT on the catalog to the app role, so this read uses appDs.
