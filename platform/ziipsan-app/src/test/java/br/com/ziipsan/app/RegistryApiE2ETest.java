@@ -219,9 +219,16 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
                 .andExpect(status().isCreated()));
         // P1-C (integracao): a R2 exige linha em relation_roles para o
         // vinculo USER — sem ela, a criacao do imovel e 422 NOT_FOUND.
-        send(post("/api/v1/registry/catalogs/relation_roles"), operator, """
-                {"code": "USER", "name": "Usuário", "active": true, "extra": {"system_role": "USER"}}""")
-                .andExpect(status().isCreated());
+        // O tenant e compartilhado: outro teste pode ja ter semeado USER
+        // (o POST volta 400 de clash de codigo) — nesse caso o 400 e
+        // confirmado pelo campo "code", nunca aceito as cegas.
+        var rolePost = send(post("/api/v1/registry/catalogs/relation_roles"), operator, """
+                {"code": "USER", "name": "Usuário", "active": true, "extra": {"system_role": "USER"}}""");
+        if (rolePost.andReturn().getResponse().getStatus() == 400) {
+            rolePost.andExpect(jsonPath("$.errors[0].field").value("code"));
+        } else {
+            rolePost.andExpect(status().isCreated());
+        }
         mvc.perform(get("/api/v1/registry/subcategories").param("categoryId", categoryId).header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1));

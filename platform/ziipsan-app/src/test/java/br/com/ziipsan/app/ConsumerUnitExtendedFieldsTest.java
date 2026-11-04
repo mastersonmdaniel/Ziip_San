@@ -120,9 +120,16 @@ class ConsumerUnitExtendedFieldsTest extends AppIntegrationTestBase {
         // USER (system_role), esgotamento e perfil pela API de catalogos;
         // face de quadra por SQL (a rota de catalogos e so leitura para ela)
         // e registry.use_block_face=true (sem ele, blockFaceId e DISABLED).
-        send(post("/api/v1/registry/catalogs/relation_roles"), operator, """
-                {"code": "USER", "name": "Usuário", "active": true, "extra": {"system_role": "USER"}}""")
-                .andExpect(status().isCreated());
+        // O tenant e compartilhado: outro teste pode ja ter semeado USER
+        // (o POST volta 400 de clash de codigo) — nesse caso o 400 e
+        // confirmado pelo campo "code", nunca aceito as cegas.
+        var rolePost = send(post("/api/v1/registry/catalogs/relation_roles"), operator, """
+                {"code": "USER", "name": "Usuário", "active": true, "extra": {"system_role": "USER"}}""");
+        if (rolePost.andReturn().getResponse().getStatus() == 400) {
+            rolePost.andExpect(jsonPath("$.errors[0].field").value("code"));
+        } else {
+            rolePost.andExpect(status().isCreated());
+        }
         sewerDischargeId = id(send(post("/api/v1/registry/catalogs/sewer_discharges"), operator, """
                 {"code": "P016", "name": "Tipo P016", "active": true}""")
                 .andExpect(status().isCreated()));

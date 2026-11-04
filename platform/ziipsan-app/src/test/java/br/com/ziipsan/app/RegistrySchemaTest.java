@@ -50,9 +50,12 @@ class RegistrySchemaTest {
             UUID sector = insert(st, "INSERT INTO " + S + ".commercial_sectors(tenant_id, locality_id, code, name) VALUES ('" + T + "', '" + locality + "', 1, 'Setor') RETURNING id");
             block = insert(st, "INSERT INTO " + S + ".blocks(tenant_id, sector_id, code, has_water_network, has_sewer_network) VALUES ('" + T + "', '" + sector + "', 1, true, true) RETURNING id");
             unit = insert(st, "INSERT INTO " + S + ".consumer_units(tenant_id, registration_number, check_digit, block_id, lot, sublot) VALUES ('" + T + "', '100', '9', '" + block + "', 1, 0) RETURNING id");
-            roleUser = insert(st, "INSERT INTO " + S + ".relation_roles(tenant_id, code, name, system_role) VALUES ('" + T + "', 'USER', 'Usuário', 'USER') RETURNING id");
-            roleOwner = insert(st, "INSERT INTO " + S + ".relation_roles(tenant_id, code, name, system_role) VALUES ('" + T + "', 'OWNER', 'Proprietário', 'OWNER') RETURNING id");
-            roleResponsible = insert(st, "INSERT INTO " + S + ".relation_roles(tenant_id, code, name, system_role) VALUES ('" + T + "', 'RESPONSIBLE', 'Responsável', 'RESPONSIBLE') RETURNING id");
+            // P1-C (integracao): o papel pode ja existir — outro teste semeia
+            // relation_roles no mesmo tenant compartilhado. Insere se ausente
+            // e resolve o id real, em qualquer ordem de execucao.
+            roleUser = insertOrSelectRole(st, "USER", "Usuário");
+            roleOwner = insertOrSelectRole(st, "OWNER", "Proprietário");
+            roleResponsible = insertOrSelectRole(st, "RESPONSIBLE", "Responsável");
             linkEndReason = insert(st, "INSERT INTO " + S + ".unit_link_end_reasons(tenant_id, code, name) VALUES ('" + T + "', 'TEST_END', 'Fim de teste') RETURNING id");
             customer1 = insert(st, customerSql("Maria", HASH_A));
             customer2 = insert(st, customerSql("João", HASH_B));
@@ -317,6 +320,17 @@ class RegistrySchemaTest {
 
     private static UUID insert(Statement st, String sql) throws SQLException {
         try (ResultSet rs = st.executeQuery(sql)) {
+            rs.next();
+            return UUID.fromString(rs.getString(1));
+        }
+    }
+
+    /** Insere a linha relation_roles se ausente e devolve o id real dela. */
+    private static UUID insertOrSelectRole(Statement st, String code, String name) throws SQLException {
+        st.execute("INSERT INTO " + S + ".relation_roles(tenant_id, code, name, system_role) VALUES ('"
+                + T + "', '" + code + "', '" + name + "', '" + code + "') ON CONFLICT DO NOTHING");
+        try (ResultSet rs = st.executeQuery("SELECT id FROM " + S + ".relation_roles WHERE tenant_id = '"
+                + T + "' AND code = '" + code + "'")) {
             rs.next();
             return UUID.fromString(rs.getString(1));
         }
