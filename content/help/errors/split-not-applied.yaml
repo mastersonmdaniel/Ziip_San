@@ -1,0 +1,11 @@
+# P1.41: erro explicado (situações do titular).
+code: urn:ziipsan:problem:split-not-applied
+title: Separação não aplicada
+explanation: Só uma separação aplicada pode ser desfeita por OS inversa. A separação informada ainda não foi aplicada.
+causes:
+  - A separação ainda está pendente de aprovação.
+  - A separação foi rejeitada ou já foi desfeita.
+actions:
+  - Consulte a situação da separação.
+  - Aplique a separação pelo fluxo de aprovação antes de pedir o desfazimento.
+suggest_ticket: false

@@ -174,6 +174,21 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:alert-not-pending",
+      "title": "Alerta de óbito fora de revisão",
+      "explanation": "Só um alerta de óbito pendente de revisão pode ser revisto. O alerta informado já foi decidido ou ainda não está em revisão.",
+      "causes": [
+        "O alerta já foi confirmado ou rejeitado por um revisor.",
+        "O alerta ainda não chegou à etapa de revisão."
+      ],
+      "actions": [
+        "Consulte a situação atual do alerta antes de revisá-lo.",
+        "Se o alerta já foi decidido, abra um novo alerta quando houver fato novo."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:approval-required",
       "title": "Tipo exige aprovação por outra pessoa",
       "explanation": "Este tipo de serviço só executa depois que outra pessoa aprova a ordem. A execução foi recusada porque a aprovação ainda não aconteceu.",
@@ -256,6 +271,20 @@ export const HELP_BUNDLE: HelpBundle = {
       ],
       "actions": [
         "Reduza o tamanho do corpo e envie de novo."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:customer-deleted",
+      "title": "Cliente excluído",
+      "explanation": "O cliente está excluído e não pode ser usado em situações do titular.",
+      "causes": [
+        "O cliente foi excluído logicamente do cadastro."
+      ],
+      "actions": [
+        "Verifique se o cliente informado é o correto.",
+        "Escolha outro cliente vigente para a operação."
       ],
       "article": null,
       "suggestTicket": false
@@ -578,6 +607,50 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:merge-not-applied",
+      "title": "Fusão não aplicada",
+      "explanation": "Só uma fusão aplicada pode ser desfeita por OS inversa. A fusão informada ainda não foi aplicada.",
+      "causes": [
+        "A fusão ainda está pendente de aprovação.",
+        "A fusão foi rejeitada ou já foi desfeita."
+      ],
+      "actions": [
+        "Consulte a situação da fusão.",
+        "Aplique a fusão pelo fluxo de aprovação antes de pedir o desfazimento."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:merge-reverse-missing",
+      "title": "Sem OS inversa pendente para a fusão",
+      "explanation": "Não há OS inversa pendente para esta fusão. A aprovação ou a rejeição do desfazimento exige um pedido pendente.",
+      "causes": [
+        "O desfazimento nunca foi pedido.",
+        "O pedido de desfazimento já foi concluído ou rejeitado."
+      ],
+      "actions": [
+        "Peça o desfazimento da fusão antes de aprová-lo ou rejeitá-lo.",
+        "Consulte a situação da fusão."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:merge-reverse-pending",
+      "title": "Desfazimento de fusão já pendente",
+      "explanation": "Já existe uma OS inversa pendente para esta fusão. Não é possível abrir outra enquanto ela não for concluída.",
+      "causes": [
+        "O desfazimento já foi pedido e aguarda aprovação."
+      ],
+      "actions": [
+        "Aprove ou rejeite a OS inversa pendente.",
+        "Não abra um novo pedido de desfazimento para a mesma fusão."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:mfa-required",
       "title": "Segundo fator exigido",
       "explanation": "Esta rota exige segundo fator (OTP ou WebAuthn) e a sessão atual não o tem. Nada foi executado.",
@@ -646,6 +719,21 @@ export const HELP_BUNDLE: HelpBundle = {
         "Volte à lista e pesquise pelo nome ou pelo endereço."
       ],
       "article": "pesquisar-imoveis",
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:not-pending",
+      "title": "Situação fora de aprovação pendente",
+      "explanation": "Só uma situação pendente de aprovação pode ser aprovada ou rejeitada.",
+      "causes": [
+        "A situação já foi aprovada, aplicada ou rejeitada.",
+        "A situação ainda não foi submetida para aprovação."
+      ],
+      "actions": [
+        "Consulte a situação atual antes de aprovar ou rejeitar.",
+        "Submeta a situação para aprovação quando ela ainda não estiver pendente."
+      ],
+      "article": null,
       "suggestTicket": false
     },
     {
@@ -799,6 +887,65 @@ export const HELP_BUNDLE: HelpBundle = {
         "Use a busca da tela, que envia o termo no corpo da requisição."
       ],
       "article": "pesquisar-imoveis",
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:split-link-changed",
+      "title": "Vínculo da separação mudou",
+      "explanation": "Um vínculo da separação mudou desde o pedido — trocou de cliente ou foi encerrado — e a operação foi recusada por inteiro para não aplicar uma separação parcial.",
+      "causes": [
+        "O vínculo passou para outro cliente depois do pedido.",
+        "O vínculo foi encerrado depois do pedido."
+      ],
+      "actions": [
+        "Revise o pedido de separação com os vínculos atuais.",
+        "Refaça a separação a partir da situação atual do cadastro."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:split-not-applied",
+      "title": "Separação não aplicada",
+      "explanation": "Só uma separação aplicada pode ser desfeita por OS inversa. A separação informada ainda não foi aplicada.",
+      "causes": [
+        "A separação ainda está pendente de aprovação.",
+        "A separação foi rejeitada ou já foi desfeita."
+      ],
+      "actions": [
+        "Consulte a situação da separação.",
+        "Aplique a separação pelo fluxo de aprovação antes de pedir o desfazimento."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:split-reverse-missing",
+      "title": "Sem OS inversa pendente para a separação",
+      "explanation": "Não há OS inversa pendente para esta separação. A aprovação ou a rejeição do desfazimento exige um pedido pendente.",
+      "causes": [
+        "O desfazimento nunca foi pedido.",
+        "O pedido de desfazimento já foi concluído ou rejeitado."
+      ],
+      "actions": [
+        "Peça o desfazimento da separação antes de aprová-lo ou rejeitá-lo.",
+        "Consulte a situação da separação."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:split-reverse-pending",
+      "title": "Desfazimento de separação já pendente",
+      "explanation": "Já existe uma OS inversa pendente para esta separação. Não é possível abrir outra enquanto ela não for concluída.",
+      "causes": [
+        "O desfazimento já foi pedido e aguarda aprovação."
+      ],
+      "actions": [
+        "Aprove ou rejeite a OS inversa pendente.",
+        "Não abra um novo pedido de desfazimento para a mesma separação."
+      ],
+      "article": null,
       "suggestTicket": false
     },
     {

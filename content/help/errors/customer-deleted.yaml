@@ -1,0 +1,10 @@
+# P1.41: erro explicado (situações do titular).
+code: urn:ziipsan:problem:customer-deleted
+title: Cliente excluído
+explanation: O cliente está excluído e não pode ser usado em situações do titular.
+causes:
+  - O cliente foi excluído logicamente do cadastro.
+actions:
+  - Verifique se o cliente informado é o correto.
+  - Escolha outro cliente vigente para a operação.
+suggest_ticket: false

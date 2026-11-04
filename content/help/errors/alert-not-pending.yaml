@@ -1,0 +1,11 @@
+# P1.41: erro explicado (situações do titular).
+code: urn:ziipsan:problem:alert-not-pending
+title: Alerta de óbito fora de revisão
+explanation: Só um alerta de óbito pendente de revisão pode ser revisto. O alerta informado já foi decidido ou ainda não está em revisão.
+causes:
+  - O alerta já foi confirmado ou rejeitado por um revisor.
+  - O alerta ainda não chegou à etapa de revisão.
+actions:
+  - Consulte a situação atual do alerta antes de revisá-lo.
+  - Se o alerta já foi decidido, abra um novo alerta quando houver fato novo.
+suggest_ticket: false

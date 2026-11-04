@@ -115,6 +115,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:alert-not-pending
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:alert-not-pending', NULL, 'Alerta de óbito fora de revisão', 'Só um alerta de óbito pendente de revisão pode ser revisto. O alerta informado já foi decidido ou ainda não está em revisão.', ARRAY['O alerta já foi confirmado ou rejeitado por um revisor.', 'O alerta ainda não chegou à etapa de revisão.']::text[], ARRAY['Consulte a situação atual do alerta antes de revisá-lo.', 'Se o alerta já foi decidido, abra um novo alerta quando houver fato novo.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:approval-required
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
@@ -164,6 +173,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:content-too-large', NULL, 'Conteúdo muito grande', 'O corpo da requisição excede o limite permitido e foi recusado antes de qualquer processamento.', ARRAY['O corpo enviado é maior que o limite.']::text[], ARRAY['Reduza o tamanho do corpo e envie de novo.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:customer-deleted
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:customer-deleted', NULL, 'Cliente excluído', 'O cliente está excluído e não pode ser usado em situações do titular.', ARRAY['O cliente foi excluído logicamente do cadastro.']::text[], ARRAY['Verifique se o cliente informado é o correto.', 'Escolha outro cliente vigente para a operação.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
@@ -367,6 +385,33 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:merge-not-applied
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:merge-not-applied', NULL, 'Fusão não aplicada', 'Só uma fusão aplicada pode ser desfeita por OS inversa. A fusão informada ainda não foi aplicada.', ARRAY['A fusão ainda está pendente de aprovação.', 'A fusão foi rejeitada ou já foi desfeita.']::text[], ARRAY['Consulte a situação da fusão.', 'Aplique a fusão pelo fluxo de aprovação antes de pedir o desfazimento.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:merge-reverse-missing
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:merge-reverse-missing', NULL, 'Sem OS inversa pendente para a fusão', 'Não há OS inversa pendente para esta fusão. A aprovação ou a rejeição do desfazimento exige um pedido pendente.', ARRAY['O desfazimento nunca foi pedido.', 'O pedido de desfazimento já foi concluído ou rejeitado.']::text[], ARRAY['Peça o desfazimento da fusão antes de aprová-lo ou rejeitá-lo.', 'Consulte a situação da fusão.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:merge-reverse-pending
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:merge-reverse-pending', NULL, 'Desfazimento de fusão já pendente', 'Já existe uma OS inversa pendente para esta fusão. Não é possível abrir outra enquanto ela não for concluída.', ARRAY['O desfazimento já foi pedido e aguarda aprovação.']::text[], ARRAY['Aprove ou rejeite a OS inversa pendente.', 'Não abra um novo pedido de desfazimento para a mesma fusão.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:mfa-required
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
@@ -407,6 +452,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:not-found', NULL, 'Registro não encontrado', 'O item que você procurou não existe neste tenant ou foi removido. Por segurança, um item de outro tenant devolve a mesma resposta.', ARRAY['O endereço ou o identificador digitado está errado.', 'O item foi excluído ou ainda não foi criado.']::text[], ARRAY['Confira o identificador e tente de novo.', 'Volte à lista e pesquise pelo nome ou pelo endereço.']::text[], 'pesquisar-imoveis', FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:not-pending
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:not-pending', NULL, 'Situação fora de aprovação pendente', 'Só uma situação pendente de aprovação pode ser aprovada ou rejeitada.', ARRAY['A situação já foi aprovada, aplicada ou rejeitada.', 'A situação ainda não foi submetida para aprovação.']::text[], ARRAY['Consulte a situação atual antes de aprovar ou rejeitar.', 'Submeta a situação para aprovação quando ela ainda não estiver pendente.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
@@ -506,6 +560,42 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:search-in-url', NULL, 'Busca na URL', 'A busca por texto vai no corpo da requisição de busca, nunca na URL.', ARRAY['O termo de busca foi enviado como parâmetro da lista (GET).']::text[], ARRAY['Use a busca da tela, que envia o termo no corpo da requisição.']::text[], 'pesquisar-imoveis', FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:split-link-changed
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:split-link-changed', NULL, 'Vínculo da separação mudou', 'Um vínculo da separação mudou desde o pedido — trocou de cliente ou foi encerrado — e a operação foi recusada por inteiro para não aplicar uma separação parcial.', ARRAY['O vínculo passou para outro cliente depois do pedido.', 'O vínculo foi encerrado depois do pedido.']::text[], ARRAY['Revise o pedido de separação com os vínculos atuais.', 'Refaça a separação a partir da situação atual do cadastro.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:split-not-applied
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:split-not-applied', NULL, 'Separação não aplicada', 'Só uma separação aplicada pode ser desfeita por OS inversa. A separação informada ainda não foi aplicada.', ARRAY['A separação ainda está pendente de aprovação.', 'A separação foi rejeitada ou já foi desfeita.']::text[], ARRAY['Consulte a situação da separação.', 'Aplique a separação pelo fluxo de aprovação antes de pedir o desfazimento.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:split-reverse-missing
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:split-reverse-missing', NULL, 'Sem OS inversa pendente para a separação', 'Não há OS inversa pendente para esta separação. A aprovação ou a rejeição do desfazimento exige um pedido pendente.', ARRAY['O desfazimento nunca foi pedido.', 'O pedido de desfazimento já foi concluído ou rejeitado.']::text[], ARRAY['Peça o desfazimento da separação antes de aprová-lo ou rejeitá-lo.', 'Consulte a situação da separação.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:split-reverse-pending
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:split-reverse-pending', NULL, 'Desfazimento de separação já pendente', 'Já existe uma OS inversa pendente para esta separação. Não é possível abrir outra enquanto ela não for concluída.', ARRAY['O desfazimento já foi pedido e aguarda aprovação.']::text[], ARRAY['Aprove ou rejeite a OS inversa pendente.', 'Não abra um novo pedido de desfazimento para a mesma separação.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,

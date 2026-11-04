@@ -1,0 +1,11 @@
+# P1.41: erro explicado (situações do titular).
+code: urn:ziipsan:problem:split-link-changed
+title: Vínculo da separação mudou
+explanation: Um vínculo da separação mudou desde o pedido — trocou de cliente ou foi encerrado — e a operação foi recusada por inteiro para não aplicar uma separação parcial.
+causes:
+  - O vínculo passou para outro cliente depois do pedido.
+  - O vínculo foi encerrado depois do pedido.
+actions:
+  - Revise o pedido de separação com os vínculos atuais.
+  - Refaça a separação a partir da situação atual do cadastro.
+suggest_ticket: false

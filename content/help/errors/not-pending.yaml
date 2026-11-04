@@ -1,0 +1,11 @@
+# P1.41: erro explicado (situações do titular).
+code: urn:ziipsan:problem:not-pending
+title: Situação fora de aprovação pendente
+explanation: Só uma situação pendente de aprovação pode ser aprovada ou rejeitada.
+causes:
+  - A situação já foi aprovada, aplicada ou rejeitada.
+  - A situação ainda não foi submetida para aprovação.
+actions:
+  - Consulte a situação atual antes de aprovar ou rejeitar.
+  - Submeta a situação para aprovação quando ela ainda não estiver pendente.
+suggest_ticket: false

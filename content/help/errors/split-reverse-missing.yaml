@@ -1,0 +1,11 @@
+# P1.41: erro explicado (situações do titular).
+code: urn:ziipsan:problem:split-reverse-missing
+title: Sem OS inversa pendente para a separação
+explanation: Não há OS inversa pendente para esta separação. A aprovação ou a rejeição do desfazimento exige um pedido pendente.
+causes:
+  - O desfazimento nunca foi pedido.
+  - O pedido de desfazimento já foi concluído ou rejeitado.
+actions:
+  - Peça o desfazimento da separação antes de aprová-lo ou rejeitá-lo.
+  - Consulte a situação da separação.
+suggest_ticket: false

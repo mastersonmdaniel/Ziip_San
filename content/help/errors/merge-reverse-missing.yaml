@@ -1,0 +1,11 @@
+# P1.41: erro explicado (situações do titular).
+code: urn:ziipsan:problem:merge-reverse-missing
+title: Sem OS inversa pendente para a fusão
+explanation: Não há OS inversa pendente para esta fusão. A aprovação ou a rejeição do desfazimento exige um pedido pendente.
+causes:
+  - O desfazimento nunca foi pedido.
+  - O pedido de desfazimento já foi concluído ou rejeitado.
+actions:
+  - Peça o desfazimento da fusão antes de aprová-lo ou rejeitá-lo.
+  - Consulte a situação da fusão.
+suggest_ticket: false

@@ -1,0 +1,10 @@
+# P1.41: erro explicado (situações do titular).
+code: urn:ziipsan:problem:split-reverse-pending
+title: Desfazimento de separação já pendente
+explanation: Já existe uma OS inversa pendente para esta separação. Não é possível abrir outra enquanto ela não for concluída.
+causes:
+  - O desfazimento já foi pedido e aguarda aprovação.
+actions:
+  - Aprove ou rejeite a OS inversa pendente.
+  - Não abra um novo pedido de desfazimento para a mesma separação.
+suggest_ticket: false

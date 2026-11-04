@@ -1,0 +1,11 @@
+# P1.41: erro explicado (situações do titular).
+code: urn:ziipsan:problem:merge-not-applied
+title: Fusão não aplicada
+explanation: Só uma fusão aplicada pode ser desfeita por OS inversa. A fusão informada ainda não foi aplicada.
+causes:
+  - A fusão ainda está pendente de aprovação.
+  - A fusão foi rejeitada ou já foi desfeita.
+actions:
+  - Consulte a situação da fusão.
+  - Aplique a fusão pelo fluxo de aprovação antes de pedir o desfazimento.
+suggest_ticket: false

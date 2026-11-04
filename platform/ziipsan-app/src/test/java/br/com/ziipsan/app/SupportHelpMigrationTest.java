@@ -108,16 +108,20 @@ class SupportHelpMigrationTest {
         // gerado (55 -> 64) — os 7 YAMLs novos da rodada 4 + saved-view-title-in-use
         // e user-required, que tinham YAML desde a P1.33 mas estavam fora do bundle
         // commitado. A lista continua exata: código novo exige YAML + bundle.
+        // P1-D (integração): +10 códigos das situações do titular da P1.41
+        // (64 -> 74) — os YAMLs novos da rodada 1 do CI total.
         assertThat(codes).containsExactly(
                 "urn:ziipsan:problem:access-denied",
                 "urn:ziipsan:problem:activation-exists",
                 "urn:ziipsan:problem:activation-state",
+                "urn:ziipsan:problem:alert-not-pending",
                 "urn:ziipsan:problem:approval-required",
                 "urn:ziipsan:problem:classe-inativa",
                 "urn:ziipsan:problem:clause-map-frozen",
                 "urn:ziipsan:problem:code",
                 "urn:ziipsan:problem:confirmation-required",
                 "urn:ziipsan:problem:content-too-large",
+                "urn:ziipsan:problem:customer-deleted",
                 "urn:ziipsan:problem:customer-has-active-link",
                 "urn:ziipsan:problem:customer-without-document",
                 "urn:ziipsan:problem:data-conflict",
@@ -140,11 +144,15 @@ class SupportHelpMigrationTest {
                 "urn:ziipsan:problem:item-duplicado",
                 "urn:ziipsan:problem:item-nao-aprovado",
                 "urn:ziipsan:problem:item-nao-pendente",
+                "urn:ziipsan:problem:merge-not-applied",
+                "urn:ziipsan:problem:merge-reverse-missing",
+                "urn:ziipsan:problem:merge-reverse-pending",
                 "urn:ziipsan:problem:mfa-required",
                 "urn:ziipsan:problem:name",
                 "urn:ziipsan:problem:no-effect-handler",
                 "urn:ziipsan:problem:no-verifier",
                 "urn:ziipsan:problem:not-found",
+                "urn:ziipsan:problem:not-pending",
                 "urn:ziipsan:problem:not-pending-approval",
                 "urn:ziipsan:problem:operational-types-disabled",
                 "urn:ziipsan:problem:order-closed",
@@ -156,6 +164,10 @@ class SupportHelpMigrationTest {
                 "urn:ziipsan:problem:safety-gate",
                 "urn:ziipsan:problem:saved-view-title-in-use",
                 "urn:ziipsan:problem:search-in-url",
+                "urn:ziipsan:problem:split-link-changed",
+                "urn:ziipsan:problem:split-not-applied",
+                "urn:ziipsan:problem:split-reverse-missing",
+                "urn:ziipsan:problem:split-reverse-pending",
                 "urn:ziipsan:problem:stale-version",
                 "urn:ziipsan:problem:state-conflict",
                 "urn:ziipsan:problem:step",
