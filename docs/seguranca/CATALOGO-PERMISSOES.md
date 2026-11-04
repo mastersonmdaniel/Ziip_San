@@ -50,6 +50,8 @@ está declarado, mas não concede nada até a liberação da ED-75.
 | `service-order:read` | ordem de servico | service-order | read | (nenhum — só concessão direta) | P1.33 |
 | `billing:read` | cobrança | billing | read | (nenhum — só concessão direta) | P1.33 |
 | `document:read` | documentos | document | read | (nenhum — só concessão direta) | P1.33 |
+| `asset:read` | ativos | asset | read | (nenhum — só concessão direta, designada pela frente P1.35) | P1.35 |
+| `asset:manage` | ativos | asset | manage | (nenhum — só concessão direta, designada pela frente P1.35) | P1.35 |
 
 ## Perfis de fábrica (P1.37)
 

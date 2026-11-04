@@ -156,7 +156,16 @@ public final class PermissionCatalog {
             new Permission("search:read", "busca", "search", "read", "P1.33"),
             new Permission("service-order:read", "ordem de servico", "service-order", "read", "P1.33"),
             new Permission("billing:read", "cobrança", "billing", "read", "P1.33"),
-            new Permission("document:read", "documentos", "document", "read", "P1.33"));
+            new Permission("document:read", "documentos", "document", "read", "P1.33"),
+            // P1.35 (integracao P1-C): o mesmo caso do console e da Central — o
+            // cadastro de ativos usava asset:read/asset:manage nas rotas
+            // /api/v1/assets/* (ver AssetRoles) sem registra-las no catalogo, e o
+            // RoutePermissionTest recusava todas. Registradas aqui, como
+            // concessao direta: a propria frente as designou assim (perfis por
+            // funcao sao da P1.37; nenhum perfil de fabrica as inclui, e
+            // inventar atribuicao violaria a regra da P1.37).
+            new Permission("asset:read", "ativos", "asset", "read", "P1.35"),
+            new Permission("asset:manage", "ativos", "asset", "manage", "P1.35"));
 
     /**
      * Perfis de fábrica (P0.13: os quatro mínimos; P1.37: os 22 por função, na ordem do
@@ -325,6 +334,10 @@ public final class PermissionCatalog {
                 "Concessão direta (P1.33, precedente registry:export): leitura de conta via busca exige a permissão direta até que a superfície de contas a inclua em perfis.");
         exemptions.put("document:read",
                 "Concessão direta (P1.33, precedente registry:export): leitura de documento via busca exige a permissão direta até a superfície de documentos catalogá-la em perfis.");
+        exemptions.put("asset:read",
+                "Concessão direta (P1.35, precedente registry:export): ler o cadastro de ativos exige a permissão direta; nenhum perfil de fábrica a inclui (AssetRoles: perfis por função são da P1.37).");
+        exemptions.put("asset:manage",
+                "Concessão direta (P1.35, precedente registry:export): incluir e alterar ativos (sempre por OS interna) exige a permissão direta; nenhum perfil de fábrica a inclui (AssetRoles: perfis por função são da P1.37).");
         return Map.copyOf(exemptions);
     }
 

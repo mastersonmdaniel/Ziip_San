@@ -40,6 +40,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * {@code POST /api/v1/release-notes/{version}/view} e
  * {@code POST /api/v1/about/documents/{code}/accept} (só escrevem estado do
  * próprio usuário; tenant e usuário vêm do token, nunca do corpo).
+ * P1.18 (integração P1-C) estende a allowlist com {@code /api/v1/me/preferences}
+ * (GET + PUT): o controller resolve o usuário pelo subject do token
+ * (UserPreferencesController.subject), nunca por corpo ou caminho — só dado
+ * próprio, sem permissão fina a declarar, pelo mesmo motivo de
+ * {@code GET /api/v1/me}.
  *
  * <p>O documento do catálogo também é conferido contra o código: toda permissão do catálogo
  * aparece nele.
@@ -64,6 +69,7 @@ class RoutePermissionTest extends AppIntegrationTestBase {
             condition.getPatterns().forEach(pattern -> {
                 String path = pattern.getPatternString();
                 if (!path.startsWith("/api/v1") || path.equals("/api/v1/me")
+                        || path.equals("/api/v1/me/preferences")
                         || path.equals("/api/v1/about") || path.equals("/api/v1/public/brand")
                         || path.equals("/api/v1/public/tenant-brand")
                         || path.equals("/api/v1/public/tenant-brand/{slug}/logo/{assetId}")

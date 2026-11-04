@@ -154,11 +154,14 @@ class PermissionCatalogTest {
         // Integração P1-C: entram as permissões de papel de plataforma da Central
         // (P1.17) e da fila de suporte (P1.23), e as de concessão direta da busca
         // global (P1.33). A lista continua exata: exceção nova exige justificativa.
+        // Integração P1-C (2): entram asset:read/asset:manage (P1.35, concessão
+        // direta designada pela própria frente, ver AssetRoles).
         assertThat(exempt).containsExactlyInAnyOrder(
                 "registry:reveal-document", "registry:search-document", "registry:export",
                 "deployment:read", "console:read", "console:manage", "console:suspend", "console:delete",
                 "central:read", "central:manage", "support:queue",
-                "search:read", "service-order:read", "billing:read", "document:read");
+                "search:read", "service-order:read", "billing:read", "document:read",
+                "asset:read", "asset:manage");
         for (String permission : PermissionCatalog.allNames()) {
             boolean inProfile = !PermissionCatalog.profilesIncluding(permission).isEmpty();
             assertThat(inProfile || exempt.contains(permission))
