@@ -68,6 +68,19 @@ final class PersonalDataColumns {
             Map.entry("waste_destination.coordinates", "localização de destinador (pessoa jurídica)"),
             // P1.31: nome de tipo de servico (catalogo, nao dado pessoal).
             Map.entry("service_types.name", "nome de tipo de servico (catalogo)"),
+            // P1.2: colunas do staging do legado que casam com o padrao por nome
+            // mas nao sao dado pessoal — mesmo precedente de
+            // fiscal_issuers.document_kind e payments.document_id acima. O dado
+            // pessoal de verdade do staging (holder_name, holder_document_masked)
+            // tem regra de redacao + classificacao na V14_1, nao allowlist.
+            Map.entry("legacy_import_staging_units.holder_document_kind",
+                    "especie do documento do titular (CPF/CNPJ), sem o numero"),
+            Map.entry("legacy_import_staging_units.holder_document_valid",
+                    "booleano (documento valido ou nao), sem o numero"),
+            Map.entry("legacy_import_batches.mapping_name",
+                    "nome do arquivo de mapeamento, nao dado pessoal"),
+            Map.entry("legacy_import_lineage.mapping_name",
+                    "nome do arquivo de mapeamento, nao dado pessoal"),
             // P1-A (integracao): colunas novas da P1.8/P1.26 que casam com o padrao por
             // nome mas nao sao dado pessoal — mesmo precedente de payments.document_id,
             // payments.document_type, collection_agreements.document_kind e
