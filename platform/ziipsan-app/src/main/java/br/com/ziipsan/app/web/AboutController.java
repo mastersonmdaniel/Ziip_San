@@ -6,6 +6,7 @@ import br.com.ziipsan.platform.about.AboutService;
 import br.com.ziipsan.platform.deployment.AboutInfo;
 import br.com.ziipsan.platform.deployment.DeploymentRepository;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.core.env.Environment;
@@ -61,6 +62,7 @@ public class AboutController {
     private final AboutService aboutService;
     private final BrandProvider brandProvider;
 
+    @Autowired
     public AboutController(DeploymentRepository deployments,
                            ObjectProvider<BuildProperties> buildProperties,
                            ObjectProvider<GitProperties> gitProperties,
