@@ -23,6 +23,7 @@
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
       "@hooks/*": ["src/hooks/*"],
+      "@i18n/*": ["src/i18n/*"],
       "@services/*": ["src/services/*"],
       "@theme/*": ["src/theme/*"],
       "@utils/*": ["src/utils/*"],

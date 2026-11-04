@@ -6,6 +6,7 @@ import { useAuth } from '@hooks/useAuth'
 import { useCan } from '@hooks/usePermissions'
 import { useTheme } from '@hooks/useTheme'
 import { useBrand } from '../brand/BrandProvider'
+import { t } from '@i18n/messages'
 import { PALETTES, type PaletteId } from '@theme/palettes.generated'
 import { cn } from '@utils/cn'
 
@@ -17,13 +18,13 @@ import { cn } from '@utils/cn'
  * "Arquivos gerados" é o ponto de entrega das exportações assíncronas.
  */
 export const navigation: Array<{ name: string; href: string; icon: IconName; permission: string }> = [
-  { name: 'Imóveis', href: '/cadastro/imoveis', icon: 'building-2', permission: 'registry:read' },
-  { name: 'Clientes', href: '/cadastro/clientes', icon: 'users', permission: 'registry:read' },
-  { name: 'Hierarquia territorial', href: '/cadastro/territorio', icon: 'map', permission: 'registry:read' },
-  { name: 'Catálogos', href: '/cadastro/catalogos', icon: 'list-checks', permission: 'registry:read' },
-  { name: 'Catálogo GIS', href: '/gis/catalogo', icon: 'map', permission: 'gis:catalog-read' },
-  { name: 'Arquivos gerados', href: '/arquivos-gerados', icon: 'download', permission: 'registry:read' },
-  { name: 'Sobre', href: '/about', icon: 'info', permission: 'registry:read' },
+  { name: t('nav.properties'), href: '/cadastro/imoveis', icon: 'building-2', permission: 'registry:read' },
+  { name: t('nav.customers'), href: '/cadastro/clientes', icon: 'users', permission: 'registry:read' },
+  { name: t('nav.territory'), href: '/cadastro/territorio', icon: 'map', permission: 'registry:read' },
+  { name: t('nav.catalogs'), href: '/cadastro/catalogos', icon: 'list-checks', permission: 'registry:read' },
+  { name: t('nav.gisCatalog'), href: '/gis/catalogo', icon: 'map', permission: 'gis:catalog-read' },
+  { name: t('nav.generatedFiles'), href: '/arquivos-gerados', icon: 'download', permission: 'registry:read' },
+  { name: t('nav.about'), href: '/about', icon: 'info', permission: 'registry:read' },
 ]
 
 export function Layout() {
@@ -93,14 +94,14 @@ export function Layout() {
         href="#conteudo"
         className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
       >
-        Pular para o conteúdo
+        {t('layout.skipToContent')}
       </a>
 
       <aside
         id="menu-principal"
         ref={menuRef}
         tabIndex={-1}
-        aria-label="Menu principal"
+        aria-label={t('layout.mainMenu')}
         className={cn(
           'fixed inset-y-0 left-0 z-30 w-64 flex-col border-r bg-card',
           menuOpen ? 'flex' : 'hidden lg:flex',
@@ -108,13 +109,13 @@ export function Layout() {
       >
         <div className="flex h-16 items-center justify-between border-b px-4">
           <span className="text-xl font-bold text-primary">{brand.productName}</span>
-          <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMenuOpen(false)} aria-label="Fechar menu">
+          <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMenuOpen(false)} aria-label={t('layout.closeMenu')}>
             <Icon name="x" className="h-5 w-5" />
           </Button>
         </div>
 
-        <nav aria-label="Principal" className="flex-1 overflow-y-auto p-4">
-          <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Cadastro</p>
+        <nav aria-label={t('layout.mainNav')} className="flex-1 overflow-y-auto p-4">
+          <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('layout.registrySection')}</p>
           <ul className="space-y-1">
             {visibleNavigation.map((item) => (
               <li key={item.href}>
@@ -147,7 +148,7 @@ export function Layout() {
           </div>
           <Button variant="outline" size="sm" className="mt-3 w-full" onClick={() => void logout()}>
             <Icon name="log-out" className="h-4 w-4" />
-            Sair
+            {t('layout.logout')}
           </Button>
         </div>
       </aside>
@@ -164,14 +165,14 @@ export function Layout() {
             onClick={() => setMenuOpen((o) => !o)}
             aria-expanded={menuOpen}
             aria-controls="menu-principal"
-            aria-label="Abrir menu"
+            aria-label={t('layout.openMenu')}
           >
             <Icon name="menu" className="h-6 w-6" />
           </Button>
           <span className="hidden text-sm text-muted-foreground lg:inline">{brand.description}</span>
           <div className="flex items-center gap-2">
             <label className="sr-only" htmlFor="palette-select">
-              Padrão de cores
+              {t('layout.colorScheme')}
             </label>
             <select
               id="palette-select"
@@ -185,7 +186,7 @@ export function Layout() {
                 </option>
               ))}
             </select>
-            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Usar tema claro' : 'Usar tema escuro'}>
+            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label={theme === 'dark' ? t('layout.useLightTheme') : t('layout.useDarkTheme')}>
               <Icon name={theme === 'dark' ? 'sun' : 'moon'} className="h-5 w-5" />
             </Button>
           </div>

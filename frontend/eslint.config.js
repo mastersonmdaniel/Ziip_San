@@ -7,6 +7,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import ziipsan from './eslint-local/no-literal-color.js'
+import ziipsanI18n from './eslint-local/no-hardcoded-ui-text.js'
 
 export default tseslint.config(
   { ignores: ['dist', 'coverage', 'node_modules'] },
@@ -21,6 +22,7 @@ export default tseslint.config(
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       ziipsan,
+      'ziipsan-i18n': ziipsanI18n,
     },
     rules: {
       'react-hooks/rules-of-hooks': 'error',
@@ -31,6 +33,10 @@ export default tseslint.config(
       // em componentes — so tokens semanticos. O modulo gerado da marca e excecao:
       // ele E a copia do pacote (ver bloco abaixo).
       'ziipsan/no-literal-color': 'error',
+      // P1.18: texto fixo de interface fora do catalogo, opt-in por arquivo
+      // (so age em arquivo que importa @i18n/messages — ver a regra). O CI
+      // roda `npm run lint`, entao a regra ja vale no CI sem passo novo.
+      'ziipsan-i18n/no-hardcoded-ui-text': 'error',
     },
   },
   {

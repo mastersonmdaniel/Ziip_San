@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { readPreference, writePreference } from '@utils/preferences'
 import { PALETTES, PALETTE_IDS, type PaletteId } from '@theme/palettes.generated'
+import { resolveApiBaseUrl } from '@services/runtimeConfig'
+import { savePreferences } from '@services/preferences'
 
 /**
  * P0.36 (MARCA-E-TEMAS §4.3–§4.5): modo light | dark | system e padrao
@@ -9,10 +11,17 @@ import { PALETTES, PALETTE_IDS, type PaletteId } from '@theme/palettes.generated
  * O script inline do index.html ja aplicou o mesmo estado antes da primeira
  * pintura; aqui o React so o mantem (e corrige se o cache divergir) e
  * acompanha prefers-color-scheme sem recarregar quando o modo e system.
- * A preferencia no servidor (GET/PUT /api/v1/me/preferences) e P1.18: ate
- * la, localStorage e o cache, nao a fonte — o comentario antigo que dizia
- * o contrario foi corrigido. Chave legada 'theme' (so light/dark) continua
- * lida na migracao.
+ * Chave legada 'theme' (so light/dark) continua lida na migracao.
+ *
+ * P1.18: o servidor (GET/PUT /api/v1/me/preferences) e a fonte; o
+ * localStorage e so o cache (MARCA-E-TEMAS §4.5 passo 3). Ao montar, o
+ * provider busca a preferencia do servidor e corrige o tema se o cache
+ * divergir; ao trocar modo/padrao, persiste a mudanca com PUT parcial
+ * (só o campo trocado — a escolha guardada do outro campo nao e tocada).
+ * O GET usa fetch() puro, nao o cliente api: na tela de login nao ha
+ * sessao, e um 401 pelo cliente api redirecionaria para o login (o
+ * interceptor so isenta URLs terminadas em '/me'); aqui o 401 so significa
+ * "sem sessao, fica o cache". Falha de rede tambem so mantem o cache.
  */
 export type ThemeMode = 'light' | 'dark' | 'system'
 type ResolvedTheme = 'light' | 'dark'
@@ -48,10 +57,39 @@ function initialPalette(): PaletteId {
   return 'aqua-blue'
 }
 
+function isThemeMode(value: unknown): value is ThemeMode {
+  return value === 'light' || value === 'dark' || value === 'system'
+}
+
+function isPaletteId(value: unknown): value is PaletteId {
+  return typeof value === 'string' && (PALETTE_IDS as string[]).includes(value)
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<ThemeMode>(initialMode)
   const [palette, setPaletteState] = useState<PaletteId>(initialPalette)
   const [systemDark, setSystemDark] = useState<boolean>(prefersDark)
+
+  // P1.18: preferencia do servidor corrige o cache ao chegar. Sem sessao
+  // (login) ou sem rede, o fetch falha e o cache continua valendo.
+  useEffect(() => {
+    if (typeof fetch !== 'function') return undefined
+    let active = true
+    void fetch(`${resolveApiBaseUrl()}/me/preferences`, { credentials: 'include' })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: unknown) => {
+        if (!active || typeof data !== 'object' || data === null) return
+        const view = data as { effectiveMode?: unknown; effectivePalette?: unknown }
+        if (isThemeMode(view.effectiveMode)) setModeState(view.effectiveMode)
+        if (isPaletteId(view.effectivePalette)) setPaletteState(view.effectivePalette)
+      })
+      .catch(() => {
+        // Cache continua valendo; nada a fazer.
+      })
+    return () => {
+      active = false
+    }
+  }, [])
 
   useEffect(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return undefined
@@ -81,12 +119,24 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       theme,
       mode,
       palette,
-      setMode: setModeState,
-      setPalette: setPaletteState,
-      setTheme: (next) => setModeState(next),
+      // PUT parcial em cada troca; falha de rede nao desfaz a troca local
+      // (o cache continua valendo e o servidor corrige no proximo GET).
+      setMode: (next) => {
+        setModeState(next)
+        void savePreferences({ mode: next }).catch(() => undefined)
+      },
+      setPalette: (next) => {
+        setPaletteState(next)
+        void savePreferences({ palette: next }).catch(() => undefined)
+      },
+      setTheme: (next) => {
+        setModeState(next)
+        void savePreferences({ mode: next }).catch(() => undefined)
+      },
       toggleTheme: () => {
-        if (mode === 'system') setModeState(theme === 'dark' ? 'light' : 'dark')
-        else setModeState(mode === 'light' ? 'dark' : 'light')
+        const next = mode === 'system' ? (theme === 'dark' ? 'light' : 'dark') : mode === 'light' ? 'dark' : 'light'
+        setModeState(next)
+        void savePreferences({ mode: next }).catch(() => undefined)
       },
     }),
     [theme, mode, palette],
