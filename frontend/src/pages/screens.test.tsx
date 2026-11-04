@@ -209,7 +209,7 @@ describe('acessibilidade (axe) das telas principais', () => {
 })
 
 describe('navegação honesta: o menu só aponta para telas que existem', () => {
-  const hrefs = ['/cadastro/imoveis', '/cadastro/clientes', '/cadastro/territorio', '/cadastro/catalogos', '/gis/catalogo', '/arquivos-gerados']
+  const hrefs = ['/cadastro/imoveis', '/cadastro/clientes', '/cadastro/territorio', '/cadastro/catalogos', '/gis/catalogo', '/arquivos-gerados', '/about', '/importacoes', '/platform/central', '/support']
 
   it('cada item do menu abre uma tela real (nenhum cai em "Página não encontrada")', async () => {
     useApi({ ...emptyCatalogs, 'GET /me': TEST_USER })
