@@ -24,8 +24,11 @@ import java.util.Set;
  * não conector: não há {@code server.tomcat.max-*} no repo e o filtro devolve
  * 413 em problem+json no formato dos demais erros, em vez do erro cru do Tomcat.
  * Cobre {@code /api/v1/**} e {@code /bff/**}, só métodos com corpo. Limite
- * padrão: 1 MiB. Não há upload multipart no código (nenhum
- * {@code MultipartFile}), só JSON — o limite cobre todos os corpos atuais.
+ * padrão: 1 MiB. Nota da integração P1-C: o importador (P1.40) trouxe o
+ * primeiro upload multipart do produto ({@code POST /api/v1/registry/imports}),
+ * e o limite cobre o corpo multipart inteiro (fronteiras incluídas) — planilhas
+ * acima de ~1 MiB levam 413 até que um limite próprio de importação seja
+ * decidido; isso é limite conhecido, não bug do importador.
  *
  * <p>Dois caminhos: fast path por {@code Content-Length} acima do limite (413
  * imediato, sem ler o corpo); sem {@code Content-Length} (chunked), o stream é

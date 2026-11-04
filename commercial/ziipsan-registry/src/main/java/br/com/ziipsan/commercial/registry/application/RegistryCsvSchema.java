@@ -9,6 +9,14 @@ import java.util.List;
  * estrangeira, duplicidade) e aplicar por OS interna de lote da P1.31. Esta
  * classe NÃO importa nada: ela só declara o esquema.
  *
+ * <p>Nota da integração P1-C (encaixe P1.3 × P1.40, declarado, não escondido):
+ * esta declaração ainda NÃO está registrada como bean {@code ImportSchema} do
+ * importador — os únicos esquemas importáveis hoje são {@code registry.categories}
+ * e {@code registry.subcategories} (as provas do framework). Importar clientes e
+ * unidades por CSV via {@code /imports} exige uma frente de acompanhamento com
+ * os aplicadores (gravar/desfazer por OS interna, respeitando rascunho,
+ * validate-step e documento cifrado); a integração não inventa esses aplicadores.
+ *
  * <p>Regras da declaração:
  * <ul>
  *   <li>Colunas em inglês camelCase na API viram snake_case no CSV, na ordem da tela.</li>

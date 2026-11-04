@@ -40,8 +40,14 @@ import java.util.regex.Pattern;
  * {@code deniedTypes}, sem dado (negação por padrão, sem oráculo de existência):
  * cliente e unidade exigem {@code registry:read}; OS exige {@code service-order:read};
  * conta exige {@code billing:read}; documento exige {@code document:read}.
- * Protocolo (P1.36) ainda não tem tabela: volta sempre em {@code pendingTypes}, sem
- * resultado fingido. Escopo por área (P3.30) ainda não existe: sem {@code org_units},
+ * Protocolo (P1.36) volta sempre em {@code pendingTypes}, sem resultado fingido.
+ * Nota da integração P1-C: a tabela da P1.36 JÁ existe na árvore integrada
+ * (V8_1), mas a seção continua pendente por decisão, não por falta de tabela:
+ * não há superfície de detalhe de protocolo para onde um hit apontaria e a
+ * semântica da busca (por número? por requerente? por assunto?) não foi
+ * desenhada — ligar um LIKE ingênuo na integração inventaria comportamento.
+ * A seção de protocolo é frente de acompanhamento, não item de integração.
+ * Escopo por área (P3.30) ainda não existe: sem {@code org_units},
  * a busca vale para o tenant inteiro (a RLS por tenant continua valendo); quando a
  * P3.30 chegar, o filtro obrigatório de repositório passa a valer aqui também.
  *
@@ -140,7 +146,8 @@ public class GlobalSearchService {
         List<String> denied = new ArrayList<>();
         List<String> pending = new ArrayList<>();
         if (wanted.contains(SearchType.PROTOCOL)) {
-            // P1.36 ainda não criou a tabela de protocolos: pendente, sem resultado fingido.
+            // Integração P1-C: tabela da P1.36 existe, seção segue pendente por
+            // decisão (ver javadoc da classe) — sem resultado fingido.
             pending.add(SearchType.PROTOCOL.name());
         }
 

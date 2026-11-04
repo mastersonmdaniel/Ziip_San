@@ -93,9 +93,11 @@ definido em runtime):
   configurado no repo e o filtro dá a resposta 413 em problem+json
   (`content-too-large`) no mesmo formato dos demais erros — um limite de
   conector devolveria um erro cru do Tomcat.
-- Limite: **1 MiB** (1048576 bytes, `ziipsan.body-limit.max-bytes`). Verificado:
-  não há upload multipart no código (nenhum `MultipartFile`), só JSON — o
-  limite cobre todos os corpos atuais.
+- Limite: **1 MiB** (1048576 bytes, `ziipsan.body-limit.max-bytes`). Nota da
+  integração P1-C: o importador (P1.40) trouxe o primeiro upload multipart do
+  produto (`POST /api/v1/registry/imports`, `MultipartFile`), e o limite cobre
+  o corpo multipart inteiro — planilhas acima de ~1 MiB levam 413 até que um
+  limite próprio de importação seja decidido.
 - Dois caminhos: fast path por `Content-Length` acima do limite (413 imediato,
   sem ler o corpo); sem `Content-Length` (chunked), wrapper de `InputStream`
   que conta bytes e estoura em 413 ao exceder.
