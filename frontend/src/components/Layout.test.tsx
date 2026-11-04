@@ -60,6 +60,15 @@ describe('Layout: menu por papel + modal com axe limpo (P1.12)', () => {
     expect(within(nav).queryByRole('link', { name: 'Arquivos gerados' })).not.toBeInTheDocument()
   })
 
+  it('P2.30: com template:read, o menu mostra Configurações > Modelos', () => {
+    authUser.user = { fullName: 'TESTE Usuário', username: 'teste', email: 't@x.invalid', permissions: ['template:read'] }
+    renderLayout()
+    const nav = screen.getByRole('navigation', { name: 'Principal' })
+    expect(within(nav).getByRole('link', { name: 'Modelos' })).toHaveAttribute('href', '/configuracoes/modelos')
+    expect(within(nav).getByText('Configurações')).toBeInTheDocument()
+    expect(within(nav).queryByRole('link', { name: 'Imóveis' })).not.toBeInTheDocument()
+  })
+
   it('P1.37: com registry:read mas sem gis:catalog-read, o Catálogo GIS não aparece', () => {
     authUser.user = { fullName: 'TESTE Usuário', username: 'teste', email: 't@x.invalid', permissions: ['registry:read'] }
     renderLayout()

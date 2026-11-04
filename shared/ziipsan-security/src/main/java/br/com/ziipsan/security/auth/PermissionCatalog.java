@@ -165,7 +165,19 @@ public final class PermissionCatalog {
             // funcao sao da P1.37; nenhum perfil de fabrica as inclui, e
             // inventar atribuicao violaria a regra da P1.37).
             new Permission("asset:read", "ativos", "asset", "read", "P1.35"),
-            new Permission("asset:manage", "ativos", "asset", "manage", "P1.35"));
+            new Permission("asset:manage", "ativos", "asset", "manage", "P1.35"),
+            // P2.30: motor único de modelos de documento e mensagem
+            // (/api/v1/templates/*). read: listar e ler modelos, gerar prévia e
+            // gerar documento; write: criar modelo e versão, propor e copiar
+            // fábrica; approve: aprovar e rejeitar versão (a separação
+            // proponente ≠ aprovador e autor ≠ aprovador continua no serviço,
+            // por ator, não por perfil — como parameters:manage na P1.6).
+            // Perfis: ADMIN e GESTOR (administram o tenant) têm as três;
+            // AUDITOR_INTERNO lê (audita o que foi aprovado), sem escrever
+            // nem aprovar.
+            new Permission("template:read", "documentos", "template", "read", "P2.30"),
+            new Permission("template:write", "documentos", "template", "write", "P2.30"),
+            new Permission("template:approve", "documentos", "template", "approve", "P2.30"));
 
     /**
      * Perfis de fábrica (P0.13: os quatro mínimos; P1.37: os 22 por função, na ordem do
@@ -190,7 +202,8 @@ public final class PermissionCatalog {
         ADMIN("Administrador do tenant", true, HOME_PAGE,
                 "registry:read", "registry:write", "user:read", "user:write",
                 "gis:catalog-read", "gis:catalog-manage", "parameters:manage",
-                "brand:manage", "support:read", "support:write", "support:manage"),
+                "brand:manage", "support:read", "support:write", "support:manage",
+                "template:read", "template:write", "template:approve"),
         /** Cadastro (leitura e escrita) e leitura de usuários; não gerencia usuários. */
         MANAGER("Gerente", true, HOME_PAGE,
                 "registry:read", "registry:write", "user:read"),
@@ -240,9 +253,10 @@ public final class PermissionCatalog {
                 "gis:catalog-read"),
         GESTOR("Gestor", true, HOME_PAGE,
                 "registry:read", "user:read", "parameters:manage",
-                "support:read", "support:write"),
+                "support:read", "support:write",
+                "template:read", "template:write", "template:approve"),
         AUDITOR_INTERNO("Auditor interno", true, HOME_PAGE,
-                "registry:read", "gis:catalog-read", "user:read", "cert:audit"),
+                "registry:read", "gis:catalog-read", "user:read", "cert:audit", "template:read"),
         OUVIDOR("Ouvidor", true, HOME_PAGE,
                 "registry:read", "protocol:read", "support:read"),
         ENCARREGADO_DADOS("Encarregado de dados", true, HOME_PAGE,

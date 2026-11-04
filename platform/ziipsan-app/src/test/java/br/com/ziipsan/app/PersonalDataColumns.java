@@ -99,6 +99,11 @@ final class PersonalDataColumns {
             // catálogo / ao documento anexo, não número de documento pessoal.
             Map.entry("documents.document_type_id", "id interno do tipo de documento do catálogo"),
             Map.entry("document_scan_events.document_id", "id interno do documento anexo do evento de varredura"),
+            // P2.30 (V1_12): o tipo do modelo é o código do enum (CHECK fechado),
+            // não número de documento pessoal; o document_id do gerado é a
+            // referência interna ao arquivo do pipeline, não documento pessoal.
+            Map.entry("document_templates.document_type", "código do tipo de documento do modelo (enum fechado)"),
+            Map.entry("generated_documents.document_id", "id interno do arquivo do pipeline da P1.20"),
             // P1-C (integracao): colunas novas da camada C que casam com o padrao
             // por nome mas nao sao dado pessoal — catalogos (nome), referencias
             // por id e flags de modelo. O dado pessoal de verdade (a referencia

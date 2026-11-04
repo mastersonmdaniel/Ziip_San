@@ -52,6 +52,9 @@ está declarado, mas não concede nada até a liberação da ED-75.
 | `document:read` | documentos | document | read | (nenhum — só concessão direta) | P1.33 |
 | `asset:read` | ativos | asset | read | (nenhum — só concessão direta, designada pela frente P1.35) | P1.35 |
 | `asset:manage` | ativos | asset | manage | (nenhum — só concessão direta, designada pela frente P1.35) | P1.35 |
+| `template:read` | documentos | template | read | ADMIN, GESTOR, AUDITOR_INTERNO | P2.30 |
+| `template:write` | documentos | template | write | ADMIN, GESTOR | P2.30 |
+| `template:approve` | documentos | template | approve | ADMIN, GESTOR | P2.30 |
 
 ## Perfis de fábrica (P1.37)
 
@@ -69,7 +72,7 @@ na administração do tenant, certificações na qualidade. A busca global e sua
 
 | Código | Função | Ativo | Permissões |
 |---|---|---|---|
-| `ADMIN` | Administrador do tenant | sim | `registry:read`, `registry:write`, `user:read`, `user:write`, `gis:catalog-read`, `gis:catalog-manage`, `parameters:manage`, `brand:manage`, `support:read`, `support:write`, `support:manage` |
+| `ADMIN` | Administrador do tenant | sim | `registry:read`, `registry:write`, `user:read`, `user:write`, `gis:catalog-read`, `gis:catalog-manage`, `parameters:manage`, `brand:manage`, `support:read`, `support:write`, `support:manage`, `template:read`, `template:write`, `template:approve` |
 | `MANAGER` | Gerente | sim | `registry:read`, `registry:write`, `user:read` |
 | `OPERATOR` | Operador | sim | `registry:read`, `registry:write` |
 | `VIEWER` | Observador | sim | `registry:read` |
@@ -87,8 +90,8 @@ na administração do tenant, certificações na qualidade. A busca global e sua
 | `RESP_TEC_QUALIDADE` | Responsável técnico da qualidade | sim | `cert:read`, `cert:write`, `cert:approve`, `cert:audit` |
 | `EDITOR_CAD_TECNICO` | Editor do cadastro técnico | sim | `gis:catalog-read`, `gis:catalog-manage` |
 | `REVISOR_CAD_TECNICO` | Revisor do cadastro técnico | sim | `gis:catalog-read` |
-| `GESTOR` | Gestor | sim | `registry:read`, `user:read`, `parameters:manage`, `support:read`, `support:write` |
-| `AUDITOR_INTERNO` | Auditor interno | sim | `registry:read`, `gis:catalog-read`, `user:read`, `cert:audit` |
+| `GESTOR` | Gestor | sim | `registry:read`, `user:read`, `parameters:manage`, `support:read`, `support:write`, `template:read`, `template:write`, `template:approve` |
+| `AUDITOR_INTERNO` | Auditor interno | sim | `registry:read`, `gis:catalog-read`, `user:read`, `cert:audit`, `template:read` |
 | `OUVIDOR` | Ouvidor | sim | `registry:read`, `protocol:read`, `support:read` |
 | `ENCARREGADO_DADOS` | Encarregado de dados | sim | `registry:read`, `user:read` |
 | `PROCURADOR` | Procurador | sim | `registry:read` |

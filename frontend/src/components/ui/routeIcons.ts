@@ -34,4 +34,6 @@ export const ROUTE_ICONS: Record<string, IconName> = {
   '/importacoes': 'upload',
   '/platform/central': 'gauge',
   '/support': 'life-buoy',
+  // P2.30: Configurações > Modelos — usa o ícone do próprio item de menu.
+  '/configuracoes/modelos': 'clipboard-list',
 }

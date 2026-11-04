@@ -26,6 +26,7 @@ describe('P1.18 catálogo de mensagens', () => {
       'layout.mainNav',
       'layout.openMenu',
       'layout.registrySection',
+      'layout.settingsSection',
       'layout.logout',
       'layout.colorScheme',
       'layout.useLightTheme',
@@ -36,6 +37,7 @@ describe('P1.18 catálogo de mensagens', () => {
       'nav.catalogs',
       'nav.gisCatalog',
       'nav.generatedFiles',
+      'nav.templates',
     ]) {
       expect(keys).toContain(key)
     }

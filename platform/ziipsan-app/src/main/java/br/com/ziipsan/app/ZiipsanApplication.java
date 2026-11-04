@@ -22,6 +22,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  *
  * <p>P1.35: o cadastro de ativos entra aqui (serviço e API). A spec OpenAPI
  * é regenerada pela integração; este front só declara as rotas.
+ *
+ * <p>P2.30: o motor de modelos entra aqui (serviço e API). Sem o pacote no
+ * {@code EnableJpaRepositories} abaixo, o contexto subia o controller e o
+ * serviço (o scan de componentes cobre {@code br.com.ziipsan.platform})
+ * mas nenhum repositório JPA — e o IT falhava com NoSuchBeanDefinition.
  */
 @SpringBootApplication(scanBasePackages = {
         "br.com.ziipsan.app",
@@ -40,6 +45,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "br.com.ziipsan.platform.search",
         // P1.27: repositórios do catálogo GIS.
         "br.com.ziipsan.intelligence.gis.catalog.repository",
+        // P2.30: repositórios do motor de modelos (document_templates,
+        // template_versions, generated_documents).
+        "br.com.ziipsan.platform.templates",
 })
 @ConfigurationPropertiesScan("br.com.ziipsan.app")
 public class ZiipsanApplication {

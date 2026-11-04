@@ -19,7 +19,7 @@ import { cn } from '@utils/cn'
  * permissão, o item some do menu (o servidor continua negando a rota).
  * "Arquivos gerados" é o ponto de entrega das exportações assíncronas.
  */
-export const navigation: Array<{ name: string; href: string; icon: IconName; permission: string }> = [
+export const navigation: Array<{ name: string; href: string; icon: IconName; permission: string; section?: string }> = [
   { name: t('nav.properties'), href: '/cadastro/imoveis', icon: 'building-2', permission: 'registry:read' },
   { name: t('nav.customers'), href: '/cadastro/clientes', icon: 'users', permission: 'registry:read' },
   { name: t('nav.territory'), href: '/cadastro/territorio', icon: 'map', permission: 'registry:read' },
@@ -30,6 +30,10 @@ export const navigation: Array<{ name: string; href: string; icon: IconName; per
   { name: t('nav.imports'), href: '/importacoes', icon: 'upload', permission: 'registry:read' },
   { name: t('nav.central'), href: '/platform/central', icon: 'gauge', permission: 'central:read' },
   { name: t('nav.support'), href: '/support', icon: 'life-buoy', permission: 'support:read' },
+  // P2.30: Configurações > Modelos — o motor único de modelos de documento
+  // e mensagem. Só aparece para quem tem template:read (o servidor nega a
+  // rota sem ela, como nos demais itens).
+  { name: t('nav.templates'), href: '/configuracoes/modelos', icon: 'clipboard-list', permission: 'template:read', section: 'settings' },
 ]
 
 export function Layout() {
@@ -143,7 +147,7 @@ export function Layout() {
         <nav aria-label={t('layout.mainNav')} className="flex-1 overflow-y-auto p-4">
           <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('layout.registrySection')}</p>
           <ul className="space-y-1">
-            {visibleNavigation.map((item) => (
+            {visibleNavigation.filter((item) => !item.section).map((item) => (
               <li key={item.href}>
                 <NavLink
                   to={item.href}
@@ -160,6 +164,29 @@ export function Layout() {
               </li>
             ))}
           </ul>
+          {visibleNavigation.some((item) => item.section === 'settings') ? (
+            <>
+              <p className="mb-2 mt-6 px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('layout.settingsSection')}</p>
+              <ul className="space-y-1">
+                {visibleNavigation.filter((item) => item.section === 'settings').map((item) => (
+                  <li key={item.href}>
+                    <NavLink
+                      to={item.href}
+                      className={({ isActive }) =>
+                        cn(
+                          'flex items-center rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                          isActive ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-accent',
+                        )
+                      }
+                    >
+                      <Icon name={item.icon} className="mr-3 h-5 w-5" />
+                      {item.name}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
         </nav>
 
         <div className="border-t p-4">

@@ -24,6 +24,7 @@ const Territory = lazy(() => import('@pages/cadastro/Territory').then((m) => ({ 
 const GeneratedFiles = lazy(() => import('@pages/GeneratedFiles').then((m) => ({ default: m.GeneratedFiles })))
 const Importacoes = lazy(() => import('@pages/Importacoes').then((m) => ({ default: m.Importacoes })))
 const Support = lazy(() => import('@pages/Support').then((m) => ({ default: m.Support })))
+const Templates = lazy(() => import('@pages/Templates').then((m) => ({ default: m.Templates })))
 const SavedViews = lazy(() => import('@pages/search/SavedViews').then((m) => ({ default: m.SavedViews })))
 const IconContactSheetPage = lazy(() =>
   import('@pages/dev/IconContactSheetPage').then((m) => ({ default: m.IconContactSheetPage })),
@@ -103,6 +104,8 @@ export function App() {
         {/* P1.17: Central Ziip v0 — Visão geral, Plataforma, Segurança e Alertas. */}
         <Route path="platform/central" element={<Central />} />
         <Route path="support" element={<Support />} />
+        {/* P2.30: Configurações > Modelos — o motor único de modelos de documento e mensagem. */}
+        <Route path="configuracoes/modelos" element={<Templates />} />
         {/* P1.33: visões salvas de filtros e colunas por usuário. */}
         <Route path="busca/visoes-salvas" element={<SavedViews />} />
 
