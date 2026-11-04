@@ -259,6 +259,29 @@ public class PlatformFiscalDocumentRepository implements FiscalDocumentRepositor
     }
 
     @Override
+    public UUID insertTaxRate(UUID tenantId, TaxRateRow row, String legalBasis) {
+        // Quebra de integracao P2-A (P2.4 x P2.13): a P2.4 acrescentou
+        // insertTaxRate a porta e a P2.13, empilhada sobre a P2.12 sem a
+        // P2.4, nao o implementava — o build da app caia. Insert simples,
+        // espelho do JdbcFiscalDocumentRepository: a validacao e a
+        // checagem de sobreposicao vivem no TaxRateService, antes da
+        // chamada. O tenantId nao existe na tabela da plataforma (as
+        // aliquotas do SaaS sao globais, como taxRates ja ignora o
+        // parametro) e o escopo vem da linha. O caminho de escrita da
+        // plataforma continua sendo SaaSFiscalRegistry.registerTaxRate
+        // (sobreposicao + auditoria); nenhum servico roteia o
+        // TaxRateService para este repositorio hoje.
+        return jdbc.queryForObject(
+                "INSERT INTO platform.saas_fiscal_tax_rate (tax_code, scope, valid_from, valid_to,"
+                        + " rate, legal_basis) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
+                new Object[]{row.taxCode(), row.scope(), Date.valueOf(row.validFrom()),
+                        row.validTo() == null ? null : Date.valueOf(row.validTo()), row.rate(), legalBasis},
+                new int[]{Types.VARCHAR, Types.VARCHAR, Types.DATE, Types.DATE, Types.NUMERIC,
+                        Types.VARCHAR},
+                (rs, i) -> rs.getObject(1, UUID.class));
+    }
+
+    @Override
     public void store(UUID tenantId, UUID documentId, byte[] xmlGzip, String sha256, String source) {
         storeAuthorizedXml(tenantId, documentId, xmlGzip, sha256, source);
     }
