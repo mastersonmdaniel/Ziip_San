@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -175,9 +177,14 @@ class BillingPartitionP23IT {
         try (Connection c = asTenant()) {
             try {
                 UUID unit = insertUnit(c, "P23-FAR-01");
+                // A falha esperada aborta a transacao: sem savepoint, o
+                // insert seguinte falharia com "current transaction is
+                // aborted" (mesmo padrao ja usado neste arquivo).
+                var savepoint = c.setSavepoint();
                 assertThatThrownBy(() -> insertBill(c, unit, FAR_MONTH, null))
                         .isInstanceOf(SQLException.class)
                         .hasMessageContaining("no partition of relation");
+                c.rollback(savepoint);
                 try (Connection m = migrator(); Statement st = m.createStatement()) {
                     st.execute("SELECT " + SCHEMA + ".bills_create_partition(DATE '" + FAR_MONTH + "')");
                 }
@@ -517,11 +524,18 @@ class BillingPartitionP23IT {
         try (Connection m = migrator(); Statement st = m.createStatement()) {
             st.execute("ALTER TABLE " + SCHEMA + ".bills " + verb + " TRIGGER audit_trigger");
             st.execute("ALTER TABLE " + SCHEMA + ".bill_items " + verb + " TRIGGER audit_trigger");
+            // Um Statement so mantem um ResultSet aberto: executar o ALTER
+            // no mesmo Statement fecharia o ResultSet no primeiro loop
+            // ("This ResultSet is closed"). Coleta primeiro, altera depois.
+            List<String> partitions = new ArrayList<>();
             try (ResultSet rs = st.executeQuery("SELECT inhrelid::regclass::text FROM pg_inherits WHERE inhparent IN ('"
                     + SCHEMA + ".bills'::regclass, '" + SCHEMA + ".bill_items'::regclass)")) {
                 while (rs.next()) {
-                    st.execute("ALTER TABLE " + rs.getString(1) + " " + verb + " TRIGGER audit_trigger");
+                    partitions.add(rs.getString(1));
                 }
+            }
+            for (String part : partitions) {
+                st.execute("ALTER TABLE " + part + " " + verb + " TRIGGER audit_trigger");
             }
         }
     }
