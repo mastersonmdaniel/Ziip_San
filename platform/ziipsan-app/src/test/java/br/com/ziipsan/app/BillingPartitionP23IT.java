@@ -661,6 +661,11 @@ class BillingPartitionP23IT {
         // scan de exatamente 1 mil entradas, sem re-escaneamento. O filtro
         // por mes na lista e nos lotes permite o pruning para a particao
         // do lote (2026_03 e exclusiva do teste de volume neste schema).
+        // O ORDER BY b.id e ESSENCIAL, nao cosmetico: sem ele o planner
+        // escolhe o indice (tenant, mes, status) e filtra por id visitando
+        // as 100 mil contas da particao por lote (~6,4 s por lote, provado
+        // com auto_explain na integracao P2A); com ele, o planner usa a PK
+        // (tenant, mes, id) como range scan ordenado, sem sort e sem filtro.
         // O trigger bills_fill_child_month esta DESLIGADO durante a carga
         // (ver disableFillMonthTrigger) — com ele ativo, o custo por linha
         // (~9,5 ms de seq scan) estouraria os 5 s em qualquer lote. O
@@ -700,7 +705,7 @@ class BillingPartitionP23IT {
                             + "SELECT ?, b.id, DATE '" + LOT_MONTH + "', 'WATER', ?, ?, DATE '" + LOT_MONTH + "', DATE '2026-03-31', "
                             + "1.0000, 'MINIMUM', 1, 0, 0, 0, 100.00, 0, 100.00 "
                             + "FROM " + SCHEMA + ".bills b WHERE b.tenant_id = ? AND b.reference_month = DATE '" + LOT_MONTH + "' "
-                            + "AND " + rangePredicate)) {
+                            + "AND " + rangePredicate + " ORDER BY b.id")) {
                 int param = 1;
                 ps.setObject(param++, TENANT);
                 ps.setObject(param++, category);
