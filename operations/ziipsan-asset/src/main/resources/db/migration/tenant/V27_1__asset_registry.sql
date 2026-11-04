@@ -268,6 +268,13 @@ BEGIN
     FOREACH t IN ARRAY ARRAY['gis_node', 'gis_arc', 'gis_connection',
                              'gis_structure', 'gis_zone', 'gis_poi'] LOOP
         EXECUTE format('ALTER TABLE %I ADD COLUMN IF NOT EXISTS asset_id UUID', t);
+        -- P1-C (integracao): o historico copia (OLD).* posicional (mais
+        -- 4 extras) — sem a coluna la, todo UPDATE/DELETE da feicao
+        -- quebra com 'INSERT has more expressions than target columns'.
+        -- A posicao nao importa (a V13_7 lista as colunas-alvo
+        -- explicitamente), entao o ADD COLUMN no fim basta. Sem FK no
+        -- historico: e log de estados passados, nao estado vigente.
+        EXECUTE format('ALTER TABLE %I ADD COLUMN IF NOT EXISTS asset_id UUID', t || '_history');
         IF NOT EXISTS (
             SELECT 1 FROM pg_constraint c JOIN pg_namespace n ON n.oid = c.connamespace
             WHERE c.conname = 'fk_' || t || '_asset' AND n.nspname = current_schema()
