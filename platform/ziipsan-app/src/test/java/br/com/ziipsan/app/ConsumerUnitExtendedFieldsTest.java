@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -29,11 +31,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * os campos novos devolve os mesmos valores no GET, e um payload sem eles continua
  * funcionando (e limpa os campos, como os demais opcionais ja faziam).
  *
- * <p>Os ids de catalogos sem tabela no backend (face de quadra, modo de envio,
- * esgotamento, perfil, fonte, poco, pavimentos, ramos de atividade) sao UUIDs
- * aleatorios: o backend os aceita e devolve, sem checar existencia, ate o catalogo
- * existir (ver V3_5). Rota de entrega, rota alternativa e imovel principal tem
- * tabela e FK, entao sao criados de verdade e o id desconhecido e recusado.
+ * <p>P1-C (integracao): a R2 trouxe os catalogos que este teste tratava como
+ * "sem tabela no backend" — face de quadra, esgotamento e perfil passam a
+ * existir de verdade (criados no setUp: block_faces por SQL, pois a rota de
+ * catalogos e so leitura para ela; os demais pela API de catalogos), o
+ * vinculo USER exige a linha relation_roles com system_role USER, e a face
+ * de quadra exige registry.use_block_face=true. Modo de envio, fonte, poco,
+ * pavimentos, ramos de atividade e rascunho continuam sem checagem de
+ * existencia: aceitos e devolvidos como Ref(id, null, null). Rota de
+ * entrega, rota alternativa e imovel principal tem tabela e FK, entao sao
+ * criados de verdade e o id desconhecido e recusado.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ConsumerUnitExtendedFieldsTest extends AppIntegrationTestBase {
@@ -54,12 +61,12 @@ class ConsumerUnitExtendedFieldsTest extends AppIntegrationTestBase {
     private static String customerId;
     private static String parentUnitId;
     private static String unitId;
+    private static String sewerDischargeId;
+    private static String profileId;
 
     // Ids pendentes (sem catalogo no backend): aceitos e devolvidos como Ref(id, null, null).
     private static final String BLOCK_FACE_ID = UUID.randomUUID().toString();
     private static final String DELIVERY_MODE_ID = UUID.randomUUID().toString();
-    private static final String SEWER_DISCHARGE_ID = UUID.randomUUID().toString();
-    private static final String PROFILE_ID = UUID.randomUUID().toString();
     private static final String WATER_SOURCE_ID = UUID.randomUUID().toString();
     private static final String WELL_TYPE_ID = UUID.randomUUID().toString();
     private static final String PAVEMENT_STREET_ID = UUID.randomUUID().toString();
@@ -109,6 +116,33 @@ class ConsumerUnitExtendedFieldsTest extends AppIntegrationTestBase {
         customerId = id(send(post("/api/v1/registry/customers"), operator, """
                 {"personType": "PF", "name": "Cliente P016", "document": "%s", "billing": {"dueDay": 10}}""".formatted(CPF))
                 .andExpect(status().isCreated()));
+        // P1-C (integracao): catalogos da R2 que os corpos exigem — vinculo
+        // USER (system_role), esgotamento e perfil pela API de catalogos;
+        // face de quadra por SQL (a rota de catalogos e so leitura para ela)
+        // e registry.use_block_face=true (sem ele, blockFaceId e DISABLED).
+        send(post("/api/v1/registry/catalogs/relation_roles"), operator, """
+                {"code": "USER", "name": "Usuário", "active": true, "extra": {"system_role": "USER"}}""")
+                .andExpect(status().isCreated());
+        sewerDischargeId = id(send(post("/api/v1/registry/catalogs/sewer_discharges"), operator, """
+                {"code": "P016", "name": "Tipo P016", "active": true}""")
+                .andExpect(status().isCreated()));
+        profileId = id(send(post("/api/v1/registry/catalogs/property_profiles"), operator, """
+                {"code": "P016", "name": "Perfil P016", "active": true}""")
+                .andExpect(status().isCreated()));
+        try (Connection c = ProvisionedTenant.migratorDs.getConnection()) {
+            c.setAutoCommit(false);
+            try (Statement st = c.createStatement()) {
+                st.execute("SELECT set_config('app.current_tenant', '" + TENANT_A + "', true)");
+                st.execute("INSERT INTO " + ProvisionedTenant.SCHEMA + ".block_faces"
+                        + " (id, tenant_id, block_id, code, name, active) VALUES ('"
+                        + BLOCK_FACE_ID + "', '" + TENANT_A + "', '" + blockId
+                        + "', 'P016', 'Face P016', true)");
+                st.execute("INSERT INTO public.tenant_settings (tenant_id, setting_key, setting_value)"
+                        + " VALUES ('" + TENANT_A + "', 'registry.use_block_face', 'true'::jsonb)"
+                        + " ON CONFLICT (tenant_id, setting_key) DO UPDATE SET setting_value = EXCLUDED.setting_value");
+            }
+            c.commit();
+        }
         parentUnitId = id(send(post("/api/v1/registry/consumer-units"), operator, legacyBody(5, 50))
                 .andExpect(status().isCreated()));
     }
@@ -126,8 +160,8 @@ class ConsumerUnitExtendedFieldsTest extends AppIntegrationTestBase {
                 .andExpect(jsonPath("$.subcategories[0].collectiveUnits").value(3))
                 .andExpect(jsonPath("$.subcategories[0].activityBranchIds[0]").value(BRANCH_A))
                 .andExpect(jsonPath("$.subcategories[0].activityBranchIds[1]").value(BRANCH_B))
-                .andExpect(jsonPath("$.sewerDischarge.id").value(SEWER_DISCHARGE_ID))
-                .andExpect(jsonPath("$.profile.id").value(PROFILE_ID))
+                .andExpect(jsonPath("$.sewerDischarge.id").value(sewerDischargeId))
+                .andExpect(jsonPath("$.profile.id").value(profileId))
                 .andExpect(jsonPath("$.waterSource.id").value(WATER_SOURCE_ID))
                 .andExpect(jsonPath("$.wellType.id").value(WELL_TYPE_ID))
                 .andExpect(jsonPath("$.pavementStreet.id").value(PAVEMENT_STREET_ID))
@@ -245,11 +279,12 @@ class ConsumerUnitExtendedFieldsTest extends AppIntegrationTestBase {
                  "physical": {"garden": true, "lowerReservoirM3": 5.0, "upperReservoirM3": 1.5, "poolM3": 20.0},
                  "usagePoints": 7, "residents": 4, "externalIds": {"iptu": "123456"},
                  "deliveryRouteId": "%s", "deliverySequence": 12, "altRouteId": "%s", "parentUnitId": "%s",
+                 "parentRelationType": "CONDOMINIUM_MACRO",
                  "notes": "Imovel P016", "draftId": "%s",
                  "readingSequence": %d%s}"""
                 .formatted(blockId, localityId, BLOCK_FACE_ID, lot, 100 + lot, customerId, TODAY,
                         DELIVERY_MODE_ID, subcategoryId, BRANCH_A, BRANCH_B, waterId, sewerId,
-                        SEWER_DISCHARGE_ID, PROFILE_ID, WATER_SOURCE_ID, WELL_TYPE_ID, PAVEMENT_STREET_ID,
+                        sewerDischargeId, profileId, WATER_SOURCE_ID, WELL_TYPE_ID, PAVEMENT_STREET_ID,
                         PAVEMENT_SIDEWALK_ID, routeId, altRouteId, parentUnitId, DRAFT_ID, readingSequence, tokens);
     }
 

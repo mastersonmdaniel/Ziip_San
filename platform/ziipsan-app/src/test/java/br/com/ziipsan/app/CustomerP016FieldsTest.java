@@ -34,7 +34,15 @@ class CustomerP016FieldsTest extends AppIntegrationTestBase {
     @Test
     @DisplayName("cliente: campos P0.16 vao e voltam; payload antigo sem eles continua valido")
     void p016FieldsRoundTrip() throws Exception {
-        String customerTypeId = UUID.randomUUID().toString();
+        // P1-C (integracao): a R2 valida customerTypeId contra o catalogo
+        // customer_types — o UUID aleatorio do teste antigo virou 422
+        // NOT_FOUND. O tipo passa a existir de verdade (sem applies_to, para
+        // nao restringir PF/PJ, e sem is_public_entity, para nao exigir
+        // esfera de governo). activityBranchId nao e validado: continua
+        // aleatorio, como antes.
+        String customerTypeId = id(send(post("/api/v1/registry/catalogs/customer_types"), operator, """
+                {"code": "P016", "name": "Tipo P016", "active": true}""")
+                .andExpect(status().isCreated()));
         String activityBranchId = UUID.randomUUID().toString();
 
         // Pai (PJ com CNPJ), para o parentCustomerId do filho.
