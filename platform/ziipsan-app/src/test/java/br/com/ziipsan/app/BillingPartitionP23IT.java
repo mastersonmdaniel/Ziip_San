@@ -509,7 +509,13 @@ class BillingPartitionP23IT {
      * O trigger de auditoria gravaria 200 mil linhas em public.audit_log para a carga
      * de volume (uma por conta e por item). A prova de volume e sobre o lote, nao sobre
      * o audit_log: o trigger e desligado so durante a carga (pai e particoes) e
-     * religado em seguida, no finally do teste.
+     * religado em seguida, no finally do teste. A P2-A (integracao) acrescentou
+     * consumer_units a lista: o lote insere 100 mil unidades num unico
+     * INSERT...SELECT e o trigger de auditoria de consumer_units estourava o
+     * statement_timeout de 5 s do papel da app no meio da carga (o erro
+     * aparecia em audit_redact durante o insert das unidades). Nenhuma
+     * assercao do teste le o audit_log: contagem, soma e poda do plano sao
+     * sobre bills/bill_items e o lote.
      */
     private static void disableAuditTriggers() throws SQLException {
         setAuditTriggers(false);
@@ -524,6 +530,7 @@ class BillingPartitionP23IT {
         try (Connection m = migrator(); Statement st = m.createStatement()) {
             st.execute("ALTER TABLE " + SCHEMA + ".bills " + verb + " TRIGGER audit_trigger");
             st.execute("ALTER TABLE " + SCHEMA + ".bill_items " + verb + " TRIGGER audit_trigger");
+            st.execute("ALTER TABLE " + SCHEMA + ".consumer_units " + verb + " TRIGGER audit_trigger");
             // Um Statement so mantem um ResultSet aberto: executar o ALTER
             // no mesmo Statement fecharia o ResultSet no primeiro loop
             // ("This ResultSet is closed"). Coleta primeiro, altera depois.

@@ -171,9 +171,14 @@ class MeterReadingPartitionP23IT {
             try {
                 UUID unit = insertUnit(c, "P23-METER-03");
                 UUID installation = insertInstallation(c, unit, "P23-HID-03");
+                // A falha esperada aborta a transacao: sem savepoint, o
+                // insert seguinte falharia com "current transaction is
+                // aborted" (mesmo padrao do BillingPartitionP23IT).
+                var savepoint = c.setSavepoint();
                 assertThatThrownBy(() -> insertReading(c, unit, installation, FAR_MONTH, "P23-KEY-03", 3000))
                         .isInstanceOf(SQLException.class)
                         .hasMessageContaining("no partition of relation");
+                c.rollback(savepoint);
                 try (Connection m = migrator(); Statement st = m.createStatement()) {
                     st.execute("SELECT " + SCHEMA + ".meter_readings_create_partition(DATE '" + FAR_MONTH + "')");
                 }
