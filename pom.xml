@@ -23,6 +23,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <lombok.version>1.18.46</lombok.version>
         <jts.version>1.19.0</jts.version>
+        <twelvemonkeys.version>3.15.3</twelvemonkeys.version>
     </properties>
 
     <dependencyManagement>
@@ -40,6 +41,17 @@
                 <groupId>org.locationtech.jts</groupId>
                 <artifactId>jts-core</artifactId>
                 <version>${jts.version}</version>
+            </dependency>
+            <dependency>
+                <!-- P1.19: leitor WebP (só leitura) do TwelveMonkeys para o reencode
+                     do logo do tenant. O JDK não decodifica WebP; sem este leitor, um
+                     logo WebP não poderia ser reencodado — só validado por estrutura.
+                     Licença BSD-3-Clause, na lista permitida (third-party-licenses-allowed.json).
+                     A escrita é sempre PNG pelo ImageIO do JDK (logo canônico, sem
+                     metadados do original); o WebP de entrada vira PNG na saída. -->
+                <groupId>com.twelvemonkeys.imageio</groupId>
+                <artifactId>imageio-webp</artifactId>
+                <version>${twelvemonkeys.version}</version>
             </dependency>
             <!-- fix(build): Tomcat embarcado 11.0.27, acima do gerenciado pelo Boot 4.1.1
                  (11.0.24). 11.0.24 acumula 9 achados CVSS >= 7 no OWASP (lote 2026-08-25,

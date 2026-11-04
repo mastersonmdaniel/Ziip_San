@@ -16,7 +16,7 @@ import java.util.List;
 @Validated
 @ConfigurationProperties("ziipsan")
 public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc, @Valid Cors cors, Bff bff,
-                                RateLimit rateLimit, BodyLimit bodyLimit) {
+                                RateLimit rateLimit, BodyLimit bodyLimit, Clamav clamav) {
 
     /**
      * Cookie de sessão do BFF (P0.14). Padrão: {@code __Host-ziipsan-session} com
@@ -114,5 +114,32 @@ public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc
 
     public BodyLimit bodyLimit() {
         return bodyLimit == null ? new BodyLimit(null) : bodyLimit;
+    }
+
+    /**
+     * Varredor da P1.20 (ClamAV) para o logo do tenant (P1.19). Padrões: daemon
+     * em 127.0.0.1:3310, timeout de 5 s, sem diretório de definições (idade
+     * desconhecida, nunca "atual"). Sem daemon, o upload fica em quarentena
+     * (202) — nunca CLEAN sem varredura.
+     */
+    public record Clamav(String host, Integer port, Integer timeoutMillis, String databaseDir) {
+        public Clamav {
+            if (host == null || host.isBlank()) {
+                host = "127.0.0.1";
+            }
+            if (port == null) {
+                port = 3310;
+            }
+            if (timeoutMillis == null) {
+                timeoutMillis = 5000;
+            }
+            if (databaseDir != null && databaseDir.isBlank()) {
+                databaseDir = null;
+            }
+        }
+    }
+
+    public Clamav clamav() {
+        return clamav == null ? new Clamav(null, null, null, null) : clamav;
     }
 }

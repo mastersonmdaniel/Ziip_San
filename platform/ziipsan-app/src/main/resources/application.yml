@@ -128,3 +128,11 @@ ziipsan:
     window-seconds: 60
   body-limit:
     max-bytes: 1048576
+  # P1.19: daemon ClamAV da P1.20 para o logo do tenant. Sem daemon, o upload
+  # fica em quarentena (202) — nunca CLEAN sem varredura. O limite de corpo
+  # (1 MiB) cobre o logo em base64 (512 KB viram ~700 KB); não há multipart
+  # no código, por isso o upload é JSON + base64.
+  clamav:
+    host: ${ZIIPSAN_CLAMAV_HOST:127.0.0.1}
+    port: ${ZIIPSAN_CLAMAV_PORT:3310}
+    database-dir: ${ZIIPSAN_CLAMAV_DB_DIR:}

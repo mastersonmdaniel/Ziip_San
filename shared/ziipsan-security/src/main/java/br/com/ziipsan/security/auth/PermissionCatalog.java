@@ -72,7 +72,11 @@ public final class PermissionCatalog {
             // funcao (atendente, supervisor, ouvidor) sao da P1.37; ate la,
             // ler e escrever protocolos exige a permissao direta.
             new Permission("protocol:read", "atendimento", "protocol", "read", "P1.36"),
-            new Permission("protocol:write", "atendimento", "protocol", "write", "P1.36"));
+            new Permission("protocol:write", "atendimento", "protocol", "write", "P1.36"),
+            // P1.19: administracao da marca do tenant (/api/v1/tenant/brand).
+            // Concessao direta, como parameters:manage: nenhum perfil de
+            // fabrica a inclui; perfis por funcao sao da P1.37.
+            new Permission("brand:manage", "console", "brand", "manage", "P1.19"));
 
     /** Perfis mínimos de fábrica da P0.13, compostos do catálogo (perfis por função: P1.37). */
     public enum FactoryProfile {

@@ -29,6 +29,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * (correção da integração resto-do-P0): é rota pública permitAll que devolve só
  * metadados da marca do ambiente, sem dado de tenant, de usuário ou segredo — não há
  * permissão de catálogo a declarar para ela, e um @PreAuthorize a quebraria.
+ * {@code GET /api/v1/public/tenant-brand} e o logo (P1.19) entram na mesma
+ * allowlist pelo mesmo motivo: marca pré-login pública (só nome, logos, cor
+ * e contato; só logo CLEAN), com slug desconhecido devolvendo a marca do
+ * produto — não há permissão de catálogo a declarar para elas.
  *
  * <p>O documento do catálogo também é conferido contra o código: toda permissão do catálogo
  * aparece nele.
@@ -53,7 +57,9 @@ class RoutePermissionTest extends AppIntegrationTestBase {
             condition.getPatterns().forEach(pattern -> {
                 String path = pattern.getPatternString();
                 if (!path.startsWith("/api/v1") || path.equals("/api/v1/me")
-                        || path.equals("/api/v1/about") || path.equals("/api/v1/public/brand")) {
+                        || path.equals("/api/v1/about") || path.equals("/api/v1/public/brand")
+                        || path.equals("/api/v1/public/tenant-brand")
+                        || path.equals("/api/v1/public/tenant-brand/{slug}/logo/{assetId}")) {
                     return;
                 }
                 PreAuthorize auth = method.getMethodAnnotation(PreAuthorize.class);

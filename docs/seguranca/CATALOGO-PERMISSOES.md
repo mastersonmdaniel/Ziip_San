@@ -30,6 +30,7 @@ na aplicação, a partir do catálogo.
 | `parameters:manage` | console | parameters | manage | (nenhum — só concessão direta) | P1.6 |
 | `protocol:read` | atendimento | protocol | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
 | `protocol:write` | atendimento | protocol | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
+| `brand:manage` | console | brand | manage | (nenhum — só concessão direta) | P1.19 |
 
 ## Regras
 
@@ -60,4 +61,9 @@ na aplicação, a partir do catálogo.
   (`/api/v1/tenant/parameters/*`: propor, aprovar, aceitar, ler vigente e painel): é
   concessão direta, como `registry:export` — nenhum perfil de fábrica a inclui. A separação
   proponente ≠ aprovador continua no serviço, por ator, não por papel.
+- `brand:manage` (P1.19) cobre toda a administração da marca do tenant
+  (`/api/v1/tenant/brand/*`: ler, salvar, subir e remover logo): é concessão
+  direta, como `parameters:manage` — nenhum perfil de fábrica a inclui. A
+  marca pré-login (`/api/v1/public/tenant-brand`) é pública e não exige
+  permissão: devolve só nome, logos, cor e contato.
 - Perfis compostos pelo ADMIN do tenant e restrição negativa ficam na ED-06, sobre este catálogo.
