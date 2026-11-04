@@ -184,9 +184,25 @@ CREATE INDEX idx_protocol_extensions_protocol ON service_protocol_extensions(ten
 -- ========================================================================
 -- CONDITIONAL FKs (see header: ordering trap + partial classpaths)
 -- ========================================================================
+-- Correção da integração P1-C: a guarda antiga (só to_regclass) não basta.
+-- No classpath só do platform, a V1_1 cria consumer_units/customers SEM o
+-- UNIQUE (tenant_id, id) que a FK exige, e o ALTER quebrava o
+-- provisionamento (42830) — o cabeçalho já documentava a intenção
+-- condicional, mas a guarda não a cumpria. A guarda agora exige a chave
+-- única (tenant_id, id) em si (UNIQUE ou PK, qualquer nome): na montagem
+-- completa a V3_1 a cria e a FK aplica; no classpath parcial ela falta e
+-- o bloco pula, como o cabeçalho sempre previu.
 DO $$
 BEGIN
-    IF to_regclass('consumer_units') IS NOT NULL THEN
+    IF EXISTS (
+        SELECT 1 FROM pg_constraint c
+        WHERE c.conrelid = 'consumer_units'::regclass
+          AND c.contype IN ('u', 'p')
+          AND (SELECT array_agg(a.attname::text ORDER BY k.ord)
+               FROM unnest(c.conkey) WITH ORDINALITY AS k(attnum, ord)
+               JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = k.attnum)
+              = ARRAY['tenant_id', 'id']
+    ) THEN
         ALTER TABLE service_protocols ADD CONSTRAINT fk_protocols_unit
             FOREIGN KEY (tenant_id, consumer_unit_id) REFERENCES consumer_units(tenant_id, id);
     END IF;
@@ -194,7 +210,15 @@ END $$;
 
 DO $$
 BEGIN
-    IF to_regclass('customers') IS NOT NULL THEN
+    IF EXISTS (
+        SELECT 1 FROM pg_constraint c
+        WHERE c.conrelid = 'customers'::regclass
+          AND c.contype IN ('u', 'p')
+          AND (SELECT array_agg(a.attname::text ORDER BY k.ord)
+               FROM unnest(c.conkey) WITH ORDINALITY AS k(attnum, ord)
+               JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = k.attnum)
+              = ARRAY['tenant_id', 'id']
+    ) THEN
         ALTER TABLE service_protocols ADD CONSTRAINT fk_protocols_requester_customer
             FOREIGN KEY (tenant_id, requester_customer_id) REFERENCES customers(tenant_id, id);
     END IF;
