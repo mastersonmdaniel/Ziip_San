@@ -87,7 +87,7 @@ public class PublicTenantBrandController {
                         .eTag("\"" + logo.sha256() + "\"")
                         .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000, immutable")
                         .header("X-Content-Type-Options", "nosniff")
-                        .header(HttpHeaders.CONTENT_SECURITY_POLICY, "default-src 'none'; sandbox")
+                        .header("Content-Security-Policy", "default-src 'none'; sandbox")
                         .body(logo.content()))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
