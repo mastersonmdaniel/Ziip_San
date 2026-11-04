@@ -48,6 +48,22 @@ describe('Central (P1.17)', () => {
           }],
         })
       }
+      if (path.includes('/sla-report')) {
+        return Promise.resolve({
+          data: {
+            tenantId: 't1', month: '2026-01-01', opened: 3, resolved: 2, adherencePct: 50,
+            csatAvg: 3.5, csatCount: 2, penaltyEstimateTotal: 1000,
+            bySeverity: [
+              { severity: 'S1', opened: 1, resolved: 0, resolvedWithinDue: 0, breachedResolution: 0,
+                adherencePct: null, avgFrtMinutes: null, avgMttrMinutes: null, csatAvg: null,
+                csatCount: 0, csatReviewCount: 0, penaltyEstimate: 0 },
+              { severity: 'S2', opened: 2, resolved: 2, resolvedWithinDue: 1, breachedResolution: 1,
+                adherencePct: 50, avgFrtMinutes: 30, avgMttrMinutes: 600, csatAvg: 3.5,
+                csatCount: 2, csatReviewCount: 1, penaltyEstimate: 1000 },
+            ],
+          },
+        })
+      }
       return Promise.resolve({ data: {} })
     })
   })
@@ -70,6 +86,17 @@ describe('Central (P1.17)', () => {
     await waitFor(() => expect(get).toHaveBeenCalledWith('/platform/central/contracts'))
     expect(await screen.findByText(/CTR-TESTE/)).toBeInTheDocument()
     expect(await screen.findByText(/40\.0%/)).toBeInTheDocument()
+  })
+
+  it('aba SLA de suporte consulta o relatorio por tenant e mes', async () => {
+    const user = userEvent.setup()
+    render(<Central />)
+    await user.click(screen.getByRole('tab', { name: 'SLA de suporte' }))
+    await user.type(screen.getByLabelText('Tenant (UUID)'), 't1')
+    await user.click(screen.getByRole('button', { name: 'Consultar relatório' }))
+    await waitFor(() => expect(get).toHaveBeenCalledWith(expect.stringContaining('/platform/central/sla-report?tenantId=t1')))
+    expect(await screen.findByText(/Abertos 3 — resolvidos 2/)).toBeInTheDocument()
+    expect(await screen.findByText(/S2 — abertos 2/)).toBeInTheDocument()
   })
 
   it('reconhecer um alerta chama o POST e recarrega', async () => {

@@ -2,6 +2,7 @@ package br.com.ziipsan.app.web;
 
 import br.com.ziipsan.core.api.ApiException;
 import br.com.ziipsan.core.json.Json;
+import br.com.ziipsan.core.support.SupportSlaService;
 import br.com.ziipsan.core.support.TicketService;
 import br.com.ziipsan.core.tenant.TenantContextHolder;
 import br.com.ziipsan.platform.documents.TicketAttachmentService;
@@ -70,6 +71,9 @@ public class SupportTicketController {
     public record AttachmentInput(UUID messageId, String fileName, String contentBase64) {
     }
 
+    public record CsatInput(int rating, String comment) {
+    }
+
     private final DataSource dataSource;
     private final TicketAttachmentService attachments;
     private final BusinessEventPublisher events;
@@ -87,6 +91,14 @@ public class SupportTicketController {
             throw new ApiException.Forbidden("Esta rota exige um token de tenant.");
         }
         return new TicketService(dataSource, tenantId, Clock.systemUTC());
+    }
+
+    private SupportSlaService slaService() {
+        UUID tenantId = TenantContextHolder.getTenantId();
+        if (tenantId == null) {
+            throw new ApiException.Forbidden("Esta rota exige um token de tenant.");
+        }
+        return new SupportSlaService(dataSource, tenantId, Clock.systemUTC());
     }
 
     private static UUID actorId(JwtAuthenticationToken auth) {
@@ -192,6 +204,35 @@ public class SupportTicketController {
         // (não há multipart no código). Anexo grande pela API REST v0 só
         // depois do transporte multipart — pendência declarada.
         return attachments.upload(service, detail.ticket().id(), in.messageId(), number, in.fileName(), content);
+    }
+
+    /**
+     * Prazos de SLA do chamado (P2.15): só o solicitante ou quem vê todos
+     * os chamados do tenant. Sem política aplicada, os prazos vêm nulos.
+     */
+    @GetMapping("/{number}/sla")
+    @PreAuthorize("hasAuthority('support:read')")
+    public SupportSlaService.TicketSlaView getTicketSla(@PathVariable String number, JwtAuthenticationToken auth) {
+        TicketService service = service();
+        TicketService.Ticket ticket = service.get(number, actorId(auth), canSeeAll(auth)).ticket();
+        return slaService().slaOf(ticket.number());
+    }
+
+    /**
+     * CSAT do chamado (P2.15; AJUDA §5): só após RESOLVED, dentro de 7
+     * dias; nota 1 ou 2 abre revisão. O solicitante avalia o próprio
+     * chamado; quem tem support:manage avalia qualquer um do tenant.
+     */
+    @PostMapping("/{number}/csat")
+    @PreAuthorize("hasAuthority('support:write')")
+    public SupportSlaService.CsatView submitCsat(@PathVariable String number, @RequestBody CsatInput in,
+                                                 JwtAuthenticationToken auth) {
+        // Sem evento na outbox: o catálogo de eventos (P1.38) só aceita
+        // tipos declarados, e a avaliação já fica na trilha do chamado
+        // (CSAT_RECEIVED) com review_required — o aviso de revisão para
+        // nota 1 ou 2 é pendência declarada, não um evento inventado.
+        return slaService().submitCsat(number, actorId(auth),
+                canSeeAll(auth), in.rating(), in.comment());
     }
 
     @GetMapping("/attachments/{attachmentId}/download")

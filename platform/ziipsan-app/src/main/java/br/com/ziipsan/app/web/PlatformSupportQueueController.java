@@ -2,6 +2,8 @@ package br.com.ziipsan.app.web;
 
 import br.com.ziipsan.core.api.ApiException;
 import br.com.ziipsan.core.json.Json;
+import br.com.ziipsan.core.parameters.TenantTime;
+import br.com.ziipsan.core.support.SupportSlaService;
 import br.com.ziipsan.core.support.TicketService;
 import br.com.ziipsan.platform.documents.TicketAttachmentService;
 import br.com.ziipsan.platform.infra.events.BusinessEventPublisher;
@@ -20,9 +22,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Clock;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -53,6 +64,9 @@ public class PlatformSupportQueueController {
     public record AgentMessageInput(String body, boolean internal) {
     }
 
+    public record ApplySlaInput(String policyKey) {
+    }
+
     private final DataSource dataSource;
     private final TenantCatalog catalog;
     private final TicketAttachmentService attachments;
@@ -73,6 +87,47 @@ public class PlatformSupportQueueController {
         catalog.find(tenantId)
                 .orElseThrow(() -> new ApiException.NotFound("O tenant não existe no catálogo."));
         return new TicketService(dataSource, tenantId, Clock.systemUTC());
+    }
+
+    private SupportSlaService slaService(UUID tenantId) {
+        catalog.find(tenantId)
+                .orElseThrow(() -> new ApiException.NotFound("O tenant não existe no catálogo."));
+        return new SupportSlaService(dataSource, tenantId, Clock.systemUTC());
+    }
+
+    /** Fuso do cálculo de SLA: o padrão de fábrica (P0.19); ler o tenant.timezone vigente é pendência da P2.15. */
+    private static ZoneId zone() {
+        return TenantTime.FACTORY_DEFAULT;
+    }
+
+    /**
+     * Feriados nacionais do schema do tenant (P2.15): sem localidade
+     * conhecida no catálogo, só eles contam — a convenção do
+     * DeadlineCalculator. O feriado municipal entra pelo conjunto
+     * explícito do serviço, não por esta carga.
+     */
+    private Set<LocalDate> nationalHolidays(UUID tenantId) {
+        String schema = catalog.find(tenantId)
+                .map(TenantCatalog.Entry::schema)
+                .orElse(null);
+        if (schema == null) {
+            return Set.of();
+        }
+        String safe = schema.replace("\"", "");
+        Set<LocalDate> out = new HashSet<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(
+                     "SELECT holiday_date FROM \"" + safe + "\".holidays"
+                             + " WHERE scope = 'NATIONAL' AND kind = 'HOLIDAY'")) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    out.add(rs.getDate(1).toLocalDate());
+                }
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Falha ao carregar os feriados do tenant: " + e.getMessage(), e);
+        }
+        return out;
     }
 
     private static UUID actorId(JwtAuthenticationToken auth) {
@@ -100,6 +155,8 @@ public class PlatformSupportQueueController {
                                        @RequestBody AgentUpdateInput in, JwtAuthenticationToken auth) {
         TicketService service = service(tenantId);
         TicketService.Ticket before = service.queueGet(number).ticket();
+        SupportSlaService sla = slaService(tenantId);
+        SupportSlaService.TicketSlaView slaBefore = sla.slaOf(number);
         TicketService.Ticket updated = service.agentUpdate(number, actorId(auth),
                 in.status(), in.severity(), in.level(), in.assigneeId());
         if (in.status() != null && !in.status().equals(before.status())) {
@@ -107,8 +164,48 @@ public class PlatformSupportQueueController {
                     "ticketId", before.id().toString(), "ticketNumber", before.number(),
                     "tenantId", tenantId.toString(), "fromStatus", before.status(),
                     "toStatus", updated.status())));
+            // P2.15: WAITING_CUSTOMER pausa o relógio de SLA; sair dele
+            // retoma e estende os prazos pelas horas úteis da pausa.
+            OffsetDateTime now = OffsetDateTime.now(Clock.systemUTC());
+            if ("WAITING_CUSTOMER".equals(updated.status()) && !slaBefore.pauseOpen()) {
+                sla.startPause(number, now);
+            } else if ("WAITING_CUSTOMER".equals(before.status()) && slaBefore.pauseOpen()) {
+                sla.endPauseAndExtend(number, now, nationalHolidays(tenantId), zone());
+            }
         }
         return updated;
+    }
+
+    /**
+     * Aplica a política de SLA ao chamado (P2.15): calcula primeira
+     * resposta e solução a partir da abertura, no calendário da política.
+     */
+    @PostMapping("/tickets/{number}/sla")
+    public SupportSlaService.TicketSlaView applySla(@RequestParam UUID tenantId, @PathVariable String number,
+                                                    @RequestBody ApplySlaInput in) {
+        service(tenantId);
+        return slaService(tenantId).applyToTicket(number, in.policyKey(), nationalHolidays(tenantId), zone());
+    }
+
+    /** Prazos e nível de alerta do chamado (P2.15), sem gravar nada. */
+    @GetMapping("/tickets/{number}/sla")
+    public SupportSlaService.SlaEvaluation getSla(@RequestParam UUID tenantId, @PathVariable String number) {
+        service(tenantId);
+        return slaService(tenantId).evaluate(number, OffsetDateTime.now(Clock.systemUTC()),
+                nationalHolidays(tenantId), zone());
+    }
+
+    /**
+     * Avaliação de alertas com registro (P2.15): WARNING a 80% e BREACHED
+     * no estouro entram na trilha do chamado, uma vez por nível. O
+     * acionamento periódico (job) é pendência declarada; até lá, a
+     * Central dispara esta verificação.
+     */
+    @PostMapping("/tickets/{number}/sla/alerts")
+    public SupportSlaService.SlaEvaluation checkSlaAlerts(@RequestParam UUID tenantId, @PathVariable String number) {
+        service(tenantId);
+        return slaService(tenantId).evaluateAndRecord(number, OffsetDateTime.now(Clock.systemUTC()),
+                nationalHolidays(tenantId), zone());
     }
 
     @PostMapping("/tickets/{number}/messages")
@@ -118,6 +215,11 @@ public class PlatformSupportQueueController {
         TicketService.Ticket ticket = service.queueGet(number).ticket();
         TicketService.TicketMessage message = service.addAgentMessage(number, actorId(auth),
                 in.body(), in.internal());
+        // P2.15: a primeira mensagem pública do agente é a primeira
+        // resposta (FRT); nota interna não conta.
+        if ("PUBLIC".equals(message.visibility())) {
+            slaService(tenantId).markFirstResponse(number, OffsetDateTime.now(Clock.systemUTC()));
+        }
         events.publish(tenantId, "support.ticket.message", 1, Json.write(Map.of(
                 "ticketId", ticket.id().toString(), "ticketNumber", ticket.number(),
                 "tenantId", tenantId.toString(), "messageId", message.id().toString(),

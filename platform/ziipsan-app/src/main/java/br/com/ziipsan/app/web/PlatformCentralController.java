@@ -1,8 +1,11 @@
 package br.com.ziipsan.app.web;
 
+import br.com.ziipsan.core.api.ApiException;
+import br.com.ziipsan.core.support.SupportSlaService;
 import br.com.ziipsan.platform.central.CentralCollectorService;
 import br.com.ziipsan.platform.central.CentralService;
 import br.com.ziipsan.platform.contract.SaaSContractService;
+import br.com.ziipsan.platform.tenant.TenantCatalog;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,9 +17,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
+import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.OffsetDateTime;
+import java.time.YearMonth;
 import java.util.UUID;
 
 /**
@@ -45,12 +53,17 @@ public class PlatformCentralController {
     private final CentralService central;
     private final CentralCollectorService collector;
     private final SaaSContractService contracts;
+    private final DataSource dataSource;
+    private final TenantCatalog catalog;
 
     public PlatformCentralController(CentralService central, CentralCollectorService collector,
-                                     SaaSContractService contracts) {
+                                     SaaSContractService contracts, DataSource dataSource,
+                                     TenantCatalog catalog) {
         this.central = central;
         this.collector = collector;
         this.contracts = contracts;
+        this.dataSource = dataSource;
+        this.catalog = catalog;
     }
 
     private static UUID actorId(JwtAuthenticationToken auth) {
@@ -100,6 +113,34 @@ public class PlatformCentralController {
     @PreAuthorize("hasAuthority('central:read')")
     public java.util.List<SaaSContractService.ContractRow> contracts() {
         return contracts.contractsTab();
+    }
+
+    /**
+     * Relatório mensal de SLA da Central (P2.15; ADR-0025): FRT, MTTR,
+     * aderência e CSAT por severidade, mais multa estimada. A coorte é
+     * de chamados ABERTOS no mês; a multa estimada usa o valor mensal do
+     * contrato ATIVO do tenant (sem contrato ativo, vem nula — só a
+     * contagem de brechas e o percentual são reportados).
+     */
+    @GetMapping("/sla-report")
+    @PreAuthorize("hasAuthority('central:read')")
+    public SupportSlaService.MonthlyReport slaReport(@RequestParam UUID tenantId, @RequestParam String month) {
+        catalog.find(tenantId)
+                .orElseThrow(() -> new ApiException.NotFound("O tenant não existe no catálogo."));
+        YearMonth yearMonth;
+        try {
+            yearMonth = YearMonth.parse(month);
+        } catch (RuntimeException e) {
+            throw ApiException.Validation.of(new ApiException.FieldError("month", "invalid",
+                    "Mes no formato AAAA-MM."));
+        }
+        BigDecimal monthlyValue = contracts.contractsByTenant(tenantId).stream()
+                .filter(c -> "ACTIVE".equals(c.status()))
+                .findFirst()
+                .map(SaaSContractService.ContractView::monthlyValue)
+                .orElse(null);
+        return new SupportSlaService(dataSource, tenantId, Clock.systemUTC())
+                .monthlyReport(yearMonth.atDay(1), monthlyValue);
     }
 
     @GetMapping("/watchdog")

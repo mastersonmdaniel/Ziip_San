@@ -6,7 +6,7 @@ import { PageHeader } from '@components/ui/PageHeader'
 import { api } from '@services/api'
 import { errorMessage } from '@services/registry/errors'
 
-type TabId = 'overview' | 'platform' | 'security' | 'alerts' | 'contracts'
+type TabId = 'overview' | 'platform' | 'security' | 'alerts' | 'contracts' | 'sla'
 
 const TABS: Array<{ id: TabId; label: string; path: string }> = [
   { id: 'overview', label: 'Visão geral', path: '/platform/central/overview' },
@@ -14,7 +14,35 @@ const TABS: Array<{ id: TabId; label: string; path: string }> = [
   { id: 'security', label: 'Segurança', path: '/platform/central/security' },
   { id: 'alerts', label: 'Alertas', path: '/platform/central/alerts' },
   { id: 'contracts', label: 'Contratos', path: '/platform/central/contracts' },
+  { id: 'sla', label: 'SLA de suporte', path: '/platform/central/sla-report' },
 ]
+
+type SlaSeverityReport = {
+  severity: string
+  opened: number
+  resolved: number
+  resolvedWithinDue: number
+  breachedResolution: number
+  adherencePct: number | null
+  avgFrtMinutes: number | null
+  avgMttrMinutes: number | null
+  csatAvg: number | null
+  csatCount: number
+  csatReviewCount: number
+  penaltyEstimate: number | null
+}
+
+type SlaReport = {
+  tenantId: string
+  month: string
+  opened: number
+  resolved: number
+  adherencePct: number | null
+  csatAvg: number | null
+  csatCount: number
+  penaltyEstimateTotal: number | null
+  bySeverity: SlaSeverityReport[]
+}
 
 type HealthScore = {
   tenantRef: string | null
@@ -55,6 +83,9 @@ type ContractRow = {
  * P2.12 acrescenta a aba Contratos (ADR-0019): uma linha por contrato
  * SaaS, com vigencia, saldo de empenho, faturas em aberto, custo do
  * provedor no mes e margem realizada — sem dado pessoal de tenant.
+ * P2.15 acrescenta a aba SLA de suporte (ADR-0025): o relatório mensal
+ * de FRT, MTTR, aderência e CSAT por severidade, com multa estimada —
+ * por tenant e mês, informados no formulário (o relatório não é global).
  * A tela só exibe o que a API devolve — contagens, scores e alertas, sem
  * nenhum dado pessoal de tenant (o tenant aparece só como UUID, o
  * `tenant_ref` do envelope da API de métricas). Sem o papel de plataforma
@@ -67,6 +98,10 @@ export function Central() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [acting, setActing] = useState<string | null>(null)
+  const [slaTenant, setSlaTenant] = useState('')
+  const [slaMonth, setSlaMonth] = useState(() => new Date().toISOString().slice(0, 7))
+  const [slaReport, setSlaReport] = useState<SlaReport | null>(null)
+  const [slaLoading, setSlaLoading] = useState(false)
 
   const path = TABS.find((t) => t.id === tab)?.path ?? '/platform/central/overview'
 
@@ -83,7 +118,26 @@ export function Central() {
     }
   }
 
+  const loadSlaReport = async () => {
+    setSlaLoading(true)
+    setError(null)
+    try {
+      const res = await api.get(`/platform/central/sla-report?tenantId=${slaTenant}&month=${slaMonth}`)
+      setSlaReport(res.data as SlaReport)
+    } catch (e) {
+      setError(errorMessage(e))
+      setSlaReport(null)
+    } finally {
+      setSlaLoading(false)
+    }
+  }
+
   useEffect(() => {
+    // A aba SLA carrega por formulário (tenant + mês), não na troca de aba.
+    if (tab === 'sla') {
+      setLoading(false)
+      return
+    }
     void load()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab])
@@ -231,6 +285,69 @@ export function Central() {
                 </ul>
               ) : (
                 <p className="mt-2 text-sm">Nenhum contrato SaaS.</p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      ) : tab === 'sla' ? (
+        <div className="space-y-6">
+          <Card>
+            <CardContent className="pt-6">
+              <h2 className="text-lg font-semibold">Relatório mensal de SLA</h2>
+              <div className="mt-2 flex flex-wrap items-end gap-2">
+                <label className="text-sm">
+                  Tenant (UUID)
+                  <input
+                    aria-label="Tenant (UUID)"
+                    className="ml-2 border px-2 py-1"
+                    value={slaTenant}
+                    onChange={(e) => setSlaTenant(e.target.value)}
+                  />
+                </label>
+                <label className="text-sm">
+                  Mês (AAAA-MM)
+                  <input
+                    aria-label="Mês (AAAA-MM)"
+                    className="ml-2 border px-2 py-1"
+                    value={slaMonth}
+                    onChange={(e) => setSlaMonth(e.target.value)}
+                  />
+                </label>
+                <Button
+                  variant="secondary"
+                  disabled={slaLoading || !slaTenant}
+                  onClick={() => void loadSlaReport()}
+                >
+                  Consultar relatório
+                </Button>
+              </div>
+              {slaLoading ? (
+                <Spinner label="Carregando..." />
+              ) : slaReport ? (
+                <div className="mt-4">
+                  <p className="text-sm">
+                    Abertos {slaReport.opened} — resolvidos {slaReport.resolved} —
+                    aderência {slaReport.adherencePct === null ? '—' : `${slaReport.adherencePct.toFixed(1)}%`} —
+                    CSAT {slaReport.csatAvg === null ? '—' : slaReport.csatAvg.toFixed(1)} ({slaReport.csatCount} avaliações) —
+                    multa estimada {slaReport.penaltyEstimateTotal === null ? '—' : slaReport.penaltyEstimateTotal}
+                  </p>
+                  <ul className="mt-2 space-y-2">
+                    {slaReport.bySeverity.map((s) => (
+                      <li key={s.severity}>
+                        {s.severity} — abertos {s.opened} — resolvidos {s.resolved} ({s.resolvedWithinDue} no prazo,{' '}
+                        {s.breachedResolution} estourados) — aderência{' '}
+                        {s.adherencePct === null ? '—' : `${s.adherencePct.toFixed(1)}%`} —
+                        FRT {s.avgFrtMinutes === null ? '—' : `${s.avgFrtMinutes.toFixed(0)} min`} —
+                        MTTR {s.avgMttrMinutes === null ? '—' : `${s.avgMttrMinutes.toFixed(0)} min`} —
+                        CSAT {s.csatAvg === null ? '—' : s.csatAvg.toFixed(1)} ({s.csatCount} avaliações,{' '}
+                        {s.csatReviewCount} em revisão) —
+                        multa estimada {s.penaltyEstimate === null ? '—' : s.penaltyEstimate}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="mt-2 text-sm">Informe o tenant e o mês para consultar o relatório.</p>
               )}
             </CardContent>
           </Card>

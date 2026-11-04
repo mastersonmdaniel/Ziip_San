@@ -3,13 +3,17 @@ package br.com.ziipsan.platform.contract;
 import br.com.ziipsan.core.api.ApiException;
 import br.com.ziipsan.core.document.DocumentNumber;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -42,9 +46,10 @@ import java.util.UUID;
  *
  * <p>Limites honestos:
  * <ul>
- *   <li>A politica de SLA e so uma referencia
- *       ({@code sla_policy_key}): {@code support.sla_policy} nasce na
- *       P2.15 (core V10_2), que valida a referencia.</li>
+ *   <li>A politica de SLA e uma referencia validada
+ *       ({@code sla_policy_key}): {@code support.sla_policy} nasceu na
+ *       P2.15 (core V10_2), que promoveu a coluna a FK — criar contrato
+ *       com chave desconhecida e 422, antes do banco recusar.</li>
  *   <li>As referencias de documento da fatura e da NFS-e sao texto: o
  *       documento em si chega na P2.13 (motor fiscal) e na P2.14 (area
  *       do tenant), que resolvem as referencias.</li>
@@ -162,6 +167,35 @@ public class SaaSContractService {
         }
         if (in.monthlyValue() != null && in.monthlyValue().compareTo(BigDecimal.ZERO) < 0) {
             throw validation("O valor mensal do contrato nao pode ser negativo.");
+        }
+        // P2.15: a referencia de SLA virou FK (core V10_2). Validar antes
+        // do INSERT para devolver 422 (politica desconhecida), nao 409 da
+        // FK. A leitura EXIGE o contexto de tenant: a policy de
+        // sla_policy e FORCED (V10_2), e sem app.current_tenant a linha
+        // nao existe para a role da aplicacao — a contagem sem contexto
+        // sempre daria zero. O set_config e local a transacao (morre no
+        // commit, nunca vaza para o pool) e usa a mesma conexao do
+        // @Transactional, como o TenantScopedConnection.
+        if (in.slaPolicyKey() != null && !in.slaPolicyKey().isBlank()) {
+            jdbc.execute((ConnectionCallback<Void>) connection -> {
+                try (PreparedStatement set = connection.prepareStatement(
+                        "SELECT set_config('app.current_tenant', ?, true)")) {
+                    set.setString(1, tenantId.toString());
+                    set.execute();
+                }
+                try (PreparedStatement query = connection.prepareStatement(
+                        "SELECT COUNT(*) FROM support.sla_policy WHERE tenant_id = ? AND policy_key = ?")) {
+                    query.setObject(1, tenantId);
+                    query.setString(2, in.slaPolicyKey());
+                    try (ResultSet rs = query.executeQuery()) {
+                        rs.next();
+                        if (rs.getInt(1) == 0) {
+                            throw validation("A politica de SLA referenciada nao existe neste tenant.");
+                        }
+                    }
+                }
+                return null;
+            });
         }
         UUID id = UUID.randomUUID();
         jdbc.update("""
