@@ -229,11 +229,13 @@ class BillingPartitionP23IT {
                 UUID category = insertCategory(c, "P23-VOL-C");
                 UUID tariffVersion = insertTariffVersion(c, "P23-VOL-T");
                 disableAuditTriggers();
+                disableFillMonthTrigger();
                 try {
                     insertVolumeUnits(c, 100_000, "P23VOL-");
                     insertVolumeBills(c, batch);
                     insertVolumeItems(c, batch, category, tariffVersion);
                 } finally {
+                    enableFillMonthTrigger();
                     enableAuditTriggers();
                 }
                 // Auditoria por run_id: contagem e total do lote inteiro.
@@ -573,7 +575,34 @@ class BillingPartitionP23IT {
      * rodada standalone, estourou em outra — variacao de carga da VM).
      * Cada lote cabe com folga; o total final segue assertado.
      */
-    private static void insertVolumeUnits(Connection c, int count, String prefix) throws SQLException {
+    /**
+     * O trigger trg_bill_items_fill_month e desligado SO durante a carga
+     * de volume (e religado no finally, junto com os de auditoria). Motivo
+     * medido em scratch: a busca do mes da conta-pai e SQL dinamico por
+     * (tenant_id, id) sem a chave de particao, e o plano escolhe SEQ SCAN
+     * da particao do lote — ~9,5 ms por linha. Com ele ativo, qualquer
+     * lote com mais de ~500 itens estoura os 5 s do papel da app. A carga
+     * e consistente por construcao (todo item carrega LOT_MONTH, o mes das
+     * contas do lote), e o comportamento do trigger segue coberto pelo
+     * teste dedicado fillTriggersAndLegacyInserts — nenhuma assercao do
+     * teste de volume le o mes preenchido pelo trigger. As FKs continuam
+     * ativas (sao constraints, nao triggers). Mesmo precedente do
+     * desligamento dos triggers de auditoria durante a carga.
+     */
+    private static void disableFillMonthTrigger() throws SQLException {
+        setFillMonthTrigger(false);
+    }
+
+    private static void enableFillMonthTrigger() throws SQLException {
+        setFillMonthTrigger(true);
+    }
+
+    private static void setFillMonthTrigger(boolean enable) throws SQLException {
+        String verb = enable ? "ENABLE" : "DISABLE";
+        try (Connection m = migrator(); Statement st = m.createStatement()) {
+            st.execute("ALTER TABLE " + SCHEMA + ".bill_items " + verb + " TRIGGER trg_bill_items_fill_month");
+        }
+    }
         int chunkSize = 10_000;
         int total = 0;
         for (int from = 1; from <= count; from += chunkSize) {
@@ -627,11 +656,12 @@ class BillingPartitionP23IT {
         // varrer o range inteiro do tenant na particao). Busca-se a lista
         // de contas uma vez, ordenada, e cada lote usa um RANGE CONTIGUO
         // de ids (id > anterior AND id <= ultimo): o plano e um range
-        // scan de exatamente 500 entradas, sem re-escaneamento. O filtro
+        // scan de exatamente 10 mil entradas, sem re-escaneamento. O filtro
         // por mes na lista e nos lotes permite o pruning para a particao
         // do lote (2026_03 e exclusiva do teste de volume neste schema).
-        // O trigger bills_fill_child_month segue ativo (custo de
-        // planejamento por linha, dentro da folga com lotes de 500). O
+        // O trigger bills_fill_child_month esta DESLIGADO durante a carga
+        // (ver disableFillMonthTrigger) — com ele ativo, o custo por linha
+        // (~9,5 ms de seq scan) estouraria os 5 s em qualquer lote. O
         // total final segue assertado em 100 mil.
         // Nota de produto (para a P2.5, nao deste commit): esse custo por
         // linha vale tambem em producao — um trigger estatico, ou o uso
@@ -649,10 +679,13 @@ class BillingPartitionP23IT {
                 }
             }
         }
+        // Com o trigger de preenchimento desligado durante a carga (ver
+        // disableFillMonthTrigger), o custo por linha cai para o cheque de
+        // FK + indices — lotes de 10 mil cabem com folga nos 5 s.
         assertThat(billIds).hasSize(100_000);
         int total = 0;
-        for (int from = 0; from < billIds.size(); from += 500) {
-            int to = Math.min(from + 500, billIds.size()) - 1;
+        for (int from = 0; from < billIds.size(); from += 10_000) {
+            int to = Math.min(from + 10_000, billIds.size()) - 1;
             String rangePredicate = from == 0
                     ? "b.id <= ?"
                     : "b.id > ? AND b.id <= ?";
