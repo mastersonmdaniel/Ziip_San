@@ -621,21 +621,26 @@ class BillingPartitionP23IT {
     }
 
     private static void insertVolumeItems(Connection c, UUID batch, UUID category, UUID tariffVersion) throws SQLException {
-        // Sem paginacao por OFFSET: o re-escaneamento a cada lote (OFFSET
-        // crescente sobre 100 mil contas, com filtro por audit_batch_id
-        // fora do indice) estourava os 5 s nos ultimos lotes. Busca-se a
-        // lista de contas uma vez (um unico scan de indice) e carrega-se
-        // em lotes de 500 por id (ANY): cada lote e um conjunto de
-        // lookups, sem re-escaneamento. O trigger bills_fill_child_month
-        // segue ativo (custo de planejamento por linha, dentro da folga
-        // com lotes de 500). O total final segue assertado em 100 mil.
+        // Sem OFFSET e sem ANY: ambos re-escaneiam as 100 mil contas do
+        // lote a cada chunk (o PG 17 nao faz skip scan; o filtro por
+        // audit_batch_id esta fora do indice e o ANY espalhado exige
+        // varrer o range inteiro do tenant na particao). Busca-se a lista
+        // de contas uma vez, ordenada, e cada lote usa um RANGE CONTIGUO
+        // de ids (id > anterior AND id <= ultimo): o plano e um range
+        // scan de exatamente 500 entradas, sem re-escaneamento. O filtro
+        // por mes na lista e nos lotes permite o pruning para a particao
+        // do lote (2026_03 e exclusiva do teste de volume neste schema).
+        // O trigger bills_fill_child_month segue ativo (custo de
+        // planejamento por linha, dentro da folga com lotes de 500). O
+        // total final segue assertado em 100 mil.
         // Nota de produto (para a P2.5, nao deste commit): esse custo por
         // linha vale tambem em producao — um trigger estatico, ou o uso
         // de NEW.reference_month quando informado, eliminaria o replanejo.
         List<UUID> billIds = new ArrayList<>();
         try (PreparedStatement ps = c.prepareStatement(
                 "SELECT b.id FROM " + SCHEMA + ".bills b "
-                        + "WHERE b.tenant_id = ? AND b.audit_batch_id = ? ORDER BY b.id")) {
+                        + "WHERE b.tenant_id = ? AND b.reference_month = DATE '" + LOT_MONTH + "' "
+                        + "AND b.audit_batch_id = ? ORDER BY b.id")) {
             ps.setObject(1, TENANT);
             ps.setObject(2, batch);
             try (ResultSet rs = ps.executeQuery()) {
@@ -647,20 +652,27 @@ class BillingPartitionP23IT {
         assertThat(billIds).hasSize(100_000);
         int total = 0;
         for (int from = 0; from < billIds.size(); from += 500) {
-            List<UUID> chunkIds = billIds.subList(from, Math.min(from + 500, billIds.size()));
+            int to = Math.min(from + 500, billIds.size()) - 1;
+            String rangePredicate = from == 0
+                    ? "b.id <= ?"
+                    : "b.id > ? AND b.id <= ?";
             try (PreparedStatement ps = c.prepareStatement(
                     "INSERT INTO " + SCHEMA + ".bill_items (tenant_id, bill_id, reference_month, service_kind, "
                             + "category_id, tariff_version_id, period_from, period_to, proration_factor, line_type, "
                             + "economies, social_economies, from_m3, consumption, gross_value, discount_value, net_value) "
                             + "SELECT ?, b.id, DATE '" + LOT_MONTH + "', 'WATER', ?, ?, DATE '" + LOT_MONTH + "', DATE '2026-03-31', "
                             + "1.0000, 'MINIMUM', 1, 0, 0, 0, 100.00, 0, 100.00 "
-                            + "FROM " + SCHEMA + ".bills b WHERE b.tenant_id = ? AND b.audit_batch_id = ? AND b.id = ANY(?)")) {
-                ps.setObject(1, TENANT);
-                ps.setObject(2, category);
-                ps.setObject(3, tariffVersion);
-                ps.setObject(4, TENANT);
-                ps.setObject(5, batch);
-                ps.setArray(6, c.createArrayOf("uuid", chunkIds.toArray()));
+                            + "FROM " + SCHEMA + ".bills b WHERE b.tenant_id = ? AND b.reference_month = DATE '" + LOT_MONTH + "' "
+                            + "AND " + rangePredicate)) {
+                int param = 1;
+                ps.setObject(param++, TENANT);
+                ps.setObject(param++, category);
+                ps.setObject(param++, tariffVersion);
+                ps.setObject(param++, TENANT);
+                if (from > 0) {
+                    ps.setObject(param++, billIds.get(from - 1));
+                }
+                ps.setObject(param, billIds.get(to));
                 total += ps.executeUpdate();
             }
         }
