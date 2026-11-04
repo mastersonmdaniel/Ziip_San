@@ -5,6 +5,7 @@ import br.com.ziipsan.core.api.ApiException;
 import br.com.ziipsan.core.tenant.TenantContextHolder;
 import br.com.ziipsan.platform.about.AboutRecords.ReleaseNoteView;
 import br.com.ziipsan.platform.about.AboutService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +46,7 @@ public class ReleaseNotesController {
     private final ReleaseNotesLoader loader;
     private final AboutService aboutService;
 
+    @Autowired
     public ReleaseNotesController(AboutService aboutService) {
         this(new ReleaseNotesLoader(), aboutService);
     }
