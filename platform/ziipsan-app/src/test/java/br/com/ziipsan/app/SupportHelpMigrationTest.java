@@ -110,6 +110,9 @@ class SupportHelpMigrationTest {
         // commitado. A lista continua exata: código novo exige YAML + bundle.
         // P1-D (integração): +10 códigos das situações do titular da P1.41
         // (64 -> 74) — os YAMLs novos da rodada 1 do CI total.
+        // P2-A (integração): +2 códigos da informação documentada da P2.25
+        // (74 -> 76) — document-state e occurrence-state, com YAMLs e
+        // bundle regenerado pela frente; a lista continua exata.
         assertThat(codes).containsExactly(
                 "urn:ziipsan:problem:access-denied",
                 "urn:ziipsan:problem:activation-exists",
@@ -126,6 +129,7 @@ class SupportHelpMigrationTest {
                 "urn:ziipsan:problem:customer-without-document",
                 "urn:ziipsan:problem:data-conflict",
                 "urn:ziipsan:problem:deletion-unavailable",
+                "urn:ziipsan:problem:document-state",
                 "urn:ziipsan:problem:draft-closed",
                 "urn:ziipsan:problem:effects-pending",
                 "urn:ziipsan:problem:evidence-link-exists",
@@ -154,6 +158,7 @@ class SupportHelpMigrationTest {
                 "urn:ziipsan:problem:not-found",
                 "urn:ziipsan:problem:not-pending",
                 "urn:ziipsan:problem:not-pending-approval",
+                "urn:ziipsan:problem:occurrence-state",
                 "urn:ziipsan:problem:operational-types-disabled",
                 "urn:ziipsan:problem:order-closed",
                 "urn:ziipsan:problem:precondition-failed",
