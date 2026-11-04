@@ -621,32 +621,46 @@ class BillingPartitionP23IT {
     }
 
     private static void insertVolumeItems(Connection c, UUID batch, UUID category, UUID tariffVersion) throws SQLException {
-        // Lotes de 500 (nao 10 mil, nem 2 mil): cada item dispara o trigger
-        // bills_fill_child_month, que executa SQL DINAMICO (EXECUTE format)
-        // buscando o mes da conta-pai por (tenant_id, id) sem a chave de
-        // particao — o plano e refeito a cada linha sobre todas as
-        // particoes (SQL dinamico nao usa plano em cache no plpgsql), o
-        // que custa milissegundos por linha e estoura os 5 s do papel da
-        // app mesmo em lotes de 2 mil. Com 500 cabe com folga. O total
-        // final segue assertado em 100 mil, trigger ativo, dado validado.
+        // Sem paginacao por OFFSET: o re-escaneamento a cada lote (OFFSET
+        // crescente sobre 100 mil contas, com filtro por audit_batch_id
+        // fora do indice) estourava os 5 s nos ultimos lotes. Busca-se a
+        // lista de contas uma vez (um unico scan de indice) e carrega-se
+        // em lotes de 500 por id (ANY): cada lote e um conjunto de
+        // lookups, sem re-escaneamento. O trigger bills_fill_child_month
+        // segue ativo (custo de planejamento por linha, dentro da folga
+        // com lotes de 500). O total final segue assertado em 100 mil.
         // Nota de produto (para a P2.5, nao deste commit): esse custo por
         // linha vale tambem em producao — um trigger estatico, ou o uso
         // de NEW.reference_month quando informado, eliminaria o replanejo.
+        List<UUID> billIds = new ArrayList<>();
+        try (PreparedStatement ps = c.prepareStatement(
+                "SELECT b.id FROM " + SCHEMA + ".bills b "
+                        + "WHERE b.tenant_id = ? AND b.audit_batch_id = ? ORDER BY b.id")) {
+            ps.setObject(1, TENANT);
+            ps.setObject(2, batch);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    billIds.add((UUID) rs.getObject(1));
+                }
+            }
+        }
+        assertThat(billIds).hasSize(100_000);
         int total = 0;
-        for (int chunk = 0; chunk < 200; chunk++) {
+        for (int from = 0; from < billIds.size(); from += 500) {
+            List<UUID> chunkIds = billIds.subList(from, Math.min(from + 500, billIds.size()));
             try (PreparedStatement ps = c.prepareStatement(
                     "INSERT INTO " + SCHEMA + ".bill_items (tenant_id, bill_id, reference_month, service_kind, "
                             + "category_id, tariff_version_id, period_from, period_to, proration_factor, line_type, "
                             + "economies, social_economies, from_m3, consumption, gross_value, discount_value, net_value) "
                             + "SELECT ?, b.id, DATE '" + LOT_MONTH + "', 'WATER', ?, ?, DATE '" + LOT_MONTH + "', DATE '2026-03-31', "
                             + "1.0000, 'MINIMUM', 1, 0, 0, 0, 100.00, 0, 100.00 "
-                            + "FROM " + SCHEMA + ".bills b WHERE b.tenant_id = ? AND b.audit_batch_id = ? "
-                            + "ORDER BY b.id LIMIT 500 OFFSET " + (chunk * 500))) {
+                            + "FROM " + SCHEMA + ".bills b WHERE b.tenant_id = ? AND b.audit_batch_id = ? AND b.id = ANY(?)")) {
                 ps.setObject(1, TENANT);
                 ps.setObject(2, category);
                 ps.setObject(3, tariffVersion);
                 ps.setObject(4, TENANT);
                 ps.setObject(5, batch);
+                ps.setArray(6, c.createArrayOf("uuid", chunkIds.toArray()));
                 total += ps.executeUpdate();
             }
         }
