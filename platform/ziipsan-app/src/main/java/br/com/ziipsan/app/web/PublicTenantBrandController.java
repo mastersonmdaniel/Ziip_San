@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RestController;
 import tools.jackson.databind.JsonNode;
 
@@ -52,7 +53,7 @@ public class PublicTenantBrandController {
     private final TenantBrandService service;
     private final BrandProvider productBrand;
 
-    public PublicTenantBrandController(DataSource dataSource, FileScanner scanner) {
+    public PublicTenantBrandController(DataSource dataSource, @Qualifier("fileScanner") FileScanner scanner) {
         this.service = new TenantBrandService(new JdbcTenantBrandStore(dataSource), scanner);
         this.productBrand = BrandProvider.fromEnvironment();
     }

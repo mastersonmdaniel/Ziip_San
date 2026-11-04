@@ -8,6 +8,7 @@ import br.com.ziipsan.platform.infra.events.BusinessEventPublisher;
 import br.com.ziipsan.platform.infra.scan.FileScanner;
 import br.com.ziipsan.platform.tenant.TenantCatalog;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -59,7 +60,7 @@ public class PlatformSupportQueueController {
     private final BusinessEventPublisher events;
 
     public PlatformSupportQueueController(DataSource dataSource, TenantCatalog catalog,
-                                          TicketAttachmentService attachments, FileScanner scanner,
+                                          TicketAttachmentService attachments, @Qualifier("ticketFileScanner") FileScanner scanner,
                                           BusinessEventPublisher events) {
         this.dataSource = dataSource;
         this.catalog = catalog;

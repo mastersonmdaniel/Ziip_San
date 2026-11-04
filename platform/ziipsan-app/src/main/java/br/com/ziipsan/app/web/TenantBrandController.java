@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RestController;
 import tools.jackson.databind.JsonNode;
 
@@ -55,7 +56,7 @@ public class TenantBrandController {
 
     private final TenantBrandService service;
 
-    public TenantBrandController(DataSource dataSource, FileScanner scanner) {
+    public TenantBrandController(DataSource dataSource, @Qualifier("fileScanner") FileScanner scanner) {
         this.service = new TenantBrandService(new JdbcTenantBrandStore(dataSource), scanner);
     }
 
