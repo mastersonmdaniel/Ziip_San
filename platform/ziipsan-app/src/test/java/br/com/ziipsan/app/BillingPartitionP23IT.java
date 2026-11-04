@@ -621,8 +621,13 @@ class BillingPartitionP23IT {
     }
 
     private static void insertVolumeItems(Connection c, UUID batch, UUID category, UUID tariffVersion) throws SQLException {
+        // Lotes de 2 mil (nao 10 mil): cada item dispara o trigger
+        // bills_fill_child_month, que busca o mes da conta-pai por
+        // (tenant_id, id) SEM a chave de particao — o plano varre todas as
+        // particoes por linha. Com 10 mil itens o lote estourava os 5 s;
+        // com 2 mil cabe com folga. O total final segue assertado.
         int total = 0;
-        for (int chunk = 0; chunk < 10; chunk++) {
+        for (int chunk = 0; chunk < 50; chunk++) {
             try (PreparedStatement ps = c.prepareStatement(
                     "INSERT INTO " + SCHEMA + ".bill_items (tenant_id, bill_id, reference_month, service_kind, "
                             + "category_id, tariff_version_id, period_from, period_to, proration_factor, line_type, "
@@ -630,7 +635,7 @@ class BillingPartitionP23IT {
                             + "SELECT ?, b.id, DATE '" + LOT_MONTH + "', 'WATER', ?, ?, DATE '" + LOT_MONTH + "', DATE '2026-03-31', "
                             + "1.0000, 'MINIMUM', 1, 0, 0, 0, 100.00, 0, 100.00 "
                             + "FROM " + SCHEMA + ".bills b WHERE b.tenant_id = ? AND b.audit_batch_id = ? "
-                            + "ORDER BY b.id LIMIT 10000 OFFSET " + (chunk * 10_000))) {
+                            + "ORDER BY b.id LIMIT 2000 OFFSET " + (chunk * 2_000))) {
                 ps.setObject(1, TENANT);
                 ps.setObject(2, category);
                 ps.setObject(3, tariffVersion);
