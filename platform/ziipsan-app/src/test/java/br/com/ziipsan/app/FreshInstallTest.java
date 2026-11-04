@@ -91,10 +91,22 @@ class FreshInstallTest {
      * é o próprio artefato (CSV mascarado) e copiá-lo integral para o audit_log
      * duplicaria o arquivo a cada mudança de estado. O pedido fica registrado
      * em personal_data_access_log (tipo EXPORT) e o estado, na própria linha.
+     *
+     * <p>P1-C (integracao): import_rows também não tem trigger, pelo mesmo
+     * argumento de generated_files, declarado no cabeçalho da V14_4: a linha
+     * crua pode conter dado pessoal nos esquemas futuros e a trilha não pode
+     * virar cópia da planilha; o registro durável da carga é o job (com
+     * trigger) + as recusas (com trigger, sem ecoar o valor recusado).
+     *
+     * <p>P1-C (integracao): registry_drafts também não tem trigger, declarado
+     * no §9 da V3_12: o payload é a cópia de trabalho do formulário e pode
+     * conter o documento em claro antes da cifra — auditar cada versão
+     * copiaria dado pessoal para o audit_log. O ciclo de vida do rascunho é
+     * rastreável pela própria linha (status, updated_at, updated_by).
      */
     private static final Set<String> NOT_AUDITED_BY_DESIGN = Set.of(
             "tenant_metadata", "scada_data_point", "epanet_node_result", "epanet_link_result",
-            "personal_data_access_log", "generated_files",
+            "personal_data_access_log", "generated_files", "import_rows", "registry_drafts",
             "gis_node_history", "gis_arc_history", "gis_connection_history",
             "gis_structure_history", "gis_zone_history", "gis_poi_history",
             "gis_node", "gis_arc", "gis_connection",

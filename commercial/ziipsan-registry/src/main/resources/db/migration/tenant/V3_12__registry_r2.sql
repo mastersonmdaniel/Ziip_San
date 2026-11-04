@@ -340,7 +340,7 @@ END $$;
 
 ALTER TABLE consumer_units ADD COLUMN IF NOT EXISTS parent_relation_type VARCHAR(20)
     CHECK (parent_relation_type IN ('CONDOMINIUM_MACRO', 'ANNEX'));
-ALTER TABLE consumer_units ADD COLUMN IF NOT EXISTS iptu_municipality_ibge CHAR(7)
+ALTER TABLE consumer_units ADD COLUMN IF NOT EXISTS iptu_municipality_ibge VARCHAR(7)
     CHECK (iptu_municipality_ibge ~ '^[0-9]{7}$');
 -- Atividade econômica (CNAE) na unidade (PD-06): 7 dígitos.
 ALTER TABLE consumer_units ADD COLUMN IF NOT EXISTS cnae_code VARCHAR(7)
@@ -438,7 +438,7 @@ CREATE TRIGGER trg_consumer_units_guards
 -- 5. ENDEREÇOS: IBGE, catálogos, referência, precisão, CHECKs
 -- ============================================================================
 
-ALTER TABLE addresses ADD COLUMN IF NOT EXISTS municipality_ibge CHAR(7)
+ALTER TABLE addresses ADD COLUMN IF NOT EXISTS municipality_ibge VARCHAR(7)
     CHECK (municipality_ibge ~ '^[0-9]{7}$');
 ALTER TABLE addresses ADD COLUMN IF NOT EXISTS reference_point VARCHAR(200);
 -- Nível de precisão da geocodificação, gravado junto com a coordenada.
