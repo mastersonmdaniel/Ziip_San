@@ -104,7 +104,7 @@ public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc
         return rateLimit == null ? new RateLimit(null, null, null) : rateLimit;
     }
 
-    /** Limite de corpo (P0.16). Padrão: 1 MiB. Só JSON hoje (nenhum multipart no código). */
+    /** Limite de corpo (P0.16). Padrão: 1 MiB. Nota da integração P1-C: cobre também o corpo multipart do importador (P1.40). */
     public record BodyLimit(Long maxBytes) {
         public BodyLimit {
             if (maxBytes == null) {
@@ -182,6 +182,5 @@ public record ZiipsanProperties(@Valid @NotNull Db db, @Valid @NotNull Oidc oidc
 
     public Scanner scanner() {
         return scanner == null ? new Scanner(null, null, null) : scanner;
-    }
     }
 }
