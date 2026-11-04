@@ -162,6 +162,12 @@ cp -a "$SRC/branding" "$FE_ROOT/branding"
 # fora de frontend/): sem o irmao packages/ o vitest quebra com "Failed to
 # resolve import ... Does the file exist?" — foi a unica falha da rodada 6.
 cp -a "$SRC/packages" "$FE_ROOT/packages"
+# P1-C (integracao camada C): o mesmo para mapSymbols.test.ts, que le
+# ../../../intelligence/ziipsan-gis/.../V13_2...sql e R__...sql (o SQL de
+# fabrica do catalogo GIS, fonte do teste de cobertura P1.30) — sem o
+# irmao intelligence/ o vitest quebra com ENOENT. Foi a unica falha
+# desse tipo na rodada 10 (3 testes do mapSymbols).
+cp -a "$SRC/intelligence" "$FE_ROOT/intelligence"
 rm -rf "$FE/node_modules" "$FE/dist" "$FE/coverage"
 (
   cd "$FE"
