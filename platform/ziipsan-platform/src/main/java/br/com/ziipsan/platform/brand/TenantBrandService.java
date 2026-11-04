@@ -8,7 +8,6 @@ import br.com.ziipsan.platform.brand.TenantBrandStore.LogoBytes;
 import br.com.ziipsan.platform.brand.TenantBrandStore.SlugUpdate;
 import br.com.ziipsan.platform.brand.TenantBrandStore.TenantBrand;
 import br.com.ziipsan.platform.infra.scan.FileScanner;
-import br.com.ziipsan.platform.infra.scan.ScannerUnavailableException;
 import tools.jackson.databind.JsonNode;
 
 import java.io.ByteArrayInputStream;
@@ -207,7 +206,9 @@ public final class TenantBrandService {
         FileScanner.ScanResult result;
         try {
             result = scanner.scan(new ByteArrayInputStream(reencoded.pngBytes()));
-        } catch (ScannerUnavailableException | IOException e) {
+        } catch (IOException e) {
+            // ScannerUnavailableException É IOException (P1.20): o multi-catch
+            // com a subclasse não compila; um único catch cobre os dois casos.
             store.markAssetNotScanned(tenantId, asset.id());
             return new UploadResult(slug, withStatus(asset, "NOT_SCANNED"), "NOT_SCANNED");
         }
@@ -263,9 +264,8 @@ public final class TenantBrandService {
             throw validation("contact", "invalid-contact", "O contato precisa ser um objeto.");
         }
         Map<String, String> fields = new LinkedHashMap<>();
-        var names = contact.propertyNames();
-        while (names.hasNext()) {
-            String field = names.next();
+        // propertyNames() do Jackson 3 devolve Iterable, não Iterator.
+        for (String field : contact.propertyNames()) {
             if (!CONTACT_FIELDS.contains(field)) {
                 throw validation("contact", "invalid-contact",
                         "O contato aceita só phone, email, site e address.");
