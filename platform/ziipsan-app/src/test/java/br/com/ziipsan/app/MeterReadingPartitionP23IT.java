@@ -167,6 +167,7 @@ class MeterReadingPartitionP23IT {
     @Test
     @DisplayName("V5_4: mes sem particao falha; meter_readings_create_partition resolve; sem DEFAULT")
     void missingPartitionFailsUntilCreated() throws SQLException {
+        // Tx 1: prova que o mes sem particao falha.
         try (Connection c = asTenant()) {
             try {
                 UUID unit = insertUnit(c, "P23-METER-03");
@@ -179,9 +180,31 @@ class MeterReadingPartitionP23IT {
                         .isInstanceOf(SQLException.class)
                         .hasMessageContaining("no partition of relation");
                 c.rollback(savepoint);
-                try (Connection m = migrator(); Statement st = m.createStatement()) {
-                    st.execute("SELECT " + SCHEMA + ".meter_readings_create_partition(DATE '" + FAR_MONTH + "')");
-                }
+            } finally {
+                c.rollback();
+            }
+        }
+        // A criacao da particao NAO pode rodar com a transacao do tenant
+        // aberta: CREATE TABLE ... PARTITION OF exige ShareRowExclusiveLock
+        // na tabela referenciada pela FK (meter_installations), e a
+        // transacao do tenant detem RowExclusiveLock nela pelo insert da
+        // instalacao. O migrador bloquearia ate o idle-in-transaction
+        // timeout de 30 s (security.sql) matar a conexao do teste — provado
+        // na integracao P2A com pg_stat_activity (migrador em
+        // Lock/relation), pg_locks (ShareRowExclusiveLock nao concedido em
+        // meter_installations) e o thread dump do fork (thread parada no
+        // execute do create_partition). Por isso a tx 1 termina antes do
+        // DDL e a tx 2 recomeca depois dele.
+        try (Connection m = migrator(); Statement st = m.createStatement()) {
+            st.execute("SELECT " + SCHEMA + ".meter_readings_create_partition(DATE '" + FAR_MONTH + "')");
+        }
+        // Tx 2: com a particao criada, o insert passa. Unidade e instalacao
+        // sao reinseridas (a tx 1 fez rollback; matricula e hidrometro
+        // voltam a estar livres).
+        try (Connection c = asTenant()) {
+            try {
+                UUID unit = insertUnit(c, "P23-METER-03");
+                UUID installation = insertInstallation(c, unit, "P23-HID-03");
                 UUID reading = insertReading(c, unit, installation, FAR_MONTH, "P23-KEY-03", 3000);
                 assertThat(reading).isNotNull();
             } finally {

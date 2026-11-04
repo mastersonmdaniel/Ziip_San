@@ -174,6 +174,7 @@ class BillingPartitionP23IT {
     @Test
     @DisplayName("V4_14: mes sem particao falha; bills_create_partition resolve; sem DEFAULT")
     void missingPartitionFailsUntilCreated() throws SQLException {
+        // Tx 1: prova que o mes sem particao falha.
         try (Connection c = asTenant()) {
             try {
                 UUID unit = insertUnit(c, "P23-FAR-01");
@@ -185,9 +186,27 @@ class BillingPartitionP23IT {
                         .isInstanceOf(SQLException.class)
                         .hasMessageContaining("no partition of relation");
                 c.rollback(savepoint);
-                try (Connection m = migrator(); Statement st = m.createStatement()) {
-                    st.execute("SELECT " + SCHEMA + ".bills_create_partition(DATE '" + FAR_MONTH + "')");
-                }
+            } finally {
+                c.rollback();
+            }
+        }
+        // A criacao da particao NAO pode rodar com a transacao do tenant
+        // aberta: CREATE TABLE ... PARTITION OF exige ShareRowExclusiveLock
+        // na tabela referenciada pela FK (consumer_units), e a transacao do
+        // tenant detem RowExclusiveLock nela pelo insert da unidade. O
+        // migrador bloquearia ate o idle-in-transaction timeout de 30 s
+        // (security.sql) matar a conexao do teste — provado na integracao
+        // P2A com pg_stat_activity (migrador em Lock/relation) e pg_locks
+        // (ShareRowExclusiveLock nao concedido em consumer_units). Por isso
+        // a tx 1 termina antes do DDL e a tx 2 recomeca depois dele.
+        try (Connection m = migrator(); Statement st = m.createStatement()) {
+            st.execute("SELECT " + SCHEMA + ".bills_create_partition(DATE '" + FAR_MONTH + "')");
+        }
+        // Tx 2: com a particao criada, o insert passa. A unidade e
+        // reinserida (a tx 1 fez rollback; a matricula volta a estar livre).
+        try (Connection c = asTenant()) {
+            try {
+                UUID unit = insertUnit(c, "P23-FAR-01");
                 UUID bill = insertBill(c, unit, FAR_MONTH, null);
                 assertThat(bill).isNotNull();
             } finally {
@@ -558,37 +577,56 @@ class BillingPartitionP23IT {
         }
     }
 
+    /**
+     * Carga em lotes de 10 mil: um unico INSERT...SELECT de 100 mil contas
+     * estoura o statement_timeout de 5 s do papel da app (security.sql, por
+     * desenho) no cheque de FK por linha. Cada lote cabe com folga no limite
+     * e o total final segue assertado em 100 mil — nenhuma assercao muda,
+     * so o tamanho do statement. O mesmo vale para os itens.
+     */
     private static void insertVolumeBills(Connection c, UUID batch) throws SQLException {
-        try (PreparedStatement ps = c.prepareStatement(
-                "INSERT INTO " + SCHEMA + ".bills (tenant_id, unit_id, reference_month, status, water_value, "
-                        + "sewer_value, debits_value, credits_value, taxes_value, total_value, audit_batch_id) "
-                        + "SELECT ?, u.id, DATE '" + LOT_MONTH + "', 'NORMAL', 100.00, 0, 0, 0, 0, 100.00, ? "
-                        + "FROM " + SCHEMA + ".consumer_units u "
-                        + "WHERE u.tenant_id = ? AND u.registration_number LIKE 'P23VOL-%'")) {
-            ps.setObject(1, TENANT);
-            ps.setObject(2, batch);
-            ps.setObject(3, TENANT);
-            int inserted = ps.executeUpdate();
-            assertThat(inserted).isEqualTo(100_000);
+        int total = 0;
+        for (int chunk = 0; chunk < 10; chunk++) {
+            int from = chunk * 10_000 + 1;
+            int to = (chunk + 1) * 10_000;
+            try (PreparedStatement ps = c.prepareStatement(
+                    "INSERT INTO " + SCHEMA + ".bills (tenant_id, unit_id, reference_month, status, water_value, "
+                            + "sewer_value, debits_value, credits_value, taxes_value, total_value, audit_batch_id) "
+                            + "SELECT ?, u.id, DATE '" + LOT_MONTH + "', 'NORMAL', 100.00, 0, 0, 0, 0, 100.00, ? "
+                            + "FROM " + SCHEMA + ".consumer_units u "
+                            + "WHERE u.tenant_id = ? AND u.registration_number LIKE 'P23VOL-%' "
+                            + "AND CAST(substring(u.registration_number FROM 8) AS INTEGER) BETWEEN ? AND ?")) {
+                ps.setObject(1, TENANT);
+                ps.setObject(2, batch);
+                ps.setObject(3, TENANT);
+                ps.setInt(4, from);
+                ps.setInt(5, to);
+                total += ps.executeUpdate();
+            }
         }
+        assertThat(total).isEqualTo(100_000);
     }
 
     private static void insertVolumeItems(Connection c, UUID batch, UUID category, UUID tariffVersion) throws SQLException {
-        try (PreparedStatement ps = c.prepareStatement(
-                "INSERT INTO " + SCHEMA + ".bill_items (tenant_id, bill_id, reference_month, service_kind, "
-                        + "category_id, tariff_version_id, period_from, period_to, proration_factor, line_type, "
-                        + "economies, social_economies, from_m3, consumption, gross_value, discount_value, net_value) "
-                        + "SELECT ?, b.id, DATE '" + LOT_MONTH + "', 'WATER', ?, ?, DATE '" + LOT_MONTH + "', DATE '2026-03-31', "
-                        + "1.0000, 'MINIMUM', 1, 0, 0, 0, 100.00, 0, 100.00 "
-                        + "FROM " + SCHEMA + ".bills b WHERE b.tenant_id = ? AND b.audit_batch_id = ?")) {
-            ps.setObject(1, TENANT);
-            ps.setObject(2, category);
-            ps.setObject(3, tariffVersion);
-            ps.setObject(4, TENANT);
-            ps.setObject(5, batch);
-            int inserted = ps.executeUpdate();
-            assertThat(inserted).isEqualTo(100_000);
+        int total = 0;
+        for (int chunk = 0; chunk < 10; chunk++) {
+            try (PreparedStatement ps = c.prepareStatement(
+                    "INSERT INTO " + SCHEMA + ".bill_items (tenant_id, bill_id, reference_month, service_kind, "
+                            + "category_id, tariff_version_id, period_from, period_to, proration_factor, line_type, "
+                            + "economies, social_economies, from_m3, consumption, gross_value, discount_value, net_value) "
+                            + "SELECT ?, b.id, DATE '" + LOT_MONTH + "', 'WATER', ?, ?, DATE '" + LOT_MONTH + "', DATE '2026-03-31', "
+                            + "1.0000, 'MINIMUM', 1, 0, 0, 0, 100.00, 0, 100.00 "
+                            + "FROM " + SCHEMA + ".bills b WHERE b.tenant_id = ? AND b.audit_batch_id = ? "
+                            + "ORDER BY b.id LIMIT 10000 OFFSET " + (chunk * 10_000))) {
+                ps.setObject(1, TENANT);
+                ps.setObject(2, category);
+                ps.setObject(3, tariffVersion);
+                ps.setObject(4, TENANT);
+                ps.setObject(5, batch);
+                total += ps.executeUpdate();
+            }
         }
+        assertThat(total).isEqualTo(100_000);
     }
 
     private static int countBillsOfBatch(Connection c, UUID batch) throws SQLException {
