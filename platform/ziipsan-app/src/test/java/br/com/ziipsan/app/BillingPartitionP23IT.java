@@ -290,6 +290,56 @@ class BillingPartitionP23IT {
                 .doesNotContain("bills_2026_01")
                 .doesNotContain("bills_2026_02")
                 .doesNotContain("bills_2026_04");
+
+        // Limpeza do residuo commitado: a tx 1 deixa 100 mil unidades e
+        // 100 mil contas no tenant COMPARTILHADO (ProvisionedTenant) — e
+        // outros ITs do mesmo fork leem esse tenant. Sem a limpeza, a
+        // exportacao de imoveis sem filtro do RegistryExportIT (que espera
+        // CSV sincrono) passa de 1.000 linhas e volta 202 em vez de 200
+        // (foi exatamente a unica falha da rodada 6 da CI total). Os
+        // triggers de auditoria sao desligados de novo so para a limpeza
+        // (nenhuma linha de audit_log para 200 mil DELETEs) e religados
+        // no finally; os itens ja foram desfeitos pelo rollback da tx 2.
+        disableAuditTriggers();
+        try (Connection c = asTenant()) {
+            try (PreparedStatement ps = c.prepareStatement(
+                    "DELETE FROM " + SCHEMA + ".bills WHERE tenant_id = ? AND audit_batch_id = ?")) {
+                ps.setObject(1, TENANT);
+                ps.setObject(2, batch);
+                assertThat(ps.executeUpdate()).isEqualTo(100_000);
+            }
+            try (PreparedStatement ps = c.prepareStatement(
+                    "DELETE FROM " + SCHEMA + ".consumer_units WHERE tenant_id = ? AND registration_number LIKE 'P23VOL-%'")) {
+                ps.setObject(1, TENANT);
+                assertThat(ps.executeUpdate()).isEqualTo(100_000);
+            }
+            try (PreparedStatement ps = c.prepareStatement(
+                    "DELETE FROM " + SCHEMA + ".bill_audit_batches WHERE tenant_id = ? AND id = ?")) {
+                ps.setObject(1, TENANT);
+                ps.setObject(2, batch);
+                assertThat(ps.executeUpdate()).isEqualTo(1);
+            }
+            try (PreparedStatement ps = c.prepareStatement(
+                    "DELETE FROM " + SCHEMA + ".categories WHERE tenant_id = ? AND code = 'P23-VOL-C'")) {
+                ps.setObject(1, TENANT);
+                assertThat(ps.executeUpdate()).isEqualTo(1);
+            }
+            try (PreparedStatement ps = c.prepareStatement(
+                    "DELETE FROM " + SCHEMA + ".tariff_versions WHERE tenant_id = ? AND tariff_id IN "
+                            + "(SELECT id FROM " + SCHEMA + ".tariffs WHERE tenant_id = ? AND code = 'P23-VOL-T')")) {
+                ps.setObject(1, TENANT);
+                ps.setObject(2, TENANT);
+                assertThat(ps.executeUpdate()).isEqualTo(1);
+            }
+            try (PreparedStatement ps = c.prepareStatement(
+                    "DELETE FROM " + SCHEMA + ".tariffs WHERE tenant_id = ? AND code = 'P23-VOL-T'")) {
+                ps.setObject(1, TENANT);
+                assertThat(ps.executeUpdate()).isEqualTo(1);
+            }
+            c.commit();
+        } finally {
+            enableAuditTriggers();
+        }
     }
 
     // ------------------------------------------------------------------
