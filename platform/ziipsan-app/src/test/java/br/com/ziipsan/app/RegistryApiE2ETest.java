@@ -79,6 +79,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     private static String customerId;
     private static String unitId;
     private static String unit2Id;
+    private static String linkEndReasonId;
     private static String inscription;
 
     private final String operator = bearer(TestTokens.token(TENANT_A, "OPERATOR"));
@@ -229,6 +230,12 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
         } else {
             rolePost.andExpect(status().isCreated());
         }
+        // P1-C (integracao): a R2 exige linkEndReasonId para fechar vinculos
+        // vigentes na exclusao logica do imovel (400 sem ele) — semeado aqui,
+        // usado no logicalDelete.
+        linkEndReasonId = id(send(post("/api/v1/registry/catalogs/unit_link_end_reasons"), operator, """
+                {"code": "E2E_DEL", "name": "Exclusão E2E", "active": true}""")
+                .andExpect(status().isCreated()));
         mvc.perform(get("/api/v1/registry/subcategories").param("categoryId", categoryId).header("Authorization", viewer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1));
@@ -424,7 +431,7 @@ class RegistryApiE2ETest extends AppIntegrationTestBase {
     @Order(7)
     @DisplayName("exclusão lógica: some da lista, includeDeleted traz; cliente com vínculo vigente não sai")
     void logicalDelete() throws Exception {
-        send(delete("/api/v1/registry/consumer-units/" + unit2Id), operator, "{\"reason\": \"Cadastro duplicado no teste\"}")
+        send(delete("/api/v1/registry/consumer-units/" + unit2Id), operator, "{\"reason\": \"Cadastro duplicado no teste\", \"linkEndReasonId\": \"" + linkEndReasonId + "\"}")
                 .andExpect(status().isNoContent());
         mvc.perform(get("/api/v1/registry/consumer-units").param("blockId", blockId).header("Authorization", viewer))
                 .andExpect(status().isOk())
