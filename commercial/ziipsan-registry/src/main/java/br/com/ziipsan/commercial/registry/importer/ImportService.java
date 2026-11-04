@@ -8,7 +8,6 @@ import br.com.ziipsan.core.serviceorder.ServiceOrderService;
 import br.com.ziipsan.core.serviceorder.ServiceOrderStatus;
 import br.com.ziipsan.core.serviceorder.TargetType;
 import br.com.ziipsan.core.tenant.TenantContextHolder;
-import br.com.ziipsan.platform.infra.queue.MessageQueue;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -68,10 +67,10 @@ public class ImportService {
     private static final int MAX_ERROR_CHARS = 4000;
 
     private final DataSource dataSource;
-    private final MessageQueue queue;
+    private final ImportJobQueue queue;
     private final ImportSchemaRegistry schemas;
 
-    public ImportService(DataSource dataSource, MessageQueue queue, ImportSchemaRegistry schemas) {
+    public ImportService(DataSource dataSource, ImportJobQueue queue, ImportSchemaRegistry schemas) {
         if (dataSource == null || queue == null || schemas == null) {
             throw new IllegalArgumentException("dataSource, queue e schemas sao obrigatorios");
         }
@@ -181,8 +180,8 @@ public class ImportService {
         ImportStore.JobView job = store.createJob(schema.code(), originalFilename.strip(), sha256,
                 csv.header(), actor());
         store.insertRows(job.id(), csv.rows(), actor());
-        queue.publish(new MessageQueue.QueuedMessage(job.id(), RegistryContext.tenantId(),
-                VALIDATE_JOB_TYPE, Json.write(Map.of("importId", job.id().toString()))));
+        queue.publish(job.id(), RegistryContext.tenantId(),
+                VALIDATE_JOB_TYPE, Json.write(Map.of("importId", job.id().toString())));
         return view(store.requireJob(job.id()), false);
     }
 
@@ -193,8 +192,8 @@ public class ImportService {
             throw new ApiException.Conflict("state-conflict",
                     "So importacao recebida ou com falha pode ser validada (esta " + job.status() + ").");
         }
-        queue.publish(new MessageQueue.QueuedMessage(job.id(), RegistryContext.tenantId(),
-                VALIDATE_JOB_TYPE, Json.write(Map.of("importId", job.id().toString()))));
+        queue.publish(job.id(), RegistryContext.tenantId(),
+                VALIDATE_JOB_TYPE, Json.write(Map.of("importId", job.id().toString())));
         return view(job, false);
     }
 
@@ -208,8 +207,8 @@ public class ImportService {
             throw new ApiException.Conflict("state-conflict",
                     "So importacao validada pode ser aplicada (esta " + job.status() + ").");
         }
-        queue.publish(new MessageQueue.QueuedMessage(job.id(), RegistryContext.tenantId(),
-                APPLY_JOB_TYPE, Json.write(Map.of("importId", job.id().toString()))));
+        queue.publish(job.id(), RegistryContext.tenantId(),
+                APPLY_JOB_TYPE, Json.write(Map.of("importId", job.id().toString())));
         return view(job, false);
     }
 
@@ -223,8 +222,8 @@ public class ImportService {
             throw new ApiException.Conflict("state-conflict",
                     "So importacao aplicada pode ser revertida (esta " + job.status() + ").");
         }
-        queue.publish(new MessageQueue.QueuedMessage(job.id(), RegistryContext.tenantId(),
-                REVERSE_JOB_TYPE, Json.write(Map.of("importId", job.id().toString()))));
+        queue.publish(job.id(), RegistryContext.tenantId(),
+                REVERSE_JOB_TYPE, Json.write(Map.of("importId", job.id().toString())));
         return view(job, false);
     }
 
