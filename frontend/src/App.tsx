@@ -22,6 +22,7 @@ const PropertySearch = lazy(() => import('@pages/cadastro/PropertySearch').then(
 const PropertyWizard = lazy(() => import('@pages/cadastro/PropertyWizard').then((m) => ({ default: m.PropertyWizard })))
 const Territory = lazy(() => import('@pages/cadastro/Territory').then((m) => ({ default: m.Territory })))
 const GeneratedFiles = lazy(() => import('@pages/GeneratedFiles').then((m) => ({ default: m.GeneratedFiles })))
+const Importacoes = lazy(() => import('@pages/Importacoes').then((m) => ({ default: m.Importacoes })))
 const IconContactSheetPage = lazy(() =>
   import('@pages/dev/IconContactSheetPage').then((m) => ({ default: m.IconContactSheetPage })),
 )
@@ -94,6 +95,8 @@ export function App() {
 
         {/* P1.24: Sobre completo. */}
         <Route path="about" element={<About />} />
+        {/* P1.40: histórico de importações por planilha (JOR-26). */}
+        <Route path="importacoes" element={<Importacoes />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>

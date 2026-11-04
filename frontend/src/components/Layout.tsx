@@ -25,6 +25,7 @@ export const navigation: Array<{ name: string; href: string; icon: IconName; per
   { name: t('nav.gisCatalog'), href: '/gis/catalogo', icon: 'map', permission: 'gis:catalog-read' },
   { name: t('nav.generatedFiles'), href: '/arquivos-gerados', icon: 'download', permission: 'registry:read' },
   { name: t('nav.about'), href: '/about', icon: 'info', permission: 'registry:read' },
+  { name: t('nav.imports'), href: '/importacoes', icon: 'upload', permission: 'registry:read' },
 ]
 
 export function Layout() {
