@@ -102,6 +102,6 @@ public class ConsumerUnitController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize(RegistryRoles.WRITE)
     public void delete(@PathVariable UUID id, @Valid @RequestBody DeleteRequest body) {
-        service.delete(id, body.reason());
+        service.delete(id, body.reason(), body.linkEndReasonId());
     }
 }

@@ -15,9 +15,11 @@ import br.com.ziipsan.commercial.registry.application.CustomerDtos.PhoneView;
 import br.com.ziipsan.commercial.registry.application.CustomerDtos.RevealResult;
 import br.com.ziipsan.commercial.registry.domain.Address;
 import br.com.ziipsan.commercial.registry.domain.Customer;
+import br.com.ziipsan.commercial.registry.domain.CustomerAddress;
 import br.com.ziipsan.commercial.registry.domain.Customer.PersonType;
 import br.com.ziipsan.commercial.registry.domain.CustomerContact;
 import br.com.ziipsan.commercial.registry.repository.AddressRepository;
+import br.com.ziipsan.commercial.registry.repository.CustomerAddressRepository;
 import br.com.ziipsan.commercial.registry.repository.CustomerContactRepository;
 import br.com.ziipsan.commercial.registry.repository.CustomerRepository;
 import org.locationtech.jts.geom.Coordinate;
@@ -84,15 +86,33 @@ public class CustomerService {
     private final AddressRepository addresses;
     private final CustomerDocumentService documents;
     private final PersonalDataAccessService accessLog;
+    /** P1.3: nulos no construtor antigo (testes legados) — nesse caso a validação de catálogo e a OS são puladas. */
+    private final CatalogLookup catalogs;
+    private final InternalOrderService orders;
+    private final CadastralChangeService changes;
+    private final CustomerAddressRepository customerAddresses;
 
     public CustomerService(CustomerRepository customers, CustomerContactRepository contacts,
                            AddressRepository addresses, CustomerDocumentService documents,
                            PersonalDataAccessService accessLog) {
+        this(customers, contacts, addresses, documents, accessLog, null, null, null, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public CustomerService(CustomerRepository customers, CustomerContactRepository contacts,
+                           AddressRepository addresses, CustomerDocumentService documents,
+                           PersonalDataAccessService accessLog, CatalogLookup catalogs,
+                           InternalOrderService orders, CadastralChangeService changes,
+                           CustomerAddressRepository customerAddresses) {
         this.customers = customers;
         this.contacts = contacts;
         this.addresses = addresses;
         this.documents = documents;
         this.accessLog = accessLog;
+        this.catalogs = catalogs;
+        this.orders = orders;
+        this.changes = changes;
+        this.customerAddresses = customerAddresses;
     }
 
     // ------------------------------------------------------------------ leitura
@@ -263,11 +283,13 @@ public class CustomerService {
         }
         checkContacts(checks, in);
         checkAddresses(checks, in);
+        checkR2(checks, in, null);
         checks.throwIfAny();
         apply(c, in);
         customers.saveAndFlush(c);
         replaceContacts(c, in);
         replaceAddresses(c, in);
+        recordWrite(c, in, null);
         return view(c);
     }
 
@@ -288,7 +310,9 @@ public class CustomerService {
         }
         checkContacts(checks, in);
         checkAddresses(checks, in);
+        checkR2(checks, in, c);
         checks.throwIfAny();
+        Customer beforeCopy = copyForDiff(c);
         apply(c, in);
         RegistryContext.touch(c);
         // Versão nova a cada PUT, mesmo quando só os contatos mudam: a versão protege o cadastro inteiro.
@@ -296,7 +320,153 @@ public class CustomerService {
         customers.saveAndFlush(c);
         replaceContacts(c, in);
         replaceAddresses(c, in);
+        recordWrite(c, in, beforeCopy);
         return view(c);
+    }
+
+    /** Cópia rasa dos campos comparados no diff da OS (nunca o documento em claro). */
+    private static Customer copyForDiff(Customer c) {
+        Customer copy = new Customer();
+        copy.setId(c.getId());
+        copy.setPersonType(c.getPersonType());
+        copy.setName(c.getName());
+        copy.setTradeName(c.getTradeName());
+        copy.setCustomerTypeId(c.getCustomerTypeId());
+        copy.setParentCustomerId(c.getParentCustomerId());
+        copy.setGovernmentSphere(c.getGovernmentSphere());
+        copy.setDocumentMasked(c.getDocumentMasked());
+        return copy;
+    }
+
+    /**
+     * Regras R2 do cliente (P1.3, V3_12), com o campo no erro (400/422 nomeia o campo).
+     * Sem CatalogLookup (construtor antigo), só as regras sem catálogo valem.
+     */
+    private void checkR2(Checks checks, CustomerInput in, Customer current) {
+        if (in.personType() == PersonType.PF && blankToNull(in.tradeName()) != null) {
+            checks.error("tradeName", "TRADE_NAME_ON_PF", "Pessoa física não tem nome fantasia.");
+        }
+        if (catalogs == null) {
+            return;
+        }
+        if (in.customerTypeId() != null) {
+            CatalogLookup.CatalogRow row = catalogs.find("customer_types", in.customerTypeId());
+            if (row == null) {
+                checks.error("customerTypeId", "NOT_FOUND", "Tipo de cliente não encontrado.");
+            } else if (!row.active()) {
+                checks.error("customerTypeId", "INACTIVE", "Tipo de cliente desativado.");
+            } else {
+                String applies = catalogs.text("customer_types", in.customerTypeId(), "applies_to");
+                if ("PF".equals(applies) && in.personType() != PersonType.PF
+                        || "PJ".equals(applies) && in.personType() != PersonType.PJ) {
+                    checks.error("customerTypeId", "INCOMPATIBLE", "Tipo de cliente incompatível com o tipo de pessoa.");
+                }
+                Boolean isPublic = catalogs.flag("customer_types", in.customerTypeId(), "is_public_entity");
+                if (Boolean.TRUE.equals(isPublic) && blankToNull(in.governmentSphere()) == null) {
+                    checks.error("governmentSphere", "REQUIRED", "Ente público: informe a esfera de governo.");
+                }
+            }
+        }
+        if (in.documentExemptionReasonId() != null) {
+            CatalogLookup.CatalogRow row = catalogs.find("document_exemption_reasons", in.documentExemptionReasonId());
+            if (row == null) {
+                checks.error("documentExemptionReasonId", "NOT_FOUND", "Motivo de dispensa não encontrado.");
+            } else if (!row.active()) {
+                checks.error("documentExemptionReasonId", "INACTIVE", "Motivo de dispensa desativado.");
+            }
+            // Ressalva: requires_permission=true (padrão protetivo, Lei 13.460/2017 art. 10-A)
+            // ainda não tem gate de permissão próprio (registry:document-exemption) no controller;
+            // a flag existe no catálogo e o gate é follow-up, não inventado aqui.
+        }
+        if (in.deleteReasonId() != null) {
+            CatalogLookup.CatalogRow row = catalogs.find("customer_delete_reasons", in.deleteReasonId());
+            if (row == null) {
+                checks.error("deleteReasonId", "NOT_FOUND", "Motivo de exclusão não encontrado.");
+            } else if (!row.active()) {
+                checks.error("deleteReasonId", "INACTIVE", "Motivo de exclusão desativado.");
+            }
+        }
+        if (in.parentCustomerId() != null) {
+            if (current != null && in.parentCustomerId().equals(current.getId())) {
+                checks.error("parentCustomerId", "CYCLE", "O cliente não pode ser o próprio órgão centralizador.");
+            } else {
+                Customer parent = customers.findById(in.parentCustomerId()).orElse(null);
+                if (parent == null || !RegistryContext.tenantId().equals(parent.getTenantId())
+                        || parent.getDeletedAt() != null) {
+                    checks.error("parentCustomerId", "NOT_FOUND", "Órgão centralizador não encontrado.");
+                } else {
+                    // Cadeia de centralizadores, com teto (o trigger do banco é o backstop).
+                    UUID walking = parent.getParentCustomerId();
+                    for (int depth = 0; depth < 100 && walking != null; depth++) {
+                        if (current != null && walking.equals(current.getId())) {
+                            checks.error("parentCustomerId", "CYCLE", "Órgão centralizador forma ciclo.");
+                            break;
+                        }
+                        Customer next = customers.findById(walking).orElse(null);
+                        walking = next == null ? null : next.getParentCustomerId();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Toda escrita de cadastro gera OS interna da P1.31 (um OS por tipo distinto entre os
+     * campos alterados) e registra cada campo em cadastral_change_requests, com o valor
+     * mascarado quando for documento. Sem wiring (construtor antigo), a escrita segue sem OS.
+     */
+    private void recordWrite(Customer c, CustomerInput in, Customer before) {
+        if (orders == null || changes == null) {
+            return;
+        }
+        Map<String, String[]> fields = new LinkedHashMap<>();
+        putField(fields, "name", before, before == null ? null : before.getName(), c.getName());
+        putField(fields, "tradeName", before, before == null ? null : before.getTradeName(), c.getTradeName());
+        putField(fields, "customerTypeId", before, before == null ? null : str(before.getCustomerTypeId()),
+                str(c.getCustomerTypeId()));
+        putField(fields, "parentCustomerId", before, before == null ? null : str(before.getParentCustomerId()),
+                str(c.getParentCustomerId()));
+        putField(fields, "governmentSphere", before, before == null ? null : before.getGovernmentSphere(),
+                c.getGovernmentSphere());
+        if (before == null || !java.util.Objects.equals(before.getDocumentMasked(), c.getDocumentMasked())) {
+            fields.put("document", new String[]{before == null ? null : before.getDocumentMasked(), c.getDocumentMasked()});
+        }
+        if (in.emails() != null || in.phones() != null) {
+            fields.put("emails", new String[]{null, null});
+            fields.put("phones", new String[]{null, null});
+        }
+        if (in.addresses() != null) {
+            fields.put("addresses", new String[]{null, null});
+        }
+        if (fields.isEmpty()) {
+            return;
+        }
+        Map<String, List<String>> byType = new LinkedHashMap<>();
+        for (String field : fields.keySet()) {
+            String type = CadastralChangeService.osTypeFor("CUSTOMER", field);
+            if (type != null) {
+                byType.computeIfAbsent(type, k -> new ArrayList<>()).add(field);
+            }
+        }
+        for (Map.Entry<String, List<String>> entry : byType.entrySet()) {
+            UUID orderId = orders.open(entry.getKey());
+            for (String field : entry.getValue()) {
+                String[] values = fields.get(field);
+                changes.record("CUSTOMER", c.getId(), field, values[0], values[1], orderId);
+            }
+            orders.executeAndClose(orderId);
+        }
+    }
+
+    private static void putField(Map<String, String[]> fields, String field, Customer before, String oldValue,
+                                 String newValue) {
+        if (before == null || !java.util.Objects.equals(oldValue, newValue)) {
+            fields.put(field, new String[]{oldValue, newValue});
+        }
+    }
+
+    private static String str(UUID id) {
+        return id == null ? null : id.toString();
     }
 
     /** Exclusão lógica. Cliente com vínculo vigente com imóvel não sai: a conta ficaria sem titular. */
@@ -353,6 +523,9 @@ public class CustomerService {
         c.setActivityBranchId(in.activityBranchId());
         c.setParentCustomerId(in.parentCustomerId());
         c.setDocumentExemptionReason(blankToNull(in.documentExemptionReason()));
+        c.setDocumentExemptionReasonId(in.documentExemptionReasonId());
+        c.setGovernmentSphere(blankToNull(in.governmentSphere()));
+        c.setDeleteReasonId(in.deleteReasonId());
         c.setBirthDate(in.birthDate());
         Integer dueDay = in.billing() == null ? null : in.billing().dueDay();
         c.setDueDay(dueDay == null ? null : dueDay.shortValue());
@@ -462,6 +635,10 @@ public class CustomerService {
             cc.setConsentId(d.consentId());
             cc.setExtension(d.extension());
             cc.setContactName(d.contactName());
+            // P1.3: o tipo do telefone vai também para phone_type (label continua sendo o tipo na API).
+            if (d.kind() == CustomerContact.Kind.PHONE) {
+                cc.setPhoneType(d.label());
+            }
             toSave.add(cc);
         }
         contacts.saveAllAndFlush(toSave);
@@ -502,6 +679,12 @@ public class CustomerService {
             row.setCity(blankToNull(addr.city()));
             row.setState(addr.state() == null ? null : addr.state().toUpperCase(Locale.ROOT));
             row.setCountry("BR");
+            // P1.3: município IBGE, referência, precisão, catálogos de logradouro/bairro.
+            row.setMunicipalityIbge(blankToNull(addr.municipalityIbge()));
+            row.setReferencePoint(blankToNull(addr.referencePoint()));
+            row.setGeocodePrecision(blankToNull(addr.geocodePrecision()));
+            row.setStreetId(addr.streetId());
+            row.setNeighborhoodId(addr.neighborhoodId());
             if (addr.coordinates() != null && addr.coordinates().lat() != null && addr.coordinates().lng() != null) {
                 // JTS: X = longitude, Y = latitude.
                 row.setCoordinates(GEOMETRY_FACTORY.createPoint(
@@ -510,6 +693,30 @@ public class CustomerService {
             toSave.add(row);
         }
         addresses.saveAllAndFlush(toSave);
+        syncCustomerAddresses(c, toSave);
+    }
+
+    /**
+     * P1.3: vínculos novos na tabela própria customer_addresses (a linha polimórfica
+     * continua existindo para as linhas legadas). Sem wiring, nada é feito aqui.
+     */
+    private void syncCustomerAddresses(Customer c, List<Address> saved) {
+        if (customerAddresses == null) {
+            return;
+        }
+        UUID tenantId = RegistryContext.tenantId();
+        customerAddresses.deleteAll(customerAddresses.findByTenantIdAndCustomerIdOrderByValidFromAsc(tenantId, c.getId()));
+        customerAddresses.flush();
+        List<CustomerAddress> toSave = new ArrayList<>();
+        for (Address row : saved) {
+            CustomerAddress link = RegistryContext.forCreate(new CustomerAddress());
+            link.setCustomerId(c.getId());
+            link.setAddressId(row.getId());
+            link.setValidFrom(java.time.LocalDate.now());
+            link.setCorrespondence(row.isPrimary());
+            toSave.add(link);
+        }
+        customerAddresses.saveAllAndFlush(toSave);
     }
 
     /** Imóveis distintos com vínculo vigente, por cliente. */
@@ -548,16 +755,32 @@ public class CustomerService {
                     : new CoordinatesView(a.getCoordinates().getY(), a.getCoordinates().getX());
             addressViews.add(new AddressView(
                     new CustomerDtos.AddressDetailView(a.getCep(), a.getStreet(), a.getNumber(), a.getComplement(),
-                            a.getNeighborhood(), a.getCity(), a.getState(), coordinates),
+                            a.getNeighborhood(), a.getCity(), a.getState(), coordinates,
+                            a.getMunicipalityIbge(), a.getReferencePoint(), a.getGeocodePrecision()),
                     a.isPrimary()));
         }
         long units = unitCounts(List.of(c.getId())).getOrDefault(c.getId(), 0L);
         return new CustomerView(c.getId(), c.getVersion(), c.getPersonType(), c.getName(), c.getTradeName(),
-                refOrNull(c.getCustomerTypeId()), c.getDocumentMasked(), c.getDocumentExemptionReason(),
+                catalogRef("customer_types", c.getCustomerTypeId()), c.getDocumentMasked(),
+                c.getDocumentExemptionReason(),
                 c.getBirthDate(), refOrNull(c.getActivityBranchId()), parentRef(c),
                 new Billing(c.getDueDay() == null ? null : (int) c.getDueDay(), c.isNextMonthDue(),
                         c.isAdvanceInvoice(), c.isBlockNegativation()),
-                emails, phones, addressViews, units, c.getDeletedAt(), c.getDeletedReason());
+                emails, phones, addressViews, units, c.getDeletedAt(), c.getDeletedReason(),
+                c.getGovernmentSphere(), catalogRef("document_exemption_reasons", c.getDocumentExemptionReasonId()),
+                catalogRef("customer_delete_reasons", c.getDeleteReasonId()));
+    }
+
+    /** Ref resolvida no catálogo R2 quando o wiring existe; senão o comportamento P0.16 (id, sem nome). */
+    private Ref catalogRef(String table, UUID id) {
+        if (id == null) {
+            return null;
+        }
+        if (catalogs == null) {
+            return refOrNull(id);
+        }
+        Ref ref = catalogs.ref(table, id);
+        return ref.name() == null ? refOrNull(id) : ref;
     }
 
     /**

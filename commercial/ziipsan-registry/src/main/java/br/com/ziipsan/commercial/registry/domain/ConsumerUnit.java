@@ -20,16 +20,18 @@ import java.util.UUID;
 @Setter
 public class ConsumerUnit extends TenantAwareEntity {
 
-    @Column(name = "matricula", nullable = false, length = 50)
-    private String matricula;
+    /** P1.3 (V3_12): coluna renomeada de matricula; o nome na API continua registration. */
+    @Column(name = "registration_number", nullable = false, length = 50)
+    private String registrationNumber;
 
-    @Column(name = "dv", nullable = false, length = 1)
+    /** P1.3 (V3_12): coluna renomeada de dv; o nome na API continua registrationDv. */
+    @Column(name = "check_digit", nullable = false, length = 1)
     private String checkDigit;
 
     @Column(name = "block_id")
     private UUID blockId;
 
-    /** Face da quadra. Sem FK: a tabela block_faces nao existe no backend (P0.16, V3_5). */
+    /** Face da quadra. P1.3 (V3_12): FK para block_faces. */
     @Column(name = "block_face_id")
     private UUID blockFaceId;
 
@@ -48,13 +50,13 @@ public class ConsumerUnit extends TenantAwareEntity {
     @Column(name = "sewer_status_id")
     private UUID sewerStatusId;
 
-    /** Sem FK: o catalogo sewer-discharges nao existe no backend (P0.16, V3_5). */
+    /** P1.3 (V3_12): FK para sewer_discharges. */
     @Column(name = "sewer_discharge_id")
     private UUID sewerDischargeId;
 
-    /** Sem FK: o catalogo property-profiles nao existe no backend (P0.16, V3_5). */
-    @Column(name = "profile_id")
-    private UUID profileId;
+    /** P1.3 (V3_12): coluna renomeada de profile_id; FK para property_profiles. */
+    @Column(name = "property_profile_id")
+    private UUID propertyProfileId;
 
     /** Sem FK: o catalogo water-sources nao existe no backend (P0.16, V3_5). */
     @Column(name = "water_source_id")
@@ -143,9 +145,21 @@ public class ConsumerUnit extends TenantAwareEntity {
     @Column(name = "coordinates", columnDefinition = "geometry(Point, 4674)")
     private org.locationtech.jts.geom.Point coordinates;
 
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
-    @Column(name = "properties", columnDefinition = "jsonb")
-    private String properties;
+    /** P1.3 (V3_12): tipo de relação com a unidade-mãe (CONDOMINIUM_MACRO, ANNEX). */
+    @Column(name = "parent_relation_type", length = 20)
+    private String parentRelationType;
+
+    /** P1.3 (V3_12): município do IPTU (código IBGE, 7 dígitos). */
+    @Column(name = "iptu_municipality_ibge", length = 7)
+    private String iptuMunicipalityIbge;
+
+    /** P1.3 (V3_12): atividade econômica (CNAE, 7 dígitos; PD-06). */
+    @Column(name = "cnae_code", length = 7)
+    private String cnaeCode;
+
+    /** P1.3 (V3_12): marca de sazonalidade (efeito na crítica/média é da P2.5). */
+    @Column(name = "seasonal", nullable = false)
+    private boolean seasonal;
 
     @Column(name = "deleted_at")
     private java.time.OffsetDateTime deletedAt;

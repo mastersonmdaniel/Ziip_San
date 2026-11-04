@@ -31,9 +31,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * P1.31 (V9_1) on the real PostgreSQL, over the provisioned tenant.
  *
  * <p>Live proof: the engine tables and the V9_1 history entry exist; the
- * history FK refuses a nonexistent order while NULL stays allowed until
- * P1.3/V3_6 (plan reservation: mandatory service_order_id lands with the
- * routing of direct registry writes); the full lifecycle runs
+ * history FK refuses a nonexistent order and NULL is refused since P1.3
+ * (V3_12 NOT NULL; FK since V9_1; the plan's V3_6 already existed, P0.16);
+ * the full lifecycle runs
  * (create, submit, approve, schedule, execute, close) with transactional
  * and idempotent effect application; invalid transitions are refused by
  * the service and by the database trigger; a class without a registered
@@ -92,7 +92,7 @@ class ServiceOrderEngineIT {
     private static UUID insertUnit(Connection c, String matricula) throws SQLException {
         UUID id = UUID.randomUUID();
         try (PreparedStatement ps = c.prepareStatement(
-                "INSERT INTO " + SCHEMA + ".consumer_units (id, tenant_id, matricula, dv) VALUES (?, ?, ?, '0')")) {
+                "INSERT INTO " + SCHEMA + ".consumer_units (id, tenant_id, registration_number, check_digit) VALUES (?, ?, ?, '0')")) {
             ps.setObject(1, id);
             ps.setObject(2, TENANT);
             ps.setString(3, matricula);
@@ -291,25 +291,27 @@ class ServiceOrderEngineIT {
     }
 
     @Test
-    @DisplayName("historico: FK recusa OS inexistente; NULL admitido ate a P1.3/V3_6 (roteamento do registro direto)")
-    void historyOrderFkEnforcedButNullableUntilP13() throws SQLException {
-        // Integracao P1-B: o plano reserva o service_order_id OBRIGATORIO para a
-        // V3_6/P1.3, quando todo registro direto passa a rotear por OS interna.
-        // A P1.31 impoe so o FK: NULL e admitido (criar o imovel escreve o
-        // historico inicial sem OS) e OS inexistente e recusada (23503). A
-        // recusa de NULL (23502) volta como teste da P1.3 junto com o NOT NULL.
+    @DisplayName("historico (P1.3/R1): NULL recusado (23502); FK recusa OS inexistente (23503)")
+    void historyOrderRequiredAndFkEnforced() throws SQLException {
+        // P1.3 (V3_12): a V3_6 reservada no plano já existia (P0.16), então o
+        // NOT NULL chegou na V3_12; a FK (fk_ush_service_order) já existia
+        // desde a V9_1 (a V9_2 do tenant é da P3.4).
+        // Este teste substitui o da P1-B, que afirmava "NULL admitido até a P1.3".
         try (Connection c = asTenant()) {
             try {
                 UUID unit = insertUnit(c, uniq("IT-HIST"));
                 var savepoint = c.setSavepoint();
-                try (PreparedStatement ps = c.prepareStatement(
-                        "INSERT INTO " + SCHEMA + ".unit_status_history (tenant_id, unit_id, service_kind,"
-                                + " to_status_id, service_order_id) VALUES (?, ?, 'WATER', ?, NULL)")) {
-                    ps.setObject(1, TENANT);
-                    ps.setObject(2, unit);
-                    ps.setObject(3, UUID.randomUUID());
-                    assertThat(ps.executeUpdate()).as("NULL admitido ate a P1.3").isEqualTo(1);
-                }
+                assertThatThrownBy(() -> {
+                    try (PreparedStatement ps = c.prepareStatement(
+                            "INSERT INTO " + SCHEMA + ".unit_status_history (tenant_id, unit_id, service_kind,"
+                                    + " to_status_id, service_order_id) VALUES (?, ?, 'WATER', ?, NULL)")) {
+                        ps.setObject(1, TENANT);
+                        ps.setObject(2, unit);
+                        ps.setObject(3, UUID.randomUUID());
+                        ps.executeUpdate();
+                    }
+                }).isInstanceOf(SQLException.class)
+                        .satisfies(e -> assertThat(((SQLException) e).getSQLState()).isEqualTo("23502"));
                 c.rollback(savepoint);
                 UUID order = service.createOrder(orderInput(declareInternal("IT-HIST-TYPE"), UUID.randomUUID())).id();
                 try (PreparedStatement ps = c.prepareStatement(

@@ -144,7 +144,7 @@ class BillingP1MigrationTest {
     private static UUID insertUnit(Connection c, String matricula) throws SQLException {
         UUID id = UUID.randomUUID();
         try (PreparedStatement ps = c.prepareStatement(
-                "INSERT INTO " + SCHEMA + ".consumer_units (id, tenant_id, matricula, dv) VALUES (?, ?, ?, '0')")) {
+                "INSERT INTO " + SCHEMA + ".consumer_units (id, tenant_id, registration_number, check_digit) VALUES (?, ?, ?, '0')")) {
             ps.setObject(1, id);
             ps.setObject(2, TENANT);
             ps.setString(3, matricula);

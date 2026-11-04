@@ -63,20 +63,28 @@ public final class CustomerDtos {
 
     public record AddressDetailView(String cep, String streetName, String number, String complement,
                                     String neighborhood, String city, String state,
-                                    CoordinatesView coordinates) {
+                                    CoordinatesView coordinates, String municipalityIbge,
+                                    String referencePoint, String geocodePrecision) {
+        /** Forma antiga (sem os campos P1.3), para não quebrar construção existente. */
+        public AddressDetailView(String cep, String streetName, String number, String complement,
+                                 String neighborhood, String city, String state,
+                                 CoordinatesView coordinates) {
+            this(cep, streetName, number, complement, neighborhood, city, state, coordinates, null, null, null);
+        }
     }
 
     public record CustomerView(UUID id, Long version, PersonType personType, String name, String tradeName,
                                Ref customerType, String documentMasked, String documentExemptionReason,
                                LocalDate birthDate, Ref activityBranch, Ref parentCustomer, Billing billing,
                                List<EmailView> emails, List<PhoneView> phones, List<AddressView> addresses,
-                               long unitCount, OffsetDateTime deletedAt, String deletedReason) {
+                               long unitCount, OffsetDateTime deletedAt, String deletedReason,
+                               String governmentSphere, Ref documentExemption, Ref deleteReason) {
         /** Forma antiga (sem os campos P0.16), para não quebrar construção existente. */
         public CustomerView(UUID id, Long version, PersonType personType, String name, String tradeName,
                             String documentMasked, LocalDate birthDate, Billing billing, List<EmailView> emails,
                             List<PhoneView> phones, long unitCount, OffsetDateTime deletedAt, String deletedReason) {
             this(id, version, personType, name, tradeName, null, documentMasked, null, birthDate, null, null, billing,
-                    emails, phones, List.of(), unitCount, deletedAt, deletedReason);
+                    emails, phones, List.of(), unitCount, deletedAt, deletedReason, null, null, null);
         }
     }
 
@@ -125,7 +133,13 @@ public final class CustomerDtos {
             @Size(max = 100) String neighborhood,
             @Size(max = 100) String city,
             @Pattern(regexp = "[A-Za-z]{2}", message = "UF com 2 letras.") String state,
-            @Valid CoordinatesInput coordinates) {
+            @Valid CoordinatesInput coordinates,
+            /* P1.3: município IBGE, ponto de referência, precisão da geocodificação, catálogos. */
+            @Pattern(regexp = "[0-9]{7}", message = "Código IBGE com 7 dígitos.") String municipalityIbge,
+            @Size(max = 200) String referencePoint,
+            @Pattern(regexp = "EXACT|INTERPOLATED|CENTROID|MANUAL|UNKNOWN", message = "Precisão da geocodificação inválida.") String geocodePrecision,
+            UUID streetId,
+            UUID neighborhoodId) {
     }
 
     public record CustomerInput(
@@ -147,13 +161,17 @@ public final class CustomerDtos {
             List<@Valid EmailInput> emails,
             List<@Valid PhoneInput> phones,
             List<@Valid CustomerAddressInput> addresses,
+            /* P1.3: esfera de governo; motivo de dispensa e de exclusão por catálogo. */
+            @Pattern(regexp = "FEDERAL|STATE|MUNICIPAL|NONE", message = "Esfera de governo inválida.") String governmentSphere,
+            UUID documentExemptionReasonId,
+            UUID deleteReasonId,
             Long version) {
         /** Forma antiga (sem os campos P0.16), para não quebrar construção existente. */
         public CustomerInput(PersonType personType, String name, String tradeName, String document,
                              LocalDate birthDate, Billing billing, List<EmailInput> emails,
                              List<PhoneInput> phones, Long version) {
             this(personType, name, tradeName, null, document, null, birthDate, null, null, billing, emails, phones,
-                    null, version);
+                    null, null, null, null, version);
         }
     }
 

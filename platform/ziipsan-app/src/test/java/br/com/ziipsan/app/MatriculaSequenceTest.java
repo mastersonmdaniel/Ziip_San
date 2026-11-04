@@ -153,13 +153,14 @@ class MatriculaSequenceTest extends AppIntegrationTestBase {
              Statement st = c.createStatement()) {
             st.execute("SET app.current_tenant = '" + TENANT + "'");
             st.execute("SET search_path TO " + SCHEMA + ", public");
-            st.execute("INSERT INTO consumer_units (id, tenant_id, matricula, dv) VALUES ('"
+            st.execute("INSERT INTO consumer_units (id, tenant_id, registration_number, check_digit) VALUES ('"
                     + UUID.randomUUID() + "', '" + TENANT + "', '777001', '0')");
             // A expressão de semeadura da V3_10, reaplicada (o Flyway não reexecuta a migration).
+            // P1.3 (V3_12): a coluna matricula foi renomeada para registration_number.
             st.execute("SELECT CASE WHEN COALESCE(m, 0) > 0 THEN setval('" + SEQ + "', m, true) "
                     + "ELSE setval('" + SEQ + "', 1, false) END "
-                    + "FROM (SELECT MAX(CAST(matricula AS bigint)) AS m FROM consumer_units "
-                    + "WHERE matricula ~ '^[0-9]+$' AND length(matricula) <= 18) x");
+                    + "FROM (SELECT MAX(CAST(registration_number AS bigint)) AS m FROM consumer_units "
+                    + "WHERE registration_number ~ '^[0-9]+$' AND length(registration_number) <= 18) x");
         }
         assertThat(nextvalAsApp()).as("próxima matrícula após 777001").isEqualTo(777002L);
     }

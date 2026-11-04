@@ -44,6 +44,29 @@ public class UnitCustomer extends TenantAwareEntity {
     @Column(name = "show_on_bill", nullable = false)
     private boolean showOnBill;
 
+    /**
+     * P1.3 (V3_12): papel por catálogo (relation_roles). {@code role} FICA como
+     * espelho do system_role (remoção na P1.41); o serviço grava os dois juntos.
+     */
+    @Column(name = "role_id", nullable = false)
+    private UUID roleId;
+
+    /** P1.3 (V3_12): motivo de fim por catálogo (unit_link_end_reasons). */
+    @Column(name = "end_reason_id")
+    private UUID endReasonId;
+
+    /** P1.3 (V3_12): OS que abriu o vínculo (FK na V9_3). */
+    @Column(name = "opened_by_service_order_id")
+    private UUID openedByServiceOrderId;
+
+    /** P1.3 (V3_12): OS que fechou o vínculo (FK na V9_3). */
+    @Column(name = "closed_by_service_order_id")
+    private UUID closedByServiceOrderId;
+
+    /** P1.3 (V3_12): forma de entrega da conta (obrigatória quando há responsável). */
+    @Column(name = "delivery_mode_id")
+    private UUID deliveryModeId;
+
     public enum Role { OWNER, USER, RESPONSIBLE }
 
 }

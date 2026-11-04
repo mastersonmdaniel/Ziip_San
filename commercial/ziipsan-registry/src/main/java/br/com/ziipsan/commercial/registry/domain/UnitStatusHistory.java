@@ -42,16 +42,17 @@ public class UnitStatusHistory extends TenantAwareEntity {
     private String reason;
 
     /**
-     * P1.31 (V9_1): FK para service_orders, NULL admitido ate a P1.3.
-     * ADR-0039 item 6 quer todo historico nascido da OS que causou a
-     * mudanca, mas o plano reserva o service_order_id obrigatorio para a
-     * V3_6/P1.3, quando todo registro direto passa a rotear por OS
-     * interna. Ate la, a escrita direta (ex.: criar o imovel escreve o
-     * historico inicial sem OS) continua valida; o FK ja recusa uma OS
-     * inexistente quando o historico carrega uma. A obrigatoriedade
-     * (NOT NULL) chega na P1.3 junto com o roteamento — nao aqui.
+     * P1.3 (V3_12): service_order_id é NOT NULL, com FK para service_orders
+     * desde a V9_1 (fk_ush_service_order) — a correção R1 ("com a FK") já
+     * estava satisfeita pela V9_1; a P1.3 entregou o NOT NULL que faltava.
+     * Antes da P1.3 ele era NULL admitido ("nullable until P1.3"); a V3_6
+     * reservada no plano já existia (P0.16), então o NOT NULL chegou na
+     * V3_12 (a V9_2 do tenant é da P3.4). A escrita direta sem OS (ex.:
+     * criar o imóvel escrevia o histórico inicial sem OS) deixa de ser
+     * válida: a escrita roteia por OS interna.
      */
-    @Column(name = "service_order_id")
+    /** P1.3 (V3_12): NOT NULL no banco — toda linha nasce de uma OS. */
+    @Column(name = "service_order_id", nullable = false)
     private UUID serviceOrderId;
 
     public enum ServiceKind { WATER, SEWER }

@@ -9,7 +9,8 @@ import java.util.UUID;
 
 @Repository
 public interface ConsumerUnitRepository extends JpaRepository<ConsumerUnit, UUID> {
-    Optional<ConsumerUnit> findByTenantIdAndMatricula(UUID tenantId, String matricula);
+    /** P1.3 (V3_12): propriedade renomeada de matricula para registrationNumber. */
+    Optional<ConsumerUnit> findByTenantIdAndRegistrationNumber(UUID tenantId, String registrationNumber);
 
     /** Unidade ativa com a mesma inscricao (quadra + lote + sublote). */
     Optional<ConsumerUnit> findByTenantIdAndBlockIdAndLotAndSublotAndDeletedAtIsNull(

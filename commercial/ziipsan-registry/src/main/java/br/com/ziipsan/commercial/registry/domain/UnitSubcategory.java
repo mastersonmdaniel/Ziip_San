@@ -35,4 +35,15 @@ public class UnitSubcategory extends TenantAwareEntity {
     @Column(name = "collective_units")
     private Integer collectiveUnits;
 
+    /**
+     * P1.3 (V3_12): vigência da linha de economias. A competência passada usa o
+     * valor da época; vigência nova começa no primeiro dia da competência
+     * (regra do serviço). O serviço sempre grava validFrom explícito.
+     */
+    @Column(name = "valid_from", nullable = false)
+    private java.time.LocalDate validFrom = java.time.LocalDate.now();
+
+    @Column(name = "valid_to")
+    private java.time.LocalDate validTo;
+
 }

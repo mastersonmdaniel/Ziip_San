@@ -49,6 +49,21 @@ public class CustomerContact extends TenantAwareEntity {
     @Column(name = "consent_id")
     private UUID consentId;
 
+    /** P1.3 (V3_12): tipo de telefone (móvel, fixo...); label continua sendo o tipo na API. */
+    @Column(name = "phone_type", length = 30)
+    private String phoneType;
+
+    /** P1.3 (V3_12): estado de verificação (UNVERIFIED, PENDING, VERIFIED). */
+    @Column(name = "verification_state", nullable = false, length = 20)
+    private String verificationState = "UNVERIFIED";
+
+    /** P1.3 (V3_12): vigência do contato. */
+    @Column(name = "valid_from")
+    private java.time.LocalDate validFrom;
+
+    @Column(name = "valid_to")
+    private java.time.LocalDate validTo;
+
     public enum Kind { EMAIL, PHONE }
 
 }

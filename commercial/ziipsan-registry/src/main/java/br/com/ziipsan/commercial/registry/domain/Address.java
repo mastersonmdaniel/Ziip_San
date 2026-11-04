@@ -70,6 +70,26 @@ public class Address extends TenantAwareEntity {
     @Column(name = "position")
     private Integer position;
 
+    /** P1.3 (V3_12): município do endereço (código IBGE, 7 dígitos). */
+    @Column(name = "municipality_ibge", length = 7)
+    private String municipalityIbge;
+
+    /** P1.3 (V3_12): ponto de referência (redigido na auditoria). */
+    @Column(name = "reference_point", length = 200)
+    private String referencePoint;
+
+    /** P1.3 (V3_12): precisão da geocodificação (EXACT, INTERPOLATED, CENTROID, MANUAL, UNKNOWN). */
+    @Column(name = "geocode_precision", length = 20)
+    private String geocodePrecision;
+
+    /** P1.3 (V3_12): logradouro por catálogo (street_names). */
+    @Column(name = "street_id")
+    private UUID streetId;
+
+    /** P1.3 (V3_12): bairro por catálogo (neighborhoods). */
+    @Column(name = "neighborhood_id")
+    private UUID neighborhoodId;
+
     public enum Type { PHYSICAL, BILLING, CORRESPONDENCE, ALTERNATIVE }
 
 }

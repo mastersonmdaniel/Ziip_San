@@ -46,4 +46,8 @@ public class Category extends TenantAwareEntity {
     @Column(name = "active", nullable = false)
     private boolean active;
 
+    /** P1.3 (V3_12): classe regulatória (NR 13, art. 6º). */
+    @Column(name = "regulatory_class", length = 20)
+    private String regulatoryClass;
+
 }

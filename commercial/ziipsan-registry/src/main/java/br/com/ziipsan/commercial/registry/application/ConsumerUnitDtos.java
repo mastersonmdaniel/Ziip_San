@@ -36,7 +36,13 @@ public final class ConsumerUnitDtos {
     }
 
     public record AddressView(String cep, String streetName, String number, String complement, String neighborhood,
-                              String city, String state, CoordinatesView coordinates) {
+                              String city, String state, CoordinatesView coordinates, String municipalityIbge,
+                              String referencePoint, String geocodePrecision) {
+        /** Forma antiga (sem os campos P1.3), para não quebrar construção existente. */
+        public AddressView(String cep, String streetName, String number, String complement, String neighborhood,
+                           String city, String state, CoordinatesView coordinates) {
+            this(cep, streetName, number, complement, neighborhood, city, state, coordinates, null, null, null);
+        }
     }
 
     public record PhysicalView(Boolean garden, BigDecimal lowerReservoirM3, BigDecimal upperReservoirM3,
@@ -72,7 +78,8 @@ public final class ConsumerUnitDtos {
                            PhysicalView physical,
                            Integer usagePoints, Integer residents, ExternalIdsView externalIds,
                            Ref deliveryMode, Ref deliveryRoute, Integer deliverySequence, Ref altRoute, Ref parentUnit,
-                           Integer dueDay, String notes, UUID draftId) {
+                           Integer dueDay, String notes, UUID draftId,
+                           String parentRelationType, String iptuMunicipalityIbge, String cnaeCode, Boolean seasonal) {
     }
 
     public record UnitSummary(UUID id, String registration, String registrationDv, InscriptionView inscription,
@@ -100,7 +107,13 @@ public final class ConsumerUnitDtos {
             @Size(max = 100) String neighborhood,
             @Size(max = 100) String city,
             @Pattern(regexp = "[A-Za-z]{2}", message = "UF com 2 letras.") String state,
-            @Valid CoordinatesInput coordinates) {
+            @Valid CoordinatesInput coordinates,
+            /* P1.3: município IBGE, ponto de referência, precisão da geocodificação, catálogos. */
+            @Pattern(regexp = "[0-9]{7}", message = "Código IBGE com 7 dígitos.") String municipalityIbge,
+            @Size(max = 200) String referencePoint,
+            @Pattern(regexp = "EXACT|INTERPOLATED|CENTROID|MANUAL|UNKNOWN", message = "Precisão da geocodificação inválida.") String geocodePrecision,
+            UUID streetId,
+            UUID neighborhoodId) {
     }
 
     /** Caracteristicas fisicas (etapa 5 do wizard). Nulo no todo = sem caracteristicas. */
@@ -120,7 +133,12 @@ public final class ConsumerUnitDtos {
             @NotNull(message = "Informe o cliente.") UUID customerId,
             @NotNull(message = "Informe o papel (OWNER, USER ou RESPONSIBLE).") UnitCustomer.Role relation,
             @NotNull(message = "Informe a data de início do vínculo.") LocalDate startDate,
-            Boolean showOnBill) {
+            Boolean showOnBill,
+            /* P1.3: papel por catálogo (quando ausente, resolve pelo system_role), motivo de
+               fim por catálogo e forma de entrega (obrigatória quando há responsável). */
+            UUID roleId,
+            UUID endReasonId,
+            UUID deliveryModeId) {
     }
 
     public record SubcategoryInput(
@@ -128,7 +146,10 @@ public final class ConsumerUnitDtos {
             @NotNull(message = "Informe as economias.") Integer economies,
             @Min(0) Integer privateUnits,
             @Min(0) Integer collectiveUnits,
-            List<UUID> activityBranchIds) {
+            List<UUID> activityBranchIds,
+            /* P1.3: vigência da linha; ausente = primeiro dia da competência corrente. */
+            LocalDate validFrom,
+            LocalDate validTo) {
     }
 
     /**
@@ -179,6 +200,13 @@ public final class ConsumerUnitDtos {
             @Min(1) @Max(31) Integer dueDay,
             @Size(max = 750) String notes,
             UUID draftId,
+            /* P1.3: tipo de relação com a unidade-mãe, município do IPTU, CNAE, sazonalidade. */
+            @Pattern(regexp = "CONDOMINIUM_MACRO|ANNEX", message = "Tipo de relação com a unidade-mãe inválido.") String parentRelationType,
+            @Pattern(regexp = "[0-9]{7}", message = "Código IBGE com 7 dígitos.") String iptuMunicipalityIbge,
+            @Pattern(regexp = "[0-9]{7}", message = "CNAE com 7 dígitos.") String cnaeCode,
+            Boolean seasonal,
+            /* P1.3: motivo por catálogo dos vínculos fechados por esta alteração (CHECK da V3_12). */
+            UUID linkEndReasonId,
             Long version,
             List<String> confirmTokens) {
     }

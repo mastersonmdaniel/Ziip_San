@@ -27,6 +27,7 @@ import br.com.ziipsan.commercial.registry.domain.ReadingRoute;
 import br.com.ziipsan.commercial.registry.domain.SewerStatus;
 import br.com.ziipsan.commercial.registry.domain.Subcategory;
 import br.com.ziipsan.commercial.registry.domain.UnitCustomer;
+import br.com.ziipsan.commercial.registry.domain.UnitDueDay;
 import br.com.ziipsan.commercial.registry.domain.UnitStatusHistory;
 import br.com.ziipsan.commercial.registry.domain.UnitSubcategory;
 import br.com.ziipsan.commercial.registry.domain.UnitSubcategoryActivity;
@@ -34,6 +35,7 @@ import br.com.ziipsan.commercial.registry.domain.WaterStatus;
 import br.com.ziipsan.commercial.registry.repository.AddressRepository;
 import br.com.ziipsan.commercial.registry.repository.ConsumerUnitRepository;
 import br.com.ziipsan.commercial.registry.repository.UnitCustomerRepository;
+import br.com.ziipsan.commercial.registry.repository.UnitDueDayRepository;
 import br.com.ziipsan.commercial.registry.repository.UnitStatusHistoryRepository;
 import br.com.ziipsan.commercial.registry.repository.UnitSubcategoryActivityRepository;
 import br.com.ziipsan.commercial.registry.repository.UnitSubcategoryRepository;
@@ -60,7 +62,9 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -94,7 +98,7 @@ public class ConsumerUnitService {
 
     private static final Map<String, List<String>> SORT = Map.of(
             "inscription", List.of("l.code", "s.code", "b.code", "u.lot", "u.sublot"),
-            "registration", List.of("length(u.matricula)", "u.matricula"),
+            "registration", List.of("length(u.registrationNumber)", "u.registrationNumber"),
             "createdAt", List.of("u.createdAt"));
 
     /** Colunas técnicas que não interessam na linha do tempo. */
@@ -116,6 +120,11 @@ public class ConsumerUnitService {
     private final CustomerDocumentService documents;
     private final RegistrySettingsService settings;
     private final PersonalDataAccessService accessLog;
+    /** P1.3: nulos no construtor antigo (testes legados) — sem eles, catálogo/OS/dia de vencimento são pulados. */
+    private final CatalogLookup catalogs;
+    private final InternalOrderService orders;
+    private final CadastralChangeService changes;
+    private final UnitDueDayRepository dueDays;
 
     /** SIRGAS 2000 (EPSG:4674), o SRID das colunas de coordenadas (V1_1). x = longitude, y = latitude. */
     private static final GeometryFactory GEOMETRY_4674 = new GeometryFactory(new PrecisionModel(), 4674);
@@ -126,6 +135,19 @@ public class ConsumerUnitService {
                                UnitStatusHistoryRepository statusHistory, AuditLogRepository auditLog,
                                CustomerDocumentService documents, RegistrySettingsService settings,
                                PersonalDataAccessService accessLog) {
+        this(units, addresses, unitCustomers, unitSubcategories, unitSubcategoryActivities, statusHistory, auditLog,
+                documents, settings, accessLog, null, null, null, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public ConsumerUnitService(ConsumerUnitRepository units, AddressRepository addresses,
+                               UnitCustomerRepository unitCustomers, UnitSubcategoryRepository unitSubcategories,
+                               UnitSubcategoryActivityRepository unitSubcategoryActivities,
+                               UnitStatusHistoryRepository statusHistory, AuditLogRepository auditLog,
+                               CustomerDocumentService documents, RegistrySettingsService settings,
+                               PersonalDataAccessService accessLog, CatalogLookup catalogs,
+                               InternalOrderService orders, CadastralChangeService changes,
+                               UnitDueDayRepository dueDays) {
         this.units = units;
         this.addresses = addresses;
         this.unitCustomers = unitCustomers;
@@ -136,6 +158,10 @@ public class ConsumerUnitService {
         this.documents = documents;
         this.settings = settings;
         this.accessLog = accessLog;
+        this.catalogs = catalogs;
+        this.orders = orders;
+        this.changes = changes;
+        this.dueDays = dueDays;
     }
 
     // ------------------------------------------------------------------ leitura
@@ -210,7 +236,7 @@ public class ConsumerUnitService {
             return hash;
         } else if (text.matches("\\d{1,18}(-\\d)?")) {
             String[] parts = text.split("-");
-            query.where("u.matricula = :matricula", "matricula", parts[0]);
+            query.where("u.registrationNumber = :matricula", "matricula", parts[0]);
             if (parts.length > 1) {
                 query.where("u.checkDigit = :dv", "dv", parts[1]);
             }
@@ -292,10 +318,11 @@ public class ConsumerUnitService {
         consistency(checks, in, r, config);
         checks.throwIfAny();
 
+        Map<String, UUID> orderIds = openWriteOrders(in, null);
         ConsumerUnit u = RegistryContext.forCreate(new ConsumerUnit());
         u.setId(UUID.randomUUID());
         String matricula = nextMatricula();
-        u.setMatricula(matricula);
+        u.setRegistrationNumber(matricula);
         u.setCheckDigit(Integer.toString(Matricula.checkDigit(matricula)));
 
         Address a = RegistryContext.forCreate(new Address());
@@ -310,10 +337,16 @@ public class ConsumerUnitService {
         apply(u, in, r);
         units.saveAndFlush(u);
 
-        recordStatus(u.getId(), UnitStatusHistory.ServiceKind.WATER, null, u.getWaterStatusId(), "Cadastro do imóvel");
-        recordStatus(u.getId(), UnitStatusHistory.ServiceKind.SEWER, null, u.getSewerStatusId(), "Cadastro do imóvel");
+        recordStatus(u.getId(), UnitStatusHistory.ServiceKind.WATER, null, u.getWaterStatusId(), "Cadastro do imóvel",
+                orderIds.get("UNIT_PROFILE_UPDATE"));
+        recordStatus(u.getId(), UnitStatusHistory.ServiceKind.SEWER, null, u.getSewerStatusId(), "Cadastro do imóvel",
+                orderIds.get("UNIT_PROFILE_UPDATE"));
         syncSubcategories(u, in.subcategories());
-        syncCustomers(u, in.customers());
+        syncCustomers(u, in.customers(), orderIds.get("OWNERSHIP_TRANSFER"), in.linkEndReasonId(),
+                in.deliveryModeId());
+        syncDueDay(u, in.dueDay(), orderIds.get("ALTERNATIVE_DUE_DAY"));
+        recordUnitWrite(u, unitFieldDiffs(in, null, null), orderIds);
+        closeWriteOrders(orderIds);
         return view(u);
     }
 
@@ -329,8 +362,11 @@ public class ConsumerUnitService {
         Resolved r = resolve(checks, in, u, config);
         consistency(checks, in, r, config);
         checks.throwIfAny();
+        Map<String, UUID> orderIds = openWriteOrders(in, u);
 
         Address a = u.getAddressId() == null ? null : addresses.findById(u.getAddressId()).orElse(null);
+        Address beforeAddress = a == null ? null : copyAddress(a);
+        ConsumerUnit beforeUnit = copyForDiff(u);
         if (a == null) {
             a = RegistryContext.forCreate(new Address());
             a.setEntityType(UNIT_ENTITY_TYPE);
@@ -353,28 +389,54 @@ public class ConsumerUnitService {
         u.setUpdatedAt(OffsetDateTime.now());
         units.saveAndFlush(u);
 
-        recordStatus(u.getId(), UnitStatusHistory.ServiceKind.WATER, waterBefore, u.getWaterStatusId(), "Alteração do cadastro");
-        recordStatus(u.getId(), UnitStatusHistory.ServiceKind.SEWER, sewerBefore, u.getSewerStatusId(), "Alteração do cadastro");
+        recordStatus(u.getId(), UnitStatusHistory.ServiceKind.WATER, waterBefore, u.getWaterStatusId(),
+                "Alteração do cadastro", orderIds.get("UNIT_PROFILE_UPDATE"));
+        recordStatus(u.getId(), UnitStatusHistory.ServiceKind.SEWER, sewerBefore, u.getSewerStatusId(),
+                "Alteração do cadastro", orderIds.get("UNIT_PROFILE_UPDATE"));
         syncSubcategories(u, in.subcategories());
-        syncCustomers(u, in.customers());
+        syncCustomers(u, in.customers(), orderIds.get("OWNERSHIP_TRANSFER"), in.linkEndReasonId(),
+                in.deliveryModeId());
+        syncDueDay(u, in.dueDay(), orderIds.get("ALTERNATIVE_DUE_DAY"));
+        recordUnitWrite(u, unitFieldDiffs(in, beforeUnit, beforeAddress), orderIds);
+        closeWriteOrders(orderIds);
         return view(u);
     }
 
     /** Exclusão lógica: libera a inscrição (índice parcial) e encerra os vínculos vigentes. */
     @Transactional
     public void delete(UUID id, String reason) {
+        delete(id, reason, null);
+    }
+
+    /**
+     * Exclusão lógica com o motivo de fim dos vínculos por catálogo (CHECK da V3_12:
+     * vínculo com data de fim exige end_reason_id). Sem ele, o fechamento é recusado
+     * com 400 nomeando o campo, em vez de um erro opaco do banco.
+     */
+    @Transactional
+    public void delete(UUID id, String reason, UUID linkEndReasonId) {
         ConsumerUnit u = unit(id);
         if (u.getDeletedAt() != null) {
             throw new ApiException.Conflict("record-already-deleted", "O imóvel já está excluído.");
+        }
+        List<UnitCustomer> vigente =
+                unitCustomers.findByTenantIdAndUnitIdAndEndDateIsNull(RegistryContext.tenantId(), id);
+        if (!vigente.isEmpty() && linkEndReasonId == null
+                && vigente.stream().allMatch(l -> l.getEndReasonId() == null)) {
+            throw new ApiException.BadRequest("linkEndReasonId",
+                    "Informe o motivo de fim dos vínculos por catálogo (linkEndReasonId).");
         }
         u.setDeletedAt(OffsetDateTime.now());
         u.setDeletedReason(reason.trim());
         RegistryContext.touch(u);
         units.saveAndFlush(u);
         LocalDate today = LocalDate.now();
-        for (UnitCustomer link : unitCustomers.findByTenantIdAndUnitIdAndEndDateIsNull(RegistryContext.tenantId(), id)) {
+        for (UnitCustomer link : vigente) {
             link.setEndDate(today.isBefore(link.getStartDate()) ? link.getStartDate() : today);
             link.setEndReason("Imóvel excluído.");
+            if (link.getEndReasonId() == null) {
+                link.setEndReasonId(linkEndReasonId);
+            }
             RegistryContext.touch(link);
         }
         unitCustomers.flush();
@@ -423,7 +485,7 @@ public class ConsumerUnitService {
                                     RegistryContext.tenantId(), block.getId(), in.lot(), in.sublot())
                             .filter(other -> !other.getId().equals(self))
                             .ifPresent(other -> checks.error("lot", "INSCRIPTION_IN_USE", "A inscrição " + inscription
-                                    + " já pertence à matrícula " + other.getMatricula() + "-" + other.getCheckDigit() + "."));
+                                    + " já pertence à matrícula " + other.getRegistrationNumber() + "-" + other.getCheckDigit() + "."));
                 }
             }
         } else if (in.lot() != null || in.sublot() != null) {
@@ -449,6 +511,7 @@ public class ConsumerUnitService {
         if (in.parentUnitId() != null && find(ConsumerUnit.class, in.parentUnitId()) == null) {
             checks.error("parentUnitId", "NOT_FOUND", "Imóvel principal não encontrado.");
         }
+        checkR2Unit(checks, in, current, config);
         // Coordenada incompleta (so lat ou so lng): o par e atomico no frontend
         // (textToCoordinates so emite o par completo ou nulo). Faixa geografica ja
         // vem do bean validation de CoordinatesInput; a caixa do Brasil nao e
@@ -514,6 +577,134 @@ public class ConsumerUnitService {
         return new Resolved(block, sector, locality, routeId, water, sewer, customers);
     }
 
+    /**
+     * Regras R2 da unidade (P1.3, V3_12), com o campo no erro. Sem CatalogLookup
+     * (construtor antigo), só as regras sem catálogo valem (relação, ciclo, mesma quadra).
+     */
+    private void checkR2Unit(Checks checks, UnitInput in, ConsumerUnit current,
+                             RegistrySettingsService.Settings config) {
+        UUID self = current == null ? null : current.getId();
+        // Unidade-mãe: tipo de relação, mesma quadra, sem ciclo.
+        if (in.parentUnitId() != null) {
+            if (blankToNull(in.parentRelationType()) == null) {
+                checks.error("parentRelationType", "REQUIRED", "Informe o tipo de relação com a unidade-mãe.");
+            }
+            if (in.parentUnitId().equals(self)) {
+                checks.error("parentUnitId", "CYCLE", "O imóvel não pode ser a própria unidade-mãe.");
+            } else {
+                ConsumerUnit parent = find(ConsumerUnit.class, in.parentUnitId());
+                if (parent != null) {
+                    if (parent.getBlockId() != null && in.blockId() != null
+                            && !parent.getBlockId().equals(in.blockId())) {
+                        checks.error("parentUnitId", "BLOCK_MISMATCH", "A unidade-mãe precisa estar na mesma quadra.");
+                    }
+                    if (parent.getBlockId() == null && in.blockId() != null) {
+                        checks.error("parentUnitId", "BLOCK_MISMATCH", "A unidade-mãe não tem quadra e a unidade tem.");
+                    }
+                    UUID walking = parent.getParentUnitId();
+                    for (int depth = 0; depth < 100 && walking != null; depth++) {
+                        if (walking.equals(self)) {
+                            checks.error("parentUnitId", "CYCLE", "Unidade-mãe forma ciclo.");
+                            break;
+                        }
+                        ConsumerUnit next = find(ConsumerUnit.class, walking);
+                        walking = next == null ? null : next.getParentUnitId();
+                    }
+                }
+            }
+        } else if (blankToNull(in.parentRelationType()) != null) {
+            checks.error("parentRelationType", "WITHOUT_PARENT", "Tipo de relação sem unidade-mãe.");
+        }
+        // Fechamento de vínculos (update): sem motivo por catálogo, o CHECK da V3_12 recusaria.
+        if (current != null && in.customers() != null) {
+            Set<String> desiredKeys = new HashSet<>();
+            in.customers().forEach(c -> desiredKeys.add(c.customerId() + "|" + c.relation()));
+            boolean willClose = unitCustomers.findByTenantIdAndUnitIdAndEndDateIsNull(RegistryContext.tenantId(),
+                            current.getId()).stream()
+                    .anyMatch(l -> !desiredKeys.contains(l.getCustomerId() + "|" + l.getRole())
+                            && l.getEndReasonId() == null);
+            if (willClose && in.linkEndReasonId() == null) {
+                checks.error("linkEndReasonId", "REQUIRED",
+                        "Informe o motivo de fim dos vínculos por catálogo (linkEndReasonId).");
+            }
+        }
+        if (catalogs == null) {
+            return;
+        }
+        checkCatalog(checks, "block_faces", in.blockFaceId(), "blockFaceId", "Face de quadra");
+        if (!config.useBlockFace() && in.blockFaceId() != null) {
+            checks.error("blockFaceId", "DISABLED", "Face de quadra desligada (registry.use_block_face).");
+        }
+        checkCatalog(checks, "sewer_discharges", in.sewerDischargeId(), "sewerDischargeId", "Tipo de esgotamento");
+        if (in.profileId() != null) {
+            CatalogLookup.CatalogRow row = catalogs.find("property_profiles", in.profileId());
+            if (row == null) {
+                checks.error("profileId", "NOT_FOUND", "Perfil do imóvel não encontrado.");
+            } else if (!row.active()) {
+                checks.error("profileId", "INACTIVE", "Perfil do imóvel desativado.");
+            } else {
+                Boolean provisional = catalogs.flag("property_profiles", in.profileId(), "provisional_only");
+                if (Boolean.TRUE.equals(provisional) && !"PROVISIONAL".equals(in.status())) {
+                    checks.error("profileId", "PROVISIONAL_ONLY", "Perfil provisório só em unidade PROVISIONAL.");
+                }
+            }
+        }
+        if (in.iptuMunicipalityIbge() != null
+                && catalogs.byCode("ibge_municipalities", in.iptuMunicipalityIbge()) == null) {
+            checks.error("iptuMunicipalityIbge", "NOT_FOUND", "Município do IPTU não encontrado no catálogo do IBGE.");
+        }
+        if (in.address() != null) {
+            if (in.address().municipalityIbge() != null
+                    && catalogs.byCode("ibge_municipalities", in.address().municipalityIbge()) == null) {
+                checks.error("address.municipalityIbge", "NOT_FOUND", "Município do endereço não encontrado no IBGE.");
+            }
+            checkCatalog(checks, "street_names", in.address().streetId(), "address.streetId", "Logradouro");
+            checkCatalog(checks, "neighborhoods", in.address().neighborhoodId(), "address.neighborhoodId", "Bairro");
+        }
+        for (int i = 0; i < in.customers().size(); i++) {
+            UnitCustomerInput link = in.customers().get(i);
+            String base = "customers[" + i + "]";
+            if (link.roleId() != null) {
+                CatalogLookup.CatalogRow row = catalogs.find("relation_roles", link.roleId());
+                if (row == null) {
+                    checks.error(base + ".roleId", "NOT_FOUND", "Papel do vínculo não encontrado.");
+                } else if (!row.active()) {
+                    checks.error(base + ".roleId", "INACTIVE", "Papel do vínculo desativado.");
+                } else if (!link.relation().name().equals(catalogs.text("relation_roles", link.roleId(), "system_role"))) {
+                    checks.error(base + ".roleId", "INCOMPATIBLE", "Papel do catálogo incompatível com o papel do vínculo.");
+                }
+            } else if (catalogs.roleBySystemRole(link.relation().name()) == null) {
+                checks.error(base + ".relation", "NOT_FOUND", "Papel do vínculo sem linha no catálogo relation_roles.");
+            }
+            if (link.endReasonId() != null) {
+                checkCatalog(checks, "unit_link_end_reasons", link.endReasonId(), base + ".endReasonId",
+                        "Motivo de fim do vínculo");
+            }
+            UUID delivery = link.deliveryModeId() != null ? link.deliveryModeId() : in.deliveryModeId();
+            if (link.relation() == UnitCustomer.Role.RESPONSIBLE && delivery == null) {
+                checks.error(base + ".deliveryModeId", "REQUIRED", "Responsável: informe a forma de entrega.");
+            }
+        }
+        for (int i = 0; i < in.subcategories().size(); i++) {
+            SubcategoryInput line = in.subcategories().get(i);
+            if (line.validFrom() != null && line.validTo() != null && line.validTo().isBefore(line.validFrom())) {
+                checks.error("subcategories[" + i + "].validTo", "INVALID", "Fim da vigência antes do início.");
+            }
+        }
+    }
+
+    private void checkCatalog(Checks checks, String table, UUID id, String field, String label) {
+        if (id == null) {
+            return;
+        }
+        CatalogLookup.CatalogRow row = catalogs.find(table, id);
+        if (row == null) {
+            checks.error(field, "NOT_FOUND", label + " não encontrado.");
+        } else if (!row.active()) {
+            checks.error(field, "INACTIVE", label + " desativado.");
+        }
+    }
+
     /** Regras de {@link UnitConsistency}, com os campos traduzidos para os nomes do corpo. */
     private void consistency(Checks checks, UnitInput in, Resolved r, RegistrySettingsService.Settings config) {
         List<UnitConsistency.Relation> relations = in.customers().stream()
@@ -575,6 +766,12 @@ public class ConsumerUnitService {
         a.setCity(blankToNull(in.city()));
         a.setState(in.state() == null ? null : in.state().toUpperCase(java.util.Locale.ROOT));
         a.setCountry("BR");
+        // P1.3: município IBGE, referência, precisão, catálogos de logradouro/bairro.
+        a.setMunicipalityIbge(blankToNull(in.municipalityIbge()));
+        a.setReferencePoint(blankToNull(in.referencePoint()));
+        a.setGeocodePrecision(blankToNull(in.geocodePrecision()));
+        a.setStreetId(in.streetId());
+        a.setNeighborhoodId(in.neighborhoodId());
         // P0.16: coordenadas aninhadas (o AddressInput nao as tinha; a coluna ja
         // existia desde V1_1). Nulo ou par nulo = sem coordenada; par parcial ja
         // foi recusado em resolve(). x = longitude, y = latitude.
@@ -599,7 +796,7 @@ public class ConsumerUnitService {
         u.setWaterStatusId(in.waterStatusId());
         u.setSewerStatusId(in.sewerStatusId());
         u.setSewerDischargeId(in.sewerDischargeId());
-        u.setProfileId(in.profileId());
+        u.setPropertyProfileId(in.profileId());
         u.setWaterSourceId(in.waterSourceId());
         u.setWellTypeId(in.wellTypeId());
         u.setPavementStreetId(in.pavementStreetId());
@@ -616,13 +813,18 @@ public class ConsumerUnitService {
         u.setDeliverySequence(in.deliverySequence());
         u.setAltRouteId(in.altRouteId());
         u.setParentUnitId(in.parentUnitId());
+        u.setParentRelationType(blankToNull(in.parentRelationType()));
+        u.setIptuMunicipalityIbge(blankToNull(in.iptuMunicipalityIbge()));
+        u.setCnaeCode(blankToNull(in.cnaeCode()));
+        u.setSeasonal(Boolean.TRUE.equals(in.seasonal()));
         u.setDraftId(in.draftId());
         u.setBuiltAreaM2(in.builtAreaM2());
         u.setDueDay(in.dueDay() == null ? null : in.dueDay().shortValue());
         u.setNotes(blankToNull(in.notes()));
     }
 
-    private void recordStatus(UUID unitId, UnitStatusHistory.ServiceKind kind, UUID from, UUID to, String reason) {
+    private void recordStatus(UUID unitId, UnitStatusHistory.ServiceKind kind, UUID from, UUID to, String reason,
+                              UUID serviceOrderId) {
         if (to == null || to.equals(from)) {
             return;
         }
@@ -633,7 +835,171 @@ public class ConsumerUnitService {
         h.setToStatusId(to);
         h.setChangedAt(OffsetDateTime.now());
         h.setReason(reason);
+        // P1.3 (V3_12): service_order_id é NOT NULL; sem wiring, segue nulo (caminho legado).
+        h.setServiceOrderId(serviceOrderId);
         statusHistory.saveAndFlush(h);
+    }
+
+    /** Cópia rasa dos campos comparados no diff da OS. */
+    private static ConsumerUnit copyForDiff(ConsumerUnit u) {
+        ConsumerUnit copy = new ConsumerUnit();
+        copy.setId(u.getId());
+        copy.setBlockId(u.getBlockId());
+        copy.setLot(u.getLot());
+        copy.setSublot(u.getSublot());
+        copy.setBuiltAreaM2(u.getBuiltAreaM2());
+        copy.setWaterStatusId(u.getWaterStatusId());
+        copy.setSewerStatusId(u.getSewerStatusId());
+        copy.setPropertyProfileId(u.getPropertyProfileId());
+        copy.setDueDay(u.getDueDay());
+        return copy;
+    }
+
+    private static Address copyAddress(Address a) {
+        Address copy = new Address();
+        copy.setCep(a.getCep());
+        copy.setStreet(a.getStreet());
+        copy.setNumber(a.getNumber());
+        copy.setComplement(a.getComplement());
+        copy.setNeighborhood(a.getNeighborhood());
+        copy.setCity(a.getCity());
+        copy.setState(a.getState());
+        return copy;
+    }
+
+    /**
+     * OS internas da escrita (P1.3): um OS por tipo distinto entre os campos alterados.
+     * Sem wiring, o mapa volta vazio e a escrita segue o caminho legado. As OS são
+     * abertas ANTES da gravação (o histórico de situação e os vínculos precisam do
+     * id) e encerradas depois, por {@link #closeWriteOrders}.
+     */
+    private Map<String, UUID> openWriteOrders(UnitInput in, ConsumerUnit before) {
+        if (orders == null) {
+            return Map.of();
+        }
+        Map<String, String> fieldToType = new LinkedHashMap<>();
+        if (before == null || !java.util.Objects.equals(before.getPropertyProfileId(), in.profileId())) {
+            fieldToType.put("profileId", "UNIT_PROFILE_CHANGE");
+        }
+        if (before == null || !java.util.Objects.equals(before.getBuiltAreaM2(), in.builtAreaM2())
+                || !java.util.Objects.equals(before.getBlockId(), in.blockId())
+                || !java.util.Objects.equals(before.getLot(), in.blockId() == null ? null : in.lot())
+                || !java.util.Objects.equals(before.getSublot(), in.blockId() == null ? null : in.sublot())
+                || !java.util.Objects.equals(before.getWaterStatusId(), in.waterStatusId())
+                || !java.util.Objects.equals(before.getSewerStatusId(), in.sewerStatusId())) {
+            fieldToType.put("physical", "UNIT_PROFILE_UPDATE");
+        }
+        if (before == null || !java.util.Objects.equals(before.getDueDay(),
+                in.dueDay() == null ? null : in.dueDay().shortValue())) {
+            fieldToType.put("dueDay", "ALTERNATIVE_DUE_DAY");
+        }
+        if (in.subcategories() != null) {
+            fieldToType.put("subcategories", "ECONOMIES_CATEGORY_CHANGE");
+        }
+        if (in.customers() != null) {
+            fieldToType.put("links", "OWNERSHIP_TRANSFER");
+        }
+        if (in.address() != null) {
+            fieldToType.put("address", "DELIVERY_ADDRESS_CHANGE");
+        }
+        Map<String, UUID> orderIds = new LinkedHashMap<>();
+        for (String type : new LinkedHashSet<>(fieldToType.values())) {
+            orderIds.put(type, orders.open(type));
+        }
+        return orderIds;
+    }
+
+    private void closeWriteOrders(Map<String, UUID> orderIds) {
+        if (orders == null) {
+            return;
+        }
+        for (UUID orderId : orderIds.values()) {
+            orders.executeAndClose(orderId);
+        }
+    }
+
+    /** Campos alterados (nome → [antes, depois]) para o registro campo a campo. */
+    private Map<String, String[]> unitFieldDiffs(UnitInput in, ConsumerUnit before, Address beforeAddress) {
+        Map<String, String[]> diffs = new LinkedHashMap<>();
+        putUnitField(diffs, "profileId", before, before == null ? null : str(before.getPropertyProfileId()),
+                str(in.profileId()));
+        putUnitField(diffs, "builtAreaM2", before, before == null ? null : str(before.getBuiltAreaM2()),
+                str(in.builtAreaM2()));
+        putUnitField(diffs, "blockId", before, before == null ? null : str(before.getBlockId()), str(in.blockId()));
+        putUnitField(diffs, "waterStatusId", before, before == null ? null : str(before.getWaterStatusId()),
+                str(in.waterStatusId()));
+        putUnitField(diffs, "sewerStatusId", before, before == null ? null : str(before.getSewerStatusId()),
+                str(in.sewerStatusId()));
+        putUnitField(diffs, "dueDay", before, before == null ? null : str(before.getDueDay()), str(in.dueDay()));
+        if (before == null || in.subcategories() != null) {
+            diffs.put("subcategories", new String[]{null, null});
+        }
+        if (before == null || in.customers() != null) {
+            diffs.put("links", new String[]{null, null});
+        }
+        if (beforeAddress == null || in.address() == null
+                || !java.util.Objects.equals(beforeAddress.getCep(),
+                        in.address().cep() == null ? null : in.address().cep().replaceAll("\\D", ""))
+                || !java.util.Objects.equals(beforeAddress.getStreet(), in.address().streetName())
+                || !java.util.Objects.equals(beforeAddress.getNumber(), in.address().number())) {
+            diffs.put("address", new String[]{null, null});
+        }
+        return diffs;
+    }
+
+    private static void putUnitField(Map<String, String[]> diffs, String field, ConsumerUnit before, String oldValue,
+                                     String newValue) {
+        if (before == null || !java.util.Objects.equals(oldValue, newValue)) {
+            diffs.put(field, new String[]{oldValue, newValue});
+        }
+    }
+
+    private static String str(Object value) {
+        return value == null ? null : String.valueOf(value);
+    }
+
+    /** Registra cada campo alterado na OS do seu tipo (mapa da P1.31). */
+    private void recordUnitWrite(ConsumerUnit u, Map<String, String[]> diffs, Map<String, UUID> orderIds) {
+        if (changes == null || orderIds.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<String, String[]> entry : diffs.entrySet()) {
+            String type = CadastralChangeService.osTypeFor("CONSUMER_UNIT", entry.getKey());
+            if (type == null || !orderIds.containsKey(type)) {
+                continue;
+            }
+            changes.record("CONSUMER_UNIT", u.getId(), entry.getKey(), entry.getValue()[0], entry.getValue()[1],
+                    orderIds.get(type));
+        }
+    }
+
+    /**
+     * Dia de vencimento (P1.3): unit_due_days é a única fonte; consumer_units.due_day
+     * é o espelho do valor vigente. Vigência nova começa no primeiro dia da
+     * competência corrente; a anterior fecha no dia anterior. Sem wiring, nada aqui.
+     */
+    private void syncDueDay(ConsumerUnit u, Integer dueDay, UUID orderId) {
+        if (dueDays == null) {
+            return;
+        }
+        UUID tenantId = RegistryContext.tenantId();
+        List<UnitDueDay> rows = dueDays.findByTenantIdAndUnitIdOrderByValidFromDesc(tenantId, u.getId());
+        LocalDate firstOfMonth = LocalDate.now().withDayOfMonth(1);
+        for (UnitDueDay row : rows) {
+            if (row.getValidTo() == null) {
+                row.setValidTo(firstOfMonth.minusDays(1));
+                RegistryContext.touch(row);
+            }
+        }
+        dueDays.flush();
+        if (dueDay != null) {
+            UnitDueDay row = RegistryContext.forCreate(new UnitDueDay());
+            row.setUnitId(u.getId());
+            row.setDueDay(dueDay.shortValue());
+            row.setValidFrom(firstOfMonth);
+            row.setServiceOrderId(orderId);
+            dueDays.saveAndFlush(row);
+        }
     }
 
     /**
@@ -669,6 +1035,9 @@ public class ConsumerUnitService {
             line.setEconomies(d.economies());
             line.setPrivateUnits(d.privateUnits());
             line.setCollectiveUnits(d.collectiveUnits());
+            // P1.3: vigência da linha; ausente = primeiro dia da competência corrente.
+            line.setValidFrom(d.validFrom() != null ? d.validFrom() : LocalDate.now().withDayOfMonth(1));
+            line.setValidTo(d.validTo());
             toSave.add(line);
         });
         unitSubcategories.saveAllAndFlush(toSave);
@@ -714,7 +1083,8 @@ public class ConsumerUnitService {
      * Vínculos vigentes: o corpo traz o conjunto desejado (cliente + papel). O que não veio é encerrado
      * hoje; o que veio e não existia é criado. Em duas fases por causa do índice único do nome na conta.
      */
-    private void syncCustomers(ConsumerUnit u, List<UnitCustomerInput> wanted) {
+    private void syncCustomers(ConsumerUnit u, List<UnitCustomerInput> wanted, UUID ownershipOrderId,
+                               UUID linkEndReasonId, UUID unitDeliveryModeId) {
         Map<String, UnitCustomerInput> desired = new LinkedHashMap<>();
         wanted.forEach(c -> desired.put(c.customerId() + "|" + c.relation(), c));
         LocalDate today = LocalDate.now();
@@ -725,6 +1095,10 @@ public class ConsumerUnitService {
             if (d == null) {
                 link.setEndDate(today.isBefore(link.getStartDate()) ? link.getStartDate() : today);
                 link.setEndReason("Vínculo encerrado na alteração do cadastro.");
+                if (link.getEndReasonId() == null) {
+                    link.setEndReasonId(linkEndReasonId);
+                }
+                link.setClosedByServiceOrderId(ownershipOrderId);
                 RegistryContext.touch(link);
             } else {
                 kept.put(key, link);
@@ -743,14 +1117,33 @@ public class ConsumerUnitService {
                 link.setUnitId(u.getId());
                 link.setCustomerId(d.customerId());
                 link.setRole(d.relation());
+                link.setOpenedByServiceOrderId(ownershipOrderId);
             } else {
                 RegistryContext.touch(link);
             }
             link.setStartDate(d.startDate());
             link.setShowOnBill(Boolean.TRUE.equals(d.showOnBill()));
+            // P1.3: papel por catálogo (espelho em role), motivo de fim e forma de entrega.
+            link.setRoleId(resolveRoleId(d));
+            if (d.endReasonId() != null) {
+                link.setEndReasonId(d.endReasonId());
+            }
+            link.setDeliveryModeId(d.deliveryModeId() != null ? d.deliveryModeId() : unitDeliveryModeId);
             toSave.add(link);
         });
         unitCustomers.saveAllAndFlush(toSave);
+    }
+
+    /** role_id do vínculo: o informado, ou o do system_role (backfill da V3_12); nulo sem catálogo. */
+    private UUID resolveRoleId(UnitCustomerInput d) {
+        if (d.roleId() != null) {
+            return d.roleId();
+        }
+        if (catalogs == null) {
+            return null;
+        }
+        CatalogLookup.CatalogRow row = catalogs.roleBySystemRole(d.relation().name());
+        return row == null ? null : row.id();
     }
 
     // ------------------------------------------------------------------ montagem das respostas
@@ -841,12 +1234,25 @@ public class ConsumerUnitService {
         CoordinatesView coordinates = a.getCoordinates() == null ? null
                 : new CoordinatesView(a.getCoordinates().getY(), a.getCoordinates().getX());
         return new AddressView(a.getCep(), a.getStreet(), a.getNumber(), a.getComplement(),
-                a.getNeighborhood(), a.getCity(), a.getState(), coordinates);
+                a.getNeighborhood(), a.getCity(), a.getState(), coordinates,
+                a.getMunicipalityIbge(), a.getReferencePoint(), a.getGeocodePrecision());
     }
 
     /** Ref sem nome para id de catalogo ainda inexistente (P0.16, ver UnitView): so o id. */
     private static Ref pendingRef(UUID id) {
         return id == null ? null : new Ref(id, null, null);
+    }
+
+    /** Ref resolvida no catálogo R2 quando o wiring existe; senão o comportamento P0.16 (id, sem nome). */
+    private Ref catalogRef(String table, UUID id) {
+        if (id == null) {
+            return null;
+        }
+        if (catalogs == null) {
+            return pendingRef(id);
+        }
+        Ref ref = catalogs.ref(table, id);
+        return ref.name() == null ? pendingRef(id) : ref;
     }
 
     private static String addressText(Address a) {
@@ -887,20 +1293,22 @@ public class ConsumerUnitService {
                 : new PhysicalView(u.getPhysicalGarden(), u.getPhysicalLowerReservoirM3(),
                         u.getPhysicalUpperReservoirM3(), u.getPhysicalPoolM3());
         ExternalIdsView externalIds = u.getExternalIptu() == null ? null : new ExternalIdsView(u.getExternalIptu());
-        return new UnitView(u.getId(), u.getVersion(), u.getMatricula(), u.getCheckDigit(), p.inscription(),
+        return new UnitView(u.getId(), u.getVersion(), u.getRegistrationNumber(), u.getCheckDigit(), p.inscription(),
                 p.inscriptionText(), u.getStatus(), u.getDeletedAt(), u.getDeletedReason(),
                 TerritoryService.ref(p.locality()), TerritoryService.ref(p.sector()), TerritoryService.ref(p.block()),
-                pendingRef(u.getBlockFaceId()),
+                catalogRef("block_faces", u.getBlockFaceId()),
                 u.getLot(), u.getSublot(), TerritoryService.ref(route), u.getReadingSequence(), u.getLotFrontageM(),
                 addressView(a), addressText(a), c.lines(), c.mainCategory(), c.mainSubcategory(), c.economies(),
                 u.getBuiltAreaM2(), CatalogService.ref(water), CatalogService.ref(sewer),
-                pendingRef(u.getSewerDischargeId()), pendingRef(u.getProfileId()), pendingRef(u.getWaterSourceId()),
+                catalogRef("sewer_discharges", u.getSewerDischargeId()),
+                catalogRef("property_profiles", u.getPropertyProfileId()), pendingRef(u.getWaterSourceId()),
                 pendingRef(u.getWellTypeId()), pendingRef(u.getPavementStreetId()), pendingRef(u.getPavementSidewalkId()),
                 physical,
                 u.getUsagePoints(), u.getResidents(), externalIds,
                 pendingRef(u.getDeliveryModeId()), TerritoryService.ref(deliveryRoute), u.getDeliverySequence(),
                 TerritoryService.ref(altRoute), pendingRef(u.getParentUnitId()),
-                u.getDueDay() == null ? null : (int) u.getDueDay(), u.getNotes(), u.getDraftId());
+                u.getDueDay() == null ? null : (int) u.getDueDay(), u.getNotes(), u.getDraftId(),
+                u.getParentRelationType(), u.getIptuMunicipalityIbge(), u.getCnaeCode(), u.isSeasonal());
     }
 
     private UnitSummary summary(ConsumerUnit u) {
@@ -910,7 +1318,7 @@ public class ConsumerUnitService {
         WaterStatus water = u.getWaterStatusId() == null ? null : em.find(WaterStatus.class, u.getWaterStatusId());
         SewerStatus sewer = u.getSewerStatusId() == null ? null : em.find(SewerStatus.class, u.getSewerStatusId());
         Customer user = currentUser(u);
-        return new UnitSummary(u.getId(), u.getMatricula(), u.getCheckDigit(), p.inscription(), p.inscriptionText(),
+        return new UnitSummary(u.getId(), u.getRegistrationNumber(), u.getCheckDigit(), p.inscription(), p.inscriptionText(),
                 user == null ? null : user.getName(), user == null ? null : user.getDocumentMasked(), addressText(a),
                 c.mainCategory() == null ? null : c.mainCategory().name(), water == null ? null : water.getName(),
                 sewer == null ? null : sewer.getName(), c.economies(), u.getStatus(), u.getDeletedAt() != null);

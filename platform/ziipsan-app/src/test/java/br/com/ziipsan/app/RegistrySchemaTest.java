@@ -31,6 +31,11 @@ class RegistrySchemaTest {
     private static UUID unit;
     private static UUID customer1;
     private static UUID customer2;
+    /** P1.3 (V3_12): role_id é NOT NULL e fim de vínculo exige end_reason_id — semeados aqui. */
+    private static UUID roleUser;
+    private static UUID roleOwner;
+    private static UUID roleResponsible;
+    private static UUID linkEndReason;
 
     @FunctionalInterface
     interface Work {
@@ -44,7 +49,11 @@ class RegistrySchemaTest {
             UUID locality = insert(st, "INSERT INTO " + S + ".localities(tenant_id, code, name) VALUES ('" + T + "', 1, 'Localidade') RETURNING id");
             UUID sector = insert(st, "INSERT INTO " + S + ".commercial_sectors(tenant_id, locality_id, code, name) VALUES ('" + T + "', '" + locality + "', 1, 'Setor') RETURNING id");
             block = insert(st, "INSERT INTO " + S + ".blocks(tenant_id, sector_id, code, has_water_network, has_sewer_network) VALUES ('" + T + "', '" + sector + "', 1, true, true) RETURNING id");
-            unit = insert(st, "INSERT INTO " + S + ".consumer_units(tenant_id, matricula, dv, block_id, lot, sublot) VALUES ('" + T + "', '100', '9', '" + block + "', 1, 0) RETURNING id");
+            unit = insert(st, "INSERT INTO " + S + ".consumer_units(tenant_id, registration_number, check_digit, block_id, lot, sublot) VALUES ('" + T + "', '100', '9', '" + block + "', 1, 0) RETURNING id");
+            roleUser = insert(st, "INSERT INTO " + S + ".relation_roles(tenant_id, code, name, system_role) VALUES ('" + T + "', 'USER', 'Usuário', 'USER') RETURNING id");
+            roleOwner = insert(st, "INSERT INTO " + S + ".relation_roles(tenant_id, code, name, system_role) VALUES ('" + T + "', 'OWNER', 'Proprietário', 'OWNER') RETURNING id");
+            roleResponsible = insert(st, "INSERT INTO " + S + ".relation_roles(tenant_id, code, name, system_role) VALUES ('" + T + "', 'RESPONSIBLE', 'Responsável', 'RESPONSIBLE') RETURNING id");
+            linkEndReason = insert(st, "INSERT INTO " + S + ".unit_link_end_reasons(tenant_id, code, name) VALUES ('" + T + "', 'TEST_END', 'Fim de teste') RETURNING id");
             customer1 = insert(st, customerSql("Maria", HASH_A));
             customer2 = insert(st, customerSql("João", HASH_B));
         });
@@ -60,7 +69,7 @@ class RegistrySchemaTest {
     @Test
     @DisplayName("inscrição (quadra + lote + sublote) é única entre unidades ativas")
     void inscriptionIsUnique() throws SQLException {
-        expect("23505", st -> st.execute("INSERT INTO " + S + ".consumer_units(tenant_id, matricula, dv, block_id, lot, sublot) "
+        expect("23505", st -> st.execute("INSERT INTO " + S + ".consumer_units(tenant_id, registration_number, check_digit, block_id, lot, sublot) "
                 + "VALUES ('" + T + "', '101', '7', '" + block + "', 1, 0)"));
     }
 
@@ -69,7 +78,7 @@ class RegistrySchemaTest {
     void deletedUnitFreesTheInscription() throws SQLException {
         inTenant(T, false, st -> {
             st.execute("UPDATE " + S + ".consumer_units SET deleted_at = now(), deleted_reason = 'teste' WHERE id = '" + unit + "'");
-            st.execute("INSERT INTO " + S + ".consumer_units(tenant_id, matricula, dv, block_id, lot, sublot) "
+            st.execute("INSERT INTO " + S + ".consumer_units(tenant_id, registration_number, check_digit, block_id, lot, sublot) "
                     + "VALUES ('" + T + "', '102', '5', '" + block + "', 1, 0)");
         });
     }
@@ -77,7 +86,7 @@ class RegistrySchemaTest {
     @Test
     @DisplayName("unidade com quadra precisa de lote e sublote (senão a unicidade não valeria)")
     void blockRequiresLotAndSublot() throws SQLException {
-        expect("23514", st -> st.execute("INSERT INTO " + S + ".consumer_units(tenant_id, matricula, dv, block_id) "
+        expect("23514", st -> st.execute("INSERT INTO " + S + ".consumer_units(tenant_id, registration_number, check_digit, block_id) "
                 + "VALUES ('" + T + "', '103', '3', '" + block + "')"));
     }
 
@@ -90,7 +99,7 @@ class RegistrySchemaTest {
     @Test
     @DisplayName("unidade provisória pode existir sem quadra")
     void provisionalUnitWithoutBlock() throws SQLException {
-        inTenant(T, false, st -> st.execute("INSERT INTO " + S + ".consumer_units(tenant_id, matricula, dv, status) "
+        inTenant(T, false, st -> st.execute("INSERT INTO " + S + ".consumer_units(tenant_id, registration_number, check_digit, status) "
                 + "VALUES ('" + T + "', '104', '1', 'PROVISIONAL')"));
     }
 
@@ -146,9 +155,16 @@ class RegistrySchemaTest {
     // ---------- vínculo cliente-imóvel ----------
 
     private static String relation(UUID cust, String role, String start, String end, boolean onBill) {
-        return "INSERT INTO " + S + ".unit_customers(tenant_id, unit_id, customer_id, role, start_date, end_date, show_on_bill) VALUES ('"
-                + T + "', '" + unit + "', '" + cust + "', '" + role + "', '" + start + "', "
-                + (end == null ? "NULL" : "'" + end + "'") + ", " + onBill + ")";
+        // P1.3 (V3_12): role_id NOT NULL (espelho de role) e fim com end_reason_id (CHECK).
+        UUID roleId = switch (role) {
+            case "OWNER" -> roleOwner;
+            case "RESPONSIBLE" -> roleResponsible;
+            default -> roleUser;
+        };
+        return "INSERT INTO " + S + ".unit_customers(tenant_id, unit_id, customer_id, role, role_id, start_date, end_date, end_reason_id, show_on_bill) VALUES ('"
+                + T + "', '" + unit + "', '" + cust + "', '" + role + "', '" + roleId + "', '" + start + "', "
+                + (end == null ? "NULL" : "'" + end + "'") + ", "
+                + (end == null ? "NULL" : "'" + linkEndReason + "'") + ", " + onBill + ")";
     }
 
     @Test
@@ -227,9 +243,14 @@ class RegistrySchemaTest {
                     rs.next();
                     intruder = UUID.fromString(rs.getString(1));
                 }
+                // P1.3 (V3_12): role_id NOT NULL — semeado para o outro tenant, para que
+                // só a FK composta da unidade (outro tenant) seja a causa do 23503.
+                UUID otherRole = UUID.randomUUID();
+                st.execute("INSERT INTO " + S + ".relation_roles(id, tenant_id, code, name, system_role) VALUES ('"
+                        + otherRole + "', '" + OTHER_TENANT + "', 'USER', 'Usuário', 'USER')");
                 try {
-                    st.execute("INSERT INTO " + S + ".unit_customers(tenant_id, unit_id, customer_id, role, start_date) VALUES ('"
-                            + OTHER_TENANT + "', '" + unit + "', '" + intruder + "', 'USER', '2025-01-01')");
+                    st.execute("INSERT INTO " + S + ".unit_customers(tenant_id, unit_id, customer_id, role, role_id, start_date) VALUES ('"
+                            + OTHER_TENANT + "', '" + unit + "', '" + intruder + "', 'USER', '" + otherRole + "', '2025-01-01')");
                     fail("vínculo de um tenant para a unidade de outro deveria ser recusado");
                 } catch (SQLException e) {
                     assertThat(e.getSQLState()).isEqualTo("23503");

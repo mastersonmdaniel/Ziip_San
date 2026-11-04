@@ -38,4 +38,8 @@ public class ReadingRoute extends TenantAwareEntity {
     @Column(name = "active", nullable = false)
     private boolean active;
 
+    /** P1.3 (V3_12): grupo de faturamento da rota (referência pendente, sem FK). */
+    @Column(name = "billing_group_id")
+    private UUID billingGroupId;
+
 }

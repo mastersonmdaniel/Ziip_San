@@ -61,6 +61,21 @@ public class Customer extends TenantAwareEntity {
     @Column(name = "document_exemption_reason", length = 300)
     private String documentExemptionReason;
 
+    /**
+     * P1.3 (V3_12): motivo de dispensa por catálogo (document_exemption_reasons).
+     * O texto livre acima FICA (compatibilidade); o catálogo é a referência nova.
+     */
+    @Column(name = "document_exemption_reason_id")
+    private java.util.UUID documentExemptionReasonId;
+
+    /** P1.3 (V3_12): esfera de governo; obrigatória para ente público (serviço). */
+    @Column(name = "government_sphere", length = 10)
+    private String governmentSphere;
+
+    /** P1.3 (V3_12): motivo de exclusão por catálogo (customer_delete_reasons). */
+    @Column(name = "delete_reason_id")
+    private java.util.UUID deleteReasonId;
+
     @Column(name = "due_day")
     private Short dueDay;
 
