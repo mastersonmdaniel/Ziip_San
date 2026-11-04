@@ -23,6 +23,11 @@ public class BillCreditEntity extends TenantAwareEntity {
     @Column(name = "bill_id", nullable = false)
     private UUID billId;
 
+    // V4_14 (P2.3): mes da conta, exigido pela FK para a tabela particionada.
+    // Preenchido pelo trigger trg_bill_credits_fill_month a partir da conta.
+    @Column(name = "reference_month", nullable = false)
+    private java.time.LocalDate referenceMonth;
+
     @Column(name = "receivable_id", nullable = false)
     private UUID receivableId;
 

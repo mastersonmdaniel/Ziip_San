@@ -49,9 +49,12 @@ class MigrationConsistencyTest {
     private static final String SQL = readSql();
 
     private static String readSql() {
-        try (InputStream in = MigrationConsistencyTest.class.getResourceAsStream(
-                "/db/migration/tenant/V5_1__create_metering_schema.sql")) {
-            assertThat(in).as("migration V5_1 no classpath").isNotNull();
+        return readSql("/db/migration/tenant/V5_1__create_metering_schema.sql");
+    }
+
+    private static String readSql(String path) {
+        try (InputStream in = MigrationConsistencyTest.class.getResourceAsStream(path)) {
+            assertThat(in).as("migration no classpath: " + path).isNotNull();
             return new String(in.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -129,11 +132,28 @@ class MigrationConsistencyTest {
     @Test
     @DisplayName("entidade e tabela têm exatamente as mesmas colunas (fora version e tenant_schema, que o helper acrescenta)")
     void entitiesMatchTableColumns() {
+        // P2.3 (V5_4): meter_readings foi RECRIADA particionada e consumption_records
+        // ganhou reading_reference. As colunas novas chegam pelos ALTERs da V5_4; as
+        // demais guardas continuam lendo so a V5_1.
+        String v54 = readSql("/db/migration/tenant/V5_4__meter_reading_partition_and_idempotency.sql");
+        Map<String, Set<String>> v54Columns = new LinkedHashMap<>();
+        Matcher alter = Pattern.compile("ALTER TABLE (\\w+) ADD COLUMN IF NOT EXISTS ([a-z_]+)").matcher(v54);
+        while (alter.find()) {
+            v54Columns.computeIfAbsent(alter.group(1), k -> new LinkedHashSet<>()).add(alter.group(2));
+        }
+        // idempotency_key nasce no CREATE TABLE particionado da V5_4, nao por ALTER.
+        Matcher create = Pattern.compile("CREATE TABLE meter_readings \\((.*?)\\) PARTITION BY RANGE", Pattern.DOTALL).matcher(v54);
+        assertThat(create.find()).as("CREATE TABLE meter_readings na V5_4").isTrue();
+        Matcher col = Pattern.compile("(?m)^\\s+([a-z_]+) (?:UUID|VARCHAR|INT|NUMERIC|BOOLEAN|DATE|TIMESTAMPTZ|JSONB)\\b").matcher(create.group(1));
+        while (col.find()) {
+            v54Columns.computeIfAbsent("meter_readings", k -> new LinkedHashSet<>()).add(col.group(1));
+        }
         for (Class<?> entity : List.of(Meter.class, MeterInstallation.class, ReadingAnomaly.class,
                 ConsumptionAnomaly.class, MeterReading.class, ConsumptionRecord.class)) {
             String table = entity.getAnnotation(Table.class).name();
             Set<String> sqlColumns = sqlColumns(table);
             sqlColumns.addAll(Set.of("version", "tenant_schema"));
+            sqlColumns.addAll(v54Columns.getOrDefault(table, Set.of()));
 
             Set<String> mapped = new LinkedHashSet<>();
             for (Class<?> c = entity; c != null && c != Object.class; c = c.getSuperclass()) {

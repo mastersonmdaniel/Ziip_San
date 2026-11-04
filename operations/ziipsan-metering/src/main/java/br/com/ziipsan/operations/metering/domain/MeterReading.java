@@ -76,6 +76,12 @@ public class MeterReading extends TenantAwareEntity {
     @Column(name = "validation_warnings", columnDefinition = "jsonb")
     private String validationWarnings;
 
+    // V5_4 (P2.3): chave de idempotencia da leitura (ex.: lote de importacao + linha).
+    // Unica por (tenant, mes, chave): o reenvio da mesma chave no mesmo mes nao duplica
+    // (23505); a mesma chave em outro mes e outra leitura; sem chave, sem deduplicacao.
+    @Column(name = "idempotency_key", length = 120)
+    private String idempotencyKey;
+
     public enum Source { MANUAL, MOBILE, COLLECTOR, TELEMETRY }
 
     public void setReferenceMonth(YearMonth month) {

@@ -24,6 +24,12 @@ public class BillItemEntity extends TenantAwareEntity {
     @Column(name = "bill_id", nullable = false)
     private UUID billId;
 
+    // V4_14 (P2.3): mes da conta, chave de particao de bill_items e da FK para bills.
+    // Preenchido pelo trigger trg_bill_items_fill_month a partir da conta; divergente,
+    // recusado. Sem ele o INSERT via JPA falharia (coluna NOT NULL).
+    @Column(name = "reference_month", nullable = false)
+    private LocalDate referenceMonth;
+
     @Column(name = "service_kind", nullable = false, length = 5)
     private String serviceKind;
 

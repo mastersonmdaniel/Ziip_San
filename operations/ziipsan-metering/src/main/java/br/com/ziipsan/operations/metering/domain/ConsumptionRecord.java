@@ -73,6 +73,12 @@ public class ConsumptionRecord extends TenantAwareEntity {
     @Column(name = "reading_id")
     private UUID readingId;
 
+    // V5_4 (P2.3): mes da leitura faturada, exigido pela FK para a tabela particionada.
+    // Preenchido pelo trigger trg_consumption_fill_reading_month a partir da leitura;
+    // NULL quando reading_id e NULL. Distinto de reference (o mes do consumo).
+    @Column(name = "reading_reference")
+    private LocalDate readingReference;
+
     @Column(name = "billed_reading")
     private Integer billedReading;
 

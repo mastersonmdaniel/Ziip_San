@@ -98,6 +98,49 @@ class MigrationConsistencyTest {
                         null, null, alter.group(4).contains("NOT NULL")));
             }
         }
+        // P2.3 (V4_14): bills e bill_items foram RECRIADAS particionadas (a V4_6 nao pode
+        // ser editada: Flyway recusa checksum alterado). O mapa das duas tabelas passa a
+        // refletir o CREATE TABLE da V4_14, e as demais filhas ganham reference_month
+        // pelos ALTERs da V4_14 (o SET NOT NULL posterior e aplicado em seguida, pois a
+        // coluna nasce NULL para o backfill). As demais guardas continuam lendo a V4_1.
+        try (InputStream in = MigrationConsistencyTest.class.getResourceAsStream("/db/migration/tenant/V4_14__bill_partition_and_batch_audit.sql")) {
+            assertThat(in).as("migration V4_14 no classpath").isNotNull();
+            String v414 = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            tables.put("bills", parseCreateTable(v414, "bills"));
+            tables.put("bill_items", parseCreateTable(v414, "bill_items"));
+            Matcher alter14 = Pattern.compile("ALTER TABLE (bill_debits|bill_credits|bill_taxes) ADD COLUMN IF NOT EXISTS ([a-z][a-z0-9_]*) +(DATE)([^;]*);").matcher(v414);
+            while (alter14.find()) {
+                tables.get(alter14.group(1)).put(alter14.group(2), new SqlColumn(alter14.group(2),
+                        alter14.group(3), null, null, null, alter14.group(4).contains("NOT NULL")));
+            }
+            Matcher notNull = Pattern.compile("ALTER TABLE (bill_debits|bill_credits|bill_taxes) ALTER COLUMN reference_month SET NOT NULL;").matcher(v414);
+            while (notNull.find()) {
+                SqlColumn old = tables.get(notNull.group(1)).get("reference_month");
+                tables.get(notNull.group(1)).put("reference_month",
+                        new SqlColumn("reference_month", old.type(), old.length(), old.precision(), old.scale(), true));
+            }
+        }
+    }
+
+    /** Colunas do CREATE TABLE particionado da V4_14 (dentro do DO, indentacao maior). */
+    private static Map<String, SqlColumn> parseCreateTable(String text, String table) {
+        Matcher header = Pattern.compile("CREATE TABLE " + table + " \\((.*?)\n\\s*\\) PARTITION BY RANGE", Pattern.DOTALL).matcher(text);
+        assertThat(header.find()).as("CREATE TABLE %s na V4_14", table).isTrue();
+        Map<String, SqlColumn> columns = new LinkedHashMap<>();
+        Pattern column = Pattern.compile("^\\s+([a-z][a-z0-9_]*) +(UUID|VARCHAR\\((\\d+)\\)|INT|SMALLINT|DATE|BOOLEAN|NUMERIC\\((\\d+),(\\d+)\\)|TIMESTAMPTZ|JSONB)(?=[ ,]|$)(.*)$", Pattern.MULTILINE);
+        for (String line : header.group(1).split("\n")) {
+            Matcher m = column.matcher(line);
+            if (m.matches()) {
+                String type = m.group(2).replaceAll("\\(.*\\)", "");
+                columns.put(m.group(1), new SqlColumn(m.group(1), type,
+                        m.group(3) == null ? null : Integer.valueOf(m.group(3)),
+                        m.group(4) == null ? null : Integer.valueOf(m.group(4)),
+                        m.group(5) == null ? null : Integer.valueOf(m.group(5)),
+                        m.group(6).contains("NOT NULL")));
+            }
+        }
+        assertThat(columns).as("colunas de %s na V4_14", table).isNotEmpty();
+        return columns;
     }
 
     private static Map<String, Map<String, SqlColumn>> parseTables(String text) {

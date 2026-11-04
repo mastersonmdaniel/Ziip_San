@@ -104,6 +104,12 @@ public class BillEntity extends TenantAwareEntity {
     @Column(name = "origin_bill_id")
     private UUID originBillId;
 
+    // V4_14 (P2.3): mes da conta de origem, exigido pela FK para a tabela particionada
+    // (a chave de particao precisa estar na FK). Preenchido pelo trigger
+    // trg_bills_fill_origin_month a partir da conta de origem; divergente, recusado.
+    @Column(name = "origin_reference_month")
+    private LocalDate originReferenceMonth;
+
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "tariff_snapshot", columnDefinition = "jsonb")
     private String tariffSnapshot;
