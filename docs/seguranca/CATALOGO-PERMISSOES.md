@@ -31,6 +31,10 @@ na aplicação, a partir do catálogo.
 | `protocol:read` | atendimento | protocol | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
 | `protocol:write` | atendimento | protocol | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.36 |
 | `brand:manage` | console | brand | manage | (nenhum — só concessão direta) | P1.19 |
+| `cert:read` | certificacao | cert | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.32 |
+| `cert:write` | certificacao | cert | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.32 |
+| `cert:approve` | certificacao | cert | approve | (nenhum — só concessão direta; perfis por função na P1.37) | P1.32 |
+| `cert:audit` | certificacao | cert | audit | (nenhum — só concessão direta; perfis por função na P1.37) | P1.32 |
 
 ## Regras
 
@@ -66,4 +70,11 @@ na aplicação, a partir do catálogo.
   direta, como `parameters:manage` — nenhum perfil de fábrica a inclui. A
   marca pré-login (`/api/v1/public/tenant-brand`) é pública e não exige
   permissão: devolve só nome, logos, cor e contato.
+- `cert:read/write/approve/audit` (P1.32) cobrem o núcleo de Certificações de qualidade
+  (`/api/v1/certification/*`): leitura do catálogo, das ativações e dos mapas (`read`);
+  propor ativação, desligar e vincular evidência (`write`); aprovar e aceitar a ativação
+  (`approve`); e a visão de auditoria do vínculo muitos-para-muitos, pelo lado da evidência
+  (`audit`). Também são concessão direta, sem perfil de fábrica — perfis por função na P1.37.
+  A separação proponente ≠ aprovador continua no serviço, por ator, não por papel, e o
+  desligamento nunca apaga registro (o mapa congelado e os vínculos continuam consultáveis).
 - Perfis compostos pelo ADMIN do tenant e restrição negativa ficam na ED-06, sobre este catálogo.

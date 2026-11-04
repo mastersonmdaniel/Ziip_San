@@ -1,0 +1,11 @@
+# P1.32: erro explicado (núcleo de Certificações, ADR-0041).
+code: urn:ziipsan:problem:clause-map-frozen
+title: Mapa de cláusulas congelado
+explanation: O mapa está congelado porque a norma foi desligada. Ele continua consultável, com as cláusulas e os vínculos preservados, mas não recebe nova evidência. Nada foi alterado.
+causes:
+  - A norma foi desligada e o mapa foi congelado no desligamento.
+  - A ativação ainda não foi reativada com um novo aceite.
+actions:
+  - Consulte o mapa congelado e os vínculos já registrados.
+  - Para vincular nova evidência, reative a norma com um novo ciclo de proposta, aprovação e aceite.
+suggest_ticket: false

@@ -97,6 +97,24 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
     suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
 
+-- Erro explicado: urn:ziipsan:problem:activation-exists
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:activation-exists', NULL, 'Norma já com ativação em andamento', 'A norma já tem uma ativação proposta, aprovada ou ativa para este tenant. Não é possível propor outra enquanto a atual não for encerrada. Nada foi alterado.', ARRAY['A norma já foi proposta e aguarda aprovação.', 'A norma já foi aprovada e aguarda o aceite formal.', 'A norma já está ativa para este tenant.']::text[], ARRAY['Consulte a lista de ativações e confira o estado atual da norma.', 'Se a ativação ativa deve ser encerrada, desligue-a antes de propor outra.', 'Se a proposta está parada, peça a outra pessoa que a aprove ou a retome.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:activation-state
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:activation-state', NULL, 'Ativação em estado que impede a operação', 'A ativação está num estado que impede esta operação. Cada passo do ciclo exige o estado anterior: só a proposta pode ser aprovada, só a aprovada pode receber o aceite formal e só a ativa pode ser desligada. Nada foi alterado.', ARRAY['A ativação já passou deste passo do ciclo.', 'A ativação foi desligada e precisa de um novo ciclo para voltar.', 'A ativação ainda não chegou ao passo exigido.']::text[], ARRAY['Recarregue a ativação e confira o estado atual.', 'Refaça a operação no estado permitido.', 'Para uma norma desligada, proponha uma nova ativação.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
 -- Erro explicado: urn:ziipsan:problem:approval-required
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
@@ -110,6 +128,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:classe-inativa', NULL, 'Classe de feição desativada', 'Não é possível criar um tipo em uma classe desativada. A classe precisa estar ativa para receber tipos.', ARRAY['A classe foi desativada no catálogo.', 'A classe expirou ou foi substituída.']::text[], ARRAY['Reative a classe ou escolha outra classe ativa.', 'Confira o catálogo antes de criar o tipo.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:clause-map-frozen
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:clause-map-frozen', NULL, 'Mapa de cláusulas congelado', 'O mapa está congelado porque a norma foi desligada. Ele continua consultável, com as cláusulas e os vínculos preservados, mas não recebe nova evidência. Nada foi alterado.', ARRAY['A norma foi desligada e o mapa foi congelado no desligamento.', 'A ativação ainda não foi reativada com um novo aceite.']::text[], ARRAY['Consulte o mapa congelado e os vínculos já registrados.', 'Para vincular nova evidência, reative a norma com um novo ciclo de proposta, aprovação e aceite.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
@@ -173,6 +200,15 @@ ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
 INSERT INTO support.error_explanation
     (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
 VALUES ('urn:ziipsan:problem:effects-pending', NULL, 'Efeitos pendentes impedem o encerramento', 'Há alvos com efeito ainda não aplicado, por isso a ordem não pode ser encerrada como executada. Encerrar assim marcaria trabalho como feito sem aplicar o efeito.', ARRAY['Um ou mais alvos ainda não tiveram o efeito aplicado.', 'A aplicação foi interrompida antes de terminar.']::text[], ARRAY['Aplique os efeitos pendentes e tente encerrar de novo.', 'Se o trabalho não foi feito, encerre como não executada.']::text[], NULL, FALSE)
+ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
+    explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
+    actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,
+    suggest_ticket = EXCLUDED.suggest_ticket, updated_at = NOW();
+
+-- Erro explicado: urn:ziipsan:problem:evidence-link-exists
+INSERT INTO support.error_explanation
+    (code, tenant_id, title, explanation, causes, actions, article_slug, suggest_ticket)
+VALUES ('urn:ziipsan:problem:evidence-link-exists', NULL, 'Evidência já vinculada à cláusula', 'Esta evidência já está vinculada a esta cláusula do mapa. O vínculo é único por evidência e cláusula; a mesma evidência pode servir a outras cláusulas, mas não duas vezes à mesma. Nada foi alterado.', ARRAY['O vínculo já foi criado antes para esta evidência e esta cláusula.', 'A operação foi enviada duas vezes.']::text[], ARRAY['Consulte os vínculos da cláusula para confirmar o que já existe.', 'Para cobrir outra cláusula com a mesma evidência, vincule-a à outra linha do mapa.']::text[], NULL, FALSE)
 ON CONFLICT (code) DO UPDATE SET title = EXCLUDED.title,
     explanation = EXCLUDED.explanation, causes = EXCLUDED.causes,
     actions = EXCLUDED.actions, article_slug = EXCLUDED.article_slug,

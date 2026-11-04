@@ -1,0 +1,11 @@
+# P1.32: erro explicado (núcleo de Certificações, ADR-0041).
+code: urn:ziipsan:problem:evidence-link-exists
+title: Evidência já vinculada à cláusula
+explanation: Esta evidência já está vinculada a esta cláusula do mapa. O vínculo é único por evidência e cláusula; a mesma evidência pode servir a outras cláusulas, mas não duas vezes à mesma. Nada foi alterado.
+causes:
+  - O vínculo já foi criado antes para esta evidência e esta cláusula.
+  - A operação foi enviada duas vezes.
+actions:
+  - Consulte os vínculos da cláusula para confirmar o que já existe.
+  - Para cobrir outra cláusula com a mesma evidência, vincule-a à outra linha do mapa.
+suggest_ticket: false

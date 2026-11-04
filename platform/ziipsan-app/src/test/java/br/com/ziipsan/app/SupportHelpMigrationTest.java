@@ -98,10 +98,14 @@ class SupportHelpMigrationTest {
         List<String> codes = queryStrings(ProvisionedTenant.migratorDs,
                 "SELECT code FROM support.error_explanation ORDER BY code");
         // P1.22 + integração P1-B: o catálogo passa a cobrir todos os códigos problem emitidos.
+        // P1.32: +4 códigos do núcleo de Certificações (51 -> 55).
         assertThat(codes).containsExactly(
                 "urn:ziipsan:problem:access-denied",
+                "urn:ziipsan:problem:activation-exists",
+                "urn:ziipsan:problem:activation-state",
                 "urn:ziipsan:problem:approval-required",
                 "urn:ziipsan:problem:classe-inativa",
+                "urn:ziipsan:problem:clause-map-frozen",
                 "urn:ziipsan:problem:confirmation-required",
                 "urn:ziipsan:problem:content-too-large",
                 "urn:ziipsan:problem:customer-has-active-link",
@@ -109,6 +113,7 @@ class SupportHelpMigrationTest {
                 "urn:ziipsan:problem:data-conflict",
                 "urn:ziipsan:problem:deletion-unavailable",
                 "urn:ziipsan:problem:effects-pending",
+                "urn:ziipsan:problem:evidence-link-exists",
                 "urn:ziipsan:problem:filter-unavailable",
                 "urn:ziipsan:problem:inactive-type",
                 "urn:ziipsan:problem:internal-error",

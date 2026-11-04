@@ -1,0 +1,13 @@
+# P1.32: erro explicado (núcleo de Certificações, ADR-0041).
+code: urn:ziipsan:problem:activation-exists
+title: Norma já com ativação em andamento
+explanation: A norma já tem uma ativação proposta, aprovada ou ativa para este tenant. Não é possível propor outra enquanto a atual não for encerrada. Nada foi alterado.
+causes:
+  - A norma já foi proposta e aguarda aprovação.
+  - A norma já foi aprovada e aguarda o aceite formal.
+  - A norma já está ativa para este tenant.
+actions:
+  - Consulte a lista de ativações e confira o estado atual da norma.
+  - Se a ativação ativa deve ser encerrada, desligue-a antes de propor outra.
+  - Se a proposta está parada, peça a outra pessoa que a aprove ou a retome.
+suggest_ticket: false

@@ -61,6 +61,17 @@ public final class PermissionCatalog {
             new Permission("console:manage", "console", "console", "manage", "P1.6"),
             new Permission("console:suspend", "console", "console", "suspend", "P1.6"),
             new Permission("console:delete", "console", "console", "delete", "P1.6"),
+            // P1.32: núcleo do módulo Certificações de qualidade (ADR-0041).
+            // Nenhum perfil de fábrica as inclui ainda: perfis por função são
+            // da P1.37; hoje são concessão direta, como gis:catalog-*.
+            // cert:read lê catálogo, ativações e mapas; cert:write propõe
+            // ativação, desliga e vincula evidência; cert:approve aprova e
+            // aceita a ativação; cert:audit lê o vínculo de evidência pelo
+            // lado da evidência (a visão de auditoria do muitos-para-muitos).
+            new Permission("cert:read", "certificacao", "cert", "read", "P1.32"),
+            new Permission("cert:write", "certificacao", "cert", "write", "P1.32"),
+            new Permission("cert:approve", "certificacao", "cert", "approve", "P1.32"),
+            new Permission("cert:audit", "certificacao", "cert", "audit", "P1.32"),
             // P1.6 (integracao P1-B): a tela de mudanca de parametro do tenant
             // (/api/v1/tenant/parameters/*) nasceu sem permissao fina — a frente
             // declarou a lacuna e o RoutePermissionTest recusava as 6 rotas.

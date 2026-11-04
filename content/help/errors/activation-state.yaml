@@ -1,0 +1,13 @@
+# P1.32: erro explicado (núcleo de Certificações, ADR-0041).
+code: urn:ziipsan:problem:activation-state
+title: Ativação em estado que impede a operação
+explanation: "A ativação está num estado que impede esta operação. Cada passo do ciclo exige o estado anterior: só a proposta pode ser aprovada, só a aprovada pode receber o aceite formal e só a ativa pode ser desligada. Nada foi alterado."
+causes:
+  - A ativação já passou deste passo do ciclo.
+  - A ativação foi desligada e precisa de um novo ciclo para voltar.
+  - A ativação ainda não chegou ao passo exigido.
+actions:
+  - Recarregue a ativação e confira o estado atual.
+  - Refaça a operação no estado permitido.
+  - Para uma norma desligada, proponha uma nova ativação.
+suggest_ticket: false

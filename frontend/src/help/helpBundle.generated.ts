@@ -140,6 +140,40 @@ export const HELP_BUNDLE: HelpBundle = {
       "suggestTicket": false
     },
     {
+      "code": "urn:ziipsan:problem:activation-exists",
+      "title": "Norma já com ativação em andamento",
+      "explanation": "A norma já tem uma ativação proposta, aprovada ou ativa para este tenant. Não é possível propor outra enquanto a atual não for encerrada. Nada foi alterado.",
+      "causes": [
+        "A norma já foi proposta e aguarda aprovação.",
+        "A norma já foi aprovada e aguarda o aceite formal.",
+        "A norma já está ativa para este tenant."
+      ],
+      "actions": [
+        "Consulte a lista de ativações e confira o estado atual da norma.",
+        "Se a ativação ativa deve ser encerrada, desligue-a antes de propor outra.",
+        "Se a proposta está parada, peça a outra pessoa que a aprove ou a retome."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:activation-state",
+      "title": "Ativação em estado que impede a operação",
+      "explanation": "A ativação está num estado que impede esta operação. Cada passo do ciclo exige o estado anterior: só a proposta pode ser aprovada, só a aprovada pode receber o aceite formal e só a ativa pode ser desligada. Nada foi alterado.",
+      "causes": [
+        "A ativação já passou deste passo do ciclo.",
+        "A ativação foi desligada e precisa de um novo ciclo para voltar.",
+        "A ativação ainda não chegou ao passo exigido."
+      ],
+      "actions": [
+        "Recarregue a ativação e confira o estado atual.",
+        "Refaça a operação no estado permitido.",
+        "Para uma norma desligada, proponha uma nova ativação."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
       "code": "urn:ziipsan:problem:approval-required",
       "title": "Tipo exige aprovação por outra pessoa",
       "explanation": "Este tipo de serviço só executa depois que outra pessoa aprova a ordem. A execução foi recusada porque a aprovação ainda não aconteceu.",
@@ -165,6 +199,21 @@ export const HELP_BUNDLE: HelpBundle = {
       "actions": [
         "Reative a classe ou escolha outra classe ativa.",
         "Confira o catálogo antes de criar o tipo."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:clause-map-frozen",
+      "title": "Mapa de cláusulas congelado",
+      "explanation": "O mapa está congelado porque a norma foi desligada. Ele continua consultável, com as cláusulas e os vínculos preservados, mas não recebe nova evidência. Nada foi alterado.",
+      "causes": [
+        "A norma foi desligada e o mapa foi congelado no desligamento.",
+        "A ativação ainda não foi reativada com um novo aceite."
+      ],
+      "actions": [
+        "Consulte o mapa congelado e os vínculos já registrados.",
+        "Para vincular nova evidência, reative a norma com um novo ciclo de proposta, aprovação e aceite."
       ],
       "article": null,
       "suggestTicket": false
@@ -262,6 +311,21 @@ export const HELP_BUNDLE: HelpBundle = {
       "actions": [
         "Aplique os efeitos pendentes e tente encerrar de novo.",
         "Se o trabalho não foi feito, encerre como não executada."
+      ],
+      "article": null,
+      "suggestTicket": false
+    },
+    {
+      "code": "urn:ziipsan:problem:evidence-link-exists",
+      "title": "Evidência já vinculada à cláusula",
+      "explanation": "Esta evidência já está vinculada a esta cláusula do mapa. O vínculo é único por evidência e cláusula; a mesma evidência pode servir a outras cláusulas, mas não duas vezes à mesma. Nada foi alterado.",
+      "causes": [
+        "O vínculo já foi criado antes para esta evidência e esta cláusula.",
+        "A operação foi enviada duas vezes."
+      ],
+      "actions": [
+        "Consulte os vínculos da cláusula para confirmar o que já existe.",
+        "Para cobrir outra cláusula com a mesma evidência, vincule-a à outra linha do mapa."
       ],
       "article": null,
       "suggestTicket": false
