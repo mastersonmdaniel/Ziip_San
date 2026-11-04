@@ -98,7 +98,30 @@ final class PersonalDataColumns {
             // P1.20 (V1_16): ids internos do pipeline de documentos — referência ao
             // catálogo / ao documento anexo, não número de documento pessoal.
             Map.entry("documents.document_type_id", "id interno do tipo de documento do catálogo"),
-            Map.entry("document_scan_events.document_id", "id interno do documento anexo do evento de varredura"));
+            Map.entry("document_scan_events.document_id", "id interno do documento anexo do evento de varredura"),
+            // P1-C (integracao): colunas novas da camada C que casam com o padrao
+            // por nome mas nao sao dado pessoal — catalogos (nome), referencias
+            // por id e flags de modelo. O dado pessoal de verdade (a referencia
+            // ao documento comprobatorio de vulneravel) tem regra de redacao na
+            // V3_13, nao allowlist.
+            Map.entry("addresses.street_id", "referência por id ao logradouro (catálogo street_names)"),
+            Map.entry("block_faces.name", "nome de face de quadra (catálogo)"),
+            Map.entry("consent_purposes.name", "nome de finalidade de consentimento (catálogo)"),
+            Map.entry("customer_addresses.address_id", "referência por id; o endereço é redigido em addresses"),
+            Map.entry("customer_contacts.phone_type", "tipo de telefone (móvel/fixo), sem o número"),
+            Map.entry("customer_delete_reasons.name", "nome de motivo de exclusão (catálogo)"),
+            Map.entry("customer_types.name", "nome de tipo de cliente (catálogo)"),
+            Map.entry("customers.document_exemption_reason_id", "referência por id ao motivo de dispensa (catálogo)"),
+            Map.entry("document_exemption_reasons.name", "nome de motivo de dispensa (catálogo)"),
+            Map.entry("ibge_municipalities.name", "nome de município (geografia pública)"),
+            Map.entry("neighborhoods.name", "nome de bairro (catálogo)"),
+            Map.entry("property_profiles.name", "nome de perfil do imóvel (catálogo)"),
+            Map.entry("relation_roles.name", "nome de papel do vínculo (catálogo)"),
+            Map.entry("service_protocol_specs.required_documents", "lista de documentos exigidos pelo protocolo (modelo, não documento de pessoa)"),
+            Map.entry("service_protocol_specs.requires_address", "booleano (protocolo exige endereço ou não)"),
+            Map.entry("sewer_discharges.name", "nome de tipo de esgotamento (catálogo)"),
+            Map.entry("street_names.name", "nome de logradouro (catálogo)"),
+            Map.entry("unit_link_end_reasons.name", "nome de motivo de fim de vínculo (catálogo)"));
 
     private PersonalDataColumns() {
     }
