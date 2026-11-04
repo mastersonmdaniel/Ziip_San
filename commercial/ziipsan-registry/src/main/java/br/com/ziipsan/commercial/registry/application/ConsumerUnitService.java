@@ -125,6 +125,7 @@ public class ConsumerUnitService {
     private final InternalOrderService orders;
     private final CadastralChangeService changes;
     private final UnitDueDayRepository dueDays;
+    private final HolderSituationService holderSituations;
 
     /** SIRGAS 2000 (EPSG:4674), o SRID das colunas de coordenadas (V1_1). x = longitude, y = latitude. */
     private static final GeometryFactory GEOMETRY_4674 = new GeometryFactory(new PrecisionModel(), 4674);
@@ -136,7 +137,7 @@ public class ConsumerUnitService {
                                CustomerDocumentService documents, RegistrySettingsService settings,
                                PersonalDataAccessService accessLog) {
         this(units, addresses, unitCustomers, unitSubcategories, unitSubcategoryActivities, statusHistory, auditLog,
-                documents, settings, accessLog, null, null, null, null);
+                documents, settings, accessLog, null, null, null, null, null);
     }
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -147,7 +148,7 @@ public class ConsumerUnitService {
                                CustomerDocumentService documents, RegistrySettingsService settings,
                                PersonalDataAccessService accessLog, CatalogLookup catalogs,
                                InternalOrderService orders, CadastralChangeService changes,
-                               UnitDueDayRepository dueDays) {
+                               UnitDueDayRepository dueDays, HolderSituationService holderSituations) {
         this.units = units;
         this.addresses = addresses;
         this.unitCustomers = unitCustomers;
@@ -162,6 +163,7 @@ public class ConsumerUnitService {
         this.orders = orders;
         this.changes = changes;
         this.dueDays = dueDays;
+        this.holderSituations = holderSituations;
     }
 
     // ------------------------------------------------------------------ leitura
@@ -362,6 +364,7 @@ public class ConsumerUnitService {
         Resolved r = resolve(checks, in, u, config);
         consistency(checks, in, r, config);
         checks.throwIfAny();
+        checkOwnershipTransfer(u, in);
         Map<String, UUID> orderIds = openWriteOrders(in, u);
 
         Address a = u.getAddressId() == null ? null : addresses.findById(u.getAddressId()).orElse(null);
@@ -1083,16 +1086,50 @@ public class ConsumerUnitService {
      * Vínculos vigentes: o corpo traz o conjunto desejado (cliente + papel). O que não veio é encerrado
      * hoje; o que veio e não existia é criado. Em duas fases por causa do índice único do nome na conta.
      */
+    /**
+     * P1.41: a troca de titularidade (usuário vigente substituído por outro)
+     * é condicionada à validação externa, quando o tenant a exige
+     * (registry.validate_document_online ≠ NONE). A primeira titularidade
+     * (create) não é troca e não é condicionada; manter o mesmo usuário
+     * também não. Sem HolderSituationService (construtor de conveniência),
+     * a checagem é pulada — o caminho Spring sempre o tem.
+     */
+    private void checkOwnershipTransfer(ConsumerUnit u, UnitInput in) {
+        if (holderSituations == null || in.customers() == null) {
+            return;
+        }
+        List<UnitCustomer> current = unitCustomers.findByTenantIdAndUnitIdAndEndDateIsNull(
+                RegistryContext.tenantId(), u.getId());
+        java.util.Set<UUID> currentUsers = new java.util.HashSet<>();
+        for (UnitCustomer link : current) {
+            if (link.getRole() == UnitCustomer.Role.USER) {
+                currentUsers.add(link.getCustomerId());
+            }
+        }
+        if (currentUsers.isEmpty()) {
+            return;
+        }
+        for (UnitCustomerInput d : in.customers()) {
+            if (d.relation() == UnitCustomer.Role.USER && !currentUsers.contains(d.customerId())) {
+                holderSituations.validateForOwnershipTransfer(d.customerId());
+            }
+        }
+    }
+
     private void syncCustomers(ConsumerUnit u, List<UnitCustomerInput> wanted, UUID ownershipOrderId,
                                UUID linkEndReasonId, UUID unitDeliveryModeId) {
         Map<String, UnitCustomerInput> desired = new LinkedHashMap<>();
         wanted.forEach(c -> desired.put(c.customerId() + "|" + c.relation(), c));
         LocalDate today = LocalDate.now();
         Map<String, UnitCustomer> kept = new HashMap<>();
+        boolean[] userTransition = {false};
         for (UnitCustomer link : unitCustomers.findByTenantIdAndUnitIdAndEndDateIsNull(RegistryContext.tenantId(), u.getId())) {
             String key = link.getCustomerId() + "|" + link.getRole();
             UnitCustomerInput d = desired.get(key);
             if (d == null) {
+                if (link.getRole() == UnitCustomer.Role.USER) {
+                    userTransition[0] = true;
+                }
                 link.setEndDate(today.isBefore(link.getStartDate()) ? link.getStartDate() : today);
                 link.setEndReason("Vínculo encerrado na alteração do cadastro.");
                 if (link.getEndReasonId() == null) {
@@ -1113,6 +1150,9 @@ public class ConsumerUnitService {
         desired.forEach((key, d) -> {
             UnitCustomer link = kept.get(key);
             if (link == null) {
+                if (d.relation() == UnitCustomer.Role.USER) {
+                    userTransition[0] = true;
+                }
                 link = RegistryContext.forCreate(new UnitCustomer());
                 link.setUnitId(u.getId());
                 link.setCustomerId(d.customerId());
@@ -1132,6 +1172,17 @@ public class ConsumerUnitService {
             toSave.add(link);
         });
         unitCustomers.saveAllAndFlush(toSave);
+        // P1.41: a ocupação acompanha a transição de vínculo de usuário
+        // (consequência da OS OWNERSHIP_TRANSFER já aberta, não situação
+        // própria): com usuário vigente -> OCCUPIED; sem -> VACANT. Sem
+        // transição de usuário, a ocupação marcada explicitamente (ou
+        // UNKNOWN) é preservada.
+        if (userTransition[0]) {
+            boolean hasUser = unitCustomers.findByTenantIdAndUnitIdAndEndDateIsNull(
+                            RegistryContext.tenantId(), u.getId())
+                    .stream().anyMatch(l -> l.getRole() == UnitCustomer.Role.USER);
+            u.setOccupancyStatus(hasUser ? "OCCUPIED" : "VACANT");
+        }
     }
 
     /** role_id do vínculo: o informado, ou o do system_role (backfill da V3_12); nulo sem catálogo. */

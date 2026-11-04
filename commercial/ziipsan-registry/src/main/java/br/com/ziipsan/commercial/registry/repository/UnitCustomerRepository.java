@@ -12,6 +12,12 @@ public interface UnitCustomerRepository extends JpaRepository<UnitCustomer, UUID
     /** Vinculos vigentes (sem data de fim) da unidade. */
     List<UnitCustomer> findByTenantIdAndUnitIdAndEndDateIsNull(UUID tenantId, UUID unitId);
 
+    /** Todos os vínculos (vigentes e encerrados) do cliente. */
+    List<UnitCustomer> findByTenantIdAndCustomerId(UUID tenantId, UUID customerId);
+
+    /** Vínculos vigentes do cliente. */
+    List<UnitCustomer> findByTenantIdAndCustomerIdAndEndDateIsNull(UUID tenantId, UUID customerId);
+
     /** Historico completo da unidade, do mais recente ao mais antigo. */
     List<UnitCustomer> findByTenantIdAndUnitIdOrderByStartDateDesc(UUID tenantId, UUID unitId);
 }

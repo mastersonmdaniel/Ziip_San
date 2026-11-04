@@ -109,6 +109,12 @@ final class PersonalDataColumns {
             Map.entry("consent_purposes.name", "nome de finalidade de consentimento (catálogo)"),
             Map.entry("customer_addresses.address_id", "referência por id; o endereço é redigido em addresses"),
             Map.entry("customer_contacts.phone_type", "tipo de telefone (móvel/fixo), sem o número"),
+            // P1.41 (V3_8): espécie do documento validado (CPF/CNPJ), sem o
+            // número — mesmo precedente de holder_document_kind acima. O
+            // resultado da validação guarda só situação e data; o número
+            // continua cifrado em customers.
+            Map.entry("customer_document_validations.document_kind",
+                    "espécie do documento validado (CPF/CNPJ), sem o número"),
             Map.entry("customer_delete_reasons.name", "nome de motivo de exclusão (catálogo)"),
             Map.entry("customer_types.name", "nome de tipo de cliente (catálogo)"),
             Map.entry("customers.document_exemption_reason_id", "referência por id ao motivo de dispensa (catálogo)"),

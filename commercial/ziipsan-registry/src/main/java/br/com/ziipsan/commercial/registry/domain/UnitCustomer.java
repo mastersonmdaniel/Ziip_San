@@ -67,6 +67,17 @@ public class UnitCustomer extends TenantAwareEntity {
     @Column(name = "delivery_mode_id")
     private UUID deliveryModeId;
 
+    /**
+     * P1.41 (V3_8): vínculo provisório de sucessão (titular falecido).
+     * provisional_kind: HEIR, ESTATE_ADMINISTRATOR ou OCCUPANT. O vínculo
+     * provisório nunca é nome na conta (o CHECK de show_on_bill exige USER).
+     */
+    @Column(name = "provisional", nullable = false)
+    private boolean provisional;
+
+    @Column(name = "provisional_kind", length = 20)
+    private String provisionalKind;
+
     public enum Role { OWNER, USER, RESPONSIBLE }
 
 }

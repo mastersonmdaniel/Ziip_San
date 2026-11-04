@@ -161,6 +161,16 @@ public class ConsumerUnit extends TenantAwareEntity {
     @Column(name = "seasonal", nullable = false)
     private boolean seasonal;
 
+    /**
+     * P1.41 (V3_8): ocupação da unidade (OCCUPIED, VACANT, UNKNOWN).
+     * VACANT só sem usuário vigente (trigger no banco + serviço). Backfill
+     * da migration: com usuário vigente -> OCCUPIED, sem -> VACANT.
+     * UNKNOWN é o estado de "ainda não classificada" (ex.: unidade
+     * PROVISIONAL recém-criada sem vínculo).
+     */
+    @Column(name = "occupancy_status", nullable = false, length = 10)
+    private String occupancyStatus = "UNKNOWN";
+
     @Column(name = "deleted_at")
     private java.time.OffsetDateTime deletedAt;
 

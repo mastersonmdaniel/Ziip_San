@@ -76,6 +76,15 @@ public class Customer extends TenantAwareEntity {
     @Column(name = "delete_reason_id")
     private java.util.UUID deleteReasonId;
 
+    /**
+     * P1.41 (V3_8): nome social, só em PF (CHECK no banco). Usado no
+     * atendimento, no portal e nas mensagens; o nome civil fica no documento
+     * fiscal e nos termos (ver HolderSituationService.displayName e o
+     * parâmetro registry.social_name_display).
+     */
+    @Column(name = "social_name", length = 200)
+    private String socialName;
+
     @Column(name = "due_day")
     private Short dueDay;
 
