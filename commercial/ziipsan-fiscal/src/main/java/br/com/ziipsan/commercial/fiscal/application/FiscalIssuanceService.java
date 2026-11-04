@@ -53,8 +53,9 @@ import java.util.zip.GZIPOutputStream;
  * as tabelas e a numeração já a suportam, o builder ainda não; (3) a assinatura XMLDSig e o
  * mTLS chegam com o cliente real (P2) — o XML aqui é o não assinado do corpus.
  *
- * <p>IBS/CBS entram como informativos (TaxEngine, 2026). Quando a composição de preço mudar
- * (CBS plena), o flag informativo passa a vir da vigência, não do motor — pendência da P2.4.
+ * <p>IBS/CBS entram como informativos só na competência do ano de teste de 2026
+ * ({@link TaxRateValidity#cbsIbsInformative}); a partir de 01/01/2027 a CBS plena deixa
+ * de ser informativa e o IBS segue a sua transição por vigência (P2.4).
  */
 public final class FiscalIssuanceService {
 
@@ -133,8 +134,10 @@ public final class FiscalIssuanceService {
                 new TaxLine("ISS", taxRates.issRate(), result.iss(), false),
                 new TaxLine("IRRF", taxRates.irrfRate(), result.irrf(), false),
                 new TaxLine("CSRF", taxRates.csrfRate(), result.csrf(), false),
-                new TaxLine("CBS", taxRates.cbsRate(), result.cbsInformative(), true),
-                new TaxLine("IBS", taxRates.ibsRate(), result.ibsInformative(), true));
+                new TaxLine("CBS", taxRates.cbsRate(), result.cbsInformative(),
+                        TaxRateValidity.cbsIbsInformative(request.competenceDate())),
+                new TaxLine("IBS", taxRates.ibsRate(), result.ibsInformative(),
+                        TaxRateValidity.cbsIbsInformative(request.competenceDate())));
         repository.signDocument(request.tenantId(), slot.documentId(), dpsId, unsignedXml, taxes);
         try {
             AuthorizationResult authorization = issuer.authorize(

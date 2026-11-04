@@ -43,4 +43,38 @@ class TaxRateValidityTest {
         assertThrows(IllegalStateException.class,
                 () -> TaxRateValidity.rateFor(overlapping, "CBS", LocalDate.of(2026, 7, 1)));
     }
+
+    @Test
+    void informativeFlagFollowsTestYear() {
+        assertEquals(true, TaxRateValidity.cbsIbsInformative(LocalDate.of(2026, 12, 31)));
+        assertEquals(false, TaxRateValidity.cbsIbsInformative(LocalDate.of(2027, 1, 1)));
+    }
+
+    @Test
+    void ibsTransitionScheduleResolvesPerYear() {
+        // Valores de teste para a lógica de seleção; o plano não publica os percentuais
+        // da transição do IBS de 2029 a 2032 (LC 214/2025, art. 544) e nenhum é inventado aqui.
+        List<TaxRateRow> schedule = List.of(
+                new TaxRateRow("IBS", "NATIONAL", LocalDate.of(2026, 1, 1), LocalDate.of(2028, 12, 31), new BigDecimal("0.001")),
+                new TaxRateRow("IBS", "NATIONAL", LocalDate.of(2029, 1, 1), LocalDate.of(2029, 12, 31), new BigDecimal("0.011")),
+                new TaxRateRow("IBS", "NATIONAL", LocalDate.of(2030, 1, 1), LocalDate.of(2030, 12, 31), new BigDecimal("0.012")),
+                new TaxRateRow("IBS", "NATIONAL", LocalDate.of(2031, 1, 1), LocalDate.of(2031, 12, 31), new BigDecimal("0.013")),
+                new TaxRateRow("IBS", "NATIONAL", LocalDate.of(2032, 1, 1), null, new BigDecimal("0.014")));
+        assertEquals(new BigDecimal("0.001"), TaxRateValidity.rateFor(schedule, "IBS", LocalDate.of(2028, 12, 31)));
+        assertEquals(new BigDecimal("0.011"), TaxRateValidity.rateFor(schedule, "IBS", LocalDate.of(2029, 6, 1)));
+        assertEquals(new BigDecimal("0.012"), TaxRateValidity.rateFor(schedule, "IBS", LocalDate.of(2030, 6, 1)));
+        assertEquals(new BigDecimal("0.013"), TaxRateValidity.rateFor(schedule, "IBS", LocalDate.of(2031, 6, 1)));
+        assertEquals(new BigDecimal("0.014"), TaxRateValidity.rateFor(schedule, "IBS", LocalDate.of(2032, 1, 1)));
+        assertEquals(new BigDecimal("0.014"), TaxRateValidity.rateFor(schedule, "IBS", LocalDate.of(2035, 6, 1)));
+    }
+
+    @Test
+    void overlapDetectionHandlesOpenEndedIntervals() {
+        assertEquals(true, TaxRateValidity.overlaps(
+                LocalDate.of(2026, 1, 1), null, LocalDate.of(2026, 6, 1), null));
+        assertEquals(true, TaxRateValidity.overlaps(
+                LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31), LocalDate.of(2026, 12, 31), null));
+        assertEquals(false, TaxRateValidity.overlaps(
+                LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31), LocalDate.of(2027, 1, 1), null));
+    }
 }

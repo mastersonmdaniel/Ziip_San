@@ -91,4 +91,11 @@ public interface FiscalDocumentRepository {
     Optional<EventRecord> findEventByDocumentAndKind(UUID tenantId, UUID documentId, String eventKind);
 
     List<TaxRateValidity.TaxRateRow> taxRates(UUID tenantId);
+
+    /**
+     * Registra uma linha de {@code tax_rates} (cadastro da P2.4) e devolve o id da linha.
+     * A restrição de exclusão da V4_5 recusa sobreposição no banco; o
+     * {@code TaxRateService} pré-checa para devolver o erro legível antes de chegar lá.
+     */
+    UUID insertTaxRate(UUID tenantId, TaxRateValidity.TaxRateRow row, String legalBasis);
 }

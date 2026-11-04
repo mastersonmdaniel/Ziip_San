@@ -38,6 +38,17 @@ public final class InMemoryFiscalRepository implements FiscalDocumentRepository 
         rates.add(rate);
     }
 
+    @Override
+    public synchronized UUID insertTaxRate(UUID tenantId, TaxRateRow row, String legalBasis) {
+        rates.add(row);
+        return UUID.randomUUID();
+    }
+
+    /** Próximo número da série (o que será reservado na próxima emissão; 1 = nunca usada). */
+    public synchronized long nextNumber(UUID issuerId, String documentType, String series) {
+        return seriesNext.getOrDefault(seriesKey(issuerId, documentType, series), 0L);
+    }
+
     public synchronized int documentCount() {
         return documents.size();
     }

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -193,5 +194,73 @@ class FiscalIssuanceServiceTest {
                 FiscalDocumentType.NFAG, "00001", "BILL", UUID.randomUUID(),
                 new BigDecimal("100.00"), COMPETENCE, Environment.SIMULATED, false, null, true);
         assertThrows(IllegalStateException.class, () -> service.issue(nfag));
+    }
+
+    /**
+     * Virada de 01/01/2027 (P2.4) no documento: a CBS de 2026 é informativa a 0,9% e a
+     * de 2027 deixa de ser informativa à alíquota de teste cadastrada. O IBS cobre as
+     * duas competências com uma única vigência aberta, para isolar a virada da CBS.
+     */
+    @Test
+    void issueAcrossTurnoverChangesCbsRateAndInformativeFlag() {
+        InMemoryFiscalRepository repo = new InMemoryFiscalRepository();
+        repo.addIssuer(new IssuerRecord(ISSUER, "4205407", "CNPJ", "hash-sintetico"));
+        repo.ensureSeries(TENANT, ISSUER, "NFSE_NACIONAL", "00001");
+        repo.addTaxRate(new TaxRateRow("ISS", "NATIONAL", LocalDate.of(2026, 1, 1), null, new BigDecimal("0.02")));
+        repo.addTaxRate(new TaxRateRow("IRRF", "NATIONAL", LocalDate.of(2026, 1, 1), null, new BigDecimal("0.015")));
+        repo.addTaxRate(new TaxRateRow("CSRF", "NATIONAL", LocalDate.of(2026, 1, 1), null, new BigDecimal("0.0465")));
+        repo.addTaxRate(new TaxRateRow("CBS", "NATIONAL", LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31), new BigDecimal("0.009")));
+        repo.addTaxRate(new TaxRateRow("CBS", "NATIONAL", LocalDate.of(2027, 1, 1), null, new BigDecimal("0.020")));
+        repo.addTaxRate(new TaxRateRow("IBS", "NATIONAL", LocalDate.of(2026, 1, 1), null, new BigDecimal("0.001")));
+        FiscalIssuanceService turnoverService = new FiscalIssuanceService(repo,
+                new FiscalIssuerRouter(FiscalIssuanceGate.closed(),
+                        new SimulatedFiscalIssuer(FiscalDocumentType.NFSE_NACIONAL), restricted),
+                xmlStore, Clock.systemUTC());
+
+        IssueRequest before = new IssueRequest(TENANT, ISSUER, CNPJ, DpsId.TYPE_CNPJ,
+                FiscalDocumentType.NFSE_NACIONAL, "00001", "BILL", UUID.randomUUID(),
+                new BigDecimal("5440.00"), LocalDate.of(2026, 12, 31),
+                Environment.SIMULATED, false, "Tomador Sintetico de Teste", true);
+        IssueRequest after = new IssueRequest(TENANT, ISSUER, CNPJ, DpsId.TYPE_CNPJ,
+                FiscalDocumentType.NFSE_NACIONAL, "00001", "BILL", UUID.randomUUID(),
+                new BigDecimal("5440.00"), LocalDate.of(2027, 1, 1),
+                Environment.SIMULATED, false, "Tomador Sintetico de Teste", true);
+        IssueResult issuedBefore = turnoverService.issue(before);
+        IssueResult issuedAfter = turnoverService.issue(after);
+
+        var cbsBefore = repo.taxesOf(issuedBefore.documentId()).stream()
+                .filter(t -> t.taxCode().equals("CBS")).findFirst().orElseThrow();
+        var cbsAfter = repo.taxesOf(issuedAfter.documentId()).stream()
+                .filter(t -> t.taxCode().equals("CBS")).findFirst().orElseThrow();
+        assertEquals(new BigDecimal("0.009"), cbsBefore.rate());
+        assertEquals(new BigDecimal("48.96"), cbsBefore.amount());
+        assertTrue(cbsBefore.informative());
+        assertEquals(new BigDecimal("0.020"), cbsAfter.rate());
+        assertEquals(new BigDecimal("108.80"), cbsAfter.amount());
+        assertFalse(cbsAfter.informative());
+    }
+
+    /**
+     * Alíquota ausente para um só tributo (P2.4): IBS sem linha, demais presentes — a
+     * emissão falha, nenhum documento existe para a origem e a série não consome número.
+     */
+    @Test
+    void missingSingleRateRefusesWithoutConsumingNumber() {
+        InMemoryFiscalRepository repo = new InMemoryFiscalRepository();
+        repo.addIssuer(new IssuerRecord(ISSUER, "4205407", "CNPJ", "hash-sintetico"));
+        repo.ensureSeries(TENANT, ISSUER, "NFSE_NACIONAL", "00001");
+        repo.addTaxRate(new TaxRateRow("ISS", "NATIONAL", LocalDate.of(2026, 1, 1), null, new BigDecimal("0.02")));
+        repo.addTaxRate(new TaxRateRow("IRRF", "NATIONAL", LocalDate.of(2026, 1, 1), null, new BigDecimal("0.015")));
+        repo.addTaxRate(new TaxRateRow("CSRF", "NATIONAL", LocalDate.of(2026, 1, 1), null, new BigDecimal("0.0465")));
+        repo.addTaxRate(new TaxRateRow("CBS", "NATIONAL", LocalDate.of(2026, 1, 1), null, new BigDecimal("0.009")));
+        FiscalIssuanceService noIbsService = new FiscalIssuanceService(repo,
+                new FiscalIssuerRouter(FiscalIssuanceGate.closed(),
+                        new SimulatedFiscalIssuer(FiscalDocumentType.NFSE_NACIONAL), restricted),
+                xmlStore, Clock.systemUTC());
+        UUID source = UUID.randomUUID();
+        assertThrows(IllegalStateException.class, () -> noIbsService.issue(request(source)));
+        assertEquals(0, repo.documentCount());
+        assertTrue(repo.findBySource(TENANT, "BILL", source, "NFSE_NACIONAL").isEmpty());
+        assertEquals(1L, repo.nextNumber(ISSUER, "NFSE_NACIONAL", "00001"));
     }
 }

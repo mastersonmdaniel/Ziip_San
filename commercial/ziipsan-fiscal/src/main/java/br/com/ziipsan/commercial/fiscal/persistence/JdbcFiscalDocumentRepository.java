@@ -422,6 +422,37 @@ public final class JdbcFiscalDocumentRepository implements FiscalDocumentReposit
         });
     }
 
+    @Override
+    public UUID insertTaxRate(UUID tenantId, TaxRateRow row, String legalBasis) {
+        return inTransaction(tenantId, connection -> {
+            try (PreparedStatement insert = connection.prepareStatement(
+                    "INSERT INTO tax_rates (tenant_id, tax_code, scope, valid_from, valid_to, rate, legal_basis) "
+                            + "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id")) {
+                insert.setObject(1, tenantId);
+                insert.setString(2, row.taxCode());
+                insert.setString(3, row.scope());
+                insert.setDate(4, Date.valueOf(row.validFrom()));
+                if (row.validTo() == null) {
+                    insert.setNull(5, Types.DATE);
+                } else {
+                    insert.setDate(5, Date.valueOf(row.validTo()));
+                }
+                insert.setBigDecimal(6, row.rate());
+                if (legalBasis == null) {
+                    insert.setNull(7, Types.VARCHAR);
+                } else {
+                    insert.setString(7, legalBasis);
+                }
+                try (ResultSet rows = insert.executeQuery()) {
+                    if (!rows.next()) {
+                        throw new IllegalStateException("Cadastro de aliquota sem id retornado");
+                    }
+                    return (UUID) rows.getObject(1);
+                }
+            }
+        });
+    }
+
     private static DocumentRecord readDocument(ResultSet rows) throws SQLException {
         Object tpAmb = rows.getObject("tp_amb");
         return new DocumentRecord(
