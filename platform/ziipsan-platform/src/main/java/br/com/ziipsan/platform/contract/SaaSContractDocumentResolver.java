@@ -19,12 +19,12 @@ import java.util.Optional;
  * antes de chegar aqui, em {@link TenantSaaSContractService}).
  *
  * <p>O hash ({@code sha256Hex}) e o hash registrado no momento da
- * autorizacao/emissao, quando a referencia o carrega. Quando presente,
+ * autorizacao/emissao. Na forma {@code object:} ele vem do sufixo
+ * {@code #sha256=} da referencia; na forma Id da DPS (ponte P2-A)
+ * ele vem de {@code platform.saas_nfse.xml_sha256}. Quando presente,
  * o servico o confere contra o SHA-256 dos bytes lidos e recusa o
  * download em divergencia (fail-closed); quando ausente, o download
- * serve com o hash calculado no cabecalho, sem conferencia — e o
- * relatorio da P2.14 registra que o caminho do XML da NFS-e so esta
- * fechado quando a P2.13 passar a gravar o hash junto da referencia.
+ * serve com o hash calculado no cabecalho, sem conferencia.
  */
 public interface SaaSContractDocumentResolver {
 

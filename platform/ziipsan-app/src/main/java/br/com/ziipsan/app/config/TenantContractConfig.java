@@ -35,7 +35,8 @@ public class TenantContractConfig {
     @Bean
     public SaaSContractDocumentResolver saasContractDocumentResolver(
             @Qualifier("saasContractObjectStorage") ObjectStorage storage,
-            ZiipsanProperties properties) {
-        return new ObjectStorageSaaSContractDocumentResolver(storage, "ziipsan-saas-docs");
+            ZiipsanProperties properties, javax.sql.DataSource dataSource) {
+        return new ObjectStorageSaaSContractDocumentResolver(storage, "ziipsan-saas-docs",
+                new org.springframework.jdbc.core.JdbcTemplate(dataSource));
     }
 }
