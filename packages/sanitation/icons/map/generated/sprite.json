@@ -1,0 +1,5112 @@
+{
+  "sanitation:attachment:anchor-block--in-service": {
+    "x": 0,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:anchor-block--planned": {
+    "x": 48,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:anchor-block--under-construction": {
+    "x": 96,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:anchor-block--abandoned": {
+    "x": 144,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:anchor-block--out-of-target": {
+    "x": 192,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:cathodic-protection--in-service": {
+    "x": 240,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:cathodic-protection--planned": {
+    "x": 288,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:cathodic-protection--under-construction": {
+    "x": 336,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:cathodic-protection--abandoned": {
+    "x": 384,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:cathodic-protection--out-of-target": {
+    "x": 432,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:meter-chamber--in-service": {
+    "x": 480,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:meter-chamber--planned": {
+    "x": 528,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:meter-chamber--under-construction": {
+    "x": 576,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:meter-chamber--abandoned": {
+    "x": 624,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:meter-chamber--out-of-target": {
+    "x": 672,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:pipe-support--in-service": {
+    "x": 720,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:pipe-support--planned": {
+    "x": 768,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:pipe-support--under-construction": {
+    "x": 816,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:pipe-support--abandoned": {
+    "x": 864,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:pipe-support--out-of-target": {
+    "x": 912,
+    "y": 0,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:thrust-block--in-service": {
+    "x": 0,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:thrust-block--planned": {
+    "x": 48,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:thrust-block--under-construction": {
+    "x": 96,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:thrust-block--abandoned": {
+    "x": 144,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:thrust-block--out-of-target": {
+    "x": 192,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:valve-chamber--in-service": {
+    "x": 240,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:valve-chamber--planned": {
+    "x": 288,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:valve-chamber--under-construction": {
+    "x": 336,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:valve-chamber--abandoned": {
+    "x": 384,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:attachment:valve-chamber--out-of-target": {
+    "x": 432,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:flush-chamber--in-service": {
+    "x": 480,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:flush-chamber--planned": {
+    "x": 528,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:flush-chamber--under-construction": {
+    "x": 576,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:flush-chamber--abandoned": {
+    "x": 624,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:flush-chamber--out-of-target": {
+    "x": 672,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:grease-trap--in-service": {
+    "x": 720,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:grease-trap--planned": {
+    "x": 768,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:grease-trap--under-construction": {
+    "x": 816,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:grease-trap--abandoned": {
+    "x": 864,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:grease-trap--out-of-target": {
+    "x": 912,
+    "y": 48,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:inspection-box--in-service": {
+    "x": 0,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:inspection-box--planned": {
+    "x": 48,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:inspection-box--under-construction": {
+    "x": 96,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:inspection-box--abandoned": {
+    "x": 144,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:inspection-box--out-of-target": {
+    "x": 192,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:junction-chamber--in-service": {
+    "x": 240,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:junction-chamber--planned": {
+    "x": 288,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:junction-chamber--under-construction": {
+    "x": 336,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:junction-chamber--abandoned": {
+    "x": 384,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:junction-chamber--out-of-target": {
+    "x": 432,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:sewer-connection-box--in-service": {
+    "x": 480,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:sewer-connection-box--planned": {
+    "x": 528,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:sewer-connection-box--under-construction": {
+    "x": 576,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:sewer-connection-box--abandoned": {
+    "x": 624,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:box:sewer-connection-box--out-of-target": {
+    "x": 672,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:dam:dam--in-service": {
+    "x": 720,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:dam:dam--planned": {
+    "x": 768,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:dam:dam--under-construction": {
+    "x": 816,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:dam:dam--abandoned": {
+    "x": 864,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:dam:dam--out-of-target": {
+    "x": 912,
+    "y": 96,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:bend--in-service": {
+    "x": 0,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:bend--planned": {
+    "x": 48,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:bend--under-construction": {
+    "x": 96,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:bend--abandoned": {
+    "x": 144,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:bend--out-of-target": {
+    "x": 192,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:blind-flange--in-service": {
+    "x": 240,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:blind-flange--planned": {
+    "x": 288,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:blind-flange--under-construction": {
+    "x": 336,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:blind-flange--abandoned": {
+    "x": 384,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:blind-flange--out-of-target": {
+    "x": 432,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:cap--in-service": {
+    "x": 480,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:cap--planned": {
+    "x": 528,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:cap--under-construction": {
+    "x": 576,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:cap--abandoned": {
+    "x": 624,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:cap--out-of-target": {
+    "x": 672,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:coupling--in-service": {
+    "x": 720,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:coupling--planned": {
+    "x": 768,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:coupling--under-construction": {
+    "x": 816,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:coupling--abandoned": {
+    "x": 864,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:coupling--out-of-target": {
+    "x": 912,
+    "y": 144,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:cross--in-service": {
+    "x": 0,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:cross--planned": {
+    "x": 48,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:cross--under-construction": {
+    "x": 96,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:cross--abandoned": {
+    "x": 144,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:cross--out-of-target": {
+    "x": 192,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:dismantling-joint--in-service": {
+    "x": 240,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:dismantling-joint--planned": {
+    "x": 288,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:dismantling-joint--under-construction": {
+    "x": 336,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:dismantling-joint--abandoned": {
+    "x": 384,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:dismantling-joint--out-of-target": {
+    "x": 432,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:flange-adapter--in-service": {
+    "x": 480,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:flange-adapter--planned": {
+    "x": 528,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:flange-adapter--under-construction": {
+    "x": 576,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:flange-adapter--abandoned": {
+    "x": 624,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:flange-adapter--out-of-target": {
+    "x": 672,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:plug--in-service": {
+    "x": 720,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:plug--planned": {
+    "x": 768,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:plug--under-construction": {
+    "x": 816,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:plug--abandoned": {
+    "x": 864,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:plug--out-of-target": {
+    "x": 912,
+    "y": 192,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:reducer--in-service": {
+    "x": 0,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:reducer--planned": {
+    "x": 48,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:reducer--under-construction": {
+    "x": 96,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:reducer--abandoned": {
+    "x": 144,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:reducer--out-of-target": {
+    "x": 192,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:service-saddle--in-service": {
+    "x": 240,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:service-saddle--planned": {
+    "x": 288,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:service-saddle--under-construction": {
+    "x": 336,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:service-saddle--abandoned": {
+    "x": 384,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:service-saddle--out-of-target": {
+    "x": 432,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:special-piece--in-service": {
+    "x": 480,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:special-piece--planned": {
+    "x": 528,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:special-piece--under-construction": {
+    "x": 576,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:special-piece--abandoned": {
+    "x": 624,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:special-piece--out-of-target": {
+    "x": 672,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:tee--in-service": {
+    "x": 720,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:tee--planned": {
+    "x": 768,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:tee--under-construction": {
+    "x": 816,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:tee--abandoned": {
+    "x": 864,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:tee--out-of-target": {
+    "x": 912,
+    "y": 240,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:wye--in-service": {
+    "x": 0,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:wye--planned": {
+    "x": 48,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:wye--under-construction": {
+    "x": 96,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:wye--abandoned": {
+    "x": 144,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:fitting:wye--out-of-target": {
+    "x": 192,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-pillar--in-service": {
+    "x": 240,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-pillar--planned": {
+    "x": 288,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-pillar--under-construction": {
+    "x": 336,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-pillar--abandoned": {
+    "x": 384,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-pillar--out-of-target": {
+    "x": 432,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-self-sealing--in-service": {
+    "x": 480,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-self-sealing--planned": {
+    "x": 528,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-self-sealing--under-construction": {
+    "x": 576,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-self-sealing--abandoned": {
+    "x": 624,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-self-sealing--out-of-target": {
+    "x": 672,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-underground--in-service": {
+    "x": 720,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-underground--planned": {
+    "x": 768,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-underground--under-construction": {
+    "x": 816,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-underground--abandoned": {
+    "x": 864,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydrant:hydrant-underground--out-of-target": {
+    "x": 912,
+    "y": 288,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-pump--in-service": {
+    "x": 0,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-pump--planned": {
+    "x": 48,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-pump--under-construction": {
+    "x": 96,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-pump--abandoned": {
+    "x": 144,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-pump--out-of-target": {
+    "x": 192,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-source--in-service": {
+    "x": 240,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-source--planned": {
+    "x": 288,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-source--under-construction": {
+    "x": 336,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-source--abandoned": {
+    "x": 384,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-source--out-of-target": {
+    "x": 432,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-tank--in-service": {
+    "x": 480,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-tank--planned": {
+    "x": 528,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-tank--under-construction": {
+    "x": 576,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-tank--abandoned": {
+    "x": 624,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:hydraulic_node:hyd-tank--out-of-target": {
+    "x": 672,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:junction:junction--in-service": {
+    "x": 720,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:junction:junction--planned": {
+    "x": 768,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:junction:junction--under-construction": {
+    "x": 816,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:junction:junction--abandoned": {
+    "x": 864,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:junction:junction--out-of-target": {
+    "x": 912,
+    "y": 336,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:manhole--in-service": {
+    "x": 0,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:manhole--planned": {
+    "x": 48,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:manhole--under-construction": {
+    "x": 96,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:manhole--abandoned": {
+    "x": 144,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:manhole--out-of-target": {
+    "x": 192,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:siphon-chamber--in-service": {
+    "x": 240,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:siphon-chamber--planned": {
+    "x": 288,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:siphon-chamber--under-construction": {
+    "x": 336,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:siphon-chamber--abandoned": {
+    "x": 384,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:siphon-chamber--out-of-target": {
+    "x": 432,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:terminal-cleanout--in-service": {
+    "x": 480,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:terminal-cleanout--planned": {
+    "x": 528,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:terminal-cleanout--under-construction": {
+    "x": 576,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:terminal-cleanout--abandoned": {
+    "x": 624,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:terminal-cleanout--out-of-target": {
+    "x": 672,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:til--in-service": {
+    "x": 720,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:til--planned": {
+    "x": 768,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:til--under-construction": {
+    "x": 816,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:til--abandoned": {
+    "x": 864,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:manhole:til--out-of-target": {
+    "x": 912,
+    "y": 384,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:meter_station:macro-meter--in-service": {
+    "x": 0,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:meter_station:macro-meter--planned": {
+    "x": 48,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:meter_station:macro-meter--under-construction": {
+    "x": 96,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:meter_station:macro-meter--abandoned": {
+    "x": 144,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:meter_station:macro-meter--out-of-target": {
+    "x": 192,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:meter_station:meter-setting--in-service": {
+    "x": 240,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:meter_station:meter-setting--planned": {
+    "x": 288,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:meter_station:meter-setting--under-construction": {
+    "x": 336,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:meter_station:meter-setting--abandoned": {
+    "x": 384,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:meter_station:meter-setting--out-of-target": {
+    "x": 432,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:monitoring:pressure-point--in-service": {
+    "x": 480,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:monitoring:pressure-point--planned": {
+    "x": 528,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:monitoring:pressure-point--under-construction": {
+    "x": 576,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:monitoring:pressure-point--abandoned": {
+    "x": 624,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:monitoring:pressure-point--out-of-target": {
+    "x": 672,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:monitoring:quality-point--in-service": {
+    "x": 720,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:monitoring:quality-point--planned": {
+    "x": 768,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:monitoring:quality-point--under-construction": {
+    "x": 816,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:monitoring:quality-point--abandoned": {
+    "x": 864,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:monitoring:quality-point--out-of-target": {
+    "x": 912,
+    "y": 432,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:outfall:discharge-point--in-service": {
+    "x": 0,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:outfall:discharge-point--planned": {
+    "x": 48,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:outfall:discharge-point--under-construction": {
+    "x": 96,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:outfall:discharge-point--abandoned": {
+    "x": 144,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:outfall:discharge-point--out-of-target": {
+    "x": 192,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:outfall:overflow--in-service": {
+    "x": 240,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:outfall:overflow--planned": {
+    "x": 288,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:outfall:overflow--under-construction": {
+    "x": 336,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:outfall:overflow--abandoned": {
+    "x": 384,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:outfall:overflow--out-of-target": {
+    "x": 432,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:booster--in-service": {
+    "x": 480,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:booster--planned": {
+    "x": 528,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:booster--under-construction": {
+    "x": 576,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:booster--abandoned": {
+    "x": 624,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:booster--out-of-target": {
+    "x": 672,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:mobile-booster--in-service": {
+    "x": 720,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:mobile-booster--planned": {
+    "x": 768,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:mobile-booster--under-construction": {
+    "x": 816,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:mobile-booster--abandoned": {
+    "x": 864,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:mobile-booster--out-of-target": {
+    "x": 912,
+    "y": 480,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:sewage-lift-station--in-service": {
+    "x": 0,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:sewage-lift-station--planned": {
+    "x": 48,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:sewage-lift-station--under-construction": {
+    "x": 96,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:sewage-lift-station--abandoned": {
+    "x": 144,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:sewage-lift-station--out-of-target": {
+    "x": 192,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:water-pump-station--in-service": {
+    "x": 240,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:water-pump-station--planned": {
+    "x": 288,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:water-pump-station--under-construction": {
+    "x": 336,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:water-pump-station--abandoned": {
+    "x": 384,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:pump_station:water-pump-station--out-of-target": {
+    "x": 432,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:amazon-well--in-service": {
+    "x": 480,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:amazon-well--planned": {
+    "x": 528,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:amazon-well--under-construction": {
+    "x": 576,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:amazon-well--abandoned": {
+    "x": 624,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:amazon-well--out-of-target": {
+    "x": 672,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:floating-intake--in-service": {
+    "x": 720,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:floating-intake--planned": {
+    "x": 768,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:floating-intake--under-construction": {
+    "x": 816,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:floating-intake--abandoned": {
+    "x": 864,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:floating-intake--out-of-target": {
+    "x": 912,
+    "y": 528,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:spring--in-service": {
+    "x": 0,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:spring--planned": {
+    "x": 48,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:spring--under-construction": {
+    "x": 96,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:spring--abandoned": {
+    "x": 144,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:spring--out-of-target": {
+    "x": 192,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:surface-intake--in-service": {
+    "x": 240,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:surface-intake--planned": {
+    "x": 288,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:surface-intake--under-construction": {
+    "x": 336,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:surface-intake--abandoned": {
+    "x": 384,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:surface-intake--out-of-target": {
+    "x": 432,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:well--in-service": {
+    "x": 480,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:well--planned": {
+    "x": 528,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:well--under-construction": {
+    "x": 576,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:well--abandoned": {
+    "x": 624,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:source:well--out-of-target": {
+    "x": 672,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:storage:elevated-tank--in-service": {
+    "x": 720,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:storage:elevated-tank--planned": {
+    "x": 768,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:storage:elevated-tank--under-construction": {
+    "x": 816,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:storage:elevated-tank--abandoned": {
+    "x": 864,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:storage:elevated-tank--out-of-target": {
+    "x": 912,
+    "y": 576,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:storage:reservoir--in-service": {
+    "x": 0,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:storage:reservoir--planned": {
+    "x": 48,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:storage:reservoir--under-construction": {
+    "x": 96,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:storage:reservoir--abandoned": {
+    "x": 144,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:storage:reservoir--out-of-target": {
+    "x": 192,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:hydropneumatic-tank--in-service": {
+    "x": 240,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:hydropneumatic-tank--planned": {
+    "x": 288,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:hydropneumatic-tank--under-construction": {
+    "x": 336,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:hydropneumatic-tank--abandoned": {
+    "x": 384,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:hydropneumatic-tank--out-of-target": {
+    "x": 432,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:one-way-feed-tank--in-service": {
+    "x": 480,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:one-way-feed-tank--planned": {
+    "x": 528,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:one-way-feed-tank--under-construction": {
+    "x": 576,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:one-way-feed-tank--abandoned": {
+    "x": 624,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:one-way-feed-tank--out-of-target": {
+    "x": 672,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:surge-shaft--in-service": {
+    "x": 720,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:surge-shaft--planned": {
+    "x": 768,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:surge-shaft--under-construction": {
+    "x": 816,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:surge-shaft--abandoned": {
+    "x": 864,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:surge_protection:surge-shaft--out-of-target": {
+    "x": 912,
+    "y": 624,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:preconditioning-station--in-service": {
+    "x": 0,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:preconditioning-station--planned": {
+    "x": 48,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:preconditioning-station--under-construction": {
+    "x": 96,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:preconditioning-station--abandoned": {
+    "x": 144,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:preconditioning-station--out-of-target": {
+    "x": 192,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:uts--in-service": {
+    "x": 240,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:uts--planned": {
+    "x": 288,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:uts--under-construction": {
+    "x": 336,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:uts--abandoned": {
+    "x": 384,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:uts--out-of-target": {
+    "x": 432,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:wtp--in-service": {
+    "x": 480,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:wtp--planned": {
+    "x": 528,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:wtp--under-construction": {
+    "x": 576,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:wtp--abandoned": {
+    "x": 624,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:wtp--out-of-target": {
+    "x": 672,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:wwtp--in-service": {
+    "x": 720,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:wwtp--planned": {
+    "x": 768,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:wwtp--under-construction": {
+    "x": 816,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:wwtp--abandoned": {
+    "x": 864,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:treatment_plant:wwtp--out-of-target": {
+    "x": 912,
+    "y": 672,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:air-valve--in-service": {
+    "x": 0,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:air-valve--planned": {
+    "x": 48,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:air-valve--under-construction": {
+    "x": 96,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:air-valve--abandoned": {
+    "x": 144,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:air-valve--out-of-target": {
+    "x": 192,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:ball-valve--in-service": {
+    "x": 240,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:ball-valve--planned": {
+    "x": 288,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:ball-valve--under-construction": {
+    "x": 336,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:ball-valve--abandoned": {
+    "x": 384,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:ball-valve--out-of-target": {
+    "x": 432,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:blowoff--in-service": {
+    "x": 480,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:blowoff--planned": {
+    "x": 528,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:blowoff--under-construction": {
+    "x": 576,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:blowoff--abandoned": {
+    "x": 624,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:blowoff--out-of-target": {
+    "x": 672,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:butterfly-valve--in-service": {
+    "x": 720,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:butterfly-valve--planned": {
+    "x": 768,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:butterfly-valve--under-construction": {
+    "x": 816,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:butterfly-valve--abandoned": {
+    "x": 864,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:butterfly-valve--out-of-target": {
+    "x": 912,
+    "y": 720,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:check-valve--in-service": {
+    "x": 0,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:check-valve--planned": {
+    "x": 48,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:check-valve--under-construction": {
+    "x": 96,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:check-valve--abandoned": {
+    "x": 144,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:check-valve--out-of-target": {
+    "x": 192,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:curb-stop--in-service": {
+    "x": 240,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:curb-stop--planned": {
+    "x": 288,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:curb-stop--under-construction": {
+    "x": 336,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:curb-stop--abandoned": {
+    "x": 384,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:curb-stop--out-of-target": {
+    "x": 432,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:fcv--in-service": {
+    "x": 480,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:fcv--planned": {
+    "x": 528,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:fcv--under-construction": {
+    "x": 576,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:fcv--abandoned": {
+    "x": 624,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:fcv--out-of-target": {
+    "x": 672,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:gate-valve--in-service": {
+    "x": 720,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:gate-valve--planned": {
+    "x": 768,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:gate-valve--under-construction": {
+    "x": 816,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:gate-valve--abandoned": {
+    "x": 864,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:gate-valve--out-of-target": {
+    "x": 912,
+    "y": 768,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:pbv--in-service": {
+    "x": 0,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:pbv--planned": {
+    "x": 48,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:pbv--under-construction": {
+    "x": 96,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:pbv--abandoned": {
+    "x": 144,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:pbv--out-of-target": {
+    "x": 192,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:prsv--in-service": {
+    "x": 240,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:prsv--planned": {
+    "x": 288,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:prsv--under-construction": {
+    "x": 336,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:prsv--abandoned": {
+    "x": 384,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:prsv--out-of-target": {
+    "x": 432,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:prv--in-service": {
+    "x": 480,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:prv--planned": {
+    "x": 528,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:prv--under-construction": {
+    "x": 576,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:prv--abandoned": {
+    "x": 624,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:prv--out-of-target": {
+    "x": 672,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:psv--in-service": {
+    "x": 720,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:psv--planned": {
+    "x": 768,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:psv--under-construction": {
+    "x": 816,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:psv--abandoned": {
+    "x": 864,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:psv--out-of-target": {
+    "x": 912,
+    "y": 816,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:surge-relief-valve--in-service": {
+    "x": 0,
+    "y": 864,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:surge-relief-valve--planned": {
+    "x": 48,
+    "y": 864,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:surge-relief-valve--under-construction": {
+    "x": 96,
+    "y": 864,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:surge-relief-valve--abandoned": {
+    "x": 144,
+    "y": 864,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  },
+  "sanitation:valve:surge-relief-valve--out-of-target": {
+    "x": 192,
+    "y": 864,
+    "width": 48,
+    "height": 48,
+    "pixelRatio": 1,
+    "content": [
+      8,
+      8,
+      40,
+      40
+    ],
+    "sdf": true
+  }
+}
