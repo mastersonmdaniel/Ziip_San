@@ -122,11 +122,15 @@ class ConsumerUnitExtendedFieldsTest extends AppIntegrationTestBase {
         // e registry.use_block_face=true (sem ele, blockFaceId e DISABLED).
         // O tenant e compartilhado: outro teste pode ja ter semeado USER
         // (o POST volta 400 de clash de codigo) — nesse caso o 400 e
-        // confirmado pelo campo "code", nunca aceito as cegas.
+        // confirmado pelo tipo + detalhe do clash, nunca aceito as cegas.
+        // (ApiException.BadRequest carrega so codigo + mensagem: o problem
+        // sai sem errors[], por isso a confirmacao e por type/detail e nao
+        // por errors[0].field.)
         var rolePost = send(post("/api/v1/registry/catalogs/relation_roles"), operator, """
                 {"code": "USER", "name": "Usuário", "active": true, "extra": {"system_role": "USER"}}""");
         if (rolePost.andReturn().getResponse().getStatus() == 400) {
-            rolePost.andExpect(jsonPath("$.errors[0].field").value("code"));
+            rolePost.andExpect(jsonPath("$.type").value("urn:ziipsan:problem:code"))
+                    .andExpect(jsonPath("$.detail").value("Já existe item com este código no catálogo."));
         } else {
             rolePost.andExpect(status().isCreated());
         }
