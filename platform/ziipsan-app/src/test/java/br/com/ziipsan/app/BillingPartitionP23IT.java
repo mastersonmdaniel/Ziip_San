@@ -566,15 +566,28 @@ class BillingPartitionP23IT {
         }
     }
 
+    /**
+     * Carga em lotes de 10 mil, pelo mesmo motivo dos lotes de contas e
+     * itens (statement_timeout de 5 s do papel da app): o INSERT...SELECT
+     * unico de 100 mil unidades ficou no limite do timeout (passou numa
+     * rodada standalone, estourou em outra — variacao de carga da VM).
+     * Cada lote cabe com folga; o total final segue assertado.
+     */
     private static void insertVolumeUnits(Connection c, int count, String prefix) throws SQLException {
-        try (PreparedStatement ps = c.prepareStatement(
-                "INSERT INTO " + SCHEMA + ".consumer_units (id, tenant_id, registration_number, check_digit) "
-                        + "SELECT uuid_generate_v4(), ?, '" + prefix + "' || g, '0' FROM generate_series(1, ?) g")) {
-            ps.setObject(1, TENANT);
-            ps.setInt(2, count);
-            int inserted = ps.executeUpdate();
-            assertThat(inserted).isEqualTo(count);
+        int chunkSize = 10_000;
+        int total = 0;
+        for (int from = 1; from <= count; from += chunkSize) {
+            int to = Math.min(from + chunkSize - 1, count);
+            try (PreparedStatement ps = c.prepareStatement(
+                    "INSERT INTO " + SCHEMA + ".consumer_units (id, tenant_id, registration_number, check_digit) "
+                            + "SELECT uuid_generate_v4(), ?, '" + prefix + "' || g, '0' FROM generate_series(?, ?) g")) {
+                ps.setObject(1, TENANT);
+                ps.setInt(2, from);
+                ps.setInt(3, to);
+                total += ps.executeUpdate();
+            }
         }
+        assertThat(total).isEqualTo(count);
     }
 
     /**
