@@ -202,7 +202,25 @@ public final class PermissionCatalog {
             // nem aprovar.
             new Permission("template:read", "documentos", "template", "read", "P2.30"),
             new Permission("template:write", "documentos", "template", "write", "P2.30"),
-            new Permission("template:approve", "documentos", "template", "approve", "P2.30"));
+            new Permission("template:approve", "documentos", "template", "approve", "P2.30"),
+            // P2.26: tela de credenciais e webhooks do tenant
+            // (/api/v1/tenant/integration/*). Vai ao ADMIN: quem administra o
+            // tenant gerencia os clientes da API pública e os endpoints.
+            new Permission("integration:manage", "integração", "integration", "manage", "P2.26"),
+            // P2.26: escopos OAuth 2.0 da API pública (plano §P2.26, catálogo
+            // recurso:ação do ADR-0040). São escopos de CLIENTE, não
+            // permissões de usuário: o @PreAuthorize das rotas públicas
+            // verifica o escopo do token opaco, nunca um perfil de usuário —
+            // por isso ficam nas exceções de cobertura abaixo, como
+            // support:queue (papel de plataforma) e search:read (concessão
+            // direta), e não em perfil de fábrica. Atribuir escopo de
+            // cliente a perfil de usuário daria ao usuário uma autoridade
+            // que nenhuma rota de usuário honra.
+            new Permission("properties:read", "integração", "properties", "read", "P2.26"),
+            new Permission("bills:read", "integração", "bills", "read", "P2.26"),
+            new Permission("payments:read", "integração", "payments", "read", "P2.26"),
+            new Permission("service-orders:read", "integração", "service-orders", "read", "P2.26"),
+            new Permission("service-orders:write", "integração", "service-orders", "write", "P2.26"));
 
     /**
      * Perfis de fábrica (P0.13: os quatro mínimos; P1.37: os 22 por função, na ordem do
@@ -229,7 +247,7 @@ public final class PermissionCatalog {
                 "gis:catalog-read", "gis:catalog-manage", "parameters:manage",
                 "brand:manage", "support:read", "support:write", "support:manage",
                 "template:read", "template:write", "template:approve",
-                "contract:read-own"),
+                "contract:read-own", "integration:manage"),
         /** Cadastro (leitura e escrita) e leitura de usuários; não gerencia usuários. */
         MANAGER("Gerente", true, HOME_PAGE,
                 "registry:read", "registry:write", "user:read"),
@@ -386,6 +404,16 @@ public final class PermissionCatalog {
                 "Concessão direta (P1.35, precedente registry:export): ler o cadastro de ativos exige a permissão direta; nenhum perfil de fábrica a inclui (AssetRoles: perfis por função são da P1.37).");
         exemptions.put("asset:manage",
                 "Concessão direta (P1.35, precedente registry:export): incluir e alterar ativos (sempre por OS interna) exige a permissão direta; nenhum perfil de fábrica a inclui (AssetRoles: perfis por função são da P1.37).");
+        exemptions.put("properties:read",
+                "Escopo OAuth 2.0 de cliente da API pública (P2.26): concedido a clientes, nunca a perfis de usuário; o @PreAuthorize da rota pública verifica o escopo do token.");
+        exemptions.put("bills:read",
+                "Escopo OAuth 2.0 de cliente da API pública (P2.26): concedido a clientes, nunca a perfis de usuário; o @PreAuthorize da rota pública verifica o escopo do token.");
+        exemptions.put("payments:read",
+                "Escopo OAuth 2.0 de cliente da API pública (P2.26): concedido a clientes, nunca a perfis de usuário; o @PreAuthorize da rota pública verifica o escopo do token.");
+        exemptions.put("service-orders:read",
+                "Escopo OAuth 2.0 de cliente da API pública (P2.26): concedido a clientes, nunca a perfis de usuário; o @PreAuthorize da rota pública verifica o escopo do token.");
+        exemptions.put("service-orders:write",
+                "Escopo OAuth 2.0 de cliente da API pública (P2.26): concedido a clientes, nunca a perfis de usuário; o @PreAuthorize da rota pública verifica o escopo do token.");
         return Map.copyOf(exemptions);
     }
 

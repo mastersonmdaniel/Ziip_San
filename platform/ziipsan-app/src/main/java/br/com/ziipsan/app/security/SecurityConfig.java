@@ -36,9 +36,16 @@ import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
+import br.com.ziipsan.integration.PublicApiVersions;
+import br.com.ziipsan.integration.security.PublicApiAuthFilter;
+import br.com.ziipsan.integration.security.PublicApiRateLimitFilter;
+import br.com.ziipsan.integration.service.ApiRateLimiter;
+import br.com.ziipsan.integration.service.ApiTokenService;
+import br.com.ziipsan.integration.service.TenantParameterReader;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
@@ -66,9 +73,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Duas cadeias no mesmo processo {@code api} (P0.14), sem quebrar uma à outra:
+ * Três cadeias no mesmo processo {@code api} (P0.14 + P2.26), sem quebrar uma à outra:
  *
  * <ol>
+ *   <li><b>API pública (ordem 0)</b> — SÓ {@code /api/v1/public-api/**}: token
+ *       opaco próprio, sem JWT e sem sessão (ver {@code publicApiSecurity});</li>
  *   <li><b>BFF (ordem 1)</b> — SÓ para o navegador: casa {@code /bff/**} e as
  *       requisições a {@code /api/v1/**} que trazem o cookie de sessão. Sessão no
  *       servidor (Spring Session JDBC, core V5), CSRF ligado, login OIDC com o
@@ -128,6 +137,46 @@ public class SecurityConfig {
                         "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"))
                 .httpStrictTransportSecurity(hsts -> hsts
                         .maxAgeInSeconds(31536000).includeSubDomains(true)));
+    }
+
+    /**
+     * P2.26 — cadeia da API pública (ordem 0, antes do BFF): casa SÓ
+     * {@code /api/v1/public-api/**}, por isso vence a cadeia BFF mesmo quando
+     * a requisição traz cookie de sessão. Sem JWT, sem CSRF, sem sessão: a
+     * autenticação é o filtro próprio (token opaco + tenant embutido), e o
+     * limite de taxa é o filtro próprio (por cliente). O token endpoint é
+     * permitAll nesta cadeia porque é ele que EMITE a credencial — a
+     * autenticação do cliente acontece dentro do controller, por segredo
+     * ou asserção, como {@code /api/v1/public/brand} é permitAll por não
+     * ter credencial a verificar. As rotas de recurso exigem a autenticação
+     * do filtro; os escopos, o {@code @PreAuthorize} do controller.
+     */
+    @Bean
+    @Order(0)
+    public SecurityFilterChain publicApiSecurity(HttpSecurity http, ApiTokenService tokens,
+                                                 TenantCatalog tenantCatalog, TenantParameterReader parameters,
+                                                 ApiRateLimiter limiter, PublicApiVersions versions) throws Exception {
+        AuthenticationEntryPoint unauthorized = (request, response, ex) -> ProblemResponses.write(
+                response, 401, "unauthenticated", "Não autenticado",
+                "Envie um token de acesso válido no cabeçalho Authorization.");
+        AccessDeniedHandler forbidden = (request, response, ex) -> ProblemResponses.write(
+                response, 403, "access-denied", "Acesso negado",
+                "O usuário não tem permissão para esta operação.");
+        PublicApiAuthFilter authFilter = new PublicApiAuthFilter(tokens, tenantCatalog, parameters, versions);
+        http.securityMatcher("/api/v1/public-api/**")
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> {
+                })
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/public-api/oauth/token").permitAll()
+                        .requestMatchers("/api/v1/public-api/**").authenticated()
+                        .anyRequest().denyAll())
+                .exceptionHandling(e -> e.authenticationEntryPoint(unauthorized).accessDeniedHandler(forbidden))
+                .addFilterBefore(authFilter, AuthorizationFilter.class)
+                .addFilterAfter(new PublicApiRateLimitFilter(limiter, parameters), PublicApiAuthFilter.class);
+        webSurfaceHeaders(http);
+        return http.build();
     }
 
     @Bean

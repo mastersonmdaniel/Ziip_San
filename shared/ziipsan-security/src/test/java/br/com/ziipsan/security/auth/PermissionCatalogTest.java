@@ -43,11 +43,13 @@ class PermissionCatalogTest {
         // entram no ADMIN; a busca global e suas leituras (P1.33) continuam fora de
         // qualquer perfil, por decisão explícita da frente P1.33 (concessão direta).
         // P2.14: a leitura do próprio contrato (contract:read-own) entra no ADMIN.
+        // P2.26: a API pública / webhooks de saída entram no ADMIN (tela /integracao).
         assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
                 .containsExactlyInAnyOrder("registry:read", "registry:write", "user:read", "user:write",
                         "gis:catalog-read", "gis:catalog-manage", "parameters:manage",
                         "brand:manage", "support:read", "support:write", "support:manage",
-                        "contract:read-own");
+                        "template:read", "template:write", "template:approve",
+                        "contract:read-own", "integration:manage");
         assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
                 .doesNotContain("registry:reveal-document");
         // P0.11: buscar por documento também é concessão direta, em nenhum perfil de fábrica.
@@ -161,13 +163,18 @@ class PermissionCatalogTest {
         // P2.12: entram contract:read/manage/restrict — só existem via papel
         // de plataforma (ver PlatformRole), como console:* e central:*; nenhum
         // perfil de fábrica de tenant as inclui, por desenho (ADR-0019).
+        // P2.26: entram os 5 escopos OAuth de cliente da API pública
+        // (concedidos a clientes, nunca a perfis de usuário) e
+        // integration:manage vai ao ADMIN, não às exceções.
         assertThat(exempt).containsExactlyInAnyOrder(
                 "registry:reveal-document", "registry:search-document", "registry:export",
                 "deployment:read", "console:read", "console:manage", "console:suspend", "console:delete",
                 "central:read", "central:manage", "support:queue",
                 "search:read", "service-order:read", "billing:read", "document:read",
                 "asset:read", "asset:manage",
-                "contract:read", "contract:manage", "contract:restrict");
+                "contract:read", "contract:manage", "contract:restrict",
+                "properties:read", "bills:read", "payments:read",
+                "service-orders:read", "service-orders:write");
         for (String permission : PermissionCatalog.allNames()) {
             boolean inProfile = !PermissionCatalog.profilesIncluding(permission).isEmpty();
             assertThat(inProfile || exempt.contains(permission))

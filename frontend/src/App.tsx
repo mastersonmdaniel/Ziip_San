@@ -31,6 +31,7 @@ const IconContactSheetPage = lazy(() =>
 )
 const GisCatalog = lazy(() => import('@pages/gis/GisCatalog').then((m) => ({ default: m.GisCatalog })))
 const About = lazy(() => import('@pages/About').then((m) => ({ default: m.About })))
+const Integration = lazy(() => import('@pages/Integration').then((m) => ({ default: m.Integration })))
 const Central = lazy(() => import('@pages/platform/Central').then((m) => ({ default: m.Central })))
 
 function PrivateRoute({ children }: { children: ReactNode }) {
@@ -103,6 +104,8 @@ export function App() {
         <Route path="importacoes" element={<Importacoes />} />
         {/* P1.17: Central Ziip v0 — Visão geral, Plataforma, Segurança e Alertas. */}
         <Route path="platform/central" element={<Central />} />
+        {/* P2.26: credenciais da API pública e webhooks de saída do tenant. */}
+        <Route path="integracao" element={<Integration />} />
         <Route path="support" element={<Support />} />
         {/* P2.30: Configurações > Modelos — o motor único de modelos de documento e mensagem. */}
         <Route path="configuracoes/modelos" element={<Templates />} />

@@ -23,6 +23,7 @@ Pacote: **sanitation** — versão 0.1.0 (plataforma mínima 1.0.0-SNAPSHOT)
 | lgpd | Privacidade / LGPD | declared | `compliance/ziipsan-lgpd` | `— (sem permissão catalogada)` | P0 (módulo existente, sem rota HTTP nem menu até esta onda) |
 | certification | Certificações de qualidade | declared | `core (motor, P1.32) + packages/sanitation (catálogo, P1.34)` | `cert:read` | P1.32 (motor no núcleo, conteúdo de saneamento no pacote — ADR-0041) |
 | support | Suporte | active | `shared/ziipsan-core` | `support:read` | P1.23 |
+| integration | Integrações / API pública | active | `integration/ziipsan-integration` | `integration:manage` | P2.26 |
 
 ## Cadastro comercial (`registry`) <!-- module: registry -->
 
@@ -41,6 +42,7 @@ Pacote: **sanitation** — versão 0.1.0 (plataforma mínima 1.0.0-SNAPSHOT)
   - `/api/v1/registry/subcategories`
   - `/api/v1/registry/water-statuses`
   - `/api/v1/registry/sewer-statuses`
+  - `/api/v1/registry/holder-situations`
 - Abas da ficha da unidade: nenhuma.
 
 ## Ordens de serviço (`service-order`) <!-- module: service-order -->
@@ -155,6 +157,23 @@ Pacote: **sanitation** — versão 0.1.0 (plataforma mínima 1.0.0-SNAPSHOT)
 - Rotas de API:
   - `/api/v1/support/tickets`
   - `/api/v1/platform/support/queue`
+- Abas da ficha da unidade: nenhuma.
+
+## Integrações / API pública (`integration`) <!-- module: integration -->
+
+- Status: `active` · módulo Maven: `integration/ziipsan-integration`
+- Permissão: `integration:manage`
+- Tarefa de origem: P2.26
+- Itens de menu:
+  - Integrações — rota `/integracao`, ícone `settings`, permissão `integration:manage`
+- Rotas de API:
+  - `/api/v1/public-api/v1/properties`
+  - `/api/v1/public-api/v1/bills`
+  - `/api/v1/public-api/v1/payments`
+  - `/api/v1/public-api/v1/service-orders`
+  - `/api/v1/tenant/integration/clients`
+  - `/api/v1/tenant/integration/webhooks/endpoints`
+  - `/api/v1/tenant/integration/webhooks/deliveries`
 - Abas da ficha da unidade: nenhuma.
 
 ## Domínios do GIS (declarados; carga na P1.26, V13_1)

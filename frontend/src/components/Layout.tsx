@@ -34,6 +34,7 @@ export const navigation: Array<{ name: string; href: string; icon: IconName; per
   // e mensagem. Só aparece para quem tem template:read (o servidor nega a
   // rota sem ela, como nos demais itens).
   { name: t('nav.templates'), href: '/configuracoes/modelos', icon: 'clipboard-list', permission: 'template:read', section: 'settings' },
+  { name: t('nav.integrations'), href: '/integracao', icon: 'settings', permission: 'integration:manage' },
 ]
 
 export function Layout() {

@@ -88,7 +88,7 @@ class ModuleBoundaryTest {
                         "br.com.ziipsan.platform", "br.com.ziipsan.app",
                         "br.com.ziipsan.commercial", "br.com.ziipsan.operations",
                         "br.com.ziipsan.intelligence", "br.com.ziipsan.grs",
-                        "br.com.ziipsan.compliance");
+                        "br.com.ziipsan.compliance", "br.com.ziipsan.integration");
     }
 
     @Test
@@ -114,6 +114,16 @@ class ModuleBoundaryTest {
                 .should().dependOnClassesThat().resideInAnyPackage(
                         APP, COMMERCIAL, INTELLIGENCE, OPERATIONS, GRS, COMPLIANCE)
                 .because("P1.13: platform nao depende de app nem de dominio (P0.47, estendida)")
+                .check(CLASSES);
+    }
+
+    @Test
+    @DisplayName("integration só depende do núcleo, da plataforma e de si mesma")
+    void integrationDependsOnlyOnCorePlatformAndItself() {
+        noClasses().that().resideInAPackage("br.com.ziipsan.integration..")
+                .should().dependOnClassesThat().resideInAnyPackage(
+                        APP, COMMERCIAL, INTELLIGENCE, OPERATIONS, GRS, COMPLIANCE)
+                .because("P2.26: a API pública compõe núcleo e plataforma (JDBC sobre as tabelas dos domínios, sem depender deles em Java); nunca app ou domínio")
                 .check(CLASSES);
     }
 

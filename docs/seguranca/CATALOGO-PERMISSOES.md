@@ -59,6 +59,12 @@ está declarado, mas não concede nada até a liberação da ED-75.
 | `template:read` | documentos | template | read | ADMIN, GESTOR, AUDITOR_INTERNO | P2.30 |
 | `template:write` | documentos | template | write | ADMIN, GESTOR | P2.30 |
 | `template:approve` | documentos | template | approve | ADMIN, GESTOR | P2.30 |
+| `integration:manage` | integração | integration | manage | ADMIN | P2.26 |
+| `properties:read` | integração | properties | read | (nenhum perfil de usuário — escopo OAuth 2.0 de cliente da API pública) | P2.26 |
+| `bills:read` | integração | bills | read | (nenhum perfil de usuário — escopo OAuth 2.0 de cliente da API pública) | P2.26 |
+| `payments:read` | integração | payments | read | (nenhum perfil de usuário — escopo OAuth 2.0 de cliente da API pública) | P2.26 |
+| `service-orders:read` | integração | service-orders | read | (nenhum perfil de usuário — escopo OAuth 2.0 de cliente da API pública) | P2.26 |
+| `service-orders:write` | integração | service-orders | write | (nenhum perfil de usuário — escopo OAuth 2.0 de cliente da API pública) | P2.26 |
 
 ## Perfis de fábrica (P1.37)
 
@@ -76,7 +82,7 @@ na administração do tenant, certificações na qualidade. A busca global e sua
 
 | Código | Função | Ativo | Permissões |
 |---|---|---|---|
-| `ADMIN` | Administrador do tenant | sim | `registry:read`, `registry:write`, `user:read`, `user:write`, `gis:catalog-read`, `gis:catalog-manage`, `parameters:manage`, `brand:manage`, `support:read`, `support:write`, `support:manage`, `template:read`, `template:write`, `template:approve`, `contract:read-own` |
+| `ADMIN` | Administrador do tenant | sim | `registry:read`, `registry:write`, `user:read`, `user:write`, `gis:catalog-read`, `gis:catalog-manage`, `parameters:manage`, `brand:manage`, `support:read`, `support:write`, `support:manage`, `template:read`, `template:write`, `template:approve`, `contract:read-own`, `integration:manage` |
 | `MANAGER` | Gerente | sim | `registry:read`, `registry:write`, `user:read` |
 | `OPERATOR` | Operador | sim | `registry:read`, `registry:write` |
 | `VIEWER` | Observador | sim | `registry:read` |

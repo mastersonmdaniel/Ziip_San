@@ -36,4 +36,6 @@ export const ROUTE_ICONS: Record<string, IconName> = {
   '/support': 'life-buoy',
   // P2.30: Configurações > Modelos — usa o ícone do próprio item de menu.
   '/configuracoes/modelos': 'clipboard-list',
+  // P2.26: rota da API pública / webhooks — mesmo ícone do item de menu.
+  '/integracao': 'settings',
 }

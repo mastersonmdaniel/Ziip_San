@@ -27,6 +27,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * {@code EnableJpaRepositories} abaixo, o contexto subia o controller e o
  * serviço (o scan de componentes cobre {@code br.com.ziipsan.platform})
  * mas nenhum repositório JPA — e o IT falhava com NoSuchBeanDefinition.
+ *
+ * <p>P2.26: a API pública de integração entra aqui (serviço e API). A
+ * cadeia de segurança própria dela vive em {@code SecurityConfig}
+ * (ordem 0, só {@code /api/v1/public-api/**}); este scan só sobe os
+ * serviços e controllers.
  */
 @SpringBootApplication(scanBasePackages = {
         "br.com.ziipsan.app",
@@ -35,6 +40,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "br.com.ziipsan.commercial.registry",
         "br.com.ziipsan.intelligence.gis.catalog",
         "br.com.ziipsan.operations.asset",
+        "br.com.ziipsan.integration",
 })
 @EnableJpaRepositories(basePackages = {
         "br.com.ziipsan.core.audit",

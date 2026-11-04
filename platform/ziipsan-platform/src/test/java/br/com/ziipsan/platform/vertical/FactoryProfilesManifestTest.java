@@ -69,8 +69,10 @@ class FactoryProfilesManifestTest {
     @Test
     void menuDerivesFromProductMapPermissions() {
         VerticalManifest manifest = manifest();
+        // P2.26: a API pública acrescenta /integracao (só ADMIN, que tem
+        // integration:manage) ao menu do mapa.
         assertEquals(List.of("/cadastro/imoveis", "/cadastro/clientes", "/cadastro/territorio",
-                "/cadastro/catalogos", "/gis/catalogo"),
+                "/cadastro/catalogos", "/gis/catalogo", "/integracao"),
                 allMenuItems(manifest).stream().map(VerticalManifest.MenuItem::route).toList());
         assertEquals(allMenuItems(manifest).stream().map(VerticalManifest.MenuItem::route).toList(),
                 visibleRoutes(PermissionCatalog.FactoryProfile.ADMIN.permissions(), manifest),

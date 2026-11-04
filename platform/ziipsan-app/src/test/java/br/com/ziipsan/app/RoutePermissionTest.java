@@ -45,6 +45,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * (UserPreferencesController.subject), nunca por corpo ou caminho — só dado
  * próprio, sem permissão fina a declarar, pelo mesmo motivo de
  * {@code GET /api/v1/me}.
+ * P2.26 estende a allowlist com {@code POST /api/v1/public-api/oauth/token}:
+ * é o endpoint que EMITE a credencial da API pública (client_credentials),
+ * não uma rota de negócio — a autenticação do cliente acontece dentro
+ * dele, por segredo ou asserção, e um @PreAuthorize o quebraria (não há
+ * autenticação prévia a verificar). As rotas de recurso da API pública
+ * continuam exigindo os escopos do token, todos no catálogo.
  *
  * <p>O documento do catálogo também é conferido contra o código: toda permissão do catálogo
  * aparece nele.
@@ -69,6 +75,7 @@ class RoutePermissionTest extends AppIntegrationTestBase {
             condition.getPatterns().forEach(pattern -> {
                 String path = pattern.getPatternString();
                 if (!path.startsWith("/api/v1") || path.equals("/api/v1/me")
+                        || path.equals("/api/v1/public-api/oauth/token")
                         || path.equals("/api/v1/me/preferences")
                         || path.equals("/api/v1/about") || path.equals("/api/v1/public/brand")
                         || path.equals("/api/v1/public/tenant-brand")
