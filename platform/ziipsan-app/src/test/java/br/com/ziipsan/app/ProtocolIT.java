@@ -173,8 +173,10 @@ class ProtocolIT {
 
     private static UUID insertUnit(Connection c, String matricula) throws SQLException {
         UUID id = UUID.randomUUID();
+        // P1-C (integracao): a R2 renomeou matricula/dv para
+        // registration_number/check_digit — a fixture usava os nomes antigos.
         try (PreparedStatement ps = c.prepareStatement(
-                "INSERT INTO " + SCHEMA + ".consumer_units (id, tenant_id, matricula, dv) VALUES (?, ?, ?, '0')")) {
+                "INSERT INTO " + SCHEMA + ".consumer_units (id, tenant_id, registration_number, check_digit) VALUES (?, ?, ?, '0')")) {
             ps.setObject(1, id);
             ps.setObject(2, TENANT);
             ps.setString(3, matricula);
