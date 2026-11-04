@@ -173,14 +173,20 @@ class RegistrySchemaTest {
     @Test
     @DisplayName("exatamente um nome na conta entre os vínculos vigentes")
     void onlyOneBillNameAtATime() throws SQLException {
+        // P1-C (integracao): a R2 proibe OWNER + show_on_bill=true pelo CHECK
+        // chk_ucust_bill_name_user (o nome na conta sai em nome do usuario
+        // titular) — o CHECK dispara (23514) antes do indice unico. A
+        // propriedade "exatamente um nome na conta" passa a ser provada com
+        // dois vinculos USER: o CHECK aceita ambos e o indice unico parcial
+        // dispara (23505).
         expect("23505", st -> {
             st.execute(relation(customer1, "USER", "2025-01-01", null, true));
-            st.execute(relation(customer2, "OWNER", "2025-01-01", null, true));
+            st.execute(relation(customer2, "USER", "2025-01-01", null, true));
         });
         // encerrando o primeiro, o segundo pode assumir
         inTenant(T, false, st -> {
             st.execute(relation(customer1, "USER", "2020-01-01", "2024-12-31", true));
-            st.execute(relation(customer2, "OWNER", "2025-01-01", null, true));
+            st.execute(relation(customer2, "USER", "2025-01-01", null, true));
         });
     }
 
