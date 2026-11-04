@@ -28,6 +28,7 @@ const IconContactSheetPage = lazy(() =>
 )
 const GisCatalog = lazy(() => import('@pages/gis/GisCatalog').then((m) => ({ default: m.GisCatalog })))
 const About = lazy(() => import('@pages/About').then((m) => ({ default: m.About })))
+const Central = lazy(() => import('@pages/platform/Central').then((m) => ({ default: m.Central })))
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -97,6 +98,8 @@ export function App() {
         <Route path="about" element={<About />} />
         {/* P1.40: histórico de importações por planilha (JOR-26). */}
         <Route path="importacoes" element={<Importacoes />} />
+        {/* P1.17: Central Ziip v0 — Visão geral, Plataforma, Segurança e Alertas. */}
+        <Route path="platform/central" element={<Central />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>

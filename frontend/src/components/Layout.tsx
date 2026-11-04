@@ -26,6 +26,7 @@ export const navigation: Array<{ name: string; href: string; icon: IconName; per
   { name: t('nav.generatedFiles'), href: '/arquivos-gerados', icon: 'download', permission: 'registry:read' },
   { name: t('nav.about'), href: '/about', icon: 'info', permission: 'registry:read' },
   { name: t('nav.imports'), href: '/importacoes', icon: 'upload', permission: 'registry:read' },
+  { name: t('nav.central'), href: '/platform/central', icon: 'gauge', permission: 'central:read' },
 ]
 
 export function Layout() {

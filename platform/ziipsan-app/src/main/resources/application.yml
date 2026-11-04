@@ -136,3 +136,11 @@ ziipsan:
     host: ${ZIIPSAN_CLAMAV_HOST:127.0.0.1}
     port: ${ZIIPSAN_CLAMAV_PORT:3310}
     database-dir: ${ZIIPSAN_CLAMAV_DB_DIR:}
+  # P1.17: coletor da Central (CENTRAL-ZIIP §5, 5 min). Desligado por
+  # padrao: quem liga e o processo worker (ou o deploy que operar a
+  # Central); a trava de advisory lock impede coleta duplicada no
+  # cluster se mais de um processo o ligar.
+  central:
+    collector:
+      enabled: false
+      interval-ms: 300000

@@ -16,6 +16,9 @@
 --                     tabela public.outbox (policy da core V8, P1.9/ADR-0014). O deploy do
 --                     worker concede LOGIN + senha fora deste init; aqui a role nasce sem
 --                     login para nenhum segredo novo entrar nas variaveis do init.
+--   ziipsan_central   NOLOGIN. A Central Ziip (P1.17): SELECT so nas tabelas da Central
+--                     e EXECUTE em platform_stats.* (core V9_1); NENHUM privilegio em
+--                     schema de tenant. LOGIN + senha so no deploy que a usar.
 --
 -- Nenhuma role de login e membro de ziipsan_owner.
 --
@@ -77,11 +80,20 @@ WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_app') \gexec
 SELECT 'CREATE ROLE ziipsan_worker NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE'
 WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_worker') \gexec
 
+-- P1.17: role da Central Ziip (sem login aqui; LOGIN + senha so no deploy
+-- que a usar para leitura externa). SELECT so nas tabelas da Central e
+-- EXECUTE nas funcoes platform_stats.* (concedidos na core V9_1); NENHUM
+-- privilegio em schema de tenant — o init nao concede nada a ela fora
+-- disso, e a V9_1 tambem nao.
+SELECT 'CREATE ROLE ziipsan_central NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE'
+WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ziipsan_central') \gexec
+
 -- Atributos impostos mesmo se a role ja existia.
 ALTER ROLE ziipsan_owner NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 ALTER ROLE ziipsan_migrator LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 ALTER ROLE ziipsan_app LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 ALTER ROLE ziipsan_worker NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
+ALTER ROLE ziipsan_central NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
 
 -- Sem isto, um tenant pode resolver funcoes de schemas de outros tenants.
 ALTER ROLE ziipsan_app SET search_path = public;
@@ -183,7 +195,7 @@ DECLARE
     r RECORD;
 BEGIN
     FOR r IN SELECT rolname, rolsuper, rolbypassrls, rolcreaterole, rolcreatedb
-             FROM pg_roles WHERE rolname IN ('ziipsan_app', 'ziipsan_migrator', 'ziipsan_owner', 'ziipsan_worker') LOOP
+             FROM pg_roles WHERE rolname IN ('ziipsan_app', 'ziipsan_migrator', 'ziipsan_owner', 'ziipsan_worker', 'ziipsan_central') LOOP
         IF r.rolsuper OR r.rolbypassrls OR r.rolcreaterole OR r.rolcreatedb THEN
             RAISE EXCEPTION 'FALHA CRITICA: % tem SUPERUSER/BYPASSRLS/CREATEROLE/CREATEDB', r.rolname;
         END IF;

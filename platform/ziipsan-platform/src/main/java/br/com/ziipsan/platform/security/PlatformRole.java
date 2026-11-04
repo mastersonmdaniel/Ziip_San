@@ -39,6 +39,11 @@ import java.util.Set;
  * {@code console:delete} (exportação e eliminação — só OWNER). A matriz fina
  * (FINANCE só com motivo inadimplência, eliminação só OWNER) continua no serviço
  * e nos testes, não só na permissão.
+ *
+ * <p>P1.17 (Central): {@code central:read} (abas, API de métricas v1, alertas —
+ * os quatro papéis) e {@code central:manage} (coleta manual, reconhecer
+ * alerta, soneca e regras — OWNER e OPS; suporte e financeiro leem, mas
+ * não operam a Central).
  */
 public final class PlatformRole {
 
@@ -55,10 +60,11 @@ public final class PlatformRole {
      * papel desconhecido (ou de tenant) não concede permissão de plataforma nenhuma.
      */
     private static final Map<String, Set<String>> PERMISSIONS = Map.of(
-            OWNER, Set.of("deployment:read", "console:read", "console:manage", "console:suspend", "console:delete"),
-            OPS, Set.of("deployment:read", "console:read", "console:manage"),
-            SUPPORT, Set.of("console:read"),
-            FINANCE, Set.of("console:read", "console:suspend"));
+            OWNER, Set.of("deployment:read", "console:read", "console:manage", "console:suspend", "console:delete",
+                    "central:read", "central:manage"),
+            OPS, Set.of("deployment:read", "console:read", "console:manage", "central:read", "central:manage"),
+            SUPPORT, Set.of("console:read", "central:read"),
+            FINANCE, Set.of("console:read", "console:suspend", "central:read"));
 
     private PlatformRole() {
     }

@@ -40,18 +40,19 @@ class PlatformRoleTest {
     }
 
     @Test
-    @DisplayName("console (P1.6): OWNER tem tudo; OPS gerencia sem suspender nem eliminar; SUPPORT só lê; FINANCE lê e suspende")
+    @DisplayName("console (P1.6) + Central (P1.17): OWNER tem tudo; OPS gerencia sem suspender nem eliminar; SUPPORT só lê; FINANCE lê e suspende")
     void consoleMatrix() {
         assertThat(PlatformRole.permissionsFor("PLATFORM_OWNER"))
-                .contains("console:read", "console:manage", "console:suspend", "console:delete");
+                .contains("console:read", "console:manage", "console:suspend", "console:delete",
+                        "central:read", "central:manage");
         assertThat(PlatformRole.permissionsFor("PLATFORM_OPS"))
-                .contains("console:read", "console:manage")
+                .contains("console:read", "console:manage", "central:read", "central:manage")
                 .doesNotContain("console:suspend", "console:delete");
         assertThat(PlatformRole.permissionsFor("PLATFORM_SUPPORT"))
-                .containsExactly("console:read");
+                .containsExactlyInAnyOrder("console:read", "central:read");
         assertThat(PlatformRole.permissionsFor("PLATFORM_FINANCE"))
-                .contains("console:read", "console:suspend")
-                .doesNotContain("console:manage", "console:delete");
+                .contains("console:read", "console:suspend", "central:read")
+                .doesNotContain("console:manage", "console:delete", "central:manage");
     }
 
     @Test
