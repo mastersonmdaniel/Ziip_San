@@ -85,11 +85,18 @@ class TenantUserServiceTest {
     @Test
     @DisplayName("P1.37: perfil de fábrica por função é atribuível por quem tem suas permissões")
     void canGrantFactoryProfileByFunction() {
+        // Integração P1-C: o ator precisa de TODAS as permissões do ATENDENTE
+        // reconciliado (registry + protocol + support); a mecânica testada é a
+        // concessão, não o conjunto exato do perfil.
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 "admin", null, List.of(
                         new SimpleGrantedAuthority("user:write"),
                         new SimpleGrantedAuthority("registry:read"),
-                        new SimpleGrantedAuthority("registry:write"))));
+                        new SimpleGrantedAuthority("registry:write"),
+                        new SimpleGrantedAuthority("protocol:read"),
+                        new SimpleGrantedAuthority("protocol:write"),
+                        new SimpleGrantedAuthority("support:read"),
+                        new SimpleGrantedAuthority("support:write"))));
         UserProfileAssignment assignment = new UserProfileAssignment();
         assignment.setProfile("ATENDENTE");
         assignment.setValidFrom(java.time.OffsetDateTime.now().minusHours(1));
