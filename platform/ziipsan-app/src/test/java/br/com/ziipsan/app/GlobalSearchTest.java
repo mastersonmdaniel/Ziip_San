@@ -122,6 +122,26 @@ class GlobalSearchTest extends AppIntegrationTestBase {
         }
     }
 
+    /** Insere a linha relation_roles USER se ausente e devolve o id real dela. */
+    private String insertOrSelectRole() throws Exception {
+        try (Connection c = ProvisionedTenant.migratorDs.getConnection()) {
+            c.setAutoCommit(false);
+            try (Statement st = c.createStatement()) {
+                st.execute("SELECT set_config('app.current_tenant', '" + TENANT + "', true)");
+                st.execute("SET LOCAL search_path TO " + SCHEMA + ", public");
+                st.execute("INSERT INTO relation_roles (tenant_id, code, name, system_role, active) VALUES ('"
+                        + TENANT + "', 'USER', 'Usuário', 'USER', true) ON CONFLICT DO NOTHING");
+                try (ResultSet rs = st.executeQuery(
+                        "SELECT id FROM relation_roles WHERE tenant_id = '" + TENANT + "' AND code = 'USER'")) {
+                    rs.next();
+                    String id = rs.getString(1);
+                    c.commit();
+                    return id;
+                }
+            }
+        }
+    }
+
     @Test
     @Order(1)
     @DisplayName("cliente do gate global: criado com a máscara do teto vigente")
@@ -146,19 +166,23 @@ class GlobalSearchTest extends AppIntegrationTestBase {
         String retentionId = UUID.randomUUID().toString();
         String cleanDocId = UUID.randomUUID().toString();
         String quarantinedDocId = UUID.randomUUID().toString();
-        String roleId = UUID.randomUUID().toString();
+        // P1-C (integracao): a R2 renomeou matricula/dv para
+        // registration_number/check_digit, e unit_customers.role_id
+        // e NOT NULL com FK para relation_roles — sem a linha do
+        // papel, o INSERT do vinculo viola o NOT NULL. O vinculo usa
+        // o papel USER: chk_ucust_bill_name_user exige que o nome na
+        // conta saia em nome do usuario titular (NR 11, art. 33, §2º),
+        // e OWNER + show_on_bill=true viola o CHECK. A linha pode ja
+        // existir (outro teste semeia o mesmo tenant) — insere se
+        // ausente e resolve o id real, nunca um aleatorio que a FK
+        // recusaria.
+        String roleId = insertOrSelectRole();
         sql(
-                // P1-C (integracao): a R2 renomeou matricula/dv para
-                // registration_number/check_digit, e unit_customers.role_id
-                // e NOT NULL com FK para relation_roles — sem a linha do
-                // papel, o INSERT do vinculo viola o NOT NULL.
-                "INSERT INTO " + SCHEMA + ".relation_roles (id, tenant_id, code, name, system_role, active) VALUES ('"
-                        + roleId + "', '" + TENANT + "', 'OWNER', 'Proprietário', 'OWNER', true)",
                 "INSERT INTO " + SCHEMA + ".consumer_units (id, tenant_id, registration_number, check_digit) VALUES ('"
                         + unitId + "', '" + TENANT + "', '" + MATRICULA + "', '0')",
                 "INSERT INTO " + SCHEMA + ".unit_customers (id, tenant_id, unit_id, customer_id, role, role_id, start_date, show_on_bill)"
                         + " VALUES ('" + UUID.randomUUID() + "', '" + TENANT + "', '" + unitId + "', '" + customerId
-                        + "', 'OWNER', '" + roleId + "', CURRENT_DATE, true)",
+                        + "', 'USER', '" + roleId + "', CURRENT_DATE, true)",
                 "INSERT INTO " + SCHEMA + ".service_types (id, tenant_id, code, name, operation, effect_code, indicator, target_classes)"
                         + " VALUES ('" + typeId + "', '" + TENANT + "', 'GLOBALTEST', 'Serviço Global', 'GLOBAL_OP', 'GLOBAL_EFFECT', 'INTERNAL', ARRAY['CONSUMER_UNIT'])",
                 "INSERT INTO " + SCHEMA + ".service_orders (id, tenant_id, service_type_id, origin, execution_mode, priority, status, created_by)"
