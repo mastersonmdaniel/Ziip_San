@@ -225,6 +225,71 @@ public class CertificationService {
         });
     }
 
+    /**
+     * Filtro da consulta do catalogo (P1.34: por classe, area, modulo,
+     * situacao e agencia). Todo campo nulo ou em branco e "sem filtro".
+     * O modulo casa por pertinencia: o catalogo guarda os modulos
+     * afetados unidos por virgula (carga R__norm_catalog), e a consulta
+     * casa o modulo inteiro entre virgulas, nunca por substring — um
+     * filtro "lgpd" nao casa "lgpd_extra". A situacao aceita so os 4
+     * valores do CHECK da V9_8; qualquer outro e erro de validacao,
+     * nunca lista vazia silenciosa.
+     */
+    public record StandardFilter(StandardClass standardClass, String area, String module,
+                                 String status, String agency) {
+    }
+
+    /** Catalogo filtrado (P1.34); sem filtro, equivale a {@link #listStandards()}. */
+    public List<StandardView> listStandardsFiltered(StandardFilter filter) {
+        return inTx(c -> {
+            StringBuilder sql = new StringBuilder(
+                    "SELECT id, catalog_key, code, title, summary, standard_class, area, module, agency,"
+                            + " verification_seal, status, effective_from, effective_to"
+                            + " FROM " + platformSchema + ".cert_standard WHERE 1 = 1");
+            List<String> params = new ArrayList<>();
+            if (filter != null && filter.standardClass() != null) {
+                sql.append(" AND standard_class = ?");
+                params.add(filter.standardClass().name());
+            }
+            if (filter != null && filter.area() != null && !filter.area().isBlank()) {
+                sql.append(" AND area = ?");
+                params.add(filter.area().trim());
+            }
+            if (filter != null && filter.module() != null && !filter.module().isBlank()) {
+                sql.append(" AND (',' || module || ',' LIKE '%,' || REPLACE(REPLACE(REPLACE(?, '\\', '\\\\'),"
+                        + " '%', '\\%'), '_', '\\_') || ',%' ESCAPE '\\')");
+                params.add(filter.module().trim());
+            }
+            if (filter != null && filter.status() != null && !filter.status().isBlank()) {
+                String status = filter.status().trim();
+                if (!List.of("VIGENTE", "VIGENCIA_FUTURA", "REVOGADA", "SUBSTITUIDA").contains(status)) {
+                    throw new ApiException.Validation("Situação de norma desconhecida: " + status + ".",
+                            List.of(new ApiException.FieldError("status", "invalid",
+                                    "Situação de norma desconhecida: " + status + ".")), List.of());
+                }
+                sql.append(" AND status = ?");
+                params.add(status);
+            }
+            if (filter != null && filter.agency() != null && !filter.agency().isBlank()) {
+                sql.append(" AND agency = ?");
+                params.add(filter.agency().trim());
+            }
+            sql.append(" ORDER BY catalog_key");
+            List<StandardView> out = new ArrayList<>();
+            try (PreparedStatement ps = c.prepareStatement(sql.toString())) {
+                for (int i = 0; i < params.size(); i++) {
+                    ps.setString(i + 1, params.get(i));
+                }
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        out.add(readStandard(rs));
+                    }
+                }
+            }
+            return out;
+        });
+    }
+
     /** One standard by code; a code the catalog does not hold is a 404, never an empty shell. */
     public StandardView getStandard(String code) {
         requireCode(code);

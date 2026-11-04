@@ -168,4 +168,34 @@ class CertificationControllerE2ETest extends AppIntegrationTestBase {
             deleteStandard(code);
         }
     }
+
+    @Test
+    @DisplayName("P1.34: lista de normas aceita filtros de classe, situacao, modulo e agencia")
+    void standardsFiltersE2E() throws Exception {
+        String futureBody = mvc.perform(get(BASE + "/standards")
+                        .queryParam("status", "VIGENCIA_FUTURA").header("Authorization", reader))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        java.util.List<java.util.Map<String, Object>> future = JsonPath.read(futureBody, "$");
+        org.assertj.core.api.Assertions.assertThat(future).extracting(m -> m.get("catalogKey"))
+                .contains("bcb-in-777-2026", "mte-nr-10")
+                .doesNotContain("decreto-10046-2019");
+
+        String lgpdBody = mvc.perform(get(BASE + "/standards")
+                        .queryParam("module", "lgpd").header("Authorization", reader))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        java.util.List<java.util.Map<String, Object>> lgpd = JsonPath.read(lgpdBody, "$");
+        org.assertj.core.api.Assertions.assertThat(lgpd).extracting(m -> m.get("catalogKey"))
+                .contains("decreto-10046-2019");
+
+        String agencyBody = mvc.perform(get(BASE + "/standards")
+                        .queryParam("agency", "Presidência da República").header("Authorization", reader))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        java.util.List<java.util.Map<String, Object>> agency = JsonPath.read(agencyBody, "$");
+        org.assertj.core.api.Assertions.assertThat(agency).extracting(m -> m.get("catalogKey"))
+                .contains("decreto-10046-2019", "decreto-13135-2026");
+
+        mvc.perform(get(BASE + "/standards")
+                        .queryParam("status", "EM_REVISAO").header("Authorization", reader))
+                .andExpect(status().isUnprocessableEntity());
+    }
 }

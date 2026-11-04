@@ -38,9 +38,14 @@ import java.util.UUID;
  * nunca parecer do produto.
  *
  * <p>O catálogo nasce VAZIO e só a carga da P1.34 o popula, a partir do
- * catálogo consolidado em docs/normas. Até lá, listar normas devolve lista
- * vazia e ativar uma norma sem linha no catálogo é 404 — nunca uma norma
- * inventada pelo serviço.
+ * catálogo consolidado em docs/normas (migration repetível
+ * R__norm_catalog.sql; gerador em scripts/normas). A carga traz
+ * metadados e resumos em palavras próprias — nunca texto de norma — e
+ * NÃO traz as 33 normas ABNT da lista fechada da P1.28: a compra segue
+ * PENDENTE, sem decisão do dono (docs/arquitetura/P1-28-LISTA-FECHADA-
+ * NORMAS-ABNT.md), e as 36 linhas correspondentes do JSON ficam fora
+ * do catálogo até a compra ser decidida. Ativar uma norma sem linha no
+ * catálogo é 404 — nunca uma norma inventada pelo serviço.
  */
 @RestController
 @RequestMapping("/api/v1/certification")
@@ -131,11 +136,23 @@ public class CertificationController {
 
     @GetMapping("/standards")
     public List<StandardResponse> listStandards(
-            @RequestParam(required = false) String standardClass) {
+            @RequestParam(required = false) String standardClass,
+            @RequestParam(required = false) String area,
+            @RequestParam(required = false) String module,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String agency) {
         CertificationService service = service();
-        List<CertificationService.StandardView> views = standardClass == null || standardClass.isBlank()
-                ? service.listStandards()
-                : service.listStandardsByClass(CertificationService.StandardClass.from(standardClass));
+        boolean filtered = (standardClass != null && !standardClass.isBlank())
+                || (area != null && !area.isBlank())
+                || (module != null && !module.isBlank())
+                || (status != null && !status.isBlank())
+                || (agency != null && !agency.isBlank());
+        List<CertificationService.StandardView> views = filtered
+                ? service.listStandardsFiltered(new CertificationService.StandardFilter(
+                        standardClass == null || standardClass.isBlank()
+                                ? null : CertificationService.StandardClass.from(standardClass),
+                        area, module, status, agency))
+                : service.listStandards();
         return views.stream().map(CertificationController::toStandard).toList();
     }
 
