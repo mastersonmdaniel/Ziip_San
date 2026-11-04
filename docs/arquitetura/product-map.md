@@ -21,7 +21,8 @@ Pacote: **sanitation** — versão 0.1.0 (plataforma mínima 1.0.0-SNAPSHOT)
 | losses | Perdas | declared | `intelligence/ziipsan-losses` | `— (sem permissão catalogada)` | P0 (módulo existente, sem rota HTTP nem menu até esta onda) |
 | mtr | Resíduos / MTR | declared | `grs/ziipsan-mtr` | `— (sem permissão catalogada)` | P0 (módulo existente, sem rota HTTP nem menu até esta onda) |
 | lgpd | Privacidade / LGPD | declared | `compliance/ziipsan-lgpd` | `— (sem permissão catalogada)` | P0 (módulo existente, sem rota HTTP nem menu até esta onda) |
-| certification | Certificações de qualidade | declared | `core (motor, P1.32) + packages/sanitation (catálogo, P1.34)` | `— (sem permissão catalogada)` | P1.32 (motor no núcleo, conteúdo de saneamento no pacote — ADR-0041) |
+| certification | Certificações de qualidade | declared | `core (motor, P1.32) + packages/sanitation (catálogo, P1.34)` | `cert:read` | P1.32 (motor no núcleo, conteúdo de saneamento no pacote — ADR-0041) |
+| support | Suporte | active | `shared/ziipsan-core` | `support:read` | P1.23 |
 
 ## Cadastro comercial (`registry`) <!-- module: registry -->
 
@@ -136,10 +137,24 @@ Pacote: **sanitation** — versão 0.1.0 (plataforma mínima 1.0.0-SNAPSHOT)
 ## Certificações de qualidade (`certification`) <!-- module: certification -->
 
 - Status: `declared` · módulo Maven: `core (motor, P1.32) + packages/sanitation (catálogo, P1.34)`
-- Permissão: `— (sem permissão catalogada)`
+- Permissão: `cert:read`
 - Tarefa de origem: P1.32 (motor no núcleo, conteúdo de saneamento no pacote — ADR-0041)
 - Itens de menu: nenhum até esta onda.
-- Rotas de API: nenhuma até esta onda.
+- Rotas de API:
+  - `/api/v1/certification/standards`
+  - `/api/v1/certification/activations`
+  - `/api/v1/certification/clause-map`
+- Abas da ficha da unidade: nenhuma.
+
+## Suporte (`support`) <!-- module: support -->
+
+- Status: `active` · módulo Maven: `shared/ziipsan-core`
+- Permissão: `support:read`
+- Tarefa de origem: P1.23
+- Itens de menu: nenhum até esta onda.
+- Rotas de API:
+  - `/api/v1/support/tickets`
+  - `/api/v1/platform/support/queue`
 - Abas da ficha da unidade: nenhuma.
 
 ## Domínios do GIS (declarados; carga na P1.26, V13_1)
