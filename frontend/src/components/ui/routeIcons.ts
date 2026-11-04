@@ -25,4 +25,6 @@ export const ROUTE_ICONS: Record<string, IconName> = {
   '/gis/catalogo': 'map',
   // P1.12: item de entrega das exportações assíncronas (e, futuramente, dos relatórios da P3.22).
   '/arquivos-gerados': 'download',
+  // P1.33: visões salvas da busca global.
+  '/busca/visoes-salvas': 'search',
 }

@@ -39,6 +39,10 @@ na aplicação, a partir do catálogo.
 | `support:write` | suporte | support | write | (nenhum — só concessão direta; perfis por função na P1.37) | P1.23 |
 | `support:manage` | suporte | support | manage | (nenhum — só concessão direta; perfis por função na P1.37) | P1.23 |
 | `support:queue` | suporte | support | queue | (nenhum perfil de tenant — só papéis de plataforma: PLATFORM_OWNER, PLATFORM_OPS, PLATFORM_SUPPORT) | P1.23 |
+| `search:read` | busca | search | read | (nenhum — só concessão direta; perfis por função na P1.37) | P1.33 |
+| `service-order:read` | ordem de servico | service-order | read | (nenhum — só concessão direta) | P1.33 |
+| `billing:read` | cobrança | billing | read | (nenhum — só concessão direta) | P1.33 |
+| `document:read` | documentos | document | read | (nenhum — só concessão direta) | P1.33 |
 
 ## Regras
 
@@ -81,4 +85,18 @@ na aplicação, a partir do catálogo.
   (`audit`). Também são concessão direta, sem perfil de fábrica — perfis por função na P1.37.
   A separação proponente ≠ aprovador continua no serviço, por ator, não por papel, e o
   desligamento nunca apaga registro (o mapa congelado e os vínculos continuam consultáveis).
+- `search:read` (P1.33) é o portão de entrada da busca global e das visões salvas
+  (`/api/v1/search/*`): concessão direta, nenhum perfil de fábrica a inclui. O portão
+  NÃO amplia a leitura de nenhum recurso: cada seção da busca global exige ainda a
+  permissão do próprio recurso (`registry:read` para cliente e unidade,
+  `service-order:read` para OS, `billing:read` para conta, `document:read` para
+  documento) e a seção sem permissão volta em `deniedTypes`, sem dado. A busca
+  global por documento completo passa pelo mesmo gate da P0.11 (`registry:search-document`,
+  registro em `personal_data_access_log` e cota por usuário por hora, 429 ao exceder):
+  sem a permissão própria, a busca global por CPF/CNPJ é 403 e não contorna o controle
+  de CPF por nenhuma outra seção (nenhuma seção casa por documento parcial, máscara ou
+  prefixo). Escopo por área (P3.30) e compartilhamento de visões por unidade
+  organizacional ainda não existem: sem `org_units`, a busca global vale para o tenant
+  inteiro (RLS) e a visão com `visibility=ORG_UNIT` só é listada ao próprio dono até a
+  P3.30 — o compartilhamento é armazenado, não fingido.
 - Perfis compostos pelo ADMIN do tenant e restrição negativa ficam na ED-06, sobre este catálogo.

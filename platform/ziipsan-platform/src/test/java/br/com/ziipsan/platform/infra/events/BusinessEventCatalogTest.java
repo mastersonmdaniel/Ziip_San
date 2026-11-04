@@ -122,8 +122,10 @@ class BusinessEventCatalogTest {
     @Test
     @DisplayName("validador do catálogo recusa permissão inventada, dado pessoal, duplicata e consumidor não declarado")
     void catalogValidatorRefuses() {
+        // "billing:read" era o exemplo de permissão inventada até a P1.33, quando
+        // virou permissão real do catálogo; o exemplo agora é um nome que nunca existe.
         assertThatThrownBy(() -> BusinessEventCatalogLoader.fromJson(
-                CATALOG_JSON.replace("\"registry:read\"", "\"billing:read\"")))
+                CATALOG_JSON.replace("\"registry:read\"", "\"invented:read\"")))
                 .isInstanceOf(IllegalStateException.class).hasMessageContaining("P0.13");
         assertThatThrownBy(() -> BusinessEventCatalogLoader.fromJson(
                 CATALOG_JSON.replace("\"statusCode\"", "\"customerEmail\"")))

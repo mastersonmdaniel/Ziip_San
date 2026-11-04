@@ -1,0 +1,9 @@
+# P1.33: erro explicado (visão salva exige usuário autenticado com identificador).
+code: urn:ziipsan:problem:user-required
+title: Usuário não identificado
+explanation: "A operação exige um usuário autenticado com identificador, e a sessão atual não trouxe um."
+causes:
+  - A sessão expirou ou o token não carrega o identificador do usuário.
+actions:
+  - Entre novamente e repita a operação.
+suggest_ticket: false

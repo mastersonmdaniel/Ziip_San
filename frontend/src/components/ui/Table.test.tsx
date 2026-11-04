@@ -35,3 +35,36 @@ describe('Table mobileCards (P1.12)', () => {
     expect(container.querySelector('table')?.hasAttribute('data-mobile-cards')).toBe(false)
   })
 })
+
+describe('Table density (P1.33)', () => {
+  it('compacta reduz a altura das células; o padrão continua confortável', () => {
+    const { container, rerender } = render(
+      <Table caption="Teste" density="compact">
+        <TableHeader>
+          <TableRow>
+            <TableHead>Nome</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell label="Nome">X</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
+    )
+    expect(container.querySelector('table')?.getAttribute('data-density')).toBe('compact')
+    expect(container.querySelector('th')?.className).toContain('h-8')
+    expect(container.querySelector('td')?.className).toContain('p-2')
+    rerender(
+      <Table caption="Teste">
+        <TableBody>
+          <TableRow>
+            <TableCell>Y</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
+    )
+    expect(container.querySelector('table')?.getAttribute('data-density')).toBe('comfortable')
+    expect(container.querySelector('td')?.className).toContain('p-4')
+  })
+})

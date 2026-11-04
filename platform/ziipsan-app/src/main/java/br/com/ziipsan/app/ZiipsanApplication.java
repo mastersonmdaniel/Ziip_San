@@ -36,6 +36,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "br.com.ziipsan.commercial.registry.repository",
         // P0.13: repositórios de usuários do tenant.
         "br.com.ziipsan.platform.user",
+        // P1.33: repositórios de visões salvas.
+        "br.com.ziipsan.platform.search",
         // P1.27: repositórios do catálogo GIS.
         "br.com.ziipsan.intelligence.gis.catalog.repository",
 })

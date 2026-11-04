@@ -1,0 +1,10 @@
+# P1.33: erro explicado (título duplicado de visão salva, um por dono).
+code: urn:ziipsan:problem:saved-view-title-in-use
+title: Já existe uma visão salva com este título
+explanation: "Você já tem uma visão salva com este título. Cada usuário pode ter só uma visão com o mesmo título."
+causes:
+  - Outra visão sua já usa este título.
+actions:
+  - Reaproveite a visão existente.
+  - Escolha outro título para a nova visão.
+suggest_ticket: false

@@ -3,7 +3,9 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Button } from '@components/ui/Button'
 import { Icon, type IconName } from '@components/ui/Icon'
 import { useAuth } from '@hooks/useAuth'
-import { hasPermission } from '@hooks/usePermissions'
+import { hasPermission, useCan } from '@hooks/usePermissions'
+import { useShortcuts, isTypingTarget } from '@hooks/useShortcuts'
+import { GlobalSearchDialog } from '@components/search/GlobalSearchDialog'
 import { useTheme } from '@hooks/useTheme'
 import { useBrand } from '../brand/BrandProvider'
 import { t } from '@i18n/messages'
@@ -45,7 +47,26 @@ export function Layout() {
   // (antes, todo item herdava registry:read, e o item do GIS aparecia para
   // quem só tinha cadastro). Sem usuário ou sem lista de permissões, nada
   // se esconde (fail-open da exibição; o servidor continua negando).
+  // Integração P1-C: o filtro por item da P1.23 é preservado — a forma
+  // tudo-ou-nada por registry:read da P1.33 regrediria os itens de GIS,
+  // Central e Suporte, por isso não entra aqui.
   const visibleNavigation = navigation.filter((item) => hasPermission(user, item.permission))
+  const canSearch = useCan('search:read')
+  // P1.33: busca global por teclado (Ctrl ou Cmd+K). O atalho não rouba a
+  // digitação em campo, e a paleta já aberta não reabre por cima de si mesma.
+  const [searchOpen, setSearchOpen] = useState(false)
+  const { settings: shortcutSettings, setEnabled: setShortcutsEnabled, setOpenSearch: setOpenSearchBinding, reset: resetShortcuts, matchesOpenSearch } = useShortcuts()
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (searchOpen || isTypingTarget(event.target)) return
+      if (matchesOpenSearch(event)) {
+        event.preventDefault()
+        setSearchOpen(true)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [searchOpen, matchesOpenSearch])
 
   // Ao trocar de tela, fecha o menu e leva o foco ao conteúdo (leitor de tela anuncia a mudança).
   useEffect(() => {
@@ -162,6 +183,14 @@ export function Layout() {
       {menuOpen ? <div className="fixed inset-0 z-20 bg-black/50 lg:hidden" aria-hidden="true" onClick={() => setMenuOpen(false)} /> : null}
 
       <div className="lg:pl-64">
+        <GlobalSearchDialog
+          open={searchOpen}
+          onClose={() => setSearchOpen(false)}
+          shortcuts={shortcutSettings}
+          setShortcutsEnabled={setShortcutsEnabled}
+          setOpenSearchBinding={setOpenSearchBinding}
+          resetShortcuts={resetShortcuts}
+        />
         <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-card px-4 sm:px-6">
           <Button
             ref={openButtonRef}
@@ -177,6 +206,19 @@ export function Layout() {
           </Button>
           <span className="hidden text-sm text-muted-foreground lg:inline">{brand.description}</span>
           <div className="flex items-center gap-2">
+            {canSearch ? (
+              <Button
+                id="global-search-button"
+                variant="outline"
+                size="sm"
+                onClick={() => setSearchOpen(true)}
+                aria-label="Abrir busca global (Ctrl ou Cmd+K)"
+              >
+                <Icon name="search" className="h-4 w-4" />
+                <span className="hidden sm:inline">Buscar</span>
+                <kbd className="hidden rounded border px-1 text-xs text-muted-foreground sm:inline">Ctrl+K</kbd>
+              </Button>
+            ) : null}
             <label className="sr-only" htmlFor="palette-select">
               {t('layout.colorScheme')}
             </label>

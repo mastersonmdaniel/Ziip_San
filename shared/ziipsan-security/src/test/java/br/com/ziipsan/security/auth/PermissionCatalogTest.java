@@ -41,6 +41,15 @@ class PermissionCatalogTest {
         // P0.11: buscar por documento também é concessão direta, em nenhum perfil de fábrica.
         assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
                 .doesNotContain("registry:search-document");
+        // P1.33: busca global e leituras de OS, conta e documento também são
+        // concessão direta, em nenhum perfil de fábrica (perfis por função: P1.37).
+        assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
+                .doesNotContain("search:read", "service-order:read", "billing:read", "document:read");
+        assertThat(PermissionCatalog.isPermission("search:read")).isTrue();
+        assertThat(PermissionCatalog.isPermission("service-order:read")).isTrue();
+        assertThat(PermissionCatalog.isPermission("billing:read")).isTrue();
+        assertThat(PermissionCatalog.isPermission("document:read")).isTrue();
+        assertThat(PermissionCatalog.authoritiesForRole("search:read")).containsExactly("search:read");
         assertThat(PermissionCatalog.authoritiesForRole("registry:search-document"))
                 .containsExactly("registry:search-document");
     }

@@ -1,5 +1,18 @@
-import type { HTMLAttributes, TableHTMLAttributes, TdHTMLAttributes, ThHTMLAttributes } from 'react'
+import { createContext, useContext, type HTMLAttributes, type TableHTMLAttributes, type TdHTMLAttributes, type ThHTMLAttributes } from 'react'
 import { cn } from '@utils/cn'
+
+/**
+ * Densidade da tabela (P1.33): `comfortable` é o espaçamento atual (padrão, sem
+ * mudança visual em nenhuma lista existente); `compact` reduz a altura das
+ * linhas. A lista passa `density`; sem ela, vale confortável.
+ */
+export type TableDensityValue = 'comfortable' | 'compact'
+
+const DensityContext = createContext<TableDensityValue>('comfortable')
+
+function useDensityValue(): TableDensityValue {
+  return useContext(DensityContext)
+}
 
 /**
  * `caption` é obrigatório: leitores de tela anunciam o propósito da tabela.
@@ -12,19 +25,23 @@ export function Table({
   className,
   caption,
   mobileCards,
+  density,
   children,
   ...props
-}: TableHTMLAttributes<HTMLTableElement> & { caption: string; mobileCards?: boolean }) {
+}: TableHTMLAttributes<HTMLTableElement> & { caption: string; mobileCards?: boolean; density?: TableDensityValue }) {
   return (
     <div className="relative w-full overflow-x-auto">
-      <table
-        className={cn('w-full caption-bottom text-sm', className)}
-        data-mobile-cards={mobileCards ? '' : undefined}
-        {...props}
-      >
-        <caption className="sr-only">{caption}</caption>
-        {children}
-      </table>
+      <DensityContext.Provider value={density ?? 'comfortable'}>
+        <table
+          className={cn('w-full caption-bottom text-sm', className)}
+          data-mobile-cards={mobileCards ? '' : undefined}
+          data-density={density ?? 'comfortable'}
+          {...props}
+        >
+          <caption className="sr-only">{caption}</caption>
+          {children}
+        </table>
+      </DensityContext.Provider>
     </div>
   )
 }
@@ -42,10 +59,11 @@ export function TableRow({ className, ...props }: HTMLAttributes<HTMLTableRowEle
 }
 
 export function TableHead({ className, scope = 'col', ...props }: ThHTMLAttributes<HTMLTableCellElement>) {
+  const density = useDensityValue()
   return (
     <th
       scope={scope}
-      className={cn('h-12 px-4 text-left align-middle font-medium text-muted-foreground', className)}
+      className={cn(density === 'compact' ? 'h-8 px-2' : 'h-12 px-4', 'text-left align-middle font-medium text-muted-foreground', className)}
       {...props}
     />
   )
@@ -56,5 +74,6 @@ export function TableCell({
   label,
   ...props
 }: TdHTMLAttributes<HTMLTableCellElement> & { label?: string }) {
-  return <td className={cn('p-4 align-middle', className)} data-label={label} {...props} />
+  const density = useDensityValue()
+  return <td className={cn(density === 'compact' ? 'p-2' : 'p-4', 'align-middle', className)} data-label={label} {...props} />
 }

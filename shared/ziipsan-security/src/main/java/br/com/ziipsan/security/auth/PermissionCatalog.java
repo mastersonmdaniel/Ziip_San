@@ -97,7 +97,20 @@ public final class PermissionCatalog {
             new Permission("support:read", "suporte", "support", "read", "P1.23"),
             new Permission("support:write", "suporte", "support", "write", "P1.23"),
             new Permission("support:manage", "suporte", "support", "manage", "P1.23"),
-            new Permission("support:queue", "suporte", "support", "queue", "P1.23"));
+            new Permission("support:queue", "suporte", "support", "queue", "P1.23"),
+            // P1.33: busca global, visoes salvas e atalhos. `search:read` e o portao
+            // de entrada das rotas /api/v1/search/* (concessao direta, nenhum perfil
+            // de fabrica — perfis por funcao sao da P1.37). Cada secao da busca
+            // global ainda exige a permissao do proprio recurso (abaixo): o portao
+            // nao amplia leitura de nenhum recurso, e secao sem permissao volta em
+            // deniedTypes, sem dado. `service-order:read`, `billing:read` e
+            // `document:read` nascem aqui porque OS, conta e documento ainda nao
+            // tem superficie web nem permissao de leitura no catalogo — sao
+            // concessao direta, pelo mesmo precedente de registry:export.
+            new Permission("search:read", "busca", "search", "read", "P1.33"),
+            new Permission("service-order:read", "ordem de servico", "service-order", "read", "P1.33"),
+            new Permission("billing:read", "cobrança", "billing", "read", "P1.33"),
+            new Permission("document:read", "documentos", "document", "read", "P1.33"));
 
     /** Perfis mínimos de fábrica da P0.13, compostos do catálogo (perfis por função: P1.37). */
     public enum FactoryProfile {
