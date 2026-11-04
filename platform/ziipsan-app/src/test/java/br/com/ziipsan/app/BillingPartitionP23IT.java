@@ -297,10 +297,18 @@ class BillingPartitionP23IT {
         // exportacao de imoveis sem filtro do RegistryExportIT (que espera
         // CSV sincrono) passa de 1.000 linhas e volta 202 em vez de 200
         // (foi exatamente a unica falha da rodada 6 da CI total). Os
-        // triggers de auditoria sao desligados de novo so para a limpeza
-        // (nenhuma linha de audit_log para 200 mil DELETEs) e religados
-        // no finally; os itens ja foram desfeitos pelo rollback da tx 2.
+        // DELETEs rodam com TODOS os triggers desligados (audit + RI) e
+        // religados no finally: o DELETE das contas, com os triggers de
+        // RI ativos, estoura os 5 s do papel da app — nao ha indice sobre
+        // (tenant, origin_reference_month, origin_bill_id), entao cada
+        // conta deletada dispara um SEQ SCAN da particao para o cheque
+        // da auto-FK de origem (provado no log: o timeout veio do
+        // RI_FKey_no_action_del, nao do DELETE em si). A ordem dos
+        // DELETEs ja respeita as FKs (contas antes das unidades); desligar
+        // a RI so remove o custo por linha, nao afrouxa nenhuma assercao
+        // — as contagens de DELETE seguem assertadas e tudo e religado.
         disableAuditTriggers();
+        setAllTriggers(false);
         try (Connection c = asTenant()) {
             try (PreparedStatement ps = c.prepareStatement(
                     "DELETE FROM " + SCHEMA + ".bills WHERE tenant_id = ? AND audit_batch_id = ?")) {
@@ -338,6 +346,7 @@ class BillingPartitionP23IT {
             }
             c.commit();
         } finally {
+            setAllTriggers(true);
             enableAuditTriggers();
         }
     }
@@ -598,6 +607,33 @@ class BillingPartitionP23IT {
             ps.executeUpdate();
         }
         return id;
+    }
+
+    /**
+     * Liga/desliga TODOS os triggers (audit + RI + fill) das tabelas da
+     * limpeza do volume, pai e particoes. Usado SO pela limpeza: o DELETE
+     * das 100 mil contas com a RI ativa estoura o statement_timeout (a
+     * auto-FK de origem nao tem indice — ver o comentario da limpeza).
+     * Tudo e religado no finally da limpeza; nenhuma assercao depende de
+     * trigger desligado.
+     */
+    private static void setAllTriggers(boolean enable) throws SQLException {
+        String verb = enable ? "ENABLE" : "DISABLE";
+        try (Connection m = migrator(); Statement st = m.createStatement()) {
+            List<String> tables = new ArrayList<>(List.of(
+                    SCHEMA + ".bills", SCHEMA + ".bill_items", SCHEMA + ".consumer_units",
+                    SCHEMA + ".bill_audit_batches", SCHEMA + ".categories",
+                    SCHEMA + ".tariffs", SCHEMA + ".tariff_versions"));
+            try (ResultSet rs = st.executeQuery("SELECT inhrelid::regclass::text FROM pg_inherits WHERE inhparent IN ('"
+                    + SCHEMA + ".bills'::regclass, '" + SCHEMA + ".bill_items'::regclass)")) {
+                while (rs.next()) {
+                    tables.add(rs.getString(1));
+                }
+            }
+            for (String table : tables) {
+                st.execute("ALTER TABLE " + table + " " + verb + " TRIGGER ALL");
+            }
+        }
     }
 
     /**
