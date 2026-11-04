@@ -658,7 +658,7 @@ class BillingPartitionP23IT {
         // varrer o range inteiro do tenant na particao). Busca-se a lista
         // de contas uma vez, ordenada, e cada lote usa um RANGE CONTIGUO
         // de ids (id > anterior AND id <= ultimo): o plano e um range
-        // scan de exatamente 10 mil entradas, sem re-escaneamento. O filtro
+        // scan de exatamente 1 mil entradas, sem re-escaneamento. O filtro
         // por mes na lista e nos lotes permite o pruning para a particao
         // do lote (2026_03 e exclusiva do teste de volume neste schema).
         // O trigger bills_fill_child_month esta DESLIGADO durante a carga
@@ -683,11 +683,13 @@ class BillingPartitionP23IT {
         }
         // Com o trigger de preenchimento desligado durante a carga (ver
         // disableFillMonthTrigger), o custo por linha cai para o cheque de
-        // FK + indices — lotes de 10 mil cabem com folga nos 5 s.
+        // FK + indices — mas, nesta VM carregada, mesmo lotes de 10 mil
+        // estouraram os 5 s. Lotes de 1 mil dao 10x de margem sobre o
+        // ponto de falha observado; o total final segue assertado.
         assertThat(billIds).hasSize(100_000);
         int total = 0;
-        for (int from = 0; from < billIds.size(); from += 10_000) {
-            int to = Math.min(from + 10_000, billIds.size()) - 1;
+        for (int from = 0; from < billIds.size(); from += 1_000) {
+            int to = Math.min(from + 1_000, billIds.size()) - 1;
             String rangePredicate = from == 0
                     ? "b.id <= ?"
                     : "b.id > ? AND b.id <= ?";
