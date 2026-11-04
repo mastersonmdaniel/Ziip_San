@@ -683,6 +683,7 @@ CREATE INDEX IF NOT EXISTS idx_unit_due_days_unit ON unit_due_days(tenant_id, un
 CREATE TABLE IF NOT EXISTS unit_alternative_sources (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID NOT NULL,
+    unit_id UUID NOT NULL,
     source_type VARCHAR(20) NOT NULL CHECK (source_type IN
         ('SHALLOW_WELL', 'DEEP_WELL', 'SURFACE_CAPTURE', 'RAINWATER', 'REUSE')),
     authorization_ref VARCHAR(100),
