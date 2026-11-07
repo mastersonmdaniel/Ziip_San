@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>br.com.ziipsan</groupId>
+        <artifactId>ziipsan</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <artifactId>ziipsan-accounting</artifactId>
+    <name>ZIIPSAN Accounting - Eventos contabeis e integracao contabil (ED-32)</name>
+    <description>Modulo novo criado pela ED-32 (o diretorio vazio foi apagado na P0.25; cada modulo novo nasce com a tarefa que o cria). Regras puras de lancamento por fato, contas a receber FIN-05, provisao, catalogos MCRSB/PCASP, fechamento congelado, exportacao diaria e contabilidade gerencial. NAO substitui o sistema contabil oficial (ADR-0028, e). O registro deste modulo no pom raiz e a fiacao JPA/Flyway sao da integracao (ver RELATORIO-ED-32).</description>
+    <dependencies>
+        <dependency>
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
