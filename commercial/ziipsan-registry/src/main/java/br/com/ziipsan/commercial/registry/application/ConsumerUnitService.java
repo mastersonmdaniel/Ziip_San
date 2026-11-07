@@ -274,13 +274,17 @@ public class ConsumerUnitService {
         ConsumerUnit u = unitForRead(id);
         UUID tenantId = RegistryContext.tenantId();
         List<HistoryEvent> events = new ArrayList<>();
-        for (UnitStatusHistory h : statusHistory.findByTenantIdAndUnitIdOrderByChangedAtDesc(tenantId, u.getId())) {
-            boolean water = h.getServiceKind() == UnitStatusHistory.ServiceKind.WATER;
-            String from = statusName(water, h.getFromStatusId());
-            String to = statusName(water, h.getToStatusId());
-            events.add(new HistoryEvent(h.getId(), h.getChangedAt(), "STATUS",
+        // GIS-05 (P2.23): a situacao mora na ligacao — a linha do tempo le
+        // connection_status_history (que substituiu unit_status_history na
+        // V3_14), pelas linhas de proveniencia desta unidade e pelas das
+        // ligacoes que a atendem.
+        for (Object[] row : connectionStatusRows(tenantId, u.getId())) {
+            boolean water = "WATER".equals(row[1]);
+            String from = statusName(water, (UUID) row[2]);
+            String to = statusName(water, (UUID) row[3]);
+            events.add(new HistoryEvent((UUID) row[0], toOffsetDateTime(row[4]), "STATUS",
                     water ? "Situação de água alterada" : "Situação de esgoto alterada",
-                    h.getCreatedBy() == null ? null : h.getCreatedBy().toString(),
+                    row[5] == null ? null : row[5].toString(),
                     List.of(new HistoryChange(water ? "waterStatus" : "sewerStatus", from, to))));
         }
         for (AuditLog a : auditLog.findByTenantIdAndEntityTypeAndEntityIdOrderByCreatedAtDesc(tenantId, UNIT_ENTITY_TYPE,
@@ -826,21 +830,108 @@ public class ConsumerUnitService {
         u.setNotes(blankToNull(in.notes()));
     }
 
+    /**
+     * GIS-05 (P2.23): a mudança de situação é gravada no histórico da
+     * LIGAÇÃO ({@code connection_status_history}, V3_14), resolvida pela
+     * unidade e pelo tipo; a ligação é criada sobre a âncora do imóvel
+     * quando ainda não existe (carga inicial da V3_14 cobre o legado;
+     * isto cobre unidade nova). Sem OS não há linha de histórico: desde
+     * a P1.3 toda mudança de situação nasce de OS (service_order_id
+     * NOT NULL), e o caminho sem OS é o legado anterior a ela.
+     * O repositório {@code statusHistory} fica sem uso e sai com a
+     * entidade {@code UnitStatusHistory} numa limpeza posterior — a
+     * tabela dele não existe mais.
+     */
     private void recordStatus(UUID unitId, UnitStatusHistory.ServiceKind kind, UUID from, UUID to, String reason,
                               UUID serviceOrderId) {
-        if (to == null || to.equals(from)) {
+        if (to == null || to.equals(from) || serviceOrderId == null) {
             return;
         }
-        UnitStatusHistory h = RegistryContext.forCreate(new UnitStatusHistory());
-        h.setUnitId(unitId);
-        h.setServiceKind(kind);
-        h.setFromStatusId(from);
-        h.setToStatusId(to);
-        h.setChangedAt(OffsetDateTime.now());
-        h.setReason(reason);
-        // P1.3 (V3_12): service_order_id é NOT NULL; sem wiring, segue nulo (caminho legado).
-        h.setServiceOrderId(serviceOrderId);
-        statusHistory.saveAndFlush(h);
+        UUID tenantId = RegistryContext.tenantId();
+        String kindName = kind.name();
+        UUID connectionId = findConnectionId(tenantId, unitId, kindName);
+        if (connectionId == null) {
+            connectionId = createConnectionForUnit(tenantId, unitId, kindName, to);
+        } else {
+            em.createNativeQuery("UPDATE service_connections SET status_id = :to, updated_at = NOW() "
+                            + "WHERE tenant_id = :t AND id = :c")
+                    .setParameter("to", to).setParameter("t", tenantId).setParameter("c", connectionId)
+                    .executeUpdate();
+        }
+        em.createNativeQuery("INSERT INTO connection_status_history (id, tenant_id, connection_id, "
+                        + "consumer_unit_id, kind, from_status_id, to_status_id, changed_at, reason, "
+                        + "service_order_id, created_at, updated_at, created_by, updated_by, version) "
+                        + "VALUES (:id, :t, :c, :u, :k, :f, :to, :now, :r, :so, :now, :now, :by, :by, 0)")
+                .setParameter("id", UUID.randomUUID()).setParameter("t", tenantId)
+                .setParameter("c", connectionId).setParameter("u", unitId).setParameter("k", kindName)
+                .setParameter("f", from).setParameter("to", to)
+                .setParameter("now", OffsetDateTime.now()).setParameter("r", reason)
+                .setParameter("so", serviceOrderId)
+                .setParameter("by", br.com.ziipsan.core.tenant.TenantContextHolder.getUserId())
+                .executeUpdate();
+    }
+
+    private UUID findConnectionId(UUID tenantId, UUID unitId, String kind) {
+        var rows = em.createNativeQuery("SELECT sc.id FROM service_connections sc "
+                        + "JOIN service_connection_units scu ON scu.connection_id = sc.id "
+                        + "AND scu.tenant_id = sc.tenant_id "
+                        + "WHERE sc.tenant_id = :t AND scu.unit_id = :u AND sc.kind = :k "
+                        + "AND sc.ended_on IS NULL", UUID.class)
+                .setParameter("t", tenantId).setParameter("u", unitId).setParameter("k", kind)
+                .getResultList();
+        return rows.isEmpty() ? null : (UUID) rows.get(0);
+    }
+
+    private UUID createConnectionForUnit(UUID tenantId, UUID unitId, String kind, UUID statusId) {
+        ConsumerUnit unit = em.find(ConsumerUnit.class, unitId);
+        UUID anchorId = ServiceConnectionRules.propertyAnchorId(unit);
+        UUID id = UUID.randomUUID();
+        em.createNativeQuery("INSERT INTO service_connections (id, tenant_id, property_unit_id, kind, "
+                        + "status_id, connected_on, connected_on_source, created_at, updated_at, version) "
+                        + "VALUES (:id, :t, :a, :k, :s, :on, 'UNIT_REGISTRATION', NOW(), NOW(), 0)")
+                .setParameter("id", id).setParameter("t", tenantId).setParameter("a", anchorId)
+                .setParameter("k", kind).setParameter("s", statusId)
+                .setParameter("on", unit.getCreatedAt() == null ? java.time.LocalDate.now()
+                        : unit.getCreatedAt().toLocalDate())
+                .executeUpdate();
+        // Vincula a âncora e as filhas de condomínio do mesmo imóvel.
+        em.createNativeQuery("INSERT INTO service_connection_units (id, tenant_id, connection_id, unit_id) "
+                        + "SELECT gen_random_uuid(), :t, :c, u.id FROM consumer_units u "
+                        + "WHERE u.tenant_id = :t AND (u.id = :a OR (u.parent_unit_id = :a "
+                        + "AND u.parent_relation_type = 'CONDOMINIUM_MACRO')) "
+                        + "ON CONFLICT (tenant_id, connection_id, unit_id) DO NOTHING")
+                .setParameter("t", tenantId).setParameter("c", id).setParameter("a", anchorId)
+                .executeUpdate();
+        return id;
+    }
+
+    /** timestamptz por query nativa chega como Timestamp do JDBC ou OffsetDateTime. */
+    private static java.time.OffsetDateTime toOffsetDateTime(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof java.time.OffsetDateTime odt) {
+            return odt;
+        }
+        if (value instanceof java.sql.Timestamp ts) {
+            return ts.toInstant().atOffset(java.time.ZoneOffset.UTC);
+        }
+        if (value instanceof java.time.Instant instant) {
+            return instant.atOffset(java.time.ZoneOffset.UTC);
+        }
+        throw new IllegalStateException("changed_at inesperado: " + value.getClass().getName());
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Object[]> connectionStatusRows(UUID tenantId, UUID unitId) {
+        return em.createNativeQuery("SELECT h.id, h.kind, h.from_status_id, h.to_status_id, "
+                        + "h.changed_at, h.created_by FROM connection_status_history h "
+                        + "WHERE h.tenant_id = :t AND (h.consumer_unit_id = :u OR h.connection_id IN "
+                        + "(SELECT scu.connection_id FROM service_connection_units scu "
+                        + "WHERE scu.tenant_id = :t AND scu.unit_id = :u)) "
+                        + "ORDER BY h.changed_at DESC")
+                .setParameter("t", tenantId).setParameter("u", unitId)
+                .getResultList();
     }
 
     /** Cópia rasa dos campos comparados no diff da OS. */
@@ -1389,6 +1480,13 @@ public class ConsumerUnitService {
     private String statusName(boolean water, UUID id) {
         if (id == null) {
             return null;
+        }
+        // GIS-05 (P2.23): catálogo único primeiro (os ids são os mesmos
+        // dos catálogos antigos, preservados na cópia da V3_14).
+        br.com.ziipsan.commercial.registry.domain.ConnectionStatus cs =
+                em.find(br.com.ziipsan.commercial.registry.domain.ConnectionStatus.class, id);
+        if (cs != null) {
+            return cs.getName();
         }
         if (water) {
             WaterStatus w = em.find(WaterStatus.class, id);
