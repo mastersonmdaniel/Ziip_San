@@ -1,0 +1,75 @@
+-- Migration repetivel (Flyway R__) — ED-76: carga do mapa de clausulas
+-- por edicao no catalogo global de normas (ADR-0041 item 11).
+--
+-- PADRAO: o mesmo da carga da P1.34 (R__norm_catalog.sql, plano v3.0 §3):
+-- migration repetivel, upsert por chave estavel, nenhuma migration
+-- versionada nova. Nao ha numero Flyway reservado a ED-76 no §3 — a
+-- reserva generica tenant V21_x (ED-69 a ED-77) e de pacotes por norma
+-- no schema do tenant, e este mapa e do catalogo global (platform),
+-- cuja estrutura ja existe desde a V9_8 da P1.32:
+-- platform.cert_clause (edition_id, clause_number, title, summary,
+-- sort_order), com UNIQUE (edition_id, clause_number). Criar tabela ou
+-- versao nova aqui duplicaria a V9_8.
+--
+-- CONTEUDO: esta versao do arquivo NAO carrega nenhuma clausula real.
+-- O mapa real e escrito em palavras proprias pela curadoria a partir
+-- dos textos comprados na P1.28, que ficam FORA do repositorio pela
+-- licenca de uso (ABNT). Inventar linhas aqui seria fabricar conteudo
+-- de norma. A fonte de curadoria e docs/normas/mapa-clausulas.json
+-- (hoje com a lista de mapas vazia, deliberadamente); cada mapa curado
+-- e revisado gera, abaixo do marcador, um bloco de upsert por clausula
+-- no formato do modelo comentado, e a revisao do mapa a cada nova
+-- edicao segue o mesmo caminho (nova edicao no catalogo + blocos da
+-- edicao nova; a comparacao entre edicoes e a lista de evidencias a
+-- revalidar sao de ClauseMapRevision/EvidenceRevalidation, no core).
+--
+-- O QUE CADA BLOCO DE UPSERT FAZ (modelo, comentado de proposito):
+-- resolve a edicao pelo CODE da norma + edicao e faz upsert da
+-- clausula por (edition_id, clause_number) — reaplicar a migration
+-- nao duplica nem apaga clausula; corrigir titulo/resumo em palavras
+-- proprias atualiza a mesma linha.
+--
+-- CHAVE DA NORMA (correcao pos-revisao, achado 2): o bloco resolve por
+-- s.code — o standardCode do JSON de curadoria e dos testes, a chave
+-- que o CertificationService usa para achar a norma (WHERE code = ?)
+-- e que a ativacao grava como standard_code. NAO usar catalog_key:
+-- code e catalog_key sao colunas UNIQUE DISTINTAS na V9_8, e um bloco
+-- com o valor de uma no filtro da outra nao encontra linha nenhuma.
+--
+-- CONFERENCIA OBRIGATORIA ANTES DE APLICAR UM BLOCO REAL (o bloco e
+-- INSERT ... SELECT: com a edicao nao encontrada ele insere ZERO
+-- linhas e a migration continua verde — falha em silencio). Antes de
+-- descomentar/aplicar qualquer bloco real, rodar a conferencia abaixo
+-- com os MESMOS valores do bloco e exigir exatamente 1 linha de volta;
+-- com 0 linhas, PARAR: conferir code/edition contra o catalogo, nao
+-- aplicar o bloco e nao tratar mapa vazio como sucesso.
+--
+-- SELECT e.id
+-- FROM platform.cert_standard s
+-- JOIN platform.cert_standard_edition e ON e.standard_id = s.id
+-- WHERE s.code = 'SYN-EXEMPLO-1' AND e.edition = '1';
+--
+-- MODELO (nao executar sem curadoria real; os valores SYN- sao
+-- sinteticos e servem so de formato):
+--
+-- INSERT INTO platform.cert_clause (edition_id, clause_number, title, summary, sort_order)
+-- SELECT e.id, '1.1', 'Titulo em palavras proprias da curadoria',
+--        'Resumo em palavras proprias da curadoria.', 1
+-- FROM platform.cert_standard s
+-- JOIN platform.cert_standard_edition e ON e.standard_id = s.id
+-- WHERE s.code = 'SYN-EXEMPLO-1' AND e.edition = '1'
+-- ON CONFLICT (edition_id, clause_number) DO UPDATE
+-- SET title = EXCLUDED.title, summary = EXCLUDED.summary,
+--     sort_order = EXCLUDED.sort_order, updated_at = NOW();
+--
+-- === BLOCOS DE CURADORIA (gerados de docs/normas/mapa-clausulas.json) ===
+-- (vazio: nenhum mapa curado a partir dos textos comprados foi entregue
+-- nesta tarefa — ver RELATORIO-ED-76, pendencia de conteudo.)
+--
+-- Corpo executavel minimo intencional: sem bloco real, o unico comando
+-- e o SELECT 1; abaixo — corpo incomum para uma R__ (as demais executam
+-- upserts reais), registrado no achado 7 da revisao: a confirmacao de
+-- que o Flyway aceita este corpo e da CI total no PC do dono, que
+-- continua pendente (conferencia pre-push, nao desta correcao).
+
+SELECT 1;
