@@ -1,0 +1,17 @@
+# P4.7: unidade de servico (systemd --user) da restauracao mensal automatizada.
+# Instale junto com o .timer de mesmo nome:
+#   cp scripts/agendamento/ziipsan-restauracao-mensal.service \
+#      scripts/agendamento/ziipsan-restauracao-mensal.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now ziipsan-restauracao-mensal.timer
+# Ajuste WorkingDirectory para a raiz da copia de trabalho.
+# Em caso de falha a unidade fica "failed" (systemctl --user status) - esse e,
+# junto com o arquivo de alerta da rotina, o sinal de alerta local.
+[Unit]
+Description=ZiipSan - restauracao mensal automatizada do backup (P4.7)
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/ziipsan
+ExecStart=/opt/ziipsan/scripts/monthly-restore.sh

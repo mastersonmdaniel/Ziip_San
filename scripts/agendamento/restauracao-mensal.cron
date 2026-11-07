@@ -1,0 +1,16 @@
+# P4.7: restauracao mensal automatizada - entrada de crontab (ambiente local Linux).
+#
+# Instalacao (usuario que opera o ambiente local, NAO root):
+#   crontab -l > /tmp/crontab-atual.txt 2>/dev/null || true
+#   cat scripts/agendamento/restauracao-mensal.cron >> /tmp/crontab-atual.txt
+#   crontab /tmp/crontab-atual.txt
+# Confira com: crontab -l
+#
+# Ajuste o caminho /opt/ziipsan para a raiz da copia de trabalho. A rotina e
+# idempotente no mes (nao restaura duas vezes sem --force) e sai com codigo
+# != 0 em caso de falha, alem de gravar o arquivo de alerta em
+# docs/operacao/restauracoes-mensais/ALERTA-RESTAURACAO-MENSAL.md.
+# A saida vai para um log local fora do repositorio.
+#
+# Dia 1 de cada mes, as 03:17 (fora do horario do CI local e do backup):
+17 3 1 * * cd /opt/ziipsan && scripts/monthly-restore.sh >> "$HOME/ziipsan-restauracao-mensal.log" 2>&1

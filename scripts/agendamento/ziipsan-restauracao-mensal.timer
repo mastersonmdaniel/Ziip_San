@@ -1,0 +1,15 @@
+# P4.7: timer mensal da restauracao automatizada (ver o .service de mesmo nome).
+# OnCalendar=monthly = dia 1 de cada mes, 00:00; Persistent=true roda na
+# proxima subida se a maquina estava desligada no dia 1. O RandomizedDelaySec
+# espalha a execucao pela madrugada, fora do horario do backup.
+[Unit]
+Description=ZiipSan - dispara a restauracao mensal (P4.7) uma vez por mes
+
+[Timer]
+OnCalendar=monthly
+RandomizedDelaySec=3h
+Persistent=true
+Unit=ziipsan-restauracao-mensal.service
+
+[Install]
+WantedBy=timers.target
