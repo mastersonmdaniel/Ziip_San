@@ -1,0 +1,24 @@
+# security.txt — MODELO (P3.38). NÃO PUBLICAR NESTE ESTADO.
+#
+# Este arquivo só vira o /.well-known/security.txt de verdade quando:
+#   1. o dono decidir o canal oficial de relato e o prazo de confirmação
+#      de recebimento (decisão pendente — nenhum canal ou prazo consta
+#      da spec da P3.38 nem dos ADR-0020/0021, e nenhum foi inventado);
+#   2. a hospedagem separada da produção existir (LC.7) e definir a URL
+#      canônica;
+#   3. o arquivo final for GERADO por br.com.ziipsan.platform.trustcenter
+#      .SecurityTxt a partir da DisclosurePolicy configurada — o gerador
+#      recusa marcador de modelo, canal inválido e Expires fora da
+#      janela da RFC 9116 (no futuro, até 1 ano).
+#
+# Publicar com os marcadores abaixo afirmaria um canal que não existe:
+# é exatamente o dado inventado que esta tarefa se recusa a entregar.
+# Os comentários (#) são legais no formato (RFC 9116 §2.3) e DEVEM sair
+# na geração final junto dos marcadores.
+#
+# Campos obrigatórios da RFC 9116: Contact e Expires.
+
+Contact: <CANAL-OFICIAL-A-DEFINIR-PELO-DONO>
+Expires: <DATA-DE-EXPIRACAO-GERADA-NA-PUBLICACAO>
+Policy: <URL-DA-POLITICA-PUBLICADA-NESTA-HOSPEDAGEM>
+Preferred-Languages: pt-BR

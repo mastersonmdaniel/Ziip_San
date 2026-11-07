@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confiança e segurança — Ziip SAN</title>
+<!--
+  P3.38: Trust Center (artefato estático, MESMA hospedagem separada da
+  produção da página de status da P3.18 — publicação na LC.7).
+  Consome GET /api/v1/public/trust-center (PublicTrustCenterController)
+  e apenas EXIBE a visão: seção sem fonte aparece como PENDENTE com a
+  nota do endpoint — esta página nunca preenche uma seção por conta
+  própria. Em falha de carga, admite que não sabe (mesma regra da
+  página de status).
+-->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 44rem; padding: 0 1rem; }
+  .state { font-weight: 600; }
+  .AVAILABLE { color: #137333; } .PENDING_SOURCE, .PENDING_DECISION { color: #b26a00; }
+  section { margin-top: 1.5rem; } li { margin: .35rem 0; }
+  .note { color: #555; }
+</style>
+</head>
+<body>
+<h1>Confiança e segurança</h1>
+<p id="generated">Carregando…</p>
+
+<section><h2>Divulgação responsável de vulnerabilidade</h2>
+  <p id="disclosure"></p>
+  <p><a href="politica-divulgacao-responsavel.md">Política de divulgação responsável</a> ·
+     <a href=".well-known/security.txt">security.txt (RFC 9116)</a></p>
+</section>
+
+<section><h2>Suboperadores</h2>
+  <p id="subprocessors-state"></p>
+  <ul id="subprocessors"></ul>
+  <div id="changes-block" hidden><h3>Mudanças anunciadas</h3><ul id="changes"></ul></div>
+</section>
+
+<section><h2>Certificações do provedor de hospedagem</h2>
+  <p id="certs-state"></p>
+  <ul id="certs"></ul>
+  <p class="note">Certificações e relatórios do PROVEDOR de hospedagem — não do Ziip SAN.</p>
+</section>
+
+<section><h2>Teste de invasão (pentest)</h2><p id="pentest"></p></section>
+
+<section><h2>Status do serviço</h2>
+  <p><a id="status-link" href="../status-page/index.html">Página pública de status</a></p>
+</section>
+
+<section><h2>Privacidade e retenção</h2>
+  <p id="privacy"></p>
+  <p><a href="privacidade-e-retencao.md">Resumo de privacidade e retenção</a></p>
+</section>
+
+<section><h2>Encarregado de dados (DPO)</h2><p id="dpo"></p></section>
+
+<section><h2>Questionários de segurança</h2>
+  <p><a href="questionario-seguranca-respostas.md">Resposta padrão a questionários de segurança</a></p>
+</section>
+
+<section><h2>Evidências ASVS</h2><p id="asvs"></p></section>
+
+<script>
+const TRUST_API_URL = '/api/v1/public/trust-center';
+function el(id) { return document.getElementById(id); }
+function stateText(prefix, section) {
+  // AVAILABLE sem nota vira só o prefixo; pendência mostra a nota do endpoint.
+  if (section.state === 'AVAILABLE') return prefix;
+  return prefix + ' — Pendente: ' + (section.note || section.state);
+}
+fetch(TRUST_API_URL)
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(data => {
+    el('generated').textContent = 'Atualizado em ' + new Date(data.generatedAt).toLocaleString('pt-BR');
+
+    const d = data.disclosure;
+    el('disclosure').textContent = d.state === 'AVAILABLE'
+      ? 'Canal oficial: ' + d.contactUri + ' · Confirmação de recebimento em até ' + d.acknowledgementTarget + '.'
+      : 'Pendente: ' + (d.note || d.state);
+
+    el('subprocessors-state').textContent = stateText('Lista de suboperadores', data.subprocessors);
+    data.subprocessors.items.forEach(s => {
+      const li = document.createElement('li');
+      li.textContent = s.name + ' — ' + s.service + ' (' + s.country + '): ' + s.purpose;
+      el('subprocessors').appendChild(li);
+    });
+    if (data.subprocessors.announcedChanges.length) {
+      el('changes-block').hidden = false;
+      data.subprocessors.announcedChanges.forEach(s => {
+        const li = document.createElement('li');
+        li.textContent = s.name + ' — mudança anunciada, vigente a partir de '
+          + new Date(s.changeEffectiveAt).toLocaleString('pt-BR');
+        el('changes').appendChild(li);
+      });
+    }
+
+    el('certs-state').textContent = stateText('Relatórios do provedor', data.providerCertifications);
+    data.providerCertifications.items.forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = c.provider + ' (' + c.region + ') — certificações: '
+        + c.certifications.join(', ') + '; relatórios de asseguração: '
+        + c.assuranceReports.join(', ') + '. Fonte: ' + c.sourceRef;
+      el('certs').appendChild(li);
+    });
+
+    el('pentest').textContent = data.pentest.state === 'AVAILABLE'
+      ? data.pentest.summary
+      : 'Pendente: ' + (data.pentest.note || data.pentest.state);
+
+    el('status-link').href = data.statusPagePath;
+    el('privacy').textContent = stateText('Resumo publicado', data.privacyAndRetention)
+      + (data.privacyAndRetention.note ? ' ' + data.privacyAndRetention.note : '');
+
+    el('dpo').textContent = data.dpo.state === 'AVAILABLE'
+      ? data.dpo.name + ' — ' + data.dpo.contact
+      : 'Pendente: ' + (data.dpo.note || data.dpo.state);
+
+    el('asvs').textContent = stateText('OWASP ASVS 5.0', data.asvsEvidence)
+      + (data.asvsEvidence.note ? ' ' + data.asvsEvidence.note : '');
+  })
+  .catch(() => {
+    // Falha ao carregar NÃO vira conteúdo: a página admite que não sabe.
+    el('generated').textContent = 'Não foi possível carregar as informações de confiança.';
+    el('generated').className = 'state PENDING_SOURCE';
+  });
+</script>
+</body>
+</html>
