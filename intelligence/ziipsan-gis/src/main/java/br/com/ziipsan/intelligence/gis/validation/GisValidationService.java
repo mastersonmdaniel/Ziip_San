@@ -6,6 +6,7 @@ import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.ConnectionF
 import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.DetectedIssue;
 import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.MetaFeature;
 import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.NodeFeature;
+import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.ServiceConnectionFeature;
 import br.com.ziipsan.intelligence.gis.validation.GisValidationReconciliation.ExistingIssue;
 import br.com.ziipsan.intelligence.gis.validation.GisValidationReconciliation.IssueKey;
 import br.com.ziipsan.intelligence.gis.validation.GisValidationReconciliation.Plan;
@@ -125,7 +126,7 @@ public class GisValidationService {
         detected.addAll(geometricChecks(tenantId, areaId, data));
         detected.addAll(GisValidationEngine.detect(new GisValidationEngine.Snapshot(
                 data.nodes(), data.arcs(), data.connections(), data.metas(),
-                data.rules(), data.containedSourceNodeIds())));
+                data.rules(), data.containedSourceNodeIds(), data.serviceConnections())));
 
         // A ordem de `detected` e a ordem de deteccao (geometricos, depois
         // o motor): e ela que decide a "primeira severidade" da chave
@@ -154,7 +155,8 @@ public class GisValidationService {
     /** Retrato carregado da área, já com a vizinhança de um salto. */
     private record SnapshotData(List<NodeFeature> nodes, List<ArcFeature> arcs,
                                 List<ConnectionFeature> connections, List<MetaFeature> metas,
-                                List<ConnectivityRule> rules, Set<UUID> containedSourceNodeIds) {
+                                List<ConnectivityRule> rules, Set<UUID> containedSourceNodeIds,
+                                List<ServiceConnectionFeature> serviceConnections) {
     }
 
     private SnapshotData loadSnapshot(UUID tenantId, UUID areaId) {
@@ -184,7 +186,9 @@ public class GisValidationService {
         List<MetaFeature> metas = loadMetas(tenantId, areaId);
         List<ConnectivityRule> rules = loadRules(tenantId);
         Set<UUID> containedSources = loadContainedSourceNodes(tenantId, nodeIds);
-        return new SnapshotData(nodes, arcs, connections, metas, rules, containedSources);
+        List<ServiceConnectionFeature> serviceConnections = loadServiceConnections(tenantId, areaId);
+        return new SnapshotData(nodes, arcs, connections, metas, rules, containedSources,
+                serviceConnections);
     }
 
     // ------------------------------------------------------------------ carga
@@ -315,6 +319,52 @@ public class GisValidationService {
                 (Integer) rs.getObject("dn_mm"), rs.getString("material_code"), rs.getBoolean("legacy_only"),
                 rs.getString("capture_method"), rs.getString("accuracy_status"),
                 rs.getObject("change_set_id", UUID.class)), tenantId, areaId, tenantId);
+    }
+
+    /**
+     * Ligações comerciais da área (GIS-05, P2.23): as cuja âncora (imóvel)
+     * cai no envelope da área suja pelo ponto da unidade ou do endereço
+     * normalizado, mais as referenciadas pelos ramais da área. Ligação
+     * sem ponto em nenhuma das duas fontes não entra no retrato da área
+     * (a varredura completa do tenant é a função
+     * gis_active_connections_without_service_line da V13_10, do painel).
+     * Sem as tabelas do registry no schema (classpath parcial de teste),
+     * devolve vazio — a regra nova não detecta nada, como as demais
+     * regras sem dado.
+     */
+    private List<ServiceConnectionFeature> loadServiceConnections(UUID tenantId, UUID areaId) {
+        Integer present = jdbc.queryForObject(
+                "SELECT CASE WHEN to_regclass('service_connections') IS NULL THEN 0 ELSE 1 END",
+                Integer.class);
+        if (present == null || present == 0) {
+            return List.of();
+        }
+        return jdbc.query("""
+                SELECT sc.id, sc.property_unit_id, sc.kind, cs.system_role,
+                       sc.ended_on IS NULL AS is_open,
+                       (SELECT count(*) FROM gis_connection gc
+                        WHERE gc.tenant_id = sc.tenant_id
+                          AND gc.service_connection_id = sc.id
+                          AND gc.lifecycle_status <> 'ABANDONED') AS line_count
+                FROM service_connections sc
+                JOIN connection_statuses cs
+                  ON cs.id = sc.status_id AND cs.tenant_id = sc.tenant_id
+                JOIN consumer_units anchor
+                  ON anchor.id = sc.property_unit_id AND anchor.tenant_id = sc.tenant_id
+                LEFT JOIN addresses addr
+                  ON addr.id = anchor.address_id AND addr.tenant_id = anchor.tenant_id
+                WHERE sc.tenant_id = ?
+                  AND (ST_Intersects(COALESCE(anchor.coordinates, addr.coordinates),
+                                     (SELECT envelope FROM gis_dirty_area WHERE id = ? AND tenant_id = ?))
+                       OR EXISTS (SELECT 1 FROM gis_connection gc2
+                                  WHERE gc2.tenant_id = sc.tenant_id
+                                    AND gc2.service_connection_id = sc.id
+                                    AND ST_Intersects(gc2.geom,
+                                        (SELECT envelope FROM gis_dirty_area WHERE id = ? AND tenant_id = ?))))
+                """, (rs, row) -> new ServiceConnectionFeature(
+                rs.getObject("id", UUID.class), rs.getObject("property_unit_id", UUID.class),
+                rs.getString("kind"), rs.getString("system_role"), rs.getBoolean("is_open"),
+                rs.getLong("line_count")), tenantId, areaId, tenantId, areaId, tenantId);
     }
 
     private List<MetaFeature> loadMetas(UUID tenantId, UUID areaId) {
@@ -455,6 +505,8 @@ public class GisValidationService {
         data.arcs().forEach(a -> idsByTable.computeIfAbsent("gis_arc", k -> new HashSet<>()).add(a.id()));
         data.connections().forEach(c -> idsByTable.computeIfAbsent("gis_connection", k -> new HashSet<>()).add(c.id()));
         data.metas().forEach(m -> idsByTable.computeIfAbsent(m.featureTable(), k -> new HashSet<>()).add(m.id()));
+        data.serviceConnections().forEach(sc -> idsByTable
+                .computeIfAbsent("service_connections", k -> new HashSet<>()).add(sc.id()));
         List<ExistingIssue> existing = new ArrayList<>();
         for (Map.Entry<String, Set<UUID>> entry : idsByTable.entrySet()) {
             if (entry.getValue().isEmpty()) {
@@ -495,6 +547,22 @@ public class GisValidationService {
     }
 
     private void insertIssue(UUID tenantId, UUID areaId, DetectedIssue issue) {
+        if ("service_connections".equals(issue.featureTable())) {
+            // GIS-05: a ligação não tem geometria própria; o envelope do
+            // problema é o da área suja que o detectou.
+            jdbc.update("""
+                    INSERT INTO gis_validation_issue
+                        (id, tenant_id, rule_code, severity, feature_table, feature_id,
+                         feature2_table, feature2_id,
+                         change_set_id, envelope, status, detected_at, message)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,
+                        (SELECT envelope FROM gis_dirty_area WHERE id = ? AND tenant_id = ?),
+                        'OPEN', now(), ?)
+                    """, UUID.randomUUID(), tenantId, issue.ruleCode(), issue.severity(),
+                    issue.featureTable(), issue.featureId(), feature2TableOf(issue),
+                    issue.feature2Id(), issue.changeSetId(), areaId, tenantId, issue.message());
+            return;
+        }
         String geom = GEOMETRY_OF.get(issue.featureTable());
         jdbc.update("""
                 INSERT INTO gis_validation_issue
