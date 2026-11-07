@@ -7,6 +7,7 @@ import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.ConnectionF
 import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.DetectedIssue;
 import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.MetaFeature;
 import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.NodeFeature;
+import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.ServiceConnectionFeature;
 import tools.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
@@ -67,6 +68,13 @@ import java.util.UUID;
  *   <li>{@code GRAVITY_CYCLE} — ciclo em rede por gravidade (§5.4);</li>
  *   <li>{@code MANHOLE_WITHOUT_INVERT} — PV sem cota de fundo (§5.4);</li>
  *   <li>{@code CONNECTION_WITHOUT_LINK} — ramal sem ligação (§5.4);</li>
+ *   <li>{@code ACTIVE_CONNECTION_WITHOUT_SERVICE_LINE} — ligação ativa
+ *   sem ramal (GIS-05, P2.23; §5.4): ligação não encerrada, com papel
+ *   de sistema diferente de {@code NO_CONNECTION}, e nenhum
+ *   {@code gis_connection} não abandonado apontando para ela. O
+ *   problema é ancorado numa "feição" sintética: a tabela
+ *   {@code service_connections} entra como feature_table do problema
+ *   para o painel tratar ligação como trata feição;</li>
  *   <li>{@code MISSING_CAPTURE_METADATA} — feição sem método de captura
  *   (§5.4);</li>
  *   <li>{@code ACCURACY_OUT_OF_TARGET} — exatidão fora da meta (§5.4);</li>
@@ -126,7 +134,19 @@ public final class GisValidationEngine {
     /** Entrada completa do motor: retrato da área + regras + nós-fonte por contenção. */
     public record Snapshot(List<NodeFeature> nodes, List<ArcFeature> arcs,
                            List<ConnectionFeature> connections, List<MetaFeature> metas,
-                           List<ConnectivityRule> rules, Set<UUID> containedSourceNodeIds) {
+                           List<ConnectivityRule> rules, Set<UUID> containedSourceNodeIds,
+                           List<ServiceConnectionFeature> serviceConnections) {
+
+        /**
+         * Compatibilidade com os chamadores e testes anteriores à
+         * GIS-05: sem ligações no retrato, a regra da ligação ativa sem
+         * ramal simplesmente não tem o que detectar.
+         */
+        public Snapshot(List<NodeFeature> nodes, List<ArcFeature> arcs,
+                        List<ConnectionFeature> connections, List<MetaFeature> metas,
+                        List<ConnectivityRule> rules, Set<UUID> containedSourceNodeIds) {
+            this(nodes, arcs, connections, metas, rules, containedSourceNodeIds, List.of());
+        }
     }
 
     public static List<DetectedIssue> detect(Snapshot snapshot) {
@@ -153,6 +173,7 @@ public final class GisValidationEngine {
         valves(nodes, issues);
         manholeInvert(nodes, issues);
         connectionsWithoutLink(snapshot.connections(), issues);
+        activeConnectionsWithoutServiceLine(snapshot.serviceConnections(), issues);
         islands(nodes, arcs, snapshot.containedSourceNodeIds(), issues);
         gravity(nodes, arcs, issues);
         captureAndMaterial(nodes, arcs, snapshot.connections(), snapshot.metas(), issues);
@@ -553,6 +574,19 @@ public final class GisValidationEngine {
             if (MANHOLE_TYPE_CODES.contains(node.typeCode()) && node.invertElevationM() == null) {
                 issues.add(new DetectedIssue("MANHOLE_WITHOUT_INVERT", WARNING,
                         "gis_node", node.id(), null, node.changeSetId()));
+            }
+        }
+    }
+
+    private static void activeConnectionsWithoutServiceLine(
+            List<ServiceConnectionFeature> serviceConnections, Set<DetectedIssue> issues) {
+        if (serviceConnections == null) {
+            return;
+        }
+        for (ServiceConnectionFeature sc : serviceConnections) {
+            if (sc.open() && !"NO_CONNECTION".equals(sc.systemRole()) && sc.serviceLineCount() == 0) {
+                issues.add(new DetectedIssue("ACTIVE_CONNECTION_WITHOUT_SERVICE_LINE", WARNING,
+                        "service_connections", sc.id(), null, null));
             }
         }
     }

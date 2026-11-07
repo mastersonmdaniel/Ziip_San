@@ -60,6 +60,18 @@ public final class GisValidationModel {
     }
 
     /**
+     * Ligação comercial ({@code service_connections}, GIS-05/P2.23) com a
+     * contagem de ramais GIS não abandonados, para a regra "ligação ativa
+     * sem ramal" do §5.4. {@code systemRole} vem do catálogo único
+     * {@code connection_statuses}; ligação com papel NO_CONNECTION não é
+     * "ativa" para esta regra (não há ligação física a ter ramal).
+     */
+    public record ServiceConnectionFeature(UUID id, UUID propertyUnitId, String kind,
+                                           String systemRole, boolean open,
+                                           long serviceLineCount) {
+    }
+
+    /**
      * Regra de conectividade de {@code gis_connectivity_rule} com os códigos
      * de tipo/classe resolvidos (a linha guarda ids; a comparação do motor é
      * por código, como o catálogo é semeado).
@@ -116,6 +128,7 @@ public final class GisValidationModel {
                 case "GRAVITY_CYCLE" -> "ciclo em rede por gravidade";
                 case "MANHOLE_WITHOUT_INVERT" -> "PV sem cota de fundo";
                 case "CONNECTION_WITHOUT_LINK" -> "ramal sem ligacao";
+                case "ACTIVE_CONNECTION_WITHOUT_SERVICE_LINE" -> "ligacao ativa sem ramal";
                 case "MISSING_CAPTURE_METADATA" -> "feicao sem metodo de captura";
                 case "ACCURACY_OUT_OF_TARGET" -> "exatidao fora da meta";
                 case "LEGACY_MATERIAL_ON_NEW_FEATURE" -> "material legado em feicao nova";
