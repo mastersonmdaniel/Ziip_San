@@ -18,7 +18,7 @@
              de release nos poms. -->
         <revision>0.0.0-SNAPSHOT</revision>
         <java.version>21</java.version>
-        <spring.boot.version>4.1.1</spring.boot.version>
+        <spring.boot.version>4.1.2</spring.boot.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <lombok.version>1.18.46</lombok.version>
@@ -53,7 +53,11 @@
                 <artifactId>imageio-webp</artifactId>
                 <version>${twelvemonkeys.version}</version>
             </dependency>
-            <!-- fix(build): Tomcat embarcado 11.0.27, acima do gerenciado pelo Boot 4.1.1
+            <!-- P3.14: com o Boot 4.1.2, o Tomcat gerenciado pelo BOM sobe para 11.0.27,
+                 logo o override abaixo virou no-op (a versao resolvida nao muda).
+                 Ele fica retido nesta entrega por conservadorismo, ate a CI provar
+                 a arvore resolvida; a remocao e limpeza pos-CI, sem pressa.
+                 fix(build): Tomcat embarcado 11.0.27, acima do gerenciado pelo Boot 4.1.1
                  (11.0.24). 11.0.24 acumula 9 achados CVSS >= 7 no OWASP (lote 2026-08-25,
                  corrigido em 11.0.25: CVE-2026-65182, 65183, 65637, 65905, 65927, 66422,
                  68525, 68569). 11.0.27 e a versao 11.0.x mais recente no Central e cobre
