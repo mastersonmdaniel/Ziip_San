@@ -99,14 +99,31 @@ public class BillEntity extends TenantAwareEntity {
     @Column(name = "late_fee_charged", nullable = false)
     private boolean lateFeeCharged;
 
-    @Column(name = "review_reason", length = 100)
-    private String reviewReason;
+    // V4_16 (P2.20, DAD-16): o texto livre review_reason/cancel_reason SAIU --
+    // motivo agora e catalogo, por id (bill_review_reasons/bill_cancel_reasons).
+    @Column(name = "review_reason_id")
+    private UUID reviewReasonId;
 
     @Column(name = "reviewed_on")
     private LocalDate reviewedOn;
 
-    @Column(name = "cancel_reason", length = 200)
-    private String cancelReason;
+    @Column(name = "cancel_reason_id")
+    private UUID cancelReasonId;
+
+    // V4_16 (P2.20, DAD-16): protocolo da P1.36 quando o pedido veio do usuario
+    // (null na alteracao interna do backoffice, ADR-0039 item 7) e a OS interna
+    // tipada da P1.31 que executou a operacao que gerou esta versao.
+    @Column(name = "protocol_id")
+    private UUID protocolId;
+
+    @Column(name = "service_order_id")
+    private UUID serviceOrderId;
+
+    // V4_16 (P2.20, DAD-14/DAD-16): numero da versao dentro da cadeia da conta
+    // (unidade, referencia). A versao 1 e a emissao original; cada operacao de
+    // manutencao insere a seguinte, ligada por origin_bill_id.
+    @Column(name = "version_no", nullable = false)
+    private int versionNo = 1;
 
     @Column(name = "origin_bill_id")
     private UUID originBillId;
@@ -153,14 +170,6 @@ public class BillEntity extends TenantAwareEntity {
     // V4_6 (base para a P2.3): lote de auditoria da execucao que gerou a conta.
     @Column(name = "audit_batch_id")
     private UUID auditBatchId;
-
-    // V4_12 (P2.34): data do fato gerador (LC 227/2026, art. 10, §3º — operação
-    // contínua), gravada SEPARADA de due_date e de issued_on. NULL até a
-    // ativação da regra, que depende da conferência do texto da LC 227/2026
-    // (ver TaxEventDateResolver no pacote cashback); nenhum valor é gravado
-    // por regra não conferida.
-    @Column(name = "tax_event_date")
-    private LocalDate taxEventDate;
 
     // V4_7 (P2.6): NFAg-e viva da conta (fiscal_documents, modelo 75, DAD-18).
     // No maximo uma por conta: a unicidade de origem entre documentos vivos e do
