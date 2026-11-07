@@ -153,4 +153,11 @@ public class BillEntity extends TenantAwareEntity {
     // V4_6 (base para a P2.3): lote de auditoria da execucao que gerou a conta.
     @Column(name = "audit_batch_id")
     private UUID auditBatchId;
+
+    // V4_7 (P2.6): NFAg-e viva da conta (fiscal_documents, modelo 75, DAD-18).
+    // No maximo uma por conta: a unicidade de origem entre documentos vivos e do
+    // dicionario fiscal, e a emissao e idempotente por conta (NfageEmissionService).
+    // NULL enquanto a conta nao tem NFAg-e.
+    @Column(name = "fiscal_document_id")
+    private UUID fiscalDocumentId;
 }
