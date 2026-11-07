@@ -1471,3 +1471,32 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   "Pendências depois das fundações", item 3).
 - **Próxima tarefa:** P2.5 — medição, ciclo e conta (`V4_3` e `V4_4`), da
   qual dependem P2.6, P2.7, P2.9, P2.10, P2.31, P2.32 e P2.34.
+
+### 07/11/2026 — Ondas 1 a 4 publicadas: lote de 54 pacotes na `main`
+
+- **Lote publicado** (autorização expressa do dono para pushes automáticos):
+  os 54 pacotes das Ondas 1–4 produzidos e revisados localmente subiram para
+  a `main` em commits `feat(<tarefa>)` por tarefa (fatiados em partes quando
+  o pacote era grande), do HEAD `0fbcd22` ao **HEAD final `9e400e0`**.
+  Fecham o lote a GL.3 (`8b64f36`/`9e400e0`) e a ED-14 (`3d5872b`).
+- **Backup da camada:** branch `backup/2026-11-07-pos-ondas-1-a-4` criada
+  apontando para `9e400e0`, conforme a política de backup do projeto.
+- **Ressalvas registradas:**
+  - A ED-04 subiu **sem** a migration `V11__tenant_isolation_environment.sql`:
+    a numeração V11 colide com a `V11__app_device.sql` da ED-18 e será
+    resolvida na série da LC.15 (decisão registrada no pacote da ED-04).
+  - Dois arquivos de workflow **não** subiram — `.github/workflows/ci.yml`
+    (ED-08) e `.github/workflows/campo-android.yml` (ED-18): a integração do
+    GitHub em uso não tem permissão de workflows (HTTP 403). Aguardam entrada
+    pelo clone local do dono ou a concessão dessa permissão ao app.
+  - Caches `__pycache__/*.pyc` dos pacotes P2.31 e P3.23 ficaram fora do
+    push (bytecode, não código do projeto).
+  - Durante a publicação, o conector do GitHub apresentou timeouts longos
+    com confirmação tardia: a P2.16 ganhou commits duplicados em conteúdo
+    (`23f7f18`, `fe58530`, `b43db99`) e um reparo (`0730b58`) com os arquivos
+    restantes — a tarefa está íntegra no repositório (84 arquivos).
+  - A branch `teste-push-p216`, criada durante o diagnóstico dos timeouts,
+    pode ser removida.
+- **Próximo passo:** rodada da CI total sobre o HEAD `9e400e0` no PC do dono
+  (`git pull` + `scripts/ci.sh`) para fechar a camada; as decisões pendentes
+  do dono seguem no arquivo de trabalho `DECISOES-DO-DONO.md`.
