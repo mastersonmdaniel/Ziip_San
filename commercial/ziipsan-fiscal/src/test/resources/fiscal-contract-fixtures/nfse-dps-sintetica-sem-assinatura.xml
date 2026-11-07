@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- VETOR DE REFERENCIA SINTETICO (FISCAL-PORTE-JAVA §5; P3.7): DPS sem assinatura,
+     sem elemento Signature, sem certificado. Dados ficticios de teste.
+     NUNCA e um XML autorizado real: e o vetor que resta depois do expurgo do ciclo. -->
+<DPS xmlns="urn:sintetico-teste-nao-e-leiaute-moc" versao="SINTETICO">
+  <infDPS>
+    <tpAmb>2</tpAmb>
+    <dhEmi>2026-11-10T09:00:00-03:00</dhEmi>
+    <prest>
+      <CNPJ>11222333000181</CNPJ>
+      <cMunPrestacao>4205407</cMunPrestacao>
+    </prest>
+    <toma>
+      <CNPJ>34028316000103</CNPJ>
+    </toma>
+    <serv>
+      <cServ>01.07</cServ>
+      <vServ>250.00</vServ>
+    </serv>
+  </infDPS>
+</DPS>

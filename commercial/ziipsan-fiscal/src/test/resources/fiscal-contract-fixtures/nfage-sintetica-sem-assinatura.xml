@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- VETOR DE REFERENCIA SINTETICO (FISCAL-PORTE-JAVA §5; P3.7): sem assinatura,
+     sem elemento Signature, sem certificado. Dados ficticios de teste:
+     emitente e destinatario sao os CNPJs de teste usados nos vetores do projeto.
+     NUNCA e um XML autorizado real: e o vetor que resta depois do expurgo do ciclo. -->
+<NFAg-e xmlns="urn:sintetico-teste-nao-e-leiaute-moc">
+  <infNFAg-e Id="NFAg-e42261211222333000181750010000001231876543214" versao="SINTETICO">
+    <ide>
+      <cUF>42</cUF>
+      <tpAmb>2</tpAmb>
+      <mod>75</mod>
+      <serie>1</serie>
+      <nNF>123</nNF>
+      <dhEmi>2026-12-15T10:00:00-03:00</dhEmi>
+      <tpEmis>1</tpEmis>
+    </ide>
+    <emit>
+      <CNPJ>11222333000181</CNPJ>
+      <xNome>EMITENTE SINTETICO DE TESTE</xNome>
+    </emit>
+    <dest>
+      <CNPJ>34028316000103</CNPJ>
+      <xMun>4205407</xMun>
+    </dest>
+    <total>
+      <vNF>100.00</vNF>
+    </total>
+  </infNFAg-e>
+</NFAg-e>
