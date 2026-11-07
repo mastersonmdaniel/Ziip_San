@@ -16,6 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useCan } from '@hooks/usePermissions'
 import { toExportFilters } from '@services/export'
 import { errorMessage, shouldOfferRetry } from '@services/registry/errors'
+import { DEFAULT_PAGE_SIZE } from '@services/registry/client'
 import { customers } from '@services/registry/resources'
 import type { ListParams, PersonType } from '@services/registry/types'
 import { orDash, PERSON_TYPE_LABEL } from '@utils/labels'
@@ -32,7 +33,7 @@ interface Filters {
 
 const EMPTY: Filters = { q: '', nameMatch: 'contains', personType: '', customerTypeId: null, city: '', includeDeleted: false }
 
-function toParams(f: Filters, page: number): ListParams {
+function toParams(f: Filters, page: number, pageSize: number): ListParams {
   return {
     q: f.q.trim(),
     nameMatch: f.q.trim() ? f.nameMatch : undefined,
@@ -41,7 +42,7 @@ function toParams(f: Filters, page: number): ListParams {
     city: f.city.trim() || undefined,
     includeDeleted: f.includeDeleted || undefined,
     page,
-    size: 25,
+    size: pageSize,
     sort: 'name,asc',
   }
 }
@@ -49,15 +50,17 @@ function toParams(f: Filters, page: number): ListParams {
 /** S4: lista de clientes. Documento SEMPRE mascarado; revelar só na ficha, por ação explícita. */
 export function CustomerList() {
   // P1.12: o filtro aplicado e a página sobrevivem à ida à ficha (sessionStorage).
-  const saved = () => loadListState<{ applied: Filters; page: number }>('customers', { applied: EMPTY, page: 0 })
+  const saved = () => loadListState<{ applied: Filters; page: number; pageSize: number }>('customers', { applied: EMPTY, page: 0, pageSize: DEFAULT_PAGE_SIZE })
   const [draft, setDraft] = useState<Filters>(() => saved().applied)
   const [applied, setApplied] = useState<Filters>(() => saved().applied)
   const [page, setPage] = useState(() => saved().page)
+  // ED-08: o tamanho de página também sobrevive à ida à ficha, junto do filtro e da página.
+  const [pageSize, setPageSize] = useState(() => saved().pageSize)
   const canWrite = useCan('registry:write')
   useEffect(() => {
-    saveListState('customers', { applied, page })
-  }, [applied, page])
-  const params = toParams(applied, page)
+    saveListState('customers', { applied, page, pageSize })
+  }, [applied, page, pageSize])
+  const params = toParams(applied, page, pageSize)
   const list = useQuery({ queryKey: ['customers', params], queryFn: ({ signal }) => customers.search(params, signal) })
 
   const onSubmit = (event: FormEvent) => {
@@ -193,7 +196,17 @@ export function CustomerList() {
                   ))}
                 </TableBody>
               </Table>
-              <Pagination page={list.data.page} totalPages={list.data.totalPages} totalElements={list.data.totalElements} onPageChange={setPage} />
+              <Pagination
+                page={list.data.page}
+                totalPages={list.data.totalPages}
+                totalElements={list.data.totalElements}
+                onPageChange={setPage}
+                pageSize={pageSize}
+                onPageSizeChange={(size) => {
+                  setPageSize(size)
+                  setPage(0)
+                }}
+              />
             </>
           ) : null}
         </CardContent>

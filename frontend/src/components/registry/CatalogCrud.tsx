@@ -10,6 +10,7 @@ import { Checkbox, Field, Input, Select, Textarea } from '@components/ui/Field'
 import { Pagination } from '@components/ui/Pagination'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@components/ui/Table'
 import { useDebounced } from '@hooks/useDebounced'
+import { DEFAULT_PAGE_SIZE } from '@services/registry/client'
 import { ApiError, errorMessage, type FieldError } from '@services/registry/errors'
 import type { CrudItem } from '@services/registry/types'
 import { ConfirmWarning, useConfirmable } from './ConfirmWarning'
@@ -310,16 +311,18 @@ export function CatalogCrud({ meta }: { meta: CrudMeta }) {
   const queryClient = useQueryClient()
   const [q, setQ] = useState('')
   const [page, setPage] = useState(0)
+  // ED-08: tamanho de página escolhido no seletor da Pagination (antes fixo em 25).
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const [editing, setEditing] = useState<CrudItem | 'new' | null>(null)
   const [deleting, setDeleting] = useState<CrudItem | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const debounced = useDebounced(q, 300)
 
   const columns = meta.fields.filter((f) => f.column)
-  const listKey = ['crud', meta.key, debounced, page]
+  const listKey = ['crud', meta.key, debounced, page, pageSize]
   const list = useQuery({
     queryKey: listKey,
-    queryFn: ({ signal }) => meta.client.list({ q: debounced, page, size: 25, sort: meta.defaultSort }, signal),
+    queryFn: ({ signal }) => meta.client.list({ q: debounced, page, size: pageSize, sort: meta.defaultSort }, signal),
   })
 
   const refresh = () => void queryClient.invalidateQueries({ queryKey: ['crud', meta.key] })
@@ -410,7 +413,17 @@ export function CatalogCrud({ meta }: { meta: CrudMeta }) {
                 </TableBody>
               </Table>
               {list.data ? (
-                <Pagination page={list.data.page} totalPages={list.data.totalPages} totalElements={list.data.totalElements} onPageChange={setPage} />
+                <Pagination
+                  page={list.data.page}
+                  totalPages={list.data.totalPages}
+                  totalElements={list.data.totalElements}
+                  onPageChange={setPage}
+                  pageSize={pageSize}
+                  onPageSizeChange={(size) => {
+                    setPageSize(size)
+                    setPage(0)
+                  }}
+                />
               ) : null}
             </>
           )}
