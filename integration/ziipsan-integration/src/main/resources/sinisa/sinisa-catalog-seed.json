@@ -1,0 +1,56 @@
+[
+  {
+    "key": "AGUA.VOLUME_PRODUZIDO",
+    "officialCode": null,
+    "form": "TECNICO",
+    "name": "Volume de agua produzido no ano-base",
+    "unit": "m3",
+    "sourceKind": "METERING",
+    "sourceExpression": "metering/macromedicao: volume de entrada do sistema (system input) do ano-base; insumo do WaterBalance da P4.2"
+  },
+  {
+    "key": "AGUA.VOLUME_FATURADO",
+    "officialCode": null,
+    "form": "TECNICO",
+    "name": "Volume de agua faturado no ano-base",
+    "unit": "m3",
+    "sourceKind": "METERING",
+    "sourceExpression": "metering (P2.5): soma de consumption_records.billed_consumption das referencias do ano-base, servico agua"
+  },
+  {
+    "key": "AGUA.AGUA_NAO_FATURADA",
+    "officialCode": null,
+    "form": "TECNICO",
+    "name": "Agua nao faturada (volume de entrada menos volume faturado)",
+    "unit": "m3",
+    "sourceKind": "DERIVED",
+    "sourceExpression": "derivado (P4.2, WaterBalance): AGUA.VOLUME_PRODUZIDO menos AGUA.VOLUME_FATURADO"
+  },
+  {
+    "key": "AGUA.LIGACOES_ATIVAS",
+    "officialCode": null,
+    "form": "TECNICO",
+    "name": "Quantidade de ligacoes ativas de agua no fim do ano-base",
+    "unit": "ligacoes",
+    "sourceKind": "REGISTRY",
+    "sourceExpression": "registry: ligacoes de agua em situacao ativa em 31/12 do ano-base; insumo Nc da UARL do IliCalculator"
+  },
+  {
+    "key": "FIN.RECEITA_OPERACIONAL_AGUA",
+    "officialCode": null,
+    "form": "FINANCEIRO",
+    "name": "Receita operacional direta de abastecimento de agua no ano-base",
+    "unit": "R$",
+    "sourceKind": "BILLING",
+    "sourceExpression": "billing (P2.5): soma das contas emitidas (bills) do ano-base referentes ao servico agua, formulario Receita e Cobranca"
+  },
+  {
+    "key": "BALANCO.ATIVO_TOTAL",
+    "officialCode": null,
+    "form": "BALANCO",
+    "name": "Ativo total do balanco patrimonial no fim do ano-base",
+    "unit": "R$",
+    "sourceKind": "MANUAL",
+    "sourceExpression": "manual justificado: balanco patrimonial da contabilidade do prestador (o modulo de contabilidade e a ED-32); formulario Balanco Patrimonial do Manual oficial, exceto natureza juridica Municipio e Autarquia"
+  }
+]
