@@ -1,0 +1,4 @@
+[
+  {"rule_key":"central.collector.stale","metric_key":"platform.collector.last_run_age_s","comparator":">","threshold":900,"consecutive_readings":1,"severity":"CRITICAL","scope":"GLOBAL","owner":"platform","runbook_url":"docs/operacao/runbooks/RB-02-fila-parada.md"},
+  {"rule_key":"platform.outbox.oldest_pending_age_s.high","metric_key":"platform.outbox.oldest_pending_age_s","comparator":">","threshold":1800,"consecutive_readings":3,"severity":"WARNING","scope":"TENANT","owner":"platform","runbook_url":"docs/operacao/runbooks/RB-02-fila-parada.md"}
+]
