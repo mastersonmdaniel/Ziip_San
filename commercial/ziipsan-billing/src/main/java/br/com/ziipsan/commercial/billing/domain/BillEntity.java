@@ -154,6 +154,14 @@ public class BillEntity extends TenantAwareEntity {
     @Column(name = "audit_batch_id")
     private UUID auditBatchId;
 
+    // V4_12 (P2.34): data do fato gerador (LC 227/2026, art. 10, §3º — operação
+    // contínua), gravada SEPARADA de due_date e de issued_on. NULL até a
+    // ativação da regra, que depende da conferência do texto da LC 227/2026
+    // (ver TaxEventDateResolver no pacote cashback); nenhum valor é gravado
+    // por regra não conferida.
+    @Column(name = "tax_event_date")
+    private LocalDate taxEventDate;
+
     // V4_7 (P2.6): NFAg-e viva da conta (fiscal_documents, modelo 75, DAD-18).
     // No maximo uma por conta: a unicidade de origem entre documentos vivos e do
     // dicionario fiscal, e a emissao e idempotente por conta (NfageEmissionService).
