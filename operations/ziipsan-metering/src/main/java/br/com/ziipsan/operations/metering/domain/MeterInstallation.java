@@ -63,4 +63,24 @@ public class MeterInstallation extends TenantAwareEntity {
     @Column(name = "location_description", length = 100)
     private String locationDescription;
 
+    // --- ED-14: ligacao (P2.23), OS de instalacao/retirada, protecao e local por catalogo ---
+    @Column(name = "service_connection_id")
+    private UUID serviceConnectionId;
+
+    @Column(name = "install_service_order_id")
+    private UUID installServiceOrderId;
+
+    @Column(name = "remove_service_order_id")
+    private UUID removeServiceOrderId;
+
+    @Column(name = "protection_catalog_id")
+    private UUID protectionCatalogId;
+
+    @Column(name = "install_location_catalog_id")
+    private UUID installLocationCatalogId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "removal_destination", length = 20)
+    private br.com.ziipsan.operations.metering.hydrometry.HydrometryEnums.RemovalDestination removalDestination;
+
 }

@@ -23,43 +23,81 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "meters")
 @Getter
-@Setter
 public class Meter extends TenantAwareEntity {
 
     @Column(name = "meter_number", nullable = false, length = 30)
-    private String meterNumber;
+    @Setter private String meterNumber;
 
     @Column(name = "brand", length = 60)
-    private String brand;
+    @Setter private String brand;
 
     @Column(name = "model", length = 60)
-    private String model;
+    @Setter private String model;
 
     @Column(name = "metrological_class", length = 10)
-    private String metrologicalClass;
+    @Setter private String metrologicalClass;
 
     @Column(name = "nominal_diameter_mm", precision = 6, scale = 1)
-    private BigDecimal nominalDiameterMm;
+    @Setter private BigDecimal nominalDiameterMm;
 
     @Column(name = "digits", nullable = false)
-    private int digits;
+    @Setter private int digits;
 
     @Column(name = "manufacture_year")
-    private Integer manufactureYear;
+    @Setter private Integer manufactureYear;
 
     @Column(name = "inmetro_approval", length = 60)
-    private String inmetroApproval;
+    @Setter private String inmetroApproval;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private Status status;
 
     @Column(name = "last_revision_on")
-    private LocalDate lastRevisionOn;
+    @Setter private LocalDate lastRevisionOn;
+
+    // --- ED-14 (hidrometria, Portaria 155/2022): catalogo substitui texto livre;
+    // classe antiga A-D migrada fica em legacyMetrologicalClass com migratedPark;
+    // lacre NAO mora aqui (lugar unico: meter_installations.seal_number). ---
+    @Column(name = "model_id")
+    @Setter private java.util.UUID modelId;
+
+    @Column(name = "lot_id")
+    @Setter private java.util.UUID lotId;
+
+    /** Ativo da P1.35 (V27_1), classe propria HIDROMETRO; FK no SQL pendente da ED-14. */
+    @Column(name = "asset_id")
+    @Setter private java.util.UUID assetId;
+
+    @Column(name = "storage_location_id")
+    @Setter private java.util.UUID storageLocationId;
+
+    @Column(name = "legacy_metrological_class", length = 10)
+    @Setter private String legacyMetrologicalClass;
+
+    @Column(name = "migrated_park", nullable = false)
+    @Setter private boolean migratedPark;
+
+    @Column(name = "write_off_reason", length = 300)
+    @Setter private String writeOffReason;
+
+    @Column(name = "totalized_volume_m3", nullable = false)
+    @Setter private long totalizedVolumeM3;
 
     @Column(name = "notes", length = 500)
-    private String notes;
+    @Setter private String notes;
 
     public enum Status { AVAILABLE, INSTALLED, IN_MAINTENANCE, STOLEN, WRITTEN_OFF }
+
+    /**
+     * ÚNICA escrita de estado (correção A4): NÃO há setter público de {@code status}.
+     * Quem chama é o MeterLifecycleService, depois de validar a transição em
+     * MeterLifecycleRule (instalação, retirada ou movimentação com OS). O teste
+     * MeterLifecycleTest trava por reflexão a ausência do setter de status.
+     */
+    public void transitionTo(Status newStatus) {
+        if (newStatus == null) throw new IllegalArgumentException("Novo estado do hidrômetro é obrigatório");
+        this.status = newStatus;
+    }
 
 }
