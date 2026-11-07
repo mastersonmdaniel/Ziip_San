@@ -23,6 +23,12 @@ import java.util.UUID;
  *
  * <p>O {@code unique = true} antigo de {@code element_code} saiu junto: o code
  * é único por tenant (UNIQUE em cada tabela de feição), nunca global.
+ *
+ * <p>Desde a GIS-03 (passo M4) a view também expõe {@code node_1_code} e
+ * {@code node_2_code}: os códigos dos nós das pontas do arco, da topologia
+ * persistida em {@code gis_arc}. Só arcos ({@code PIPE}) os têm; nos demais
+ * elementos vêm nulos. É por eles que o {@code NetworkTopologyBuilder} liga a
+ * tubulação — a resolução por proximidade acabou.
  */
 @Entity
 @Immutable
@@ -56,6 +62,14 @@ public class GisNetworkElement extends TenantAwareEntity {
 
     @Column(name = "diameter_mm")
     private Integer diameterMm;
+
+    /** Código do nó da ponta inicial (topologia persistida); só em arcos. Somente leitura. */
+    @Column(name = "node_1_code", length = 50, insertable = false, updatable = false)
+    private String node1Code;
+
+    /** Código do nó da ponta final (topologia persistida); só em arcos. Somente leitura. */
+    @Column(name = "node_2_code", length = 50, insertable = false, updatable = false)
+    private String node2Code;
 
     @Column(name = "length_m", precision = 10, scale = 2)
     private BigDecimal lengthM;

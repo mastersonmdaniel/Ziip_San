@@ -52,10 +52,10 @@ class InpWriterTest {
                 null, null, null, null, nums("elevation_m", 85, "demand_lps", 1)));
         l.add(new ElementSpec("P1", "Adutora", Kind.PIPE, GF.createLineString(
                 new Coordinate[]{new Coordinate(-46.0000, -23.0), new Coordinate(-46.0010, -23.0)}),
-                150, new BigDecimal("110"), "PVC", null, new HashMap<>()));
+                150, new BigDecimal("110"), "PVC", null, new HashMap<>(), "W1", "J1"));
         l.add(new ElementSpec("P2", "Rede", Kind.PIPE, GF.createLineString(
                 new Coordinate[]{new Coordinate(-46.0010, -23.0), new Coordinate(-46.0020, -23.0)}),
-                100, new BigDecimal("110.5"), "Aço", null, new HashMap<>()));
+                100, new BigDecimal("110.5"), "Aço", null, new HashMap<>(), "J1", "J2"));
         return NetworkTopologyBuilder.build("DMC 01 - Centro", "Rede de teste", l);
     }
 
@@ -212,7 +212,9 @@ class InpWriterTest {
 
         java.nio.file.Files.writeString(dir.resolve("rede-simples.inp"), InpWriter.write(validNetwork()));
 
-        // Rede com registro de isolamento, válvula redutora e bomba, todos no meio de tubulações.
+        // Rede com registro de isolamento, válvula redutora e bomba. Desde a GIS-03 (M4) as
+        // peças são nós do cadastro: cada trajeto de 102 m vira dois arcos de 51 m que se
+        // encontram na peça, com as pontas gravadas.
         List<ElementSpec> l = new ArrayList<>();
         l.add(new ElementSpec("W1", "Poço", Kind.RESERVOIR, GF.createPoint(new Coordinate(-46.0000, -23.0)),
                 null, null, null, null, nums("head_m", 130)));
@@ -223,14 +225,23 @@ class InpWriterTest {
         l.add(new ElementSpec("J3", "Nó 3", Kind.JUNCTION, GF.createPoint(new Coordinate(-46.0030, -23.0)),
                 null, null, null, null, nums("elevation_m", 80, "demand_lps", 1)));
         l.add(new ElementSpec("P1", "Adutora", Kind.PIPE, GF.createLineString(new Coordinate[]{
-                new Coordinate(-46.0000, -23.0), new Coordinate(-46.0010, -23.0)}),
-                200, new BigDecimal("102"), "PVC", null, new HashMap<>()));
-        l.add(new ElementSpec("P2", "Rede 1", Kind.PIPE, GF.createLineString(new Coordinate[]{
-                new Coordinate(-46.0010, -23.0), new Coordinate(-46.0020, -23.0)}),
-                150, new BigDecimal("102"), "PVC", null, new HashMap<>()));
-        l.add(new ElementSpec("P3", "Rede 2", Kind.PIPE, GF.createLineString(new Coordinate[]{
-                new Coordinate(-46.0020, -23.0), new Coordinate(-46.0030, -23.0)}),
-                100, new BigDecimal("102"), "PVC", null, new HashMap<>()));
+                new Coordinate(-46.0000, -23.0), new Coordinate(-46.0005, -23.0)}),
+                200, new BigDecimal("51"), "PVC", null, new HashMap<>(), "W1", "RG1"));
+        l.add(new ElementSpec("P2", "Adutora", Kind.PIPE, GF.createLineString(new Coordinate[]{
+                new Coordinate(-46.0005, -23.0), new Coordinate(-46.0010, -23.0)}),
+                200, new BigDecimal("51"), "PVC", null, new HashMap<>(), "RG1", "J1"));
+        l.add(new ElementSpec("P3", "Rede 1", Kind.PIPE, GF.createLineString(new Coordinate[]{
+                new Coordinate(-46.0010, -23.0), new Coordinate(-46.0015, -23.0)}),
+                150, new BigDecimal("51"), "PVC", null, new HashMap<>(), "J1", "PRV1"));
+        l.add(new ElementSpec("P4", "Rede 1", Kind.PIPE, GF.createLineString(new Coordinate[]{
+                new Coordinate(-46.0015, -23.0), new Coordinate(-46.0020, -23.0)}),
+                150, new BigDecimal("51"), "PVC", null, new HashMap<>(), "PRV1", "J2"));
+        l.add(new ElementSpec("P5", "Rede 2", Kind.PIPE, GF.createLineString(new Coordinate[]{
+                new Coordinate(-46.0020, -23.0), new Coordinate(-46.0025, -23.0)}),
+                100, new BigDecimal("51"), "PVC", null, new HashMap<>(), "J2", "B1"));
+        l.add(new ElementSpec("P6", "Rede 2", Kind.PIPE, GF.createLineString(new Coordinate[]{
+                new Coordinate(-46.0025, -23.0), new Coordinate(-46.0030, -23.0)}),
+                100, new BigDecimal("51"), "PVC", null, new HashMap<>(), "B1", "J3"));
         l.add(new ElementSpec("RG1", "Registro", Kind.VALVE, GF.createPoint(new Coordinate(-46.0005, -23.0)),
                 null, null, null, null, nums()));
         l.add(new ElementSpec("PRV1", "Redutora", Kind.VALVE, GF.createPoint(new Coordinate(-46.0015, -23.0)),

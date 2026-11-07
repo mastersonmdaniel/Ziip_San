@@ -666,3 +666,98 @@ WHERE tenant_id = '${tenant_id}' AND origin = 'FACTORY'
   AND factory_retired_on IS NOT NULL;
 
 DROP TABLE IF EXISTS gis02_factory_codes;
+
+-- ======================================================================
+-- GIS-03 (P2.21) — regras de conectividade do §5.3 em gis_connectivity_rule.
+--
+-- MODELO: a regra liga o NO (from = tipo do no) aos ARCOS que nele chegam
+-- (to = classe PIPE, que e a unica classe de arco de fabrica), com
+-- relation CONNECTS, min_arcs/max_arcs = grau exigido no no e condition
+-- JSONB para o que o grau sozinho nao diz. Quem avalia e a validacao por
+-- area suja (§5.5, frente de servico): para cada no do tipo, conta os
+-- arcos com node_1_id/node_2_id = no e confere min/max e a condition.
+--
+-- condition (vocabulario desta frente, documentado para o validador):
+--   {"dn": "SAME"}      os DNs (dn_mm do item de catalogo) de todos os
+--                       arcos ligados sao iguais — curva e luva (§5.3).
+--   {"dn": "DIFFERENT", "dn_pair": "CATALOG_ITEM"}
+--                       os dois arcos tem DNs diferentes, iguais ao par
+--                       (dn_mm, dn2_mm) do item de catalogo da peca —
+--                       reducao (§5.3).
+--   {"on": "DN_OR_MATERIAL_CHANGE"} (linha WARNING separada do JUNCTION)
+--                       num JUNCTION, arcos ligados com DN ou material
+--                       diferentes entre si geram AVISO (mudanca sem peca
+--                       cadastrada, §4.2.2/§5.3); a linha nao tem min/max
+--                       (nulos): ela so carrega a condicao.
+-- Sem condition (NULL): vale so o grau.
+--
+-- Graus (§5.3 e tabela de graus do §4.2.2):
+--   exatamente 1: CAP, PLUG, BLIND_FLANGE (terminais) e TERMINAL_CLEANOUT;
+--   exatamente 2: BEND (curva), COUPLING (luva), REDUCER (reducao),
+--     DISMANTLING_JOINT (junta de desmontagem), FLANGE_ADAPTER (grau 2 no
+--     §4.2.2) e a valvula em linha — GATE_VALVE e BUTTERFLY_VALVE, os
+--     registros de linha da rede. PRV, CHECK_VALVE, AIR_VALVE e BLOWOFF
+--     NAO entram: sao dispositivos com terminal_config ou funcao propria
+--     (controlador, direcional, terminal de ar/descarga) e a regra de grau
+--     deles, se houver, e da validacao de servico/hidraulica (GIS-11/12),
+--     nao do §5.3. BALL_VALVE tambem nao: e registro de ramal (ligado a
+--     CONNECTION, nao a ARC), e grau em arcos daria falso positivo;
+--   exatamente 3: TEE e WYE (juncao em Y, grau 3 no §4.2.2);
+--   exatamente 4: CROSS (cruzeta);
+--   2 a 4: SPECIAL_PIECE (grau "2 a 4" no §4.2.2);
+--   minimo 2, sem maximo: JUNCTION (no topologico; §5.3).
+--
+-- O QUE NAO FOI MODELADO AQUI (nao cabe em min/max + condition sobre
+-- no x arcos; fica para a validacao de servico, registrado no relatorio
+-- da tarefa): ramal em adutora/subadutora (depende da network_function do
+-- arco e do ramal, nao do no); hidrante por ramal de hidrante ou te;
+-- PV/TIL/caixa de passagem com "um ou mais de entrada e um de saida" (o
+-- modelo conta arcos, nao separa entrada de saida); dominio igual entre
+-- arco e no; contencao (CONTAINS) e anexo (ATTACHES) do §5.3 — a tabela
+-- aceita as relacoes, mas container/conteudo nao e grau de arco;
+-- SERVICE_SADDLE ("na rede, com o ramal": grau nao e numero de arcos).
+--
+-- IDEMPOTENCIA: gis_connectivity_rule NAO tem UNIQUE alem do id (V13_1),
+-- logo ON CONFLICT nao serve; o INSERT usa WHERE NOT EXISTS pela chave
+-- natural completa (tenant, from_type, to_class, relation, min, max,
+-- severity). Reaplicar a R__ nao duplica regra nem altera regra que o
+-- tenant tenha ajustado em outra combinacao de grau/severidade.
+-- ======================================================================
+
+INSERT INTO gis_connectivity_rule (tenant_id, from_type_id, to_class_id, relation,
+                                   min_arcs, max_arcs, condition, severity)
+SELECT '${tenant_id}', ft.id, pc.id, 'CONNECTS', v.min_arcs, v.max_arcs,
+       v.condition::jsonb, v.severity
+FROM (VALUES
+    ('CAP',                1,    1,    NULL,                                                   'ERROR'),
+    ('PLUG',               1,    1,    NULL,                                                   'ERROR'),
+    ('BLIND_FLANGE',       1,    1,    NULL,                                                   'ERROR'),
+    ('TERMINAL_CLEANOUT',  1,    1,    NULL,                                                   'ERROR'),
+    ('BEND',               2,    2,    '{"dn": "SAME"}',                                       'ERROR'),
+    ('COUPLING',           2,    2,    '{"dn": "SAME"}',                                       'ERROR'),
+    ('REDUCER',            2,    2,    '{"dn": "DIFFERENT", "dn_pair": "CATALOG_ITEM"}',       'ERROR'),
+    ('GATE_VALVE',         2,    2,    NULL,                                                   'ERROR'),
+    ('BUTTERFLY_VALVE',    2,    2,    NULL,                                                   'ERROR'),
+    ('DISMANTLING_JOINT',  2,    2,    NULL,                                                   'ERROR'),
+    ('FLANGE_ADAPTER',     2,    2,    NULL,                                                   'ERROR'),
+    ('TEE',                3,    3,    NULL,                                                   'ERROR'),
+    ('WYE',                3,    3,    NULL,                                                   'ERROR'),
+    ('CROSS',              4,    4,    NULL,                                                   'ERROR'),
+    ('SPECIAL_PIECE',      2,    4,    NULL,                                                   'ERROR'),
+    ('JUNCTION',           2,    NULL, NULL,                                                   'ERROR'),
+    ('JUNCTION',           NULL, NULL, '{"on": "DN_OR_MATERIAL_CHANGE"}',                      'WARNING')
+) AS v(type_code, min_arcs, max_arcs, condition, severity)
+JOIN gis_feature_type ft
+    ON ft.tenant_id = '${tenant_id}' AND ft.code = v.type_code
+JOIN gis_feature_class pc
+    ON pc.tenant_id = '${tenant_id}' AND pc.code = 'PIPE'
+WHERE NOT EXISTS (
+    SELECT 1 FROM gis_connectivity_rule r
+    WHERE r.tenant_id = '${tenant_id}'
+      AND r.from_type_id = ft.id
+      AND r.to_class_id = pc.id
+      AND r.relation = 'CONNECTS'
+      AND r.min_arcs IS NOT DISTINCT FROM v.min_arcs
+      AND r.max_arcs IS NOT DISTINCT FROM v.max_arcs
+      AND r.severity = v.severity
+);

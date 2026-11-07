@@ -25,6 +25,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * PostgreSQL real. Nenhuma das duas metades, sozinha, prova o .inp igual; as
  * duas juntas, sim: colunas iguais entram no builder, e o builder é função
  * determinística dessas colunas.
+ *
+ * <p>Desde a GIS-03 (M4) a leitura inclui {@code node_1_code}/{@code node_2_code}
+ * dos arcos, que a view passou a expor da topologia persistida; a massa de
+ * referência os declara e a prova continua a mesma.
  */
 class GisCompatibilityViewInpTest {
 
@@ -56,9 +60,9 @@ class GisCompatibilityViewInpTest {
                 new ElementSpec("J2", "J2", Kind.JUNCTION, pt(-46.0020, -23.0), null, null, null, null,
                         nums("elevation_m", 85.0, "demand_lps", 1.0)),
                 new ElementSpec("P1", "P1", Kind.PIPE, line(-46.0000, -23.0, -46.0010, -23.0), 150,
-                        new BigDecimal("110"), "PVC", null, new HashMap<>()),
+                        new BigDecimal("110"), "PVC", null, new HashMap<>(), "W1", "J1"),
                 new ElementSpec("P2", "P2", Kind.PIPE, line(-46.0010, -23.0, -46.0020, -23.0), 100,
-                        new BigDecimal("110"), "Aço", null, new HashMap<>()));
+                        new BigDecimal("110"), "Aço", null, new HashMap<>(), "J1", "J2"));
     }
 
     @Test

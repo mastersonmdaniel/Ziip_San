@@ -2,6 +2,7 @@ package br.com.ziipsan.intelligence.gis.epanet;
 
 import br.com.ziipsan.intelligence.gis.domain.GisNetworkElement;
 import br.com.ziipsan.intelligence.gis.repository.GisNetworkElementRepository;
+import br.com.ziipsan.intelligence.gis.repository.GisValidationIssueRepository;
 import br.com.ziipsan.intelligence.losses.repository.DmaDistrictRepository;
 import br.com.ziipsan.intelligence.losses.domain.DmaDistrict;
 import br.com.ziipsan.intelligence.losses.domain.PressureAnalysis;
@@ -27,6 +28,7 @@ public class EpanetSimulationService {
     private final AuditLogRepository auditLogRepository;
     private final DmaDistrictRepository dmaRepository;
     private final GisNetworkElementRepository networkElementRepository;
+    private final GisValidationIssueRepository validationIssueRepository;
 
     // ========================================================================
     // EPANET NETWORK BUILDING
@@ -34,12 +36,14 @@ public class EpanetSimulationService {
 
     @Transactional(readOnly = true)
     public EpanetNetwork buildNetworkFromDma(UUID dmaId) {
-        DmaDistrict dma = dmaRepository.findByIdAndTenantId(dmaId, TenantContextHolder.getTenantId())
+        UUID tenantId = TenantContextHolder.getTenantId();
+        DmaDistrict dma = dmaRepository.findByIdAndTenantId(dmaId, tenantId)
                 .orElseThrow(() -> new IllegalArgumentException("DMA not found"));
 
-        List<GisNetworkElement> elements = networkElementRepository.findByDmaIdAndTenantId(dmaId, TenantContextHolder.getTenantId());
+        List<GisNetworkElement> elements = networkElementRepository.findByDmaIdAndTenantId(dmaId, tenantId);
 
         List<ElementSpec> specs = new ArrayList<>();
+        List<GisNetworkElement> candidates = new ArrayList<>();
         int withoutHydraulicRole = 0;
         for (GisNetworkElement element : elements) {
             ElementSpec spec = toSpec(element);
@@ -47,13 +51,41 @@ public class EpanetSimulationService {
                 withoutHydraulicRole++;
             } else {
                 specs.add(spec);
+                candidates.add(element);
             }
+        }
+
+        // Aceite da GIS-03: feição com erro grave (severidade ERROR) ainda aberto na
+        // validação contínua fica FORA da exportação e é listada. A exclusão é aviso, não
+        // problema do modelo: o restante da rede continua exportável e o .inp não é
+        // recusado por causa dela. Se a feição excluída era ponta ou peça de tubulação, o
+        // construtor registra o problema de topologia correspondente, como qualquer
+        // referência quebrada.
+        Map<UUID, List<String>> openErrors = validationIssueRepository.findOpenErrorRulesByFeatureId(
+                tenantId, candidates.stream().map(GisNetworkElement::getId).toList());
+        List<String> excluded = new ArrayList<>();
+        if (!openErrors.isEmpty()) {
+            List<ElementSpec> kept = new ArrayList<>();
+            for (int i = 0; i < specs.size(); i++) {
+                List<String> rules = openErrors.get(candidates.get(i).getId());
+                if (rules == null) {
+                    kept.add(specs.get(i));
+                } else {
+                    excluded.add("Feição " + specs.get(i).code() + " excluída da exportação EPANET: "
+                            + "erro grave aberto na validação contínua (regras "
+                            + String.join(", ", rules) + "). Corrija o problema ou aceite-o na "
+                            + "validação para a feição voltar à exportação.");
+                }
+            }
+            specs = kept;
+            Collections.sort(excluded);
         }
 
         EpanetNetwork network = NetworkTopologyBuilder.build(
                 "DMA " + dma.getCode() + " - " + dma.getName(),
                 "Gerado do cadastro GIS para o DMC " + dma.getCode(),
                 specs);
+        network.getWarnings().addAll(excluded);
         if (withoutHydraulicRole > 0) {
             network.getWarnings().add(withoutHydraulicRole + " elemento(s) sem papel hidráulico no modelo foram "
                     + "ignorados (hidrantes, medidores, ligações prediais, ...).");
@@ -97,8 +129,9 @@ public class EpanetSimulationService {
         }
 
         parseNumbers(text, numbers);
+        // Topologia persistida (GIS-03, M4): as pontas do arco vêm da view; só PIPE as tem.
         return new ElementSpec(e.getElementCode(), e.getName(), kind, e.getGeometry(), e.getDiameterMm(),
-                e.getLengthM(), e.getMaterial(), valveType, numbers);
+                e.getLengthM(), e.getMaterial(), valveType, numbers, e.getNode1Code(), e.getNode2Code());
     }
 
     /** Lê os campos numéricos do JSON de propriedades. {@code elevation} é aceito como {@code elevation_m}. */
@@ -213,6 +246,10 @@ public class EpanetSimulationService {
         result.setLinkCount(network.linkCount());
         result.setTotalPipeLengthMeters(network.totalPipeLength());
 
+        // O relatório da simulação carrega os avisos da rede — inclusive a lista de
+        // feições excluídas por erro grave aberto (GIS-03), para quem lê o resultado
+        // saber o que ficou de fora da exportação e por quê.
+        result.getWarnings().addAll(network.getWarnings());
         result.getWarnings().add("Hydraulic solution not computed: no EPANET solver "
                 + "is configured. Pressures, flows and velocities are unavailable.");
         if (options != null && options.statistic() != Statistic.AVERAGE) {

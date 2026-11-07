@@ -36,10 +36,24 @@ class DmaDistrictRepositoryBoundaryTest {
         assertThat(lossesRepo.isInterface()).isTrue();
 
         Constructor<?> constructor = Arrays.stream(EpanetSimulationService.class.getDeclaredConstructors())
-                .filter(c -> c.getParameterCount() == 3)
+                .filter(c -> c.getParameterCount() == 4)
                 .findFirst()
                 .orElseThrow();
         assertThat(constructor.getParameterTypes())
                 .contains(lossesRepo);
+    }
+
+    @Test
+    @DisplayName("o repositorio de problemas da validacao (GIS-03) e injetado no servico do GIS")
+    void validationIssueRepositoryIsInjectedIntoGisService() throws Exception {
+        Class<?> validationRepo = Class.forName(
+                "br.com.ziipsan.intelligence.gis.repository.GisValidationIssueRepository");
+
+        Constructor<?> constructor = Arrays.stream(EpanetSimulationService.class.getDeclaredConstructors())
+                .filter(c -> c.getParameterCount() == 4)
+                .findFirst()
+                .orElseThrow();
+        assertThat(constructor.getParameterTypes())
+                .contains(validationRepo);
     }
 }
