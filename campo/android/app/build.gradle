@@ -1,0 +1,54 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+android {
+    namespace = 'br.com.ziipsan.campo'
+    compileSdk = rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        applicationId = 'br.com.ziipsan.campo'
+        minSdk = rootProject.ext.minSdkVersion
+        targetSdk = rootProject.ext.targetSdkVersion
+        // versionCode/versionName NAO sao escritos a mao: vem da tag do repo no CI
+        // (mesma regra do P0.39); os valores abaixo sao so o default de dev local.
+        versionCode = 1
+        versionName = '0.0.0-SNAPSHOT'
+        // Host do App Link de retorno do login: propriedade de build, porque o
+        // dominio real e o da plataforma/tenant em producao (a verificar na
+        // implantacao); o default e um dominio invalido de proposito, para um
+        // build sem a propriedade nunca fingir um App Link valido.
+        manifestPlaceholders = [appLinkHost: (project.findProperty('APP_LINK_HOST') ?: 'campo.ziipsan.invalid')]
+        testInstrumentationRunner = 'androidx.test.runner.AndroidJUnitRunner'
+    }
+
+    signingConfigs {
+        release {
+            // Assinatura de release SO por variaveis de ambiente do CI (segredos):
+            // nenhum keystore nem senha vive no repositorio.
+            storeFile = file(System.getenv('ZIIPSAN_CAMPO_KEYSTORE') ?: 'dev-null.keystore')
+            storePassword = System.getenv('ZIIPSAN_CAMPO_KEYSTORE_PASSWORD')
+            keyAlias = System.getenv('ZIIPSAN_CAMPO_KEY_ALIAS')
+            keyPassword = System.getenv('ZIIPSAN_CAMPO_KEY_PASSWORD')
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.release
+            minifyEnabled = false
+        }
+    }
+}
+
+dependencies {
+    implementation project(':capacitor-android')
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+    implementation 'androidx.sqlite:sqlite-ktx:2.4.0'
+    // SQLCipher: cifra do banco local com a chave do Keystore (ver FieldSecurityPlugin).
+    // Licenca conferida na lista de terceiros do projeto antes do primeiro build.
+    implementation 'net.zetetic:sqlcipher-android:4.5.4'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+}
+
+apply from: 'capacitor.build.gradle'

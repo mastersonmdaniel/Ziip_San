@@ -1,0 +1,29 @@
+{
+  "name": "ziipsan-campo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ZiipSan Campo — app de campo Android (ED-18, ADR-0026/ADR-0030). Versao do app NAO vive aqui: vem da tag do repo, como no frontend (P0.39).",
+  "scripts": {
+    "test": "node --test \"src/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc && vite build",
+    "android:build": "npm run build && npx cap sync android && cd android && ./gradlew assembleRelease"
+  },
+  "dependencies": {
+    "@capacitor/core": "*",
+    "@capacitor/android": "*",
+    "@capacitor/app": "*",
+    "@capacitor/browser": "*",
+    "@capacitor/camera": "*"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "*",
+    "@types/node": "*",
+    "typescript": "*",
+    "vite": "*"
+  },
+  "comments": {
+    "versoes": "Versoes do Capacitor e do tooling NAO foram fixadas nesta entrega: a politica da ED-18 exige a linha do Capacitor com suporte ativo na data da integracao, conferida e travada no package-lock.json gerado no PC do dono (npm install) antes do primeiro build de CI. Fixar numero aqui, sem conferir o suporte vigente, violaria a propria politica. Ver docs/campo/POLITICA-MOVEL.md."
+  }
+}

@@ -1,0 +1,32 @@
+// Gradle raiz do app de campo (ED-18). VERSOES A VERIFICAR NA INTEGRACAO: os
+// numeros de AGP/Kotlin abaixo sao referencias de trabalho, nao numeros do
+// plano; valem os da matriz da linha do Capacitor adotada (ver politica).
+// Versoes do AGP/Gradle seguem a linha do
+// Capacitor com suporte ativo na data da integracao (politica em
+// docs/campo/POLITICA-MOVEL.md): sao travadas no wrapper e conferidas no CI,
+// nunca inventadas aqui.
+buildscript {
+    ext {
+        // API alvo exigida pelo Google Play para apps novos e atualizacoes,
+        // conforme o aceite da ED-18 (hoje Android 16, API 36). Revisar a cada
+        // mudanca de exigencia da loja.
+        targetSdkVersion = 36
+        compileSdkVersion = 36
+        minSdkVersion = 24
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.7.3'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
