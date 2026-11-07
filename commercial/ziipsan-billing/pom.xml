@@ -27,6 +27,19 @@
             <artifactId>ziipsan-security</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- P2.17 (correcao da revisao cruzada): o teste
+             BrandedBillTemplateContentTest importa as classes de modelo/marca
+             de ziipsan-platform (TemplateBlock, LegalTemplateBlocks,
+             BrandedDocumentComposer, BrandedTemplateGuard, TenantPdfBrand).
+             O pom vigente no repo NAO declara esta dependencia — sem ela o
+             teste nao compila. Escopo test: nenhum codigo de producao do
+             billing usa platform hoje. -->
+        <dependency>
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-platform</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
