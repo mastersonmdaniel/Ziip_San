@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Status — Ziip SAN</title>
+<!--
+  P3.18: página pública de status (artefato estático).
+  Consome GET /api/v1/public/status (PublicStatusController) e apenas
+  EXIBE a visão derivada — nenhum status é escrito ou editado aqui.
+  Na LC.7 esta página é publicada em hospedagem separada da produção;
+  nesse caso STATUS_API_URL deve apontar para a base pública da API.
+  Textos de exibição em português; códigos de status em inglês (API).
+-->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 44rem; padding: 0 1rem; }
+  .status { font-weight: 600; }
+  .OUTAGE { color: #b00020; } .DEGRADED { color: #b26a00; }
+  .MAINTENANCE { color: #0b5cad; } .UNKNOWN { color: #555; } .OPERATIONAL { color: #137333; }
+  section { margin-top: 1.5rem; } li { margin: .35rem 0; }
+</style>
+</head>
+<body>
+<h1>Status do serviço</h1>
+<p id="overall">Carregando…</p>
+<p id="generated"></p>
+
+<section><h2>Componentes</h2><ul id="components"></ul></section>
+<section id="incidents-section" hidden><h2>Incidentes em andamento</h2><ul id="incidents"></ul></section>
+<section id="maintenance-section" hidden><h2>Manutenções programadas</h2><ul id="maintenance"></ul></section>
+<section id="summaries-section" hidden><h2>Resumos de incidentes</h2><ul id="summaries"></ul></section>
+
+<script>
+const STATUS_API_URL = '/api/v1/public/status';
+const LABELS = {
+  OPERATIONAL: 'Operacional', DEGRADED: 'Degradado', OUTAGE: 'Indisponível',
+  MAINTENANCE: 'Em manutenção', UNKNOWN: 'Sem medição recente'
+};
+function el(id) { return document.getElementById(id); }
+function item(text, cls) {
+  const li = document.createElement('li');
+  if (cls) { const s = document.createElement('span'); s.className = 'status ' + cls; s.textContent = text; li.appendChild(s); }
+  else { li.textContent = text; }
+  return li;
+}
+fetch(STATUS_API_URL)
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(data => {
+    el('overall').innerHTML = '';
+    el('overall').appendChild(item('Estado geral: ' + (LABELS[data.overall] || data.overall), data.overall));
+    el('generated').textContent = 'Atualizado em ' + new Date(data.generatedAt).toLocaleString('pt-BR');
+    data.components.forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = c.name + ' — ';
+      li.appendChild(item(LABELS[c.status] || c.status, c.status));
+      el('components').appendChild(li);
+    });
+    if (data.activeIncidents.length) {
+      el('incidents-section').hidden = false;
+      data.activeIncidents.forEach(i => el('incidents').appendChild(
+        item(i.title + ' (desde ' + new Date(i.startedAt).toLocaleString('pt-BR') + ')')));
+    }
+    if (data.maintenance.length) {
+      el('maintenance-section').hidden = false;
+      data.maintenance.forEach(w => el('maintenance').appendChild(item(
+        w.title + ': ' + new Date(w.startsAt).toLocaleString('pt-BR') + ' até '
+        + new Date(w.endsAt).toLocaleString('pt-BR') + (w.active ? ' (em andamento)' : ''))));
+    }
+    if (data.publishedSummaries.length) {
+      el('summaries-section').hidden = false;
+      data.publishedSummaries.forEach(s => el('summaries').appendChild(
+        item(s.incidentTitle + ' — ' + s.summary)));
+    }
+  })
+  .catch(() => {
+    // Falha ao carregar NÃO vira "operacional": a página admite que não sabe.
+    el('overall').textContent = 'Não foi possível carregar o estado do serviço.';
+    el('overall').className = 'status UNKNOWN';
+  });
+</script>
+</body>
+</html>
