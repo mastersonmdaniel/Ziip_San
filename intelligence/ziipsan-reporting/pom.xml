@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>br.com.ziipsan</groupId>
+        <artifactId>ziipsan</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <artifactId>ziipsan-reporting</artifactId>
+    <name>ZIIPSAN Reporting - relatorios operacionais nativos (P3.22, ADR-0027)</name>
+    <!-- Modulo NOVO da P3.22 (nao existia no HEAD 0fbcd22: intelligence/ tinha
+         gis, losses e quality). Sem dependencias alem do core de proposito:
+         CSV/XLSX/PDF sao gerados com o JDK (zip + XML + PDF minimo), o que
+         dispensa biblioteca nova, licenca nova e CVE novo. JSON so pela
+         classe Json do core (regra do projeto). -->
+    <dependencies>
+        <dependency>
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <!-- Padrao dos demais modulos (ex.: losses): driver explicito,
+                 tambem usado pelo ReportViewsDatabaseTest (PGSimpleDataSource). -->
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
