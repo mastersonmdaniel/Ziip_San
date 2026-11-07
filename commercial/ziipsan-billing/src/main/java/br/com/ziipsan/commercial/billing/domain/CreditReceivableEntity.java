@@ -5,12 +5,19 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * Credito a realizar: valor a favor do cliente abatido da conta em parcelas. {@code residualAmount} e o que a conta anterior nao comportou e passa ao mes seguinte.
+ *
+ * <p>DAD-20 (P2.5, trecho F3 da V4_4): a origem e item do catalogo {@code credit_origins}
+ * (classe a; {@code creditOriginId}), no lugar do texto livre. A proveniencia tipada
+ * ({@code sourceType}/{@code sourceId}/{@code legacyReference}/{@code serviceOrderId}) e os
+ * meses contabil e de arrecadacao seguem as mesmas regras do debito — ver
+ * {@code DebitReceivableEntity} e os CHECKs {@code chk_crec_*} do trecho F3 da V4_4.
  *
  * <p>Nao usar {@code @Builder}: o Lombok descarta os campos herdados de {@code BaseEntity}.
  */
@@ -23,8 +30,8 @@ public class CreditReceivableEntity extends TenantAwareEntity {
     @Column(name = "unit_id", nullable = false)
     private UUID unitId;
 
-    @Column(name = "origin", nullable = false, length = 40)
-    private String origin;
+    @Column(name = "credit_origin_id", nullable = false)
+    private UUID creditOriginId;
 
     @Column(name = "description", length = 200)
     private String description;
@@ -43,4 +50,25 @@ public class CreditReceivableEntity extends TenantAwareEntity {
 
     @Column(name = "status", nullable = false, length = 12)
     private String status = "NORMAL";
+
+    @Column(name = "source_type", nullable = false, length = 30)
+    private String sourceType;
+
+    @Column(name = "source_id")
+    private UUID sourceId;
+
+    @Column(name = "legacy_reference", length = 100)
+    private String legacyReference;
+
+    @Column(name = "service_order_id")
+    private UUID serviceOrderId;
+
+    @Column(name = "accounting_month", nullable = false)
+    private LocalDate accountingMonth;
+
+    @Column(name = "collection_month")
+    private LocalDate collectionMonth;
+
+    @Column(name = "financing_term")
+    private Integer financingTerm;
 }

@@ -23,8 +23,15 @@ import java.util.UUID;
 
 /**
  * Consumo faturado de uma unidade, serviço (água ou esgoto) e referência, com o <b>tipo</b> e a
- * <b>anormalidade</b> que explicam como se chegou nele. Uma linha por (unidade, serviço, referência):
- * refaturar atualiza, nunca duplica; a história das versões fica no {@code audit_log}.
+ * <b>anormalidade</b> que explicam como se chegou nele.
+ *
+ * <p><b>Versionamento (V4_4 do billing, P2.5, DAD-14):</b> cada (unidade, serviço, referência)
+ * tem uma cadeia de versões. A vigente é a de {@code supersededById == null} (o banco garante
+ * uma só, por índice único parcial); retificar NÃO atualiza os valores da linha -- insere a
+ * versão seguinte ({@code versionNo + 1}) e liga a anterior por {@code supersededById}, a
+ * única coluna da versão antiga que muda. O histórico de 120 meses se reconstitui dessas
+ * versões, sem ler o {@code audit_log}. Quem cria a versão nova é
+ * {@code ConsumptionRectification} (pacote {@code rules}).
  *
  * <p>{@code calculatedConsumption} é a base da média futura: não é zerado quando o faturamento é
  * paralisado ou o tipo não permite faturar ({@code billedConsumption} é).
@@ -114,6 +121,30 @@ public class ConsumptionRecord extends TenantAwareEntity {
     @Column(name = "apportioned_consumption")
     private Integer apportionedConsumption;
 
+    // V4_4 (billing, P2.5, DAD-14): numero da versao dentro de (unidade, servico, referencia).
+    // A versao 1 e a linha original; cada retificacao insere a seguinte.
+    @Column(name = "version_no", nullable = false)
+    private int versionNo = 1;
+
+    // V4_4 (DAD-14): a versao que substituiu esta. NULL = versao vigente. E a unica
+    // coluna da versao antiga que a retificacao toca.
+    @Column(name = "superseded_by_id")
+    private UUID supersededById;
+
+    // V4_4 (DAD-14): conta que faturou esta versao (bills, do billing). billReferenceMonth
+    // e o mes da conta, exigido pela FK para a tabela particionada (padrao V4_14/V5_4).
+    @Column(name = "bill_id")
+    private UUID billId;
+
+    @Column(name = "bill_reference_month")
+    private LocalDate billReferenceMonth;
+
+    // V4_4 (DAD-14): ids das parameter_versions lidas no calculo desta linha (JSON,
+    // array de UUIDs), na mesma convencao de bills.parameter_version_ids.
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "parameter_version_ids", columnDefinition = "jsonb")
+    private String parameterVersionIds;
+
     /** Avisos da cascata (JSON: lista de {code, message}). Nada é aproximado sem deixar rastro aqui. */
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "warnings", columnDefinition = "jsonb")
@@ -125,6 +156,47 @@ public class ConsumptionRecord extends TenantAwareEntity {
     private String calculationSnapshot;
 
     public enum ServiceKind { WATER, SEWER }
+
+    /** Versao vigente da sua (unidade, servico, referencia): a que nenhuma retificacao substituiu. */
+    public boolean isCurrent() {
+        return supersededById == null;
+    }
+
+    /**
+     * Copia todos os valores faturados desta versao para {@code target} (a base da
+     * versao retificada, que quem chama corrige antes de salvar). NAO copia
+     * identidade (id, tenant e auditoria da base), nem a ligacao de versao
+     * ({@code versionNo}, {@code supersededById}, {@code billId},
+     * {@code billReferenceMonth}, {@code parameterVersionIds}): quem monta a
+     * cadeia e {@code ConsumptionRectification}.
+     */
+    public void copyValuesTo(ConsumptionRecord target) {
+        target.unitId = this.unitId;
+        target.serviceKind = this.serviceKind;
+        target.reference = this.reference;
+        target.billedConsumption = this.billedConsumption;
+        target.calculatedConsumption = this.calculatedConsumption;
+        target.billable = this.billable;
+        target.billingPaused = this.billingPaused;
+        target.consumptionType = this.consumptionType;
+        target.anomalyId = this.anomalyId;
+        target.billedReadingAnomalyId = this.billedReadingAnomalyId;
+        target.readingId = this.readingId;
+        target.readingReference = this.readingReference;
+        target.billedReading = this.billedReading;
+        target.billedReadingOn = this.billedReadingOn;
+        target.averageConsumption = this.averageConsumption;
+        target.averageMonths = this.averageMonths;
+        target.averageSource = this.averageSource;
+        target.connectionMinimum = this.connectionMinimum;
+        target.discardedRemainder = this.discardedRemainder;
+        target.appliedActionMonth = this.appliedActionMonth;
+        target.collectionPercent = this.collectionPercent;
+        target.condominiumMacroRecordId = this.condominiumMacroRecordId;
+        target.apportionedConsumption = this.apportionedConsumption;
+        target.warnings = this.warnings;
+        target.calculationSnapshot = this.calculationSnapshot;
+    }
 
     public void setReferenceMonth(YearMonth month) {
         this.reference = month.atDay(1);

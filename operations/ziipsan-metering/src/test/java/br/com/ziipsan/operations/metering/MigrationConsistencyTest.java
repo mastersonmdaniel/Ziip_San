@@ -38,6 +38,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Mantém a migration {@code V5_1} e as entidades/enums de acordo, sem banco.
+ * Desde a P2.5 guarda também a {@code V5_6} (versionamento de
+ * {@code consumption_records}, DAD-14) e a {@code V5_7} (tipo de OS de
+ * {@code reading_anomalies}, JOR-10), lidas do classpath deste módulo.
  *
  * <p>O teste de instalação do zero ({@code platform/ziipsan-app}) é quem prova o mapeamento contra
  * um PostgreSQL, mas só enxerga este módulo depois que o app depender dele. Este teste pega o erro
@@ -47,6 +50,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MigrationConsistencyTest {
 
     private static final String SQL = readSql();
+
+    // P2.5 (correcao da revisao cruzada, B1/B4): o versionamento de
+    // consumption_records (DAD-14) saiu da V4_4 do billing para a V5_6 deste
+    // modulo, e a coluna do tipo de OS de reading_anomalies (JOR-10) nasce na
+    // V5_7. As duas sao lidas de verdade daqui -- a V4_4 nao esta (nem nunca
+    // esteve) no classpath deste modulo.
+    private static final String SQL_V56 = readSql("/db/migration/tenant/V5_6__consumption_record_versioning.sql");
+    private static final String SQL_V57 = readSql("/db/migration/tenant/V5_7__reading_anomaly_service_order_type.sql");
 
     private static String readSql() {
         return readSql("/db/migration/tenant/V5_1__create_metering_schema.sql");
@@ -148,12 +159,33 @@ class MigrationConsistencyTest {
         while (col.find()) {
             v54Columns.computeIfAbsent("meter_readings", k -> new LinkedHashSet<>()).add(col.group(1));
         }
+        // P2.5 (V5_6/V5_7, deste modulo): consumption_records ganha as colunas do
+        // versionamento DAD-14 (version_no, superseded_by_id, bill_id,
+        // bill_reference_month, parameter_version_ids) pela V5_6, e
+        // reading_anomalies ganha service_order_type_code (JOR-10) pela V5_7.
+        // As colunas sao LIDAS das migrations (mesmo padrao da V5_4 acima), nao
+        // mais um conjunto fixo de nomes: se a migration mudar, a guarda muda junto.
+        Map<String, Set<String>> laterColumns = new LinkedHashMap<>();
+        for (String laterSql : List.of(SQL_V56, SQL_V57)) {
+            Matcher laterAlter = Pattern.compile("ALTER TABLE (\\w+) ADD COLUMN IF NOT EXISTS ([a-z_]+)").matcher(laterSql);
+            while (laterAlter.find()) {
+                laterColumns.computeIfAbsent(laterAlter.group(1), k -> new LinkedHashSet<>()).add(laterAlter.group(2));
+            }
+        }
+        assertThat(laterColumns.getOrDefault("consumption_records", Set.of()))
+                .as("colunas do versionamento DAD-14 lidas da V5_6")
+                .containsExactlyInAnyOrder("version_no", "superseded_by_id", "bill_id",
+                        "bill_reference_month", "parameter_version_ids");
+        assertThat(laterColumns.getOrDefault("reading_anomalies", Set.of()))
+                .as("coluna do tipo de OS (JOR-10) lida da V5_7")
+                .containsExactlyInAnyOrder("service_order_type_code");
         for (Class<?> entity : List.of(Meter.class, MeterInstallation.class, ReadingAnomaly.class,
                 ConsumptionAnomaly.class, MeterReading.class, ConsumptionRecord.class)) {
             String table = entity.getAnnotation(Table.class).name();
             Set<String> sqlColumns = sqlColumns(table);
             sqlColumns.addAll(Set.of("version", "tenant_schema"));
             sqlColumns.addAll(v54Columns.getOrDefault(table, Set.of()));
+            sqlColumns.addAll(laterColumns.getOrDefault(table, Set.of()));
 
             Set<String> mapped = new LinkedHashSet<>();
             for (Class<?> c = entity; c != null && c != Object.class; c = c.getSuperclass()) {
@@ -169,6 +201,44 @@ class MigrationConsistencyTest {
             assertThat(mapped).as("colunas da entidade %s x tabela %s", entity.getSimpleName(), table)
                     .containsExactlyInAnyOrderElementsOf(sqlColumns);
         }
+    }
+
+    // As assercoes textuais de DAD-14 viviam no BillAccountMigrationConsistencyTest
+    // do billing, lendo a V4_4; com a secao movida para a V5_6 (B1), elas moram
+    // aqui, contra o SQL da V5_6 -- sem nenhuma assercao a menos.
+
+    @Test
+    @DisplayName("DAD-14 (V5_6): consumption_records ganha versao, sucessora, conta e versoes de parametro")
+    void consumptionVersioningColumns() {
+        assertThat(SQL_V56).contains("ALTER TABLE consumption_records ADD COLUMN IF NOT EXISTS version_no INT NOT NULL DEFAULT 1;");
+        assertThat(SQL_V56).contains("ALTER TABLE consumption_records ADD COLUMN IF NOT EXISTS superseded_by_id UUID;");
+        assertThat(SQL_V56).contains("ALTER TABLE consumption_records ADD COLUMN IF NOT EXISTS bill_id UUID;");
+        assertThat(SQL_V56).contains("ALTER TABLE consumption_records ADD COLUMN IF NOT EXISTS bill_reference_month DATE;");
+        assertThat(SQL_V56).contains("ALTER TABLE consumption_records ADD COLUMN IF NOT EXISTS parameter_version_ids JSONB;");
+        assertThat(SQL_V56).contains("FOREIGN KEY (tenant_id, superseded_by_id) REFERENCES consumption_records(tenant_id, id)");
+        assertThat(SQL_V56).contains("FOREIGN KEY (tenant_id, bill_reference_month, bill_id) REFERENCES bills(tenant_id, reference_month, id)");
+        assertThat(SQL_V56).contains("CHECK (version_no >= 1)");
+    }
+
+    @Test
+    @DisplayName("DAD-14 (V5_6): o indice unico antigo cai e o novo vale so para a versao vigente; a cadeia nao bifurca")
+    void consumptionCurrentOnlyUniqueIndex() {
+        assertThat(SQL_V56).contains("DROP INDEX IF EXISTS idx_consumption_unit_period;");
+        assertThat(SQL_V56).contains("CREATE UNIQUE INDEX idx_consumption_unit_period_current "
+                + "ON consumption_records(tenant_id, unit_id, service_kind, reference)");
+        assertThat(SQL_V56).contains("WHERE superseded_by_id IS NULL");
+        assertThat(SQL_V56).contains("CREATE UNIQUE INDEX idx_consumption_unit_period_version "
+                + "ON consumption_records(tenant_id, unit_id, service_kind, reference, version_no)");
+        assertThat(SQL_V56).contains("CREATE UNIQUE INDEX idx_consumption_superseded "
+                + "ON consumption_records(tenant_id, superseded_by_id)");
+    }
+
+    @Test
+    @DisplayName("JOR-10 (V5_7): reading_anomalies ganha o tipo de OS, com o CHECK de coerencia no padrao chk_")
+    void readingAnomalyServiceOrderTypeColumn() {
+        assertThat(SQL_V57).contains("ALTER TABLE reading_anomalies ADD COLUMN IF NOT EXISTS service_order_type_code VARCHAR(60);");
+        assertThat(SQL_V57).contains("chk_reading_anomalies_service_order_type");
+        assertThat(SQL_V57).contains("generates_service_order = (service_order_type_code IS NOT NULL");
     }
 
     private static Set<String> sqlColumns(String table) {

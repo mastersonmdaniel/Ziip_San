@@ -23,6 +23,9 @@ import java.util.List;
  * <p>Diferença consciente em relação ao legado: o legado tinha um ramo para "última parcela já
  * concedida na referência" (reprocessamento). Aqui o reprocessamento é tratado pela idempotência da
  * conta, não por esta regra.
+ *
+ * <p>DAD-20 (P2.5): a regra de parcelas/resíduo não mudou; cada {@link CreditLine} passa a carregar
+ * também a origem tipada do crédito (id e código do catálogo {@code credit_origins}).
  */
 public final class CreditApplier {
 
@@ -62,7 +65,8 @@ public final class CreditApplier {
             BigDecimal residualAfter = available.subtract(applied);
             Integer installmentNo = hasInstallment ? credit.installmentsDone() + 1 : null;
             int doneAfter = hasInstallment ? credit.installmentsDone() + 1 : credit.installmentsDone();
-            lines.add(new CreditLine(credit.id(), installmentNo, applied, residualAfter, doneAfter));
+            lines.add(new CreditLine(credit.id(), credit.creditOriginId(), credit.originCode(), installmentNo,
+                    applied, residualAfter, doneAfter));
             remaining = remaining.subtract(applied);
             totalApplied = totalApplied.add(applied);
         }

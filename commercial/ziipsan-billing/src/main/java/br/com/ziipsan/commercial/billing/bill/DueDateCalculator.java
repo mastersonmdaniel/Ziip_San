@@ -1,7 +1,10 @@
 package br.com.ziipsan.commercial.billing.bill;
 
+import br.com.ziipsan.core.parameters.ParameterLimits;
+
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
 
 /**
  * Vencimento da conta (relatório 02, seção 5.7). Reproduz a especificação do legado, inclusive o
@@ -51,6 +54,73 @@ public final class DueDateCalculator {
             return routeDueDate.plusMonths(1); // java.time ajusta ao último dia do mês quando preciso
         }
         return routeDueDate;
+    }
+
+    // ------------------------------------------------------------------------------------------
+    // P2.5 (RAS-24): opcoes de vencimento do tenant e antecedencia entrega x vencimento
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Valida {@code bill.due_date_options} com a trava do produto (P0.20):
+     * dias 1..31 distintos e, para concessionária, ao menos 6 datas
+     * (Lei 8.987/1995, art. 7º-A, incluído pela Lei 9.791/1999) — uma
+     * configuração com 5 datas é recusada. A lista só amplia em relação à
+     * aceita anteriormente.
+     */
+    public static List<Integer> validateDueDateOptions(List<Integer> days, boolean concessionaire,
+                                                       Integer previousAcceptedCount) {
+        ParameterLimits.validateDueDateOptions(days, concessionaire, previousAcceptedCount);
+        return List.copyOf(days);
+    }
+
+    /**
+     * Vencimento a partir das opções do tenant ({@code bill.due_date_options}) e da
+     * antecedência mínima entre entrega e vencimento
+     * ({@code bill.min_days_delivery_to_due}, resolvida por categoria pelo chamador).
+     *
+     * <pre>
+     *   sem dia escolhido:  candidato = vencimento da rota
+     *   com dia escolhido:  o dia precisa estar entre as opções ofertadas (senão recusa);
+     *                       candidato = dia escolhido no mês da rota (último dia do mês, se não existir)
+     *   antecedência:       se candidato &lt; entrega + minDays, o vencimento avança para a
+     *                       ocorrência seguinte do mesmo dia (mês seguinte, com o mesmo
+     *                       ajuste), repetindo mês a mês até satisfazer a antecedência --
+     *                       com minDays maior que o mês, uma ocorrência só não basta
+     * </pre>
+     *
+     * @param routeDueDate         vencimento da rota no ciclo
+     * @param chosenDay            dia escolhido pelo cliente dentre as opções; {@code null} = dia da rota
+     * @param options              {@code bill.due_date_options} vigente (validado aqui)
+     * @param concessionaire       o tenant é concessionária (vale o mínimo de 6 datas)
+     * @param deliveryDate         data de entrega da conta ao cliente
+     * @param minDaysDeliveryToDue antecedência mínima, em dias, entre entrega e vencimento
+     */
+    public static LocalDate dueDateFromOptions(LocalDate routeDueDate, Integer chosenDay, List<Integer> options,
+                                               boolean concessionaire, LocalDate deliveryDate,
+                                               int minDaysDeliveryToDue) {
+        validateDueDateOptions(options, concessionaire, null);
+        if (minDaysDeliveryToDue < 0) {
+            throw new IllegalArgumentException(
+                    "bill.min_days_delivery_to_due não pode ser negativo: " + minDaysDeliveryToDue);
+        }
+        LocalDate candidate;
+        if (chosenDay == null) {
+            candidate = routeDueDate;
+        } else {
+            if (!options.contains(chosenDay)) {
+                throw new IllegalArgumentException(
+                        "Dia de vencimento " + chosenDay + " fora de bill.due_date_options: " + options);
+            }
+            candidate = clampedDay(YearMonth.from(routeDueDate), chosenDay);
+        }
+        LocalDate earliest = deliveryDate.plusDays(minDaysDeliveryToDue);
+        int day = chosenDay == null ? routeDueDate.getDayOfMonth() : chosenDay;
+        // Avanca mes a mes (nunca o mesmo mes duas vezes: cada passo cai num mes
+        // estritamente posterior, logo o laco termina) ate a antecedencia valer.
+        while (candidate.isBefore(earliest)) {
+            candidate = clampedDay(YearMonth.from(candidate).plusMonths(1), day);
+        }
+        return candidate;
     }
 
     /** Validade da conta: último dia do mês de (vencimento + meses de validade). */

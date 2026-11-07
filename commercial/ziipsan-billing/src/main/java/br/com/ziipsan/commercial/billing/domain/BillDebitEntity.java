@@ -12,6 +12,10 @@ import lombok.Setter;
 /**
  * Parcela de debito a cobrar cobrada na conta.
  *
+ * <p>DAD-20 (P2.5, trecho F3 da V4_4): {@code type_code} em texto livre vira a referencia ao
+ * catalogo {@code debit_types} ({@code debitTypeId}) mais a fotografia do codigo
+ * ({@code debitTypeCode}), para a conta emitida nao mudar se o catalogo for renomeado.
+ *
  * <p>Nao usar {@code @Builder}: o Lombok descarta os campos herdados de {@code BaseEntity}.
  */
 @Entity
@@ -31,8 +35,11 @@ public class BillDebitEntity extends TenantAwareEntity {
     @Column(name = "receivable_id", nullable = false)
     private UUID receivableId;
 
-    @Column(name = "type_code", nullable = false, length = 40)
-    private String typeCode;
+    @Column(name = "debit_type_id", nullable = false)
+    private UUID debitTypeId;
+
+    @Column(name = "debit_type_code", nullable = false, length = 40)
+    private String debitTypeCode;
 
     @Column(name = "installment_no", nullable = false)
     private int installmentNo;

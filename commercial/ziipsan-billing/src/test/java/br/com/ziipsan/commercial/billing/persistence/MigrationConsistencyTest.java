@@ -120,6 +120,27 @@ class MigrationConsistencyTest {
                         new SqlColumn("reference_month", old.type(), old.length(), old.precision(), old.scale(), true));
             }
         }
+        // P2.5 (V4_4): bills ganha parameter_version_ids (JSONB), billed_customer_id (UUID)
+        // e billed_customer_snapshot (TEXT, o ciphertext do snapshot DAD-15) por ALTER
+        // TABLE. As tabelas novas da V4_4 (modelos de conta) tem guarda propria em
+        // BillAccountMigrationConsistencyTest, como as da V4_6 na Social.
+        // Correcao B2-DDL (revisao cruzada da P2.5): a V4_4 fundida tambem acrescenta
+        // fixed_part_value NUMERIC(14,2) NOT NULL (TFDI, secao 5), que BillEntity mapeia
+        // como BigDecimal(14,2) -- a regex de ALTER passa a aceitar NUMERIC(p,s) e a
+        // guardar precisao/escala, senao a coluna passaria invisivel por esta guarda.
+        try (InputStream in = MigrationConsistencyTest.class.getResourceAsStream("/db/migration/tenant/V4_4__bill_account_models_and_versioning.sql")) {
+            assertThat(in).as("migration V4_4 no classpath").isNotNull();
+            String v44 = new String(in.readAllBytes(), StandardCharsets.UTF_8).replace("\r\n", "\n");
+            Matcher alter44 = Pattern.compile("ALTER TABLE bills ADD COLUMN IF NOT EXISTS ([a-z][a-z0-9_]*) +(UUID|TEXT|JSONB|NUMERIC\\((\\d+),(\\d+)\\))([^;]*);").matcher(v44);
+            while (alter44.find()) {
+                String type = alter44.group(2).replaceAll("\\(.*\\)", "");
+                tables.get("bills").put(alter44.group(1), new SqlColumn(alter44.group(1), type,
+                        null,
+                        alter44.group(3) == null ? null : Integer.valueOf(alter44.group(3)),
+                        alter44.group(4) == null ? null : Integer.valueOf(alter44.group(4)),
+                        alter44.group(5).contains("NOT NULL")));
+            }
+        }
     }
 
     /** Colunas do CREATE TABLE particionado da V4_14 (dentro do DO, indentacao maior). */
@@ -212,6 +233,11 @@ class MigrationConsistencyTest {
         if (t == String.class) {
             if (col.type().equals("JSONB")) {
                 return f.isAnnotationPresent(org.hibernate.annotations.JdbcTypeCode.class);
+            }
+            if (col.type().equals("TEXT")) {
+                // V4_4: billed_customer_snapshot guarda o ciphertext (base64 de tamanho
+                // variavel); TEXT nao tem o length de um VARCHAR para conferir.
+                return true;
             }
             return col.type().equals("VARCHAR") && c.length() == col.length();
         }

@@ -59,6 +59,13 @@ public class BillEntity extends TenantAwareEntity {
     @Column(name = "sewer_value", nullable = false, precision = 14, scale = 2)
     private BigDecimal sewerValue;
 
+    // V4_4 (P2.5, F5/RAS-22): parcela fixa avulsa (TFDI, Res. ARESC 105/2018)
+    // cobrada nesta conta -- componente proprio do total, como no CHECK
+    // chk_bills_total_with_withholding_tax: total = agua + esgoto + parcela
+    // fixa + debitos - creditos - tributos. Zero nas contas sem TFDI.
+    @Column(name = "fixed_part_value", nullable = false, precision = 14, scale = 2)
+    private BigDecimal fixedPartValue;
+
     @Column(name = "debits_value", nullable = false, precision = 14, scale = 2)
     private BigDecimal debitsValue;
 
@@ -113,6 +120,26 @@ public class BillEntity extends TenantAwareEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "tariff_snapshot", columnDefinition = "jsonb")
     private String tariffSnapshot;
+
+    // V4_4 (P2.5): ids das parameter_versions lidas nesta emissao, em coluna propria,
+    // alem do tariff_snapshot (que guarda os valores, nao as versoes). JSON (array de
+    // UUIDs) gravado pela classe Json do core, via BillSnapshotService.
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "parameter_version_ids", columnDefinition = "jsonb")
+    private String parameterVersionIds;
+
+    // V4_4 (P2.5, DAD-15): cliente faturado -- o do vinculo show_on_bill vigente na
+    // emissao. NULL numa conta sem titular (unidade sem usuario vigente, P1.41),
+    // sempre junto do snapshot (CHECK chk_bills_billed_customer_pair).
+    @Column(name = "billed_customer_id")
+    private UUID billedCustomerId;
+
+    // V4_4 (P2.5, DAD-15): snapshot do titular faturado na emissao (nome, documento
+    // mascarado, endereco de entrega) SOMENTE como texto cifrado pelo FieldCipher
+    // (contexto BillSnapshotService.SNAPSHOT_CONTEXT). Nunca o JSON em claro: quem
+    // grava e le e o BillSnapshotService. Nao muda com troca posterior de titular.
+    @Column(name = "billed_customer_snapshot", columnDefinition = "text")
+    private String billedCustomerSnapshot;
 
     @Column(name = "completed", nullable = false)
     private boolean completed;

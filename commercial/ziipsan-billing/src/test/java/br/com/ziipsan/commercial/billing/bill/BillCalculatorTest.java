@@ -35,12 +35,16 @@ class BillCalculatorTest {
         return new BillInput(t1Schedule(), FROM, TO, groups, water, sewer, debits, credits, taxes);
     }
 
+    // DAD-20 (P2.5): tipo/origem dos catalogos (itens ficticios TESTE) e proveniencia MANUAL;
+    // a fabrica so monta os lancamentos tipados — os casos e os valores dos testes nao mudaram.
     private static DebitReceivable debit(int n, String total, int installments, int done) {
-        return new DebitReceivable(id(n), "TESTE", d(total), installments, done);
+        return new DebitReceivable(id(n), id(900), "TESTE", false, d(total), installments, done,
+                ReceivableSourceType.MANUAL, null, null, null, LocalDate.of(2026, 1, 1), null, null);
     }
 
     private static CreditReceivable credit(int n, String total, int installments, int done, String residual) {
-        return new CreditReceivable(id(n), "TESTE", d(total), installments, done, d(residual));
+        return new CreditReceivable(id(n), id(901), "TESTE", d(total), installments, done, d(residual),
+                ReceivableSourceType.MANUAL, null, null, null, LocalDate.of(2026, 1, 1), null, null);
     }
 
     private static TaxWithholdingPolicy illustrativeTaxes() {
@@ -67,6 +71,26 @@ class BillCalculatorTest {
         assertThat(r.debitLines().get(0).installmentNo()).isEqualTo(1);
         assertThat(r.debitLines().get(0).installmentTotal()).isEqualTo(3);
         assertThat(r.creditLines().get(0).installmentsDoneAfter()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("TFDI (parcela fixa avulsa): água 100,00 (25 m³) + TFDI 30,00 = total 130,00; sem TFDI a mesma conta é 100,00")
+    void fixedPartAddsToTheTotal() {
+        // água 25 m³ RES, 1 eco = mínima 30,00 + 10 m³ x 4,00 (até 20) + 5 m³ x 6,00 (até 50)
+        // = 30,00 + 40,00 + 30,00 = 100,00 ; com TFDI de 30,00: 100,00 + 30,00 = 130,00
+        BillResult r = BillCalculator.calculate(new BillInput(t1Schedule(), FROM, TO, List.of(res(1)), 25, null,
+                List.of(), List.of(), null, d("30.00")));
+
+        assertThat(r.waterValue()).isEqualByComparingTo("100.00");
+        assertThat(r.fixedPartValue()).isEqualByComparingTo("30.00");
+        assertThat(r.charges()).isEqualByComparingTo("130.00");
+        assertThat(r.total()).isEqualByComparingTo("130.00");
+
+        // entrada sem TFDI (construtor sem a parcela / valor ausente) vale ZERO:
+        // a mesma conta, sem parcela fixa, continua 100,00
+        BillResult without = BillCalculator.calculate(input(List.of(res(1)), 25, null, List.of(), List.of(), null));
+        assertThat(without.fixedPartValue()).isEqualByComparingTo("0.00");
+        assertThat(without.total()).isEqualByComparingTo("100.00");
     }
 
     @Test

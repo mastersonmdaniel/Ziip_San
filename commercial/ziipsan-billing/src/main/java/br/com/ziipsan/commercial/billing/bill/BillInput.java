@@ -1,9 +1,11 @@
 package br.com.ziipsan.commercial.billing.bill;
 
+import br.com.ziipsan.commercial.billing.math.Money;
 import br.com.ziipsan.commercial.billing.tariff.TariffGroup;
 import br.com.ziipsan.commercial.billing.tariff.SewerParameters;
 import br.com.ziipsan.commercial.billing.tariff.TariffSchedule;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,11 +22,14 @@ import java.util.List;
  * @param debits           débitos a cobrar selecionados para este mês
  * @param credits          créditos a realizar, na ordem de abatimento
  * @param taxPolicy        retenção de impostos; {@code null} = a conta não retém (cliente sem retenção)
+ * @param fixedPartValue   parcela fixa avulsa (TFDI, Res. ARESC 105/2018) já resolvida pelo
+ *                         chamador (regra {@code FixedPartCharge}); {@code null} = sem TFDI,
+ *                         vale {@link Money#ZERO} -- contas sem parcela fixa não mudam
  */
 public record BillInput(TariffSchedule schedule, LocalDate periodFrom, LocalDate periodTo,
                         List<TariffGroup> groups, Integer waterConsumption, SewerBilling sewer,
                         List<DebitReceivable> debits, List<CreditReceivable> credits,
-                        TaxWithholdingPolicy taxPolicy) {
+                        TaxWithholdingPolicy taxPolicy, BigDecimal fixedPartValue) {
 
     /**
      * @param baseVolume volume de água (ou do poço) de que o esgoto parte; a coleta o reduz
@@ -32,9 +37,22 @@ public record BillInput(TariffSchedule schedule, LocalDate periodFrom, LocalDate
     public record SewerBilling(int baseVolume, SewerParameters parameters) {
     }
 
+    /** Sem parcela fixa (TFDI): o construtor de antes da P2.5, para os chamadores sem TFDI. */
+    public BillInput(TariffSchedule schedule, LocalDate periodFrom, LocalDate periodTo,
+                     List<TariffGroup> groups, Integer waterConsumption, SewerBilling sewer,
+                     List<DebitReceivable> debits, List<CreditReceivable> credits,
+                     TaxWithholdingPolicy taxPolicy) {
+        this(schedule, periodFrom, periodTo, groups, waterConsumption, sewer, debits, credits,
+                taxPolicy, null);
+    }
+
     public BillInput {
         debits = debits == null ? List.of() : List.copyOf(debits);
         credits = credits == null ? List.of() : List.copyOf(credits);
+        fixedPartValue = fixedPartValue == null ? Money.ZERO : fixedPartValue;
+        if (fixedPartValue.signum() < 0) {
+            throw new IllegalArgumentException("Parcela fixa (TFDI) negativa: " + fixedPartValue);
+        }
         boolean usesTariff = waterConsumption != null || sewer != null;
         if (usesTariff && (schedule == null || periodFrom == null || periodTo == null || groups == null || groups.isEmpty())) {
             throw new IllegalArgumentException(

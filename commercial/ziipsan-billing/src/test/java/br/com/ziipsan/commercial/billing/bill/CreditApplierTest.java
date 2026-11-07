@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -19,14 +20,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 class CreditApplierTest {
 
+    // DAD-20 (P2.5): origem do catalogo credit_origins (item ficticio TESTE) e proveniencia MANUAL;
+    // a fabrica so monta o lancamento tipado — os casos e os valores dos testes nao mudaram.
     private static CreditReceivable credit(int n, String total, int installments, int done, String residual) {
-        return new CreditReceivable(id(n), "TESTE", d(total), installments, done, d(residual));
+        return new CreditReceivable(id(n), id(901), "TESTE", d(total), installments, done, d(residual),
+                ReceivableSourceType.MANUAL, null, null, null, LocalDate.of(2026, 1, 1), null, null);
     }
 
     /** Aplica o resultado de um mês ao crédito, como a persistência faria. */
     private static CreditReceivable after(CreditReceivable before, CreditLine line) {
-        return new CreditReceivable(before.id(), before.origin(), before.total(), before.installments(),
-                line.installmentsDoneAfter(), line.residualAfter());
+        return new CreditReceivable(before.id(), before.creditOriginId(), before.originCode(), before.total(),
+                before.installments(), line.installmentsDoneAfter(), line.residualAfter(), before.sourceType(),
+                before.sourceId(), before.legacyReference(), before.serviceOrderId(), before.accountingMonth(),
+                before.collectionMonth(), before.financingTerm());
     }
 
     @Test
@@ -143,7 +149,8 @@ class CreditApplierTest {
             if (total.compareTo(BigDecimal.valueOf(installments).movePointLeft(2)) < 0) {
                 continue;
             }
-            CreditReceivable credit = new CreditReceivable(id(1), "TESTE", total, installments, 0, d("0.00"));
+            CreditReceivable credit = new CreditReceivable(id(1), id(901), "TESTE", total, installments, 0,
+                    d("0.00"), ReceivableSourceType.MANUAL, null, null, null, LocalDate.of(2026, 1, 1), null, null);
             BigDecimal realized = BigDecimal.ZERO;
             int months = 0;
             while ((credit.installmentsDone() < credit.installments() || credit.residual().signum() > 0) && months < 2000) {

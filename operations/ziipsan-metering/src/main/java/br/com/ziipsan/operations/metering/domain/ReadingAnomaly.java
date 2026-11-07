@@ -4,6 +4,7 @@ import br.com.ziipsan.core.domain.TenantAwareEntity;
 import br.com.ziipsan.operations.metering.rules.ConsumptionEffect;
 import br.com.ziipsan.operations.metering.rules.ReadingAnomalyRule;
 import br.com.ziipsan.operations.metering.rules.ReadingEffect;
+import br.com.ziipsan.operations.metering.rules.ReadingOccurrence;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -43,6 +44,13 @@ public class ReadingAnomaly extends TenantAwareEntity {
 
     @Column(name = "generates_service_order", nullable = false)
     private boolean generatesServiceOrder;
+
+    // V5_7 (P2.5, JOR-10): tipo da OS gerada, por codigo, no catalogo de tipos de
+    // OS da P1.31. Obrigatorio se, e somente se, generatesServiceOrder (a regra
+    // pura ReadingOccurrence e o CHECK chk_reading_anomalies_service_order_type
+    // da V5_7 recusam os dois desencontros); NULL nas ocorrencias sem OS.
+    @Column(name = "service_order_type_code", length = 60)
+    private String serviceOrderTypeCode;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "reading_effect_without_reading", nullable = false, length = 30)
@@ -90,6 +98,18 @@ public class ReadingAnomaly extends TenantAwareEntity {
         return new ReadingAnomalyRule(code, readingEffectWithoutReading, readingEffectWithReading,
                 consumptionEffectWithoutReading, consumptionEffectWithReading, factorWithoutReading,
                 factorWithReading, forUnitWithoutMeter);
+    }
+
+    /**
+     * A ocorrência completa do catálogo (JOR-10): a regra da cascata ({@link #toRule()})
+     * mais o que só a linha persistida sabe -- o tipo de OS gerado, a perda de
+     * benefício (a tarifa social) e a suspensão da leitura. Linha incoerente
+     * (gera OS sem tipo, tipo sem gerar OS) é recusada pela própria
+     * {@link ReadingOccurrence}, nunca montada por aproximação.
+     */
+    public ReadingOccurrence toOccurrence() {
+        return new ReadingOccurrence(code, description, toRule(), generatesServiceOrder,
+                serviceOrderTypeCode, losesSocialTariff, suspendReadingMonths, suspendAfterOccurrences);
     }
 
 }
