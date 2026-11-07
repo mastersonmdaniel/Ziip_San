@@ -1,0 +1,6 @@
+{
+  "name": "legacy-xml",
+  "version": "1",
+  "sourceSystem": "SISTEMA_ANTIGO",
+  "acceptedModels": ["55", "75"]
+}
