@@ -119,9 +119,9 @@ public final class NotificationPolicy {
             deliverAfter = now.atZone(zone).toLocalDate().plusDays(1).atStartOfDay(zone).toInstant();
         }
         if (isSilenced(now, silenceStart, silenceEnd, zone)) {
-            Instant silenceEnd = silenceEndsAt(now, silenceStart, silenceEnd, zone);
-            if (silenceEnd.isAfter(deliverAfter)) {
-                deliverAfter = silenceEnd;
+            Instant silenceEndAt = silenceEndsAt(now, silenceStart, silenceEnd, zone);
+            if (silenceEndAt.isAfter(deliverAfter)) {
+                deliverAfter = silenceEndAt;
             }
         }
         return deliverAfter.equals(now)
