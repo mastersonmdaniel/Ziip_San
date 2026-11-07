@@ -1,7 +1,7 @@
 # Diário de Bordo — SIGSAN
 
 Registro vivo do projeto: o que é, como está, o que travou e o que vem agora.
-Última atualização: 12/10/2026
+Última atualização: 07/11/2026
 
 ---
 
@@ -1430,3 +1430,44 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   165, app 88), frontend 134 passed + build, portas OK.
 - Push continua bloqueado até a re-revisão do gate corrigido aprovar;
   nenhum push foi feito neste ponto.
+
+### 07/11/2026 — Retomada: rodada 8 da CI total verde, integração P2a fechada
+
+- **Registro do intervalo.** A execução de 03–04/11/2026 (camadas P1a–P1d e a
+  primeira leva do P2) ficou registrada só nos commits; este diário não foi
+  atualizado na época. Esta entrada resume esse intervalo fielmente aos
+  commits, sem reconstruir o que não foi registrado.
+- **P1 entregue** nas camadas a, b, c e d, cada uma com a sua integração e as
+  suas rodadas de CI total (cadastro R2 completo, OS e protocolo, GIS,
+  Central Ziip v0, suporte v0, importadores, perfis de fábrica, certificações,
+  normas, marca do tenant, situações do titular, entre as demais tarefas
+  P1.1–P1.41 dos commits do período).
+- **P2, primeira leva (camada P2a):** P2.1 (fundação de lote), P2.2 (pools por
+  papel), P2.3 (tabelas de fato particionadas), P2.4 (CBS/IBS com vigência),
+  P2.30 (motor único de modelos de documento e mensagem), P2.12 (cobrança do
+  SaaS por contrato), P2.13 (NFS-e da venda SaaS), P2.14 (área do tenant),
+  P2.15 (SLA de suporte e CSAT), P2.25 (informação documentada), P2.26 (API
+  pública e webhooks) e P2.27 (domínio próprio do tenant).
+- **Integração P2a:** rodadas 1 a 7 da CI total geraram a sequência de
+  `fix(p2a-integracao)` (manifesto, RLS das partições, harness dos ITs da
+  P2.3, teste de volume e limpeza do resíduo do tenant compartilhado). O
+  último commit, `cbef2f5` (04/11/2026), corrigiu a ordem esperada do menu e
+  deixou registrado: "a prova integral fica para a rodada 8 da CI total".
+  A rodada 8 não tinha rodado — o trabalho parou aí.
+- **Retomada em 07/11/2026.** A cópia local do dono estava no commit
+  `dc7ca94` (29/10/2026), com a renomeação `sigsan`→`ziipsan` aplicada só
+  nos arquivos, sem commit; por isso a primeira tentativa da CI leu o POM
+  antigo. O estado solto foi guardado em `git stash -u` (rede de segurança,
+  sem pop) e a cópia foi atualizada por `git pull` até `cbef2f5`.
+- **Rodada 8 executada no PC do dono** com `scripts/ci.sh` sobre o HEAD
+  `cbef2f5`, terminando em `== OK` (log `rodada8-ci-total.log`): banco de
+  integração virgem, `mvn clean verify`, frontend e checagens de marca —
+  o script para na primeira falha, logo o `== OK` é a prova integral que
+  faltava. **Integração P2a fechada.**
+- **Resíduo conhecido, não bloqueante:** o `npm audit` do frontend aponta
+  5 vulnerabilidades (2 moderadas, 2 altas, 1 crítica) em `maplibre-gl`,
+  `react-router` e `zod`; a correção exige versão principal nova — decisão
+  do dono já registrada como pendente desde as fundações (seção 18,
+  "Pendências depois das fundações", item 3).
+- **Próxima tarefa:** P2.5 — medição, ciclo e conta (`V4_3` e `V4_4`), da
+  qual dependem P2.6, P2.7, P2.9, P2.10, P2.31, P2.32 e P2.34.
