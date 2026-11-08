@@ -1,0 +1,26 @@
+-- P3.12 — Fim do outOfOrder (17:D1; G10a; COD-14).
+--
+-- MARCO DA SEQUÊNCIA GLOBAL: esta é a primeira migration de tenant da
+-- sequência global única. Antes dela, cada módulo versionava na sua faixa
+-- (V1_x platform, V2_x intelligence/grs/compliance, V3_x registry, V4_x
+-- billing/fiscal, V5_x metering, V6_x collection, V7_1 integration,
+-- V8_x/V9_x core, V13_x gis, V14_x importação, V15_1 reporting, V21_x
+-- certification, V27_1 asset) e o TenantMigrator rodava com
+-- outOfOrder(true) para uma faixa baixa poder chegar depois de uma maior
+-- (decisão G10a, válida só até o fim do P3).
+--
+-- Com as últimas faixas publicadas (V15_1/P3.22, V6_5/P3.29, V1_8/P3.30,
+-- V21_3/P3.31), a P3.12 retira o outOfOrder do TenantMigrator
+-- (.outOfOrder(false)) e daqui em diante TODA migration nova de tenant
+-- entra nesta sequência, com versão maior que a anterior e nunca menor ou
+-- igual à maior publicada — recusado na CI por
+-- TenantMigrationGlobalSequenceCiTest / TenantMigrationVersionPolicy
+-- (lista de publicadas em migration-policy/published-tenant-migrations.txt;
+-- maior publicada no corte: 27.1, a V27_1 de asset).
+--
+-- Migration deliberadamente SEM DDL/DML: ela não muda schema nenhum — o
+-- conteúdo da virada é o código do TenantMigrator e a política de versões.
+-- O registro dela no flyway_schema_history de cada tenant é a prova, no
+-- próprio histórico, de que o tenant cruzou o corte da P3.12 já com todas
+-- as faixas aplicadas (com outOfOrder desligado, uma faixa pendente
+-- abaixo da versão corrente não seria mais aplicada).

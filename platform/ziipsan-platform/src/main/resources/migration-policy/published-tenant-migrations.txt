@@ -1,0 +1,111 @@
+# Migrations de tenant PUBLICADAS ate o corte da P3.12 (fim do outOfOrder).
+# Fonte: listagem via MCP (get_file_contents) de src/main/resources/db/migration/tenant
+# de todos os modulos do repo mastersonmdaniel/Ziip_San no HEAD 8b3d9fc9c619e4c82c607929b84cc0734d9ed842,
+# em 07/11/2026, mais a V1_8 da P3.30 (faixa nomeada no aceite da P3.12; pacote local
+# p3.30, ainda fora desse HEAD — entra no repo antes da P3.12, que e executada depois dela).
+# Regra (TenantMigrationVersionPolicy): arquivo versionado de tenant FORA desta lista
+# e migration nova — precisa de versao >= V100 e maior que a maior publicada desta
+# lista (27.1 no corte). Regenerar/atualizar esta lista SO no commit de integracao que
+# publicar uma migration de faixa ainda pendente, com scripts/migration/check-tenant-migration-versions.py --write-baseline.
+# R__*.sql (repeatable) e arquivos nao versionados nao entram: nao tem versao Flyway.
+V13_10__gis_service_connection_link.sql
+V13_11__gis_import_staging.sql
+V13_12__gis_publication_tiles_styles.sql
+V13_1__gis_classification_catalog.sql
+V13_2__gis_features_history_migration.sql
+V13_3__gis_responsible_party_redaction.sql
+V13_4__gis_catalog_approval.sql
+V13_5__gis_check_feature_qualified.sql
+V13_6__gis_check_feature_search_path.sql
+V13_7__gis_write_history_explicit_columns.sql
+V13_8__gis_topology_validation.sql
+V13_9__gis_change_sets.sql
+V14_1__legacy_import.sql
+V14_2__legacy_import_v1_history.sql
+V14_3__legacy_authorized_xml_import.sql
+V14_4__generic_spreadsheet_importer.sql
+V15_1__reporting_core_and_views.sql
+V15_X__ed46_complete_catalog.sql
+V1_10__users_audit_redaction.sql
+V1_11__personal_data_access_log_export.sql
+V1_11__work_items_and_delegations.sql
+V1_12__p2_30_document_templates.sql
+V1_13__regulatory_profile_origin.sql
+V1_14__document_signatures.sql
+V1_15__notifications_and_preferences.sql
+V1_16__p1_20_documents.sql
+V1_17__p1_33_saved_views.sql
+V1_18__p1_37_user_profiles_check.sql
+V1_1__create_tenant_schema.sql
+V1_2__tenant_table_helper.sql
+V1_3__harden_audit_function.sql
+V1_4__audit_redaction.sql
+V1_5__tenant_parameters.sql
+V1_6__personal_data_access_log.sql
+V1_7__user_preferences.sql
+V1_9__create_users.sql
+V21_1__certification_core.sql
+V21_2__certification_documents_occurrences.sql
+V21_3__certification_governance.sql
+V27_1__asset_registry.sql
+V2_10__losses_audit_redaction.sql
+V2_11__lgpd_soft_delete.sql
+V2_1__create_quality_schema.sql
+V2_2__create_losses_schema.sql
+V2_3__create_gis_schema.sql
+V2_4__create_mtr_schema.sql
+V2_5__create_lgpd_schema.sql
+V2_6__mtr_audit_redaction.sql
+V2_7__lgpd_audit_redaction.sql
+V2_8__mtr_document_protection.sql
+V2_9__quality_audit_redaction.sql
+V3_10__registry_matricula_sequence.sql
+V3_11__generated_files.sql
+V3_12__registry_r2.sql
+V3_13__vulnerable_proof_redaction.sql
+V3_14__service_connections.sql
+V3_1__create_registry_schema.sql
+V3_2__registry_audit_redaction.sql
+V3_3__registry_unit_deleted_reason_redaction.sql
+V3_4__customer_p016_fields.sql
+V3_5__registry_unit_extended_fields.sql
+V3_6__registry_territory_fields.sql
+V3_7__catalog_frontend_fields.sql
+V3_8__holder_situations.sql
+V3_9__customer_name_trigram.sql
+V4_10__bill_required_content_and_legal_messages.sql
+V4_11__fiscal_operator_queue.sql
+V4_12__cashback_cbs_ibs.sql
+V4_13__social_tariff_service_order_not_null.sql
+V4_14__bill_partition_and_batch_audit.sql
+V4_15__bill_partition_rls_and_check_names.sql
+V4_16__bill_rectification_and_maintenance.sql
+V4_17__leak_review_and_meter_test.sql
+V4_1__create_billing_schema.sql
+V4_2__social_tariff_enrollments.sql
+V4_3__billing_cycle_and_schedule.sql
+V4_4__bill_account_models_and_versioning.sql
+V4_5__create_fiscal_schema.sql
+V4_6__bill_total_tax_check_and_batch_audit.sql
+V4_7__fiscal_issuers_redaction.sql
+V4_7__nfse_avulsa_parte.sql
+V4_9__tariff_readjust_review_and_simulation.sql
+V5_1__create_metering_schema.sql
+V5_2__metering_audit_redaction.sql
+V5_3__outsourced_reading_tasks_and_files.sql
+V5_4__meter_reading_partition_and_idempotency.sql
+V5_5__meter_reading_partition_rls.sql
+V5_6__consumption_record_versioning.sql
+V5_7__reading_anomaly_service_order_type.sql
+V6_1__create_collection_schema.sql
+V6_2__payment_return_and_reconciliation.sql
+V6_3__pix_charges_and_hybrid_slip.sql
+V6_5__payment_refunds_and_unidentified_queue.sql
+V6_6__fine_cap_acceptance.sql
+V7_1__public_api_webhooks.sql
+V8_1__service_protocol.sql
+V8_3__public_bill_verification.sql
+V9_1__service_order_engine.sql
+V9_2__cutoff_reconnection.sql
+V9_3__registry_service_order_links.sql
+V1_8__org_units_and_scopes.sql

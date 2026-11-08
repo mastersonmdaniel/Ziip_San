@@ -10,9 +10,26 @@ import java.util.UUID;
 /**
  * Aplica as migrations de tenant (db/migration/tenant, todos os módulos) num schema.
  *
- * <p>Usado no provisionamento de um tenant novo e na subida da aplicação, para levar os tenants
- * existentes à versão atual. Fica fora do {@link TenantProvisioningService} porque o migrador de
- * subida roda antes do EntityManagerFactory e não pode depender de nada que dependa dele.
+ * <p>Usado no provisionamento de um tenant novo e pelo job {@code migrate}
+ * (via {@code DatabaseMigrator}/{@code TenantMigrationRollout}), para levar os
+ * tenants existentes à versão atual. Fica fora do {@link TenantProvisioningService}
+ * porque o migrador roda antes do EntityManagerFactory e não pode depender de
+ * nada que dependa dele. A api e o worker nunca chamam esta classe (P0.6).
+ *
+ * <p>P3.12 — fim do {@code outOfOrder} (17:D1; G10a; COD-14): até a P3.12 cada
+ * módulo tinha sua faixa de versão (V1_x platform, V3_x registry, V6_x
+ * collection...) no mesmo histórico por tenant, e uma migration nova numa
+ * faixa baixa chegava depois de versões maiores já aplicadas — daí o
+ * {@code outOfOrder(true)} da decisão G10a. Com as últimas faixas publicadas
+ * (V15_1 da P3.22, V6_5 da P3.29, V1_8 da P3.30 e V21_3 da P3.31), o
+ * {@code outOfOrder} é retirado nesta tarefa: daqui em diante as migrations de
+ * tenant seguem uma sequência global única a partir de {@code V100} (ver
+ * {@link TenantMigrationVersionPolicy}), sempre crescente, e o Flyway volta a
+ * recusar/ignorar versão menor ou igual à já aplicada em vez de aplicá-la
+ * fora de ordem. Pré-condição da virada, registrada para a integração: todo
+ * tenant existente precisa estar com todas as migrations de faixa aplicadas
+ * (job {@code migrate} verde) antes desta versão entrar — uma migration de
+ * faixa pendente num tenant já além dela deixaria de ser aplicada.
  */
 public final class TenantMigrator {
 
@@ -64,11 +81,13 @@ public final class TenantMigrator {
                 .locations(LOCATION)
                 .baselineOnMigrate(true)
                 .baselineVersion("0")
-                // Cada modulo tem sua faixa de versao (V1_x platform, V3_x registry, V6_x collection...)
-                // e todas vao para o mesmo historico por tenant. Uma migration nova numa faixa baixa
-                // (ex.: V1_3) chega depois de V6_1 ja aplicada: sem outOfOrder o Flyway a recusa num
-                // tenant existente. Decisao G10a do plano de 12/10/2026.
-                .outOfOrder(true)
+                // P3.12: outOfOrder DESLIGADO (era true pela G10a, enquanto havia
+                // faixa de módulo pendente). Explícito, e não só removido, para a
+                // virada ficar auditável no código e no teste de CI
+                // (TenantMigrationGlobalSequenceCiTest recusa outOfOrder(true)
+                // nesta classe). Sequência global a partir de V100:
+                // TenantMigrationVersionPolicy.
+                .outOfOrder(false)
                 .table("flyway_schema_history")
                 .load();
     }
