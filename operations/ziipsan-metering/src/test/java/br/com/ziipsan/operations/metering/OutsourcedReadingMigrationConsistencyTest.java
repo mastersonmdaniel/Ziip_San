@@ -152,7 +152,7 @@ class OutsourcedReadingMigrationConsistencyTest {
         int end = SQL.indexOf("\n);", start.end());
         String body = SQL.substring(start.end(), end);
         Set<String> columns = new LinkedHashSet<>();
-        Matcher column = Pattern.compile("(?m)^    ([a-z_]+) (?:UUID|VARCHAR|INT|BOOLEAN|DATE|TIMESTAMPTZ|JSONB)\\b").matcher(body);
+        Matcher column = Pattern.compile("(?m)^    ([a-z_][a-z0-9_]*) (?:UUID|VARCHAR|INT|BOOLEAN|DATE|TIMESTAMPTZ|JSONB)\\b").matcher(body);
         while (column.find()) {
             columns.add(column.group(1));
         }
