@@ -1,0 +1,21 @@
+# ED-67 / GIS-17 — GeoServer do WMS servidor (exceção do ADR-0010).
+# NENHUMA porta publicada: o serviço só existe na rede interna e só
+# a `api` o alcança (proxy autenticado por tenant, §7.2 item 1).
+# A imagem/versão é FIXADA na implantação pela variável abaixo —
+# esta entrega não inventa número de versão nem coordenada de
+# imagem; sem a variável, o compose se recusa a subir.
+services:
+  geoserver:
+    image: ${GEOSERVER_IMAGE_PINNED:?defina a imagem oficial do GeoServer com a versao fixada decidida na implantacao}
+    environment:
+      # Console administrativo não exposto: a administração é pela
+      # API REST a partir da api, com o usuário de serviço.
+      GEOSERVER_ADMIN_CONSOLE_ENABLED: "false"
+    expose:
+      - "8080"
+    networks:
+      - gis-internal
+    restart: unless-stopped
+networks:
+  gis-internal:
+    internal: true
