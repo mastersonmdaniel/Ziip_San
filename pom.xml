@@ -104,6 +104,8 @@
         <module>operations/ziipsan-asset</module>
         <module>commercial/ziipsan-collection</module>
         <module>commercial/ziipsan-fiscal</module>
+        <module>commercial/ziipsan-accounting</module>
+        <module>commercial/ziipsan-billing-rules</module>
         <module>integration/ziipsan-integration</module>
         <module>platform/ziipsan-app</module>
     </modules>
