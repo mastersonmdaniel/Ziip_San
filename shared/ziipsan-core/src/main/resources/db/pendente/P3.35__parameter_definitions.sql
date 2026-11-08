@@ -1,0 +1,25 @@
+-- PENDENTE — NAO E MIGRATION (nao esta em db/migration e o Flyway nao o executa).
+-- Cadastro das chaves da P3.35 em public.parameter_definitions /
+-- public.parameter_legal_limits (core V3, P0.19).
+--
+-- Por que pendente: o mapa de versoes do plano (secao 3) reserva para a
+-- P3.35 somente a tenant V8_3 (portal) e NENHUMA versao de core para o
+-- cadastro destas chaves — o mesmo caso da P3.3 (RELATORIO-P3.3, pendencia
+-- P-1). Sem reserva, nenhum numero e inventado: este SQL fica pronto para
+-- entrar na primeira versao de core que o plano reservar para cadastro de
+-- parametros do portal, ou numa R__ de catalogo se essa for a decisao.
+--
+-- Classes e padroes sao os do aceite da P3.35:
+--   portal.verify_enabled     classe d, padrao de fabrica true (ligado)
+--   portal.official_channels  classe d, padrao de fabrica [] (nenhum canal
+--                             publicado ate o tenant derivar de branding.contact)
+--   portal.scam_alert         classe d, padrao de fabrica {"enabled": false}
+--
+-- INSERT INTO public.parameter_definitions (key, category, value_class, factory_value, description)
+-- VALUES
+--   ('portal.verify_enabled', 'portal', 'd', 'true',
+--    'Verificacao publica de autenticidade da fatura (P3.35)'),
+--   ('portal.official_channels', 'portal', 'd', '[]',
+--    'Canais oficiais do tenant, derivados de branding.contact (P3.35)'),
+--   ('portal.scam_alert', 'portal', 'd', '{"enabled": false}',
+--    'Alerta de golpe configuravel exibido no portal (P3.35)');
