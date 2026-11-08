@@ -11,8 +11,10 @@
  *  - DeviceDirective: src/sync/syncEngine.ts (ED-18)
  *  - evaluateOcr/OcrMode/OcrVerdict: src/ocr/ocrCompare.ts (ED-18)
  *
- * O que os DTOs NAO expoem (endereco da unidade, tarifa, divergencia de
- * campo) NAO aparece aqui — ver pendencias no RELATORIO-APP-CAMPO-TELAS.md.
+ * O que os DTOs NAO expoem (tarifa, divergencia de campo) NAO aparece aqui
+ * — ver pendencias no RELATORIO-APP-CAMPO-TELAS.md. O endereco da unidade
+ * (R2-M4) aparece QUANDO o pacote de rota o carrega (RouteTask.unitAddress,
+ * opcional): sem ele, a identificacao segue pelos IDs (pendencia RG2-C-P2).
  */
 import type {
   OccurrenceSnapshot,
@@ -62,10 +64,17 @@ export function routeProgress(pkg: RoutePackage, pending: PendingReading[]): Rou
   return { total: rows.length, done, pending: rows.length - done, rows };
 }
 
-/** Rotulo de identificacao da tarefa: SOMENTE identificadores que o DTO expoe. */
+/**
+ * Rotulo de identificacao da tarefa (R2-M4): endereco legivel QUANDO o
+ * pacote de rota o carrega (RouteTask.unitAddress); sem ele, SOMENTE os
+ * identificadores que o DTO expoe (unitId/installationId). Endereco vazio
+ * ou so espacos equivale a ausente — nunca exibe linha em branco.
+ */
 export function taskLabel(task: RouteTask): string {
   const kind = task.kind === 'WATER' ? 'Água' : 'Poço';
-  return `${kind} · unidade ${task.unitId} · instalação ${task.installationId}`;
+  const base = `${kind} · unidade ${task.unitId} · instalação ${task.installationId}`;
+  const address = task.unitAddress?.trim();
+  return address ? `${base} · ${address}` : base;
 }
 
 // ---------------------------------------------------------------------------

@@ -23,6 +23,7 @@ function harness(directive: DeviceDirective) {
   };
   const store: LocalStore = {
     async pendingReadings() { return PENDING; },
+    async saveReading() {},
     async saveRoute() {},
     async clearRoute() { calls.push('clearRoute'); },
   };

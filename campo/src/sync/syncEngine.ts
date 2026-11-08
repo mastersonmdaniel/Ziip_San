@@ -15,6 +15,16 @@ export interface SyncTransport {
 
 export interface LocalStore {
   pendingReadings(routeId: string): Promise<PendingReading[]>;
+  /**
+   * Grava (ou substitui, pela chave taskId) UMA leitura executada na fila
+   * local (P-04 / R2-M2): sem este metodo a leitura confirmada vivia so na
+   * memoria da sessao e se perdia no reinicio. A substituicao por taskId
+   * mantem a idempotencia da sincronizacao (o reenvio usa o MESMO task_id
+   * e o servidor responde duplicate=true — syncEngine.ts). A implementacao
+   * SQLCipher deste metodo e da integracao (RG2-C-P4); a porta TS
+   * (createSaveReading, sync/fieldReadingStore.ts) ja delega para ele.
+   */
+  saveReading(reading: PendingReading): Promise<void>;
   saveRoute(pkg: RoutePackage): Promise<void>;
   clearRoute(routeId: string): Promise<void>;
 }

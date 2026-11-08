@@ -71,6 +71,18 @@ test('rotulo da tarefa usa somente os identificadores do DTO (sem endereco inven
   assert.equal(taskLabel(PKG.tasks[0]), 'Poço · unidade u-2 · instalação i-2');
 });
 
+test('R2-M4: endereco do pacote aparece no rotulo; ausente ou em branco, so os IDs', () => {
+  const withAddress = { ...PKG.tasks[1], unitAddress: 'Rua das Flores, 123 — Centro' };
+  assert.equal(taskLabel(withAddress),
+    'Água · unidade u-1 · instalação i-1 · Rua das Flores, 123 — Centro');
+  assert.equal(taskLabel({ ...PKG.tasks[1], unitAddress: null }),
+    'Água · unidade u-1 · instalação i-1');
+  assert.equal(taskLabel({ ...PKG.tasks[1], unitAddress: '   ' }),
+    'Água · unidade u-1 · instalação i-1');
+  assert.equal(taskLabel({ ...PKG.tasks[1], unitAddress: '  Rua A, 1  ' }),
+    'Água · unidade u-1 · instalação i-1 · Rua A, 1');
+});
+
 test('parse da leitura: digitos ou null', () => {
   assert.equal(parseReading(' 00123 '), 123);
   assert.equal(parseReading(''), null);
