@@ -62,3 +62,21 @@ ED-05 continuam válidos e são incorporados por remissão.
 | Premissa provisória da P3.15 (denominador exclui manutenção planejada) = decisão expressa pendente | P3.15 via Anexo I §4 da ED-05 (registro D5) |
 | Risco residual regional declarado; nada fora de `sa-east-1` | LC.3/RNF-44 via Contrato-modelo §2.9 da ED-05 |
 | Assinatura do contrato/DPA só na LC.9, antes do primeiro dado real | Aceite da P3.9 |
+
+## Nota de conferência — B2-9 (Rodada 2, 08/11/2026)
+
+A citação de `support.sla_policy` neste índice (e nas minutas) foi
+**confirmada contra a P2.15**: a migration `core V10_2`
+(`shared/ziipsan-core/src/main/resources/db/migration/core/V10_2__support_sla_csat.sql`,
+blob na main `df29a1f0aeea2fcafd1d13ca4b1953b9c7fe986c`, cabeçalho
+"P2.15 — SLA de suporte por contrato e CSAT") cria a tabela
+`support.sla_policy` (política de SLA por tenant, linha 53, com
+`UNIQUE (tenant_id, policy_key)`) e a tabela distinta
+`support.sla_policy_target` (os cinco alvos S1–S5 de cada política,
+linha 85, `policy_id` com FK para `support.sla_policy (id)`).
+
+Não há conflito de nomes: a P3.9 cita a política (`support.sla_policy`,
+ADR-0019 item 1 — o contrato referencia a política do próprio tenant) e
+a P3.15 lê a tabela-filha (`support.sla_policy_target` —
+`MonthlyContractReport.java:82`). A suspeita B2-9 fecha como
+**confirmado, sem correção no texto das minutas**.
