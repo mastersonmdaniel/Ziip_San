@@ -13,7 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Consistencia migration x codigo da ED-46, no padrao dos testes de
- * consistencia do projeto: a DDL pronta (V15_X, numeracao pendente
+ * consistencia do projeto: a DDL pronta (artefato pendente
+ * ED-46__complete_catalog.sql em db/pendente/, numeracao pendente
  * declarada) contem as views das definicoes, a seed das definicoes com
  * as MESMAS colunas do Java e a seed do catalogo com o MESMO numero de
  * itens de {@link CompleteReportCatalog}.
@@ -25,7 +26,7 @@ class Ed46MigrationConsistencyTest {
     @BeforeAll
     static void load() throws Exception {
         try (InputStream in = Ed46MigrationConsistencyTest.class.getClassLoader()
-                .getResourceAsStream("db/migration/tenant/V15_X__ed46_complete_catalog.sql")) {
+                .getResourceAsStream("db/pendente/ED-46__complete_catalog.sql")) {
             assertThat(in).as("migration da ED-46 no classpath").isNotNull();
             sql = new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
@@ -33,8 +34,9 @@ class Ed46MigrationConsistencyTest {
 
     @Test
     void numeracaoNaoFoiInventada() {
-        // Sem reserva nominal no plano para a ED-46: o arquivo e V15_X e o
-        // cabecalho declara a pendencia. Nenhum V15_3+ pode aparecer.
+        // Sem reserva nominal no plano para a ED-46: o arquivo e o artefato
+        // pendente em db/pendente/ e o cabecalho declara a pendencia.
+        // Nenhum V15_3+ pode aparecer.
         assertThat(sql).contains("NUMERACAO PENDENTE");
         assertThat(sql).doesNotContain("V15_3", "V15_4", "V15_5");
     }

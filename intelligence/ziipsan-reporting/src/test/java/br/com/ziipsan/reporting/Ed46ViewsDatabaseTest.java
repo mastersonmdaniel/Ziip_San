@@ -19,7 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Prova de conteudo das views novas da ED-46 contra PostgreSQL real, no
  * padrao de integracao do projeto (banco descartavel, variaveis
  * ZIIPSAN_IT_*; mesmo harness da P3.22). Aplica a DDL minima das fontes
- * reais, a migration da ED-46 INTEIRA (V15_X) e a massa sintetica, e
+ * reais, a DDL pendente da ED-46 INTEIRA (ED-46__complete_catalog.sql
+ * em db/pendente/) e a massa sintetica, e
  * confere os valores calculados a mao (recalculos no RELATORIO-ED-46).
  *
  * <p>Inclui a medicao RNF-71 das views novas SOBRE ESTA MASSA (pequena):
@@ -199,9 +200,9 @@ class Ed46ViewsDatabaseTest {
 
     private static String migrationSql() throws Exception {
         java.nio.file.Path path = java.nio.file.Path.of(
-                "src/main/resources/db/migration/tenant/V15_X__ed46_complete_catalog.sql");
+                "src/main/resources/db/pendente/ED-46__complete_catalog.sql");
         if (!java.nio.file.Files.exists(path)) {
-            return resource("db/migration/tenant/V15_X__ed46_complete_catalog.sql");
+            return resource("db/pendente/ED-46__complete_catalog.sql");
         }
         return java.nio.file.Files.readString(path, StandardCharsets.UTF_8);
     }

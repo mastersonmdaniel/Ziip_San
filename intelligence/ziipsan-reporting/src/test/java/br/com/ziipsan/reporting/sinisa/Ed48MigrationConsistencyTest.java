@@ -9,13 +9,14 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Consistencia do SQL pendente da ED-48 (V15_X, numeracao NAO inventada)
+ * Consistencia do SQL pendente da ED-48 (artefato pendente
+ * ED-48__sinisa_catalog_benchmark.sql em db/pendente/, numeracao NAO inventada)
  * com as classes: tabelas, travas de adesao e o padrao desligado no banco.
  */
 class Ed48MigrationConsistencyTest {
 
     private String migration() throws Exception {
-        Path path = Path.of("src/main/resources/db/migration/tenant/V15_X__ed48_sinisa_catalog_benchmark.sql");
+        Path path = Path.of("src/main/resources/db/pendente/ED-48__sinisa_catalog_benchmark.sql");
         if (!Files.exists(path)) {
             path = Path.of("intelligence/ziipsan-reporting").resolve(path);
         }

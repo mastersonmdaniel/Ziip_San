@@ -11,6 +11,7 @@
 V13_10__gis_service_connection_link.sql
 V13_11__gis_import_staging.sql
 V13_12__gis_publication_tiles_styles.sql
+V13_13__gis_thematic_maps.sql
 V13_1__gis_classification_catalog.sql
 V13_2__gis_features_history_migration.sql
 V13_3__gis_responsible_party_redaction.sql
@@ -25,7 +26,7 @@ V14_2__legacy_import_v1_history.sql
 V14_3__legacy_authorized_xml_import.sql
 V14_4__generic_spreadsheet_importer.sql
 V15_1__reporting_core_and_views.sql
-V15_X__ed46_complete_catalog.sql
+V15_2__indicator_registry.sql
 V1_10__users_audit_redaction.sql
 V1_11__personal_data_access_log_export.sql
 V1_11__work_items_and_delegations.sql
@@ -47,6 +48,7 @@ V1_9__create_users.sql
 V21_1__certification_core.sql
 V21_2__certification_documents_occurrences.sql
 V21_3__certification_governance.sql
+V23_1__lgpd_privacy.sql
 V27_1__asset_registry.sql
 V2_10__losses_audit_redaction.sql
 V2_11__lgpd_soft_delete.sql
@@ -104,6 +106,7 @@ V6_5__payment_refunds_and_unidentified_queue.sql
 V6_6__fine_cap_acceptance.sql
 V7_1__public_api_webhooks.sql
 V8_1__service_protocol.sql
+V8_2__consumer_portal_link.sql
 V8_3__public_bill_verification.sql
 V9_1__service_order_engine.sql
 V9_2__cutoff_reconnection.sql
