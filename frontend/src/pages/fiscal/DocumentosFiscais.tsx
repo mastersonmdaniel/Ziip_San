@@ -23,6 +23,12 @@ import {
  * mesmo modelo. Ações (reenvio, inutilização, cancelamento pendente) têm permissão
  * própria no servidor e exigem motivo: a tela não finge a regra — sem a permissão,
  * o servidor recusa e o erro aparece aqui. A visão da Ziip na Central é da P2.11.
+ *
+ * Correção RG-Lote3 (08/11/2026): estado vazio explícito da fila — com a
+ * consulta resolvida e nenhum documento, a tela mostra a mensagem abaixo
+ * em vez da tabela vazia, no mesmo padrão das demais páginas
+ * (MinhasTarefas: "Nenhuma tarefa neste filtro."; CustomerList:
+ * "Nenhum cliente encontrado."). Nenhum outro comportamento mudou.
  */
 const STATE_LABELS: Record<FiscalQueueState, string> = {
   AUTHORIZED: 'Autorizada',
@@ -139,6 +145,9 @@ export function DocumentosFiscais() {
               </TableBody>
             </Table>
           )}
+          {queue.data && queue.data.length === 0 ? (
+            <p>Nenhum documento fiscal neste filtro.</p>
+          ) : null}
         </CardContent>
       </Card>
     </div>

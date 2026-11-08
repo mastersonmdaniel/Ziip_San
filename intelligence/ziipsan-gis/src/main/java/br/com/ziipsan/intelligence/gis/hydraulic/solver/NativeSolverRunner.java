@@ -162,7 +162,19 @@ public final class NativeSolverRunner implements SolverPort {
         Matcher m = Pattern.compile("Continuity Error \\(%\\) \\.+\\s+([-0-9.]+)").matcher(text);
         Double last = null;
         while (m.find()) {
-            try { last = Double.parseDouble(m.group(1)); } catch (NumberFormatException ignored) { }
+            try {
+                last = Double.parseDouble(m.group(1));
+            } catch (NumberFormatException ignored) {
+                // Correção RG-Lote3 (08/11/2026): comentário fundamentado no
+                // catch antes vazio. A regex aceita sequências que não são
+                // número (ex.: "--", "1-2"): a ocorrência malformada é
+                // ignorada e o ÚLTIMO valor válido já lido é mantido — é o
+                // mesmo tratamento das linhas de cabeçalho em
+                // parseEpanetTables. A falha não some em silêncio: se
+                // nenhuma ocorrência parsear, o método devolve null e o
+                // SolverResult registra a continuidade como ausente (campo
+                // anulável), sem número fabricado.
+            }
         }
         return last;
     }

@@ -7,6 +7,7 @@ import br.com.ziipsan.platform.tenant.TenantMigrator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.info.BuildProperties;
@@ -18,8 +19,10 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -51,6 +54,14 @@ import java.util.UUID;
  * e o worker não têm este bean (P0.6) e nenhum outro bean migra tenant. Na
  * mesma tarefa o {@code TenantMigrator} perdeu o {@code outOfOrder(true)}:
  * a sequência de tenant é global, a partir de V100.
+ *
+ * <p>Correção RG-Lote3 (08/11/2026): os carimbos do registro de implantação
+ * ({@code started_at}/{@code finished_at} de {@code platform.deployment}) e
+ * o relógio repassado ao {@link TenantMigrationRollout} vêm de um único
+ * {@link Clock} — {@code Clock.systemUTC()} na fiação do Spring (construtor
+ * público, agora com {@code @Autowired} explícito por haver um segundo
+ * construtor) e injetável no construtor package-private para testes. Antes
+ * eram dois {@code Instant.now()} diretos.
  */
 @Slf4j
 @Component("databaseMigrator")
@@ -64,7 +75,9 @@ public class DatabaseMigrator implements InitializingBean {
     private final ObjectProvider<GitProperties> gitProperties;
     private final Environment environment;
     private final String configuredEnvironment;
+    private final Clock clock;
 
+    @Autowired
     public DatabaseMigrator(@Qualifier("migratorDataSource") DataSource migratorDataSource,
                             @Value("${ziipsan.db.migrate-on-startup:false}") boolean enabled,
                             @Value("${ziipsan.db.migration-parallelism:2}") int parallelism,
@@ -72,6 +85,18 @@ public class DatabaseMigrator implements InitializingBean {
                             ObjectProvider<GitProperties> gitProperties,
                             Environment environment,
                             @Value("${ziipsan.deployment.environment:}") String configuredEnvironment) {
+        this(migratorDataSource, enabled, parallelism, buildProperties, gitProperties,
+                environment, configuredEnvironment, Clock.systemUTC());
+    }
+
+    DatabaseMigrator(DataSource migratorDataSource,
+                     boolean enabled,
+                     int parallelism,
+                     ObjectProvider<BuildProperties> buildProperties,
+                     ObjectProvider<GitProperties> gitProperties,
+                     Environment environment,
+                     String configuredEnvironment,
+                     Clock clock) {
         this.migratorDataSource = migratorDataSource;
         this.enabled = enabled;
         this.parallelism = parallelism;
@@ -79,6 +104,7 @@ public class DatabaseMigrator implements InitializingBean {
         this.gitProperties = gitProperties;
         this.environment = environment;
         this.configuredEnvironment = configuredEnvironment;
+        this.clock = Objects.requireNonNull(clock, "Clock é obrigatório (relógio injetável)");
     }
 
     @Override
@@ -87,7 +113,7 @@ public class DatabaseMigrator implements InitializingBean {
             log.info("Migrations na subida desligadas (ziipsan.db.migrate-on-startup=false)");
             return;
         }
-        Instant startedAt = Instant.now();
+        Instant startedAt = clock.instant();
         new CoreMigrationRunner(migratorDataSource).run(null);
 
         // tenant_catalog não tem RLS (cadastro global da plataforma): o migrador lê sem contexto.
@@ -114,7 +140,8 @@ public class DatabaseMigrator implements InitializingBean {
                     return new TenantMigrationRollout.MigrationOutcome(
                             result.migrationsExecuted, target);
                 },
-                parallelism);
+                parallelism,
+                clock);
         TenantMigrationRollout.RolloutResult rolloutResult = rollout.run(
                 tenants.stream()
                         .map(t -> new TenantMigrationRollout.Tenant(t.id(), t.schema()))
@@ -146,7 +173,7 @@ public class DatabaseMigrator implements InitializingBean {
         // implantação é registrada como concluída. Versão/commit vêm do artefato
         // (build-info/git.properties) quando presentes; sem eles, "dev"/nulo —
         // nunca um valor inventado.
-        recordDeployment(startedAt, Instant.now());
+        recordDeployment(startedAt, clock.instant());
     }
 
     private void recordDeployment(Instant startedAt, Instant finishedAt) {

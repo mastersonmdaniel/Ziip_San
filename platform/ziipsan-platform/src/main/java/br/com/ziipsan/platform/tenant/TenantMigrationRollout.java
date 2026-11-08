@@ -4,11 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -61,6 +63,12 @@ import java.util.function.BiFunction;
  * {@code TenantMigrator::migrate} adaptado. O retorno da função é o número de
  * migrations executadas e a versão-alvo, que o chamador usa para atualizar
  * {@code tenant_schema_version} — esta classe não escreve essa coluna.
+ *
+ * <p>Correção RG-Lote3 (08/11/2026): o carimbo {@code migration_attempted_at}
+ * gravado por {@code recordStatuses} vem do {@link Clock} injetado, no padrão
+ * do projeto (construtor de conveniência com {@code Clock.systemUTC()}, como
+ * na P2.31). Antes era {@code Instant.now()} direto. O construtor de três
+ * argumentos continua existindo — nenhuma construção atual quebra.
  */
 public final class TenantMigrationRollout {
 
@@ -93,13 +101,22 @@ public final class TenantMigrationRollout {
     private final JdbcTemplate jdbc;
     private final BiFunction<String, UUID, MigrationOutcome> migrateOne;
     private final int parallelism;
+    private final Clock clock;
 
     public TenantMigrationRollout(JdbcTemplate jdbc,
                                   BiFunction<String, UUID, MigrationOutcome> migrateOne,
                                   int parallelism) {
+        this(jdbc, migrateOne, parallelism, Clock.systemUTC());
+    }
+
+    public TenantMigrationRollout(JdbcTemplate jdbc,
+                                  BiFunction<String, UUID, MigrationOutcome> migrateOne,
+                                  int parallelism,
+                                  Clock clock) {
         this.jdbc = jdbc;
         this.migrateOne = migrateOne;
         this.parallelism = Math.max(1, parallelism);
+        this.clock = Objects.requireNonNull(clock, "Clock é obrigatório (relógio injetável)");
     }
 
     public RolloutResult run(List<Tenant> tenants) {
@@ -192,7 +209,7 @@ public final class TenantMigrationRollout {
     }
 
     private void recordStatuses(List<TenantResult> results) {
-        Instant now = Instant.now();
+        Instant now = clock.instant();
         for (TenantResult result : results) {
             jdbc.update(
                     "UPDATE public.tenant_catalog SET migration_status = ?, migration_error = ?, "
