@@ -1698,3 +1698,71 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   condicionadas à aprovação da P3.9; a recuperação M3 dos 10
   pacotes; as 52 condicionadas, as 16 bloqueadas-raiz e as sob
   demanda do plano.
+
+### 08/11/2026 — Push 3: correções da recuperação M3
+
+- **Ordem expressa do dono** (08/11/2026, 15h00): subir as 7 correções
+  da recuperação M3, todas aprovadas com confirmação independente.
+- **Recuperação M3 concluída:** os 10 pacotes que estavam na `main`
+  sem veredito formal localizado (P2.21, P2.23, P2.28, P3.15, P3.18,
+  P3.22, P3.26, P3.29, P3.38, P4.8) receberam revisão cruzada nova e
+  independente — **10/10 com veredito formal: 8 aprovados e 2
+  aprovados com pendências nomeadas** (P2.21 e P3.26). P2.23, P2.28 e
+  P3.15 foram aprovados sem correção — nada a pousar deles. As
+  correções abaixo já nasceram de defeitos provados por
+  execução/sonda, com controles negativos nas confirmações.
+- **P2.21 (GIS):** a classe `GisComponentService` **não compilava**
+  (`jdbc.query` ambíguo) — corrigida; o checker passa a emitir
+  `PGR_SPLIT_IN_JAVA`; `pieceElevation` propaga pela cadeia; 2 ciclos
+  disjuntos geram 2 `GRAVITY_CYCLE`; lacuna do §5.3 implementada
+  (10 testes novos). Suíte 76 (com erro de compilação) → **91/91**.
+- **P3.18:** incidentes/janelas/resumos de componentes
+  `visible=false` **vazavam no JSON da página pública** de status —
+  vazamento fechado nos três canais; suíte 15/15 → **18/18**.
+- **P3.22:** a **exportação PDF quebrava para qualquer entrada**
+  (conta de objetos `3 + pages*2`; o correto é `2 + pages*2`) —
+  correção de 1 linha no `PdfReportWriter`, conferida por 3 agentes;
+  suíte 59/60 → **60/60**.
+- **P3.26 (GIS):** relatório de qualidade (PDF ISO 19157) com serviço,
+  endpoint e teste novos; benchmark medido de 50,047 km em ~1,1–1,2 s
+  de servidor (teto de 2 h). O benchmark provou um **defeito real
+  novo**: no PostGIS 3.4, `GeometryType()` devolve `'LINESTRING'`
+  sem o prefixo `ST_`, e a V13_11 publicada compara com
+  `'ST_LineString'` — a remoção de segmentos curtos **nunca
+  disparava** (experimento em banco: 0 → 10 removidos). Como a
+  V13_11 é migration publicada, ela **não foi reescrita**: a
+  correção (seed Saneago + `ST_GeometryType` nas 3 funções) pousa
+  como **migration nova V101**, pela sequência global da P3.12 —
+  a V100 é o marcador de abertura da sequência já presente na
+  `main`, nenhum V101+ existia em nenhum módulo, e a lista de
+  publicadas foi atualizada no mesmo commit (114 → 115 linhas).
+- **P3.29:** asserção de mensagem de teste desalinhada do validador
+  (comportamento correto) — 1 linha de teste, suíte 59/60 → **60/60**.
+- **P3.38:** o record passa a impor em Java 2 das 10 coerências dos
+  CHECKs da V10_6 e `Policy:`/`Canonical:` aceitam só `https:`
+  (RFC 9116); suíte 16/16 → **29/29**. A contagem errada de testes
+  do relatório original (17 × 16 reais) foi corrigida por ERRATA
+  local, sem reescrever o original.
+- **P4.8:** a **transferência para humano por escrito não
+  funcionava** ("quero falar com um humano" não casava as frases do
+  matcher) — corrigida; e o guard de telemetria não recursava em
+  listas (identificador dentro de array era aceito e gravado) —
+  corrigido. Suíte 22/23 → **29/29**.
+- **Backup da camada:** branch `backup/2026-11-08-pos-push-3` criada
+  sobre o HEAD final desta operação (este commit de diário incluso).
+- **Pendências nomeadas vivas:** P2.21 PEND-01 (publicador de área
+  suja — a spec não decide quem publica/quando/`dedup_key` e a API
+  da fila da P1.9 não existe nos espelhos; integração posterior) e
+  PEND-02 (pgRouting real e `Gis03TopologyIT` — CI definitiva);
+  P3.26 A3 (grade oficial do IBGE: arquivos `br_ibge_*.tif`
+  ausentes — item não aprovado, destrava com os artefatos oficiais
+  e os pontos de homologação), A1 (medidas ISO de homologação), A2
+  (publicação IMPORT/leitura GDAL não medidas) e A4 (validação
+  contra a IN 00.0229); P3.38 (canal e prazo do `security.txt`
+  seguem decisão do dono — o gerador recusa publicar sem eles);
+  P3.22 N2 (execução pode ficar `RUNNING` em falha de escrita —
+  pendência separada na esteira); a **CI total definitiva sobre o
+  novo HEAD** no PC do dono (prova integrada de tudo que pousou,
+  incl. a guarda de migrations com a V101 e os ITs inexequíveis
+  nesta VM); **piloto P0.30** (o dono indicará a prestadora; trava
+  P3.13, GL.4, a trilha LC e a aprovação das minutas da P3.9).
