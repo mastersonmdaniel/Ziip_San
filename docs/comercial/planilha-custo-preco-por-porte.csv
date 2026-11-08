@@ -1,0 +1,21 @@
+secao;item;unidade;valor;fonte_ou_estado
+PLANILHA-MODELO;versao;;[A DEFINIR];versao aprovada da planilha (PriceSheet.version)
+PLANILHA-MODELO;vigencia_inicio;;[A DEFINIR];PriceSheet.validFrom
+FAIXA_DE_PORTE;codigo_e_limites_de_ligacoes_ativas;ligacoes;[A DEFINIR];nenhuma fonte fixa cortes de porte - dado da versao (SizeBand)
+CUSTO_P026;componente_de_hospedagem_ou_direto;R$/mes;[A DEFINIR];tabela de custo da P0.26 (decisao ADR-0011/ADR-0033) entra como CostComponent - nenhum custo presumido
+CUSTO_P026;alocacao_do_componente;;[A DEFINIR];FIXED_PER_TENANT | PER_CONNECTION | SHARED_POOL
+PERFIL;papel_profissional;;[A DEFINIR];ProfessionalProfile.role
+PERFIL;valor_homem_hora;R$/hora;[A DEFINIR];ProfessionalProfile.hourlyRate
+PERFIL;horas_mensais;hora/mes;[A DEFINIR];ProfessionalProfile.monthlyHours
+PRECO;margem_sobre_o_custo;%;[A DEFINIR];parametro saas.margin_percent - sem valor de fabrica
+TETO_REFERENCIA;VISAN;R$/mes;18866.65;acceptance da ED-10 (valor literal do edital de referencia)
+TETO_REFERENCIA;SAMAE;R$/mes;7636.74;acceptance da ED-10 (valor literal do edital de referencia)
+GARANTIA;garantia;meses;12;acceptance da ED-10 (valor literal)
+GARANTIA;correcao_de_vicios;horas;48;acceptance da ED-10 (valor literal)
+REVERSAO;desconto_sobre_a_mensalidade;%;[A DEFINIR];parametro saas.reversion_discount_percent (ADR-0024 remete a tabela comercial)
+INSTANCIA_DEDICADA;custo_da_pilha_propria;R$/mes;[A DEFINIR];soma dos CostComponent da pilha (api+worker+Keycloak+banco) - preco deve cobrir (ADR-0024)
+REPASSE;modo;;[A DEFINIR];parametro saas.pass_through_mode: FRANCHISE | FULL_PASS_THROUGH
+REPASSE;franquia_por_categoria;mensagens ou tokens;[A DEFINIR];por categoria (WhatsApp marketing/utilidade/autenticacao, SMS, LLM)
+REPASSE;custo_unitario_por_categoria;R$;[A DEFINIR];custo por categoria de modelo de mensagem (ED-41/GES-19); LLM por 1000 tokens
+REPASSE;uso_medido;;medido;P2.12 usage_ledger + ED-41 UsageStore - nunca estimado
+BASE_COMPROVAVEL;ligacoes_ativas_mensais_com_hash;;medido;fotografia mensal da P2.12 (PLT-17) verificada por hash (ActiveConnectionSnapshot)
