@@ -1,0 +1,38 @@
+// ED-19 — integracao do artefato ziipsan-billing-rules no app de campo.
+// Aplicar no build do app Android (integration step, junto do cap sync):
+//   apply from: '../billing-rules.gradle'  (caminho ajustado na integracao)
+//
+// O app depende do MESMO artefato que o servidor usa. A versao NAO e
+// escrita a mao: vem da tag do repo, como no restante do projeto (P0.39) —
+// o pipeline injeta -DbillingRulesVersion=<tag> no Gradle.
+
+dependencies {
+    implementation "br.com.ziipsan:ziipsan-billing-rules:${project.findProperty('billingRulesVersion')}"
+}
+
+// Conferencia de hash no build: o JAR resolvido para o APK tem o SHA-256
+// calculado e gravado em billing-rules-artifact.sha256 ao lado do APK.
+// O servidor carimba o hash dele no pacote da rota; o aparelho confere os
+// dois antes de aceitar a rota (ArtifactHash.requireMatch) — artefato
+// diferente nao emite conta.
+tasks.register('verifyBillingRulesHash') {
+    doLast {
+        def jar = configurations.named('releaseRuntimeClasspath').get().files.find {
+            it.name.startsWith('ziipsan-billing-rules')
+        }
+        if (jar == null) {
+            throw new GradleException('ziipsan-billing-rules nao resolvido no classpath do app')
+        }
+        def digest = java.security.MessageDigest.getInstance('SHA-256')
+        jar.withInputStream { input ->
+            byte[] buffer = new byte[8192]
+            int read
+            while ((read = input.read(buffer)) >= 0) {
+                digest.update(buffer, 0, read)
+            }
+        }
+        def hex = digest.digest().collect { String.format('%02x', it) }.join()
+        new File(buildDir, 'billing-rules-artifact.sha256').text = hex
+        logger.lifecycle("ziipsan-billing-rules SHA-256: ${hex}")
+    }
+}
