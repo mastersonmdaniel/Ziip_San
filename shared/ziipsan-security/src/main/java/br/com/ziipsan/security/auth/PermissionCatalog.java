@@ -220,7 +220,23 @@ public final class PermissionCatalog {
             new Permission("bills:read", "integração", "bills", "read", "P2.26"),
             new Permission("payments:read", "integração", "payments", "read", "P2.26"),
             new Permission("service-orders:read", "integração", "service-orders", "read", "P2.26"),
-            new Permission("service-orders:write", "integração", "service-orders", "write", "P2.26"));
+            new Permission("service-orders:write", "integração", "service-orders", "write", "P2.26"),
+            // P3.30: unidade organizacional e escopo por área (ADR-0040,
+            // DAD-31). As três são CONCESSÃO DIRETA (ver coverageExemptions):
+            // protocol:transfer-any-unit desvia da exigência de escopo nas
+            // duas pontas do trâmite; so:close-retroactive e
+            // so:close-without-activities desviam das guardas do
+            // encerramento de OS do motor da P1.31, que é quem as impõe —
+            // incluí-las num perfil de fábrica daria o desvio a todos os
+            // portadores do perfil. Recurso "so" em
+            // so:close-without-activities é literal do aceite da P3.30,
+            // distinto de "service-order" (P1.33) e de "service-orders"
+            // (escopos OAuth da P2.26): os três recursos coexistem porque
+            // nomeiam superfícies diferentes, e unificá-los mudaria nomes
+            // já publicados de outras tarefas.
+            new Permission("protocol:transfer-any-unit", "atendimento", "protocol", "transfer-any-unit", "P3.30"),
+            new Permission("so:close-retroactive", "ordem de servico", "so", "close-retroactive", "P3.30"),
+            new Permission("so:close-without-activities", "ordem de servico", "so", "close-without-activities", "P3.30"));
 
     /**
      * Perfis de fábrica (P0.13: os quatro mínimos; P1.37: os 22 por função, na ordem do
@@ -414,6 +430,12 @@ public final class PermissionCatalog {
                 "Escopo OAuth 2.0 de cliente da API pública (P2.26): concedido a clientes, nunca a perfis de usuário; o @PreAuthorize da rota pública verifica o escopo do token.");
         exemptions.put("service-orders:write",
                 "Escopo OAuth 2.0 de cliente da API pública (P2.26): concedido a clientes, nunca a perfis de usuário; o @PreAuthorize da rota pública verifica o escopo do token.");
+        exemptions.put("protocol:transfer-any-unit",
+                "Concessão direta (P3.30, precedente registry:reveal-document): tramitar protocolo para qualquer unidade sem escopo nas duas pontas é desvio, nunca padrão de perfil.");
+        exemptions.put("so:close-retroactive",
+                "Concessão direta (P3.30, precedente registry:reveal-document): encerrar OS com data retroativa é desvio das guardas da P1.31, nunca padrão de perfil.");
+        exemptions.put("so:close-without-activities",
+                "Concessão direta (P3.30, precedente registry:reveal-document): encerrar OS sem atividades registradas é desvio das guardas da P1.31, nunca padrão de perfil.");
         return Map.copyOf(exemptions);
     }
 

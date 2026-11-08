@@ -1,0 +1,2 @@
+tenant_id;module_key;planned_hours;delivered_hours;delivered_units;participants_enrolled;participants_completed;status;concluded_on
+<uuid-do-tenant>;CADASTRO;40;;FUNDAMENTOS|OPERACAO_GUIADA|PRATICA_SUPERVISIONADA|EXCECOES_E_CONTROLES|AVALIACAO_E_ENCERRAMENTO;;;PLANNED;

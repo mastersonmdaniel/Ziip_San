@@ -1,0 +1,2 @@
+tenant_id;customization_key;category;title;description;source_ref;status;decided_by;decided_on;rollback_note
+<uuid-do-tenant>;<chave-estavel>;PARAMETER;<titulo>;<descricao e razao da divergencia>;P0.19;RECORDED;;;
