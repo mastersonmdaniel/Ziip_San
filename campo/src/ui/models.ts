@@ -363,6 +363,86 @@ export class HeldQueue {
 }
 
 // ---------------------------------------------------------------------------
+// 4b. Fila de divergencia campo x servidor (R2-m2 / P-05)
+// ---------------------------------------------------------------------------
+
+/** Um campo divergente, com os dois valores em texto plano (espelho do
+ *  `FieldDifference` da ED-19: `DivergenceEvaluator`). */
+export interface FieldDifferenceView {
+  field: string;
+  fieldValue: string;
+  serverValue: string;
+}
+
+/**
+ * Uma conta na fila de divergencia do servidor (ED-19/P2.20, situacao
+ * `DIVERGENT_QUEUED` no backend): a conta impressa em campo (taskId)
+ * diverge da recalculada pelo servidor. `basisDivergent` = a base (versao
+ * de tarifa/parametros) nao e a esperada; `differences` = os campos de
+ * valor que diferem no centavo (vazio = valores iguais, divergencia so
+ * de base). A conta impressa NUNCA e alterada pela correcao — a
+ * aprovacao gera uma NOVA versao no servidor
+ * (`DivergenceApprovalService`); quem aprova nao e quem submeteu.
+ *
+ * FONTE DOS DADOS: o aparelho nao calcula divergencia — ela e apurada no
+ * servidor e entregue pela porta de integracao `fetchDivergences`
+ * (controller). Sem a porta, a fila nao existe no aparelho: a tela
+ * declara a indisponibilidade em vez de mostrar uma fila vazia fingida.
+ */
+export interface DivergenceEntry {
+  taskId: string;
+  basisDivergent: boolean;
+  differences: FieldDifferenceView[];
+}
+
+/**
+ * Fila de divergencias da sessao: substituida inteira a cada consulta a
+ * porta (o servidor e a fonte; o aparelho nao acumula nem resolve).
+ */
+export class DivergenceQueue {
+  private readonly entries = new Map<string, DivergenceEntry>();
+
+  /** Substitui a fila pela lista devolvida pelo servidor (copia). */
+  replace(entries: DivergenceEntry[]): void {
+    this.entries.clear();
+    for (const e of entries) {
+      this.entries.set(e.taskId, {
+        taskId: e.taskId,
+        basisDivergent: e.basisDivergent,
+        differences: e.differences.map((d) => ({ ...d })),
+      });
+    }
+  }
+
+  list(): DivergenceEntry[] {
+    return [...this.entries.values()];
+  }
+
+  count(): number {
+    return this.entries.size;
+  }
+
+  forTask(taskId: string): DivergenceEntry | null {
+    return this.entries.get(taskId) ?? null;
+  }
+}
+
+/** Linhas de exibicao de uma divergencia: titulo + base + cada campo. */
+export function divergenceDisplay(entry: DivergenceEntry): string[] {
+  const lines = [`Conta da tarefa ${entry.taskId} diverge do servidor.`];
+  if (entry.basisDivergent) {
+    lines.push('Base divergente: a tarifa/parâmetros usados em campo não são os esperados pelo servidor.');
+  }
+  for (const d of entry.differences) {
+    lines.push(`${d.field}: campo ${d.fieldValue} · servidor ${d.serverValue}`);
+  }
+  if (!entry.basisDivergent && entry.differences.length === 0) {
+    lines.push('Sem detalhe de divergência informado pelo servidor.');
+  }
+  return lines;
+}
+
+// ---------------------------------------------------------------------------
 // 5. Sincronizacao
 // ---------------------------------------------------------------------------
 
@@ -405,6 +485,38 @@ export function syncView(pendingCount: number, lastRun: LastSyncRun | null): Syn
       ? `${lastRun.uploaded} leitura(s) enviada(s)${lastRun.wiped ? ' · dados locais apagados (diretiva do servidor)' : ''} · ${lastRun.at}`
       : null,
   };
+}
+
+// ---------------------------------------------------------------------------
+// 5b. Consulta de diretiva fora da sincronizacao (R2-m3 / P-06)
+// ---------------------------------------------------------------------------
+
+/**
+ * Estado da consulta de diretiva fora da sync: a diretiva so existe no
+ * servidor, entao "consultar" e perguntar a ele pela porta de integracao
+ * `queryDirective` (controller). `READY` com diretiva null = o servidor
+ * respondeu sem informar diretiva (desconhecida, nao "nenhuma").
+ */
+export type DirectiveQueryState = 'UNAVAILABLE' | 'NOT_QUERIED' | 'READY' | 'ERROR';
+
+/** Linhas de exibicao da diretiva consultada fora da sincronizacao. */
+export function directiveQueryDisplay(
+  state: DirectiveQueryState,
+  directive: DeviceDirective | null,
+  error: string | null,
+): string[] {
+  switch (state) {
+    case 'UNAVAILABLE':
+      return ['Diretiva atual: consulta fora da sincronização indisponível nesta integração — o SyncEngine da ED-18 não expõe consulta separada (pendência P-06).'];
+    case 'NOT_QUERIED':
+      return ['Diretiva atual: ainda não consultada nesta sessão.'];
+    case 'ERROR':
+      return [`Diretiva atual: a consulta falhou (${error ?? 'erro desconhecido'}).`];
+    case 'READY':
+      return directive === null
+        ? ['Diretiva atual: o servidor não informou diretiva nesta consulta.']
+        : [`Diretiva atual do aparelho: ${directive} — ${directiveLabel(directive)}`];
+  }
 }
 
 // ---------------------------------------------------------------------------

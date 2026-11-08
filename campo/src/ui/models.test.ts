@@ -3,12 +3,15 @@ import assert from 'node:assert/strict';
 import type { PendingReading, RoutePackage } from '../readings/routePackage.ts';
 import type { FieldBillResultDto } from '../field/fieldEmission.ts';
 import {
+  DivergenceQueue,
   HeldQueue,
   Navigator,
   addOccurrencePhotoRef,
   billDisplayRows,
   buildPendingReading,
   directiveLabel,
+  directiveQueryDisplay,
+  divergenceDisplay,
   occurrenceRequiresPhoto,
   ocrVerdictFor,
   outcomeDisplay,
@@ -18,6 +21,7 @@ import {
   syncView,
   taskLabel,
   validateReading,
+  type DivergenceEntry,
   type ReadingDraft,
 } from './models.ts';
 
@@ -194,4 +198,47 @@ test('navegacao: abrir tarefa vai a leitura; voltar desfaz na ordem', () => {
   assert.equal(nav.back(), true);
   assert.equal(nav.current(), 'rota');
   assert.equal(nav.back(), false);
+});
+
+test('R2-m2: fila de divergencias guarda a lista do servidor, substitui por consulta e busca por tarefa', () => {
+  const q = new DivergenceQueue();
+  assert.equal(q.count(), 0);
+  assert.equal(q.forTask('task-1'), null);
+  const first: DivergenceEntry[] = [
+    { taskId: 'task-1', basisDivergent: false, differences: [{ field: 'total', fieldValue: '27.90', serverValue: '31.40' }] },
+    { taskId: 'task-2', basisDivergent: true, differences: [] },
+  ];
+  q.replace(first);
+  assert.equal(q.count(), 2);
+  assert.equal(q.forTask('task-1')?.differences[0].serverValue, '31.40');
+  assert.equal(q.forTask('task-2')?.basisDivergent, true);
+  // Nova consulta substitui inteira: a resolvida some da fila.
+  q.replace([{ taskId: 'task-2', basisDivergent: true, differences: [] }]);
+  assert.equal(q.count(), 1);
+  assert.equal(q.forTask('task-1'), null);
+});
+
+test('R2-m2: exibicao da divergencia mostra base e cada campo (campo x servidor), sem recalcular', () => {
+  const lines = divergenceDisplay({
+    taskId: 'task-1', basisDivergent: true,
+    differences: [
+      { field: 'total', fieldValue: '27.90', serverValue: '31.40' },
+      { field: 'consumptionM3', fieldValue: '12', serverValue: '14' },
+    ],
+  });
+  assert.match(lines[0], /task-1/);
+  assert.match(lines[1], /Base divergente/);
+  assert.match(lines[2], /total: campo 27.90 · servidor 31.40/);
+  assert.match(lines[3], /consumptionM3: campo 12 · servidor 14/);
+  assert.deepEqual(divergenceDisplay({ taskId: 'task-9', basisDivergent: false, differences: [] })[1],
+    'Sem detalhe de divergência informado pelo servidor.');
+});
+
+test('R2-m3: exibicao da consulta de diretiva distingue os 4 estados sem afirmar o que nao sabe', () => {
+  assert.match(directiveQueryDisplay('UNAVAILABLE', null, null)[0], /indisponível nesta integração/);
+  assert.match(directiveQueryDisplay('NOT_QUERIED', null, null)[0], /ainda não consultada/);
+  assert.match(directiveQueryDisplay('ERROR', null, 'rede fora')[0], /rede fora/);
+  assert.match(directiveQueryDisplay('READY', 'BLOCK', null)[0], /BLOCK/);
+  assert.match(directiveQueryDisplay('READY', 'BLOCK', null)[0], /bloqueado/);
+  assert.match(directiveQueryDisplay('READY', null, null)[0], /não informou diretiva/);
 });

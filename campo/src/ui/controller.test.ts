@@ -99,6 +99,8 @@ function deps(over: Partial<FieldScreensDeps> = {}): { deps: FieldScreensDeps; s
     ocrSettings: null,
     ocrEngine: null,
     printer: null,
+    fetchDivergences: null,
+    queryDirective: null,
     now: () => '2026-11-08T10:00:00Z',
   };
   return { deps: { ...base, ...over }, storeFake };
@@ -316,4 +318,99 @@ test('syncNow com diretiva BLOCK apaga a fila local (comportamento real da ED-18
   const run = await ctl.syncNow();
   assert.deepEqual({ uploaded: run.uploaded, wiped: run.wiped }, { uploaded: 0, wiped: true });
   assert.equal(ctl.progress().done, 0);
+});
+
+test('R2-m2: refreshDivergences com a porta alimenta a fila da sessao (fonte: servidor)', async () => {
+  const { deps: d } = deps({
+    fetchDivergences: async () => [
+      { taskId: 'task-1', basisDivergent: false, differences: [{ field: 'total', fieldValue: '27.90', serverValue: '31.40' }] },
+    ],
+  });
+  const ctl = new FieldScreensController(d);
+  await ctl.load();
+  assert.equal(ctl.hasDivergenceFeed(), true);
+  assert.equal(ctl.divergenceFeedState(), 'NOT_QUERIED');
+  assert.equal(ctl.divergences.count(), 0);
+  assert.equal(await ctl.refreshDivergences(), 'READY');
+  assert.equal(ctl.divergenceFeedState(), 'READY');
+  assert.equal(ctl.divergences.count(), 1);
+  assert.equal(ctl.divergences.forTask('task-1')?.differences[0].serverValue, '31.40');
+});
+
+test('R2-m2: sem a porta, a fila e UNAVAILABLE e nenhuma divergencia e fingida', async () => {
+  const { deps: d } = deps({ fetchDivergences: null });
+  const ctl = new FieldScreensController(d);
+  await ctl.load();
+  assert.equal(ctl.hasDivergenceFeed(), false);
+  assert.equal(await ctl.refreshDivergences(), 'UNAVAILABLE');
+  assert.equal(ctl.divergenceFeedState(), 'UNAVAILABLE');
+  assert.equal(ctl.divergences.count(), 0);
+});
+
+test('R2-m2: porta falhando vira ERROR e mantem a ultima fila consultada', async () => {
+  let fail = false;
+  const { deps: d } = deps({
+    fetchDivergences: async () => {
+      if (fail) throw new Error('servidor fora');
+      return [{ taskId: 'task-1', basisDivergent: true, differences: [] }];
+    },
+  });
+  const ctl = new FieldScreensController(d);
+  await ctl.load();
+  assert.equal(await ctl.refreshDivergences(), 'READY');
+  assert.equal(ctl.divergences.count(), 1);
+  fail = true;
+  assert.equal(await ctl.refreshDivergences(), 'ERROR');
+  assert.equal(ctl.divergenceFeedError(), 'servidor fora');
+  assert.equal(ctl.divergences.count(), 1);
+});
+
+test('R2-m3: refreshDirective consulta a diretiva fora da sync e guarda so por consulta expressa', async () => {
+  const { deps: d } = deps({ queryDirective: async () => 'BLOCK' as const });
+  const ctl = new FieldScreensController(d);
+  await ctl.load();
+  assert.equal(ctl.hasDirectiveQuery(), true);
+  assert.equal(ctl.directiveQueryState(), 'NOT_QUERIED');
+  assert.equal(ctl.directive(), null);
+  assert.equal(await ctl.refreshDirective(), 'READY');
+  assert.equal(ctl.directive(), 'BLOCK');
+  // A sync com BLOCK nao muda a diretiva guardada: so a consulta expressa muda.
+  const storeFake = makeStore([
+    { taskId: 'task-1', reading: 12012, occurrenceCode: null, photoRefs: [], ocrValue: null, capturedAt: 'T' },
+  ]);
+  const { deps: dSync } = deps({ store: storeFake.store, sync: makeSync(storeFake.store, 'BLOCK'), queryDirective: async () => 'BLOCK' as const });
+  const ctlSync = new FieldScreensController(dSync);
+  await ctlSync.load();
+  assert.equal(ctlSync.directive(), null);
+  await ctlSync.syncNow();
+  assert.equal(ctlSync.directive(), null);
+});
+
+test('R2-m3: sem a porta, a diretiva e UNAVAILABLE e nada e inferido da sync', async () => {
+  const { deps: d } = deps({ queryDirective: null });
+  const ctl = new FieldScreensController(d);
+  await ctl.load();
+  assert.equal(ctl.hasDirectiveQuery(), false);
+  assert.equal(await ctl.refreshDirective(), 'UNAVAILABLE');
+  assert.equal(ctl.directiveQueryState(), 'UNAVAILABLE');
+  assert.equal(ctl.directive(), null);
+});
+
+test('R2-m3: porta que devolve null = servidor sem diretiva a informar (desconhecida, nao "nenhuma")', async () => {
+  const { deps: d } = deps({ queryDirective: async () => null });
+  const ctl = new FieldScreensController(d);
+  await ctl.load();
+  assert.equal(await ctl.refreshDirective(), 'READY');
+  assert.equal(ctl.directive(), null);
+});
+
+test('R2-m3: porta de diretiva falhando vira ERROR sem valor fingido', async () => {
+  const { deps: d } = deps({
+    queryDirective: async () => { throw new Error('rede fora'); },
+  });
+  const ctl = new FieldScreensController(d);
+  await ctl.load();
+  assert.equal(await ctl.refreshDirective(), 'ERROR');
+  assert.equal(ctl.directiveQueryError(), 'rede fora');
+  assert.equal(ctl.directive(), null);
 });

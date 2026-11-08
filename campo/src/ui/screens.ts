@@ -16,6 +16,8 @@ import {
   SCREEN_TITLES,
   billDisplayRows,
   directiveLabel,
+  directiveQueryDisplay,
+  divergenceDisplay,
   outcomeDisplay,
   printerHealthDisplay,
   syncView,
@@ -382,10 +384,66 @@ export class FieldScreensView {
       }
       box.append(list);
     }
+    box.append(this.divergenceSection());
+    return box;
+  }
+
+  // --- Fila de divergencia campo x servidor (R2-m2 / P-05) -----------------
+  // A fila vive no servidor (ED-19, DIVERGENT_QUEUED) e chega pela porta
+  // fetchDivergences. Sem a porta, a secao declara a indisponibilidade —
+  // nunca uma fila vazia fingida. A correcao da divergencia e aprovacao
+  // no servidor (nova versao da conta); o aparelho so EXIBE a fila.
+  private divergenceSection(): HTMLElement {
+    const box = h('section', { 'aria-label': 'Divergências campo × servidor' });
+    box.append(h('h2', {}, 'Divergências campo × servidor'));
+    if (!this.ctl.hasDivergenceFeed()) {
+      box.append(
+        h('p', {},
+          'Fila de divergência campo × servidor indisponível neste aparelho: ' +
+          'a integração ainda não entrega a consulta ao servidor (pendência P-05). ' +
+          'As divergências seguem tratadas na fila do servidor (P2.20/ED-19).'),
+      );
+      return box;
+    }
+    const state = this.ctl.divergenceFeedState();
+    if (state === 'ERROR') {
+      box.append(h('p', {}, `A consulta à fila de divergências falhou (${this.ctl.divergenceFeedError() ?? 'erro desconhecido'}).`));
+    }
+    const entries = this.ctl.divergences.list();
+    if (state === 'READY' && entries.length === 0) {
+      box.append(h('p', {}, 'Nenhuma divergência na fila do servidor.'));
+    }
+    if (state === 'NOT_QUERIED') {
+      box.append(h('p', {}, 'Fila de divergências ainda não consultada nesta sessão.'));
+    }
+    const list = h('ul', { class: 'campo-list' });
+    for (const e of entries) {
+      const li = h('li', { class: 'campo-item' });
+      for (const line of divergenceDisplay(e)) {
+        li.append(h('span', {}, line));
+      }
+      li.append(
+        button('Abrir tarefa', () => {
+          this.ctl.nav.openTask(e.taskId);
+          this.render();
+        }),
+      );
+      list.append(li);
+    }
+    box.append(list);
     box.append(
-      h('p', {},
-        'Divergências de valor entre campo e servidor são tratadas na fila do servidor (P2.20/ED-19) ' +
-        'e não aparecem nesta tela: o contrato de campo não expõe esse conceito (pendência P-05).'),
+      button('Consultar divergências do servidor', () => {
+        void this.ctl.refreshDivergences().then((s) => {
+          this.say(
+            s === 'READY'
+              ? `Fila de divergências atualizada: ${this.ctl.divergences.count()} conta(s) em divergência.`
+              : s === 'ERROR'
+                ? 'Não foi possível consultar a fila de divergências.'
+                : 'Fila de divergências indisponível nesta integração.',
+          );
+          this.render();
+        });
+      }),
     );
     return box;
   }
@@ -401,11 +459,38 @@ export class FieldScreensView {
           ? `Última sincronização desta sessão: ${view.lastRunLabel}`
           : 'Nenhuma sincronização executada nesta sessão.'),
     );
-    box.append(
-      h('p', {},
-        'A diretiva atual do aparelho (NONE/RETIRE/BLOCK) só é conhecida no contato com o servidor, ' +
-        'durante a sincronização — o SyncEngine da ED-18 não expõe consulta separada (pendência P-06).'),
-    );
+    // Diretiva atual consultavel FORA da sincronizacao (R2-m3 / P-06):
+    // a secao mostra a ultima diretiva conhecida por consulta expressa e
+    // o botao consulta o servidor pela porta queryDirective. Sem a porta,
+    // nada e afirmado — a legenda abaixo explica os valores possiveis sem
+    // dizer qual esta ativo. A diretiva NUNCA e inferida do resultado da
+    // ultima sync (wiped cobre RETIRE e BLOCK sem dizer qual).
+    const directiveBox = h('section', { 'aria-label': 'Diretiva atual do aparelho' });
+    directiveBox.append(h('h2', {}, 'Diretiva atual'));
+    for (const line of directiveQueryDisplay(
+      this.ctl.directiveQueryState(),
+      this.ctl.directive(),
+      this.ctl.directiveQueryError(),
+    )) {
+      directiveBox.append(h('p', {}, line));
+    }
+    if (this.ctl.hasDirectiveQuery()) {
+      directiveBox.append(
+        button('Consultar diretiva atual', () => {
+          void this.ctl.refreshDirective().then((state) => {
+            this.say(
+              state === 'READY'
+                ? 'Diretiva atual consultada.'
+                : state === 'ERROR'
+                  ? 'Não foi possível consultar a diretiva atual.'
+                  : 'Consulta de diretiva indisponível nesta integração.',
+            );
+            this.render();
+          });
+        }),
+      );
+    }
+    box.append(directiveBox);
     // Legenda das diretivas possiveis (directiveLabel ligada de verdade:
     // explica cada valor do contrato SEM afirmar qual esta ativa — a
     // diretiva vigente nao e recuperavel do resultado de syncRoute).

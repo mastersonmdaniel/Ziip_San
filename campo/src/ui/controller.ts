@@ -18,9 +18,14 @@
  *    (no Java da ED-19 ele existe: FieldTariffSnapshot — a porta TS nao).
  *  - saveReading: o LocalStore da ED-18 expoe leitura da fila
  *    (pendingReadings) mas NENHUM metodo de gravacao de leitura executada.
+ *  - fetchDivergences (P-05): a fila de divergencia vive no servidor
+ *    (ED-19, DIVERGENT_QUEUED); sem a porta, a Tela 4 mostra so as
+ *    retencoes locais e declara a fila do servidor indisponivel.
+ *  - queryDirective (P-06): a diretiva atual so existe no servidor; sem
+ *    a porta, a Tela 5 nao afirma diretiva nenhuma fora da sync.
  */
 import type { PendingReading, RoutePackage, RouteTask } from '../readings/routePackage.ts';
-import type { LocalStore, SyncEngine } from '../sync/syncEngine.ts';
+import type { DeviceDirective, LocalStore, SyncEngine } from '../sync/syncEngine.ts';
 import type { OnDeviceOcrEngine } from '../ocr/onDeviceOcr.ts';
 import {
   FieldEmission,
@@ -30,6 +35,7 @@ import {
   type ThermalPrinterBridge,
 } from '../field/fieldEmission.ts';
 import {
+  DivergenceQueue,
   HeldQueue,
   Navigator,
   addOccurrencePhotoRef,
@@ -38,6 +44,8 @@ import {
   occurrenceRequiresPhoto,
   routeProgress,
   validateReading,
+  type DirectiveQueryState,
+  type DivergenceEntry,
   type LastSyncRun,
   type OcrSettings,
   type PrinterHealth,
@@ -64,6 +72,20 @@ export interface FieldScreensDeps {
   ocrEngine: OnDeviceOcrEngine | null;
   /** Ponte da impressora real (ED-19) para saude do aparelho; opcional. */
   printer: ThermalPrinterBridge | null;
+  /**
+   * Porta de integracao (P-05): fila de divergencia campo x servidor.
+   * O aparelho nao apura divergencia — a fonte e o servidor (ED-19,
+   * situacao DIVERGENT_QUEUED); a integracao entrega a consulta e a tela
+   * exibe a fila. Null enquanto a integracao nao a entregar.
+   */
+  fetchDivergences: (() => Promise<DivergenceEntry[]>) | null;
+  /**
+   * Porta de integracao (P-06): consulta da diretiva atual do aparelho
+   * fora da sincronizacao. O SyncEngine da ED-18 so conhece a diretiva
+   * no contato (fetchDirective e do SyncTransport); sem esta porta, a
+   * tela nao afirma diretiva nenhuma. Null enquanto nao entregue.
+   */
+  queryDirective: (() => Promise<DeviceDirective | null>) | null;
   now?: () => string;
 }
 
@@ -75,6 +97,7 @@ export type EmitResult =
 export class FieldScreensController {
   readonly nav = new Navigator();
   readonly held = new HeldQueue();
+  readonly divergences = new DivergenceQueue();
 
   private readonly deps: FieldScreensDeps;
   private readonly now: () => string;
@@ -84,6 +107,11 @@ export class FieldScreensController {
   private readonly emissionTasks = new Map<string, FieldTaskEmission>();
   private lastSync: LastSyncRun | null = null;
   private syncing = false;
+  private divergenceState: 'NOT_QUERIED' | 'READY' | 'ERROR' = 'NOT_QUERIED';
+  private divergenceError: string | null = null;
+  private lastKnownDirective: DeviceDirective | null = null;
+  private directiveState: 'NOT_QUERIED' | 'READY' | 'ERROR' = 'NOT_QUERIED';
+  private directiveError: string | null = null;
   private printerHealthCache: PrinterHealth | null = null;
   private printerHealthChecked = false;
   private printerHealthError: string | null = null;
@@ -326,5 +354,84 @@ export class FieldScreensController {
     } finally {
       this.syncing = false;
     }
+  }
+
+  /** true quando a porta da fila de divergencia (P-05) foi entregue. */
+  hasDivergenceFeed(): boolean {
+    return this.deps.fetchDivergences !== null;
+  }
+
+  /** Estado da fila de divergencias para a Tela 4. */
+  divergenceFeedState(): 'UNAVAILABLE' | 'NOT_QUERIED' | 'READY' | 'ERROR' {
+    if (!this.deps.fetchDivergences) return 'UNAVAILABLE';
+    return this.divergenceState;
+  }
+
+  /** Erro da ultima consulta a fila de divergencias (null = sem erro). */
+  divergenceFeedError(): string | null {
+    return this.divergenceError;
+  }
+
+  /**
+   * Consulta a fila de divergencias no servidor (porta P-05) e a guarda
+   * nesta sessao — o servidor e a fonte, o aparelho nao acumula nem
+   * resolve divergencia. Sem a porta, devolve UNAVAILABLE sem fingir
+   * fila vazia. Falha da porta vira ERROR e mantem a ultima fila
+   * consultada (nunca a apaga por causa do erro).
+   */
+  async refreshDivergences(): Promise<'UNAVAILABLE' | 'NOT_QUERIED' | 'READY' | 'ERROR'> {
+    if (!this.deps.fetchDivergences) return 'UNAVAILABLE';
+    try {
+      const entries = await this.deps.fetchDivergences();
+      this.divergences.replace(entries);
+      this.divergenceError = null;
+      this.divergenceState = 'READY';
+    } catch (err) {
+      this.divergenceError = err instanceof Error ? err.message : String(err);
+      this.divergenceState = 'ERROR';
+    }
+    return this.divergenceState;
+  }
+
+  /** true quando a porta de consulta de diretiva (P-06) foi entregue. */
+  hasDirectiveQuery(): boolean {
+    return this.deps.queryDirective !== null;
+  }
+
+  /** Estado da consulta de diretiva fora da sync, para a Tela 5. */
+  directiveQueryState(): DirectiveQueryState {
+    if (!this.deps.queryDirective) return 'UNAVAILABLE';
+    return this.directiveState;
+  }
+
+  /** Ultima diretiva conhecida por consulta expressa (null = desconhecida). */
+  directive(): DeviceDirective | null {
+    return this.lastKnownDirective;
+  }
+
+  /** Erro da ultima consulta de diretiva (null = sem erro). */
+  directiveQueryError(): string | null {
+    return this.directiveError;
+  }
+
+  /**
+   * Consulta a diretiva atual do aparelho FORA da sincronizacao (porta
+   * P-06). Sem a porta, devolve UNAVAILABLE: nenhuma diretiva e inferida
+   do resultado da ultima sync (wiped cobre RETIRE e BLOCK sem dizer
+   qual). A diretiva guardada so muda por esta consulta expressa — nunca
+   por inferencia. Porta que devolve null = servidor sem diretiva a
+   informar (desconhecida, nao "nenhuma").
+   */
+  async refreshDirective(): Promise<DirectiveQueryState> {
+    if (!this.deps.queryDirective) return 'UNAVAILABLE';
+    try {
+      this.lastKnownDirective = await this.deps.queryDirective();
+      this.directiveError = null;
+      this.directiveState = 'READY';
+    } catch (err) {
+      this.directiveError = err instanceof Error ? err.message : String(err);
+      this.directiveState = 'ERROR';
+    }
+    return this.directiveState;
   }
 }

@@ -9,7 +9,7 @@
  *   import { mountFieldScreens } from './ui/boot.ts';
  *   await mountFieldScreens(document.getElementById('app')!, bootstrap, {
  *     routePackage, store, emission, buildEmissionTask, saveReading,
- *     ocrSettings, ocrEngine, printer,
+ *     ocrSettings, ocrEngine, printer, fetchDivergences, queryDirective,
  *   });
  *
  * A assinatura real tem TRES argumentos: (root, bootstrap, deps). O
