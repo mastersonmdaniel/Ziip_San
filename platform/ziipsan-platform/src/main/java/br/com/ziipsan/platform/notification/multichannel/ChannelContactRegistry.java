@@ -22,6 +22,18 @@ public interface ChannelContactRegistry {
     /** Contato de push (token do dispositivo) vigente do destinatário para a finalidade, se houver. */
     Optional<ChannelContact> resolvePushContact(UUID tenantId, UUID customerId, UUID userId, String purposeCode);
 
+    /**
+     * Contato telefônico PELO ID do contato (B2-7 da rodada 2): resolve o
+     * contato exato cujo consentimento foi verificado - nunca outro
+     * contato do mesmo destinatario. A implementacao da P1.3 busca o
+     * contato pelo id no cadastro e devolve vazio quando ele nao existe,
+     * nao esta verificado ou nao e do canal/finalidade.
+     */
+    Optional<ChannelContact> resolvePhoneContactForContact(UUID tenantId, UUID contactId, String purposeCode);
+
+    /** Contato de push PELO ID do contato (B2-7 da rodada 2) - mesmo desenho do telefone. */
+    Optional<ChannelContact> resolvePushContactForContact(UUID tenantId, UUID contactId, String purposeCode);
+
     /** Marca o contato como inválido no cadastro (efeito de um evento REJECTED do provedor). */
     void markContactInvalid(UUID tenantId, UUID contactId, String reason);
 }

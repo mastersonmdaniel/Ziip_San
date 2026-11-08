@@ -125,6 +125,14 @@ final class MultichannelTestSupport {
 
         public Optional<ChannelContact> resolvePhoneContact(UUID t, UUID c, UUID u, String p) { return phone; }
         public Optional<ChannelContact> resolvePushContact(UUID t, UUID c, UUID u, String p) { return push; }
+        public Optional<ChannelContact> resolvePhoneContactForContact(UUID t, UUID contactId, String p) {
+            // B2-7: o cadastro devolve o contato SOMENTE quando o id pedido
+            // e o do contato guardado - outro contato nao e substituido aqui.
+            return phone.filter(c -> c.contactId().equals(contactId));
+        }
+        public Optional<ChannelContact> resolvePushContactForContact(UUID t, UUID contactId, String p) {
+            return push.filter(c -> c.contactId().equals(contactId));
+        }
         public void markContactInvalid(UUID t, UUID contactId, String reason) { invalidated.add(contactId); }
     }
 

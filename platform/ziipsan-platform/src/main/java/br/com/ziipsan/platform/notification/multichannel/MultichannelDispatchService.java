@@ -219,10 +219,13 @@ public class MultichannelDispatchService {
         // não titular de consentimento de consumidor da P1.3 — o ConsentGate
         // é indexado por consumidor/contato/consentimento dele. O recorte é
         // MAIS estrito que a P3.5 (que não consulta consentimento no disparo
-        // de e-mail) e coerente com o piso da P3.36. Nota de integração
-        // (mesmo padrão da P3.5): o contato resolvido adiante NÃO é amarrado
-        // ao contactId desta linha de preferência — a resolução é
-        // independente, por finalidade, no cadastro da P1.3.
+        // de e-mail) e coerente com o piso da P3.36. Amarração do destino
+        // (B2-7 da rodada 2): neste caminho o DESTINO é resolvido pelo
+        // contactId VERIFICADO aqui (resolve*ForContact) - nunca por outro
+        // contato do mesmo destinatário; fora deste caminho (obrigatória /
+        // usuário) não há contactId verificado e a resolução segue por
+        // finalidade no cadastro, como antes.
+        UUID verifiedContactId = null;
         if (optIn == OptInRule.OptInDecision.ALLOWED_OPT_IN && draft.recipientCustomerId() != null) {
             NotificationPreference row = rows.stream().filter(NotificationPreference::enabled)
                     .findFirst().orElse(null);
@@ -232,14 +235,26 @@ public class MultichannelDispatchService {
                 return MultichannelDispatchResult.of(Outcome.CONSENT_INACTIVE,
                         "o consentimento exato da preferência não está vigente na P1.3");
             }
+            verifiedContactId = row.contactId();
         }
 
-        ChannelContact contact = (channel == NotificationChannel.PUSH
-                ? contacts.resolvePushContact(tenantId, draft.recipientCustomerId(), draft.recipientUserId(),
-                        draft.purposeCode())
-                : contacts.resolvePhoneContact(tenantId, draft.recipientCustomerId(), draft.recipientUserId(),
-                        draft.purposeCode()))
-                .orElse(null);
+        ChannelContact contact;
+        if (verifiedContactId != null) {
+            // B2-7: destino amarrado ao contato do consentimento verificado.
+            UUID expected = verifiedContactId;
+            contact = (channel == NotificationChannel.PUSH
+                    ? contacts.resolvePushContactForContact(tenantId, expected, draft.purposeCode())
+                    : contacts.resolvePhoneContactForContact(tenantId, expected, draft.purposeCode()))
+                    .filter(c -> expected.equals(c.contactId()))
+                    .orElse(null);
+        } else {
+            contact = (channel == NotificationChannel.PUSH
+                    ? contacts.resolvePushContact(tenantId, draft.recipientCustomerId(), draft.recipientUserId(),
+                            draft.purposeCode())
+                    : contacts.resolvePhoneContact(tenantId, draft.recipientCustomerId(), draft.recipientUserId(),
+                            draft.purposeCode()))
+                    .orElse(null);
+        }
         if (contact == null || !contact.verified()) {
             return MultichannelDispatchResult.of(Outcome.NO_CONTACT,
                     "sem contato verificado deste canal no cadastro para o destinatário e a finalidade");

@@ -153,6 +153,34 @@ class MultichannelDispatchServiceTest {
     }
 
     @Test
+    @DisplayName("B2-7: cadastro sem o contato do consentimento verificado não dispara para outro número")
+    void destinationBoundToVerifiedContact() {
+        // O consentimento verificado e do CONTACT_ID da preferencia; o
+        // cadastro so tem OUTRO contato (outro id, outro numero) - o
+        // disparo nao pode "cair" no contato errado.
+        contacts.phone = Optional.of(new ChannelContact(UUID.randomUUID(), CUSTOMER, null,
+                "+5548888880000", true));
+        optIn(NotificationCategory.BILLING, NotificationChannel.SMS, true);
+        assertThat(service.dispatch(billMessage("bill.sms"), NotificationChannel.SMS, MODULE).outcome())
+                .isEqualTo(MultichannelDispatchService.Outcome.NO_CONTACT);
+        assertThat(gateways.sends).isEmpty();
+        assertThat(store.deliveries).isEmpty();
+    }
+
+    @Test
+    @DisplayName("B2-7: destino amarrado envia para o numero do contato verificado e grava o contactId dele")
+    void destinationOfVerifiedContactSends() {
+        optIn(NotificationCategory.BILLING, NotificationChannel.SMS, true);
+        MultichannelDispatchService.MultichannelDispatchResult r =
+                service.dispatch(billMessage("bill.sms"), NotificationChannel.SMS, MODULE);
+        assertThat(r.outcome()).isEqualTo(MultichannelDispatchService.Outcome.SENT);
+        assertThat(gateways.sends).containsExactly("SMS|ZIIPSAN|+5548999990000");
+        assertThat(store.deliveries).hasSize(1);
+        assertThat(store.deliveries.get(0).contactId())
+                .isEqualTo(MultichannelTestSupport.CONTACT_ID);
+    }
+
+    @Test
     @DisplayName("sem contato verificado do canal não dispara")
     void noContact() {
         contacts.phone = Optional.empty();
