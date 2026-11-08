@@ -24,6 +24,15 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- GIS-08 (P3.27): as definições GIS-001/GIS-002 registram-se no
+                 núcleo de relatórios da P3.22 (ExternalReportRegistrar).
+                 Mesmo desenho da dependência gis -> losses acima; o reporting
+                 não depende do gis, portanto não há ciclo. -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-reporting</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
