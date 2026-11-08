@@ -1849,3 +1849,56 @@ POC/TR/SAMAE), publicador de área suja (PEND-01 da P2.21) e provas
 PostGIS/pgRouting na CI, valores comerciais reais da ED-10
 (parâmetros do dono), fiação e numeração global dos SQL pendentes;
 CI total definitiva e piloto P0.30, como antes.
+
+## 08/11/2026 — Cascata ED, Camada C3 (ED-23, ED-43, ED-50, ED-56, ED-58, ED-66, ED-91, ED-92)
+
+Oito tarefas, ciclo completo por tarefa (produção → revisão cruzada
+independente → correção → confirmação por agente novo → push).
+Duas REPROVAÇÕES na primeira revisão, ambas corrigidas e confirmadas:
+
+- **ED-92 (Ocorrência de rede como entidade) — REPROVADA → APROVADA**
+  (`52833b0`): o revisor aplicou o SQL em PostgreSQL real e ele NÃO
+  aplicava (FK sem UNIQUE no pai — o padrão virou item de vigia da
+  cascata). Catálogo de causas: só ALAGAMENTO tem fonte (ED-64);
+  desconhecido nunca vira zero no JOR-33 (null + contadores).
+- **ED-56 (GIS-19 ativos/manutenção) — REPROVADA → APROVADA**
+  (`7155ff1`, `c97f534`): mesmo grave de SQL (FK sem UNIQUE) + 8
+  defeitos, incl. operabilidade sem frescor (válvula vencida saía
+  operável) — contrato virou tri-estado com DESCONHECIDA para a
+  ED-54, e detecção de sobreposição que era verde falso passou a
+  detecção real.
+- **ED-50 (Qualidade da água) — APROVADA** (`f51cc6e`, `dd0fe28`):
+  disciplina regulatória integral — NENHUM limite de portaria como
+  valor fixo; catálogo é dado carregado que só fundamenta
+  conformidade após revisão do responsável técnico (sem revisão =
+  INDETERMINATE); vigências sobrepostas recusadas na carga.
+- **ED-43 (Chatbot/IA) — APROVADA** (`c5bf750`): 4 moderados
+  corrigidos — máscara de dados pessoais contornável fechada
+  (fail-closed), vazamento na saída descartado, prompt sem
+  avaliação não chama o modelo, EXPLAIN_BILL despacha pela função
+  determinística da ED-38 (a IA redige, não calcula).
+- **ED-23 (Revisão por vazamento) — APROVADA** (`ad131fb`):
+  protocolo de fases sobre a P3.28 sem duplicar cálculo; retomada
+  após recusa da P2.20 funciona sem re-assinar; assinatura só após
+  validar fase/conclusão.
+- **ED-58 (Almoxarifado) — APROVADA** (`f1fa421`, `0dcce85`):
+  reconciliação disponível-negativo × físico-piso-zero provada;
+  correções de atomicidade (baixa de campo, NF-e idempotente por
+  chave, cancelamento sem mutação parcial, encerramento sem
+  contagem em dobro).
+- **ED-66 (Campo GIS Capacitor) — APROVADA** (`2885bf6`, `ef8c2a9`):
+  portão de meta de precisão agora vale também para INSERT de
+  as-built (aparelho e servidor); validade do pacote checada na
+  construção do delta, não só na abertura.
+- **ED-91 (Crise hídrica) — APROVADA** (`01f7042`): medida
+  excepcional sobre LOCALITY/ROUTE não bloqueava corte em silêncio
+  — correção fecha os 4 tipos de área (sem membros = recusa, nunca
+  silêncio); item 32 só observado.
+
+Placar: **ED 65/98 · geral 235/286**. Vigia permanente herdada da
+camada: todo SQL novo é APLICADO em PostgreSQL real na revisão
+(parse não basta — dois pacotes cairiam na CI sem isso).
+Pendências vivas: fiação de integração dos pacotes (JPA/beans/
+telas), numeração global dos SQL pendentes, provas externas B
+(provedores reais da ED-43, ensaios POC/SAMAE), P-ED58-07 (silo de
+serializados), CI total definitiva e piloto P0.30.
