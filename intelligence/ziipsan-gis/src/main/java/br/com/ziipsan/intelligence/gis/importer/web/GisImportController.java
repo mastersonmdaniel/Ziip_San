@@ -13,7 +13,10 @@ import br.com.ziipsan.intelligence.gis.importer.GisImportDtos.RawView;
 import br.com.ziipsan.intelligence.gis.importer.GisImportDtos.StageRowInput;
 import br.com.ziipsan.intelligence.gis.importer.GisImportService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -125,6 +128,17 @@ public class GisImportController {
     @GetMapping("/batches/{id}/quality-report")
     public Map<String, Object> getQualityReport(@PathVariable UUID id) {
         return service.getQualityReport(id);
+    }
+
+    /** O mesmo relatório ISO 19157 em PDF (§11, linha GIS-07) — correcao M3, A1. */
+    @GetMapping(value = "/batches/{id}/quality-report.pdf",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> qualityReportPdf(@PathVariable UUID id) {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"relatorio-iso19157-" + id + ".pdf\"")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(service.qualityReportPdf(id));
     }
 
     /** Publica o lote como pacote IMPORT submetido; devolve o pacote. */

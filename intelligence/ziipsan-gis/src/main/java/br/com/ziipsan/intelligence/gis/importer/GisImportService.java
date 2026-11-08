@@ -345,6 +345,16 @@ public class GisImportService {
         return getBatch(batchId);
     }
 
+    /**
+     * O PDF do relatório ISO 19157 (§9.1 etapa 6; linha GIS-07 do §11),
+     * gerado por {@link GisQualityReportPdf} do relatório registrado e
+     * das contagens reais da limpeza gravadas no lote — correcao M3, A1.
+     */
+    public byte[] qualityReportPdf(UUID batchId) {
+        BatchView batch = getBatch(batchId);
+        return GisQualityReportPdf.render(batch, getQualityReport(batchId));
+    }
+
     public Map<String, Object> getQualityReport(UUID batchId) {
         UUID tenantId = GisImportContext.tenantId();
         getBatch(batchId);
