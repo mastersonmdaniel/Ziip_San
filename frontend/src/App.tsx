@@ -1,11 +1,12 @@
 import { lazy, Suspense, type ReactNode } from 'react'
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Layout } from '@components/Layout'
 import { VersionBanner } from '@components/VersionBanner'
 import { WhatsNew } from '@components/WhatsNew'
 import { Spinner } from '@components/ui/Alert'
 import { useAuth } from '@hooks/useAuth'
+import { useTheme } from '@hooks/useTheme'
 import { AuthCallback } from '@pages/AuthCallback'
 import { Login } from '@pages/Login'
 import { NotFound } from '@pages/NotFound'
@@ -30,9 +31,15 @@ const IconContactSheetPage = lazy(() =>
   import('@pages/dev/IconContactSheetPage').then((m) => ({ default: m.IconContactSheetPage })),
 )
 const GisCatalog = lazy(() => import('@pages/gis/GisCatalog').then((m) => ({ default: m.GisCatalog })))
+const GisMap = lazy(() => import('@pages/gis/GisMap').then((m) => ({ default: m.GisMap })))
+const GisStyles = lazy(() => import('@pages/gis/GisStyles').then((m) => ({ default: m.GisStyles })))
+const ChangeSetReview = lazy(() => import('@pages/gis/ChangeSetReview').then((m) => ({ default: m.ChangeSetReview })))
 const About = lazy(() => import('@pages/About').then((m) => ({ default: m.About })))
 const Integration = lazy(() => import('@pages/Integration').then((m) => ({ default: m.Integration })))
 const Central = lazy(() => import('@pages/platform/Central').then((m) => ({ default: m.Central })))
+const DocumentosFiscais = lazy(() => import('@pages/fiscal/DocumentosFiscais').then((m) => ({ default: m.DocumentosFiscais })))
+const MinhasTarefas = lazy(() => import('@pages/tarefas/MinhasTarefas').then((m) => ({ default: m.MinhasTarefas })))
+const Agenda = lazy(() => import('@pages/agenda/Agenda').then((m) => ({ default: m.Agenda })))
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -44,11 +51,24 @@ function PrivateRoute({ children }: { children: ReactNode }) {
 }
 
 /**
+ * Correção S1 (revisão geral de 08/11/2026): a tela de revisão de pacote da
+ * GIS-04 recebe o id do pacote pela rota declarada no GIS-CADASTRO-TECNICO
+ * §10.3 (/gis/change-sets); o detalhe é /gis/change-sets/:id. Sem id não há
+ * pacote para revisar: volta para o mapa.
+ */
+function ChangeSetReviewRoute() {
+  const { id } = useParams()
+  if (!id) return <Navigate to="/gis" replace />
+  return <ChangeSetReview changeSetId={id} />
+}
+
+/**
  * Só existem rotas de telas que existem. Dashboard, Faturamento, Cobrança etc. foram removidas
  * porque as páginas nunca foram escritas. S7 (hidrômetros) e S8 (recadastramento) ficam para a P1.
  */
 export function App() {
   const location = useLocation()
+  const { theme } = useTheme()
   return (
     <>
       {/* P0.39: aviso de recarga do SPA antigo (só aparece após o evento de versão). */}
@@ -92,6 +112,14 @@ export function App() {
         <Route path="cadastro/catalogos" element={<Catalogs />} />
 
         <Route path="gis/catalogo" element={<GisCatalog />} />
+        {/* Correção S1: mapa web e estilos da GIS-06 — rotas declaradas no
+            README-ROTAS da P3.25 (/gis e /gis/styles); o tema vem do useTheme,
+            como o README-ROTAS pede, e não do padrão light do componente. */}
+        <Route path="gis" element={<GisMap theme={theme} />} />
+        <Route path="gis/styles" element={<GisStyles />} />
+        {/* Correção S1: revisão de pacote da GIS-04 — rota declarada no
+            GIS-CADASTRO-TECNICO §10.3 (/gis/change-sets), detalhe por id. */}
+        <Route path="gis/change-sets/:id" element={<ChangeSetReviewRoute />} />
         <Route path="cadastro/catalogos/:tipo" element={<Catalogs />} />
 
         {/* P1.12: ponto de entrega das exportações assíncronas (e, no futuro, dos
@@ -111,6 +139,20 @@ export function App() {
         <Route path="configuracoes/modelos" element={<Templates />} />
         {/* P1.33: visões salvas de filtros e colunas por usuário. */}
         <Route path="busca/visoes-salvas" element={<SavedViews />} />
+        {/* P2.33: fila de documentos fiscais do tenant (rota declarada no
+            cabeçalho da página: /documentos-fiscais). */}
+        <Route path="documentos-fiscais" element={<DocumentosFiscais />} />
+        {/* P2.28: caixa de trabalho do usuário logado (rota declarada no
+            cabeçalho da página: /minhas-tarefas). */}
+        <Route path="minhas-tarefas" element={<MinhasTarefas />} />
+        {/* P3.39: agenda do usuário (rota declarada no cabeçalho da página:
+            /agenda). A página Início (/inicio, P3.39) NÃO entra neste lote:
+            ela exige a prop profile e nenhuma fonte de perfil de fábrica
+            existe no frontend da main (AuthUser de GET /me não tem o campo) —
+            registrar com valor inventado violaria a regra de não inventar
+            dados; fica para a integração resolver a fonte (pendência 3 da
+            P3.39). */}
+        <Route path="agenda" element={<Agenda />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>
@@ -122,3 +164,4 @@ export function App() {
 }
 
 export default App
+

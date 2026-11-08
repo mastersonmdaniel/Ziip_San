@@ -9,6 +9,7 @@ import br.com.ziipsan.operations.metering.repository.MeasuringPointRepository;
 import br.com.ziipsan.operations.metering.repository.MeterReadingRepository;
 import br.com.ziipsan.operations.metering.repository.TelemetryReadingRepository;
 import br.com.ziipsan.operations.metering.rules.ReadingStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -41,7 +42,19 @@ import java.util.UUID;
  *       a semântica do próprio {@link ReadingStatus}).</li>
  * </ul>
  *
- * Classe simples, sem anotação, como os demais serviços do projeto.
+ * Classe simples, sem anotação de componente, como os demais serviços do
+ * projeto. Só {@link #promote} é {@link Transactional} (correção
+ * RG-LOTE2/S2, revisão geral de 08/11/2026): ele é o único método com mais
+ * de uma escrita — grava a leitura de faturamento e depois marca a leitura
+ * de telemetria como {@code PROMOTED} — e a checagem da revisão geral na
+ * main (HEAD 19f5890) confirmou que nenhum chamador, fachada ou job na raiz
+ * de composição embrulha a promoção em transação (o módulo nem está no scan
+ * da aplicação ainda). {@code assess} e {@code edit} gravam uma única vez,
+ * pela transação do próprio repositório, e por isso não ganham anotação: o
+ * ponto de menor impacto é a operação de duas escritas. Para a anotação
+ * valer, a fiação deve expor a instância como bean gerenciado pelo Spring
+ * (o mesmo requisito dos demais serviços {@code @Transactional} do
+ * projeto); instância criada fora do contexto não é interceptada.
  */
 public class TelemetryVeeService {
 
@@ -153,6 +166,7 @@ public class TelemetryVeeService {
     }
 
     /** Promove a leitura aprovada na VEE a leitura de faturamento (origem {@code TELEMETRY}). */
+    @Transactional
     public MeterReading promote(UUID tenantId, UUID readingId) {
         TelemetryReading reading = requireReading(tenantId, readingId);
         if (reading.getVeeStatus() != VeeStatus.VALIDATED

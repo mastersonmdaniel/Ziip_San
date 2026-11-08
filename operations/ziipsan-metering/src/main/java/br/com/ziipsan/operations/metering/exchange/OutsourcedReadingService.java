@@ -15,6 +15,7 @@ import br.com.ziipsan.operations.metering.repository.ReadingTaskRepository;
 import br.com.ziipsan.operations.metering.repository.ReadingVendorRepository;
 import br.com.ziipsan.operations.metering.rules.MeasurementKind;
 import br.com.ziipsan.operations.metering.rules.ReadingStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -59,8 +60,27 @@ import java.util.UUID;
  * {@code readingStatus} REALIZED com leitura, NOT_REALIZED sem leitura (so
  * com anormalidade, como manda o CHECK de {@code meter_readings}).
  *
- * <p>Classe simples, sem anotacao, como os demais servicos do projeto: quem
- * a instancia e a fiacao da aplicacao.
+ * <p>Classe simples, sem anotacao de componente, como os demais servicos do
+ * projeto: quem a instancia e a fiacao da aplicacao. Os tres metodos publicos
+ * de escrita sao {@link Transactional} (correcao RG-LOTE2/S2, revisao geral
+ * de 08/11/2026): a revisao cruzada da P2.7 ja tinha nomeado a ausencia de
+ * transacao de lote como pendencia da integracao, e a checagem da revisao
+ * geral na main (HEAD 19f5890) confirmou que nenhum chamador, fachada ou job
+ * na raiz de composicao embrulha estas chamadas em transacao -- o scan da
+ * aplicacao nem alcanca este modulo ainda. A atomicidade, entao, e declarada
+ * aqui, no ponto de menor impacto: uma transacao por operacao publica
+ * (criacao das tarefas, exportacao e importacao do lote inteiro). Para a
+ * anotacao valer, a fiacao deve expor a instancia como bean gerenciado pelo
+ * Spring (o mesmo requisito dos demais servicos {@code @Transactional} do
+ * projeto); instancia criada fora do contexto nao e interceptada.
+ *
+ * <p>Consequencia assumida da transacao de lote na importacao: o caminho de
+ * arquivo estruturalmente invalido ({@code parse} lanca excecao) marcava o
+ * lote {@code REJECTED} e o gravava antes de relancar; com a transacao, essa
+ * gravacao desfaz junto com o restante do lote e o lote rejeitado nao fica
+ * persistido. A excecao e o motivo continuam propagando ao chamador, e o
+ * reenvio do mesmo arquivo e rejeitado de novo, sem criar leitura nem
+ * registro -- nenhum efeito parcial sobrevive em nenhum dos dois desenhos.
  */
 public class OutsourcedReadingService {
 
@@ -107,6 +127,7 @@ public class OutsourcedReadingService {
      * a repeticao dentro da propria lista de entrada, detectada em memoria
      * antes de qualquer consulta ou gravacao.
      */
+    @Transactional
     public List<ReadingTask> createTasks(UUID tenantId, UUID vendorId, String routeCode, YearMonth reference,
                                          CycleLink cycleLink, List<TaskAssignment> assignments, UUID actor) {
         ReadingVendor vendor = requireActiveVendor(tenantId, vendorId);
@@ -165,6 +186,7 @@ public class OutsourcedReadingService {
      * novo), porque o fornecedor pode ter perdido a ida -- quem protege a
      * volta e a idempotencia, nao a ida.
      */
+    @Transactional
     public String exportFile(UUID tenantId, UUID vendorId, String routeCode, YearMonth reference, UUID actor) {
         ReadingVendor vendor = requireActiveVendor(tenantId, vendorId);
         requireLayout(vendor);
@@ -207,6 +229,7 @@ public class OutsourcedReadingService {
      * ou com anormalidade fora do catalogo vira ERROR com o motivo; as demais
      * viram leitura e cumprem a tarefa (READ com leitura, NOT_READ sem).
      */
+    @Transactional
     public ImportOutcome importFile(UUID tenantId, UUID vendorId, String fileName, String externalRef,
                                     String content, UUID actor) {
         ReadingVendor vendor = requireActiveVendor(tenantId, vendorId);
