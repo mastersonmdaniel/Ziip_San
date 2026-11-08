@@ -1766,3 +1766,45 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   incl. a guarda de migrations com a V101 e os ITs inexequíveis
   nesta VM); **piloto P0.30** (o dono indicará a prestadora; trava
   P3.13, GL.4, a trilha LC e a aprovação das minutas da P3.9).
+
+## 08/11/2026 — Cascata ED, Camada C1 (ED-41, ED-73 e micro-lote P3.22 N2)
+
+Produção contínua da cascata destravada pela P3.9 (mapa em
+`ziipsan-producao/cascata-ed/MAPA-CASCATA.md`), ciclo completo por
+tarefa (produção → revisão cruzada independente → correção →
+confirmação por agente novo → push imediato):
+
+- **Micro-lote P3.22 N2 — CORRIGIDO e na main** (`b56a3a6`): falha na
+  escrita/exportação de relatório deixava a execução presa em
+  `RUNNING`; agora toda falha pós-início fecha a execução em `FAILED`
+  exatamente uma vez, com a causa registrada e a exceção original
+  relançada. Revisão independente: 60/60 → 64/64, controle negativo
+  exato (os 4 testes novos falham sem a correção). A pendência N2 sai
+  da lista de pendências vivas.
+- **ED-73 (Pacote ISO/IEC 27001) — APROVADA e na main** (`348cbf8`,
+  `95f1de2`): subpacote `certification.infosec27001` no core, SoA com
+  os 93 controles como mecanismo (títulos `[A DEFINIR]` — nenhum
+  título/identificador literal do Anexo A reproduzido; a reprodução
+  aguarda decisão do dono sobre licença × reescrita), matriz
+  Ziip×cliente, campanha de recertificação sobre o catálogo da ED-06
+  e pacote de evidência do fornecedor por referência + SHA-256.
+  Revisão com ressalvas D1–D5, todas corrigidas e confirmadas por
+  agente novo (53/53). SQL em `db/pendente/` (numeração global na
+  integração).
+- **ED-41 (Notificações multicanal e fatura por e-mail) — APROVADA e
+  na main** (`1c3ef0a`, `c43bb0d`): disparo multicanal com guardas
+  (opt-in por canal/finalidade, consentimento, contato verificado,
+  provedor no DPA, remetente por tenant), fatura por e-mail do POC-20
+  herdando as guardas de reputação da P3.5, classificação de modelos
+  WhatsApp com estimativa e alerta de marketing, teto mensal com
+  alertas 80%/100% sobre o gasto comprometido e medição de uso por
+  tenant/módulo para o console da P1.6. Revisão com ressalvas D1–D5
+  corrigidas e confirmadas (73/73; o teste de consistência da P3.36
+  passou a enxergar a migration da ED-41 — controle provou que a
+  asserção não foi afrouxada). SQL em `db/pendente/`.
+
+Placar: **ED 52/98 · geral 222/286**. Pendências vivas da camada:
+títulos do Anexo A da ISO 27001 (decisão do dono); provedores reais e
+ensaio POC-20/SAMAE 2.19 (provas externas); fiação JDBC/beans e
+numeração global dos SQL pendentes (integração); CI total definitiva
+sobre o HEAD corrente no PC do dono; piloto P0.30.
