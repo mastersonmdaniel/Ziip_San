@@ -29,7 +29,7 @@ class RefundDestinationValidatorTest {
         assertThatThrownBy(() -> RefundDestinationValidator.validatePixReturnToPayer(
                 new PixOrigin("BOLETO", null, true)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("original foi Pix");
+                .hasMessageContaining("pagamento original Pix");
     }
 
     @Test
