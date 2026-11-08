@@ -128,6 +128,55 @@ class TelemetryPrivacyTest {
     }
 
     @Test
+    @DisplayName("P4.8 regressão D2: identificador dentro de ARRAY sob chave permitida é recusado e nada é gravado")
+    void refusesIdentifierInsideArray() {
+        ListSink sink = new ListSink();
+        // O vetor exato da sonda da revisão cruzada (REVISAO-P4.8, D2):
+        // "role":[{"userId":"pessoa-123"}] era ACEITO antes da correção.
+        String json = "{\"tenantId\":\"" + TENANT + "\",\"role\":[{\"userId\":\"pessoa-123\"}],"
+                + "\"kind\":\"FEATURE_USED\",\"featureKey\":\"billing.cycle\","
+                + "\"occurredAt\":\"2026-11-07T12:00:00Z\"}";
+        assertThatThrownBy(() -> aggregated(sink).ingest(json))
+                .isInstanceOf(ApiException.Validation.class);
+        try {
+            aggregated(sink).ingest(json);
+        } catch (ApiException.Validation v) {
+            assertThat(v.errors()).anySatisfy(e ->
+                    assertThat(e.code()).isEqualTo("telemetry-forbidden-field"));
+        }
+        assertThat(sink.events()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("P4.8 regressão D2: proibido em qualquer aninhamento com coleções (lista em lista, lista em mapa, conteúdo em lista)")
+    void refusesForbiddenInsideNestedCollections() {
+        ListSink sink = new ListSink();
+        for (String extra : List.of(
+                // mapa com identificador dentro de lista sob chave permitida
+                "\"wizardKey\":[{\"userId\":\"pessoa-123\"}]",
+                // lista dentro de lista
+                "\"wizardKey\":[[{\"personIdentifier\":\"pessoa-123\"}]]",
+                // conteúdo digitado dentro de lista
+                "\"taskKey\":[{\"content\":\"texto digitado\"}]",
+                // alternância lista→mapa→lista→mapa, só com chaves permitidas no caminho
+                "\"taskKey\":[{\"role\":[{\"sessionId\":\"abc\"}]}]")) {
+            assertThatThrownBy(() -> aggregated(sink).ingest("{" + BASE + "," + extra + "}"))
+                    .isInstanceOf(ApiException.Validation.class);
+        }
+        assertThat(sink.events()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("P4.8 regressão D2: vetor PLANO de escalares sob chave permitida continua passando (sem chaves, sem recusa)")
+    void flatScalarArrayStillPasses() {
+        ListSink sink = new ListSink();
+        TelemetryEvent event = aggregated(sink).ingest(
+                "{" + BASE + ",\"wizardKey\":[\"wizard-a\",\"wizard-b\"]}");
+        assertThat(event.tenantId().toString()).isEqualTo(TENANT);
+        assertThat(sink.events()).containsExactly(event);
+    }
+
+    @Test
     @DisplayName("P4.8: telemetry.product_usage=OFF não coleta nada; padrão (nulo) é AGGREGATED; valor inválido recusa")
     void modeOffCollectsNothingAndDefaultIsAggregated() {
         ListSink sink = new ListSink();

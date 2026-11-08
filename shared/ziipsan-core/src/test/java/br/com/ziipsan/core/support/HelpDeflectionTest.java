@@ -40,6 +40,44 @@ class HelpDeflectionTest {
     }
 
     @Test
+    @DisplayName("P4.8 regressão D1: formas naturais COM artigo sondadas pelo revisor pedem humano")
+    void humanRequestWithArticleTransfers() {
+        // As duas sondas executadas na revisão cruzada (REVISAO-P4.8, D1):
+        assertThat(HelpDeflection.requestsHuman("quero falar com um humano")).isTrue();
+        assertThat(HelpDeflection.requestsHuman("quero falar com um humano, por favor")).isTrue();
+        // Variações naturais da mesma intenção, com artigo definido/indefinido:
+        assertThat(HelpDeflection.requestsHuman("falar com um humano")).isTrue();
+        assertThat(HelpDeflection.requestsHuman("quero falar com uma pessoa")).isTrue();
+        assertThat(HelpDeflection.requestsHuman("quero falar com a pessoa")).isTrue();
+        assertThat(HelpDeflection.requestsHuman("transferir para um humano")).isTrue();
+        // E a transferência de ponta a ponta, mesmo havendo artigo que responderia:
+        assertThat(HelpDeflection.deflect(ARTICLE, false, "quero falar com um humano").outcome())
+                .isEqualTo(HelpDeflection.Outcome.TRANSFERRED_TO_HUMAN);
+    }
+
+    @Test
+    @DisplayName("P4.8 regressão D1: formas SEM artigo e as frases já cobertas continuam transferindo")
+    void humanRequestWithoutArticleStillTransfers() {
+        assertThat(HelpDeflection.requestsHuman("quero falar com humano")).isTrue();
+        assertThat(HelpDeflection.requestsHuman("falar com humano")).isTrue();
+        assertThat(HelpDeflection.requestsHuman("falar com pessoa")).isTrue();
+        assertThat(HelpDeflection.requestsHuman("quero um humano")).isTrue();
+        assertThat(HelpDeflection.requestsHuman("quero uma pessoa")).isTrue();
+        assertThat(HelpDeflection.requestsHuman("quero atendimento humano")).isTrue();
+    }
+
+    @Test
+    @DisplayName("P4.8 regressão D1: menção solta a humano/pessoa NÃO é pedido — sem falso positivo grosseiro")
+    void mereMentionOfHumanDoesNotTransfer() {
+        assertThat(HelpDeflection.requestsHuman("isso é humano")).isFalse();
+        assertThat(HelpDeflection.requestsHuman("o erro foi humano")).isFalse();
+        assertThat(HelpDeflection.requestsHuman("quero saber como a pessoa usa a segunda via")).isFalse();
+        assertThat(HelpDeflection.requestsHuman("como tiro a segunda via?")).isFalse();
+        assertThat(HelpDeflection.deflect(ARTICLE, false, "isso é humano").outcome())
+                .isEqualTo(HelpDeflection.Outcome.ANSWERED_WITH_ARTICLE);
+    }
+
+    @Test
     @DisplayName("P4.8: sem artigo encontrado, transfere — nunca fabrica resposta sem fonte")
     void noArticleTransfers() {
         HelpDeflection.DeflectionAnswer a =

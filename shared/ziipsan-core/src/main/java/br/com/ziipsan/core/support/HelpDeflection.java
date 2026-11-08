@@ -68,13 +68,41 @@ public final class HelpDeflection {
         }
     }
 
-    /** Frases que são pedido de humano, comparadas sem acento e em minúsculas. */
+    /**
+     * Frases que são pedido de humano, comparadas na forma normalizada
+     * de {@link #normalizeHumanRequest(String)} (minúsculas, sem acento
+     * e sem artigos). Remover os artigos — definidos (o/a/os/as) e
+     * indefinidos (um/uma/uns/umas) — do texto do usuário E das frases
+     * desta lista faz a forma natural "quero falar com um humano"
+     * casar com a entrada "falar com humano", sem enumerar cada
+     * combinação com/sem artigo ("falar com uma pessoa",
+     * "falar com a pessoa" e "falar com pessoa" colapsam na mesma
+     * forma). O alcance no resto NÃO muda: continua sendo casamento de
+     * frase inteira desta lista — a menção solta a "humano"/"pessoa"
+     * (ex.: "isso é humano") não casa com nenhuma entrada e não
+     * transfere.
+     */
     private static final List<String> HUMAN_REQUEST_PHRASES = List.of(
             "falar com humano", "falar com uma pessoa", "atendimento humano",
             "atendente humano", "quero um humano", "quero uma pessoa",
             "transferir para humano", "chamar um atendente");
 
+    /** As mesmas frases, já normalizadas (sem artigos) para a comparação. */
+    private static final List<String> HUMAN_REQUEST_PHRASES_NORMALIZED =
+            HUMAN_REQUEST_PHRASES.stream().map(HelpDeflection::normalizeHumanRequest).toList();
+
     private HelpDeflection() {
+    }
+
+    private static String normalizeHumanRequest(String text) {
+        String normalized = text.toLowerCase(Locale.ROOT)
+                .replaceAll("[áàâã]", "a").replaceAll("[éê]", "e")
+                .replaceAll("[í]", "i").replaceAll("[óôõ]", "o").replaceAll("[ú]", "u")
+                .replaceAll("[ç]", "c");
+        // Artigo como palavra inteira sai; o espaço resultante é colapsado
+        // para a forma normalizada continuar comparável por substring.
+        normalized = normalized.replaceAll("\\b(um|uma|uns|umas|o|a|os|as)\\b", " ");
+        return normalized.replaceAll("\\s+", " ").trim();
     }
 
     /** O texto do usuário pede atendimento humano? */
@@ -82,11 +110,8 @@ public final class HelpDeflection {
         if (userText == null) {
             return false;
         }
-        String normalized = userText.toLowerCase(Locale.ROOT)
-                .replaceAll("[áàâã]", "a").replaceAll("[éê]", "e")
-                .replaceAll("[í]", "i").replaceAll("[óôõ]", "o").replaceAll("[ú]", "u")
-                .replaceAll("[ç]", "c");
-        return HUMAN_REQUEST_PHRASES.stream().anyMatch(normalized::contains);
+        String normalized = normalizeHumanRequest(userText);
+        return HUMAN_REQUEST_PHRASES_NORMALIZED.stream().anyMatch(normalized::contains);
     }
 
     /**

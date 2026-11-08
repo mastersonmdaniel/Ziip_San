@@ -4,6 +4,7 @@ import br.com.ziipsan.core.api.ApiException;
 import br.com.ziipsan.core.json.Json;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -18,7 +19,8 @@ import java.util.UUID;
  * <p>A ingestão recebe o JSON do evento e o lê SÓ pela classe
  * {@link Json} do core. Antes de qualquer campo virar
  * {@link TelemetryEvent}, TODAS as chaves do objeto (em qualquer nível de
- * aninhamento) são conferidas contra a lista de proibidas: identificador
+ * aninhamento, inclusive dentro de coleções/arrays) são conferidas contra
+ * a lista de proibidas: identificador
  * de pessoa, contato, documento, sessão/gravação e conteúdo digitado.
  * Uma única chave proibida recusa o evento INTEIRO com 422 — nunca se
  * "limpa" o evento e se aceita o resto, porque aceitar parcial ensinaria
@@ -90,10 +92,33 @@ public final class TelemetryPrivacyGuard {
                         "Evento de telemetria recusado: campo não previsto '" + keyPath
                                 + "' (a lista de campos da telemetria agregada é fechada)."));
             }
-            if (e.getValue() instanceof Map<?, ?> nested) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> nestedMap = (Map<String, Object>) nested;
-                checkKeys(nestedMap, keyPath);
+            checkValue(e.getValue(), keyPath);
+        }
+    }
+
+    /**
+     * Desce em QUALQUER estrutura aninhada sob uma chave já conferida:
+     * mapa, coleção (a lista/array que o {@code Json} produz) ou array,
+     * em qualquer profundidade — mapa dentro de lista, lista dentro de
+     * lista e lista dentro de mapa são todos varridos, e as chaves de
+     * qualquer mapa encontrado passam pela mesma conferência de
+     * {@link #checkKeys}. Elementos escalares (texto, número, booleano,
+     * {@code null}) não têm chaves a conferir e não mudam o veredito:
+     * um vetor plano de escalares sob chave permitida continua
+     * passando, como antes da correção.
+     */
+    private static void checkValue(Object value, String path) {
+        if (value instanceof Map<?, ?> nested) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> nestedMap = (Map<String, Object>) nested;
+            checkKeys(nestedMap, path);
+        } else if (value instanceof Collection<?> collection) {
+            for (Object element : collection) {
+                checkValue(element, path);
+            }
+        } else if (value instanceof Object[] array) {
+            for (Object element : array) {
+                checkValue(element, path);
             }
         }
     }
