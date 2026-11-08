@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Cliente: rede so para a API do tenant, login no navegador do
+         sistema e push (FCM). Sem permissao alem destas nesta casca. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application
+        android:allowBackup="false"
+        android:label="__TENANT_APP_NAME__"
+        android:usesCleartextTraffic="false">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- App Link de retorno do login (PKCE, realm ziipsan-portal).
+                 A verificacao exige /.well-known/assetlinks.json no host,
+                 gerado pelo pipeline (pipeline/generate.ts). O host e
+                 carimbado por tenant na geracao. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="__TENANT_LINK_HOST__"
+                    android:pathPrefix="/auth/callback" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

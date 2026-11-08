@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Fragmento de referencia do Info.plist do app do cliente (ED-39):
+  o projeto iOS completo e gerado pelo `cap add ios` na integracao
+  (como os arquivos capacitor.* do Android na ED-18); este fragmento
+  registra o que NAO pode faltar:
+  - Universal Link: o dominio entra como Associated Domain
+    (applinks:__TENANT_LINK_HOST__) nas Capabilities/entitlements do
+    projeto, e o arquivo apple-app-site-association gerado pelo
+    pipeline e publicado em https://__TENANT_LINK_HOST__/.well-known/
+  - Nenhum esquema customizado de URL recebe o retorno do login:
+    deep link nao verificado NAO e redirect URI do client.
+  - O refresh token fica no Keychain via plugin SecureToken
+    (kSecClassGenericPassword, AfterFirstUnlockThisDeviceOnly, sem
+    sincronizacao com iCloud) — RNF-39.
+-->
+<plist version="1.0">
+<dict>
+  <key>CFBundleDisplayName</key>
+  <string>__TENANT_APP_NAME__</string>
+  <key>CFBundleIdentifier</key>
+  <string>__TENANT_APP_ID__</string>
+</dict>
+</plist>
