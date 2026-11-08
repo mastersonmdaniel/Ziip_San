@@ -262,6 +262,15 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/metrics", "/actuator/metrics/**",
                                 "/actuator/prometheus").authenticated()
                         .requestMatchers("/v3/api-docs", "/v3/api-docs/**").permitAll()
+                        // R2-G2 (correção da rodada 2, 08/11/2026): o backoffice do DPO
+                        // (DpoBackofficeController, /privacidade/**) caía no
+                        // anyRequest().denyAll() abaixo e dava 403 para todo mundo,
+                        // inclusive o encarregado — o @PreAuthorize do controller
+                        // nunca era avaliado. Autenticado aqui, o @PreAuthorize
+                        // decide; restringir ao encarregado exige a permissão de
+                        // privacidade no catálogo da P0.13 (limitação já declarada
+                        // no teste S3).
+                        .requestMatchers("/privacidade/**").authenticated()
                         .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().denyAll())
                 .oauth2ResourceServer(rs -> rs
