@@ -1565,3 +1565,136 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
   as 52 tarefas condicionadas e as 16 bloqueadas-raiz do plano, e as sob
   demanda (P4.6, ED-51, ED-68, ED-102, ED-103, ED-104); a rodada definitiva
   da CI total sobre o HEAD final; e o push posterior da P3.24 e da ED-27.
+### 08/11/2026 — Push 2: P3.24, ED-27, P3.9, npm audit e correções da 1ª revisão geral
+
+- **Ordem expressa do dono** (08/11/2026, 14h26): "pode subir tudo
+  agora", com a trava de aprovação por deploy aposentada (ele marcou
+  "Permitir sempre" no primeiro cartão). Subiram todos os pacotes
+  aprovados que aguardavam push, em 16 lotes sobre o HEAD `19f5890`,
+  mais este registro. Placar na `main`: **220/286 tarefas (76,9%)**
+  com commit de entrega; nenhum pacote aprovado ficou retido.
+- **P3.24 e ED-27 na `main`** (decisão RAS-06 do dono: caminho duplo —
+  conversão ao Pix Automático pela P4.5 e FEBRABAN 150 mantido como
+  legado para a base atual; débito novo só por Pix Automático):
+  débito automático FEBRABAN 150 para autorizações legadas no
+  `ziipsan-collection` (19 arquivos, migration `V6_4` reservada) e o
+  subpacote `collection.debit` da ED-27 (11 arquivos, SQL em
+  `db/pendente/`). Os dois foram produzidos e aprovados com revisão
+  cruzada hoje (confirmações independentes 24/24 e 26/26).
+- **P3.9 produzida e aprovada, incluída neste push:** as 6 minutas do
+  aceite (contrato SaaS, DPA, SLA/suporte, suboperadores e
+  transferência internacional, termo de homologação local e termos de
+  uso) e o índice de rastreabilidade estão em `docs/contratos/`,
+  construídos das ADRs 0002/0019/0020/0033 e do RAS-20, sem cláusula
+  inventada (o que não tem fonte ficou marcado `[A DEFINIR]`).
+  Aprovação do piloto pendente por desenho; assinatura só na LC.9.
+  Dos 22 marcadores `[A DEFINIR NA P3.9]` da ED-05, **8 resolvidos**
+  pelas minutas e **14 abertos por falta de fonte** — fecham na
+  contratação com o piloto.
+- **Pacote npm audit aplicado:** `maplibre-gl` 6.16.0 → 6.17.0
+  (`package.json` + `package-lock.json` do frontend). É a única
+  mudança real: a frente provou que o repositório já estava nas
+  versões corrigidas dos 5 advisories das rodadas 8/9 — eles viviam
+  na cópia de trabalho desatualizada do PC do dono; `react-router`
+  segue 7.18.5 (a v8 exige React ≥ 19.2.7; o projeto está em React
+  18) e `zod` segue 4.6.7 (última release). A migração React 19 +
+  react-router v8 ficou para depois, como onda própria de manutenção
+  pós-lançamento (decisão delegada pelo dono e registrada).
+- **Correções da 1ª rodada de revisão geral pousadas** (mesa de
+  verificação da sub-sessão de auditoria; correções executadas na
+  sessão principal, com revisão cruzada):
+  - **G1 (grave):** os `V15_X` da ED-46/ED-48 saíram do caminho ativo
+    de migrations do reporting e foram recolhidos para
+    `db/pendente/`, byte-idênticos; os 3 testes consumidores foram
+    ajustados só em caminho/comentário, com as asserções intactas.
+    Numeração fica para a leva global da integração (P3.12).
+  - **G2 (grave):** 29 tabelas de tenant inscritas com
+    `register_tenant_table` em 7 migrations novas em `db/pendente/`
+    (ED-19, ED-24, ED-30, ED-31, ED-33, ED-38, ED-84), na convenção
+    agora registrada: toda tabela com `tenant_id` se registra na
+    mesma leva que a cria. A ED-67 ficou fora com justificativa
+    provada (RLS GIS da rotina privilegiada de implantação).
+  - **M5 (falso verde):** `ziipsan-accounting` (ED-32) e
+    `ziipsan-billing-rules` (ED-19) registrados no POM raiz (+2
+    linhas) — os dois módulos passam a compilar e testar na CI.
+  - **OBS-1 + guarda composta:** a lista
+    `published-tenant-migrations.txt` pousou UMA vez, já composta
+    (G1 + OBS-1): 114 linhas, com os 4 nomes que faltavam (V15_2,
+    V8_2, V13_13, V23_1) e sem a linha do `V15_X` da ED-46. A réplica
+    da guarda da P3.12 sobre os 117 nomes de migration da `main`
+    resulta em **zero violações** com os dois pousos; a CI definitiva
+    confirma executando o teste de verdade.
+  - **Lote 2:** M7 — a V4_7 canônica é a fundida da P2.6 e já era a
+    da `main` (prova por hash registrada; nenhum arquivo a pousar).
+    M6 — nota de integração autoritativa da numeração pousada ao
+    lado da lista de publicadas (sequência global da P3.12; as
+    instruções de faixa dos relatórios antigos estão superadas). S1 —
+    `App.tsx` com 6 rotas novas (GIS, documentos fiscais, minhas
+    tarefas, agenda); `Inicio`, `GisThematics` e `GisWebEditor`
+    seguem como pendência nomeada, sem rota inventada, e o menu
+    lateral é passo de integração registrado. S2 —
+    `@Transactional` no `OutsourcedReadingService` (P2.7) e no
+    `promote` da ED-17, com testes novos de atomicidade (rollback
+    provado); efeito conhecido registrado: o lote `REJECTED` de
+    importação inválida não persiste mais. S3 —
+    `@PreAuthorize("isAuthenticated()")` no `DpoBackofficeController`
+    (P3.40), com teste; limitação registrada: qualquer autenticado
+    passa até existir a permissão do encarregado no catálogo.
+  - **Lote 3 (registros que a integração lança por este push):**
+    (1) **M1** — telas do fluxo de leitura do app de campo produzidas
+    sobre o bootstrap da ED-18 e a fachada da ED-19 (7 arquivos em
+    `campo/src/ui/`, 51/51 testes), **sem tocar no calculador de
+    campo** (hash do `fieldEmission.ts` inalterado; a decisão O7-6
+    segue pendente do dono, provisoriamente no neutro de manter o
+    contrato entregue); pendências de integração P-01 a P-08,
+    incluindo a fiação do `boot.ts` e as portas de tarifa/gravação
+    de leitura. (2) **M2** — registro do placar com segunda dimensão
+    criado nas pastas de produção: das 219 executadas classificadas
+    à época, 47 de aceite completo, 57 de núcleo entregue + ensaio
+    externo pendente, 15 de categoria C e 100 pré-retomada sem
+    classificação por relatório local — insumo para a rotina de
+    status. (3) **M4** — ED-08 ressalvada no placar: veredito formal
+    parcial; matriz E2E verde pendente da 1ª rodada do job
+    `e2e-navegadores`. (4) **M3** — `REVISAO-REGISTRO.md` anexado aos
+    13 pacotes sem artefato; 3 vereditos localizados só em prosa no
+    próprio relatório (P2.7, P2.9, P2.10, com ressalva de forma) e
+    **10 vereditos NÃO localizados — recuperação em execução** com
+    revisores novos: P2.21, P2.23, P2.28, P3.15, P3.18, P3.22, P3.26,
+    P3.29, P3.38, P4.8 (P2.28/P3.15/P3.22/P3.29 têm só a reprovação
+    inicial sem confirmação; P4.8 tem auto-revisão declarada).
+    (5) **M8** — tabela de aceite da ED-40 corrigida (quiosque e
+    painel SG-625/626: núcleo aprovado / tela = integração).
+    (6) **Menores** — contagem de frontend da P3.25 corrigida
+    (11 → 12); `GisThematics` com estado de carregando (P3.27);
+    `DocumentosFiscais` com estado vazio explícito (P2.33);
+    comentário fundamentado no catch do `NativeSolverRunner`
+    (ED-63); `Clock` injetado nos carimbos de auditoria da P3.22 e
+    da P3.12, com testes.
+  - **Micro-lotes de teste:** o regex de extração de colunas dos
+    testes de consistência do metering foi corrigido SEM afrouxar
+    (`[a-z_][a-z0-9_]*`, superconjunto mínimo — a forma sugerida
+    `[a-z0-9_]+` foi rejeitada com prova, por passar a aceitar nome
+    começando por dígito): `OutsourcedReadingMigrationConsistencyTest`
+    (P2.7) de 5/6 para 6/6; e o `MigrationConsistencyTest` (P2.5)
+    pousou na versão final do micro-lote V5_7, que soma o parser por
+    statement completo. Sobre a V5_7: a migration está publicada e é
+    SQL válido — o defeito era do parser do teste (o `ALTER` em duas
+    linhas não era lido); **a migration NÃO foi reescrita** e o
+    placar esperado da classe na `main` passa a 7/7.
+- **Nota de execução:** o `package-lock.json` (283 KB) não cabe no
+  canal de argumentos do conector (limite de ~128 KB por argumento);
+  ele e os demais arquivos deste push foram pela rota de snapshot
+  local do conector (`push-files`), com o HEAD conferido após cada
+  lote. Nenhum lote precisou de segunda tentativa, exceto a troca de
+  rota do lote do lock.
+- **Backup da camada:** branch `backup/2026-11-08-pos-push-2` criada
+  sobre o HEAD final desta operação (este commit de diário incluso).
+- **Pendências vivas:** a rodada definitiva da CI total sobre o novo
+  HEAD no PC do dono (é ela que prova integrado o que este push
+  pousou, em especial a guarda de migrations e os dois módulos novos
+  no reactor); piloto P0.30 (o dono indicará a prestadora; trava
+  P3.13, GL.4, a trilha LC, a aprovação das minutas da P3.9 e o
+  fechamento dos 14 marcadores abertos); a cascata de ~42 ED
+  condicionadas à aprovação da P3.9; a recuperação M3 dos 10
+  pacotes; as 52 condicionadas, as 16 bloqueadas-raiz e as sob
+  demanda do plano.
