@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * P3.18: derivação do status público e montagem da visão da página
@@ -34,8 +36,12 @@ import java.util.Objects;
  *       sem incidente/janela → {@code OPERATIONAL}.</li>
  * </ol>
  *
- * <p>A visão pública é filtrada: componentes não visíveis não aparecem,
- * incidente resolvido só aparece com o resumo quando ele foi publicado
+ * <p>A visão pública é filtrada: componentes não visíveis não aparecem
+ * — e nem os fatos ligados SÓ a eles: incidente aberto, janela e resumo
+ * publicado cujos componentes afetados são todos invisíveis são
+ * excluídos da visão no mesmo ponto ({@link #buildView}); janela global
+ * ({@code componentKey} nulo) é pública por definição e permanece.
+ * Incidente resolvido só aparece com o resumo quando ele foi publicado
  * ({@link PostIncidentSummary}), e nenhum campo interno (revisão
  * completa, causa interna) existe nestes records para vazar.
  *
@@ -146,6 +152,16 @@ public final class PublicStatusService {
      * a leitura mais recente por componente (ausência da chave = sonda
      * nunca mediu). Incidentes resolvidos sem resumo publicado NÃO
      * aparecem: a página não anuncia revisão que ainda não foi publicada.
+     *
+     * <p>O filtro de visibilidade vale para TODAS as listas da visão, no
+     * mesmo ponto: incidentes abertos e resumos publicados só entram se
+     * afetarem ao menos um componente visível (e a lista de afetados da
+     * visão é aparada às chaves visíveis, para a chave interna nem ser
+     * nomeada); janelas só entram se forem do componente visível ou
+     * globais. O {@code overall} nasce de {@link #overallOf} sobre os
+     * componentes visíveis e o {@link #derive} de cada um só considera
+     * incidente/janela que o afeta — fato de componente invisível não
+     * aparece nem influencia o estado geral.
      */
     public static PublicStatusView buildView(List<StatusComponent> components,
                                              Map<String, ProbeReading> readingsByComponentKey,
@@ -162,6 +178,9 @@ public final class PublicStatusService {
                 .sorted(Comparator.comparingInt(StatusComponent::sortOrder)
                         .thenComparing(StatusComponent::componentKey))
                 .toList();
+        Set<String> visibleKeys = visible.stream()
+                .map(StatusComponent::componentKey)
+                .collect(Collectors.toUnmodifiableSet());
 
         List<ComponentView> componentViews = new ArrayList<>();
         for (StatusComponent component : visible) {
@@ -173,13 +192,15 @@ public final class PublicStatusService {
 
         List<IncidentView> activeIncidents = incidents.stream()
                 .filter(StatusIncident::isOpen)
+                .filter(i -> i.affectedComponentKeys().stream().anyMatch(visibleKeys::contains))
                 .sorted(Comparator.comparing(StatusIncident::startedAt).reversed())
                 .map(i -> new IncidentView(i.title(), i.impact().name(), i.status().name(),
-                        i.affectedComponentKeys(), i.startedAt()))
+                        visibleAffectedKeys(i, visibleKeys), i.startedAt()))
                 .toList();
 
         List<MaintenanceView> maintenanceViews = windows.stream()
                 .filter(w -> w.isActiveAt(now) || w.isUpcomingAt(now))
+                .filter(w -> w.componentKey() == null || visibleKeys.contains(w.componentKey()))
                 .sorted(Comparator.comparing(MaintenanceWindow::startsAt))
                 .map(w -> new MaintenanceView(w.title(), w.description(), w.componentKey(),
                         w.startsAt(), w.endsAt(), w.isActiveAt(now)))
@@ -187,13 +208,21 @@ public final class PublicStatusService {
 
         List<PublishedSummaryView> summaries = incidents.stream()
                 .filter(StatusIncident::hasPublishedSummary)
+                .filter(i -> i.affectedComponentKeys().stream().anyMatch(visibleKeys::contains))
                 .sorted(Comparator.comparing(StatusIncident::summaryPublishedAt).reversed())
-                .map(i -> new PublishedSummaryView(i.title(), i.affectedComponentKeys(),
+                .map(i -> new PublishedSummaryView(i.title(), visibleAffectedKeys(i, visibleKeys),
                         i.startedAt(), i.resolvedAt(), i.postIncidentSummary(), i.summaryPublishedAt()))
                 .toList();
 
         return new PublicStatusView(overallOf(componentViews), now, List.copyOf(componentViews),
                 activeIncidents, maintenanceViews, summaries);
+    }
+
+    /** Chaves afetadas que a página pode nomear: só as dos componentes visíveis. */
+    private static List<String> visibleAffectedKeys(StatusIncident incident, Set<String> visibleKeys) {
+        return incident.affectedComponentKeys().stream()
+                .filter(visibleKeys::contains)
+                .toList();
     }
 
     /**
