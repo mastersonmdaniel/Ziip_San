@@ -68,38 +68,83 @@ public final class ReportExportService {
         UUID executionId = executions.start(new ReportExecutionRecorder.Start(user.tenantId(),
                 user.userId(), definition.code(), format.name(), ReportQueryJson.toJson(query),
                 scheduled, ReportExecution.Status.RUNNING, "PRIMARY", timeout, null, null, null));
-        JdbcReportQueryExecutor.ExecutionResult result;
+        // CORRECAO N2 (recuperacao M3): a linha acima nasce RUNNING e TODA
+        // falha posterior - leitura, mascara, enfileiramento ou escrita -
+        // tem de fecha-la num estado terminal. Antes, finish(FAILED) so
+        // cobria o SQLException da leitura; uma falha de escrita
+        // (IOException do escritor -> IllegalStateException em
+        // writeContent, RuntimeException do escritor/executor ou falha
+        // de delivery.enqueue) propagava sem nenhum finish e a execucao
+        // ficava RUNNING para sempre. A guarda abaixo fecha FAILED uma
+        // unica vez, com a causa, e relanca a excecao original intacta.
+        // Desfechos ja registrados (READY/QUEUED/FAILED da leitura) NAO
+        // sao sobrescritos: outcomeRecorded bloqueia a dupla escrita.
+        boolean outcomeRecorded = false;
         try {
-            result = executor.execute(definition, query, user, timeout);
-        } catch (SQLException e) {
-            // CORRECAO R4 (pos-revisao): falha de leitura NAO e NOT_FOUND.
-            // Os desfechos aceitos de personal_data_access_log (entidade
-            // real do core, PersonalDataAccessLog.Result) sao apenas
-            // FOUND, NOT_FOUND, DENIED e QUOTA_EXCEEDED - NAO existe valor
-            // de erro, e inventar um quebraria o CHECK/leitura do core.
-            // A falha fica registrada onde ha vocabulario para ela:
-            // report_executions com status FAILED. Declarado no relatorio.
-            executions.finish(executionId, ReportExecution.Status.FAILED, null, null,
-                    "falha de leitura: " + e.getClass().getSimpleName());
-            throw new IllegalStateException("Falha ao gerar " + definition.code(), e);
-        }
-        List<Map<String, Object>> masked = maskRows(definition, result.rows(), user);
-        if (masked.size() > ReportDefinition.SYNC_ROW_LIMIT && !scheduled) {
-            UUID fileId = delivery.enqueue(user.tenantId(), user.userId(),
-                    "report:" + definition.code(),
-                    definition.code().toLowerCase() + "." + format.extension());
-            executions.finish(executionId, ReportExecution.Status.QUEUED,
-                    (long) masked.size(), fileId, null);
+            JdbcReportQueryExecutor.ExecutionResult result;
+            try {
+                result = executor.execute(definition, query, user, timeout);
+            } catch (SQLException e) {
+                // CORRECAO R4 (pos-revisao): falha de leitura NAO e NOT_FOUND.
+                // Os desfechos aceitos de personal_data_access_log (entidade
+                // real do core, PersonalDataAccessLog.Result) sao apenas
+                // FOUND, NOT_FOUND, DENIED e QUOTA_EXCEEDED - NAO existe valor
+                // de erro, e inventar um quebraria o CHECK/leitura do core.
+                // A falha fica registrada onde ha vocabulario para ela:
+                // report_executions com status FAILED. Declarado no relatorio.
+                executions.finish(executionId, ReportExecution.Status.FAILED, null, null,
+                        "falha de leitura: " + e.getClass().getSimpleName());
+                outcomeRecorded = true;
+                throw new IllegalStateException("Falha ao gerar " + definition.code(), e);
+            }
+            List<Map<String, Object>> masked = maskRows(definition, result.rows(), user);
+            if (masked.size() > ReportDefinition.SYNC_ROW_LIMIT && !scheduled) {
+                UUID fileId = delivery.enqueue(user.tenantId(), user.userId(),
+                        "report:" + definition.code(),
+                        definition.code().toLowerCase() + "." + format.extension());
+                executions.finish(executionId, ReportExecution.Status.QUEUED,
+                        (long) masked.size(), fileId, null);
+                outcomeRecorded = true;
+                audit.recordExport(user.tenantId(), user.userId(), definition.code(), "FOUND",
+                        "assincrono; linhas=" + masked.size() + "; arquivo=" + fileId);
+                return ExportOutcome.queued(fileId, masked.size(), result.source().name());
+            }
+            byte[] content = writeContent(definition, format, masked);
+            executions.finish(executionId, ReportExecution.Status.READY, (long) masked.size(), null, null);
+            outcomeRecorded = true;
             audit.recordExport(user.tenantId(), user.userId(), definition.code(), "FOUND",
-                    "assincrono; linhas=" + masked.size() + "; arquivo=" + fileId);
-            return ExportOutcome.queued(fileId, masked.size(), result.source().name());
+                    "formato=" + format + "; linhas=" + masked.size() + "; fonte=" + result.source()
+                            + "; truncado=" + result.truncated() + "; agendado=" + scheduled);
+            return ExportOutcome.ready(content, format, masked.size(), result.truncated(), result.source().name());
+        } catch (RuntimeException e) {
+            if (!outcomeRecorded) {
+                try {
+                    executions.finish(executionId, ReportExecution.Status.FAILED, null, null,
+                            failureDetail(e));
+                } catch (RuntimeException finishFailure) {
+                    // A tentativa de fechar FAILED nunca mascara a causa
+                    // original: ela segue como suprimida da excecao real.
+                    e.addSuppressed(finishFailure);
+                }
+            }
+            throw e;
         }
-        byte[] content = writeContent(definition, format, masked);
-        executions.finish(executionId, ReportExecution.Status.READY, (long) masked.size(), null, null);
-        audit.recordExport(user.tenantId(), user.userId(), definition.code(), "FOUND",
-                "formato=" + format + "; linhas=" + masked.size() + "; fonte=" + result.source()
-                        + "; truncado=" + result.truncated() + "; agendado=" + scheduled);
-        return ExportOutcome.ready(content, format, masked.size(), result.truncated(), result.source().name());
+    }
+
+    /** Causa registrada no FAILED da correcao N2: tipo, mensagem e causa raiz. */
+    private static String failureDetail(RuntimeException e) {
+        StringBuilder detail = new StringBuilder("falha na execucao/escrita: ")
+                .append(e.getClass().getSimpleName());
+        if (e.getMessage() != null) {
+            detail.append(": ").append(e.getMessage());
+        }
+        if (e.getCause() != null) {
+            detail.append("; causa: ").append(e.getCause().getClass().getSimpleName());
+            if (e.getCause().getMessage() != null) {
+                detail.append(": ").append(e.getCause().getMessage());
+            }
+        }
+        return detail.toString();
     }
 
     /**
