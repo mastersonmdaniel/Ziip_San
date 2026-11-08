@@ -1,0 +1,20 @@
+requisito,caso,asvs,owasp,api_top10,teste,evidencia,execucao,lc8
+P3.20/P3.3 vinculo,VINCULO,4;2,A01;A07,,HomologationSecurityPortalTest.vinculoRespostaUniforme + integracao do vinculo (CI),audit_log/personal_data_access_log e relatorio de teste do CI,unidade + stack CI,sim
+P3.20 enumeracao de matricula,ENUMERACAO_MATRICULA,4;11,A01,API1,HomologationSecurityPortalTest.matriculaNaoECodigo,saida do teste no CI,unidade + stack CI,sim
+P3.3/P3.20 enumeracao do codigo de vinculacao,ENUMERACAO_CODIGO_VINCULACAO,2;4,A07,API6,HomologationSecurityPortalTest.matriculaNaoECodigo + codigoVinculacaoHashCego + convidadoLimitePorCodigo,saida do teste no CI,unidade,sim
+P3.3 enumeracao no login,ENUMERACAO_LOGIN,2,A07,API2,HomologationSecurityPortalTest.enumeracaoLogin,saida do teste no CI,unidade,sim
+P3.3 enumeracao na recuperacao,ENUMERACAO_RECUPERACAO,2,A07,API2;API6,HomologationSecurityPortalTest.enumeracaoRecuperacao,saida do teste no CI,unidade,sim
+ADR-0043 item 4 convidado,ENUMERACAO_CONVIDADO,4;11,A01,API1;API6,HomologationSecurityPortalTest.enumeracaoConvidado + convidadoLimite,registro de consultas do convidado + saida do teste,unidade,sim
+P3.3 troca de token entre realms,TROCA_TOKEN_REALMS,3;4,A01;A07,API5,HomologationSecurityPortalTest.trocaDeRealms,saida do teste no CI,unidade,sim
+P3.3/P3.20 download do portal,DOWNLOAD_PORTAL,4;8;12,A01,API1,HomologationSecurityPortalTest.downloadPortal,personal_data_access_log (integracao) + saida do teste,unidade + stack CI,sim
+P3.17 acesso assistido,ACESSO_ASSISTIDO,4;7,A01;A09,,HomologationSecurityAccessTest.assistidoNegadoEAuditado,audit_log do tenant com consentId,unidade,sim
+P3.17 acesso de emergencia,ACESSO_EMERGENCIA,2;4;7,A01;A07;A09,,HomologationSecurityAccessTest.emergenciaNegadaEAuditada + emergenciaEscritaBloqueada,audit_log do tenant e audit_event com incidentId,unidade,sim
+P3.3 PLT-22 defesa contra automacao,DEFESA_AUTOMACAO,2;11,A07,API4;API6,HomologationSecurityPortalTest.defesaAutomacao,telemetria da Central (integracao) + saida do teste,unidade,sim
+RNF-38 isolamento entre tenants,ISOLAMENTO_TENANTS,1;4;6;8,A01;A04,API1,testes de integracao de RLS das tarefas donas (CI),relatorio de integracao do CI,stack CI,sim
+P0.45 cofre local,COFRE,6;7;14,A02;A04,API8,conferencia do cofre da P3.7 + varreduras da stack (CI),registro de acessos ao cofre,stack CI,sim
+P3.8 DAST autenticada ZAP,DAST_AUTENTICADA,5;9;13;14,A02,API8,scripts/security/run-dast.sh + FindingGateTest,relatorio ZAP JSON + resumo do FindingGate,DAST no CI,sim
+P2.26 OWASP API Top 10 2023,API_PUBLICA_TOP10,13;4,A01,API1;API2;API3;API4;API5;API6;API7;API8;API9;API10,testes de contrato e seguranca da P2.26 (CI),relatorio de teste da P2.26 no CI,stack CI,sim
+Top 10:2025 A03 cadeia de suprimentos,CADEIA_SUPRIMENTOS,10;14,A03,,SBOM/licencas da P0.40 + npm audit do ci.sh,relatorio SBOM e npm audit do CI,stack CI,nao
+Top 10:2025 A10 condicoes excepcionais,CONDICOES_EXCEPCIONAIS,7;11,A10,,FindingGateTest.relatorioMalformadoFalhaFechado + casos de falha fechada da suite,saida do teste no CI,unidade + stack CI,nao
+ED-43 OWASP LLM Top 10 2025 (criterio),LLM_TOP10_ED43,11;13,,,criterio registrado para a ED-43 (sem execucao na P3.8),matriz da ED-43 quando ela executar,criterio de outra tarefa,nao
+RNF-39 apps (LC.8),APPS_LC8,3,A07,,ensaios dos apps ED-18/ED-39 cobertos pelo pentest da LC.8,relatorio do pentest externo da LC.8,pentest externo LC.8,sim

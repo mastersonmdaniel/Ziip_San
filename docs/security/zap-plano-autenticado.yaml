@@ -1,0 +1,72 @@
+# Plano de automacao do OWASP ZAP para a DAST autenticada da P3.8.
+# Consumido por scripts/security/run-dast.sh (zap -autorun).
+# Usuarios e senhas vem do AMBIENTE (usuarios sinteticos da massa local,
+# ADR-0033) — nenhum segredo neste arquivo. Alvo: SOMENTE o ambiente local.
+env:
+  contexts:
+    - name: portal
+      urls:
+        - "${ZIIPSAN_BASE_URL}"
+      includedPaths:
+        - "${ZIIPSAN_BASE_URL}/portal/.*"
+      authentication:
+        method: form
+        parameters:
+          loginPageUrl: "${ZIIPSAN_BASE_URL}/portal/login"
+          loginRequestUrl: "${ZIIPSAN_BASE_URL}/portal/login"
+          loginRequestBody: "username={%username%}&password={%password%}"
+        verification:
+          method: response
+          loggedInRegex: "\\Qlogout\\E"
+          pollFrequency: 5
+      users:
+        - name: sintetico-portal
+          username: "${ZAP_PORTAL_USER}"
+          password: "${ZAP_PORTAL_PASS}"
+    - name: backoffice
+      urls:
+        - "${ZIIPSAN_BASE_URL}"
+      includedPaths:
+        - "${ZIIPSAN_BASE_URL}/app/.*"
+        - "${ZIIPSAN_BASE_URL}/api/.*"
+      authentication:
+        method: form
+        parameters:
+          loginPageUrl: "${ZIIPSAN_BASE_URL}/login"
+          loginRequestUrl: "${ZIIPSAN_BASE_URL}/login"
+          loginRequestBody: "username={%username%}&password={%password%}"
+        verification:
+          method: response
+          loggedInRegex: "\\Qlogout\\E"
+          pollFrequency: 5
+      users:
+        - name: sintetico-backoffice
+          username: "${ZAP_BACKOFFICE_USER}"
+          password: "${ZAP_BACKOFFICE_PASS}"
+  parameters:
+    failOnError: true
+    progressToStdout: true
+jobs:
+  - type: spiderAjax
+    parameters:
+      context: portal
+      user: sintetico-portal
+  - type: spiderAjax
+    parameters:
+      context: backoffice
+      user: sintetico-backoffice
+  - type: activeScan
+    parameters:
+      context: portal
+      user: sintetico-portal
+      maxRuleDurationInMins: 10
+  - type: activeScan
+    parameters:
+      context: backoffice
+      user: sintetico-backoffice
+      maxRuleDurationInMins: 10
+  - type: report
+    parameters:
+      template: traditional-json
+      reportDir: "/zap/wrk"
+      reportFile: "p38-zap-report.json"
