@@ -52,6 +52,8 @@ public final class LegacyDebitService {
         private final String enrollmentId;
         private final BigDecimal amount;
         private final LocalDate debitDate;
+        /** Chave de deduplicacao da remessa (B2-4): identifica o debito do ciclo. */
+        private final String remittanceKey;
         private DebitStatus status = DebitStatus.REMETIDO;
         private int remittanceCount = 1;
         private String outcomeCode;
@@ -65,6 +67,7 @@ public final class LegacyDebitService {
             this.enrollmentId = enrollmentId;
             this.amount = amount;
             this.debitDate = debitDate;
+            this.remittanceKey = LegacyDebitService.remittanceKey(tenantId, enrollmentId, amount, debitDate);
         }
 
         public UUID id() { return id; }
@@ -73,6 +76,8 @@ public final class LegacyDebitService {
         public String enrollmentId() { return enrollmentId; }
         public BigDecimal amount() { return amount; }
         public LocalDate debitDate() { return debitDate; }
+        /** Chave de deduplicacao da remessa (B2-4). */
+        public String remittanceKey() { return remittanceKey; }
         public DebitStatus status() { return status; }
         public int remittanceCount() { return remittanceCount; }
         /** Codigo de ocorrencia do retorno guardado VERBATIM (correcao D1 da revisao). */
@@ -88,8 +93,26 @@ public final class LegacyDebitService {
         List<LegacyDebitAuthorization> findAuthorizations(UUID tenantId);
         void saveDebit(LegacyDebit debit);
         Optional<LegacyDebit> findDebit(UUID tenantId, UUID debitId);
+        /** Busca o debito do ciclo pela chave de deduplicacao da remessa (B2-4). */
+        Optional<LegacyDebit> findDebitByRemittanceKey(UUID tenantId, String remittanceKey);
         void saveConsent(LegacyConversionConsent consent);
         List<LegacyConversionConsent> findConsents(UUID tenantId, UUID authorizationId);
+    }
+
+    /**
+     * Chave deterministica de deduplicacao da remessa (B2-4): um debito e o
+     * mesmo quando repete tenant + matricula + valor + data do ciclo. O
+     * valor e normalizado ({@code stripTrailingZeros}) para "100.00" e
+     * "100.0" nao virarem debitos distintos.
+     */
+    public static String remittanceKey(UUID tenantId, String enrollmentId, BigDecimal amount,
+                                       LocalDate debitDate) {
+        Objects.requireNonNull(tenantId, "tenant e obrigatorio");
+        Objects.requireNonNull(enrollmentId, "matricula e obrigatoria");
+        Objects.requireNonNull(amount, "valor e obrigatorio");
+        Objects.requireNonNull(debitDate, "data do debito e obrigatoria");
+        return tenantId + "|" + enrollmentId + "|"
+                + amount.stripTrailingZeros().toPlainString() + "|" + debitDate;
     }
 
     private final Store store;
@@ -181,6 +204,19 @@ public final class LegacyDebitService {
      * duas chamadas, o B sai nas duas. A deduplicacao da lista de
      * pendentes e de quem chama, que monta as listas por ciclo (mesmo
      * desenho de {@code drafts} e {@code cancellationsPending}).
+     *
+     * <p>IDEMPOTENCIA POR DEBITO (B2-4): a reexecucao com os MESMOS drafts
+     * nao cria debitos duplicados - o debito ja existente para a chave
+     * {@link #remittanceKey} e reutilizado e nenhum registro E novo e
+     * escrito para ele; o trailer F soma so os debitos EFETIVAMENTE
+     * criados nesta chamada (nunca os reutilizados). Draft com valor ou
+     * data distintos e outro debito (outra chave) e cria normalmente. A
+     * emissao de B/C a cada chamada (D4) nao muda: a dedup cobre os
+     * debitos E, nao a lista de pendentes, que continua sendo do chamador.
+     * A UNIQUE de banco sobre a chave exige migration nova e esta
+     * ADIADA de proposito: a V6_4 pode virar V102+ por decisao pendente
+     * do dono (R2-G1) e o numero V102 nao pode ser reclamado agora; a
+     * UNIQUE deve acompanhar aquela renumeracao (ou a V103 seguinte).
      */
     public List<LegacyDebit> generateRemittance(UUID tenantId, String receiverBankCode,
                                                   List<DebitDraft> drafts,
@@ -201,16 +237,25 @@ public final class LegacyDebitService {
                     Febraban150Port.RecordType.B, enrollmentId, null, null, null, ++seq));
         }
         List<LegacyDebit> created = new ArrayList<>();
+        List<LegacyDebit> newlyCreated = new ArrayList<>();
         for (DebitDraft draft : drafts) {
             LegacyDebitAuthorization auth = requireActiveLegacy(tenantId, draft.enrollmentId());
             if (!auth.receiverBankCode().equals(receiverBankCode)) {
                 throw new IllegalStateException("banco do recebedor da remessa diverge do optante "
                         + draft.enrollmentId());
             }
+            // B2-4: debito do ciclo ja gerado - reutiliza, sem duplicar e sem novo registro E.
+            Optional<LegacyDebit> existing = store.findDebitByRemittanceKey(tenantId,
+                    remittanceKey(tenantId, draft.enrollmentId(), draft.amount(), draft.debitDate()));
+            if (existing.isPresent()) {
+                created.add(existing.get());
+                continue;
+            }
             LegacyDebit debit = new LegacyDebit(UUID.randomUUID(), tenantId, auth.id(),
                     draft.enrollmentId(), draft.amount(), draft.debitDate());
             store.saveDebit(debit);
             created.add(debit);
+            newlyCreated.add(debit);
             records.add(new Febraban150Port.RemittanceRecord(
                     Febraban150Port.RecordType.E, draft.enrollmentId(), debit.id(),
                     draft.amount(), draft.debitDate(), ++seq));
@@ -230,7 +275,7 @@ public final class LegacyDebitService {
         }
         records.add(new Febraban150Port.RemittanceRecord(
                 Febraban150Port.RecordType.F, null, null,
-                created.stream().map(LegacyDebit::amount).reduce(BigDecimal.ZERO, BigDecimal::add),
+                newlyCreated.stream().map(LegacyDebit::amount).reduce(BigDecimal.ZERO, BigDecimal::add),
                 null, ++seq));
         filePort.writeRemittance(new Febraban150Port.RemittanceBatch(tenantId, receiverBankCode,
                 List.copyOf(records)));
@@ -329,10 +374,33 @@ public final class LegacyDebitService {
      * Registra o consentimento GUARDADO do optante e converte: a
      * autorizacao sai do legado (CONVERTIDA_PIX) e nao gera mais debito
      * FEBRABAN 150. Sem consentimento registrado, nada muda.
+     *
+     * <p>Idempotente por prova (B2-2): o mesmo consentimento registrado
+     * duas vezes (mesma matricula + mesmo hash de prova) devolve o
+     * registro ja guardado, sem duplicar e sem re-marcar a autorizacao
+     * (que ja esta CONVERTIDA_PIX e falharia no portao de ativa).
      */
     public LegacyConversionConsent registerConversionConsent(
             UUID tenantId, String enrollmentId, String proofHash, String proofReference,
             String channel, Instant consentedAt) {
+        LegacyDebitAuthorization existing = store.findAuthorizationByEnrollment(tenantId, enrollmentId)
+                .orElse(null);
+        if (existing != null && proofHash != null) {
+            String normalized = proofHash.toLowerCase();
+            for (LegacyConversionConsent prior : store.findConsents(tenantId, existing.id())) {
+                if (prior.proofHash().equals(normalized)) {
+                    // Consentimento ja guardado (ex.: pelo adaptador da ED-27):
+                    // devolve o registro sem duplicar, MAS ainda converte a
+                    // autorizacao quando ela segue ativa - a conversao nao
+                    // pode ser pulada junto com a deduplicacao.
+                    if (existing.status() == LegacyDebitAuthorization.Status.ATIVA_LEGADO) {
+                        existing.markConvertedToPix(consentedAt);
+                        store.saveAuthorization(existing);
+                    }
+                    return prior;
+                }
+            }
+        }
         LegacyDebitAuthorization auth = requireActiveLegacy(tenantId, enrollmentId);
         LegacyConversionConsent consent = new LegacyConversionConsent(UUID.randomUUID(), tenantId,
                 auth.id(), enrollmentId, proofHash, proofReference, channel, consentedAt);
@@ -340,6 +408,20 @@ public final class LegacyDebitService {
         auth.markConvertedToPix(consentedAt);
         store.saveAuthorization(auth);
         return consent;
+    }
+
+    /** Todas as autorizacoes legadas importadas do tenant (apoio ao adaptador da ED-27, B2-5). */
+    public List<LegacyDebitAuthorization> listLegacyAuthorizations(UUID tenantId) {
+        return store.findAuthorizations(tenantId);
+    }
+
+    /** Autorizacao legada pela unidade vinculada, se houver (apoio ao adaptador da ED-27, B2-5). */
+    public Optional<LegacyDebitAuthorization> findLegacyAuthorizationByUnit(UUID tenantId, UUID unitId) {
+        if (unitId == null) {
+            return Optional.empty();
+        }
+        return store.findAuthorizations(tenantId).stream()
+                .filter(a -> unitId.equals(a.unitId())).findFirst();
     }
 
     private LegacyDebitAuthorization requireActiveLegacy(UUID tenantId, String enrollmentId) {

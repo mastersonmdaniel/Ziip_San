@@ -42,6 +42,10 @@ final class LegacyDebitFixture {
             LegacyDebitService.LegacyDebit d = debits.get(id);
             return d != null && d.tenantId().equals(t) ? Optional.of(d) : Optional.empty();
         }
+        public Optional<LegacyDebitService.LegacyDebit> findDebitByRemittanceKey(UUID t, String key) {
+            return debits.values().stream()
+                    .filter(d -> d.tenantId().equals(t) && d.remittanceKey().equals(key)).findFirst();
+        }
         public void saveConsent(LegacyConversionConsent c) { consents.add(c); }
         public List<LegacyConversionConsent> findConsents(UUID t, UUID authId) {
             return consents.stream()
