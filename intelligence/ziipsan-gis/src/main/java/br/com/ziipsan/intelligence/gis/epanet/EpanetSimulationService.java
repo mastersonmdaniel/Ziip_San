@@ -1,381 +1,216 @@
 package br.com.ziipsan.intelligence.gis.epanet;
 
-import br.com.ziipsan.intelligence.gis.domain.GisNetworkElement;
-import br.com.ziipsan.intelligence.gis.repository.GisNetworkElementRepository;
-import br.com.ziipsan.intelligence.gis.repository.GisValidationIssueRepository;
-import br.com.ziipsan.intelligence.losses.repository.DmaDistrictRepository;
-import br.com.ziipsan.intelligence.losses.domain.DmaDistrict;
-import br.com.ziipsan.intelligence.losses.domain.PressureAnalysis;
-import br.com.ziipsan.intelligence.losses.domain.WaterBalance;
-import br.com.ziipsan.core.json.Json;
+import br.com.ziipsan.core.api.ApiException;
 import br.com.ziipsan.core.tenant.TenantContextHolder;
-import br.com.ziipsan.core.audit.AuditLogRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import br.com.ziipsan.intelligence.gis.hydraulic.EpanetInpWriter;
+import br.com.ziipsan.intelligence.gis.hydraulic.HydraulicModel.SnapshotRequest;
+import br.com.ziipsan.intelligence.gis.hydraulic.HydraulicModel.WaterArc;
+import br.com.ziipsan.intelligence.gis.hydraulic.HydraulicModel.WaterNode;
+import br.com.ziipsan.intelligence.gis.hydraulic.HydraulicModel.WaterSnapshot;
+import br.com.ziipsan.intelligence.gis.hydraulic.HydraulicPublication;
+import br.com.ziipsan.intelligence.gis.hydraulic.solver.SolverPort;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-@Slf4j
+/**
+ * GIS-12 (ED-63) — SUBSTITUI o serviço da GIS-03. Mudanças de fundo
+ * (M5/M6 do GIS-CADASTRO-TECNICO §2.3):
+ *
+ * <ul>
+ *   <li>não lê mais a view de compatibilidade {@code gis_network_element}
+ *       nem a entidade {@code GisNetworkElement} (ambas removidas pelo SQL
+ *       pendente desta entrega): a foto vem de {@code gis_node}/{@code gis_arc}
+ *       por zona, estado e data, com o mapeamento tipo → elemento da tabela
+ *       {@code gis_hydraulic_mapping} (por tenant);</li>
+ *   <li>não devolve mais aviso de "solução não calculada":
+ *       {@link #runSimulation} executa o solver real (porta
+ *       {@link SolverPort}; produção = biblioteca do EPANET 2.2) sobre a
+ *       topologia persistida e publica pelo portão da N7. Sem solver
+ *       configurado, a chamada FALHA — resultado inventado ou vazio
+ *       disfarçado não existe mais;</li>
+ *   <li>a demanda é o consumo faturado das ligações do nó, injetado pela
+ *       porta {@link BilledConsumptionSource} (a agregação vive no módulo
+ *       comercial/faturamento, GIS-05; o GIS não duplica a consulta).</li>
+ * </ul>
+ */
 @Service
-@RequiredArgsConstructor
 public class EpanetSimulationService {
 
-    private final AuditLogRepository auditLogRepository;
-    private final DmaDistrictRepository dmaRepository;
-    private final GisNetworkElementRepository networkElementRepository;
-    private final GisValidationIssueRepository validationIssueRepository;
+    /** Consumo faturado agregado por código de nó no período (fonte: faturamento, via GIS-05). */
+    public interface BilledConsumptionSource {
+        Map<String, BigDecimal> billedVolumeM3ByNode(UUID tenantId, String zoneCode, int periodDays);
+    }
 
-    // ========================================================================
-    // EPANET NETWORK BUILDING
-    // ========================================================================
+    private final JdbcTemplate jdbc;
+    private final SolverPort solver;
+    private final BilledConsumptionSource consumption;
 
-    @Transactional(readOnly = true)
-    public EpanetNetwork buildNetworkFromDma(UUID dmaId) {
-        UUID tenantId = TenantContextHolder.getTenantId();
-        DmaDistrict dma = dmaRepository.findByIdAndTenantId(dmaId, tenantId)
-                .orElseThrow(() -> new IllegalArgumentException("DMA not found"));
-
-        List<GisNetworkElement> elements = networkElementRepository.findByDmaIdAndTenantId(dmaId, tenantId);
-
-        List<ElementSpec> specs = new ArrayList<>();
-        List<GisNetworkElement> candidates = new ArrayList<>();
-        int withoutHydraulicRole = 0;
-        for (GisNetworkElement element : elements) {
-            ElementSpec spec = toSpec(element);
-            if (spec == null) {
-                withoutHydraulicRole++;
-            } else {
-                specs.add(spec);
-                candidates.add(element);
-            }
-        }
-
-        // Aceite da GIS-03: feição com erro grave (severidade ERROR) ainda aberto na
-        // validação contínua fica FORA da exportação e é listada. A exclusão é aviso, não
-        // problema do modelo: o restante da rede continua exportável e o .inp não é
-        // recusado por causa dela. Se a feição excluída era ponta ou peça de tubulação, o
-        // construtor registra o problema de topologia correspondente, como qualquer
-        // referência quebrada.
-        Map<UUID, List<String>> openErrors = validationIssueRepository.findOpenErrorRulesByFeatureId(
-                tenantId, candidates.stream().map(GisNetworkElement::getId).toList());
-        List<String> excluded = new ArrayList<>();
-        if (!openErrors.isEmpty()) {
-            List<ElementSpec> kept = new ArrayList<>();
-            for (int i = 0; i < specs.size(); i++) {
-                List<String> rules = openErrors.get(candidates.get(i).getId());
-                if (rules == null) {
-                    kept.add(specs.get(i));
-                } else {
-                    excluded.add("Feição " + specs.get(i).code() + " excluída da exportação EPANET: "
-                            + "erro grave aberto na validação contínua (regras "
-                            + String.join(", ", rules) + "). Corrija o problema ou aceite-o na "
-                            + "validação para a feição voltar à exportação.");
-                }
-            }
-            specs = kept;
-            Collections.sort(excluded);
-        }
-
-        EpanetNetwork network = NetworkTopologyBuilder.build(
-                "DMA " + dma.getCode() + " - " + dma.getName(),
-                "Gerado do cadastro GIS para o DMC " + dma.getCode(),
-                specs);
-        network.getWarnings().addAll(excluded);
-        if (withoutHydraulicRole > 0) {
-            network.getWarnings().add(withoutHydraulicRole + " elemento(s) sem papel hidráulico no modelo foram "
-                    + "ignorados (hidrantes, medidores, ligações prediais, ...).");
-        }
-        network.setOptions(createSimulationOptions());
-        return network;
+    public EpanetSimulationService(JdbcTemplate jdbc, SolverPort solver, BilledConsumptionSource consumption) {
+        this.jdbc = jdbc;
+        this.solver = solver;
+        this.consumption = consumption;
     }
 
     /**
-     * Converte um elemento do cadastro no papel hidráulico do EPANET, ou {@code null} se ele não
-     * tem representação no modelo.
-     *
-     * <p>Reservatório e tanque do cadastro são {@code TANK} do EPANET (volume que enche e esvazia).
-     * O {@code RESERVOIR} do EPANET é uma fronteira de carga fixa: só poço, nascente e captação
-     * entram assim. Os atributos numéricos vêm do JSON {@code properties}; o que não existe lá
-     * continua ausente e o construtor de topologia registra como problema.
+     * Foto da rede de água por zona/estado/data direto das tabelas novas.
+     * Data = tempo do negócio: installed_on <= data e (abandoned_on nulo ou > data).
+     * Zona = feições do DMA da zona ou contidas no polígono dela.
      */
-    private ElementSpec toSpec(GisNetworkElement e) {
-        ElementSpec.Kind kind;
-        EpanetValve.ValveType valveType = null;
-        Map<String, BigDecimal> numbers = new HashMap<>();
-        String text = e.getProperties();
-
-        switch (e.getElementType()) {
-            case NODE, JUNCTION -> kind = ElementSpec.Kind.JUNCTION;
-            case RESERVOIR, TANK -> kind = ElementSpec.Kind.TANK;
-            case WELL, SPRING, INTAKE -> kind = ElementSpec.Kind.RESERVOIR;
-            case PUMP_STATION -> kind = ElementSpec.Kind.PUMP;
-            case PIPE -> kind = ElementSpec.Kind.PIPE;
-            case VALVE -> {
-                kind = ElementSpec.Kind.VALVE;
-                valveType = parseValveType(text);
-            }
-            case PRESSURE_REDUCING_VALVE -> {
-                kind = ElementSpec.Kind.VALVE;
-                valveType = EpanetValve.ValveType.PRV;
-            }
-            default -> {
-                return null;
-            }
-        }
-
-        parseNumbers(text, numbers);
-        // Topologia persistida (GIS-03, M4): as pontas do arco vêm da view; só PIPE as tem.
-        return new ElementSpec(e.getElementCode(), e.getName(), kind, e.getGeometry(), e.getDiameterMm(),
-                e.getLengthM(), e.getMaterial(), valveType, numbers, e.getNode1Code(), e.getNode2Code());
-    }
-
-    /** Lê os campos numéricos do JSON de propriedades. {@code elevation} é aceito como {@code elevation_m}. */
-    private void parseNumbers(String propertiesJson, Map<String, BigDecimal> out) {
-        if (propertiesJson == null || propertiesJson.isBlank()) return;
-        try {
-            var node = Json.readTree(propertiesJson);
-            node.properties().forEach(en -> {
-                if (en.getValue().isNumber()) {
-                    out.put(en.getKey(), en.getValue().decimalValue());
-                }
-            });
-            if (!out.containsKey("elevation_m") && out.containsKey("elevation")) {
-                out.put("elevation_m", out.get("elevation"));
-            }
-        } catch (Exception ex) {
-            log.warn("Propriedades do elemento não são um JSON válido: {}", ex.getMessage());
-        }
-    }
-
-    /** {@code valve_type} no JSON (PRV, PSV, PBV, FCV, TCV). Ausente = válvula de isolamento. */
-    private EpanetValve.ValveType parseValveType(String propertiesJson) {
-        if (propertiesJson == null || propertiesJson.isBlank()) return null;
-        try {
-            var node = Json.readTree(propertiesJson);
-            if (node.has("valve_type") && node.get("valve_type").isString()) {
-                return EpanetValve.ValveType.valueOf(node.get("valve_type").asString().trim().toUpperCase(Locale.ROOT));
-            }
-        } catch (Exception ex) {
-            log.warn("valve_type inválido: {}", ex.getMessage());
-        }
-        return null;
-    }
-
-    private EpanetSimulationOptions createSimulationOptions() {
-        EpanetSimulationOptions options = new EpanetSimulationOptions();
-        options.setDuration(24 * 3600); // 24 hours
-        options.setHydraulicTimestep(3600); // 1 hour
-        options.setQualityTimestep(3600);
-        options.setPatternTimestep(3600);
-        options.setPatternStart(0);
-        options.setReportTimestep(3600);
-        options.setReportStart(0);
-        options.setStartClockTime(0);
-        options.setStatistic(Statistic.NONE);
-        options.setReportLinks(LinkReport.ALL);
-        options.setReportNodes(NodeReport.ALL);
-        options.setUnbalancedMaxTrials(100);
-        options.setUnbalancedTolerance(0.01);
-        options.setDemandModel(DemandModel.DDA);
-        options.setEmitterExponent(0.5);
-        options.setAccuracy(BigDecimal.valueOf(0.001));
-        options.setMaxTrials(40);
-        options.setCheckFrequency(2);
-        options.setDampingLimit(BigDecimal.ZERO);
-        return options;
-    }
-
-    // ========================================================================
-    // SIMULATION EXECUTION (WASM)
-    // ========================================================================
-
-    @Transactional
-    public SimulationResult runSimulation(UUID dmaId, SimulationRequest request) {
-        EpanetNetwork network = buildNetworkFromDma(dmaId);
-
-        // Convert network to EPANET input format (.inp)
-        String inpContent = generateInpFile(network);
-
-        // Run simulation via EPANET WASM
-        // This would call the WASM module in the browser or via a WASM runtime
-        // For server-side, we can use epanet-js via GraalVM or call a microservice
-        SimulationResult result = runEpanetWasm(inpContent, network, request.baseOptions());
-
-        // Parse results and store
-        if (request.storeResults()) {
-            storeSimulationResults(dmaId, result);
-        }
-
-        return result;
-    }
-
-    /** Gera o .inp. Lança {@link InpValidationException} se o modelo não for confiável. */
-    private String generateInpFile(EpanetNetwork network) {
-        return InpWriter.write(network);
-    }
-
-    private SimulationResult runEpanetWasm(String inpContent, EpanetNetwork network, SimulationOptions options) {
-        // ===================================================================
-        // NOT A HYDRAULIC SOLVER. No EPANET engine is invoked here.
-        //
-        // A real implementation calls an EPANET WASM module (epanet-js/wa-epanet)
-        // with inpContent, which returns pressures, flows, velocities and
-        // headlosses per node/link. That runtime is not wired in yet, so this
-        // method does only what can be computed honestly from the network
-        // itself: structural counts and length aggregation.
-        //
-        // Node/link hydraulic maps are deliberately left EMPTY and
-        // solverExecuted=false. Empty is reported as empty - never as zeros,
-        // and never as invented numbers.
-        // ===================================================================
-        SimulationResult result = new SimulationResult();
-        result.setSimulationTime(OffsetDateTime.now());
-        result.setSolverExecuted(false);
-        result.setDurationSeconds(0);
-        result.setNodeResults(new LinkedHashMap<>());
-        result.setLinkResults(new LinkedHashMap<>());
-        result.setWarnings(new ArrayList<>());
-
-        // Deterministic structural aggregation - valid without a solver.
-        result.setNodeCount(network.nodeCount());
-        result.setLinkCount(network.linkCount());
-        result.setTotalPipeLengthMeters(network.totalPipeLength());
-
-        // O relatório da simulação carrega os avisos da rede — inclusive a lista de
-        // feições excluídas por erro grave aberto (GIS-03), para quem lê o resultado
-        // saber o que ficou de fora da exportação e por quê.
-        result.getWarnings().addAll(network.getWarnings());
-        result.getWarnings().add("Hydraulic solution not computed: no EPANET solver "
-                + "is configured. Pressures, flows and velocities are unavailable.");
-        if (options != null && options.statistic() != Statistic.AVERAGE) {
-            result.getWarnings().add("Requested reporting statistic " + options.statistic()
-                    + " is ignored until a solver is available.");
-        }
-
-        log.info("EPANET run for network '{}': {} nodes, {} links, {} m of pipe. "
-                        + "No hydraulic solution computed (solver not configured).",
-                network.getTitle(), result.getNodeCount(), result.getLinkCount(),
-                result.getTotalPipeLengthMeters());
-
-        return result;
-    }
-
-    private void storeSimulationResults(UUID dmaId, SimulationResult result) {
-        // Store node pressures, link flows, tank levels, etc.
-    }
-
-    // ========================================================================
-    // SCENARIO ANALYSIS
-    // ========================================================================
-
     @Transactional(readOnly = true)
-    public ScenarioAnalysisResult analyzeScenario(UUID dmaId, ScenarioRequest request) {
-        // Run base simulation. ScenarioRequest carries SimulationOptions, while
-        // runSimulation takes a SimulationRequest, so wrap the base options into
-        // the request runSimulation expects.
-        SimulationResult baseResult = runSimulation(dmaId, new SimulationRequest(
-                request.baseOptions(), request.scenarioOptions(), request.storeResults()));
+    public WaterSnapshot loadSnapshot(SnapshotRequest request, int billedPeriodDays) {
+        UUID tenantId = TenantContextHolder.getTenantId();
+        Map<String, String> mapping = loadMapping(tenantId, "EPANET");
 
-        // NOT IMPLEMENTED: applying scenario modifications (pipe break, valve
-        // closure, demand change, pump failure) and re-running. Without a real
-        // EPANET solver there is nothing meaningful to compare against, so no
-        // deltas are invented here - the result reports scenarioModelled=false.
-        ScenarioAnalysisResult analysis = new ScenarioAnalysisResult();
-        analysis.setBaseResult(baseResult);
-        analysis.setSolverExecuted(baseResult.isSolverExecuted());
-        log.warn("Scenario analysis for DMA {} ran the base case only; scenario "
-                + "modification and comparison are not implemented", dmaId);
+        List<WaterNode> nodes = new ArrayList<>();
+        List<Map<String, Object>> nodeRows = jdbc.queryForList("""
+                SELECT n.code, n.name, ft.code AS type_code, n.ground_elevation_m, n.rim_elevation_m,
+                       n.invert_elevation_m, n.setting,
+                       (n.attributes ->> 'head_m')::numeric AS head_m,
+                       (n.attributes ->> 'init_level_m')::numeric AS init_level_m,
+                       (n.attributes ->> 'min_level_m')::numeric AS min_level_m,
+                       (n.attributes ->> 'max_level_m')::numeric AS max_level_m,
+                       (n.attributes ->> 'diameter_m')::numeric AS diameter_m,
+                       ST_X(n.geom) AS x, ST_Y(n.geom) AS y
+                  FROM gis_node n
+                  JOIN gis_feature_type ft ON ft.tenant_id = n.tenant_id AND ft.id = n.feature_type_id
+                  JOIN gis_zone z ON z.tenant_id = n.tenant_id AND z.code = ?
+                 WHERE n.tenant_id = ? AND n.lifecycle_status = ANY (?)
+                   AND (n.installed_on IS NULL OR n.installed_on <= ?)
+                   AND (n.abandoned_on IS NULL OR n.abandoned_on > ?)
+                   AND (n.dma_id = z.dma_district_id OR ST_Contains(z.geom, n.geom))
+                """, request.zoneCode(), tenantId,
+                request.lifecycleStatuses().toArray(new String[0]), request.asOf(), request.asOf());
+        for (Map<String, Object> r : nodeRows) {
+            String element = mapping.get(str(r, "type_code"));
+            if (element == null) continue; // tipo sem papel hidráulico no mapeamento do tenant
+            WaterNode.WaterNodeKind kind = switch (element) {
+                case "RESERVOIR" -> WaterNode.WaterNodeKind.RESERVOIR;
+                case "TANK" -> WaterNode.WaterNodeKind.TANK;
+                default -> WaterNode.WaterNodeKind.JUNCTION;
+            };
+            nodes.add(new WaterNode(str(r, "code"), str(r, "name"), kind,
+                    num(r, "ground_elevation_m"), num(r, "head_m"), num(r, "init_level_m"),
+                    num(r, "min_level_m"), num(r, "max_level_m"), num(r, "diameter_m"),
+                    num(r, "x"), num(r, "y")));
+        }
 
-        return analysis;
+        List<WaterArc> arcs = new ArrayList<>();
+        List<Map<String, Object>> arcRows = jdbc.queryForList("""
+                SELECT a.code, a.name, ft.code AS type_code, n1.code AS node1_code, n2.code AS node2_code,
+                       COALESCE(a.declared_length_m, a.length_m) AS length_m,
+                       ci.dn_mm, m.code AS material_code, m.hazen_williams_c,
+                       (a.attributes ->> 'roughness')::numeric AS roughness,
+                       (a.attributes ->> 'power_kw')::numeric AS power_kw,
+                       (a.attributes ->> 'valve_type') AS valve_type, (a.attributes ->> 'setting')::numeric AS setting, a.operational_status
+                  FROM gis_arc a
+                  JOIN gis_feature_type ft ON ft.tenant_id = a.tenant_id AND ft.id = a.feature_type_id
+                  LEFT JOIN gis_node n1 ON n1.tenant_id = a.tenant_id AND n1.id = a.node_1_id
+                  LEFT JOIN gis_node n2 ON n2.tenant_id = a.tenant_id AND n2.id = a.node_2_id
+                  LEFT JOIN gis_catalog_item ci ON ci.tenant_id = a.tenant_id AND ci.id = a.catalog_item_id
+                  LEFT JOIN gis_material m ON m.tenant_id = a.tenant_id AND m.id = ci.material_id
+                  JOIN gis_zone z ON z.tenant_id = a.tenant_id AND z.code = ?
+                 WHERE a.tenant_id = ? AND a.lifecycle_status = ANY (?)
+                   AND (a.installed_on IS NULL OR a.installed_on <= ?)
+                   AND (a.abandoned_on IS NULL OR a.abandoned_on > ?)
+                   AND (a.dma_id = z.dma_district_id OR ST_Contains(z.geom, ST_Centroid(a.geom)))
+                """, request.zoneCode(), tenantId,
+                request.lifecycleStatuses().toArray(new String[0]), request.asOf(), request.asOf());
+        Map<String, BigDecimal> hwC = new LinkedHashMap<>();
+        for (Map<String, Object> r : arcRows) {
+            String element = mapping.get(str(r, "type_code"));
+            if (element == null) continue;
+            if (str(r, "material_code") != null && num(r, "hazen_williams_c") != null) {
+                hwC.put(str(r, "material_code"), num(r, "hazen_williams_c"));
+            }
+            WaterArc.WaterArcKind kind = switch (element) {
+                case "PUMP" -> WaterArc.WaterArcKind.PUMP;
+                case "VALVE" -> WaterArc.WaterArcKind.VALVE;
+                default -> WaterArc.WaterArcKind.PIPE;
+            };
+            boolean open = !"CLOSED".equalsIgnoreCase(str(r, "operational_status"));
+            arcs.add(new WaterArc(str(r, "code"), str(r, "name"), kind, str(r, "node1_code"), str(r, "node2_code"),
+                    num(r, "length_m"), intOrNull(r, "dn_mm"), str(r, "material_code"), num(r, "roughness"),
+                    num(r, "power_kw"), str(r, "valve_type"), num(r, "setting"), open));
+        }
+
+        Map<String, BigDecimal> billed = consumption == null ? Map.of()
+                : consumption.billedVolumeM3ByNode(tenantId, request.zoneCode(), billedPeriodDays);
+        return new WaterSnapshot(request, "Rede de agua - zona " + request.zoneCode(),
+                nodes, arcs, billed, billedPeriodDays, hwC, List.of());
     }
 
-    // ========================================================================
-    // HYDRAULIC CALCULATIONS
-    // ========================================================================
-
-    public HydraulicIndicators calculateHydraulicIndicators(UUID dmaId, SimulationResult result) {
-        HydraulicIndicators indicators = new HydraulicIndicators();
-
-        // Pressure statistics
-        List<BigDecimal> pressures = result.getNodeResults().values().stream()
-                .map(r -> r.getPressure())
-                .filter(Objects::nonNull)
-                .toList();
-
-        if (!pressures.isEmpty()) {
-            BigDecimal avg = pressures.stream().reduce(BigDecimal.ZERO, BigDecimal::add)
-                    .divide(BigDecimal.valueOf(pressures.size()), 4, RoundingMode.HALF_UP);
-            BigDecimal min = Collections.min(pressures);
-            BigDecimal max = Collections.max(pressures);
-
-            indicators.setAvgPressure(avg);
-            indicators.setMinPressure(Collections.min(pressures));
-            indicators.setMaxPressure(max);
-            indicators.setPressureDeficitCount(
-                    (int) pressures.stream().filter(p -> p.compareTo(BigDecimal.valueOf(20)) < 0).count());
-            indicators.setPressureExcessCount(
-                    (int) pressures.stream().filter(p -> p.compareTo(BigDecimal.valueOf(60)) > 0).count());
-        }
-
-        // Velocity statistics
-        List<BigDecimal> velocities = result.getLinkResults().values().stream()
-                .map(r -> r.getVelocity())
-                .filter(Objects::nonNull)
-                .toList();
-
-        if (!velocities.isEmpty()) {
-            BigDecimal avgVel = velocities.stream().reduce(BigDecimal.ZERO, BigDecimal::add)
-                    .divide(BigDecimal.valueOf(velocities.size()), 4, RoundingMode.HALF_UP);
-            BigDecimal maxVel = Collections.max(velocities);
-
-            indicators.setAvgVelocity(avgVel);
-            indicators.setMaxVelocity(maxVel);
-            indicators.setHighVelocityCount(
-                    (int) velocities.stream().filter(v -> v.compareTo(BigDecimal.valueOf(2.0)) > 0).count());
-        }
-
-        // Headloss
-        List<BigDecimal> headlosses = result.getLinkResults().values().stream()
-                .map(r -> r.getHeadloss())
-                .filter(Objects::nonNull)
-                .toList();
-
-        if (!headlosses.isEmpty()) {
-            BigDecimal total = headlosses.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-            indicators.setTotalHeadloss(total);
-        }
-
-        return indicators;
-    }
-
-    // DTOs
-    public record SimulationRequest(
-            SimulationOptions baseOptions,
-            SimulationOptions scenarioOptions,
-            boolean storeResults
-    ) {}
-
-    public record SimulationOptions(
-            int duration,
-            int hydraulicTimestep,
-            Statistic statistic,
-            DemandModel demandModel,
-            BigDecimal accuracy,
-            int maxTrials
-    ) {
-        public SimulationOptions() {
-            this(86400, 3600, Statistic.AVERAGE, DemandModel.DDA,
-                    new BigDecimal("0.001"), 40);
+    /** Gera o .inp do recorte (sem executar). Problemas de modelo viram 422 com a lista. */
+    @Transactional(readOnly = true)
+    public String exportInp(SnapshotRequest request, int billedPeriodDays) {
+        try {
+            return EpanetInpWriter.write(loadSnapshot(request, billedPeriodDays));
+        } catch (br.com.ziipsan.intelligence.gis.hydraulic.HydraulicValidationException e) {
+            throw ApiException.unprocessable(String.join(" | ", e.issues()));
         }
     }
 
-    public enum Statistic { NONE, AVERAGE, MINIMUM, MAXIMUM, RANGE };
-    public enum DemandModel { DDA, PDA };
-    public enum LinkReport { NONE, ALL };
-    public enum NodeReport { NONE, ALL };
+    /** Executa o solver REAL e devolve o resultado cru (base da calibração e dos cenários). */
+    @Transactional(readOnly = true)
+    public SolverPort.SolverResult runCalculation(SnapshotRequest request, int billedPeriodDays) {
+        String inp = exportInp(request, billedPeriodDays);
+        try {
+            return solver.runEpanet(inp);
+        } catch (SolverPort.SolverUnavailableException | SolverPort.SolverExecutionException e) {
+            throw ApiException.unprocessable(e.getMessage());
+        }
+    }
+
+    /**
+     * Executa e PUBLICA pelo portão da N7: exige solver, versão (do
+     * relatório do solver), premissas e grau de confiança — este último
+     * vem da calibração (HydraulicCalibration) ou da declaração do
+     * cenário; sem ele a publicação é barrada, nunca presumida.
+     */
+    @Transactional(readOnly = true)
+    public HydraulicPublication.PublishedResult runSimulation(SnapshotRequest request, int billedPeriodDays,
+                                                              List<String> premises,
+                                                              HydraulicPublication.Confidence confidence) {
+        SolverPort.SolverResult result = runCalculation(request, billedPeriodDays);
+        List<String> allPremises = new ArrayList<>();
+        allPremises.add("Topologia persistida gis_node/gis_arc, zona " + request.zoneCode()
+                + ", estados " + request.lifecycleStatuses() + ", data " + request.asOf());
+        allPremises.add("Demanda do consumo faturado agregado por no, periodo de " + billedPeriodDays + " dias");
+        if (premises != null) allPremises.addAll(premises);
+        return HydraulicPublication.publish(new HydraulicPublication.PublishedResult(
+                result, "EPANET", result.solverVersion(), allPremises, confidence));
+    }
+
+    private Map<String, String> loadMapping(UUID tenantId, String model) {
+        Map<String, String> map = new LinkedHashMap<>();
+        for (Map<String, Object> r : jdbc.queryForList(
+                "SELECT feature_type_code, element_code FROM gis_hydraulic_mapping WHERE tenant_id = ? AND model = ? AND active",
+                tenantId, model)) {
+            map.put(str(r, "feature_type_code"), str(r, "element_code"));
+        }
+        return map;
+    }
+
+    private static String str(Map<String, Object> r, String key) {
+        Object v = r.get(key);
+        return v == null ? null : v.toString();
+    }
+
+    private static BigDecimal num(Map<String, Object> r, String key) {
+        Object v = r.get(key);
+        if (v == null) return null;
+        return v instanceof BigDecimal b ? b : new BigDecimal(v.toString());
+    }
+
+    private static Integer intOrNull(Map<String, Object> r, String key) {
+        Object v = r.get(key);
+        return v == null ? null : ((Number) v).intValue();
+    }
 }
