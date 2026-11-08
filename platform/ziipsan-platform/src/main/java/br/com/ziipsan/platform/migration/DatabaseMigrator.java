@@ -43,6 +43,14 @@ import java.util.UUID;
  * implantação quando TODOS concluíram — a semântica da P0.42 está preservada.
  * O paralelismo vem de {@code ziipsan.db.migration-parallelism} (padrão 2, igual
  * ao pool do migrador; nunca configure acima dele, ver TenantMigrationRollout).
+ *
+ * <p>P3.12: este é o ÚNICO caminho de aplicação de migrations de tenant —
+ * job {@code migrate}, em ondas (canário, depois lotes de no máximo o
+ * paralelismo configurado), com quarentena do tenant cuja migração falha sem
+ * bloquear os demais. Não existe mais aplicação em sequência na subida: a api
+ * e o worker não têm este bean (P0.6) e nenhum outro bean migra tenant. Na
+ * mesma tarefa o {@code TenantMigrator} perdeu o {@code outOfOrder(true)}:
+ * a sequência de tenant é global, a partir de V100.
  */
 @Slf4j
 @Component("databaseMigrator")

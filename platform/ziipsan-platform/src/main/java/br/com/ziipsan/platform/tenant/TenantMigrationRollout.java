@@ -17,20 +17,24 @@ import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 
 /**
- * Rollout de migrations por tenant (P1.14; 17:D1; ADR-0005).
+ * Rollout de migrations por tenant (P1.14; ondas explícitas na P3.12; 17:D1; ADR-0005).
  *
  * <p>Regras, na ordem:
  * <ol>
  *   <li><b>Canário.</b> O primeiro tenant da lista (o {@code DatabaseMigrator} ordena por
- *   {@code schema_name}) migra sozinho, em sequência. Se ele falha, a onda é abortada: os
- *   demais tenants nem são tentados — o canário existe justamente para que uma migration
- *   quebrada não atinja todo mundo. O canário falho vai para a quarentena como qualquer
- *   outro tenant falho.</li>
- *   <li><b>Paralelismo limitado.</b> Passando o canário, os demais tenants migram num pool
- *   fixo de {@code parallelism} threads. O padrão é 2, igual ao pool do DataSource de
- *   migração (ver {@code DataSourceConfig}): cada migração segura uma conexão durante
- *   toda a execução, então um paralelismo maior que o pool só faria threads esperarem
- *   conexão — nunca configure acima do pool do migrador.</li>
+ *   {@code schema_name}) migra sozinho, em sequência — é a onda zero. Se ele falha, a onda
+ *   é abortada: os demais tenants nem são tentados — o canário existe justamente para que
+ *   uma migration quebrada não atinja todo mundo. O canário falho vai para a quarentena
+ *   como qualquer outro tenant falho.</li>
+ *   <li><b>Ondas com paralelismo limitado (P3.12).</b> Passando o canário, os demais
+ *   tenants migram em <b>ondas</b>: lotes de no máximo {@code parallelism} grupos de
+ *   schema, executados em paralelo dentro da onda e em sequência entre ondas — a onda
+ *   seguinte só começa quando a anterior termina e tem a situação gravada. O padrão do
+ *   paralelismo é 2, igual ao pool do DataSource de migração (ver
+ *   {@code DataSourceConfig}): cada migração segura uma conexão durante toda a execução,
+ *   então um paralelismo maior que o pool só faria threads esperarem conexão — nunca
+ *   configure acima do pool do migrador. A falha de um tenant numa onda <b>não</b> aborta
+ *   as ondas seguintes: ele vai para a quarentena e os demais continuam (regra 3).</li>
  *   <li><b>Quarentena sem parar os demais.</b> A falha de um tenant não-canário (exceção do
  *   Flyway ou de conexão) é capturada: o tenant é marcado {@code QUARANTINED} no catálogo
  *   com a mensagem da falha e os demais continuam. O job só falha no fim (o
@@ -121,33 +125,48 @@ public final class TenantMigrationRollout {
         }
 
         List<Map.Entry<String, List<Tenant>>> rest = groups.subList(1, groups.size());
-        if (!rest.isEmpty()) {
-            ExecutorService pool = Executors.newFixedThreadPool(parallelism);
-            try {
-                List<Future<List<TenantResult>>> futures = new ArrayList<>();
-                for (Map.Entry<String, List<Tenant>> group : rest) {
-                    futures.add(pool.submit(() -> migrateGroup(group, false)));
-                }
-                // Ordem determinística no registro: segue a ordem dos grupos, não a de
-                // término das threads.
-                for (Future<List<TenantResult>> future : futures) {
-                    try {
-                        results.addAll(future.get());
-                    } catch (ExecutionException e) {
-                        // migrateGroup já captura qualquer exceção por tenant; chegar aqui
-                        // seria um erro do próprio executor, não de um tenant.
-                        throw new IllegalStateException("Falha do executor do rollout", e.getCause());
-                    }
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new IllegalStateException("Rollout interrompido", e);
-            } finally {
-                pool.shutdownNow();
-            }
-            recordStatuses(results.subList(canaryResults.size(), results.size()));
+        // P3.12: ondas explícitas de no máximo `parallelism` grupos. Cada onda
+        // roda em paralelo por dentro, termina por completo (com a situação
+        // gravada) e só então a próxima começa — diferente de submeter todos os
+        // grupos de uma vez a um pool, em que o "lote" era só o limite de
+        // threads e nenhuma fronteira de onda era observável no registro.
+        for (int waveStart = 0, wave = 1; waveStart < rest.size(); waveStart += parallelism, wave++) {
+            List<Map.Entry<String, List<Tenant>>> waveGroups =
+                    rest.subList(waveStart, Math.min(waveStart + parallelism, rest.size()));
+            List<TenantResult> waveResults = runWave(waveGroups, wave);
+            results.addAll(waveResults);
+            recordStatuses(waveResults);
         }
         return new RolloutResult(results, false);
+    }
+
+    private List<TenantResult> runWave(List<Map.Entry<String, List<Tenant>>> waveGroups, int wave) {
+        log.info("Onda {} do rollout: {} grupo(s) de schema", wave, waveGroups.size());
+        ExecutorService pool = Executors.newFixedThreadPool(parallelism);
+        try {
+            List<Future<List<TenantResult>>> futures = new ArrayList<>();
+            for (Map.Entry<String, List<Tenant>> group : waveGroups) {
+                futures.add(pool.submit(() -> migrateGroup(group, false)));
+            }
+            // Ordem determinística no registro: segue a ordem dos grupos, não a de
+            // término das threads.
+            List<TenantResult> waveResults = new ArrayList<>();
+            for (Future<List<TenantResult>> future : futures) {
+                try {
+                    waveResults.addAll(future.get());
+                } catch (ExecutionException e) {
+                    // migrateGroup já captura qualquer exceção por tenant; chegar aqui
+                    // seria um erro do próprio executor, não de um tenant.
+                    throw new IllegalStateException("Falha do executor do rollout", e.getCause());
+                }
+            }
+            return waveResults;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Rollout interrompido", e);
+        } finally {
+            pool.shutdownNow();
+        }
     }
 
     private List<TenantResult> migrateGroup(Map.Entry<String, List<Tenant>> group, boolean canary) {
