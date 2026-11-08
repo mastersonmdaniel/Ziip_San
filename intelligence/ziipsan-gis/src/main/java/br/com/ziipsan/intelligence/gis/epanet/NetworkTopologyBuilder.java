@@ -11,10 +11,12 @@ import java.math.RoundingMode;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Monta a rede EPANET a partir de elementos do cadastro, usando a topologia persistida
@@ -366,7 +368,7 @@ public final class NetworkTopologyBuilder {
 
             String nodeIn = code + "-i";
             String nodeOut = code + "-o";
-            BigDecimal elevation = pieceElevation(piece, up, down, byCode);
+            BigDecimal elevation = pieceElevation(piece, up, down, byCode, plans);
             Coordinate c = pieceCoordinate.get(code);
             addVirtualJunction(nodeIn, c, elevation);
             addVirtualJunction(nodeOut, c, elevation);
@@ -387,11 +389,13 @@ public final class NetworkTopologyBuilder {
      * da versão anterior, que interpolava entre as pontas da tubulação dividida.
      */
     private BigDecimal pieceElevation(ElementSpec piece, PipePlan up, PipePlan down,
-                                      Map<String, ElementSpec> byCode) {
+                                      Map<String, ElementSpec> byCode, List<PipePlan> plans) {
         BigDecimal elevation = piece.number("elevation_m");
         if (elevation != null) return elevation;
-        BigDecimal from = farElevation(up.spec.node1Code(), byCode);
-        BigDecimal to = farElevation(down.spec.node2Code(), byCode);
+        Set<String> visited = new HashSet<>();
+        visited.add(piece.code());
+        BigDecimal from = farElevation(up.spec.node1Code(), byCode, plans, visited);
+        BigDecimal to = farElevation(down.spec.node2Code(), byCode, plans, visited);
         if (from != null && to != null) {
             return from.add(to).divide(BigDecimal.valueOf(2), 3, RoundingMode.HALF_UP);
         }
@@ -400,13 +404,46 @@ public final class NetworkTopologyBuilder {
         return null;
     }
 
-    /** Cota conhecida de um código de ponta: nó real pelo mapa; peça, pelo seu elevation_m. */
-    private BigDecimal farElevation(String code, Map<String, ElementSpec> byCode) {
+    /**
+     * Cota conhecida de um código de ponta: nó real pelo mapa; peça, pelo seu
+     * {@code elevation_m} — e, sem ele, pela propagação através da cadeia de
+     * peças (correção M3, D3): duas peças-nó em sequência (válvula–válvula)
+     * não têm nó real entre elas, então a cota da ponta distante atravessa a
+     * peça vizinha até o próximo nó real de cada lado. A peça vizinha
+     * empresta a média dos dois lados dela quando ambos resolvem; quando só
+     * um lado resolve (o outro é a própria cadeia de onde a busca veio,
+     * cortada pelo conjunto {@code visited}), empresta esse lado — é ele que
+     * permite à peça de origem tirar a média das suas duas pontas reais. A
+     * regra da peça de origem não muda: ela continua exigindo as duas pontas
+     * resolvidas (ver {@link #pieceElevation}); a propagação só deixa de
+     * parar na primeira peça sem {@code elevation_m} cadastrado.
+     */
+    private BigDecimal farElevation(String code, Map<String, ElementSpec> byCode,
+                                    List<PipePlan> plans, Set<String> visited) {
         if (code == null) return null;
         BigDecimal e = nodeElevation.get(code);
         if (e != null) return e;
         ElementSpec other = byCode.get(code);
-        return other == null ? null : other.number("elevation_m");
+        if (other == null) return null;
+        BigDecimal own = other.number("elevation_m");
+        if (own != null) return own;
+        if (other.kind() != ElementSpec.Kind.VALVE && other.kind() != ElementSpec.Kind.PUMP) {
+            return null;
+        }
+        if (!visited.add(code)) return null;
+        List<PipePlan> neighborUp = plans.stream().filter(p -> code.equals(p.toPiece)).toList();
+        List<PipePlan> neighborDown = plans.stream().filter(p -> code.equals(p.fromPiece)).toList();
+        if (neighborUp.size() != 1 || neighborDown.size() != 1) {
+            // Cadeia ambígua ou peça ligada de um lado só: sem propagação
+            // conclusiva (a ligação da peça já é problema em linkPieces).
+            return null;
+        }
+        BigDecimal from = farElevation(neighborUp.get(0).spec.node1Code(), byCode, plans, visited);
+        BigDecimal to = farElevation(neighborDown.get(0).spec.node2Code(), byCode, plans, visited);
+        if (from != null && to != null) {
+            return from.add(to).divide(BigDecimal.valueOf(2), 3, RoundingMode.HALF_UP);
+        }
+        return from != null ? from : to;
     }
 
     private void addPointLink(ElementSpec spec, String nodeIn, String nodeOut, double shortLength,

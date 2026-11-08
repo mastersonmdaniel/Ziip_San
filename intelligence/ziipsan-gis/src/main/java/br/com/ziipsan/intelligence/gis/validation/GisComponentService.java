@@ -1,6 +1,7 @@
 package br.com.ziipsan.intelligence.gis.validation;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,9 +60,14 @@ public class GisComponentService {
         String edgesSql = "SELECT id, node_1_id AS source, node_2_id AS target, 1 AS cost "
                 + "FROM gis_arc WHERE tenant_id = '" + tenantId + "' "
                 + "AND node_1_id IS NOT NULL AND node_2_id IS NOT NULL";
+        // Correção M3 (D1): o lambda linha a linha é um RowCallbackHandler
+        // (preenche o mapa, sem valor agregado de retorno); sem o cast, a
+        // chamada é ambígua com o overload de ResultSetExtractor e o
+        // módulo não compila.
         jdbc.query("SELECT node, component FROM pgr_connectedComponents(?)",
                 ps -> ps.setString(1, edgesSql),
-                rs -> pgr.put(rs.getObject("node", UUID.class), rs.getLong("component")));
+                (RowCallbackHandler) rs -> pgr.put(
+                        rs.getObject("node", UUID.class), rs.getLong("component")));
         return GisComponentConsistencyChecker.compare(javaComponents(tenantId), pgr);
     }
 

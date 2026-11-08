@@ -17,6 +17,16 @@ import java.util.UUID;
  * componente da outra, nos dois sentidos, e nenhum nó existe de um lado
  * só. As divergências saem agrupadas por componente (não por par de nós),
  * para a comparação em lote não explodir em redes grandes.
+ *
+ * <p><b>Simetria das divisões (correção M3, D2):</b> uma divisão de
+ * partição é uma divergência simétrica — se um componente de um lado se
+ * espalha por mais de um componente do outro, as duas partições diferem
+ * nos dois sentidos de leitura. Por isso toda divisão detectada emite o
+ * par {@code JAVA_SPLIT_IN_PGR} + {@code PGR_SPLIT_IN_JAVA}; o texto de
+ * {@code detail} de cada emissão registra o sentido em que a divisão foi
+ * detectada, para não se perder a direção original do achado. É o
+ * contrato declarado em {@code GisComponentConsistencyCheckerTest}
+ * ("divergência nos dois sentidos").
  */
 public final class GisComponentConsistencyChecker {
 
@@ -61,6 +71,11 @@ public final class GisComponentConsistencyChecker {
             if (pgrIds.size() > 1) {
                 divergences.add(new Divergence(JAVA_SPLIT_IN_PGR, root,
                         "componente Java dividido em " + pgrIds.size() + " componentes no pgRouting"));
+                // Espelho simétrico (D2): a mesma divisão lida do outro lado.
+                divergences.add(new Divergence(PGR_SPLIT_IN_JAVA, root,
+                        "divisão simétrica: o componente Java " + root + " dividido em "
+                                + pgrIds.size() + " componentes no pgRouting também separa "
+                                + "componentes do pgRouting no traçado Java"));
             }
         });
 
@@ -77,6 +92,11 @@ public final class GisComponentConsistencyChecker {
                 divergences.add(new Divergence(PGR_SPLIT_IN_JAVA, roots.iterator().next(),
                         "componente " + component + " do pgRouting dividido em "
                                 + roots.size() + " componentes no traçado Java"));
+                // Espelho simétrico (D2): a mesma divisão lida do outro lado.
+                divergences.add(new Divergence(JAVA_SPLIT_IN_PGR, roots.iterator().next(),
+                        "divisão simétrica: o componente " + component + " do pgRouting dividido em "
+                                + roots.size() + " componentes no traçado Java também separa "
+                                + "componentes Java no pgRouting"));
             }
         });
         return divergences;
