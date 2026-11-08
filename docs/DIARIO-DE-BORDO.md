@@ -1808,3 +1808,44 @@ títulos do Anexo A da ISO 27001 (decisão do dono); provedores reais e
 ensaio POC-20/SAMAE 2.19 (provas externas); fiação JDBC/beans e
 numeração global dos SQL pendentes (integração); CI total definitiva
 sobre o HEAD corrente no PC do dono; piloto P0.30.
+
+## 08/11/2026 — Cascata ED, Camada C2 (ED-10, ED-20, ED-42, ED-54, ED-101)
+
+Ciclo completo por tarefa (produção → revisão cruzada independente →
+correção → confirmação por agente novo → push imediato):
+
+- **ED-10 (Política comercial e preço por porte) — APROVADA**
+  (`32e94ef`): planilha de custo/preço por porte sobre a P0.26, tetos
+  VISAN/SAMAE só como comparação, franquia/repasse por categoria
+  sobre o uso medido da ED-41 com fotografia de ligações (PLT-17).
+  Ressalvas documentais e de guarda corrigidas e confirmadas (43/43).
+  Nenhum preço/margem com valor de fábrica — parâmetros do dono.
+- **ED-20 (OS em campo e acompanhamento) — APROVADA** (`f0c5c21`):
+  pacote de corte com revalidação na sincronização, GPS só na
+  jornada com governança LGPD (aviso ao empregado agora é portão
+  composto na ingestão), aviso "a caminho" pela ED-41, desfoque de
+  faces ligado à porta. Confirmação 36/36 Java + 5/5 TS.
+- **ED-42 (Omnichannel híbrido) — APROVADA** (`d4197ae`, `4a10f63`):
+  conversa nos 6 canais registrada no protocolo, webhook fail-closed
+  (HMAC/segredo conferidos), recusas precoces agora lançam rastro na
+  cadeia de integridade, medição lida da ED-41 sem duplicar regra.
+  Confirmação 35/35 + sondas 36/36.
+- **ED-54 (GIS-11 — traçados, isolamento e manobras) — APROVADA após
+  REPROVAÇÃO** (`98ba075`, `c83ea3f`): a revisão cruzada pegou 2
+  defeitos GRAVES no motor de isolamento (válvula já fechada não
+  barrava a recomputação da área; área afetada vazia conforme a
+  orientação do arco-alvo) — corrigidos com testes das sondas,
+  captura provada (reversão derruba exatamente os testes novos) e
+  confirmação por agente novo (30/30, coerência 53/53). Recorte O8-1
+  respeitado: nenhum solver de equipes, só rede (ADR-0034).
+- **ED-101 (Metas, comparação com pares e gamificação) — APROVADA**
+  (`adf13dc`): delega o cálculo à PeerComparison da ED-38 com o piso
+  de privacidade da O9-3 inviolável (coorte 4 não publica no piso 5),
+  guarda de adesão fechada em todas as operações. Confirmação 40/40.
+
+Placar: **ED 57/98 · geral 227/286**. Pendências vivas da camada:
+provas externas B (provedores/contas reais da ED-42, ensaios
+POC/TR/SAMAE), publicador de área suja (PEND-01 da P2.21) e provas
+PostGIS/pgRouting na CI, valores comerciais reais da ED-10
+(parâmetros do dono), fiação e numeração global dos SQL pendentes;
+CI total definitiva e piloto P0.30, como antes.
