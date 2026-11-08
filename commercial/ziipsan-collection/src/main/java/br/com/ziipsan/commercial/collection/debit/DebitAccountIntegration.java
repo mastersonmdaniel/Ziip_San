@@ -3,6 +3,7 @@ package br.com.ziipsan.commercial.collection.debit;
 import br.com.ziipsan.commercial.collection.parameters.LegacyDebitParameters;
 import br.com.ziipsan.commercial.collection.pixauto.AccountDebitAuthorizationGate;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -35,11 +36,20 @@ import java.util.stream.Collectors;
  *       chamada a porta e CONTADOS em
  *       {@code RemittanceResult.excludedCount} (correcao D1);</li>
  *   <li>retorno processado com baixa IDEMPOTENTE POR DEBITO, alinhada a
- *       P3.24 (correcoes D2/D3 - ver {@link #processLegacyReturn});</li>
+ *       P3.24 (correcoes D2/D3 - ver {@link #processLegacyReturn}); o
+ *       retorno do ULTIMO ciclo e aceito mesmo APOS o desligamento
+ *       (B2-3 da rodada 2: o portao de operabilidade NAO se aplica ao
+ *       processamento de retorno - so a remessa, ao reenvio e ao
+ *       cancelamento sao recusados depois do desligamento);</li>
  *   <li>conversao ao Pix Automatico so se consuma com o CONSENTIMENTO do
  *       optante guardado com prova (hash SHA-256 + referencia, mesmo desenho
  *       de prova da autorizacao da P4.5); sem prova, o optante segue como
- *       candidato da campanha e continua no legado ate o desligamento.</li>
+ *       candidato da campanha e continua no legado ate o desligamento.
+ *       O store CANONICO do consentimento e
+ *       {@code legacy_debit_conversion_consents} (V6_4 da P3.24) - ver
+ *       {@link ConversionConsentStore} e
+ *       {@link CanonicalConversionConsentAdapter}; a ED-27 nao tem
+ *       tabela propria de consentimento (B2-2 da rodada 2).</li>
  * </ol>
  */
 public final class DebitAccountIntegration {
@@ -188,7 +198,12 @@ public final class DebitAccountIntegration {
     /**
      * Processa o retorno legado com baixa IDEMPOTENTE tambem no caminho
      * de falha (correcao D2), com a chave canonica POR DEBITO alinhada a
-     * P3.24 (correcao D3):
+     * P3.24 (correcao D3). SEM o portao {@code requireLegacyOperable}
+     * (B2-3 da rodada 2, decisao pelo menor impacto): o retorno do
+     * ULTIMO ciclo chega DEPOIS do desligamento e precisa baixar - a
+     * P3.24 o aceita ({@code LegacyDebitService.processReturn} nao tem
+     * portao) e recusar aqui deixaria a baixa do ultimo ciclo sem
+     * caminho. Remessa, reenvio e cancelamento continuam sob o portao.
      * <ol>
      *   <li><b>Pre-validacao completa do lote</b>: TODAS as linhas
      *       liquidadas precisam ter valor conhecido ANTES de qualquer
@@ -207,6 +222,21 @@ public final class DebitAccountIntegration {
      *   <li><b>Chave do arquivo como atalho</b>: marcada apenas ao fim
      *       do processamento completo; reprocessar um arquivo ja completo
      *       devolve {@code REPETIDO_SEM_EFEITO} sem varrer as linhas.</li>
+     *   <li><b>Janela residual (Rodada 2, B2-8 — DECLARADA, nao fechada
+     *       nesta classe)</b>: entre {@code settlementSink.settle(...)}
+     *       e {@code processedReturns.markProcessed(...)} da mesma linha
+     *       nao ha atomicidade. Se o processo cair — ou duas passagens
+     *       concorrerem — nesse intervalo, a baixa ja feita ainda nao
+     *       esta marcada e o reprocessamento a refaz: a prova de "cada
+     *       debito baixa exatamente UMA vez" cobre reprocessamento
+     *       SEQUENCIAL com dublês (testes
+     *       {@code retornoProcessadoBaixaUmaUnicaVezMesmoReprocessado},
+     *       {@code retornoComFalhaDoSinkNoMeioEReprocessadoRetomaSemDuplicar},
+     *       {@code mesmoDebitoEmOutroArquivoDeRetornoNaoBaixaDeNovo}),
+     *       nao a concorrencia nem a queda dentro da janela. Fechar
+     *       exige a fiacao: baixa+marca em UMA transacao, ou baixa
+     *       idempotente no sink (UNIQUE por debito). Ver
+     *       RELATORIO-ED-27, secao "Janela residual (B2-8)".</li>
      * </ol>
      * Justificativa da escolha (D2): pre-validacao + marcacao por linha
      * dispensam depender da transacao da fiacao (V6_4/P3.1) para a
@@ -221,7 +251,8 @@ public final class DebitAccountIntegration {
                                                       LocalDate onDate,
                                                       LegacyDebitPort.ReturnBatch batch,
                                                       java.util.Map<String, java.math.BigDecimal> amountByCharge) {
-        requireLegacyOperable(kind, onDate);
+        // B2-3: SEM requireLegacyOperable aqui - o retorno do ultimo ciclo
+        // e processado mesmo apos o desligamento (ver javadoc do metodo).
         Objects.requireNonNull(batch, "lote de retorno e obrigatorio");
         Objects.requireNonNull(amountByCharge, "valores por identificador sao obrigatorios");
         if (processedReturns.alreadyProcessed(tenantId, batch.returnKey())) {
@@ -290,6 +321,29 @@ public final class DebitAccountIntegration {
         }
         return new ConversionDecision(unitId, ConversionStatus.CONVERTIDO,
                 consentProofHash, consentProofReference);
+    }
+
+    /**
+     * Conversao com PERSISTENCIA (B2-2): alem da decisao de
+     * {@link #convertOptant}, guarda o consentimento no store CANONICO
+     * ({@code legacy_debit_conversion_consents}, V6_4 da P3.24) atraves
+     * do {@link ConversionConsentStore} dado. Sem prova valida, nada e
+     * persistido e o optante permanece CANDIDATO. Consentimento ja
+     * guardado com a mesma prova e devolvido sem duplicar.
+     */
+    public ConversionDecision convertOptantAndPersist(UUID tenantId, UUID unitId, String enrollmentId,
+                                                      String consentProofHash, String consentProofReference,
+                                                      String channel, Instant consentedAt,
+                                                      ConversionConsentStore consentStore) {
+        Objects.requireNonNull(tenantId, "tenant e obrigatorio");
+        Objects.requireNonNull(consentStore, "store canonico de consentimento e obrigatorio");
+        ConversionDecision decision = convertOptant(unitId, consentProofHash, consentProofReference);
+        if (decision.status() != ConversionStatus.CONVERTIDO) {
+            return decision;
+        }
+        consentStore.saveConsent(tenantId, unitId, enrollmentId, consentProofHash,
+                consentProofReference, channel, consentedAt);
+        return decision;
     }
 
     /** Optantes ainda legados (candidatos ou nao convertidos) para a campanha. */
