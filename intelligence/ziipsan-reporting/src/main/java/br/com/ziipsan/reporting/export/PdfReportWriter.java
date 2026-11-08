@@ -47,7 +47,7 @@ public final class PdfReportWriter implements ReportWriter {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         List<Integer> offsets = new ArrayList<>();
         write(out, "%PDF-1.4\n");
-        int objects = 3 + pages.size() * 2;
+        int objects = 2 + pages.size() * 2;
         offsets.add(0);
         offsets.add(out.size());
         write(out, "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
