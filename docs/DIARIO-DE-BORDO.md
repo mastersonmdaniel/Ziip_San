@@ -1,7 +1,7 @@
 # Diário de Bordo — SIGSAN
 
 Registro vivo do projeto: o que é, como está, o que travou e o que vem agora.
-Última atualização: 07/11/2026
+Última atualização: 08/11/2026
 
 ---
 
@@ -1500,3 +1500,68 @@ Todas as decisões foram tomadas pelo dono do produto em cartões de múltipla e
 - **Próximo passo:** rodada da CI total sobre o HEAD `9e400e0` no PC do dono
   (`git pull` + `scripts/ci.sh`) para fechar a camada; as decisões pendentes
   do dono seguem no arquivo de trabalho `DECISOES-DO-DONO.md`.
+
+### 08/11/2026 — Push de registro: Ondas 1–11 completas na `main`
+
+- **Retomada de 07/11/2026:** a produção foi retomada com frentes paralelas
+  por tarefa e portão de revisão cruzada independente (nenhum pacote conta
+  como concluído sem veredito formal de outra frente). No mesmo dia, a
+  **rodada 8 da CI total passou verde** no PC do dono (HEAD `cbef2f5`),
+  fechando a integração da camada P2a; resíduo não bloqueante: `npm audit`
+  com 5 vulnerabilidades (maplibre-gl, react-router, zod) cuja correção
+  exige versões principais novas.
+- **Ondas 1–11 concluídas (08/11/2026, ~02h20):** todas as 118 tarefas
+  executáveis do plano v3.0 foram produzidas em pacotes locais com revisão
+  cruzada e veredito formal — placar da retomada: **217 de 286 tarefas
+  executadas (75,9%)**. O backlog de revisões foi zerado; defeitos reais
+  pegos pela revisão (entre eles o da P3.41, com alvos de indicadores
+  quebrados, e o da ED-29, com o corte de esgoto recusado pela API) foram
+  corrigidos e re-conferidos antes da liberação.
+- **Período de trabalho no Drive:** por ordem do dono (07/11/2026, 22h45),
+  os pushes ao GitHub ficaram suspensos e o trabalho passou a viver no
+  Google Drive (pasta "ZiipSan — Trabalho", arquivo `ziipsan-trabalho.zip`
+  atualizado a cada 2h). No GitHub, commit só ao final ou a pedido expresso.
+- **Este push de registro** (ordem expressa do dono em 08/11/2026,
+  "registra tudo e sube pro git", levantando a suspensão só para esta
+  operação): os 45 pacotes aprovados que aguardavam subiram em **59 lotes**
+  (`feat(lote final): <tarefas> (parte N/59)`), 999 arquivos no total.
+  O lote 1 pousou às 04h15 (`fb2f937`, completando a ED-06 e deixando a
+  ED-11 parcial); em seguida o **canal de escrita do conector ficou preso**
+  por ~8h — travamento idêntico para 87 KB, 26 KB e um arquivo único de
+  4.989 bytes, com as leituras normais — até a retomada manual ordenada
+  pelo dono às 12h02 ("tenta novamente"): a sonda pousou às 12h05
+  (`7b19662`) e os lotes 2–59 pousaram em sequência, fechando em
+  **HEAD `ab64927`** (59/59 lotes). Com isso, **a main passa de 173 para
+  217 de 286 tarefas (75,9%)**: tudo o que está executado está agora na
+  `main`, com ED-06 e ED-11 completas.
+- **Exclusões aplicadas neste push:** `.github/workflows/cliente-mobile.yml`
+  (ED-39) não subiu — a integração do GitHub em uso não tem permissão de
+  workflows (HTTP 403), mesmo bloqueio já registrado para os workflows da
+  ED-08 e da ED-18; e 2 arquivos `__pycache__/*.pyc` (ED-11) ficaram fora
+  (bytecode, não código do projeto). Nenhum pacote aprovado foi retido.
+- **Backup da camada:** branch `backup/2026-11-08-pos-ondas-1-a-11` criada
+  sobre o HEAD final desta operação (este commit de diário incluso).
+- **CI total:** a **rodada 9 passou verde** no PC do dono em 08/11/2026,
+  mas sobre o HEAD do pull que ele fez enquanto os lotes ainda pousavam;
+  a rodada definitiva da camada completa se repete agora, com o push
+  fechado e um novo `git pull`. Enquanto ela não roda sobre o HEAD final,
+  "na main" não é "provado integrado" — em especial a P2.16, que está na
+  main com numeração de partes incoerente (só a CI diz se falta algo).
+- **Decisões do dono em 08/11/2026 (bloqueantes):** (1) CI total — ele roda
+  no PC dele e cola o log; (2) piloto P0.30 — ele indicará o nome da
+  prestadora (aguardando); (3) RAS-06 — débito automático confirmado,
+  caminho duplo: campanha de conversão ao Pix Automático (P4.5) e FEBRABAN
+  150 mantido como legado para a base atual (débito novo só por Pix
+  Automático); com isso, **P3.24 e ED-27 foram produzidas e aprovadas com
+  revisão cruzada ainda hoje**, em pacotes locais fora do plano deste
+  push, aguardando push posterior; o protesto de CDA da ED-31 segue
+  desligado (o parecer PD-10 específico continua inexistente); (4) P3.9 —
+  produzir as minutas agora, a partir da especificação completa do aceite
+  (ADRs 0002/0019/0020/0033 + RAS-20); (5) `npm audit` — atualizar
+  maplibre-gl, react-router/react-router-dom e zod nas versões principais
+  novas.
+- **Pendências vivas:** piloto P0.30 (trava P3.13, GL.4 e toda a trilha
+  LC); minutas da P3.9 (seguram a ED-05 completa e ~42 ED condicionadas);
+  as 52 tarefas condicionadas e as 16 bloqueadas-raiz do plano, e as sob
+  demanda (P4.6, ED-51, ED-68, ED-102, ED-103, ED-104); a rodada definitiva
+  da CI total sobre o HEAD final; e o push posterior da P3.24 e da ED-27.
