@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>br.com.ziipsan</groupId>
+        <artifactId>ziipsan</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <artifactId>ziipsan-billing-rules</artifactId>
+    <name>ZIIPSAN Billing Rules - Regras puras da emissao simultanea em campo (ED-19)</name>
+    <description>
+        Modulo PURO (sem Spring, sem JPA, sem Android, sem I/O alem dos vetores de
+        contrato): a MESMA conta de campo e calculada pelo servidor e pelo plugin
+        Android a partir deste MESMO artefato. Nenhuma dependencia de producao:
+        so o JDK. JUnit apenas em teste.
+        Registro no pom raiz (uma linha em modules: commercial/ziipsan-billing-rules)
+        e passo de integracao declarado no relatorio da ED-19.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
