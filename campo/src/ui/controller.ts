@@ -16,8 +16,21 @@
  *    templateId, documentJson, nivel de assinatura e certificado) exige o
  *    retrato de tarifa/versoes que o RoutePackage TS da ED-18 NAO carrega
  *    (no Java da ED-19 ele existe: FieldTariffSnapshot — a porta TS nao).
+ *    A MONTAGEM agora existe em TS (field/fieldTariffSnapshot.ts:
+ *    espelho do record Java + formato do fixture da ED-19 +
+ *    createBuildEmissionTask); o que segue pendente sao os DADOS por
+ *    tarefa (retrato e insumos vindos do pacote de rota — RG2-C-P2).
+ *    Quando o montador lanca o erro nomeado P-03, emit() o converte em
+ *    UNAVAILABLE em vez de deixar a promessa rejeitar sem resposta.
  *  - saveReading: o LocalStore da ED-18 expoe leitura da fila
  *    (pendingReadings) mas NENHUM metodo de gravacao de leitura executada.
+ *    O metodo agora EXISTE no contrato (LocalStore.saveReading,
+ *    syncEngine.ts) e a porta e a delegacao para ele
+ *    (sync/fieldReadingStore.ts: createSaveReading). Sem a porta (null),
+ *    a leitura segue so na memoria da sessao — a tela avisa; com a porta,
+ *    a leitura gravada volta pela fila local (prova: o teste de
+ *    controller recarrega e a leitura esta la). A implementacao SQLCipher
+ *    do LocalStore segue pendencia de integracao (RG2-C-P4).
  *  - fetchDivergences (P-05): a fila de divergencia vive no servidor
  *    (ED-19, DIVERGENT_QUEUED); sem a porta, a Tela 4 mostra so as
  *    retencoes locais e declara a fila do servidor indisponivel.
@@ -272,7 +285,18 @@ export class FieldScreensController {
     if (!reading) {
       return { status: 'NO_READING', reason: 'Registre a leitura da unidade antes de emitir.' };
     }
-    const taskEmission = this.deps.buildEmissionTask(this.task(taskId), reading);
+    let taskEmission: FieldTaskEmission;
+    try {
+      taskEmission = this.deps.buildEmissionTask(this.task(taskId), reading);
+    } catch (err) {
+      // O montador (P-03) recusa com motivo nomeado quando falta o retrato
+      // ou um insumo: a tela declara a indisponibilidade em vez de deixar
+      // a promessa rejeitar sem resposta na tela.
+      return {
+        status: 'UNAVAILABLE',
+        reason: err instanceof Error ? err.message : String(err),
+      };
+    }
     this.emissionTasks.set(taskId, taskEmission);
     const outcome = await this.deps.emission.emit(taskEmission);
     this.outcomes.set(taskId, outcome);

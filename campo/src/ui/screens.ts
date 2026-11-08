@@ -7,9 +7,11 @@
  * aria-live, titulo da tela recebe foco a cada navegacao.
  *
  * Nenhuma tela recalcula conta: a emissao exibe o FieldBillResultDto que a
- * fachada da ED-19 devolveu. Nenhum campo alem dos DTOs reais e exibido —
- * RouteTask nao tem endereco (pendencia P-01), entao a identificacao da
- * unidade usa unitId/installationId, que sao o que o contrato expoe.
+ * fachada da ED-19 devolveu. O endereco da unidade (R2-M4) aparece quando o
+ * pacote de rota o carrega (RouteTask.unitAddress): a Tela 1 o inclui no
+ * rotulo da tarefa e a Tela 2 o repete como linha propria no momento da
+ * leitura — o instante de maior risco de ler a unidade errada. Sem ele,
+ * a identificacao segue pelos IDs (pendencia RG2-C-P2).
  */
 import type { FieldScreensController } from './controller.ts';
 import {
@@ -157,6 +159,11 @@ export class FieldScreensView {
     const task = this.ctl.task(taskId);
     const draft = this.ctl.draftFor(taskId);
     box.append(h('p', {}, taskLabel(task)));
+    // R2-M4: o endereco — quando o pacote o carrega — aparece como linha
+    // propria no momento da leitura (o instante de maior risco de ler a
+    // unidade errada). Sem ele, nada e exibido alem dos IDs do rotulo.
+    const address = task.unitAddress?.trim();
+    if (address) box.append(h('p', {}, `Endereço: ${address}`));
     box.append(h('p', {}, `Referência ${task.reference} · leitura anterior: ${task.previousReading ?? '—'}`));
 
     const readingId = 'campo-leitura-atual';

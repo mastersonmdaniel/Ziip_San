@@ -13,6 +13,8 @@ import {
   type ThermalRenderBridge,
 } from '../field/fieldEmission.ts';
 import { FieldScreensController, type FieldScreensDeps } from './controller.ts';
+import { createSaveReading } from '../sync/fieldReadingStore.ts';
+import { createBuildEmissionTask, type FieldTariffSnapshotJson } from '../field/fieldTariffSnapshot.ts';
 import { printerHealthDisplay } from './models.ts';
 
 const PKG: RoutePackage = {
@@ -39,16 +41,19 @@ function makeStore(initial: PendingReading[] = []) {
   const saved: PendingReading[] = [];
   const store: LocalStore = {
     async pendingReadings() { return [...pending]; },
+    // P-04 (R2-M2): o dublê implementa o metodo novo do contrato com a
+    // mesma semantica de upsert por taskId que a producao exige.
+    async saveReading(reading: PendingReading) {
+      saved.push(reading);
+      pending = [...pending.filter((p) => p.taskId !== reading.taskId), reading];
+    },
     async saveRoute() {},
     async clearRoute() { pending = []; },
   };
   return {
     store,
     saved,
-    saveReading: async (r: PendingReading) => {
-      saved.push(r);
-      pending = [...pending.filter((p) => p.taskId !== r.taskId), r];
-    },
+    saveReading: createSaveReading(store),
     current: () => [...pending],
   };
 }
@@ -318,6 +323,70 @@ test('syncNow com diretiva BLOCK apaga a fila local (comportamento real da ED-18
   const run = await ctl.syncNow();
   assert.deepEqual({ uploaded: run.uploaded, wiped: run.wiped }, { uploaded: 0, wiped: true });
   assert.equal(ctl.progress().done, 0);
+});
+
+test('R2-M2/P-04: leitura gravada pela porta sobrevive ao reinicio (novo controller recarrega da fila)', async () => {
+  const { deps: d, storeFake } = deps();
+  const ctl = new FieldScreensController(d);
+  await ctl.load();
+  const res = await ctl.submitReading('task-1', {
+    readingText: '12012', occurrenceCode: null, photoRefs: [], ocrValue: null,
+  });
+  assert.deepEqual(res, { ok: true, persisted: true });
+  // Reinicio: outra instancia, mesmo store — a leitura volta pela fila local.
+  const { deps: d2 } = deps({ store: storeFake.store, sync: makeSync(storeFake.store) });
+  const ctl2 = new FieldScreensController(d2);
+  await ctl2.load();
+  assert.equal(ctl2.progress().done, 1);
+  assert.equal(ctl2.pendingFor('task-1')?.reading, 12012);
+  assert.equal(storeFake.current().length, 1);
+});
+
+test('R2-M2/P-03: montador sem retrato vira UNAVAILABLE nomeado (nao rejeita sem resposta)', async () => {
+  const { emission } = makeEmission();
+  const throwing = () => {
+    throw new Error('P-03: sem retrato de tarifa para a tarefa task-1 — emissao indisponivel nesta integracao');
+  };
+  const { deps: d } = deps({ emission, buildEmissionTask: throwing });
+  const ctl = new FieldScreensController(d);
+  await ctl.load();
+  await ctl.submitReading('task-1', { readingText: '12012', occurrenceCode: null, photoRefs: [], ocrValue: null });
+  const res = await ctl.emit('task-1');
+  assert.equal(res.status, 'UNAVAILABLE');
+  if (res.status === 'UNAVAILABLE') assert.match(res.reason, /P-03: sem retrato de tarifa/);
+  assert.equal(ctl.held.count(), 0);
+});
+
+test('R2-M2/P-03: fabrica real monta o FieldTaskEmission do retrato e a fachada imprime', async () => {
+  const snapshot: FieldTariffSnapshotJson = {
+    tariffVersionId: '00000000-0000-0000-0000-0000000000aa',
+    categoryId: '00000000-0000-0000-0000-0000000000cc',
+    minimumM3PerEconomy: 10, fixedChargePerEconomy: 12.5,
+    brackets: [
+      { pricePerM3: 1.5, widthM3: 10 },
+      { pricePerM3: 2.5, widthM3: 10 },
+      { pricePerM3: 4.0, widthM3: null },
+    ],
+    sewerEnabled: true, sewerPct: 80, parameterVersions: { tariff: 'v2026-01' },
+  };
+  const build = createBuildEmissionTask(() => ({
+    snapshot,
+    inputs: {
+      economies: 1, debits: [], credits: [], dueDate: '2026-12-10',
+      templateId: 'tpl-1', documentJson: {}, ocrVerdict: 'MATCH',
+      requiredSignatureLevel: null, deviceCertificatePresent: true, signedLevel: null,
+    },
+  }));
+  const { emission, calls } = makeEmission();
+  const { deps: d } = deps({ emission, buildEmissionTask: build });
+  const ctl = new FieldScreensController(d);
+  await ctl.load();
+  await ctl.submitReading('task-1', { readingText: '12012', occurrenceCode: null, photoRefs: [], ocrValue: null });
+  const res = await ctl.emit('task-1');
+  assert.equal(res.status, 'DONE');
+  if (res.status === 'DONE') assert.equal(res.outcome.kind, 'PRINTED');
+  assert.deepEqual(calls, ['hash', 'calc', 'render', 'print']);
+  assert.equal(ctl.billFor('task-1')?.total, '27.90');
 });
 
 test('R2-m2: refreshDivergences com a porta alimenta a fila da sessao (fonte: servidor)', async () => {
