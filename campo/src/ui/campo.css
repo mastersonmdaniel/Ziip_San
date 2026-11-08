@@ -1,0 +1,103 @@
+/*
+ * Estilos das telas do app de campo (LOTE 3 / M1).
+ *
+ * O app de campo da ED-18 NAO tem CSS nem tema proprios (index.html e a casca
+ * vazia; a identidade do tenant e aplicada na casca nativa — vite.config.ts).
+ * Este arquivo usa as MESMAS variaveis de marca do projeto (ED-39/P3.21:
+ * --brand-primary, --brand-on-primary, --brand-text) com reservas neutras,
+ * para nao divergir quando a casca injetar o tema do tenant.
+ *
+ * Acessibilidade (padrao ED-39/a11y.ts): alvos de toque >= 48dp, fonte sem
+ * teto (respeita a escala do aparelho), foco visivel.
+ */
+
+.campo-main {
+  font-family: system-ui, sans-serif;
+  color: var(--brand-text, #1a1a1a);
+  padding: 1rem;
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.campo-title {
+  font-size: 1.5rem;
+  margin: 0 0 0.75rem;
+}
+
+.campo-title:focus-visible,
+.campo-btn:focus-visible,
+.campo-input:focus-visible {
+  outline: 3px solid var(--brand-primary, #333333);
+  outline-offset: 2px;
+}
+
+.campo-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.campo-btn {
+  min-height: 48px;
+  min-width: 48px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--brand-primary, #333333);
+  border-radius: 0.5rem;
+  background: var(--brand-primary, #333333);
+  color: var(--brand-on-primary, #ffffff);
+  font: inherit;
+  cursor: pointer;
+}
+
+.campo-btn[disabled] {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.campo-btn[aria-current='page'] {
+  text-decoration: underline;
+}
+
+.campo-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.campo-item {
+  display: grid;
+  gap: 0.25rem;
+  border: 1px solid #9a9a9a;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+
+.campo-input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  font: inherit;
+  padding: 0.5rem;
+  margin: 0.25rem 0 1rem;
+  box-sizing: border-box;
+}
+
+.campo-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75rem 0;
+}
+
+.campo-table th,
+.campo-table td {
+  text-align: left;
+  padding: 0.375rem 0.5rem;
+  border-bottom: 1px solid #c8c8c8;
+}
+
+.campo-status {
+  margin-top: 1rem;
+  min-height: 1.5em;
+}
