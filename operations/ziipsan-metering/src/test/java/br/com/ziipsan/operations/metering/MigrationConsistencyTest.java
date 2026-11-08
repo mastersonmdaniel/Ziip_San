@@ -148,14 +148,14 @@ class MigrationConsistencyTest {
         // demais guardas continuam lendo so a V5_1.
         String v54 = readSql("/db/migration/tenant/V5_4__meter_reading_partition_and_idempotency.sql");
         Map<String, Set<String>> v54Columns = new LinkedHashMap<>();
-        Matcher alter = Pattern.compile("ALTER TABLE (\\w+) ADD COLUMN IF NOT EXISTS ([a-z_]+)").matcher(v54);
+        Matcher alter = Pattern.compile("ALTER TABLE (\\w+) ADD COLUMN IF NOT EXISTS ([a-z_][a-z0-9_]*)").matcher(v54);
         while (alter.find()) {
             v54Columns.computeIfAbsent(alter.group(1), k -> new LinkedHashSet<>()).add(alter.group(2));
         }
         // idempotency_key nasce no CREATE TABLE particionado da V5_4, nao por ALTER.
         Matcher create = Pattern.compile("CREATE TABLE meter_readings \\((.*?)\\) PARTITION BY RANGE", Pattern.DOTALL).matcher(v54);
         assertThat(create.find()).as("CREATE TABLE meter_readings na V5_4").isTrue();
-        Matcher col = Pattern.compile("(?m)^\\s+([a-z_]+) (?:UUID|VARCHAR|INT|NUMERIC|BOOLEAN|DATE|TIMESTAMPTZ|JSONB)\\b").matcher(create.group(1));
+        Matcher col = Pattern.compile("(?m)^\\s+([a-z_][a-z0-9_]*) (?:UUID|VARCHAR|INT|NUMERIC|BOOLEAN|DATE|TIMESTAMPTZ|JSONB)\\b").matcher(create.group(1));
         while (col.find()) {
             v54Columns.computeIfAbsent("meter_readings", k -> new LinkedHashSet<>()).add(col.group(1));
         }
@@ -167,9 +167,22 @@ class MigrationConsistencyTest {
         // mais um conjunto fixo de nomes: se a migration mudar, a guarda muda junto.
         Map<String, Set<String>> laterColumns = new LinkedHashMap<>();
         for (String laterSql : List.of(SQL_V56, SQL_V57)) {
-            Matcher laterAlter = Pattern.compile("ALTER TABLE (\\w+) ADD COLUMN IF NOT EXISTS ([a-z_]+)").matcher(laterSql);
-            while (laterAlter.find()) {
-                laterColumns.computeIfAbsent(laterAlter.group(1), k -> new LinkedHashSet<>()).add(laterAlter.group(2));
+            // Correcao (micro-lote correcoes-rg-v57): a extracao le STATEMENTS
+            // completos, nao linhas. Na V5_7 (migration PUBLICADA, que nao pode
+            // ser reescrita) o ALTER esta quebrado em duas linhas; SQL e
+            // insensivel a espacos/quebras e o Flyway executa statements
+            // terminados em ';', logo a quebra nao muda a semantica -- quem
+            // nao enxergava o statement era o padrao de uma linha so. A
+            // normalizacao de espacos vive SO nesta copia local, por statement:
+            // o texto cru das migrations segue intacto para as demais
+            // extracoes do arquivo, que dependem de ancoras multilinha
+            // (^\s+, ^    ) sobre ele.
+            for (String statement : laterSql.split(";")) {
+                String normalizedStatement = statement.replaceAll("\\s+", " ").trim();
+                Matcher laterAlter = Pattern.compile("ALTER\\s+TABLE\\s+(\\w+)\\s+ADD\\s+COLUMN\\s+IF\\s+NOT\\s+EXISTS\\s+([a-z_][a-z0-9_]*)").matcher(normalizedStatement);
+                while (laterAlter.find()) {
+                    laterColumns.computeIfAbsent(laterAlter.group(1), k -> new LinkedHashSet<>()).add(laterAlter.group(2));
+                }
             }
         }
         assertThat(laterColumns.getOrDefault("consumption_records", Set.of()))
@@ -236,7 +249,16 @@ class MigrationConsistencyTest {
     @Test
     @DisplayName("JOR-10 (V5_7): reading_anomalies ganha o tipo de OS, com o CHECK de coerencia no padrao chk_")
     void readingAnomalyServiceOrderTypeColumn() {
-        assertThat(SQL_V57).contains("ALTER TABLE reading_anomalies ADD COLUMN IF NOT EXISTS service_order_type_code VARCHAR(60);");
+        // Correcao (micro-lote correcoes-rg-v57): a afirmacao e sobre o
+        // STATEMENT completo, nao sobre uma linha. O ALTER da V5_7 publicada
+        // esta quebrado em duas linhas no texto cru; numa copia local com os
+        // espacos normalizados, o statement inteiro -- ate o ';' inclusive,
+        // que prova o termino do statement e nao um prefixo dele -- volta a
+        // ser uma cadeia so, com o mesmo conteudo exigido antes (tabela,
+        // coluna e tipo VARCHAR(60)). As outras duas assercoes deste teste
+        // leem o texto cru e ficam intactas.
+        String normalizedV57 = SQL_V57.replaceAll("\\s+", " ");
+        assertThat(normalizedV57).contains("ALTER TABLE reading_anomalies ADD COLUMN IF NOT EXISTS service_order_type_code VARCHAR(60);");
         assertThat(SQL_V57).contains("chk_reading_anomalies_service_order_type");
         assertThat(SQL_V57).contains("generates_service_order = (service_order_type_code IS NOT NULL");
     }
@@ -247,7 +269,7 @@ class MigrationConsistencyTest {
         int end = SQL.indexOf("\n);", start.end());
         String body = SQL.substring(start.end(), end);
         Set<String> columns = new LinkedHashSet<>();
-        Matcher column = Pattern.compile("(?m)^    ([a-z_]+) (?:UUID|VARCHAR|INT|NUMERIC|BOOLEAN|DATE|TIMESTAMPTZ|JSONB)\\b").matcher(body);
+        Matcher column = Pattern.compile("(?m)^    ([a-z_][a-z0-9_]*) (?:UUID|VARCHAR|INT|NUMERIC|BOOLEAN|DATE|TIMESTAMPTZ|JSONB)\\b").matcher(body);
         while (column.find()) {
             columns.add(column.group(1));
         }
