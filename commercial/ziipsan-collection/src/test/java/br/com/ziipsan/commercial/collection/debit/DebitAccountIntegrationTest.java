@@ -271,6 +271,27 @@ class DebitAccountIntegrationTest {
     }
 
     @Test
+    void retornoDoUltimoCicloEAceitoAposODesligamentoERemessaContinuaRecusada() {
+        // B2-3 (rodada 2): o portao de operabilidade NAO se aplica ao
+        // retorno - o ultimo ciclo chega depois do desligamento e precisa
+        // baixar; remessa, reenvio e cancelamento continuam recusados.
+        var processed = new DebitFixture.InMemoryProcessed();
+        var sink = new DebitFixture.RecordingSink();
+        var svc = DebitFixture.integration(new DebitFixture.FakeLegacyPort(), true, processed, sink);
+        var batch = new LegacyDebitPort.ReturnBatch("NSA-ULTIMO-HASH", List.of(
+                new LegacyDebitPort.ReturnLine("CHG-1", true, null)));
+        var result = svc.processLegacyReturn(TENANT, PUBLIC_SERVICE, LocalDate.of(2027, 1, 1),
+                batch, Map.of("CHG-1", new BigDecimal("100.00")));
+        assertThat(result.outcome()).isEqualTo(DebitAccountIntegration.ReturnProcessingOutcome.PROCESSADO);
+        assertThat(result.settledCount()).isEqualTo(1);
+        assertThat(sink.settled.get("CHG-1")).isEqualByComparingTo("100.00");
+        assertThatThrownBy(() -> svc.generateLegacyRemittance(TENANT, PUBLIC_SERVICE,
+                LocalDate.of(2027, 1, 1), List.of(DebitFixture.auth(UNIT, "001", "001", true)),
+                List.of(item("CHG-1", "100.00"))))
+                .isInstanceOf(DebitAccountIntegration.LegacyDebitRefusedException.class);
+    }
+
+    @Test
     void conversaoSoSeConsumaComConsentimentoGuardadoComProva() {
         var svc = DebitFixture.integration(new DebitFixture.FakeLegacyPort(), true,
                 new DebitFixture.InMemoryProcessed(), new DebitFixture.RecordingSink());

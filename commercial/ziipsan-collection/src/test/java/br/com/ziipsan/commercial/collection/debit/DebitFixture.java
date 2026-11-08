@@ -1,13 +1,19 @@
 package br.com.ziipsan.commercial.collection.debit;
 
+import br.com.ziipsan.commercial.collection.legacydebit.Febraban150Port;
+import br.com.ziipsan.commercial.collection.legacydebit.LegacyConversionConsent;
+import br.com.ziipsan.commercial.collection.legacydebit.LegacyDebitAuthorization;
+import br.com.ziipsan.commercial.collection.legacydebit.LegacyDebitService;
 import br.com.ziipsan.commercial.collection.parameters.LegacyDebitParameters;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -92,6 +98,52 @@ final class DebitFixture {
     static LegacyDebitPort.LegacyAuthorization auth(UUID unit, String payerBank, String receiverBank,
                                                     boolean active) {
         return new LegacyDebitPort.LegacyAuthorization(TENANT, unit, "MAT-" + unit, payerBank, receiverBank, active);
+    }
+
+    /**
+     * Duble em memoria do {@code LegacyDebitService.Store} da P3.24 (B2-2/B2-5):
+     * o mesmo store que o servico real usa nos testes do adaptador.
+     */
+    static final class MemLegacyStore implements LegacyDebitService.Store {
+        final Map<UUID, LegacyDebitAuthorization> auths = new LinkedHashMap<>();
+        final Map<UUID, LegacyDebitService.LegacyDebit> debits = new LinkedHashMap<>();
+        final List<LegacyConversionConsent> consents = new ArrayList<>();
+
+        public void saveAuthorization(LegacyDebitAuthorization a) { auths.put(a.id(), a); }
+        public Optional<LegacyDebitAuthorization> findAuthorization(UUID t, UUID id) {
+            LegacyDebitAuthorization a = auths.get(id);
+            return a != null && a.tenantId().equals(t) ? Optional.of(a) : Optional.empty();
+        }
+        public Optional<LegacyDebitAuthorization> findAuthorizationByEnrollment(UUID t, String e) {
+            return auths.values().stream()
+                    .filter(a -> a.tenantId().equals(t) && a.enrollmentId().equals(e)).findFirst();
+        }
+        public List<LegacyDebitAuthorization> findAuthorizations(UUID t) {
+            return auths.values().stream().filter(a -> a.tenantId().equals(t)).toList();
+        }
+        public void saveDebit(LegacyDebitService.LegacyDebit d) { debits.put(d.id(), d); }
+        public Optional<LegacyDebitService.LegacyDebit> findDebit(UUID t, UUID id) {
+            LegacyDebitService.LegacyDebit d = debits.get(id);
+            return d != null && d.tenantId().equals(t) ? Optional.of(d) : Optional.empty();
+        }
+        public Optional<LegacyDebitService.LegacyDebit> findDebitByRemittanceKey(UUID t, String key) {
+            return debits.values().stream()
+                    .filter(d -> d.tenantId().equals(t) && d.remittanceKey().equals(key)).findFirst();
+        }
+        public void saveConsent(LegacyConversionConsent c) { consents.add(c); }
+        public List<LegacyConversionConsent> findConsents(UUID t, UUID authId) {
+            return consents.stream()
+                    .filter(c -> c.tenantId().equals(t) && c.authorizationId().equals(authId)).toList();
+        }
+    }
+
+    /** Duble em memoria do arquivo FEBRABAN 150 (B2-5). */
+    static final class MemFile implements Febraban150Port {
+        final List<RemittanceBatch> written = new ArrayList<>();
+        List<ReturnEntry> returnEntries = List.of();
+
+        public void writeRemittance(RemittanceBatch batch) { written.add(batch); }
+        public List<ReturnEntry> readReturn(UUID tenantId, String fileReference) { return returnEntries; }
     }
 
     private DebitFixture() {
