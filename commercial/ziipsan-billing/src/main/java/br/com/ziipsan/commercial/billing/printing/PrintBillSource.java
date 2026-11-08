@@ -37,6 +37,9 @@ import java.util.UUID;
  *                            para a unidade ({@link AccessiblePrintFormat})
  * @param linkingCode       codigo de vinculacao ao portal do imovel
  *                            (ADR-0022), vigente para a unidade
+ * @param verificationCode  codigo publico de verificacao da fatura
+ *                            (P3.35, PLT-11), vigente para ESTA conta —
+ *                            distinto do codigo de vinculacao
  */
 public record PrintBillSource(
         UUID billId,
@@ -53,7 +56,8 @@ public record PrintBillSource(
         BigDecimal totalValue,
         LegalMessageEngine.EmissionContext emissionContext,
         AccessiblePrintFormat accessibleFormat,
-        PortalLinkingCode linkingCode) {
+        PortalLinkingCode linkingCode,
+        VerificationCode verificationCode) {
 
     public PrintBillSource {
         if (billId == null) {
@@ -96,6 +100,10 @@ public record PrintBillSource(
             throw new IllegalArgumentException("linkingCode e obrigatorio para a conta " + billId
                     + ": conta sem codigo de vinculacao nao entra no arquivo da grafica (ADR-0022)");
         }
+        if (verificationCode == null) {
+            throw new IllegalArgumentException("verificationCode e obrigatorio para a conta " + billId
+                    + ": conta sem codigo de verificacao nao entra no arquivo da grafica (P3.35)");
+        }
     }
 
     /** Representacao segura para log/resumo: NUNCA inclui o codigo de vinculacao. */
@@ -104,6 +112,6 @@ public record PrintBillSource(
         return "PrintBillSource[billId=" + billId + ", billVersionNo=" + billVersionNo
                 + ", unitId=" + unitId + ", registrationNumber=" + registrationNumber
                 + ", referenceMonth=" + referenceMonth + ", accessibleFormat=" + accessibleFormat
-                + ", linkingCode=REDACTED]";
+                + ", linkingCode=REDACTED, verificationCode=REDACTED]";
     }
 }

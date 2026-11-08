@@ -131,7 +131,10 @@ public class DefaultPrintFileService implements PrintFileService {
                 // UNICO ponto da tarefa em que o codigo de vinculacao e lido:
                 // direto para a linha do arquivo final da grafica.
                 "VINCULO_PORTAL=" + bill.linkingCode().value(),
-                "ACESSIVEL=" + bill.accessibleFormat().fileToken());
+                "ACESSIVEL=" + bill.accessibleFormat().fileToken(),
+                // Idem para o codigo de verificacao da P3.35: leitura unica,
+                // direto para a linha do arquivo final da grafica.
+                "VERIFICACAO=" + bill.verificationCode().value());
     }
 
     private static String total(PrintBillSource bill) {

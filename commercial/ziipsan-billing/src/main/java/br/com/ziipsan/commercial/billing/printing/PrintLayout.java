@@ -5,10 +5,11 @@ package br.com.ziipsan.commercial.billing.printing;
  * campos. Arquivo texto UTF-8, uma linha por registro, quebra {@code \n}:
  *
  * <pre>
- * HDR|LAYOUT=1|BATCH=...|GERADO_EM=...|PERFIL=...|CONTEUDO_V=...|MENSAGENS_V=...
+ * HDR|LAYOUT=2|BATCH=...|GERADO_EM=...|PERFIL=...|CONTEUDO_V=...|MENSAGENS_V=...
  * CTA|SEQ=...|CONTA=...|VERSAO=...|UNIDADE=...|MATRICULA=...|TITULAR=...|
  *     ENDERECO_ENTREGA=...|COMPETENCIA=...|VENCIMENTO=...|TOTAL=...|
- *     MODELO_VERSAO=...|CAMPOS=...|MENSAGENS=...|VINCULO_PORTAL=...|ACESSIVEL=...
+ *     MODELO_VERSAO=...|CAMPOS=...|MENSAGENS=...|VINCULO_PORTAL=...|ACESSIVEL=...|
+ *     VERIFICACAO=...
  * TRL|REGISTROS=...|SHA256=...
  * </pre>
  *
@@ -19,6 +20,10 @@ package br.com.ziipsan.commercial.billing.printing;
  * versao indicada em {@code MODELO_VERSAO} de cada registro. Nenhuma frase
  * legal e escrita por esta tarefa.
  *
+ * <p>Versao 2 (P3.35): acrescenta {@code VERIFICACAO} ao fim do registro — o
+ * codigo publico de verificacao da fatura (PLT-11), impresso na conta e
+ * codificado no QR. Campo novo no FIM, sem reordenar os existentes.
+ *
  * <p>A aprovacao deste leiaute com amostra impressa e homologacao externa
  * (item de processo do aceite): o codigo gera o arquivo neste leiaute; a
  * amostra sintetica de conferencia acompanha a entrega da tarefa.
@@ -26,7 +31,7 @@ package br.com.ziipsan.commercial.billing.printing;
 public final class PrintLayout {
 
     /** Versao do leiaute. Mudanca de campo ou de ordem sobe a versao. */
-    public static final int LAYOUT_VERSION = 1;
+    public static final int LAYOUT_VERSION = 2;
 
     /** Separador de campos. Valor de campo com o separador ou quebra de linha e recusado na geracao. */
     public static final String DELIMITER = "|";
