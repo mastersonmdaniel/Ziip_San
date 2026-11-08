@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  *       de prova da autorizacao da P4.5); sem prova, o optante segue como
  *       candidato da campanha e continua no legado ate o desligamento.
  *       O store CANONICO do consentimento e
- *       {@code legacy_debit_conversion_consents} (V6_4 da P3.24) - ver
+ *       {@code legacy_debit_conversion_consents} (V102 da P3.24) - ver
  *       {@link ConversionConsentStore} e
  *       {@link CanonicalConversionConsentAdapter}; a ED-27 nao tem
  *       tabela propria de consentimento (B2-2 da rodada 2).</li>
@@ -239,7 +239,7 @@ public final class DebitAccountIntegration {
      *       RELATORIO-ED-27, secao "Janela residual (B2-8)".</li>
      * </ol>
      * Justificativa da escolha (D2): pre-validacao + marcacao por linha
-     * dispensam depender da transacao da fiacao (V6_4/P3.1) para a
+     * dispensam depender da transacao da fiacao (V102/P3.1) para a
      * alegacao de idempotencia desta classe; a marcacao vem DEPOIS da
      * baixa da linha (nunca antes) para uma linha cuja baixa falhou nao
      * ficar marcada como baixada sem ter baixado.
@@ -326,7 +326,7 @@ public final class DebitAccountIntegration {
     /**
      * Conversao com PERSISTENCIA (B2-2): alem da decisao de
      * {@link #convertOptant}, guarda o consentimento no store CANONICO
-     * ({@code legacy_debit_conversion_consents}, V6_4 da P3.24) atraves
+     * ({@code legacy_debit_conversion_consents}, V102 da P3.24) atraves
      * do {@link ConversionConsentStore} dado. Sem prova valida, nada e
      * persistido e o optante permanece CANDIDATO. Consentimento ja
      * guardado com a mesma prova e devolvido sem duplicar.

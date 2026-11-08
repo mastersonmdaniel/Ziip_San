@@ -11,7 +11,7 @@ import java.util.UUID;
  * (B2-2 da rodada 2 da auditoria continua).
  *
  * <p>UM SO store canonico: {@code legacy_debit_conversion_consents}
- * (V6_4 da P3.24, com FK para a autorizacao legada, prova por hash
+ * (V102 da P3.24, com FK para a autorizacao legada, prova por hash
  * SHA-256 + referencia e canal de coleta). A tabela
  * {@code debit_conversion_consent} da ED-27 era um SEGUNDO store sem
  * sincronizacao com este - nenhum Java da ED-27 a referenciava e o

@@ -27,7 +27,7 @@ public final class DebitAcceptanceCoverage {
         return List.of(
                 new Requirement("POC-29/REMESSA",
                         "arquivo FEBRABAN 150 (registros B, C, E, F) gerado para autorizacoes legadas",
-                        "LegacyDebitPort.generateRemittance (implementacao e leiaute: P3.24/V6_4); "
+                        "LegacyDebitPort.generateRemittance (implementacao e leiaute: P3.24/V102); "
                                 + "DebitAccountIntegration.generateLegacyRemittance aplica o portao e filtra os ITENS "
                                 + "pela autorizacao vinculada (unitId): so itens de autorizacao ativa de mesmo banco "
                                 + "chegam a porta; os demais sao excluidos e contados (correcao D1)",

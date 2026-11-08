@@ -7,7 +7,7 @@ import java.util.UUID;
 
 /**
  * Porta da parte FEBRABAN 150 legada - a IMPLEMENTACAO e da P3.24
- * (migration {@code V6_4}: autorizacoes legadas importadas e conferidas por
+ * (migration {@code V102}: autorizacoes legadas importadas e conferidas por
  * matricula, remessa com registros B, C, E e F, retorno com baixa
  * idempotente, reenvio e cancelamento de optante, so para optante cujo
  * banco do pagador seja o mesmo do recebedor).

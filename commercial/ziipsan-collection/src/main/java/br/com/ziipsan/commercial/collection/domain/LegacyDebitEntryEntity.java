@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Debito legado de um ciclo (P3.24, V6_4): chave da baixa idempotente do
+ * Debito legado de um ciclo (P3.24, V102): chave da baixa idempotente do
  * retorno. {@code outcomeCode} guarda o codigo do banco VERBATIM - nenhuma
  * tabela de codigos e presumida [layout/codigos SEM FONTE, ver relatorio].
  * Nao usar {@code @Builder}.

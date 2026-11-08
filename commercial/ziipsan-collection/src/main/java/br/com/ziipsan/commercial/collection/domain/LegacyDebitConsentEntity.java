@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Consentimento GUARDADO da conversao ao Pix Automatico (P3.24, V6_4):
+ * Consentimento GUARDADO da conversao ao Pix Automatico (P3.24, V102):
  * prova por hash SHA-256 + referencia, mesmo desenho da P4.5.
  * Nao usar {@code @Builder}.
  */

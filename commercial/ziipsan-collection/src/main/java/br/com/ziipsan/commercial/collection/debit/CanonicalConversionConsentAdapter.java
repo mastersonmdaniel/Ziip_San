@@ -13,7 +13,7 @@ import java.util.UUID;
  * Adaptador canonico do consentimento de conversao (B2-2 da rodada 2):
  * o {@link ConversionConsentStore} da ED-27 sobre o
  * {@code LegacyDebitService.Store} da P3.24, cuja tabela e
- * {@code legacy_debit_conversion_consents} (V6_4).
+ * {@code legacy_debit_conversion_consents} (V102).
  *
  * <p>Mapeamento: a autorizacao e resolvida POR MATRICULA no store da
  * P3.24 (a ED-27 trabalha por unidade; a matricula e a chave de

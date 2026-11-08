@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * B2-2: UM so store de consentimento de conversao - o canonico
- * {@code legacy_debit_conversion_consents} (V6_4 da P3.24) - com o
+ * {@code legacy_debit_conversion_consents} (V102 da P3.24) - com o
  * adaptador da ED-27 sobre ele. A tabela duplicada
  * {@code debit_conversion_consent} foi removida do SQL pendente.
  */

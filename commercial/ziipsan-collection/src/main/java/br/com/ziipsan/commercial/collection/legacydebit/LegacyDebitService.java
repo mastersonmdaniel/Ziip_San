@@ -213,10 +213,13 @@ public final class LegacyDebitService {
      * data distintos e outro debito (outra chave) e cria normalmente. A
      * emissao de B/C a cada chamada (D4) nao muda: a dedup cobre os
      * debitos E, nao a lista de pendentes, que continua sendo do chamador.
-     * A UNIQUE de banco sobre a chave exige migration nova e esta
-     * ADIADA de proposito: a V6_4 pode virar V102+ por decisao pendente
-     * do dono (R2-G1) e o numero V102 nao pode ser reclamado agora; a
-     * UNIQUE deve acompanhar aquela renumeracao (ou a V103 seguinte).
+     * A UNIQUE de banco sobre a chave exige migration nova e segue
+     * ADIADA de proposito: a renumeracao R2-G1 (decisao do dono de
+     * 08/11/2026) levou a migration do legado de V6_4 para V102 SEM a
+     * UNIQUE - a chave e derivada em aplicacao e nao tem coluna
+     * propria na tabela, logo a forma exata da UNIQUE no banco nao
+     * esta provada no codigo; fica pendente de desenho proprio
+     * (V103 seguinte, se aprovada).
      */
     public List<LegacyDebit> generateRemittance(UUID tenantId, String receiverBankCode,
                                                   List<DebitDraft> drafts,
@@ -342,7 +345,7 @@ public final class LegacyDebitService {
                 continue;
             }
             // Correcao D1 da revisao: o codigo de ocorrencia do retorno e
-            // guardado VERBATIM no debito (coluna outcome_code da V6_4 /
+            // guardado VERBATIM no debito (coluna outcome_code da V102 /
             // LegacyDebitEntryEntity.outcomeCode), na baixa e na divergencia.
             debit.outcomeCode = entry.outcomeCode();
             if (!entry.settled() || entry.amount() == null

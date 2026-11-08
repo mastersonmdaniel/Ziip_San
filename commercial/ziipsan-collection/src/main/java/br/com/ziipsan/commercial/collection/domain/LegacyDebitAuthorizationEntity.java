@@ -10,9 +10,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Autorizacao legada importada do FEBRABAN 150 (P3.24, V6_4). Conferencia
- * por matricula (UNIQUE por tenant na V6_4); elegibilidade de mesmo banco
- * espelhada no CHECK da V6_4 e no estado INELEGIVEL_BANCO_DIVERSO.
+ * Autorizacao legada importada do FEBRABAN 150 (P3.24, V102). Conferencia
+ * por matricula (UNIQUE por tenant na V102); elegibilidade de mesmo banco
+ * espelhada no CHECK da V102 e no estado INELEGIVEL_BANCO_DIVERSO.
  * Nao usar {@code @Builder} (Lombok descarta campos herdados).
  */
 @Entity

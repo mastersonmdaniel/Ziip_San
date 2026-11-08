@@ -1,9 +1,9 @@
 -- ED-27 - Debito em conta: integracao Pix Automatico (P4.5) + legado FEBRABAN 150 (P3.24).
 -- SEM NUMERO Flyway: a numeracao e fixada na integracao (precedente P4.1/ED-30/ED-31).
--- A migration do legado em si e a V6_4 da P3.24 (tabelas do FEBRABAN 150) - NAO duplicada aqui.
+-- A migration do legado em si e a V102 da P3.24 (tabelas do FEBRABAN 150) - NAO duplicada aqui.
 -- Este SQL cobre so o que e proprio da ED-27: idempotencia do processamento
 -- de retorno legado. O consentimento da conversao NAO tem tabela propria
--- aqui: o store CANONICO e `legacy_debit_conversion_consents` (V6_4 da
+-- aqui: o store CANONICO e `legacy_debit_conversion_consents` (V102 da
 -- P3.24) - a tabela `debit_conversion_consent`, segundo store sem
 -- sincronizacao, foi REMOVIDA por este pacote (B2-2 da rodada 2 da
 -- auditoria continua; adaptador: CanonicalConversionConsentAdapter).
