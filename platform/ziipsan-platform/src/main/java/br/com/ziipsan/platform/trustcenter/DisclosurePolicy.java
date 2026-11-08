@@ -22,8 +22,13 @@ import java.util.Objects;
  *                   {@code https:}); {@code null} = decisão pendente
  * @param policyUrl URL pública da política de divulgação responsável
  *                  ({@code docs/trust-center/politica-divulgacao-responsavel.md}
- *                  publicada); {@code null} = ainda não publicada
+ *                  publicada); obrigatoriamente {@code https:} — é o
+ *                  campo {@code Policy} da RFC 9116 (§2.5.4), que não
+ *                  admite {@code mailto:}; {@code null} = ainda não
+ *                  publicada
  * @param canonicalUrl URL canônica do {@code security.txt} publicado;
+ *                     obrigatoriamente {@code https:} — campo
+ *                     {@code Canonical} da RFC 9116 (§2.5.3);
  *                     {@code null} = hospedagem (LC.7) ainda não definiu
  * @param acknowledgementTarget prazo-alvo da confirmação de recebimento
  *                              ao pesquisador; {@code null} = decisão
@@ -44,10 +49,10 @@ public record DisclosurePolicy(
             requireUri(contactUri, "contactUri");
         }
         if (policyUrl != null) {
-            requireUri(policyUrl, "policyUrl");
+            requireHttpsUri(policyUrl, "policyUrl");
         }
         if (canonicalUrl != null) {
-            requireUri(canonicalUrl, "canonicalUrl");
+            requireHttpsUri(canonicalUrl, "canonicalUrl");
         }
         if (acknowledgementTarget != null && (acknowledgementTarget.isZero() || acknowledgementTarget.isNegative())) {
             throw new IllegalArgumentException("Prazo de confirmação de recebimento deve ser positivo");
@@ -66,6 +71,25 @@ public record DisclosurePolicy(
         if (!value.startsWith("mailto:") && !value.startsWith("https://")) {
             throw new IllegalArgumentException(
                     field + " deve começar com mailto: ou https:// (canal verificável): " + value);
+        }
+    }
+
+    /**
+     * Variante estrita para os campos que a RFC 9116 define como URI
+     * {@code https:} — {@code Policy} (§2.5.4) e {@code Canonical}
+     * (§2.5.3). Correção D3 da revisão cruzada M3: {@code mailto:} nesses
+     * campos geraria um {@code security.txt} que um validador reprova;
+     * o {@code Contact} (§2.5.2) continua aceitando {@code mailto:}.
+     */
+    private static void requireHttpsUri(String value, String field) {
+        if (value.isBlank() || value.contains("<") || value.contains(">") || value.contains(" ")) {
+            throw new IllegalArgumentException(
+                    field + " deve ser uma URI sem espaços nem marcadores de modelo: " + value);
+        }
+        if (!value.startsWith("https://")) {
+            throw new IllegalArgumentException(
+                    field + " deve começar com https:// (RFC 9116: Policy e Canonical são URIs https:): "
+                            + value);
         }
     }
 
