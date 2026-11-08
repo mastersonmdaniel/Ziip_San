@@ -1,0 +1,69 @@
+# ED-47 (ADR-0027): Apache Superset embarcado — arquivo ADITIVO ao
+# docker-compose.yml do repo (mesclar o serviço no compose principal na
+# integração, ou subir com -f docker-compose.yml -f este arquivo).
+#
+# Forma fixada pela exceção do ADR-0010 (origem ADR-0027): contêiner
+# próprio, lendo SÓ a réplica de leitura; SSO pelo Keycloak; uma role de
+# banco por tenant; modo SÍNCRONO; metadados no PostgreSQL; Redis e
+# Celery NÃO entram (só com nova exceção no ADR-0010).
+#
+# Versão da imagem: fixada para reprodutibilidade, a CONFIRMAR na
+# integração (SBOM/licenças da P0.40 e notas da versão) — esta VM não
+# tem Docker nem acesso a registro para conferir a tag.
+services:
+  superset-db:
+    # Metadados do Superset (definições de dashboards/datasets, usuários
+    # espelhados do SSO) — nunca dado de tenant nem consulta de BI.
+    # PostgreSQL dedicado deste perfil para o metadado não disputar o
+    # primário dos tenants; a consulta de dados vai só à réplica, pelas
+    # databases registradas com a role de cada tenant.
+    image: postgres:17
+    environment:
+      POSTGRES_DB: superset
+      POSTGRES_USER: superset
+      POSTGRES_PASSWORD: ${ZIIPSAN_SUPERSET_DB_PASSWORD:?defina no .env local, fora do repositorio}
+    volumes:
+      - superset-db-data:/var/lib/postgresql/data
+    profiles: ["bi"]
+    # Sem porta publicada: só o Superset fala com o próprio metadado.
+
+  superset-init:
+    image: apache/superset:4.1.1
+    environment:
+      SUPERSET_SECRET_KEY: ${ZIIPSAN_SUPERSET_SECRET_KEY:?defina no .env local, fora do repositorio}
+      SUPERSET_CONFIG_PATH: /app/superset_config.py
+      ZIIPSAN_KEYCLOAK_ISSUER: ${ZIIPSAN_KEYCLOAK_ISSUER:?URL do Keycloak do ambiente}
+      ZIIPSAN_SUPERSET_OIDC_CLIENT_ID: ${ZIIPSAN_SUPERSET_OIDC_CLIENT_ID:?cliente OIDC criado no realm ziipsan}
+      ZIIPSAN_SUPERSET_OIDC_CLIENT_SECRET: ${ZIIPSAN_SUPERSET_OIDC_CLIENT_SECRET:?segredo no cofre/.env local}
+    volumes:
+      - ./superset_config.py:/app/superset_config.py:ro
+    depends_on:
+      - superset-db
+    command: ["sh", "-c", "superset db upgrade && superset init"]
+    profiles: ["bi"]
+    # One-shot de migração do METADADO e papéis internos. A criação do
+    # usuário administrador é passo manual do runbook (docs/bi) — nenhuma
+    # senha padrão mora neste repositório.
+
+  superset:
+    image: apache/superset:4.1.1
+    environment:
+      SUPERSET_SECRET_KEY: ${ZIIPSAN_SUPERSET_SECRET_KEY:?defina no .env local, fora do repositorio}
+      SUPERSET_CONFIG_PATH: /app/superset_config.py
+      ZIIPSAN_KEYCLOAK_ISSUER: ${ZIIPSAN_KEYCLOAK_ISSUER:?URL do Keycloak do ambiente}
+      ZIIPSAN_SUPERSET_OIDC_CLIENT_ID: ${ZIIPSAN_SUPERSET_OIDC_CLIENT_ID:?cliente OIDC criado no realm ziipsan}
+      ZIIPSAN_SUPERSET_OIDC_CLIENT_SECRET: ${ZIIPSAN_SUPERSET_OIDC_CLIENT_SECRET:?segredo no cofre/.env local}
+    volumes:
+      - ./superset_config.py:/app/superset_config.py:ro
+      # Ativos de marca da P0.34 entram por este mount na fiação; sem
+      # eles o SupersetBranding (código) recusa habilitar o BI.
+      # - ./brand:/app/brand:ro
+    depends_on:
+      - superset-db
+      - superset-init
+    ports:
+      - "127.0.0.1:8088:8088"
+    profiles: ["bi"]
+
+volumes:
+  superset-db-data:
