@@ -34,9 +34,23 @@ fi
 acquire_lock
 mirror
 
+# Imagem do Maven com cliente PostgreSQL (correcao de ambiente da CI,
+# achado da rodada de 09/11/2026): os testes de escala do core
+# (P0.21 — ShardCatalogScaleTest) chamam o binario pg_dump de DENTRO do
+# contentor do Maven, e a imagem oficial maven:3.9-eclipse-temurin-21
+# nao o traz ("Cannot run program pg_dump"). A imagem local abaixo e a
+# oficial + postgresql-client, construida uma unica vez (idempotente).
+MAVEN_IMAGE="ziipsan/maven-pg:3.9-temurin-21"
+if ! docker image inspect "$MAVEN_IMAGE" >/dev/null 2>&1; then
+  echo "== a construir a imagem do Maven com pg_dump (uma unica vez)"
+  printf 'FROM maven:3.9-eclipse-temurin-21\nRUN apt-get update && apt-get install -y --no-install-recommends postgresql-client && rm -rf /var/lib/apt/lists/*\n' \
+    | docker build -t "$MAVEN_IMAGE" - \
+    || die "falha ao construir a imagem $MAVEN_IMAGE (pg_dump em falta no contentor da CI)"
+fi
+
 MSYS_NO_PATHCONV=1 docker run --rm \
   -e ZIIPSAN_IT_JDBC_URL="jdbc:postgresql://host.docker.internal:${IT_PORT}/ziipsan" \
   -e ZIIPSAN_IT_DB_PASSWORD="$ZIIPSAN_IT_DB_PASSWORD" \
   -e ZIIPSAN_IT_MIGRATOR_PASSWORD="$ZIIPSAN_IT_MIGRATOR_PASSWORD" \
   -v "$(cygpath -m "$MIRROR"):/app" -v ziipsan-m2:/root/.m2 -w /app \
-  maven:3.9-eclipse-temurin-21 mvn -B "$@"
+  "$MAVEN_IMAGE" mvn -B "$@"

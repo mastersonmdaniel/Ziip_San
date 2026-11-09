@@ -11,7 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class InventoryMigrationConsistencyTest {
 
     private String sql() throws Exception {
-        Path p = Path.of(System.getProperty("ed58.sql"));
+        String prop = System.getProperty("ed58.sql");
+        Path p = prop != null ? Path.of(prop)
+                : Path.of("src/main/resources/db/pendente/ED-58__inventory_warehouse.sql");
+        if (prop == null && !Files.exists(p)) {
+            p = Path.of("shared/ziipsan-core/src/main/resources/db/pendente/ED-58__inventory_warehouse.sql");
+        }
         return Files.readString(p);
     }
 

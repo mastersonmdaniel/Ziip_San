@@ -11,16 +11,20 @@ import static org.junit.jupiter.api.Assertions.*;
  * Consistencia Java x SQL pendente (padrao ED-58): as chaves de
  * parametro aparecem no SQL, toda FK composta tem a UNIQUE (tenant_id,
  * id) no pai (licao C3), e NENHUM valor de fabrica/dosagem e semeado.
- * Caminho do SQL via -Ded89.sql (harness); sem a propriedade, usa o
- * caminho relativo da entrega.
+ * Caminho do SQL via -Ded89.sql (harness); sem a propriedade, o
+ * teste localiza o SQL pendente nos caminhos do repo (padrao das
+ * MigrationConsistencyTest vizinhas — ED-98/ED-37): a partir do
+ * modulo (CWD do surefire) ou da raiz.
  */
 class ChemMigrationConsistencyTest {
 
     private String sql() throws Exception {
         String prop = System.getProperty("ed89.sql");
         Path p = prop != null ? Path.of(prop)
-                : Path.of(System.getProperty("user.home"),
-                        "workspace/ziipsan-producao/ed-89/entrega/shared/ziipsan-core/src/main/resources/db/pendente/ED-89__chemicals_reservoirs.sql");
+                : Path.of("src/main/resources/db/pendente/ED-89__chemicals_reservoirs.sql");
+        if (prop == null && !Files.exists(p)) {
+            p = Path.of("shared/ziipsan-core/src/main/resources/db/pendente/ED-89__chemicals_reservoirs.sql");
+        }
         return Files.readString(p);
     }
 

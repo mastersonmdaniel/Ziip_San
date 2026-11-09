@@ -14,14 +14,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Coerencia do SQL pendente da ED-83 com o nucleo: tabelas, guardas
  * nomeadas no aceite e ausencia de seeds/valores inventados. O caminho
  * do SQL vem de -Ded83.sql.path (harness); sem a propriedade, o teste
- * localiza o arquivo a partir do diretorio de trabalho da entrega.
+ * localiza o arquivo nos caminhos do repo (padrao das
+ * MigrationConsistencyTest vizinhas — ED-98/ED-37): a partir do
+ * modulo (CWD do surefire) ou da raiz.
  */
 class Ed83MigrationConsistencyTest {
 
     private static String sql() throws IOException {
         String prop = System.getProperty("ed83.sql.path");
         Path p = prop != null ? Path.of(prop)
-                : Path.of("shared/ziipsan-core/src/main/resources/db/pendente/ED-83__nondomestic_discharger.sql");
+                : Path.of("src/main/resources/db/pendente/ED-83__nondomestic_discharger.sql");
+        if (prop == null && !Files.exists(p)) {
+            p = Path.of("shared/ziipsan-core/src/main/resources/db/pendente/ED-83__nondomestic_discharger.sql");
+        }
         return Files.readString(p);
     }
 

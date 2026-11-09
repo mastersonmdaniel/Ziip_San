@@ -12,14 +12,21 @@ import static org.junit.jupiter.api.Assertions.*;
  * Consistencia do SQL pendente da ED-79 com o nucleo: tabelas, UNIQUE
  * (tenant_id, id) nos pais de FK composta, FK real para cert_risks da
  * P3.31, ausencia de seeds e das bases legais fora do aceite.
- * O caminho do SQL vem da propriedade {@code ed79.sql} do harness.
+ * O caminho do SQL vem da propriedade {@code ed79.sql} do harness,
+ * quando presente; sem ela, o teste localiza o SQL pendente nos
+ * caminhos do repo (padrao das MigrationConsistencyTest vizinhas —
+ * ED-98/ED-37): a partir do modulo (CWD do surefire) ou da raiz.
  */
 class Ed79MigrationConsistencyTest {
 
     private String sql() throws IOException {
-        String path = System.getProperty("ed79.sql");
-        assertNotNull(path, "harness deve passar -Ded79.sql com o caminho do SQL pendente");
-        return Files.readString(Path.of(path));
+        String prop = System.getProperty("ed79.sql");
+        Path p = prop != null ? Path.of(prop)
+                : Path.of("src/main/resources/db/pendente/ED-79__water_systems_psa_annual_charter.sql");
+        if (prop == null && !Files.exists(p)) {
+            p = Path.of("shared/ziipsan-core/src/main/resources/db/pendente/ED-79__water_systems_psa_annual_charter.sql");
+        }
+        return Files.readString(p);
     }
 
     @Test void allTablesPresentAndRegistered() throws IOException {

@@ -11,7 +11,7 @@ import java.util.UUID;
  * <ul>
  *   <li>{@link ConsumerUnitPort} — a unidade existe no cadastro da
  *       P1.3 ({@code consumer_units});</li>
- *   <li>{@link HydrometryPort} — o hidrometro esta INSTALADO na
+ *   <li>{@link HydrometryPort} — o medidor esta INSTALADO na
  *       unidade pela hidrometria da ED-14 (medicao real do uso);</li>
  *   <li>{@link BalanceSourcePort} — a fonte do uso proprio da ED-85
  *       existe para o DMC/periodo, ja DECOMPOSTA pelo adapter
@@ -67,7 +67,7 @@ public final class OwnUseService {
             throw new IllegalArgumentException("unidade consumidora inexistente no cadastro "
                     + "da P1.3 para o tenant: " + unit.consumerUnitId());
         if (!hydrometry.meterInstalledOnUnit(tenantId, unit.meterId(), unit.consumerUnitId()))
-            throw new IllegalArgumentException("hidrometro " + unit.meterId()
+            throw new IllegalArgumentException("medidor " + unit.meterId()
                     + " nao esta instalado na unidade " + unit.consumerUnitId()
                     + " pela hidrometria da ED-14: uso proprio sem medicao nao se cadastra");
         return unit;
