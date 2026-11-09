@@ -236,6 +236,10 @@ export class FieldScreensController {
    * monta o PendingReading real e grava pela porta de integracao. Sem a
    * porta (P-04), a leitura fica SOMENTE na memoria desta sessao e o retorno
    * diz isso — a tela avisa o leiturista, nada e fingido como persistido.
+   * Falha do saver (R4-m4, fundido do lote R3-D na fusao FUSAO-R3D-MAIN)
+   * devolve `{ ok:false, error }` com a mensagem original — a leitura JA
+   * esta em `pending` (sem perda de dado) e a tela exibe o erro em vez de
+   * o silenciar.
    */
   async submitReading(
     taskId: string,
@@ -248,7 +252,13 @@ export class FieldScreensController {
     this.pending = [...this.pending.filter((p) => p.taskId !== taskId), reading];
     this.drafts.set(taskId, { ...draft });
     if (this.deps.saveReading) {
-      await this.deps.saveReading(reading);
+      try {
+        await this.deps.saveReading(reading);
+      } catch (err) {
+        // R4-m4 (fundido do lote R3-D): o tipo promete { ok:false, error } —
+        // a rejeicao do saver nao pode escapar como promessa sem trato.
+        return { ok: false, error: err instanceof Error ? err.message : String(err) };
+      }
       return { ok: true, persisted: true };
     }
     return { ok: true, persisted: false };

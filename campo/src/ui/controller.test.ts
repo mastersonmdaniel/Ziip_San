@@ -150,6 +150,22 @@ test('submitReading valido persiste pela porta e entra no progresso', async () =
   assert.equal(ctl.progress().done, 1);
 });
 
+test('R4-m4: saver que rejeita devolve { ok:false, error } e a leitura permanece em pending', async () => {
+  const { deps: d, storeFake } = deps({
+    saveReading: async () => { throw new Error('falha de gravacao local'); },
+  });
+  const ctl = new FieldScreensController(d);
+  await ctl.load();
+  const res = await ctl.submitReading('task-1', {
+    readingText: '12012', occurrenceCode: null, photoRefs: [], ocrValue: null,
+  });
+  assert.deepEqual(res, { ok: false, error: 'falha de gravacao local' });
+  assert.equal(storeFake.saved.length, 0);
+  // Sem perda de dado: a leitura ja estava em pending antes do saver.
+  assert.equal(ctl.progress().done, 1);
+  assert.equal(ctl.pendingFor('task-1')?.reading, 12012);
+});
+
 test('submitReading sem a porta de gravacao assume memoria de sessao (nao finge persistir)', async () => {
   const { deps: d } = deps({ saveReading: null });
   const ctl = new FieldScreensController(d);

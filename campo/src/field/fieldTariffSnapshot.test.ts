@@ -102,3 +102,38 @@ test('P-03: a fabrica fecha o resolvedor na assinatura da porta; sem dado, erro 
   const missing = createBuildEmissionTask(() => null);
   assert.throws(() => missing(TASK, READING), /P-03: sem retrato de tarifa/);
 });
+
+test('P-03 (fusao R3-D): retrato com largura nao-positiva ou preco negativo recusa', () => {
+  assert.throws(
+    () => assertValidSnapshot({
+      ...SNAPSHOT,
+      brackets: [{ pricePerM3: 1.5, widthM3: 0 }, { pricePerM3: 4.0, widthM3: null }],
+    }),
+    /largura da faixa deve ser positiva/,
+  );
+  assert.throws(
+    () => assertValidSnapshot({
+      ...SNAPSHOT,
+      brackets: [{ pricePerM3: -1, widthM3: 10 }, { pricePerM3: 4.0, widthM3: null }],
+    }),
+    /preco por m3 negativo/,
+  );
+});
+
+test('P-03 (fusao R3-D): leitura de outra tarefa recusa na montagem', () => {
+  assert.throws(
+    () => buildFieldTaskEmission(TASK, { ...READING, taskId: 'outra-tarefa' }, SNAPSHOT, INPUTS),
+    /nao pertence a tarefa/,
+  );
+});
+
+test('P-03 (fusao R3-D): debito/credito sem codigo ou com valor negativo recusa', () => {
+  assert.throws(
+    () => buildFieldTaskEmission(TASK, READING, SNAPSHOT, { ...INPUTS, debits: [{ amount: -1, code: 'DEB' }] }),
+    /valor da linha DEB negativo/,
+  );
+  assert.throws(
+    () => buildFieldTaskEmission(TASK, READING, SNAPSHOT, { ...INPUTS, credits: [{ amount: 1, code: '  ' }] }),
+    /sem codigo/,
+  );
+});

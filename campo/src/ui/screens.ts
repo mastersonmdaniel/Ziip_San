@@ -282,6 +282,12 @@ export class FieldScreensView {
           );
           this.ctl.nav.go('emissao', taskId);
           this.render();
+        }).catch((err: unknown) => {
+          // R4-m4 (fundido do lote R3-D): nenhuma rejeicao de submitReading
+          // some em silencio — o erro e exibido ao leiturista e a tela
+          // re-renderiza (a leitura segue em pending no controller).
+          this.say(`Falha ao registrar a leitura: ${err instanceof Error ? err.message : String(err)}`);
+          this.render();
         });
       }),
     );

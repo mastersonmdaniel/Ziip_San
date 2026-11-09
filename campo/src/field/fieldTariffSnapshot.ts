@@ -21,6 +21,14 @@
  * em vez de fingir emissao). Nenhum valor e presumido: economias sem
  * fonte, template sem fonte ou vencimento sem fonte recusam com motivo
  * nomeado.
+ *
+ * FUSAO FUSAO-R3D-MAIN (do lote R3-D, `validateTariffSnapshot`/
+ * `validateAmountLine`/`buildFieldBillInput` de fieldTaskEmission.ts):
+ * incorporadas as recusas do espelho Java que faltavam aqui — largura de
+ * faixa positiva, preco por m3 nao-negativo, leitura pertencente a tarefa
+ * e linhas de debito/credito com codigo e valor nao-negativo. O formato
+ * JSON do fixture segue canonico (a representacao em strings decimais do
+ * R3-D NAO foi fundida — divergencia registada no relatorio da fusao).
  */
 import type { PendingReading, RouteTask } from '../readings/routePackage.ts';
 import type { FieldTaskEmission, OcrVerdictName } from './fieldEmission.ts';
@@ -82,6 +90,8 @@ export interface FieldEmissionInputs {
  * nao-negativos, esgoto faturado exige percentual nao-negativo.
  */
 export function assertValidSnapshot(snapshot: FieldTariffSnapshotJson): void {
+  // FUSAO-R3D-MAIN: validacoes por faixa no laco abaixo (largura positiva
+  // e preco nao-negativo) espelham o construtor Java via lote R3-D.
   if (!snapshot.tariffVersionId) throw new Error('P-03: retrato sem tariffVersionId');
   if (!snapshot.categoryId) throw new Error('P-03: retrato sem categoryId');
   if (snapshot.minimumM3PerEconomy < 0) {
@@ -96,6 +106,15 @@ export function assertValidSnapshot(snapshot: FieldTariffSnapshotJson): void {
   for (let i = 0; i < snapshot.brackets.length; i++) {
     if (snapshot.brackets[i].widthM3 === null && i !== snapshot.brackets.length - 1) {
       throw new Error(`P-03: faixa aberta so pode ser a ultima (indice ${i})`);
+    }
+    // FUSAO-R3D-MAIN (do validateTariffSnapshot do R3-D): o construtor
+    // Java recusa largura nao-positiva e preco negativo — aqui faltavam.
+    const widthM3 = snapshot.brackets[i].widthM3;
+    if (widthM3 !== null && widthM3 <= 0) {
+      throw new Error(`P-03: largura da faixa deve ser positiva (indice ${i}): ${widthM3}`);
+    }
+    if (snapshot.brackets[i].pricePerM3 < 0) {
+      throw new Error(`P-03: preco por m3 negativo na faixa ${i}: ${snapshot.brackets[i].pricePerM3}`);
     }
   }
   if (snapshot.brackets[snapshot.brackets.length - 1].widthM3 !== null) {
@@ -120,6 +139,20 @@ export function buildFieldTaskEmission(
   inputs: FieldEmissionInputs,
 ): FieldTaskEmission {
   assertValidSnapshot(snapshot);
+  // FUSAO-R3D-MAIN (do buildFieldBillInput do R3-D): a leitura tem de ser
+  // DESTA tarefa, e cada linha de debito/credito tem codigo e valor >= 0
+  // (espelho do AmountLine Java) — recusas que aqui nao existiam.
+  if (reading.taskId !== task.taskId) {
+    throw new Error(`P-03: leitura da tarefa ${reading.taskId} nao pertence a tarefa ${task.taskId}`);
+  }
+  for (const adj of [...inputs.debits, ...inputs.credits]) {
+    if (!adj.code || adj.code.trim() === '') {
+      throw new Error('P-03: linha de debito/credito sem codigo');
+    }
+    if (adj.amount < 0) {
+      throw new Error(`P-03: valor da linha ${adj.code} negativo: ${adj.amount}`);
+    }
+  }
   if (reading.reading === null) {
     throw new Error(`P-03: emissao exige a leitura atual da tarefa ${task.taskId}`);
   }
