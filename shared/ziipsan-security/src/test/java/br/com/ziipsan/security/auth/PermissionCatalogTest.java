@@ -44,12 +44,18 @@ class PermissionCatalogTest {
         // qualquer perfil, por decisão explícita da frente P1.33 (concessão direta).
         // P2.14: a leitura do próprio contrato (contract:read-own) entra no ADMIN.
         // P2.26: a API pública / webhooks de saída entram no ADMIN (tela /integracao).
+        // ED-06: a gestão de perfis compostos, a recertificação e a trilha de
+        // auditoria de acesso entram no ADMIN (ADR-0040/0043); access:audit-read
+        // entra também no AUDITOR_INTERNO. A frente ED-06 actualizou o catálogo
+        // sem actualizar esta lista — correcção registada no pacote
+        // correcao-ci-security-teste (achado nº 4 da CI, parte 2).
         assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
                 .containsExactlyInAnyOrder("registry:read", "registry:write", "user:read", "user:write",
                         "gis:catalog-read", "gis:catalog-manage", "parameters:manage",
                         "brand:manage", "support:read", "support:write", "support:manage",
                         "template:read", "template:write", "template:approve",
-                        "contract:read-own", "integration:manage");
+                        "contract:read-own", "integration:manage",
+                        "access:manage-profiles", "access:recertify", "access:audit-read");
         assertThat(PermissionCatalog.FactoryProfile.ADMIN.permissions())
                 .doesNotContain("registry:reveal-document");
         // P0.11: buscar por documento também é concessão direta, em nenhum perfil de fábrica.
@@ -166,6 +172,12 @@ class PermissionCatalogTest {
         // P2.26: entram os 5 escopos OAuth de cliente da API pública
         // (concedidos a clientes, nunca a perfis de usuário) e
         // integration:manage vai ao ADMIN, não às exceções.
+        // P3.30: entram protocol:transfer-any-unit, so:close-retroactive e
+        // so:close-without-activities — concessão direta por desenho
+        // (ADR-0040, DAD-31), registadas pela própria frente no
+        // coverageExemptions do catálogo, sem actualizar esta lista —
+        // correcção registada no pacote correcao-ci-security-teste
+        // (achado nº 4 da CI, parte 2).
         assertThat(exempt).containsExactlyInAnyOrder(
                 "registry:reveal-document", "registry:search-document", "registry:export",
                 "deployment:read", "console:read", "console:manage", "console:suspend", "console:delete",
@@ -174,7 +186,8 @@ class PermissionCatalogTest {
                 "asset:read", "asset:manage",
                 "contract:read", "contract:manage", "contract:restrict",
                 "properties:read", "bills:read", "payments:read",
-                "service-orders:read", "service-orders:write");
+                "service-orders:read", "service-orders:write",
+                "protocol:transfer-any-unit", "so:close-retroactive", "so:close-without-activities");
         for (String permission : PermissionCatalog.allNames()) {
             boolean inProfile = !PermissionCatalog.profilesIncluding(permission).isEmpty();
             assertThat(inProfile || exempt.contains(permission))
