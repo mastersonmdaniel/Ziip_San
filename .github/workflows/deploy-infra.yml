@@ -1,0 +1,223 @@
+# Pacote LC.2 — Produtor, sessao 764b25ad-2ccf-40e5-afbf-986d42be0213
+# Correcao LC.2 (estagio 3), sessao b36fd7a8-91ec-4322-9e7e-8bfe051efd54:
+# R-1 (download-artifact nos applies), m6 (validate inclui dedicado),
+# m7 (papel de producao no rollback) e m8 (rollback partido em plan/apply,
+# aprovacao DEPOIS do plano) — ver CORRECAO-LC.2.md.
+# Pipeline de deploy da IaC (LC.2).
+#
+# Padrao de pipeline SUSTENTADO pelas fontes: GitHub Actions — o plano v3.0
+# fixa "CI no GitHub Actions" (tarefa P0.3) e o GitHub como fonte da verdade
+# (P0.1). O aceite da LC.2 exige: deploy pelo pipeline; PRODUCAO COM
+# APROVACAO MANUAL (job de apply de producao protegido pelo Environment
+# "producao" do GitHub, com required reviewers); rollback pelo mesmo
+# pipeline (job manual rollback, ver docs/operacao/ROLLBACK.md).
+#
+# Credenciais: OIDC do GitHub Actions para a conta AWS (papel por ambiente),
+# NENHUM segredo de longa duracao versionado; os ARNs dos papeis sao
+# [A DEFINIR] nas variaveis do repositorio quando a conta existir.
+name: deploy-infra-lc2
+
+on:
+  pull_request:
+    paths:
+      - "infra/aws/**"
+      - ".github/workflows/deploy-infra.yml"
+  push:
+    branches: [main]
+    paths:
+      - "infra/aws/**"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Ambiente alvo"
+        type: choice
+        options: [homologacao, demonstracao, producao]
+        default: homologacao
+      action:
+        description: "Acao"
+        type: choice
+        options: [plan, apply, rollback]
+        default: plan
+      rollback_ref:
+        description: "Somente rollback: ref (commit/tag) da IaC a reaplicar"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: iac-${{ inputs.environment || 'ci' }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: fmt e validacao estrutural (sem AWS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: terraform fmt -check
+        run: terraform fmt -check -recursive infra/aws
+      - name: validate por ambiente (init -backend=false)
+        run: |
+          for env in homologacao demonstracao producao dedicado; do
+            terraform -chdir=infra/aws/envs/$env init -backend=false
+            terraform -chdir=infra/aws/envs/$env validate
+          done
+
+  plan:
+    name: plan (${{ inputs.environment || 'homologacao' }})
+    needs: validate
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: plan-${{ inputs.environment || 'homologacao' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.action == 'rollback' && inputs.rollback_ref || github.sha }}
+      - name: Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Assumir papel AWS do ambiente via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # [A DEFINIR] variavel de repositorio por ambiente (conta AWS inexistente neste bloco)
+          role-to-assume: ${{ vars.AWS_IAC_ROLE_ARN }}
+          aws-region: sa-east-1
+      - name: init e plan
+        run: |
+          ENV="${{ inputs.environment || 'homologacao' }}"
+          terraform -chdir=infra/aws/envs/$ENV init -backend-config=backend.hcl
+          terraform -chdir=infra/aws/envs/$ENV plan -out=tfplan
+      - name: Guardar o plano como artefato da execucao
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ inputs.environment || 'homologacao' }}
+          path: infra/aws/envs/${{ inputs.environment || 'homologacao' }}/tfplan
+
+  apply-homologacao-demonstracao:
+    name: apply (homologacao/demonstracao)
+    needs: plan
+    if: inputs.action != 'rollback' && (inputs.environment == 'homologacao' || inputs.environment == 'demonstracao' || inputs.environment == '')
+    runs-on: ubuntu-latest
+    environment: apply-nonprod
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Assumir papel AWS do ambiente via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_IAC_ROLE_ARN }}
+          aws-region: sa-east-1
+      # R-1 (correcao): o tfplan vive no runner do job plan; sem descarregar
+      # o artefato, o apply nao tem plano nenhum para aplicar.
+      - name: Descarregar o plano guardado pelo job plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-${{ inputs.environment || 'homologacao' }}
+          path: infra/aws/envs/${{ inputs.environment || 'homologacao' }}
+      - name: apply do plano aprovado nesta execucao
+        run: |
+          ENV="${{ inputs.environment || 'homologacao' }}"
+          terraform -chdir=infra/aws/envs/$ENV init -backend-config=backend.hcl
+          terraform -chdir=infra/aws/envs/$ENV apply -auto-approve tfplan
+
+  apply-producao:
+    name: apply PRODUCAO (aprovacao manual obrigatoria)
+    needs: plan
+    if: inputs.action == 'apply' && inputs.environment == 'producao'
+    runs-on: ubuntu-latest
+    # A APROVACAO MANUAL e a protecao do Environment "producao" no GitHub
+    # (required reviewers). Sem a aprovacao, este job nao inicia.
+    environment: producao
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Assumir papel AWS de producao via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_IAC_ROLE_ARN_PROD }}
+          aws-region: sa-east-1
+      # R-1 (correcao): idem ao apply de homologacao/demonstracao — o plano
+      # e descarregado do artefato da MESMA execucao; o gate de aprovacao
+      # manual e o Environment "producao" acima, inalterado.
+      - name: Descarregar o plano guardado pelo job plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-producao
+          path: infra/aws/envs/producao
+      - name: apply do plano desta execucao
+        run: |
+          terraform -chdir=infra/aws/envs/producao init -backend-config=backend.hcl
+          terraform -chdir=infra/aws/envs/producao apply -auto-approve tfplan
+
+  # Rollback partido em dois jobs (correcao m8): o plano e gerado e
+  # guardado SEM gate de Environment, para ser CONFERIDO antes de qualquer
+  # aprovacao; a aprovacao manual de producao protege so o job de apply,
+  # que descarrega e aplica exatamente esse plano. Procedimento alinhado
+  # em docs/operacao/ROLLBACK.md.
+  rollback-plan:
+    name: rollback — plan da ref anterior (sem aprovacao; plano conferivel)
+    needs: validate
+    if: inputs.action == 'rollback' && inputs.rollback_ref != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.rollback_ref }}
+      - name: Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Assumir papel AWS do ambiente via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # Correcao m7: rollback de producao usa o papel DE PRODUCAO
+          # (AWS_IAC_ROLE_ARN_PROD), como o apply-producao; os restantes
+          # ambientes usam o papel generico.
+          role-to-assume: ${{ inputs.environment == 'producao' && vars.AWS_IAC_ROLE_ARN_PROD || vars.AWS_IAC_ROLE_ARN }}
+          aws-region: sa-east-1
+      - name: plan da ref de rollback
+        run: |
+          ENV="${{ inputs.environment }}"
+          terraform -chdir=infra/aws/envs/$ENV init -backend-config=backend.hcl
+          terraform -chdir=infra/aws/envs/$ENV plan -out=tfplan-rollback
+      - name: Guardar o plano de rollback como artefato da execucao
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-rollback-${{ inputs.environment }}
+          path: infra/aws/envs/${{ inputs.environment }}/tfplan-rollback
+
+  rollback:
+    name: rollback — apply do plano conferido (reaplicar ref anterior)
+    needs: rollback-plan
+    if: inputs.action == 'rollback' && inputs.rollback_ref != ''
+    runs-on: ubuntu-latest
+    # Rollback de PRODUCAO passa pelo mesmo Environment com aprovacao manual.
+    # Este job so inicia depois de o plano existir (job rollback-plan) —
+    # a aprovacao acontece, portanto, DEPOIS de o plano poder ser conferido.
+    environment: ${{ inputs.environment == 'producao' && 'producao' || 'apply-nonprod' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.rollback_ref }}
+      - name: Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Assumir papel AWS do ambiente via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # Correcao m7: idem ao rollback-plan — papel de producao em producao.
+          role-to-assume: ${{ inputs.environment == 'producao' && vars.AWS_IAC_ROLE_ARN_PROD || vars.AWS_IAC_ROLE_ARN }}
+          aws-region: sa-east-1
+      - name: Descarregar o plano de rollback guardado pelo job rollback-plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-rollback-${{ inputs.environment }}
+          path: infra/aws/envs/${{ inputs.environment }}
+      - name: apply do plano de rollback conferido
+        run: |
+          ENV="${{ inputs.environment }}"
+          terraform -chdir=infra/aws/envs/$ENV init -backend-config=backend.hcl
+          terraform -chdir=infra/aws/envs/$ENV apply -auto-approve tfplan-rollback
