@@ -1,0 +1,81 @@
+# LC.7 — OpenTelemetry Collector de produção (AWS)
+# Produtor: sessão 92031a19-4d6d-4174-92b7-164897d85503 (papel: Produtor)
+#
+# Aceite LC.7: "OpenTelemetry Collector exportando ao serviço gerenciado".
+# Origem do sinal: P0.8 (métricas HTTP/Hikari, traces com tenant_id,
+# logs JSON com X-Request-ID) e P3.11 (SLOs, alertas, error tracking —
+# cujo lado de PRODUÇÃO a P3.11 remete expressamente a esta LC.7).
+#
+# O serviço gerenciado de destino NÃO é nomeado por nenhuma fonte local
+# lida: ele é parâmetro [A DEFINIR] (pendência P-LC7-01), resolvido por
+# variável de ambiente na implantação. Por isso o exportador abaixo é o
+# genérico OTLP/HTTP — qualquer serviço gerenciado compatível com OTLP
+# (ou o exportador específico do provedor escolhido) entra trocando só
+# endpoint/headers, sem mudar receivers/processors/pipelines.
+# Nenhuma credencial neste arquivo: autenticação só por referência de
+# ambiente, preenchida a partir do cofre (LC.4) no deploy.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  # Métricas do próprio coletor (saúde do pipeline de observabilidade).
+  prometheus/self:
+    config:
+      scrape_configs:
+        - job_name: otel-collector
+          scrape_interval: 60s
+          static_configs:
+            - targets: [127.0.0.1:8888]
+
+processors:
+  batch:
+    timeout: 10s
+    send_batch_size: 1024
+  memory_limiter:
+    check_interval: 1s
+    # [A DEFINIR] dimensionamento do coletor em produção (sem fonte
+    # local): os limites entram na implantação com a LC.2.
+    limit_percentage: 80
+    spike_limit_percentage: 25
+  # Privacidade herdada da P0.8: rótulo de tenant só onde a P0.8 permite
+  # (contadores agregados e traces); nenhum atributo novo de tenant é
+  # criado aqui. Atributos sensíveis nunca são promovidos a rótulo.
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: producao
+        action: upsert
+
+exporters:
+  # Destino gerenciado — [A DEFINIR] (P-LC7-01).
+  otlphttp/gerenciado:
+    endpoint: "${env:OTEL_EXPORTER_OTLP_ENDPOINT}"
+    headers:
+      # Referência de segredo resolvida no deploy (LC.4); sem literal.
+      authorization: "${env:OTEL_EXPORTER_AUTH_HEADER}"
+  # Error tracking é destino SEPARADO do pipeline de telemetria:
+  # ver docs/observability/error-tracking-producao.md (P-LC7-02).
+  debug/local:
+    verbosity: basic
+
+service:
+  telemetry:
+    metrics:
+      address: 127.0.0.1:8888
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [otlphttp/gerenciado]
+    metrics:
+      receivers: [otlp, prometheus/self]
+      processors: [memory_limiter, resource, batch]
+      exporters: [otlphttp/gerenciado]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [otlphttp/gerenciado]
