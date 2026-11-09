@@ -15,6 +15,11 @@
 -- MODO ASSISTIDO (ADR-0004): status nasce GENERATED_VALIDATED; so vira
 -- SUBMITTED_BY_TENANT com protocolo da agencia declarado pelo tenant
 -- (CHECK abaixo) -- envio real nao se finge.
+-- Correcao R7-B2 (Rodada 7): o CHECK do protocolo exige protocolo
+-- NAO-BRANCO (btrim <> ''), como o Java (SubmissionRecord: isBlank), e
+-- o formato de evidence_ref e validado aqui com o mesmo padrao que o
+-- Java produz em SubmissionRecord.evidenceRef():
+-- ED97-EVIDENCE:<agencia>:<periodo>:<16 hex>.
 -- SEPARACAO: kind AGGREGATE_PUBLIC x NOMINAL_RESTRICTED gravado na linha;
 -- a trava de conteudo (nominal nunca no agregado) e do codigo
 -- (ExportPackage) e repetida aqui pela coluna kind.
@@ -46,7 +51,10 @@ CREATE TABLE IF NOT EXISTS reg_export_submissions (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT uq_reg_export_submissions_tenant_id UNIQUE (tenant_id, id),
     CONSTRAINT ck_reg_export_submitted_needs_protocol
-        CHECK (status <> 'SUBMITTED_BY_TENANT' OR agency_protocol IS NOT NULL)
+        CHECK (status <> 'SUBMITTED_BY_TENANT'
+               OR (agency_protocol IS NOT NULL AND btrim(agency_protocol) <> '')),
+    CONSTRAINT ck_reg_export_evidence_ref_format
+        CHECK (evidence_ref ~ '^ED97-EVIDENCE:[A-Za-z0-9_-]+:[A-Za-z0-9_-]+:[0-9a-f]{16}$')
 );
 CREATE UNIQUE INDEX IF NOT EXISTS uq_reg_export_submission_pkg
     ON reg_export_submissions(tenant_id, agency_code, period_ref, package_sha256);

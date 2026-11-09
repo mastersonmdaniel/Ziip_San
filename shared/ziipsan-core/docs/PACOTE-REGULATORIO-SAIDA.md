@@ -28,4 +28,9 @@ Exportação agregada pública nunca carrega linha nominal; nominal é sempre
 restrita. O escopo regulatório do perfil externo do regulador (ED-75,
 P-ED75-01 atendida aqui): este pacote, indicadores da ED-48, relatório do
 art. 54 da NR 11, ouvidoria e interrupções — sem evidência ISO, sem dado
-pessoal.
+pessoal. Correção R7-B1 (Rodada 7): o item "este pacote" no escopo acima
+denota somente a parte agregada pública — o pacote nominal restrito não
+tem recurso externo (`RegulatorExternalScope.resourceForPackage` devolve
+vazio e `canRegulatorReadPackage` é falso para ele) e a evidência
+externa (`ExportSubmissionService.evidenceRefsFor(periodo)`) devolve
+somente refs agregadas; refs nominais só por kind explícito, em uso local.

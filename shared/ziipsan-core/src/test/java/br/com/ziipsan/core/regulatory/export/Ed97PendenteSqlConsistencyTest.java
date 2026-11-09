@@ -25,4 +25,19 @@ class Ed97PendenteSqlConsistencyTest {
     @Test void sqlHasNoNumberedMigrationName() throws Exception {
         assertTrue(sql().contains("PENDENTE DE NUMERACAO"));
     }
+    @Test void sqlRequiresNonBlankProtocolForSubmitted() throws Exception {
+        // Correcao R7-B2: o CHECK do protocolo exige nao-branco, como o
+        // Java (SubmissionRecord: isBlank) — '' nao passa mais.
+        String s = sql();
+        assertTrue(s.contains("ck_reg_export_submitted_needs_protocol"));
+        assertTrue(s.contains("btrim(agency_protocol) <> ''"));
+    }
+    @Test void sqlValidatesEvidenceRefFormat() throws Exception {
+        // Correcao R7-B2: o formato de evidence_ref e validado no SQL
+        // com o mesmo padrao que o Java produz em evidenceRef().
+        String s = sql();
+        assertTrue(s.contains("ck_reg_export_evidence_ref_format"));
+        assertTrue(s.contains("^ED97-EVIDENCE:"));
+        assertTrue(s.contains("[0-9a-f]{16}"));
+    }
 }

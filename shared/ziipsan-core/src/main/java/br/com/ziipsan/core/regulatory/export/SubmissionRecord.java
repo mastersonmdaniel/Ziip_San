@@ -36,6 +36,17 @@ public record SubmissionRecord(UUID id, UUID tenantId, String agencyCode, String
         return "ED97-EVIDENCE:" + agencyCode + ":" + periodRef + ":" + packageSha256Hex.substring(0, 16);
     }
 
+    /**
+     * Verdadeiro somente para registro de pacote NOMINAL_RESTRICTED
+     * (correcao R7-B1): o registro distingue o kind — o nominal e
+     * restrito e nao tem recurso externo
+     * ({@link RegulatorExternalScope#canRegulatorReadPackage} e falso
+     * para ele); o agregado nao e restrito.
+     */
+    public boolean isRestricted() {
+        return kind == ExportPackage.Kind.NOMINAL_RESTRICTED;
+    }
+
     public SubmissionRecord markSubmittedByTenant(String protocol, Instant when) {
         Objects.requireNonNull(when);
         return new SubmissionRecord(id, tenantId, agencyCode, profileKey, layoutVersion, periodRef,

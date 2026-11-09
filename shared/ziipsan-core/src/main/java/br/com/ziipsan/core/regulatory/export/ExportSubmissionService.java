@@ -48,7 +48,13 @@ public final class ExportSubmissionService {
             }
         } else {
             for (String req : profile.requiredFieldNames()) {
-                boolean present = pkg.lines().stream().anyMatch(l -> l.contains(req + "="));
+                // Correcao R7-B3 (Rodada 7): a presenca do campo e testada
+                // pela CHAVE de cada segmento `chave=valor` da linha,
+                // insensivel a caixa — nao por substring na linha inteira:
+                // `nota=campo=5` nao satisfaz `campo` (a chave e `nota`) e
+                // `CAMPO=...` satisfaz `campo`. Segmento sem `=` nao conta
+                // (a linha segue o formato `chave=valor;...`).
+                boolean present = pkg.lines().stream().anyMatch(l -> lineHasField(l, req));
                 if (!present) {
                     throw new IllegalArgumentException("campo obrigatorio ausente no pacote: " + req);
                 }
@@ -63,9 +69,45 @@ public final class ExportSubmissionService {
 
     public List<SubmissionRecord> records() { return List.copyOf(records); }
 
-    /** Evidencias de um periodo, para a agenda da ED-98 (RAS-08). */
+    /** Registros de um kind (a distincao por kind do registro, R7-B1). */
+    public List<SubmissionRecord> recordsOfKind(ExportPackage.Kind kind) {
+        Objects.requireNonNull(kind);
+        return records.stream().filter(r -> r.kind() == kind).toList();
+    }
+
+    /**
+     * Verdadeiro se a linha traz o campo como chave de algum segmento
+     * {@code chave=valor} (chave antes do primeiro {@code =} do segmento,
+     * insensivel a caixa; espacos ao redor da chave sao ignorados).
+     * Correcao R7-B3.
+     */
+    static boolean lineHasField(String line, String fieldName) {
+        if (line == null || fieldName == null) return false;
+        for (String segment : line.split(";", -1)) {
+            int eq = segment.indexOf('=');
+            if (eq < 0) continue;
+            String key = segment.substring(0, eq).trim();
+            if (!key.isEmpty() && key.equalsIgnoreCase(fieldName)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Evidencias de um periodo, para a agenda da ED-98 (RAS-08).
+     * Correcao R7-B1: por padrao, SOMENTE as evidencias de pacotes
+     * AGREGADOS PUBLICOS sao devolvidas — a evidencia de pacote nominal
+     * restrito nao e legivel por este canal. Para a evidencia de um kind
+     * explicito (uso local), usar {@link #evidenceRefsFor(String, ExportPackage.Kind)}.
+     */
     public List<String> evidenceRefsFor(String periodRef) {
-        return records.stream().filter(r -> r.periodRef().equals(periodRef))
+        return evidenceRefsFor(periodRef, ExportPackage.Kind.AGGREGATE_PUBLIC);
+    }
+
+    /** Evidencias de um periodo e de um kind explicito (R7-B1). */
+    public List<String> evidenceRefsFor(String periodRef, ExportPackage.Kind kind) {
+        Objects.requireNonNull(kind);
+        return records.stream()
+                .filter(r -> r.periodRef().equals(periodRef) && r.kind() == kind)
                 .map(SubmissionRecord::evidenceRef).toList();
     }
 }

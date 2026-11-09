@@ -17,7 +17,11 @@ import java.util.Objects;
  *       na construcao — nominal nunca vaza para o agregado.</li>
  *   <li>NOMINAL RESTRITA: linhas nominais, marcadas restritas; nunca
  *       publicaveis (o registro de envio as trata como restritas e o
- *       escopo externo do regulador da ED-75 nao as inclui).</li>
+ *       escopo externo do regulador da ED-75 nao as inclui — lastro em
+ *       codigo: {@link RegulatorExternalScope#resourceForPackage} devolve
+ *       vazio e {@link RegulatorExternalScope#canRegulatorReadPackage}
+ *       e falso para este kind, correcao R7-B1; o registro distingue o
+ *       kind em {@link SubmissionRecord#isRestricted}).</li>
  * </ul>
  *
  * O hash do pacote e SHA-256 do conteudo canonico (perfil + periodo +
