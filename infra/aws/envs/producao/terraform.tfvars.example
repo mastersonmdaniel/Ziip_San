@@ -1,0 +1,18 @@
+# Pacote LC.2 — Produtor, sessao 764b25ad-2ccf-40e5-afbf-986d42be0213
+# EXEMPLO — copiar para terraform.tfvars e preencher. Todo valor com
+# [A DEFINIR] depende de fonte que ainda nao existe (conta AWS, dominio
+# real, dimensionamento aprovado): NAO inventar valor para "fazer rodar".
+environment_name = "producao"
+environment_kind = "shared"
+tenant_slug      = null
+vpc_cidr         = "[A DEFINIR]"
+root_domain      = "[A DEFINIR]"
+waf_rate_limit   = 0 # [A DEFINIR] substituir pelo limite aprovado
+container_image  = "[A DEFINIR: ECR da conta + digest da release]"
+api_cpu          = 0 # [A DEFINIR]
+api_memory       = 0 # [A DEFINIR]
+api_desired_count = 0 # [A DEFINIR]
+config_delivery_bucket = "[A DEFINIR]"
+tenant_domains   = []
+ses_tenants      = []
+messaging_tenants = []

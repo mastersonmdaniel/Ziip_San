@@ -1,0 +1,12 @@
+# Pacote LC.2 — Produtor, sessao 764b25ad-2ccf-40e5-afbf-986d42be0213
+# Configuracao do backend (usar: terraform init -backend-config=backend.hcl)
+# bucket         = "[A DEFINIR: bucket de state da conta, em sa-east-1]"
+# key            = "ziipsan/homologacao/terraform.tfstate"
+# region         = "sa-east-1"
+# encrypt        = true
+# use_lockfile   = true
+# kms_key_id     = "[A DEFINIR: chave KMS do state (LC.4)]"
+# Regras do state (aceite LC.2: sem segredo no state):
+# - versionamento ligado, Object Lock conforme LC.5, acesso publico bloqueado;
+# - o state guarda apenas IDs/ARNs/atributos — esta IaC nao recebe segredo;
+# - acesso ao bucket restrito ao papel do pipeline (ver pipeline).
