@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 # PROVA DE CARGA E LIMPEZA — BASE FICTÍCIA DE TESTES DO ZIIPSAN (decisão nº 34)
 # Cluster PostgreSQL 16 DESCARTÁVEL em /tmp/bf12k-pg (porta 55441, socket /tmp).
-# Sobe, prova (7 asserções do pacote) e DERRUBA o cluster no fim.
+# Sobe, prova (7 asserções originais + 5 do complemento EMASA = 12) e DERRUBA
+# o cluster no fim. Complemento EMASA (09/11/2026): dois municípios fictícios —
+# Porto das Gaivotas (MAIOR, 9.000 UCs) e Vale do Rio Claro (MENOR, 3.000 UCs);
+# município via addresses.city/municipality_ibge e via cadeia
+# consumer_units.block_id -> blocks.sector_id -> commercial_sectors.locality_id
+# -> localities (mecanismo real do domínio, V3_1 registry).
 # Uso: bash prova-carga-limpeza.sh
 # Variáveis: SEED_DIR (padrão: diretório deste script), FIXTURE (padrão:
 # ../../../trabalho/fixture.sql a partir deste script).
@@ -158,6 +163,120 @@ else:
     sys.exit(1)
 PYEOF
 checa "distribuicao por situacao = matriz.csv" "0" "$?"
+
+# (8) complemento EMASA: UCs por municipio = reparticao declarada (9000/3000),
+# pelos DOIS mecanismos do dominio (endereco e cadeia territorial)
+MUN_A_ESPERADO=9000; MUN_B_ESPERADO=3000
+MUN_A_NOME='Porto das Gaivotas'; MUN_B_NOME='Vale do Rio Claro'
+POR_ENDERECO="$(psql_bf -At -F'|' -c "SELECT a.city, count(*) FROM consumer_units cu JOIN addresses a ON a.tenant_id=cu.tenant_id AND a.id=cu.address_id WHERE cu.tenant_id='$TENANT' GROUP BY a.city ORDER BY a.city;")"
+echo "REGISTO-COMPLEMENTO ucs_por_municipio_endereco: $(echo "$POR_ENDERECO" | tr '\n' ' ')"
+POR_CADEIA="$(psql_bf -At -F'|' -c "SELECT l.name, count(*) FROM consumer_units cu JOIN blocks b ON b.tenant_id=cu.tenant_id AND b.id=cu.block_id JOIN commercial_sectors sec ON sec.tenant_id=b.tenant_id AND sec.id=b.sector_id JOIN localities l ON l.tenant_id=sec.tenant_id AND l.id=sec.locality_id WHERE cu.tenant_id='$TENANT' GROUP BY l.name ORDER BY l.name;")"
+echo "REGISTO-COMPLEMENTO ucs_por_municipio_cadeia_localidades: $(echo "$POR_CADEIA" | tr '\n' ' ')"
+checa "UCs por municipio (endereco) = 9000/3000 declarados" "$MUN_A_NOME|$MUN_A_ESPERADO
+$MUN_B_NOME|$MUN_B_ESPERADO" "$POR_ENDERECO"
+checa "UCs por municipio (cadeia localities) = endereco" "$POR_ENDERECO" "$POR_CADEIA"
+
+# (9) complemento EMASA: distribuicao situacao x municipio = matriz.csv
+# (mesma reconstrucao de situacao da assercao 2, acrescida da cidade do endereco)
+psql_bf -At -F',' -c "
+SELECT cu.status,
+       (SELECT cat.code FROM unit_subcategories us
+          JOIN subcategories s ON s.tenant_id=us.tenant_id AND s.id=us.subcategory_id
+          JOIN categories cat ON cat.tenant_id=s.tenant_id AND cat.id=s.category_id
+         WHERE us.tenant_id=cu.tenant_id AND us.unit_id=cu.id LIMIT 1),
+       ws.code,
+       CASE WHEN EXISTS (SELECT 1 FROM social_tariff_enrollments e WHERE e.tenant_id=cu.tenant_id AND e.unit_id=cu.id AND e.status='ACTIVE') THEN 'SIM' ELSE 'NAO' END,
+       CASE WHEN mi.id IS NULL THEN 'NONE'
+            WHEN mt.status='INSTALLED' THEN 'INSTALLED'
+            WHEN mt.status='IN_MAINTENANCE' THEN 'MAINTENANCE'
+            WHEN mt.status='WRITTEN_OFF' THEN 'WRITTEN_OFF' ELSE mt.status END,
+       CASE WHEN EXISTS (SELECT 1 FROM meter_readings r WHERE r.tenant_id=cu.tenant_id AND r.unit_id=cu.id AND r.anomaly_id IS NOT NULL) THEN 'ANOMALIA'
+            WHEN cr.id IS NULL THEN 'NONE'
+            WHEN cr.consumption_type='REAL' THEN 'NORMAL'
+            WHEN cr.consumption_type='ESTIMATED' THEN 'ESTIMADA' ELSE cr.consumption_type END,
+       CASE WHEN b.id IS NULL THEN 'SEM_CONTA'
+            WHEN b.status='INSTALLMENT' THEN 'PARCELADA'
+            WHEN b.status='CANCELLED' THEN 'CANCELADA'
+            WHEN b.status='PAID' THEN 'PAGA'
+            WHEN b.status='NORMAL' AND b.due_date >= DATE '2026-11-01' THEN 'ABERTA'
+            WHEN b.status='NORMAL' THEN 'VENCIDA' ELSE b.status END,
+       CASE WHEN EXISTS (SELECT 1 FROM debit_receivables d WHERE d.tenant_id=cu.tenant_id AND d.unit_id=cu.id AND d.status='NORMAL') THEN 'SIM' ELSE 'NAO' END,
+       CASE WHEN so.id IS NULL THEN 'SEM_OS'
+            WHEN so.status IN ('CLOSED_EXECUTED','CLOSED_NOT_EXECUTED') THEN 'OS_FECHADA' ELSE 'OS_ABERTA' END,
+       CASE WHEN a.city='Porto das Gaivotas' THEN 'MAIOR' ELSE 'MENOR' END,
+       count(*)
+FROM consumer_units cu
+JOIN water_statuses ws ON ws.tenant_id=cu.tenant_id AND ws.id=cu.water_status_id
+JOIN addresses a ON a.tenant_id=cu.tenant_id AND a.id=cu.address_id
+LEFT JOIN LATERAL (SELECT mi2.id FROM meter_installations mi2 WHERE mi2.tenant_id=cu.tenant_id AND mi2.unit_id=cu.id ORDER BY mi2.installed_on DESC LIMIT 1) mi ON true
+LEFT JOIN meters mt ON mt.tenant_id=cu.tenant_id AND mt.id=(SELECT mi3.meter_id FROM meter_installations mi3 WHERE mi3.tenant_id=cu.tenant_id AND mi3.id=mi.id)
+LEFT JOIN LATERAL (SELECT cr2.id, cr2.consumption_type FROM consumption_records cr2 WHERE cr2.tenant_id=cu.tenant_id AND cr2.unit_id=cu.id AND cr2.service_kind='WATER' ORDER BY cr2.reference DESC LIMIT 1) cr ON true
+LEFT JOIN LATERAL (SELECT b2.id, b2.status, b2.due_date FROM bills b2 WHERE b2.tenant_id=cu.tenant_id AND b2.unit_id=cu.id ORDER BY b2.reference_month DESC LIMIT 1) b ON true
+LEFT JOIN LATERAL (SELECT so2.id, so2.status FROM service_orders so2 JOIN service_order_targets t2 ON t2.tenant_id=so2.tenant_id AND t2.order_id=so2.id AND t2.target_type='CONSUMER_UNIT' AND t2.target_id=cu.id WHERE so2.tenant_id=cu.tenant_id ORDER BY so2.created_at LIMIT 1) so ON true
+WHERE cu.tenant_id='$TENANT'
+GROUP BY 1,2,3,4,5,6,7,8,9,10 ORDER BY 1,2,3,4,5,6,7,8,9,10;" > /tmp/bf12k-mun.csv
+python3 - "$SEED_DIR/matriz.csv" /tmp/bf12k-mun.csv <<'PYEOF2'
+import csv, sys
+esp = {}
+with open(sys.argv[1], newline='', encoding='utf-8') as f:
+    for row in csv.DictReader(f):
+        chave = (row['status_uc'], row['categoria'], row['situacao_agua'], row['tarifa_social'],
+                 row['hidrometro'], row['leitura'], row['conta'], row['debito'], row['ordem_servico'])
+        if int(row['ucs_municipio_maior']):
+            esp[chave + ('MAIOR',)] = int(row['ucs_municipio_maior'])
+        if int(row['ucs_municipio_menor']):
+            esp[chave + ('MENOR',)] = int(row['ucs_municipio_menor'])
+obt = {}
+with open(sys.argv[2], newline='', encoding='utf-8') as f:
+    for row in csv.reader(f):
+        if row:
+            obt[tuple(row[:10])] = int(row[10])
+if esp == obt:
+    print("SITUACAO X MUNICIPIO OK")
+else:
+    print("SITUACAO X MUNICIPIO DIVERGE")
+    for k in sorted(set(esp) | set(obt)):
+        if esp.get(k) != obt.get(k):
+            print(" ", k, "esperado", esp.get(k), "obtido", obt.get(k))
+    sys.exit(1)
+PYEOF2
+checa "distribuicao situacao x municipio = matriz.csv (regra declarada)" "0" "$?"
+
+# (10) complemento EMASA: separacao por municipio — leituras e contas agregadas
+# pelo mecanismo real (join UC -> endereco), resultados registados e conferidos
+# contra o esperado derivado da matriz.csv
+SEP="$(psql_bf -At -F'|' -c "
+SELECT a.city,
+       (SELECT count(*) FROM meter_readings r JOIN consumer_units u2 ON u2.tenant_id=r.tenant_id AND u2.id=r.unit_id JOIN addresses a2 ON a2.tenant_id=u2.tenant_id AND a2.id=u2.address_id WHERE r.tenant_id='$TENANT' AND a2.city=a.city),
+       (SELECT count(*) FROM bills b JOIN consumer_units u3 ON u3.tenant_id=b.tenant_id AND u3.id=b.unit_id JOIN addresses a3 ON a3.tenant_id=u3.tenant_id AND a3.id=u3.address_id WHERE b.tenant_id='$TENANT' AND a3.city=a.city),
+       (SELECT coalesce(sum(b.total_value),0) FROM bills b JOIN consumer_units u3 ON u3.tenant_id=b.tenant_id AND u3.id=b.unit_id JOIN addresses a3 ON a3.tenant_id=u3.tenant_id AND a3.id=u3.address_id WHERE b.tenant_id='$TENANT' AND a3.city=a.city)
+FROM (SELECT DISTINCT city FROM addresses WHERE tenant_id='$TENANT') a ORDER BY a.city;")"
+echo "REGISTO-COMPLEMENTO separacao_por_municipio (cidade|leituras|contas|soma_contas):"
+echo "$SEP" | while IFS='|' read -r c l n soma; do echo "REGISTO-COMPLEMENTO   $c leituras=$l contas=$n soma_contas=$soma"; done
+ESP_SEP="$(python3 - "$SEED_DIR/matriz.csv" <<'PYEOF3'
+import csv, sys
+leit = {'MAIOR': 0, 'MENOR': 0}; contas = {'MAIOR': 0, 'MENOR': 0}
+with open(sys.argv[1], newline='', encoding='utf-8') as f:
+    for row in csv.DictReader(f):
+        for mun, col in (('MAIOR', 'ucs_municipio_maior'), ('MENOR', 'ucs_municipio_menor')):
+            q = int(row[col])
+            if row['leitura'] in ('NORMAL', 'ANOMALIA'):
+                leit[mun] += q
+            if row['conta'] != 'SEM_CONTA':
+                contas[mun] += q
+print(f"Porto das Gaivotas|{leit['MAIOR']}|{contas['MAIOR']}")
+print(f"Vale do Rio Claro|{leit['MENOR']}|{contas['MENOR']}")
+PYEOF3
+)"
+OBT_SEP="$(echo "$SEP" | cut -d'|' -f1-3)"
+checa "separacao por municipio: leituras e contas agregadas conferem com a matriz" "$ESP_SEP" "$OBT_SEP"
+
+# (11) complemento EMASA: rotas separadas por municipio (cada rota serve 1 so
+# municipio; 2 rotas por municipio, via consumer_units.reading_route_id)
+ROTAS="$(psql_bf -At -c "SELECT count(*) FROM (SELECT cu.reading_route_id FROM consumer_units cu JOIN addresses a ON a.tenant_id=cu.tenant_id AND a.id=cu.address_id WHERE cu.tenant_id='$TENANT' GROUP BY cu.reading_route_id HAVING count(DISTINCT a.city) = 1) rotas_puras;")"
+NROTAS="$(psql_bf -At -c "SELECT count(DISTINCT reading_route_id) FROM consumer_units WHERE tenant_id='$TENANT'")"
+echo "REGISTO-COMPLEMENTO rotas: total_usadas=$NROTAS puras_um_municipio=$ROTAS"
+checa "rotas separadas por municipio (4 rotas, nenhuma mista)" "4/4" "$NROTAS/$ROTAS"
 
 # (3) orfaos por FK = 0 (FKs sao impostas na carga; varredura explicita das principais)
 ORFAOS="$(psql_bf -At -c "
