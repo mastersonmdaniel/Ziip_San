@@ -1,0 +1,18 @@
+# Exemplo de variaveis — LC.3 (Produtor: sessao ca6d61bf-f7f3-42dd-a535-196ff96c1069)
+# Todos os valores sao [A DEFINIR] na janela AWS; nenhum valor real aqui.
+aws_region                    = "sa-east-1"
+environment                   = "[A DEFINIR]"
+vpc_id                        = "[A DEFINIR]"
+db_subnet_ids                 = ["[A DEFINIR]", "[A DEFINIR]"]
+db_security_group_ids         = ["[A DEFINIR]"]
+kms_key_arn                   = "[A DEFINIR] # saida do modulo LC.4"
+instance_class                = "[A DEFINIR] # P-LC3-01"
+replica_instance_class        = "[A DEFINIR] # P-LC3-01"
+allocated_storage_gib         = 0 # [A DEFINIR] P-LC3-01 — 0 e placeholder invalido de proposito: apply exige valor real decidido
+master_username               = "[A DEFINIR]"
+backup_retention_days         = 0 # [A DEFINIR] P-LC3-02
+vault_destination_account_id  = "[A DEFINIR] # P-LC3-03"
+vault_lock_min_retention_days = 0 # [A DEFINIR] P-LC3-04
+vault_lock_max_retention_days = 0 # [A DEFINIR] P-LC3-04
+backup_copy_delete_after_days = 0 # [A DEFINIR] P-LC3-04
+backup_role_arn               = "[A DEFINIR] # role da LC.2"
