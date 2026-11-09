@@ -127,6 +127,36 @@ class EmissionInventoryTest {
         assertThat(csv).contains("total;;;;;kgCO2e;2000;");
     }
 
+    // ---- Correcao R4-m1 (Rodada 4 da auditoria continua) ----
+
+    @Test
+    void resultadoSemUnidadeDeEmissaoRecusaR4m1() {
+        assertThatThrownBy(() -> new EmissionInventory.InventoryResult(VERSION, List.of(),
+                new BigDecimal("350"), new BigDecimal("2000"), new BigDecimal("2350"), null))
+                .isInstanceOf(IndicatorValidationException.class)
+                .hasMessageContaining("EMISSION_INVENTORY_EMISSION_UNIT_REQUIRED");
+    }
+
+    @Test
+    void resultadoComUnidadeDeEmissaoEmBrancoRecusaR4m1() {
+        assertThatThrownBy(() -> new EmissionInventory.InventoryResult(VERSION, List.of(),
+                new BigDecimal("350"), new BigDecimal("2000"), new BigDecimal("2350"), "   "))
+                .isInstanceOf(IndicatorValidationException.class)
+                .hasMessageContaining("EMISSION_INVENTORY_EMISSION_UNIT_REQUIRED");
+    }
+
+    @Test
+    void resultadoCanonicoCarregaAUnidadeDeEmissaoR4m1() {
+        // A forma legada de 5 argumentos sem a unidade nao existe mais:
+        // a unica construcao e a canonica, com unidade real. A remocao
+        // e provada pela compilacao da suite inteira (qualquer uso
+        // legado nao compilaria) e por esta construcao canonica direta.
+        var result = new EmissionInventory.InventoryResult(VERSION, List.of(),
+                new BigDecimal("350"), new BigDecimal("2000"), new BigDecimal("2350"), "kgCO2e");
+        assertThat(result.emissionUnit()).isEqualTo("kgCO2e");
+        assertThat(result.total()).isEqualByComparingTo("2350");
+    }
+
     @Test
     void origemFleetEd59SoCoerenteComCombustivelP16() {
         assertThatThrownBy(() -> new EmissionInventory.EmissionActivity(EmissionSource.ELECTRICITY,

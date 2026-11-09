@@ -91,18 +91,21 @@ public final class EmissionInventory {
      * EMISSAO dos totais ({@code emissionUnit}): um total sem unidade
      * nao e numero auditavel. Como o {@code compute} recusa unidades
      * divergentes entre as linhas, esta e a unidade unica do resultado.
+     *
+     * <p>CORRECAO R4-m1 (Rodada 4 da auditoria continua): a unidade de
+     * emissao e obrigatoria — nula ou em branco recusa — e a forma
+     * legada de 5 argumentos sem a unidade foi removida.
      */
     public record InventoryResult(String catalogVersion, List<EmissionLine> lines,
                                   BigDecimal scope1Total, BigDecimal scope2Total,
                                   BigDecimal total, String emissionUnit) {
         public InventoryResult {
             lines = lines == null ? List.of() : List.copyOf(lines);
-        }
-
-        /** Forma legada sem a unidade (resultados anteriores a correcao D3). */
-        public InventoryResult(String catalogVersion, List<EmissionLine> lines,
-                               BigDecimal scope1Total, BigDecimal scope2Total, BigDecimal total) {
-            this(catalogVersion, lines, scope1Total, scope2Total, total, null);
+            if (emissionUnit == null || emissionUnit.isBlank()) {
+                throw new IndicatorValidationException("EMISSION_INVENTORY_EMISSION_UNIT_REQUIRED",
+                        "resultado do inventario sem a unidade de emissao dos totais: "
+                                + "um total sem unidade nao e numero auditavel");
+            }
         }
     }
 
