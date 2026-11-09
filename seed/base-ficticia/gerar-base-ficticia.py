@@ -26,6 +26,21 @@ Dimensões e valores (fontes no domínio — ver RELATORIO-COBERTURA.md):
   * installment_agreements.status — CHECK do DDL pendente da P4.1 (collection).
   * service_orders.status — CHECK + trigger de transição da V9_1 (core): toda OS
     nasce DRAFT e é promovida por UPDATEs válidos no próprio arquivo de carga.
+
+COMPLEMENTO EMASA (09/11/2026, adendo ao item 34): a prestadora fictícia passa a
+espelhar o PERFIL ESTRUTURAL da EMASA (só a forma: autarquia, DOIS municípios,
+água+esgoto) — nenhum dado real copiado. Dois municípios 100% fictícios:
+  * MAIOR (cidade costeira turística): "Porto das Gaivotas", IBGE fictício 9990001
+  * MENOR (vizinha): "Vale do Rio Claro", IBGE fictício 9990002
+Mecanismo do domínio (V3_1 registry): localities(municipality_ibge) ->
+commercial_sectors(locality_id) -> blocks(sector_id) -> consumer_units(block_id),
+mais addresses.city/municipality_ibge via consumer_units(address_id) e rotas
+dedicadas por município (consumer_units.reading_route_id / blocks.reading_route_id).
+Repartição declarada: 9.000 UCs no MAIOR (75%) e 3.000 no MENOR (25%) — escolha de
+modelagem justificada no RELATORIO-COBERTURA.md (a fonte do perfil não traz
+repartição por cidade). Por situação: MENOR = floor(q/4); os 2 restantes para
+fechar 3.000 vão às primeiras situações com maior resto fracionário (S14, S15).
+Dentro de cada situação, as primeiras UCs geradas são do MAIOR e as demais do MENOR.
 """
 import csv
 import hashlib
@@ -98,16 +113,36 @@ SITUACOES = [
 TOTAL = sum(s[10] for s in SITUACOES)
 assert TOTAL == 12000, f"soma da matriz = {TOTAL}, esperado 12000"
 
+# --- Complemento EMASA: dois municípios fictícios (perfil estrutural, sem dado real)
+MUN_MAIOR = {"chave": "MAIOR", "nome": "Porto das Gaivotas", "ibge": "9990001", "ucs": 9000}
+MUN_MENOR = {"chave": "MENOR", "nome": "Vale do Rio Claro", "ibge": "9990002", "ucs": 3000}
+MUNICIPIOS = (MUN_MAIOR, MUN_MENOR)
+
+
+def reparticao_menor():
+    """UCs do município MENOR por situação: floor(q/4) + maiores restos até 3.000."""
+    base = {s[0]: s[10] // 4 for s in SITUACOES}
+    falta = MUN_MENOR["ucs"] - sum(base.values())
+    ordem = sorted(SITUACOES, key=lambda s: (-(s[10] % 4), s[0]))
+    for s in ordem[:falta]:
+        base[s[0]] += 1
+    assert sum(base.values()) == MUN_MENOR["ucs"]
+    return base
+
+
+REPARTICAO_MENOR = reparticao_menor()  # situacao -> UCs no município menor
+TENANT_NOME = "Autarquia Ficticia Intermunicipal de Aguas — Porto das Gaivotas e Vale do Rio Claro (TESTE FICTICIO)"
+
 # Catálogos (ids determinísticos)
 CAT = {c: det_uuid("categoria", c) for c in ("RESIDENCIAL", "COMERCIAL", "INDUSTRIAL", "PUBLICA")}
 SUB = {c: det_uuid("subcategoria", c) for c in CAT}
 WATER = {c: det_uuid("water_status", c) for c in ("LIGADA", "CORTADA", "SUSPENSA", "SEM_LIGACAO")}
 SEWER = {c: det_uuid("sewer_status", c) for c in ("LIGADO", "SEM_LIGACAO")}
-LOC_ID = det_uuid("localidade", 1)
-SEC_ID = det_uuid("setor", 1)
-ROUTE1 = det_uuid("rota", 1)
-ROUTE2 = det_uuid("rota", 2)
-BLOCKS = [det_uuid("quadra", i) for i in range(1, 21)]
+LOC_IDS = {m["chave"]: det_uuid("localidade", m["chave"]) for m in MUNICIPIOS}
+SEC_IDS = {m["chave"]: det_uuid("setor", m["chave"]) for m in MUNICIPIOS}
+ROUTES = {m["chave"]: [det_uuid("rota", f'{m["chave"]}-1'), det_uuid("rota", f'{m["chave"]}-2')] for m in MUNICIPIOS}
+ROUTE_CODES = {ROUTES["MAIOR"][0]: 1, ROUTES["MAIOR"][1]: 2, ROUTES["MENOR"][0]: 3, ROUTES["MENOR"][1]: 4}
+BLOCKS = {m["chave"]: [det_uuid("quadra", f'{m["chave"]}-{i}') for i in range(1, 21)] for m in MUNICIPIOS}
 TARIFF_ID = det_uuid("tarifa", "TARIFA_FICTICIA")
 TVERSION_ID = det_uuid("tarifa_versao", 1)
 ANOM_SEM_LEITURA = det_uuid("anomalia_leitura", "SEM_LEITURA")
@@ -191,14 +226,16 @@ def gerar():
 
     # ------------------------- catálogos do tenant fictício -----------------
     w.copy("localities", ["id", "tenant_id", "code", "name", "municipality_ibge"],
-           [[LOC_ID, TENANT_ID, 1, "Municipio Ficticio de Teste", "0000000"]])
+           [[LOC_IDS[m["chave"]], TENANT_ID, i + 1, m["nome"], m["ibge"]] for i, m in enumerate(MUNICIPIOS)])
     w.copy("commercial_sectors", ["id", "tenant_id", "locality_id", "code", "name"],
-           [[SEC_ID, TENANT_ID, LOC_ID, 1, "Setor Ficticio 1"]])
+           [[SEC_IDS[m["chave"]], TENANT_ID, LOC_IDS[m["chave"]], 1, f'Setor Ficticio {m["nome"]}'] for m in MUNICIPIOS])
     w.copy("reading_routes", ["id", "tenant_id", "code", "name", "active"],
-           [[ROUTE1, TENANT_ID, 1, "Rota Ficticia 1", "t"],
-            [ROUTE2, TENANT_ID, 2, "Rota Ficticia 2", "t"]])
+           [[rid, TENANT_ID, ROUTE_CODES[rid], f'Rota Ficticia {ROUTE_CODES[rid]} — {m["nome"]}', "t"]
+            for m in MUNICIPIOS for rid in ROUTES[m["chave"]]])
     w.copy("blocks", ["id", "tenant_id", "sector_id", "code", "reading_route_id", "has_water_network", "has_sewer_network"],
-           [[BLOCKS[i], TENANT_ID, SEC_ID, i + 1, ROUTE1 if i % 2 == 0 else ROUTE2, "t", "t"] for i in range(20)])
+           [[BLOCKS[m["chave"]][i], TENANT_ID, SEC_IDS[m["chave"]], i + 1,
+             ROUTES[m["chave"]][0] if i % 2 == 0 else ROUTES[m["chave"]][1], "t", "t"]
+            for m in MUNICIPIOS for i in range(20)])
     w.copy("categories", ["id", "tenant_id", "code", "name", "public_entity", "active"],
            [[CAT[c], TENANT_ID, c, f"Categoria Ficticia {c}", "t" if c == "PUBLICA" else "f", "t"] for c in CAT])
     w.copy("subcategories", ["id", "tenant_id", "category_id", "code", "name", "active"],
@@ -239,7 +276,8 @@ def gerar():
     enrollments, meters, installations, readings, consumptions = [], [], [], [], []
     bills, bill_items, debits, agreements, schedules = [], [], [], [], []
     os_inserts, os_updates, os_targets = [], [], []
-    bloco_contador = [0] * 20
+    bloco_contador = {m["chave"]: [0] * 20 for m in MUNICIPIOS}
+    cont_mun = {m["chave"]: 0 for m in MUNICIPIOS}  # UCs já geradas por município
     n = 0
 
     def flush_lotes():
@@ -247,7 +285,8 @@ def gerar():
             w.copy("customers", ["id", "tenant_id", "person_type", "name"], customers); customers.clear()
         if addresses:
             w.copy("addresses", ["id", "tenant_id", "entity_type", "entity_id", "type", "street", "number",
-                                 "neighborhood", "city", "state", "country", "is_primary"], addresses); addresses.clear()
+                                 "neighborhood", "city", "state", "country", "is_primary", "municipality_ibge"],
+                   addresses); addresses.clear()
         if units:
             w.copy("consumer_units", ["id", "tenant_id", "matricula", "dv", "block_id", "lot", "sublot", "address_id",
                                       "water_status_id", "sewer_status_id", "reading_route_id", "reading_sequence",
@@ -303,26 +342,33 @@ def gerar():
             w.bloco("".join(os_updates)); os_updates.clear()
 
     for (sid, cu_status, categoria, agua, social, medidor, leitura, conta, debito, os_estado, qtd, _desc) in SITUACOES:
-        for _ in range(qtd):
+        for pos in range(qtd):
             n += 1
+            # Município desta UC: as primeiras (qtd - REPARTICAO_MENOR[sid]) da
+            # situação são do MAIOR; as restantes, do MENOR (regra declarada).
+            mun = MUN_MAIOR if pos < qtd - REPARTICAO_MENOR[sid] else MUN_MENOR
+            chave = mun["chave"]
+            idx_mun = cont_mun[chave]
+            cont_mun[chave] += 1
             unit_id = det_uuid("unit", n)
             cust_id = det_uuid("customer", n)
-            # Endereços compartilhados (1 a cada 6 UCs, como num prédio): a FK da UC
-            # é para addresses(tenant_id, id); entity_id guarda a 1ª UC do grupo.
-            addr_grupo = (n - 1) // 6
-            addr_id = det_uuid("address", addr_grupo)
-            bloco_idx = (n - 1) % 20
-            lote = bloco_contador[bloco_idx]
-            bloco_contador[bloco_idx] += 1
+            # Endereços compartilhados (1 a cada 6 UCs DO MESMO município, como num
+            # prédio): a FK da UC é para addresses(tenant_id, id); entity_id guarda
+            # a 1ª UC do grupo. Grupo nunca mistura municípios (cidade é do endereço).
+            addr_grupo = idx_mun // 6
+            addr_id = det_uuid("address", f"{chave}-{addr_grupo}")
+            bloco_idx = idx_mun % 20
+            lote = bloco_contador[chave][bloco_idx]
+            bloco_contador[chave][bloco_idx] += 1
 
             customers.append([cust_id, TENANT_ID, "PF", f"Titular Ficticio {n:05d}"])
-            if (n - 1) % 6 == 0:
+            if idx_mun % 6 == 0:
                 addresses.append([addr_id, TENANT_ID, "CONSUMER_UNIT", unit_id, "RESIDENTIAL",
                                   f"Rua Ficticia {(addr_grupo % 200) + 1:03d}", str(addr_grupo + 1), "Bairro Ficticio",
-                                  "Municipio Ficticio de Teste", "SC", "BR", "t"])
-            units.append([unit_id, TENANT_ID, f"{n:08d}", str(n % 10), BLOCKS[bloco_idx], lote, 0, addr_id,
+                                  mun["nome"], "SC", "BR", "t", mun["ibge"]])
+            units.append([unit_id, TENANT_ID, f"{n:08d}", str(n % 10), BLOCKS[chave][bloco_idx], lote, 0, addr_id,
                           WATER[agua], SEWER["SEM_LIGACAO" if agua == "SEM_LIGACAO" else "LIGADO"],
-                          ROUTE1 if n % 2 == 1 else ROUTE2, n, "80.00", 10, cu_status])
+                          ROUTES[chave][0] if idx_mun % 2 == 0 else ROUTES[chave][1], n, "80.00", 10, cu_status])
             unit_customers.append([det_uuid("unit_customer", n), TENANT_ID, unit_id, cust_id, "USER", "2026-01-05", "t"])
             unit_subs.append([det_uuid("unit_sub", n), TENANT_ID, unit_id, SUB[categoria], 1])
 
@@ -417,6 +463,14 @@ def main():
         antigo.unlink()
 
     manifesto = {"semente": SEED, "tenant_id": TENANT_ID, "total_ucs": TOTAL,
+                 "tenant_nome": TENANT_NOME,
+                 "municipios_ficticios": [
+                     {"nome": m["nome"], "ibge_ficticio": m["ibge"], "ucs": m["ucs"],
+                      "papel": "cidade costeira turistica maior" if m is MUN_MAIOR else "cidade vizinha menor"}
+                     for m in MUNICIPIOS],
+                 "reparticao_por_situacao": {s[0]: {"municipio_maior": s[10] - REPARTICAO_MENOR[s[0]],
+                                                    "municipio_menor": REPARTICAO_MENOR[s[0]]}
+                                             for s in SITUACOES},
                  "contagens_por_tabela": dict(sorted(w.contagens.items())), "arquivos": {}}
     for nome, conteudo in arquivos:
         (saida / nome).write_text(conteudo, encoding="utf-8")
@@ -426,10 +480,12 @@ def main():
     with (saida / "matriz.csv").open("w", newline="", encoding="utf-8") as f:
         csv_w = csv.writer(f)
         csv_w.writerow(["situacao", "status_uc", "categoria", "situacao_agua", "tarifa_social",
-                        "hidrometro", "leitura", "conta", "debito", "ordem_servico", "contagem"])
+                        "hidrometro", "leitura", "conta", "debito", "ordem_servico", "contagem",
+                        "ucs_municipio_maior", "ucs_municipio_menor"])
         for s in SITUACOES:
             csv_w.writerow([s[0], s[1], s[2], s[3], "SIM" if s[4] else "NAO", s[5], s[6], s[7],
-                            "SIM" if s[8] else "NAO", s[9], s[10]])
+                            "SIM" if s[8] else "NAO", s[9], s[10],
+                            s[10] - REPARTICAO_MENOR[s[0]], REPARTICAO_MENOR[s[0]]])
     manifesto["arquivos"]["matriz.csv"] = {
         "bytes": (saida / "matriz.csv").stat().st_size,
         "sha256": hashlib.sha256((saida / "matriz.csv").read_bytes()).hexdigest()}

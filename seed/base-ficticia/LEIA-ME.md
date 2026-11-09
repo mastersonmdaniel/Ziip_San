@@ -9,16 +9,44 @@ Decisão de origem: dono, nº 34 (09/11/2026) — a P0.30 não tem piloto real;
 os testes rodam sobre esta base fictícia de **12.000 unidades consumidoras**
 e a base é **limpa por completo** ao final.
 
+**Complemento EMASA (09/11/2026, adendo ao item 34):** a prestadora fictícia
+passa a espelhar **só o perfil estrutural** da EMASA — autarquia municipal,
+**dois municípios atendidos**, água + esgoto próprios, porte de referência
+30 mil ligações / 73 mil+ unidades — porque, nas palavras do dono, a EMASA
+"é uma gestora de duas cidades" e a base deve testar se o sistema está
+pronto para isso. **Nenhum dado real da EMASA foi copiado** (nome, CNPJ,
+telefone, e-mail, endereço e lei de criação ficam de fora): nome da
+prestadora, municípios, códigos e endereços são **inventados** e marcados
+como fictícios. As 12.000 UCs (escala reduzida frente às 73 mil+ unidades
+do perfil) distribuem-se entre os dois municípios fictícios.
+
 ## Tenant dedicado
 
 | Campo | Valor |
 |---|---|
-| tenant_id (UUID fixo) | `11111111-2222-4333-8444-555555555555` |
-| Nome | Prestadora Fictícia de Testes — Município Fictício de Teste |
+| tenant_id (UUID fixo, inalterado no complemento) | `11111111-2222-4333-8444-555555555555` |
+| Nome | Autarquia Ficticia Intermunicipal de Aguas — Porto das Gaivotas e Vale do Rio Claro (TESTE FICTICIO) |
 | schema_name | `tenant_ficticio_teste` |
 
+## Dois municípios fictícios
+
+| Município fictício | Papel no perfil | Código IBGE fictício | UCs |
+|---|---|---:|---:|
+| Porto das Gaivotas | cidade costeira turística maior | `9990001` (inventado) | 9.000 (75%) |
+| Vale do Rio Claro | cidade vizinha menor | `9990002` (inventado) | 3.000 (25%) |
+
+O município existe na massa pelo mecanismo real do domínio (registry V3_1):
+`localities` (uma linha por município, com `municipality_ibge` fictício) →
+`commercial_sectors` → `blocks` → `consumer_units.block_id`, e também em
+`addresses.city`/`addresses.municipality_ibge` via
+`consumer_units.address_id`. Rotas de leitura são dedicadas por município
+(2 por município; nenhuma rota mistura os dois). A repartição 75/25 é
+**escolha de modelagem justificada** no `RELATORIO-COBERTURA.md` — a fonte
+do perfil não traz repartição por cidade.
+
 Todas as linhas da massa carregam este `tenant_id`. Titulares chamam-se
-`Titular Ficticio NNNNN`; endereços ficam no Município Fictício de Teste.
+`Titular Ficticio NNNNN`; endereços ficam em Porto das Gaivotas ou em
+Vale do Rio Claro, conforme o município da UC.
 Documentos (CPF/CNPJ) **não** foram gerados: o DDL permite documento nulo
 (`customers.document_*`) e nenhum documento fictício foi inventado.
 
@@ -33,7 +61,7 @@ Documentos (CPF/CNPJ) **não** foram gerados: o DDL permite documento nulo
 | `manifesto.json` | Contagens por tabela e SHA-256 de cada saída do gerador. |
 | `limpeza-base-ficticia.sql` | Limpeza exata: DELETEs por `tenant_id` fictício, em ordem segura para as FKs, + remoção do tenant. **Só toca no tenant fictício.** |
 | `RELATORIO-COBERTURA.md` | Situação × contagem × fonte no domínio. |
-| `prova-carga-limpeza.sh` | Harness reproduzível: cluster PostgreSQL 16 descartável, sentinela, carga, 7 asserções, limpeza, placar. |
+| `prova-carga-limpeza.sh` | Harness reproduzível: cluster PostgreSQL 16 descartável, sentinela, carga, 12 asserções (7 originais + 5 do complemento: UCs por município ×2 mecanismos, situação × município, separação de leituras/contas por município, rotas por município), limpeza, placar. |
 
 Este diretório vive em `seed/base-ficticia/` no repositório — **fora** de
 qualquer `db/migration`. A massa **nunca** vira migration versionada e
@@ -62,6 +90,6 @@ tenant (provado pelo harness com um tenant sentinela).
 ## Como provar
 
 ```bash
-bash prova-carga-limpeza.sh   # placar esperado: 7/7
+bash prova-carga-limpeza.sh   # placar esperado: 12/12
 python3 gerar-base-ficticia.py /tmp/regenerado   # determinismo: hashes idênticos
 ```
