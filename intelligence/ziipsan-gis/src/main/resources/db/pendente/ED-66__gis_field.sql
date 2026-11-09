@@ -99,12 +99,15 @@ CREATE TABLE IF NOT EXISTS gis_field_photo (
     updated_by UUID,
     CONSTRAINT uq_gis_field_photo_tenant_id UNIQUE (tenant_id, id),
     CONSTRAINT uq_gis_field_photo_attachment UNIQUE (tenant_id, attachment_id),
-    -- Correcao m3 da revisao da ED-66: altitude NORMAL so existe em datum
-    -- vertical de nivelamento (IMBITUBA/SANTANA) — normal_height_m com
-    -- datum ELLIPSOIDAL/UNKNOWN (ou sem datum) e recusado pelo banco, nao
-    -- so pelo nucleo Java: elipsoidal nunca e gravada como normal.
+    -- Correcao m3 da revisao da ED-66 (corrigida no lote R3-C, B3-3):
+    -- altitude NORMAL so existe em datum vertical de nivelamento
+    -- (IMBITUBA/SANTANA) — normal_height_m com datum ELLIPSOIDAL/UNKNOWN
+    -- ou sem datum (NULL) e recusado pelo banco, nao so pelo nucleo
+    -- Java: elipsoidal nunca e gravada como normal. (O texto anterior
+    -- afirmava a recusa do nulo, mas o CHECK original a aceitava por
+    -- logica trivalorada; o IS NOT NULL abaixo fecha essa brecha.)
     CONSTRAINT ck_gis_field_photo_normal_height_datum CHECK (
-        normal_height_m IS NULL OR vertical_datum IN ('IMBITUBA', 'SANTANA'))
+        normal_height_m IS NULL OR (vertical_datum IS NOT NULL AND vertical_datum IN ('IMBITUBA', 'SANTANA')))
 );
 SELECT register_tenant_table('gis_field_photo');
 
