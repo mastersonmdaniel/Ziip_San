@@ -37,6 +37,14 @@
 -- versionado por tenant e a existência é validada no serviço, como a
 -- P3.31 faz com IndicatorCatalog). O risco é a descrição declarada; o
 -- registro formal de riscos é o cert_risks da V21_3.
+--
+-- D2 (lote R3-D, B2-10): as réguas do Java valem aqui também, no banco —
+-- `ProcessMapEntry.requireEntries` exige ao menos uma entrada/saída e
+-- nenhum item em branco. O CHECK (mesmo padrão das ED-71/ED-87/ED-91:
+-- `jsonb_array_length(...) > 0`) fecha o array vazio; o item em branco
+-- ou não-texto é recusado pelo trigger abaixo — CHECK não aceita
+-- subconsulta, por isso a regra vive num trigger BEFORE (mesmo mecanismo
+-- dos triggers da ED-72), não numa segunda fonte de verdade.
 
 CREATE TABLE IF NOT EXISTS cert_q9001_processes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -44,8 +52,8 @@ CREATE TABLE IF NOT EXISTS cert_q9001_processes (
     process_code VARCHAR(60) NOT NULL CHECK (btrim(process_code) <> ''),
     process_name TEXT NOT NULL CHECK (btrim(process_name) <> ''),
     owner_id UUID NOT NULL,
-    inputs JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(inputs) = 'array'),
-    outputs JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(outputs) = 'array'),
+    inputs JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(inputs) = 'array' AND jsonb_array_length(inputs) > 0),
+    outputs JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(outputs) = 'array' AND jsonb_array_length(outputs) > 0),
     indicator_code VARCHAR(60) NOT NULL CHECK (btrim(indicator_code) <> ''),
     risk_description TEXT NOT NULL CHECK (btrim(risk_description) <> ''),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -57,6 +65,38 @@ ALTER TABLE cert_q9001_processes
     ADD CONSTRAINT uq_q9001_processes_tenant_id UNIQUE (tenant_id, id);
 CREATE UNIQUE INDEX IF NOT EXISTS uq_q9001_processes_code
     ON cert_q9001_processes(tenant_id, process_code);
+
+-- D2 (lote R3-D): espelho no banco de `ProcessMapEntry.requireEntries` —
+-- cada item de inputs/outputs tem de ser texto não em branco. O guarda
+-- ignora valor não-array (o CHECK acima já o recusa — a ordem de
+-- avaliação entre trigger BEFORE e CHECK não é garantida, por isso o
+-- trigger não assume o formato).
+CREATE OR REPLACE FUNCTION cert_q9001_check_process_entries()
+RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE
+    item jsonb;
+BEGIN
+    IF jsonb_typeof(NEW.inputs) = 'array' THEN
+        FOR item IN SELECT jsonb_array_elements(NEW.inputs) LOOP
+            IF jsonb_typeof(item) <> 'string' OR btrim(item #>> '{}') = '' THEN
+                RAISE EXCEPTION 'cert_q9001: inputs do processo % tem item em branco ou nao-texto (ProcessMapEntry.requireEntries)', NEW.process_code;
+            END IF;
+        END LOOP;
+    END IF;
+    IF jsonb_typeof(NEW.outputs) = 'array' THEN
+        FOR item IN SELECT jsonb_array_elements(NEW.outputs) LOOP
+            IF jsonb_typeof(item) <> 'string' OR btrim(item #>> '{}') = '' THEN
+                RAISE EXCEPTION 'cert_q9001: outputs do processo % tem item em branco ou nao-texto (ProcessMapEntry.requireEntries)', NEW.process_code;
+            END IF;
+        END LOOP;
+    END IF;
+    RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS trg_q9001_process_entries_not_blank
+    ON cert_q9001_processes;
+CREATE TRIGGER trg_q9001_process_entries_not_blank
+    BEFORE INSERT OR UPDATE OF inputs, outputs ON cert_q9001_processes
+    FOR EACH ROW EXECUTE FUNCTION cert_q9001_check_process_entries();
 
 -- ======================================================================
 -- 2. CALIBRAÇÃO DE INSTRUMENTOS DE MEDIÇÃO (validade e bloqueio)
@@ -125,7 +165,12 @@ CREATE INDEX IF NOT EXISTS idx_q9001_nonconforming_occurrence
 CREATE TABLE IF NOT EXISTS cert_q9001_clause_assessments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID NOT NULL,
-    clause_number VARCHAR(40) NOT NULL CHECK (btrim(clause_number) <> ''),
+    -- D2 (lote R3-D): padrao de referencia espelhado do Java
+    -- (`QualityClauseAssessment.REFERENCE`: grupos alfanumericos separados
+    -- por ponto, teto 40 ja imposto pelo VARCHAR(40)); o btrim antes do
+    -- match espelha o trim do Java. "clausula sobre contexto" e recusado
+    -- aqui como la.
+    clause_number VARCHAR(40) NOT NULL CHECK (btrim(clause_number) ~ '^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*$'),
     own_words_title TEXT NOT NULL CHECK (btrim(own_words_title) <> ''),
     conformity VARCHAR(20) NOT NULL CHECK (conformity IN
         ('CONFORMING', 'PARTIAL', 'NON_CONFORMING', 'NOT_APPLICABLE')),
@@ -167,7 +212,10 @@ CREATE TABLE IF NOT EXISTS cert_q9001_readiness_items (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID NOT NULL,
     edition VARCHAR(10) NOT NULL CHECK (edition IN ('2015', '2026')),
-    clause_number VARCHAR(40) NOT NULL CHECK (btrim(clause_number) <> ''),
+    -- D2 (lote R3-D): mesmo padrao de referencia do Java
+    -- (`ReadinessChecklist.REFERENCE`, identico ao de
+    -- `QualityClauseAssessment`); ver comentario na tabela 4.
+    clause_number VARCHAR(40) NOT NULL CHECK (btrim(clause_number) ~ '^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*$'),
     prompt_own_words TEXT NOT NULL CHECK (btrim(prompt_own_words) <> ''),
     status VARCHAR(20) NOT NULL CHECK (status IN ('READY', 'PENDING', 'NOT_APPLICABLE')),
     justification TEXT NOT NULL DEFAULT '',
