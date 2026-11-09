@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * {@code credit_origins}, proveniência {@code source_type}/{@code source_id}, OS obrigatória no
  * débito de serviço, meses contábil/de arrecadação e prazo de financiamento — e a travessia de
  * meses de parcelas/resíduo com os lançamentos tipados, com os mesmos valores calculados à mão
- * dos casos C-*/D-* já existentes (que continuam valendo em {@link CreditApplierTest} e
+ * dos casos C-* e D-* já existentes (que continuam valendo em {@link CreditApplierTest} e
  * {@link InstallmentsAndApportionmentTest}).
  *
  * <p>Os itens de catálogo "TESTE" e todos os valores são fictícios, como no restante da suíte:

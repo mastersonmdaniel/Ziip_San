@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * Parametros cut.*/rec.* da P3.4: um teste por regra de validacao e por
+ * Parametros cut.* e rec.* da P3.4: um teste por regra de validacao e por
  * opcao, incluindo os formatos REAIS que os perfis da P2.31 carregam.
  */
 class CutoffParametersTest {
