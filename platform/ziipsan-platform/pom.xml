@@ -54,6 +54,14 @@
             <artifactId>spring-boot-starter-security-oauth2-resource-server</artifactId>
         </dependency>
         <dependency>
+            <!-- @Valid/@NotNull no FieldDeviceController (ED-18); mesmo
+                 desenho do ziipsan-registry. A entrega da ED-18 trouxe o
+                 controller sem esta dependência — correcção
+                 correcao-ci-platform-pom (achado nº 7 da CI, 2026-11-09). -->
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
