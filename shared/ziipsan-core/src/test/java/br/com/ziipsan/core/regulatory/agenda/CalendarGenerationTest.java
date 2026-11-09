@@ -68,7 +68,7 @@ class CalendarGenerationTest {
     }
 
     @Test void ruleWhoseNormIsMissingFromCatalogIsUnresolvedNotInvented() {
-        var partial = AgendaFixtures.portOf(new br.com.ziipsan.platform.central.complete.RegulatoryLibrary(
+        var partial = AgendaFixtures.portOf(new AgendaFixtures.NormFixtureCatalog(
                 AgendaFixtures.fullCatalog().stream()
                         .filter(n -> !n.catalogKey().equals("sisagua-vigilancia")).toList()));
         var gen = service(partial, new AgendaFixtures.RecordingReminders())

@@ -1,6 +1,5 @@
 package br.com.ziipsan.core.regulatory.agenda;
 
-import br.com.ziipsan.platform.central.complete.RegulatoryLibrary;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,10 +66,15 @@ class InspectionAndEarlyWarningTest {
                 "VIGENCIA_FUTURA", today.plusDays(200));
         var futureNoDate = AgendaFixtures.norm("norma-futura-sem-data", "Norma futura sem data",
                 "VIGENCIA_FUTURA", null);
-        var library = new RegulatoryLibrary(List.of(futureSoon, futureFar, futureNoDate));
-        // Coerencia com a P3.15/P1.34 REAL: withFutureEffect ve as edicoes
-        // futuras; statusAt mantem VIGENCIA_FUTURA antes da data de efeito.
-        assertEquals("VIGENCIA_FUTURA", RegulatoryLibrary.statusAt(futureSoon, today));
+        var library = new AgendaFixtures.NormFixtureCatalog(List.of(futureSoon, futureFar, futureNoDate));
+        // Coerencia com a P3.15/P1.34 (correcao correcao-ci-agenda): a
+        // assercao de statusAt passa a exercer o EQUIVALENTE LOCAL do
+        // fixture (NormFixtureCatalog.statusAt), que reproduz a regra
+        // real da P1.34 — statusAt mantem VIGENCIA_FUTURA antes da data
+        // de efeito. A classe real da plataforma segue coberta pelos
+        // testes proprios da P3.15 (disposicao expressa no
+        // RELATORIO-CORRECAO-CI-AGENDA.md deste pacote de correcao).
+        assertEquals("VIGENCIA_FUTURA", AgendaFixtures.NormFixtureCatalog.statusAt(futureSoon, today));
         var rem = new AgendaFixtures.RecordingReminders();
         var svc = new ObligationCalendarService(AgendaFixtures.portOf(library), rem);
         var warnings = svc.earlyNormWarnings(
