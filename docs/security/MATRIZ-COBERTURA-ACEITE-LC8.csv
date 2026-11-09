@@ -1,0 +1,22 @@
+id,item_do_aceite_ou_baseline,fonte,documento_lc8,cobertura
+A-01,"pentest externo sobre a producao na AWS","aceite LC.8","PACOTE-ESCOPO §2.1 E-01 + REQUISITOS §1",escopo definido; execucao pendente externa (PC-01)
+A-02,"baseline P3.8 PLT-08: ASVS 5.0","aceite LC.8; PLANO-DE-TESTE-P3.8 §1","PACOTE-ESCOPO §2.1 E-02",coberto (L2 geral; L3 autenticacao/pagamento/dados pessoais; componentes listados)
+A-03,"baseline P3.8 PLT-08: OWASP API Top 10","aceite LC.8; matriz P3.8 API_PUBLICA_TOP10","PACOTE-ESCOPO §2.1 E-03",coberto (API Security Top 10 2023 API1-API10)
+A-04,"baseline P3.8 PLT-08: LLM Top 10","aceite LC.8; ESCOPO-PENTEST-EXTERNO-LC8 (P3.8)","PACOTE-ESCOPO §2.1 E-04 + §3 PC-07",coberto como condicional (onde a ED-43 estiver no ar); ver D-LC8-01
+A-05,"nenhum achado critico ou alto aberto antes do primeiro dado real","aceite LC.8","PACOTE-ESCOPO §4 + TERMO-RESULTADO §4",portao formal definido; termo em branco
+A-06,"isolamento entre tenants","aceite LC.8; caso ISOLAMENTO_TENANTS","PACOTE-ESCOPO §2.2 V-01",coberto
+A-07,"cofre","aceite LC.8; caso COFRE","PACOTE-ESCOPO §2.2 V-02",coberto
+A-08,"vinculo do portal","aceite LC.8; caso VINCULO","PACOTE-ESCOPO §2.2 V-03",coberto
+A-09,"enumeracao de matricula","aceite LC.8; caso ENUMERACAO_MATRICULA","PACOTE-ESCOPO §2.2 V-04",coberto
+A-10,"enumeracao de codigo de vinculacao","aceite LC.8; caso ENUMERACAO_CODIGO_VINCULACAO","PACOTE-ESCOPO §2.2 V-05",coberto
+A-11,"enumeracao de CPF/CNPJ ou e-mail no login","aceite LC.8; caso ENUMERACAO_LOGIN","PACOTE-ESCOPO §2.2 V-06",coberto
+A-12,"enumeracao de CPF/CNPJ ou e-mail na recuperacao de senha","aceite LC.8; caso ENUMERACAO_RECUPERACAO","PACOTE-ESCOPO §2.2 V-07",coberto
+A-13,"troca de token entre realms","aceite LC.8; caso TROCA_TOKEN_REALMS","PACOTE-ESCOPO §2.2 V-08",coberto
+A-14,"download do portal","aceite LC.8; caso DOWNLOAD_PORTAL","PACOTE-ESCOPO §2.2 V-09",coberto
+A-15,"acesso assistido","aceite LC.8; caso ACESSO_ASSISTIDO","PACOTE-ESCOPO §2.2 V-10",coberto
+A-16,"acesso de emergencia","aceite LC.8; caso ACESSO_EMERGENCIA","PACOTE-ESCOPO §2.2 V-11",coberto
+A-17,"apps","aceite LC.8; matriz P3.8 APPS_LC8","PACOTE-ESCOPO §2.2 V-12",coberto
+B-01,"enumeracao do codigo no caminho de convidado (ADR-0043 item 4)","baseline P3.8: SecurityCase inLc8Scope=true; matriz lc8=sim","PACOTE-ESCOPO §2.3 B-01",coberto (baseline alem do literal do aceite)
+B-02,"defesa contra automacao PLT-22 incl. WCAG 2.2 3.3.8","baseline P3.8: caso DEFESA_AUTOMACAO","PACOTE-ESCOPO §2.3 B-02",coberto (baseline alem do literal do aceite)
+B-03,"DAST autenticada portal e backoffice como tecnica","baseline P3.8: caso DAST_AUTENTICADA","PACOTE-ESCOPO §2.3 B-03",coberto com ressalva (plano local nao reutilizavel em producao)
+X-01,"OWASP Top 10:2025 A03 e A10","matriz P3.8 lc8=nao","PACOTE-ESCOPO §2.4",fora do escopo LC.8 declarado (cobertos na homologacao local/CI)
