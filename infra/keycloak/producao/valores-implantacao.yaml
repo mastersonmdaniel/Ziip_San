@@ -1,0 +1,77 @@
+# LC.6 — Valores de implantação do Keycloak de produção (AWS)
+# Produtor: sessão 92031a19-4d6d-4174-92b7-164897d85503 (papel: Produtor)
+#
+# Arquivo de PARÂMETROS para a IaC da LC.2 (Terraform, sa-east-1):
+# componível com ela, sem a editar. A LC.2 declara os ambientes
+# (homologação/produção/demonstração/dedicado); estes valores alimentam
+# apenas o componente "keycloak" do ambiente de produção. Chaves sem
+# fonte no aceite ficam [A DEFINIR] — nenhum número é inventado.
+
+componente: keycloak
+ambiente: producao
+# Região: herdada da LC.2 (sa-east-1, fixada no aceite da LC.2).
+regiao: sa-east-1
+
+imagem:
+  # Mesma imagem e tag exata do modo de produção local (compose).
+  referencia: quay.io/keycloak/keycloak:26.8.0
+  # A imagem de produção é a do Dockerfile deste pacote (tema da P0.35
+  # embutido + kc.sh build); o registro onde ela é publicada é saída da
+  # LC.2: [A DEFINIR] no pouso.
+  registro: "[A DEFINIR — registro de imagens da LC.2]"
+  comando: ["start", "--optimized", "--import-realm"]
+
+replicas:
+  # Aceite LC.6: 2 réplicas. Fixo, não é parâmetro livre.
+  desejadas: 2
+  min_disponiveis: 1
+
+sessao:
+  # Persistência/replicação de sessão entre réplicas — mecanismo do
+  # ensaio local da P0.29 (RNF-17): cache distribuído sobre o banco
+  # compartilhado; nenhuma sessão vive só na memória de uma réplica.
+  cache: ispn
+  cache_stack: jdbc-ping
+  banco_compartilhado: true
+
+banco:
+  # PostgreSQL do Keycloak (banco/role próprios, como no local).
+  # Instância, backup e PITR são da LC.3; segredos são da LC.4.
+  banco: keycloak
+  usuario: keycloak
+  url: "[A DEFINIR — saída da LC.3]"
+  senha: "[A DEFINIR — referência de segredo (LC.4), sem valor]"
+
+tls:
+  # Aceite LC.6/P0.29: TLS com sslRequired=all (no realm).
+  ssl_required: all
+  # Terminação TLS: borda da LC.2 (CloudFront/WAF, TLS 1.3, HSTS) e/ou
+  # balanceador; certificado automático é da LC.2. O hostname público:
+  hostname: "[A DEFINIR — domínio do IdP em produção]"
+  certificado: "[A DEFINIR — certificado da borda/LC.2 ou segredo LC.4]"
+
+tema_p035:
+  # Tema de login e de e-mail da P0.35, gerado do pacote de marca
+  # (P0.34; trocar ZIIPSAN_BRAND muda login e e-mail sem alterar código).
+  embutido_na_imagem: true
+  diretorio_build: themes/ziipsan/
+  # [SEM FONTE] artefato do tema ausente nos pacotes locais (P-LC6-02).
+  fonte: "[SEM FONTE — pendência P-LC6-02]"
+
+saude:
+  health_enabled: true
+  metrics_enabled: true
+  # Porta de gerenciamento do Keycloak (health/metrics): 9000 no local;
+  # na AWS fica restrita à rede interna/observabilidade (LC.7).
+  porta_gerenciamento: 9000
+
+recursos:
+  # Nenhuma fonte local fixa CPU/memória do Keycloak em produção:
+  cpu: "[A DEFINIR]"
+  memoria: "[A DEFINIR]"
+
+zonas_de_disponibilidade:
+  # Distribuir as 2 réplicas em AZs distintas é o desenho esperado para
+  # o teste de derrubada valer também contra falha de AZ, mas nenhuma
+  # fonte o fixa: fica como decisão da implantação com a LC.2.
+  distribuicao: "[A DEFINIR — decisão de implantação com a LC.2]"
