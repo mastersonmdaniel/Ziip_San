@@ -101,6 +101,12 @@ CREATE TABLE IF NOT EXISTS gis_maneuver_plan (
     requested_by UUID NOT NULL,
     CONSTRAINT ck_gis_maneuver_plan_target
         CHECK ((target_arc_id IS NULL) <> (target_node_id IS NULL)),
+    -- R3-G1 (auditoria rodada 3): UNIQUE exigida pelas FKs compostas
+    -- fk_gis_maneuver_plan_valve_plan e fk_gis_maneuver_outage_plan,
+    -- que referenciam gis_maneuver_plan (tenant_id, id). Sem ela a
+    -- migration falha ao ser aplicada (mesmo padrao da V13_2 para
+    -- gis_arc/gis_node). Nenhum numero Flyway atribuido aqui.
+    CONSTRAINT uq_gis_maneuver_plan_tenant_id UNIQUE (tenant_id, id),
     CONSTRAINT fk_gis_maneuver_plan_arc
         FOREIGN KEY (tenant_id, target_arc_id) REFERENCES gis_arc (tenant_id, id),
     CONSTRAINT fk_gis_maneuver_plan_node

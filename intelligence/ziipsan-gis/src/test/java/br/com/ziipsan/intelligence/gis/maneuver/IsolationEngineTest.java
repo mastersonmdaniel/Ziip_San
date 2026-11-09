@@ -109,6 +109,50 @@ class IsolationEngineTest {
         assertEquals(6, r.totalEconomies());
     }
 
+    /**
+     * Sonda B3-M1 da auditoria (rodada 3, residual do D2): o arco-alvo
+     * A12 tem válvula operável aberta nas DUAS pontas (VB e VC). Sem a
+     * correção, as duas sementes caíam em barred e o motor devolvia
+     * isolable=true com área VAZIA (nós/arcos/unidades vazios, 0
+     * economias) — o mesmo modo de falha silenciosa do D2. Com a
+     * correção, o trecho isolado é o próprio A12 com suas pontas:
+     * fechar VB+VC isola exatamente esse arco, e a conexão C8
+     * derivada dele entra na área.
+     */
+    @Test
+    void targetArcWithValvesAtBothEndsIsolatesTargetArc() {
+        IsolationResult r = IsolationEngine.isolate(withValveToValveArc(), Target.arc(A12));
+        assertTrue(r.isolable());
+        assertNull(r.failure());
+        assertEquals(List.of("VB", "VC"),
+                r.valvesToClose().stream().map(v -> v.code()).toList());
+        assertTrue(r.inoperableTraversed().isEmpty());
+        assertEquals(List.of(VB, VC), r.affectedNodeIds());
+        assertEquals(List.of(A12), r.affectedArcIds());
+        assertEquals(List.of(U8), r.affectedUnitIds());
+        assertEquals(1, r.totalEconomies());
+        assertTrue(r.essentialConnections().isEmpty());
+    }
+
+    /**
+     * Variante da sonda B3-M1 com VB e VC JÁ FECHADAS: o isolamento
+     * continua possível sem nenhuma válvula a fechar, com a mesma
+     * área {VB, VC} / [A12] — a guarda vale também quando as pontas
+     * barram por já estarem fechadas.
+     */
+    @Test
+    void targetArcWithValvesAtBothEndsAlreadyClosedIsolatesTargetArc() {
+        IsolationResult r = IsolationEngine.isolate(withValveToValveArcBothClosed(), Target.arc(A12));
+        assertTrue(r.isolable());
+        assertNull(r.failure());
+        assertTrue(r.valvesToClose().isEmpty());
+        assertTrue(r.inoperableTraversed().isEmpty());
+        assertEquals(List.of(VB, VC), r.affectedNodeIds());
+        assertEquals(List.of(A12), r.affectedArcIds());
+        assertEquals(List.of(U8), r.affectedUnitIds());
+        assertEquals(1, r.totalEconomies());
+    }
+
     @Test
     void sourceReachedWithoutValveIsNotIsolable() {
         IsolationResult r = IsolationEngine.isolate(base(), Target.arc(A1));

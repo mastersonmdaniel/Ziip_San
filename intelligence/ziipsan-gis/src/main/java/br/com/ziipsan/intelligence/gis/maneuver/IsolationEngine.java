@@ -32,7 +32,10 @@ import java.util.UUID;
  * uma fonte sem válvula operável no caminho, ou se o componente
  * isolado ainda tiver fonte, o isolamento é IMPOSSÍVEL
  * ({@code isolable=false}, motivo nomeado) e nenhuma área afetada é
- * afirmada.
+ * afirmada. Se NENHUMA ponta sobrevive (arco-alvo com válvula
+ * operável nas DUAS pontas — correção B3-M1 da auditoria, rodada 3),
+ * o trecho isolado é o próprio arco-alvo com suas pontas: fechando
+ * as duas válvulas, exatamente esse arco fica isolado.
  *
  * <p>Imóveis afetados: pelas conexões funcionais (SG-852) cujo nó de
  * derivação ou arco cai na área afetada, ordenados com clientes
@@ -161,6 +164,20 @@ public final class IsolationEngine {
             if (!barred.contains(seed)) {
                 affectedNodes.addAll(graph.componentWithout(seed, barred));
             }
+        }
+        // B3-M1 (auditoria rodada 3, residual do D2): se NENHUMA semente
+        // sobreviveu — arco-alvo com válvula operável nas DUAS pontas — a
+        // área nascia vazia com isolable=true (falha silenciosa: plano
+        // com aviso para ninguém). O trecho isolado é o próprio
+        // arco-alvo com suas pontas: fechando as duas válvulas,
+        // exatamente esse arco fica isolado, e as conexões derivadas
+        // dele entram na área. Recusar seria um falso negativo (o
+        // isolamento É possível); incluir o arco é o que o código
+        // sustenta — mesma lógica do D2 (área = componente do arco
+        // removido). Vale também quando as duas válvulas já estão
+        // fechadas (barram do mesmo modo, sem OS de fechamento).
+        if (affectedNodes.isEmpty()) {
+            affectedNodes.addAll(seeds);
         }
         for (UUID n : affectedNodes) {
             if (nodesById.get(n).source()) return IsolationResult.failed(Failure.SOURCE_REACHED_WITHOUT_VALVE);

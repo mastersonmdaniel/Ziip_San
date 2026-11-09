@@ -34,10 +34,13 @@ public final class ManeuverFixtures {
     }
 
     public static final UUID S = id(1), N1 = id(2), VA = id(3), N2 = id(4), VX = id(5),
-            N3 = id(6), VB = id(7), N4 = id(8), N5 = id(9), N6 = id(10), Z1 = id(11);
+            N3 = id(6), VB = id(7), N4 = id(8), N5 = id(9), N6 = id(10), Z1 = id(11),
+            VC = id(12);
     public static final UUID A1 = id(101), A2 = id(102), A3 = id(103), A4 = id(104), A5 = id(105),
-            A6 = id(106), A7 = id(107), A8 = id(108), A9 = id(109), A10 = id(110), A11 = id(111);
+            A6 = id(106), A7 = id(107), A8 = id(108), A9 = id(109), A10 = id(110), A11 = id(111),
+            A12 = id(112);
     public static final UUID U1 = id(201), U2 = id(202), U3 = id(203), U4 = id(204), U5 = id(205);
+    public static final UUID U8 = id(208);
     public static final UUID TENANT = id(900), ACTOR = id(901);
 
     private ManeuverFixtures() {
@@ -95,6 +98,46 @@ public final class ManeuverFixtures {
                 new ValveState(VA, "VA", true, ValvePosition.CLOSED),
                 new ValveState(VX, "VX", false, ValvePosition.OPEN),
                 new ValveState(VB, "VB", true, ValvePosition.OPEN));
+        return new NetworkSnapshot(b.nodes(), b.arcs(), valves, b.connections());
+    }
+
+    /**
+     * Base + arco válvula–válvula (sonda B3-M1 da auditoria, rodada 3):
+     * o arco A12 liga VB a VC (válvula operável aberta nova, nó VC),
+     * com a conexão C8 derivada do próprio A12 (U8, 1 economia). Na
+     * base não existe nenhum arco com válvula operável nas duas
+     * pontas — isolar A12 sem a correção devolvia isolable=true com
+     * área VAZIA (as duas sementes caem em barred). Resultado
+     * esperado com a correção: fechar VB+VC, área = {VB, VC} e [A12],
+     * afetados [U8], 1 economia.
+     */
+    public static NetworkSnapshot withValveToValveArc() {
+        NetworkSnapshot b = base();
+        List<NetworkNode> nodes = new java.util.ArrayList<>(b.nodes());
+        nodes.add(new NetworkNode(VC, "VC", "VALVE", false, 6.0, 2.0));
+        List<NetworkArc> arcs = new java.util.ArrayList<>(b.arcs());
+        arcs.add(arc(A12, "A12", VB, VC, FlowDirection.WITH_GEOMETRY));
+        List<ValveState> valves = new java.util.ArrayList<>(b.valves());
+        valves.add(new ValveState(VC, "VC", true, ValvePosition.OPEN));
+        List<FunctionalConnection> conns = new java.util.ArrayList<>(b.connections());
+        conns.add(new FunctionalConnection(id(308), "C8", A12, null, id(408), id(508),
+                List.of(U8), 1, false, null));
+        return new NetworkSnapshot(nodes, arcs, valves, conns);
+    }
+
+    /**
+     * Variante de withValveToValveArc() com VB e VC JÁ FECHADAS: isolar
+     * A12 tem de continuar isolável, sem válvula a fechar, com a mesma
+     * área {VB, VC} / [A12] — a guarda B3-M1 vale também quando as duas
+     * pontas barram por já estarem fechadas (não só por estarem a fechar).
+     */
+    public static NetworkSnapshot withValveToValveArcBothClosed() {
+        NetworkSnapshot b = withValveToValveArc();
+        List<ValveState> valves = List.of(
+                new ValveState(VA, "VA", true, ValvePosition.OPEN),
+                new ValveState(VX, "VX", false, ValvePosition.OPEN),
+                new ValveState(VB, "VB", true, ValvePosition.CLOSED),
+                new ValveState(VC, "VC", true, ValvePosition.CLOSED));
         return new NetworkSnapshot(b.nodes(), b.arcs(), valves, b.connections());
     }
 
