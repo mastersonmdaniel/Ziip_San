@@ -82,7 +82,13 @@ CREATE TABLE IF NOT EXISTS inv_requisitions (
     decided_at TIMESTAMPTZ,
     CHECK (requester_id <> approver_id OR approver_id IS NULL OR approval_mode = 'AUTO')
 );
-ALTER TABLE inv_requisitions ADD CONSTRAINT uq_inv_requisitions_tenant_id UNIQUE (tenant_id, id);
+-- Correcao B3-4 (lote R3-C, 08/11/2026): guarda de reexecucao no padrao da
+-- ED-43 (m6) — a 2a aplicacao deste SQL nao pode falhar com "already exists".
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'uq_inv_requisitions_tenant_id') THEN
+        ALTER TABLE inv_requisitions ADD CONSTRAINT uq_inv_requisitions_tenant_id UNIQUE (tenant_id, id);
+    END IF;
+END $$;
 CREATE TABLE IF NOT EXISTS inv_requisition_lines (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID NOT NULL,
