@@ -236,7 +236,16 @@ public final class PermissionCatalog {
             // já publicados de outras tarefas.
             new Permission("protocol:transfer-any-unit", "atendimento", "protocol", "transfer-any-unit", "P3.30"),
             new Permission("so:close-retroactive", "ordem de servico", "so", "close-retroactive", "P3.30"),
-            new Permission("so:close-without-activities", "ordem de servico", "so", "close-without-activities", "P3.30"));
+            new Permission("so:close-without-activities", "ordem de servico", "so", "close-without-activities", "P3.30"),
+            // ED-06: controle de acesso de edital (ADR-0040/0043). Gestão de
+            // perfis compostos, restrição negativa, delegação e aceites NIST:
+            // só ADMIN (quem administra o acesso do tenant). Recertificação:
+            // só ADMIN (a campanha é ato do administrador do tenant; a ED-73
+            // consome as decisões como evidência). Trilha por usuário e
+            // sessões ativas: ADMIN e AUDITOR_INTERNO (TR-128, SG-062).
+            new Permission("access:manage-profiles", "plataforma", "access", "manage-profiles", "ED-06"),
+            new Permission("access:recertify", "plataforma", "access", "recertify", "ED-06"),
+            new Permission("access:audit-read", "plataforma", "access", "audit-read", "ED-06"));
 
     /**
      * Perfis de fábrica (P0.13: os quatro mínimos; P1.37: os 22 por função, na ordem do
@@ -263,7 +272,8 @@ public final class PermissionCatalog {
                 "gis:catalog-read", "gis:catalog-manage", "parameters:manage",
                 "brand:manage", "support:read", "support:write", "support:manage",
                 "template:read", "template:write", "template:approve",
-                "contract:read-own", "integration:manage"),
+                "contract:read-own", "integration:manage",
+                "access:manage-profiles", "access:recertify", "access:audit-read"),
         /** Cadastro (leitura e escrita) e leitura de usuários; não gerencia usuários. */
         MANAGER("Gerente", true, HOME_PAGE,
                 "registry:read", "registry:write", "user:read"),
@@ -318,7 +328,7 @@ public final class PermissionCatalog {
                 "contract:read-own"),
         AUDITOR_INTERNO("Auditor interno", true, HOME_PAGE,
                 "registry:read", "gis:catalog-read", "user:read", "cert:audit", "template:read",
-                "contract:read-own"),
+                "contract:read-own", "access:audit-read"),
         OUVIDOR("Ouvidor", true, HOME_PAGE,
                 "registry:read", "protocol:read", "support:read"),
         ENCARREGADO_DADOS("Encarregado de dados", true, HOME_PAGE,
