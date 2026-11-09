@@ -138,4 +138,66 @@ class CorrectionEd50Test {
         assertThrows(IllegalArgumentException.class, () -> Sample.CustodyKind.valueOf("RETURNED"));
         assertEquals(4, Sample.CustodyKind.values().length);
     }
+
+    // ------------------------------------------------------------ B3-2 (Rodada 3)
+    private SamplingPlan planAB() {
+        return new SamplingPlan(UUID.randomUUID(), "SIS-1",
+                YearMonth.of(2026, 1), YearMonth.of(2026, 12), "FIXTURE-1",
+                List.of(new SamplingPlan.PlanLine(TestSupport.POINT, "PARAM_A", 1),
+                        new SamplingPlan.PlanLine(TestSupport.POINT, "PARAM_B", 1)));
+    }
+
+    private static MonthlyClosing.ParameterLine line(MonthlyClosing c, String key) {
+        return c.lines().stream().filter(l -> l.parameterKey().equals(key)).findFirst().orElseThrow();
+    }
+
+    @Test void b32_partialResultCountsCollectedForMissingParameter() {
+        // Sonda do revisor da Rodada 3 (02-backend-c3-rodada3.md, B3-2): plano com
+        // PARAM_A e PARAM_B no mesmo ponto (1 planejado cada); amostra coletada +
+        // recebida; resultado validado SO para PARAM_A (5 <= 10, CONFORMING).
+        // Esperado: PARAM_A collected=1 analyzed=1; PARAM_B collected=1 analyzed=0.
+        // Antes da correcao, PARAM_B saia collected=0 (a amostra era excluida do
+        // balde (b) por ter QUALQUER entrada).
+        NormativeCatalog catalog = TestSupport.catalog(
+                TestSupport.maxStandard("PARAM_A", "10", true, false),
+                TestSupport.maxStandard("PARAM_B", "10", true, false));
+        Sample s = TestSupport.receivedSample("ETQ-B32");
+        AnalysisResult rA = TestSupport.numericResult(s, "PARAM_A", "5", true);
+        List<MonthlyClosing.Entry> entries = List.of(
+                new MonthlyClosing.Entry(s, rA, ConformityEvaluator.evaluate(rA, catalog, LocalDate.of(2026, 1, 10))));
+        MonthlyClosing closing = MonthlyClosing.assemble(UUID.randomUUID(), "SIS-1",
+                YearMonth.of(2026, 1), planAB(), List.of(s), entries);
+        MonthlyClosing.ParameterLine a = line(closing, "PARAM_A");
+        assertEquals(1, a.planned());
+        assertEquals(1, a.collected());
+        assertEquals(1, a.analyzed());
+        assertEquals(1, a.conforming());
+        MonthlyClosing.ParameterLine b = line(closing, "PARAM_B");
+        assertEquals(1, b.planned());
+        assertEquals(1, b.collected(), "amostra coletada sem entrada PARA PARAM_B conta em collected_B");
+        assertEquals(0, b.analyzed());
+        assertEquals(100.0, b.coveragePercent());
+    }
+
+    @Test void b32_sampleWithEntriesForBothParametersIsNotDoubleCounted() {
+        // Guarda de regressao: amostra com entrada validada para A E para B conta
+        // exatamente 1 vez em cada linha (balde (a) apenas — o balde (b) nao a
+        // reconta em nenhuma das chaves).
+        NormativeCatalog catalog = TestSupport.catalog(
+                TestSupport.maxStandard("PARAM_A", "10", true, false),
+                TestSupport.maxStandard("PARAM_B", "10", true, false));
+        Sample s = TestSupport.receivedSample("ETQ-B32B");
+        AnalysisResult rA = TestSupport.numericResult(s, "PARAM_A", "5", true);
+        AnalysisResult rB = TestSupport.numericResult(s, "PARAM_B", "7", true);
+        LocalDate d = LocalDate.of(2026, 1, 10);
+        List<MonthlyClosing.Entry> entries = List.of(
+                new MonthlyClosing.Entry(s, rA, ConformityEvaluator.evaluate(rA, catalog, d)),
+                new MonthlyClosing.Entry(s, rB, ConformityEvaluator.evaluate(rB, catalog, d)));
+        MonthlyClosing closing = MonthlyClosing.assemble(UUID.randomUUID(), "SIS-1",
+                YearMonth.of(2026, 1), planAB(), List.of(s), entries);
+        assertEquals(1, line(closing, "PARAM_A").collected());
+        assertEquals(1, line(closing, "PARAM_A").analyzed());
+        assertEquals(1, line(closing, "PARAM_B").collected());
+        assertEquals(1, line(closing, "PARAM_B").analyzed());
+    }
 }

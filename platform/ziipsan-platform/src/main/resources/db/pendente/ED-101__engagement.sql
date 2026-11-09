@@ -92,6 +92,14 @@ CREATE TABLE IF NOT EXISTS eng_reminder_log (
     UNIQUE (tenant_id, unit_id, kind, period)
 );
 
+-- CORRECAO R3-B (R3-M1, Rodada 3, padrao G2 / B2-6): tabelas de tenant inscritas no
+-- registro de isolamento por tenant (RLS) — uma chamada por tabela, no proprio SQL pendente.
+SELECT register_tenant_table('eng_user_enrollments');
+SELECT register_tenant_table('eng_consumption_goals');
+SELECT register_tenant_table('eng_peer_reports');
+SELECT register_tenant_table('eng_goal_milestone_awards');
+SELECT register_tenant_table('eng_reminder_log');
+
 -- Parametros do tenant (integrar no catalogo core, migration core tambem
 -- sem numero — padrao da ED-38/ED-41):
 -- eng.peer_report_enabled      BOOLEAN classe d  fabrica false (opcional por tenant, aceite)

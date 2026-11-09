@@ -88,6 +88,14 @@ public final class MonthlyClosing {
      * ponto serve as linhas do plano daquele ponto; (3) amostra apenas
      * PLANNED ou CANCELLED nao conta. {@code coveragePercent} herda a
      * contagem corrigida.
+     *
+     * <p><b>Correcao B3-2 (Rodada 3):</b> o balde (b) da M-2 excluía a
+     * amostra por ter <i>qualquer</i> entrada — amostra com resultado
+     * validado so para PARAM_A nao contava para PARAM_B, embora o plano
+     * preveja B no ponto dela e a amostra tenha sido coletada. Agora a
+     * exclusao e POR (amostra, parametro): a amostra so sai do balde (b)
+     * da chave para a qual ja tem entrada validada; para as demais chaves
+     * do ponto ela continua contando como coletada sem resultado.
      */
     public static MonthlyClosing assemble(UUID id, String supplySystem, YearMonth month,
                                           SamplingPlan plan, List<Sample> samplesOfMonth,
@@ -113,13 +121,16 @@ public final class MonthlyClosing {
                 .filter(s -> s.status() != Sample.Status.PLANNED && s.status() != Sample.Status.CANCELLED)
                 .map(Sample::id)
                 .collect(java.util.stream.Collectors.toSet());
-        // M-2: amostras coletadas SEM nenhuma entrada (sem resultado
-        // validado) — atribuidas pelos parametros do plano no ponto delas.
-        java.util.Set<UUID> entrySampleIds = entries.stream()
-                .map(e -> e.sample().id())
-                .collect(java.util.stream.Collectors.toSet());
-        List<Sample> collectedWithoutEntry = samplesOfMonth.stream()
-                .filter(s -> collectedIds.contains(s.id()) && !entrySampleIds.contains(s.id()))
+        // M-2/B3-2: amostras coletadas, por (amostra, parametro) com
+        // entrada validada — a amostra so sai do balde (b) da chave para
+        // a qual ja tem entrada; para as demais chaves do ponto ela
+        // continua contando como coletada sem resultado.
+        java.util.Map<UUID, java.util.Set<String>> entryKeysBySample = new java.util.HashMap<>();
+        entries.forEach(e -> entryKeysBySample
+                .computeIfAbsent(e.sample().id(), k -> new java.util.HashSet<>())
+                .add(e.result().parameterKey()));
+        List<Sample> collectedSamples = samplesOfMonth.stream()
+                .filter(s -> collectedIds.contains(s.id()))
                 .collect(java.util.stream.Collectors.toMap(Sample::id, s -> s, (a, b) -> a))
                 .values().stream().toList();
         List<ParameterLine> lines = new java.util.ArrayList<>();
@@ -131,11 +142,13 @@ public final class MonthlyClosing {
             List<Entry> ofKey = entries.stream().filter(e -> e.result().parameterKey().equals(key)).toList();
             int analyzed = ofKey.size();
             // Coletado do parametro = (a) amostras distintas das entradas
-            // coletadas no mes + (b) amostras coletadas sem entrada cujo
-            // ponto tem este parametro no plano (correcao M-2).
+            // coletadas no mes + (b) amostras coletadas sem entrada PARA
+            // ESTA CHAVE cujo ponto tem este parametro no plano (M-2,
+            // refinado pela B3-2: a exclusao e por (amostra, chave)).
             int collectedFromEntries = (int) ofKey.stream().map(e -> e.sample().id()).distinct()
                     .filter(collectedIds::contains).count();
-            int collectedWithoutResult = (int) collectedWithoutEntry.stream()
+            int collectedWithoutResult = (int) collectedSamples.stream()
+                    .filter(s -> !entryKeysBySample.getOrDefault(s.id(), java.util.Set.of()).contains(key))
                     .filter(s -> plan.plannedFor(s.pointId(), key) > 0)
                     .count();
             int collected = collectedFromEntries + collectedWithoutResult;

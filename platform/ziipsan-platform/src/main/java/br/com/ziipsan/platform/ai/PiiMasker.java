@@ -7,20 +7,25 @@ import java.util.regex.Pattern;
  * CORRECAO ED-43 (M1 da revisao cruzada): os padroes aceitam separadores variaveis (ponto, hifen,
  * barra e ESPACOS, ate 3 entre grupos de digitos), de modo que grafias como "123 456 789 09" ou
  * "48 99999 1234" sao mascaradas como as formas formatadas — a grafia nao contorna a mascara.
- * O detector fail-closed (containsStructuredPii) cobre TODOS os padroes da mascara (CPF, CNPJ,
- * e-mail, telefone com/sem DDD e CEP, em qualquer grafia) e, como segunda camada, varre sequencias
- * de digitos+separadores cujo total de digitos seja 11 (CPF/telefone com DDD) ou 14 (CNPJ): grafia
- * exotica que a mascara nao reconheca NAO passa pelo detector — quem chama transborda (fail-closed),
- * nunca envia o dado cru ao modelo. Simetria entrada/saida: o mesmo detector vigia a resposta. */
+ * CORRECAO R3-B (B3-1, Rodada 3): os separadores passam a incluir VIRGULA e UNDERSCORE — as grafias
+ * "123,456,789-09", "123_456_789_09" e "48,99999,1234" escapavam da mascara E do detector (a
+ * segunda camada, DIGIT_RUN, usava a mesma classe de separadores sem "," nem "_"), chegando cruas
+ * ao modelo e voltando cruas na resposta. A promessa do javadoc ("qualquer grafia") so vale com
+ * esta correcao; o detector fail-closed (containsStructuredPii) cobre TODOS os padroes da mascara
+ * (CPF, CNPJ, e-mail, telefone com/sem DDD e CEP, em qualquer grafia) e, como segunda camada, varre
+ * sequencias de digitos+separadores cujo total de digitos seja 11 (CPF/telefone com DDD) ou 14
+ * (CNPJ): grafia exotica que a mascara nao reconheca NAO passa pelo detector — quem chama transborda
+ * (fail-closed), nunca envia o dado cru ao modelo. Simetria entrada/saida: o mesmo detector vigia
+ * a resposta. */
 public final class PiiMasker {
-    private static final String SEP = "[\\s.\\-/]{0,3}";
+    private static final String SEP = "[\\s.,\\-/_]{0,3}";
     private static final Pattern CPF = Pattern.compile("\\b\\d{3}" + SEP + "\\d{3}" + SEP + "\\d{3}" + SEP + "\\d{2}\\b");
     private static final Pattern CNPJ = Pattern.compile("\\b\\d{2}" + SEP + "\\d{3}" + SEP + "\\d{3}" + SEP + "\\d{4}" + SEP + "\\d{2}\\b");
     private static final Pattern EMAIL = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}");
-    private static final Pattern PHONE = Pattern.compile("\\(?\\d{2}\\)?[\\s.\\-]{0,3}9?\\d{4}[\\s.\\-]{0,3}\\d{4}\\b");
-    private static final Pattern PHONE_LOCAL = Pattern.compile("\\b9\\d{4}[\\s.\\-]{0,3}\\d{4}\\b");
-    private static final Pattern CEP = Pattern.compile("\\b\\d{5}[\\s\\-]{0,3}\\d{3}\\b");
-    private static final Pattern DIGIT_RUN = Pattern.compile("[0-9][0-9\\s.\\-/()]*[0-9]");
+    private static final Pattern PHONE = Pattern.compile("\\(?\\d{2}\\)?[\\s.,\\-/_]{0,3}9?\\d{4}[\\s.,\\-/_]{0,3}\\d{4}\\b");
+    private static final Pattern PHONE_LOCAL = Pattern.compile("\\b9\\d{4}[\\s.,\\-/_]{0,3}\\d{4}\\b");
+    private static final Pattern CEP = Pattern.compile("\\b\\d{5}[\\s\\-.,_]{0,3}\\d{3}\\b");
+    private static final Pattern DIGIT_RUN = Pattern.compile("[0-9][0-9\\s.\\-/(),_]*[0-9]");
     private PiiMasker() {}
     public static String mask(String text, java.util.Collection<String> knownSensitiveValues) {
         if (text == null) return "";
@@ -43,7 +48,9 @@ public final class PiiMasker {
         return digitRunHasPiiLength(text);
     }
     /** Segunda camada do detector: sequencia continua de digitos e separadores com 11 ou 14 digitos
-     * no total e tratada como PII estruturada, qualquer que seja a grafia dos separadores. */
+     * no total e tratada como PII estruturada, qualquer que seja a grafia dos separadores
+     * (B3-1: a classe de separadores inclui VIRGULA e UNDERSCORE, como a mascara — sem elas, a
+     * grafia "123,456,789-09" formava corridas de 3 digitos e passava). */
     private static boolean digitRunHasPiiLength(String text) {
         var m = DIGIT_RUN.matcher(text);
         while (m.find()) {

@@ -83,6 +83,13 @@ CREATE TABLE leak_review_reports (
     CHECK (conclusion <> 'INCONCLUSIVE' OR inconclusive_reason IS NOT NULL)
 );
 
+-- CORRECAO R3-B (R3-M1, Rodada 3, padrao G2 / B2-6): tabelas de tenant inscritas no
+-- registro de isolamento por tenant (RLS) — uma chamada por tabela, no proprio SQL pendente.
+SELECT register_tenant_table('leak_review_protocols');
+SELECT register_tenant_table('leak_review_phase_events');
+SELECT register_tenant_table('leak_review_inspections');
+SELECT register_tenant_table('leak_review_reports');
+
 -- NENHUMA definicao de parametro nova: o protocolo consome leak.* e
 -- meter.test_* (P3.28/P2.31) e sign.min_level.* (P3.34) como estao.
 -- Prazo por fase do protocolo: [A DEFINIR] -- nenhuma chave criada

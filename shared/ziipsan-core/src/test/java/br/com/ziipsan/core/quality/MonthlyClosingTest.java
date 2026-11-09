@@ -43,13 +43,19 @@ class MonthlyClosingTest {
         MonthlyClosing.ParameterLine a = c.lines().stream()
                 .filter(l -> l.parameterKey().equals("PARAM_A")).findFirst().orElseThrow();
         assertEquals(4, a.planned());
-        assertEquals(2, a.collected());
+        // B3-2 (Rodada 3, correcao da semantica do balde (b)): s3 tem entrada validada SO
+        // para PARAM_U (fora do plano) e nenhuma para PARAM_A — pelo balde (b) por
+        // (amostra, chave) ela conta como coletada sem resultado para PARAM_A:
+        // 2 amostras com entrada para A + s3 = 3. A expectativa antiga (2) codificava
+        // a regra com defeito (exclusao por ter QUALQUER entrada) e foi corrigida junto
+        // com a producao — nao afrouxada: a contagem passou a incluir um caso a mais.
+        assertEquals(3, a.collected());
         assertEquals(2, a.analyzed());
         assertEquals(1, a.conforming());
         assertEquals(1, a.nonConforming());
         assertEquals(0, a.indeterminate());
         assertEquals(50.0, a.conformityPercent());
-        assertEquals(50.0, a.coveragePercent());
+        assertEquals(75.0, a.coveragePercent()); // 3 coletadas / 4 planejadas (B3-2)
     }
 
     @Test void indeterminateIsCountedSeparatelyNeverAsConforming() {

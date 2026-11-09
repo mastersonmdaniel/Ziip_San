@@ -44,6 +44,55 @@ class CorrectionEd43Test {
     }
     @Test void m1_copilotSpacedCpfIsMasked(){ String s = AttendantCopilot.summarizeInput(List.of("cpf 123 456 789 09 relatado"), List.of()); assertFalse(s.contains("123 456 789 09"), s); }
 
+    // ---------- B3-1 (Rodada 3): virgula/underscore nao contornam mascara nem detector ----------
+    @Test void b31_commaCpfIsMasked(){ String out = PiiMasker.mask("meu cpf e 123,456,789-09, ok?", List.of()); assertFalse(out.contains("123,456,789-09"), out); assertTrue(out.contains("[CPF]"), out); assertFalse(PiiMasker.containsStructuredPii(out)); }
+    @Test void b31_underscoreCpfIsMasked(){ String out = PiiMasker.mask("meu cpf e 123_456_789_09, ok?", List.of()); assertFalse(out.contains("123_456_789_09"), out); assertTrue(out.contains("[CPF]"), out); assertFalse(PiiMasker.containsStructuredPii(out)); }
+    @Test void b31_mixedSeparatorCpfIsMasked(){ String out = PiiMasker.mask("meu cpf e 123.456.789,09, ok?", List.of()); assertFalse(out.contains("123.456.789,09"), out); assertTrue(out.contains("[CPF]"), out); assertFalse(PiiMasker.containsStructuredPii(out)); }
+    @Test void b31_commaPhoneIsMasked(){ String out = PiiMasker.mask("me liguem no 48,99999,1234 sobre a conta", List.of()); assertFalse(out.contains("99999"), out); assertFalse(out.contains("48,99999,1234"), out); assertFalse(PiiMasker.containsStructuredPii(out)); }
+    @Test void b31_underscorePhoneIsMasked(){ String out = PiiMasker.mask("me liguem no 48_99999_1234 sobre a conta", List.of()); assertFalse(out.contains("99999"), out); assertFalse(PiiMasker.containsStructuredPii(out)); }
+    @Test void b31_commaCnpjIsMasked(){ String out = PiiMasker.mask("cnpj 12,345,678/0001-90 da empresa", List.of()); assertFalse(out.contains("12,345,678/0001-90"), out); assertTrue(out.contains("[CNPJ]"), out); assertFalse(PiiMasker.containsStructuredPii(out)); }
+    @Test void b31_commaCepIsMasked(){ String out = PiiMasker.mask("cep 88010,010 da unidade", List.of()); assertFalse(out.contains("88010,010"), out); assertTrue(out.contains("[CEP]"), out); assertFalse(PiiMasker.containsStructuredPii(out)); }
+    @Test void b31_detectorCoversCommaAndUnderscoreSpellings(){
+        // As 7 grafias da sonda do revisor da Rodada 3 (02-backend-c3-rodada3.md, B3-1):
+        assertTrue(PiiMasker.containsStructuredPii("meu cpf e 123,456,789-09"));
+        assertTrue(PiiMasker.containsStructuredPii("meu cpf e 123_456_789_09"));
+        assertTrue(PiiMasker.containsStructuredPii("meu cpf e 123.456.789,09"));
+        assertTrue(PiiMasker.containsStructuredPii("me liguem no 48,99999,1234"));
+        assertTrue(PiiMasker.containsStructuredPii("cnpj 12,345,678/0001-90"));
+        assertTrue(PiiMasker.containsStructuredPii("cep 88010,010"));
+        assertTrue(PiiMasker.containsStructuredPii("tel 48_99999_1234"));
+        // Controle negativo pre-existente: numeros curtos separados por virgula nao sao PII.
+        assertFalse(PiiMasker.containsStructuredPii("leitura de 30 dias, consumo de 12 m3"));
+    }
+    @Test void b31_serviceNeverSendsCommaIdentifiersToModel(){
+        var p=new Ed43TestSupport.Params(); var m=new CountingModel();
+        var r=svc(p,m,new Ed43TestSupport.Usage(),new Ed43TestSupport.Logs())
+            .chat(Ed43TestSupport.T, req("meu cpf e 123,456,789-09 e me liguem no 48,99999,1234","HELP_SEARCH",Set.of("portal.help.read")));
+        assertEquals(ChatbotService.Outcome.ANSWERED, r.outcome()); assertEquals(1, m.calls.get());
+        String sent = m.last.get().messages().get(0).maskedText();
+        assertFalse(sent.contains("123,456,789-09"), sent); assertFalse(sent.contains("48,99999,1234"), sent); assertFalse(sent.contains("99999"), sent);
+    }
+    @Test void b31_serviceNeverSendsUnderscoreIdentifiersToModel(){
+        var p=new Ed43TestSupport.Params(); var m=new CountingModel();
+        var r=svc(p,m,new Ed43TestSupport.Usage(),new Ed43TestSupport.Logs())
+            .chat(Ed43TestSupport.T, req("meu cpf e 123_456_789_09","HELP_SEARCH",Set.of("portal.help.read")));
+        assertEquals(ChatbotService.Outcome.ANSWERED, r.outcome()); assertEquals(1, m.calls.get());
+        String sent = m.last.get().messages().get(0).maskedText();
+        assertFalse(sent.contains("123_456_789_09"), sent);
+    }
+    @Test void b31_outputWithCommaCpfIsDiscarded(){
+        var p=new Ed43TestSupport.Params(); var m=new CountingModel(); m.out="seu cpf e 123,456,789-09, anote ai.";
+        var r=svc(p,m,new Ed43TestSupport.Usage(),new Ed43TestSupport.Logs()).chat(Ed43TestSupport.T, req("qual minha conta?","HELP_SEARCH",Set.of("portal.help.read")));
+        assertEquals(ChatbotService.Outcome.OUTPUT_DISCARDED_LEAK, r.outcome()); assertNull(r.reply());
+    }
+    @Test void b31_outputWithUnderscorePhoneIsDiscarded(){
+        var p=new Ed43TestSupport.Params(); var m=new CountingModel(); m.out="ligaremos para 48_99999_1234 sobre a conta.";
+        var r=svc(p,m,new Ed43TestSupport.Usage(),new Ed43TestSupport.Logs()).chat(Ed43TestSupport.T, req("qual minha conta?","HELP_SEARCH",Set.of("portal.help.read")));
+        assertEquals(ChatbotService.Outcome.OUTPUT_DISCARDED_LEAK, r.outcome()); assertNull(r.reply());
+    }
+    @Test void b31_copilotCommaCpfIsMasked(){ String s = AttendantCopilot.summarizeInput(List.of("cpf 123,456,789-09 relatado"), List.of()); assertFalse(s.contains("123,456,789-09"), s); assertTrue(s.contains("[CPF]"), s); }
+    @Test void b31_copilotUnderscoreCpfIsMasked(){ String s = AttendantCopilot.summarizeInput(List.of("cpf 123_456_789_09 relatado"), List.of()); assertFalse(s.contains("123_456_789_09"), s); assertTrue(s.contains("[CPF]"), s); }
+
     // ---------- M2: simetria de saida — reply nunca sai crua ----------
     @Test void m2_outputWithPhoneIsDiscarded(){
         var p=new Ed43TestSupport.Params(); var m=new CountingModel(); m.out="ligaremos para (48) 99999-1234 sobre a conta.";

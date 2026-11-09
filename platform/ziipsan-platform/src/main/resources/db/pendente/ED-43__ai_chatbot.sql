@@ -34,6 +34,11 @@ CREATE TABLE IF NOT EXISTS ai_conversation_logs (
     masked_user_text TEXT, masked_reply_text TEXT, tokens_used BIGINT NOT NULL DEFAULT 0,
     outcome VARCHAR(60) NOT NULL, human_corrected BOOLEAN NOT NULL DEFAULT FALSE, occurred_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
 CREATE INDEX IF NOT EXISTS idx_ai_logs_conversation ON ai_conversation_logs (tenant_id, conversation_id, occurred_at);
+-- CORRECAO R3-B (R3-M1, Rodada 3, padrao G2 / B2-6): tabelas de tenant inscritas no
+-- registro de isolamento por tenant (RLS) — uma chamada por tabela, no proprio SQL pendente.
+SELECT register_tenant_table('ai_model_prompts');
+SELECT register_tenant_table('ai_provider_registrations');
+SELECT register_tenant_table('ai_conversation_logs');
 -- Parametros (definicoes destacadas para o core no pouso, padrao ED-41/ED-42):
 -- ai.enabled_features (classe b, padrao desligado), ai.provider_region (c), ai.log_retention_days (c),
 -- ai.human_review_required (classe a, travado p/ corte/negativacao/tarifa social), bill.explain_enabled,
