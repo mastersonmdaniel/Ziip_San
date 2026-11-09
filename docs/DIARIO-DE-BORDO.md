@@ -2037,3 +2037,38 @@ Pacote regulatório de saída por agência, com subsídios e Índice de Tarifa S
 - **Esteira completa:** correção → revisão **APROVADO** → confirmação **CONFIRMADO**, três sessões distintas com UUID registrado nos cabeçalhos. Placares reexecutados pelas três frentes: **JUnit 56/56** (45 originais + 11 novos); PostgreSQL descartável: **7/7 negativas recusadas** (4 originais + NEG5/NEG6/NEG7 do R7-B2), com a prova do erro literal dos CHECKs em instância descartável. Portão mecânico exit 1 só na Regra 3 — **falso positivo demonstrado** em `PORTAO-REGISTRO-R7-A.md` (§3.2: o rótulo "Corretor" do produtor não consta da lista de padrões do extrator; os três UUIDs são distintos e estão declarados nos cabeçalhos); o portão **não foi editado**. Nenhuma asserção afrouxada; os 10 arquivos restantes da entrega ED-97 seguem byte-idênticos ao pouso.
 - **Pouso:** a primeira tentativa ficou suspensa por HTTP 429 (FECHO-R7-A, 09/11/2026 ~02:38 −03 — nenhum push tentado). Executado agora por ordem do dono (09/11/2026 13:01 −03), em lote único sobre o HEAD `3edcbf7…` (diário da base fictícia). **Rebase verificado no ato:** os 7 arquivos alterados estavam na main byte-idênticos aos originais da ED-97 (SHA-256 `a0bfb48b…`, `2542e4e8…`, `48ec351e…`, `456c1bd3…`, `a3f46fe7…`, `9584e248…`, `d6d4e16d…`) e `CorrectionsR7ATest.java` ausente — nenhuma linha alheia removida. A tabela hash a hash da verificação pós-pouso dos 8 arquivos (contra o `PORTAO-REGISTRO-R7-A.md` §5) fica arquivada no pacote do lote (`correcoes-r7-a/VERIFICACAO-POS-POUSO-R7-A.md`).
 - **Pendências que ficam:** P-ED97-04 (a fiação externa deve consultar `resourceForPackage` e recusar expor pacote sem recurso — requisito registrado no Javadoc) segue fora do escopo; a observação sobre `AgendaItem.linkSubmission` (ED-98) ficou para a revisão completa da ED-98.
+
+## Lote R7-B — correções da Rodada 7 (base fictícia 12k) — 09/11/2026
+
+- **Origem:** achados R7-I-M1 (moderado), R7-I-m1 e R7-I-m2 (menores)
+  da Rodada 7 da auditoria contínua (01:43 −03, 09/11/2026).
+- **O que pousou:** errata do lote 11
+  (`base-ficticia-12k/push/ERRATA-LOTE-11.md`); adendos com os números
+  pós-complemento em `base-ficticia-12k/RELATORIO-BASE-FICTICIA-12K.md`
+  e `base-ficticia-12k/LANDING.md` (123.120 linhas; 23.540.541 bytes);
+  adendo + nota sobre o teto do runner no diário C6
+  (`cascata-ed/RELATORIO-C6.md`,
+  `cascata-ed/push/diario-c6/ADENDO-TETO.md`) e correção do texto
+  "~110 KB" em `cascata-ed/push/runner-big.py` (teto real 400.000
+  bytes); relatórios do lote em `correcoes-r7-b/`.
+- **Precisão factual (ficheiro n.º 3):** `base-ficticia-12k/LANDING.md`
+  pousa no estado `47acae72519fde7bb84fc14f9c5b1d1deca37a20` (39.714 bytes)
+  por força do ciclo de reapreciação de 09/11/2026
+  (`ADENDO-REAPRECIACAO-R7-B-2026-11-09.md`, SHA-256
+  `94e4a76346b1cbab9d6a84d79c808864c9f3afb395f69c5917313f51d4625a06`,
+  revisão APROVADO, confirmação CONFIRMADO — artefactos locais do lote),
+  e NÃO no estado `8478e2cb…` da tabela original do
+  `PORTAO-REGISTRO-R7-B.md` §5; a tabela pós-pouso actualizada é a do §4
+  do adendo de reapreciação.
+- **Cadeia:** correção (sessão b6cf0c91) → revisão APROVADO (4fa0183b)
+  → confirmação CONFIRMADO (48bd52df); portão mecânico com falso
+  positivo na Regra 3 resolvido pela rota do §3.2
+  (`correcoes-r7-b/PORTAO-REGISTRO-R7-B.md`, local); verificação
+  pós-pouso por hash dos 9 ficheiros contra a tabela actualizada —
+  resultado registado no acto a seguir ao pouso, na tabela arquivada
+  localmente em `correcoes-r7-b/VERIFICACAO-POS-POUSO-R7-B.md`.
+- **Commit(s):** commit único deste lote (lote único sobre o HEAD
+  `1bd9278a6d71e9888ca32d6b4eefed4b366aeab3`) — o próprio commit que
+  introduz este verbete; o seu SHA é registado após o pouso na tabela
+  de verificação local acima referida, nunca inventado aqui.
+- **P-BF-06/07/08:** sem execução; aguardam decisão de desenho do dono.
