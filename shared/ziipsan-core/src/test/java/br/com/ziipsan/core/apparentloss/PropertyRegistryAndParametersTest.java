@@ -80,6 +80,21 @@ class PropertyRegistryAndParametersTest {
     }
 
     @Test
+    void fraudRulesTrailingCommaIsRefused() {
+        // Chave CONHECIDA: a recusa so pode vir do parser, nao da checagem de chave desconhecida.
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> LossParameters.FraudRuleThresholds.parse("{\"zeroConsumption.enabled\": true,}"));
+        assertTrue(e.getMessage().contains("virgula final"), "mensagem deve nomear a virgula final: " + e.getMessage());
+    }
+
+    @Test
+    void fraudRulesTrailingCommaWithSpaceBeforeItIsRefused() {
+        // Chave CONHECIDA: a recusa so pode vir do parser, nao da checagem de chave desconhecida.
+        assertThrows(IllegalArgumentException.class,
+                () -> LossParameters.FraudRuleThresholds.parse("{\"zeroConsumption.enabled\": true ,}"));
+    }
+
+    @Test
     void enabledRuleWithoutThresholdIsExplicitError() {
         LossParameters.FraudRuleThresholds t = LossParameters.FraudRuleThresholds.parse(
                 "{\"zeroConsumption.enabled\": true}");

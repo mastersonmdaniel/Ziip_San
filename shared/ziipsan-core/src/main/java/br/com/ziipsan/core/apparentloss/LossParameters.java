@@ -250,6 +250,8 @@ public final class LossParameters {
                     throw new IllegalArgumentException(FRAUD_RULES + ": chave duplicada '" + key + "'");
                 i = (comma < 0 ? n : comma + 1);
                 while (i < n && Character.isWhitespace(body.charAt(i))) i++;
+                if (comma >= 0 && i >= n)
+                    throw new IllegalArgumentException(FRAUD_RULES + ": virgula final sem chave seguinte");
             }
             return out;
         }
