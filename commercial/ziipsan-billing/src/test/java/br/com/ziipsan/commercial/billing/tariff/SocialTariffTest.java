@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
+import br.com.ziipsan.commercial.billingrules.tariff.CategoryCharge;
+import br.com.ziipsan.commercial.billingrules.tariff.SewerCharge;
+import br.com.ziipsan.commercial.billingrules.tariff.TariffCharge;
 import static br.com.ziipsan.commercial.billing.fixture.FictitiousTariffs.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
