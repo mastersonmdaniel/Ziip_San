@@ -1,3 +1,12 @@
+# Pacote LC.15 — Produtor, sessao b3a03bf9-b502-478f-a071-9590cb482d99
+# Extensao LC.15 sobre o workflow da LC.2 (ficheiro vivo na main):
+# (1) ambiente "dedicado" entra nas opcoes de dispatch; (2) job proprio
+# apply-dedicado, atras do Environment "dedicado" (aprovacao manual),
+# assumindo o papel OIDC DA CONTA DEDICADA (vars.AWS_IAC_ROLE_ARN_DEDICADO);
+# (3) o job plan passa a selecionar o papel por ambiente (dedicado usa o
+# papel da conta dedicada). Todo o resto e o workflow da LC.2, sem
+# bifurcacao de pipeline: a instancia dedicada atualiza pelo MESMO
+# pipeline, com a mesma imagem e a mesma release (aceite LC.15/ADR-0024).
 # Pacote LC.2 — Produtor, sessao 764b25ad-2ccf-40e5-afbf-986d42be0213
 # Correcao LC.2 (estagio 3), sessao b36fd7a8-91ec-4322-9e7e-8bfe051efd54:
 # R-1 (download-artifact nos applies), m6 (validate inclui dedicado),
@@ -31,7 +40,7 @@ on:
       environment:
         description: "Ambiente alvo"
         type: choice
-        options: [homologacao, demonstracao, producao]
+        options: [homologacao, demonstracao, producao, dedicado]
         default: homologacao
       action:
         description: "Acao"
@@ -83,8 +92,10 @@ jobs:
       - name: Assumir papel AWS do ambiente via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          # [A DEFINIR] variavel de repositorio por ambiente (conta AWS inexistente neste bloco)
-          role-to-assume: ${{ vars.AWS_IAC_ROLE_ARN }}
+          # LC.15: o ambiente dedicado assume o papel da CONTA DEDICADA;
+          # os restantes ambientes mantem o papel generico da LC.2.
+          # [A DEFINIR] variaveis de repositorio por ambiente (contas AWS inexistentes neste bloco)
+          role-to-assume: ${{ inputs.environment == 'dedicado' && vars.AWS_IAC_ROLE_ARN_DEDICADO || vars.AWS_IAC_ROLE_ARN }}
           aws-region: sa-east-1
       - name: init e plan
         run: |
@@ -154,6 +165,34 @@ jobs:
         run: |
           terraform -chdir=infra/aws/envs/producao init -backend-config=backend.hcl
           terraform -chdir=infra/aws/envs/producao apply -auto-approve tfplan
+
+
+  apply-dedicado:
+    name: apply DEDICADO (conta separada do cliente; aprovacao manual obrigatoria)
+    needs: plan
+    if: inputs.action == 'apply' && inputs.environment == 'dedicado'
+    runs-on: ubuntu-latest
+    # A APROVACAO MANUAL e a protecao do Environment "dedicado" no GitHub
+    # (required reviewers) — mesmo desenho do Environment "producao".
+    environment: dedicado
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Assumir papel AWS da CONTA DEDICADA via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_IAC_ROLE_ARN_DEDICADO }}
+          aws-region: sa-east-1
+      - name: Descarregar o plano guardado pelo job plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-dedicado
+          path: infra/aws/envs/dedicado
+      - name: apply do plano desta execucao
+        run: |
+          terraform -chdir=infra/aws/envs/dedicado init -backend-config=backend.hcl
+          terraform -chdir=infra/aws/envs/dedicado apply -auto-approve tfplan
 
   # Rollback partido em dois jobs (correcao m8): o plano e gerado e
   # guardado SEM gate de Environment, para ser CONFERIDO antes de qualquer
