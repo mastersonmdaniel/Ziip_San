@@ -1,0 +1,25 @@
+# II-8 (Onda II, decisão 64): perfil "golive" — congela a exposição mínima
+# do Actuator para a prova de release e para o arranque de go-live.
+#
+# Este perfil NÃO alarga nada em relação à base: a base (application.yml,
+# P0.8) já expõe só health,metrics,prometheus, com health sem detalhes.
+# O perfil existe para que a exposição verificada na prova de release
+# seja EXACTAMENTE esta, declarada num único sítio, e para que qualquer
+# desvio futuro da base apareça como diff contra este ficheiro.
+# Activação: SPRING_PROFILES_ACTIVE=golive (sobre o perfil de ambiente).
+# Autenticação dos endpoints: a da base (SecurityConfig da P0.8) —
+# /actuator/health público sem detalhes; metrics/prometheus autenticados.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true

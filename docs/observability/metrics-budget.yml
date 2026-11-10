@@ -34,3 +34,11 @@ services:
       - name: misc
         estimated_series: 100
         basis: "logback, micrometer misc e medidores de health agregados"
+      # II-8 (Onda II): metricas de processo do go-live (RedUseMetrics) —
+      # itens do lote {outcome} 2 series + timer de duracao do lote ~8
+      # (count/sum/max + buckets, sem rotulos) + itens de sync {outcome} 2.
+      # Nenhum rotulo por UC/tenant: a guarda de cardinalidade (II-8)
+      # recusa identificadores como rotulo na registacao.
+      - name: ii8-golive
+        estimated_series: 12
+        basis: "ziipsan_billing_batch_items_total{outcome} 2 + ziipsan_billing_batch_duration_seconds ~8 + ziipsan_field_sync_items_total{outcome} 2 (II-8)"

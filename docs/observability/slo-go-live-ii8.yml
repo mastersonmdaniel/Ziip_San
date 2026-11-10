@@ -1,0 +1,31 @@
+# II-8 — Catálogo machine-readable dos SLOs de go-live.
+# Desenho em slo-go-live-ii8.md. Alvos: "[A DEFINIR]" até haver baseline
+# real medida pelo método lá descrito (pendência P-II8-ALVOS).
+# Nenhum número neste ficheiro é um alvo: janelas e limiares de burn são
+# os herdados da P3.11 (SRE Workbook), não metas novas.
+slos:
+  - id: slo-1-api-disponibilidade
+    sli: "requisicoes de negocio sem erro de servidor / total (derivado de http.server.requests por status)"
+    target: "[A DEFINIR]"
+    window_days: 30
+    source: actuator-prometheus
+  - id: slo-2-api-latencia-p95
+    sli: "p95 de http.server.requests por route_group (sem rotulo de tenant)"
+    target: "[A DEFINIR]"
+    window_days: 30
+    source: actuator-prometheus
+  - id: slo-3-lote-faturacao-conclusao
+    sli: "lotes concluidos integros (BatchReport.complete) / lotes executados; duracao como sinal"
+    target: "[A DEFINIR]"
+    window: ciclo-de-faturacao
+    source: ii8-billing-batch-release-proof
+    baseline_mass: "base ficticia 12k: 11300 contas faturaveis de 12000 UCs"
+  - id: slo-4-sync-campo
+    sli: "itens de sync SUCCESS / total (ziipsan_field_sync_items_total{outcome})"
+    target: "[A DEFINIR]"
+    window_days: 30
+    source: ii8-red-use-metrics
+burn_rate:
+  calculator: br.com.ziipsan.platform.observability.BurnRateCalculator
+  tiers: { page_fast: 14.4, page_slow: 6.0, ticket_fast: 3.0, ticket_slow: 1.0 }
+  origin: "P3.11 (SRE Workbook) — herdado sem alteracao"
