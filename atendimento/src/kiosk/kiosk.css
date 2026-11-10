@@ -1,0 +1,30 @@
+/* Telas de atendimento da ED-40 (quiosque, painel, guiche, relatorio).
+   Alvos de toque >= 48px (totem), painel com tipografia grande.
+   Cor de marca SOMENTE via variaveis --brand-* da ED-39 (injetadas pela
+   casca, como no portal e no tema), com reserva neutra — nenhuma cor de
+   tenant fixa neste ficheiro (correccao R2-F5). */
+
+.kiosk-main { font-family: system-ui, sans-serif; margin: 0 auto; max-width: 960px; padding: 16px; }
+.kiosk-title { font-size: 1.6rem; }
+.kiosk-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.kiosk-btn { min-height: 48px; min-width: 48px; padding: 10px 18px; font-size: 1.05rem; border-radius: 8px; border: 1px solid #444; background: #fff; cursor: pointer; }
+.kiosk-btn-primary { font-weight: 700; }
+.kiosk-btn-selected { outline: 3px solid var(--brand-primary, #333333); font-weight: 700; }
+.kiosk-card { border: 1px solid #bbb; border-radius: 10px; padding: 16px; }
+.kiosk-refusal { font-weight: 700; }
+.kiosk-pending { font-style: italic; }
+.kiosk-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.kiosk-fieldset { display: grid; gap: 6px; margin: 12px 0; }
+.kiosk-fieldset label { min-height: 48px; display: flex; align-items: center; gap: 8px; font-size: 1.05rem; }
+.kiosk-select, .kiosk-input { min-height: 48px; font-size: 1.05rem; display: block; margin: 6px 0 14px; }
+.kiosk-ticket-code { font-size: 3rem; font-weight: 800; text-align: center; }
+.kiosk-status { min-height: 1.5em; margin-top: 12px; }
+.kiosk-panel-current-code { font-size: 5rem; font-weight: 800; text-align: center; margin: 8px 0; }
+.kiosk-panel-current-desk { font-size: 2rem; text-align: center; margin: 4px 0 16px; }
+.kiosk-panel-empty { font-size: 1.4rem; text-align: center; }
+.kiosk-panel-history { font-size: 1.3rem; line-height: 1.7; }
+.kiosk-queue { font-size: 1.1rem; line-height: 1.8; }
+.kiosk-active { border: 2px solid var(--brand-primary, #333333); border-radius: 10px; padding: 12px; margin: 12px 0; }
+.kiosk-table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+.kiosk-table th, .kiosk-table td { border: 1px solid #bbb; padding: 6px 8px; text-align: right; }
+.kiosk-table th { text-align: center; }
