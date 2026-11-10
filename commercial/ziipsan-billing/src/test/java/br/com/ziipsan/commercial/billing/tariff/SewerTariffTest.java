@@ -10,6 +10,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
+import br.com.ziipsan.commercial.billingrules.tariff.SewerCharge;
 import static br.com.ziipsan.commercial.billing.fixture.FictitiousTariffs.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

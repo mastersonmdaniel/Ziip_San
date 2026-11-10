@@ -3,13 +3,13 @@ package br.com.ziipsan.commercial.billing.composition;
 import br.com.ziipsan.commercial.billing.bill.BillCalculator;
 import br.com.ziipsan.commercial.billing.bill.BillInput;
 import br.com.ziipsan.commercial.billing.bill.BillResult;
-import br.com.ziipsan.commercial.billing.catalog.ChargeResolution;
 import br.com.ziipsan.commercial.billing.tariff.CategoryRule;
 import br.com.ziipsan.commercial.billing.tariff.SewerFactorPolicy;
 import br.com.ziipsan.commercial.billing.tariff.SewerParameters;
 import br.com.ziipsan.commercial.billing.tariff.TariffGroup;
 import br.com.ziipsan.commercial.billing.tariff.TariffSchedule;
 import br.com.ziipsan.commercial.billing.tariff.TariffVersion;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeResolution;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import br.com.ziipsan.commercial.billingrules.composition.BillComposition;
 import static br.com.ziipsan.commercial.billing.composition.BillComposerEquivalenceTest.COMPETENCE;
 import static br.com.ziipsan.commercial.billing.composition.BillComposerEquivalenceTest.FROM;
 import static br.com.ziipsan.commercial.billing.composition.BillComposerEquivalenceTest.TO;
@@ -228,14 +229,14 @@ class DifferentialHarnessTest {
                                                   UUID tariffVersionId, String tariffScope,
                                                   String definitionScope, int consumption) {
         var waterDef = BillComposerEquivalenceTest.definition("AGUA",
-                br.com.ziipsan.commercial.billing.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
+                br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
                 definitionScope);
         ChargeResolution water = new ChargeResolution(waterDef,
-                new br.com.ziipsan.commercial.billing.catalog.ChargeVersion(UUID.randomUUID(),
+                new br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion(UUID.randomUUID(),
                         waterDef.id(), 1, LocalDate.of(2026, 1, 1), null,
-                        br.com.ziipsan.commercial.billing.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
+                        br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
                         tariffVersionId, null, null,
-                        br.com.ziipsan.commercial.billing.catalog.ChargeVersion.ChargeParameters.empty()));
+                        br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion.ChargeParameters.empty()));
         ChargeCalculationContext context = ChargeCalculationContext.builder()
                 .unitRef("UC-FIXTURE").municipalityIbge(municipality).competence(COMPETENCE)
                 .schedule(schedule).periodFrom(FROM).periodTo(TO).groups(List.of(res(1)))
@@ -288,23 +289,23 @@ class DifferentialHarnessTest {
         // C2 continua a receber List<ChargeResolution> pre-resolvida;
         // quem aqui resolve e o resolvedor real, nao uma escolha a mao.
         var companyDef = BillComposerEquivalenceTest.definition("AGUA",
-                br.com.ziipsan.commercial.billing.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
+                br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
                 null);
         var municipalDef = BillComposerEquivalenceTest.definition("AGUA",
-                br.com.ziipsan.commercial.billing.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
+                br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
                 MUNICIPALITY_A);
         br.com.ziipsan.commercial.billing.catalog.ChargeCatalog catalog =
                 new br.com.ziipsan.commercial.billing.catalog.ChargeCatalog();
-        catalog.add(companyDef, new br.com.ziipsan.commercial.billing.catalog.ChargeVersion(
+        catalog.add(companyDef, new br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion(
                 UUID.randomUUID(), companyDef.id(), 1, LocalDate.of(2026, 1, 1), null,
-                br.com.ziipsan.commercial.billing.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
+                br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
                 id(100), null, null,
-                br.com.ziipsan.commercial.billing.catalog.ChargeVersion.ChargeParameters.empty()));
-        catalog.add(municipalDef, new br.com.ziipsan.commercial.billing.catalog.ChargeVersion(
+                br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion.ChargeParameters.empty()));
+        catalog.add(municipalDef, new br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion(
                 UUID.randomUUID(), municipalDef.id(), 1, LocalDate.of(2026, 1, 1), null,
-                br.com.ziipsan.commercial.billing.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
+                br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
                 id(100), null, null,
-                br.com.ziipsan.commercial.billing.catalog.ChargeVersion.ChargeParameters.empty()));
+                br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion.ChargeParameters.empty()));
 
         // A resolucao devolvida pelo resolvedor real (precedencia
         // INV-C1-04-v2): a MUNICIPAL vence a de empresa no mesmo codigo.
@@ -394,36 +395,36 @@ class DifferentialHarnessTest {
 
     static ChargeResolution scopedWater(String municipality) {
         var def = BillComposerEquivalenceTest.definition("AGUA",
-                br.com.ziipsan.commercial.billing.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
+                br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
                 municipality);
-        return new ChargeResolution(def, new br.com.ziipsan.commercial.billing.catalog.ChargeVersion(
+        return new ChargeResolution(def, new br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion(
                 UUID.randomUUID(), def.id(), 1, LocalDate.of(2026, 1, 1), null,
-                br.com.ziipsan.commercial.billing.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
+                br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.PROGRESSIVE_BY_CONSUMPTION,
                 id(100), null, null,
-                br.com.ziipsan.commercial.billing.catalog.ChargeVersion.ChargeParameters.empty()));
+                br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion.ChargeParameters.empty()));
     }
 
     static ChargeResolution scopedSewer(String municipality) {
         var def = BillComposerEquivalenceTest.definition("ESGOTO",
-                br.com.ziipsan.commercial.billing.catalog.CalculationModel.DERIVED_FROM_VOLUME,
+                br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.DERIVED_FROM_VOLUME,
                 municipality);
-        return new ChargeResolution(def, new br.com.ziipsan.commercial.billing.catalog.ChargeVersion(
+        return new ChargeResolution(def, new br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion(
                 UUID.randomUUID(), def.id(), 1, LocalDate.of(2026, 1, 1), null,
-                br.com.ziipsan.commercial.billing.catalog.CalculationModel.DERIVED_FROM_VOLUME,
+                br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.DERIVED_FROM_VOLUME,
                 id(100), null, null,
-                new br.com.ziipsan.commercial.billing.catalog.ChargeVersion.ChargeParameters(
+                new br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion.ChargeParameters(
                         d("80"), null, null)));
     }
 
     static ChargeResolution scopedFixed(String municipality) {
         var def = BillComposerEquivalenceTest.definition("TFDI",
-                br.com.ziipsan.commercial.billing.catalog.CalculationModel.FIXED_PER_UNIT,
+                br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.FIXED_PER_UNIT,
                 municipality);
-        return new ChargeResolution(def, new br.com.ziipsan.commercial.billing.catalog.ChargeVersion(
+        return new ChargeResolution(def, new br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion(
                 UUID.randomUUID(), def.id(), 1, LocalDate.of(2026, 1, 1), null,
-                br.com.ziipsan.commercial.billing.catalog.CalculationModel.FIXED_PER_UNIT,
+                br.com.ziipsan.commercial.billingrules.catalog.CalculationModel.FIXED_PER_UNIT,
                 null, null, null,
-                new br.com.ziipsan.commercial.billing.catalog.ChargeVersion.ChargeParameters(
+                new br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion.ChargeParameters(
                         null, d("99.00"), null)));
     }
 }

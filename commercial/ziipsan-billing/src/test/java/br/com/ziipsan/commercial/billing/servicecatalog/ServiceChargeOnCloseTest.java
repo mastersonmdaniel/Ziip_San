@@ -1,4 +1,5 @@
 package br.com.ziipsan.commercial.billing.servicecatalog;
+import br.com.ziipsan.commercial.billingrules.servicecatalog.RevenueNature;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

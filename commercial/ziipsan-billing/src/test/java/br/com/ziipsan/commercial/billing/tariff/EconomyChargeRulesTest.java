@@ -1,6 +1,7 @@
 package br.com.ziipsan.commercial.billing.tariff;
 
 import br.com.ziipsan.commercial.billing.fixture.FictitiousTariffs;
+import br.com.ziipsan.commercial.billingrules.tariff.CategoryCharge;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

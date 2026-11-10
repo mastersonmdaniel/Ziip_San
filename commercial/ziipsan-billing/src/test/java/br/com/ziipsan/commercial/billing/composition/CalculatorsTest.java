@@ -1,16 +1,16 @@
 package br.com.ziipsan.commercial.billing.composition;
 
 import br.com.ziipsan.commercial.billing.bill.BillInput;
-import br.com.ziipsan.commercial.billing.catalog.CalculationModel;
-import br.com.ziipsan.commercial.billing.catalog.ChargeDefinition;
-import br.com.ziipsan.commercial.billing.catalog.ChargeOwner;
-import br.com.ziipsan.commercial.billing.catalog.ChargeResolution;
-import br.com.ziipsan.commercial.billing.catalog.ChargeVersion;
-import br.com.ziipsan.commercial.billing.servicecatalog.RevenueNature;
 import br.com.ziipsan.commercial.billing.servicecatalog.ServicePriceItem;
 import br.com.ziipsan.commercial.billing.tariff.SewerFactorPolicy;
 import br.com.ziipsan.commercial.billing.tariff.SewerParameters;
 import br.com.ziipsan.commercial.billing.tariff.TariffEngine;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeDefinition;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeOwner;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeResolution;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion;
+import br.com.ziipsan.commercial.billingrules.servicecatalog.RevenueNature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import br.com.ziipsan.commercial.billingrules.composition.BillChargeLine;
 import static br.com.ziipsan.commercial.billing.composition.BillComposerEquivalenceTest.COMPETENCE;
 import static br.com.ziipsan.commercial.billing.composition.BillComposerEquivalenceTest.FROM;
 import static br.com.ziipsan.commercial.billing.composition.BillComposerEquivalenceTest.TO;
@@ -77,7 +78,7 @@ class CalculatorsTest {
         assertThat(line.amount()).isEqualTo(
                 TariffEngine.calculate(t1Schedule(), FROM, TO, List.of(res(1)), 27).net());
         assertThat(line.amount()).isEqualTo(d("112.00"));
-        assertThat(line.detail()).isInstanceOf(br.com.ziipsan.commercial.billing.tariff.TariffCharge.class);
+        assertThat(line.detail()).isInstanceOf(br.com.ziipsan.commercial.billingrules.tariff.TariffCharge.class);
     }
 
     @Test

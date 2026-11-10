@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import br.com.ziipsan.commercial.billingrules.tariff.ChargeLine;
 import static br.com.ziipsan.commercial.billing.fixture.FictitiousTariffs.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

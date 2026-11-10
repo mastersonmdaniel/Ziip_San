@@ -1,17 +1,17 @@
 package br.com.ziipsan.commercial.billing.composition;
 
 import br.com.ziipsan.commercial.billing.bill.BillInput;
-import br.com.ziipsan.commercial.billing.bill.CreditLine;
 import br.com.ziipsan.commercial.billing.bill.TaxRate;
 import br.com.ziipsan.commercial.billing.bill.TaxWithholdingPolicy;
-import br.com.ziipsan.commercial.billing.catalog.CalculationModel;
-import br.com.ziipsan.commercial.billing.catalog.ChargeDefinition;
-import br.com.ziipsan.commercial.billing.catalog.ChargeOwner;
-import br.com.ziipsan.commercial.billing.catalog.ChargeResolution;
-import br.com.ziipsan.commercial.billing.catalog.ChargeVersion;
-import br.com.ziipsan.commercial.billing.servicecatalog.RevenueNature;
 import br.com.ziipsan.commercial.billing.tariff.SewerFactorPolicy;
 import br.com.ziipsan.commercial.billing.tariff.SewerParameters;
+import br.com.ziipsan.commercial.billingrules.bill.CreditLine;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeDefinition;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeOwner;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeResolution;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion;
+import br.com.ziipsan.commercial.billingrules.servicecatalog.RevenueNature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import br.com.ziipsan.commercial.billingrules.composition.BillChargeLine;
+import br.com.ziipsan.commercial.billingrules.composition.BillComposition;
 import static br.com.ziipsan.commercial.billing.composition.BillComposerEquivalenceTest.COMPETENCE;
 import static br.com.ziipsan.commercial.billing.composition.BillComposerEquivalenceTest.FROM;
 import static br.com.ziipsan.commercial.billing.composition.BillComposerEquivalenceTest.TO;
