@@ -114,9 +114,16 @@ class SocialBeneficiaryImportSchemaTest {
         ImportValidator.ValidationResult result = ImportValidator.validate(SCHEMA,
                 csv(badSource, badBasis), checks(false));
         assertThat(result.accepted()).isEmpty();
+        // As duas linhas tem a mesma composicao de chave (familia, pessoa, papel HOLDER):
+        // pela premissa registrada A3 deste esquema, a segunda ocorrencia e recusada como
+        // DUPLICATE_IN_FILE mesmo tendo a sua recusa de dominio propria - o validador
+        // generico da P1.40 acumula todas as recusas aplicaveis por linha. (Correcao
+        // P-CURA3-03, pacote correcao-ci-cura-lote-4: o conjunto esperado ganha a recusa
+        // de duplicidade que a especificacao sempre mandou produzir.)
         assertThat(result.rejections())
                 .extracting(r -> r.field() + ":" + r.reasonCode())
-                .containsExactlyInAnyOrder("list_source:INVALID_DOMAIN", "eligibility_basis:INVALID_DOMAIN");
+                .containsExactlyInAnyOrder("list_source:INVALID_DOMAIN", "eligibility_basis:INVALID_DOMAIN",
+                        "family_code_hash:DUPLICATE_IN_FILE");
     }
 
     @Test
