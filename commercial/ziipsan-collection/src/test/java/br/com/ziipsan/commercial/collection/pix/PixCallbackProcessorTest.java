@@ -103,7 +103,7 @@ class PixCallbackProcessorTest {
     }
 
     static final class FakePsp implements PspPixPort {
-        PspPix confirmed;
+        PspPixPort.PspPix confirmed;
         boolean supportsSecret;
         List<String> sharedLog;
         int fetches;
@@ -115,7 +115,7 @@ class PixCallbackProcessorTest {
         }
 
         @Override
-        public Optional<PspPix> fetchPixByEndToEndId(String endToEndId) {
+        public Optional<PspPixPort.PspPix> fetchPixByEndToEndId(String endToEndId) {
             fetches++;
             if (sharedLog != null) {
                 // Mesmo log da loja: a posicao do fetch na ordem fica provada (B1).
@@ -125,7 +125,7 @@ class PixCallbackProcessorTest {
         }
 
         @Override
-        public List<PspPix> listPixByInterval(Instant inicio, Instant fim) {
+        public List<PspPixPort.PspPix> listPixByInterval(Instant inicio, Instant fim) {
             return List.of();
         }
 
@@ -149,7 +149,7 @@ class PixCallbackProcessorTest {
 
     private static PixCallbackProcessor processor(FakeStore store, FakePsp psp) {
         store.charge = new PixCallbackProcessor.LocalCharge(UUID.randomUUID(), "ATIVA", null, null);
-        psp.confirmed = new PspPix(E2EID, TXID, new BigDecimal("100.00"),
+        psp.confirmed = new PspPixPort.PspPix(E2EID, TXID, new BigDecimal("100.00"),
                 Instant.parse("2026-11-30T11:59:00Z"), CNPJ_ALFA, CNPJ_ALFA);
         psp.sharedLog = store.calls;
         return new PixCallbackProcessor(store, psp);
@@ -391,7 +391,7 @@ class PixCallbackProcessorTest {
         FakeStore store = new FakeStore();
         FakePsp psp = new FakePsp();
         var proc = processor(store, psp);
-        psp.confirmed = new PspPix(E2EID, TXID, new BigDecimal("90.00"),
+        psp.confirmed = new PspPixPort.PspPix(E2EID, TXID, new BigDecimal("90.00"),
                 Instant.parse("2026-11-30T11:59:00Z"), CNPJ_ALFA, CNPJ_ALFA);
         var outcome = proc.receive(new PixCallbackProcessor.CallbackCommand(
                 SEGMENT, true, null, payload(TXID), RECEIVED));

@@ -20,6 +20,14 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- @Valid/@NotNull no FieldSyncController; mesmo desenho do
+                 ziipsan-registry/ziipsan-platform. Sem esta dependencia
+                 o modulo nao compila — correcao-ci-cura-lote-1
+                 (varredura de compilacao da CI, 2026-11-09). -->
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>

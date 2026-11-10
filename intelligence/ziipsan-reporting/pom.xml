@@ -23,6 +23,29 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- ED-93: a sala de situacao (SituationFeeds) usa o tipo REAL
+                 MeterAlarmKind da ED-17, que vive no ziipsan-metering —
+                 sem esta dependencia o modulo nao compila. Nao e
+                 biblioteca externa: o proposito da P3.22 (sem biblioteca
+                 nova) mantem-se. correcao-ci-cura-lote-1 (varredura de
+                 compilacao da CI, 2026-11-09). -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-metering</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- So para TESTES: o StrategicPanelBenchmarkTest (ED-49)
+                 compara a seccao do ERP com a leitura da ED-62, que vive
+                 no ziipsan-integration (ErpIndicators/ErpProvider),
+                 transportada verbatim — sem esta dependencia (ambito
+                 test) os testes do modulo nao compilam.
+                 correcao-ci-cura-lote-1 (varredura, 2026-11-09). -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-integration</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>

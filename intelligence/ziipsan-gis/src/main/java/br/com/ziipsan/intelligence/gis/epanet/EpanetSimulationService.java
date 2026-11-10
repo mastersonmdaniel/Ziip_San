@@ -153,7 +153,7 @@ public class EpanetSimulationService {
         try {
             return EpanetInpWriter.write(loadSnapshot(request, billedPeriodDays));
         } catch (br.com.ziipsan.intelligence.gis.hydraulic.HydraulicValidationException e) {
-            throw ApiException.unprocessable(String.join(" | ", e.issues()));
+            throw new ApiException.Validation(String.join(" | ", e.issues()), List.of(), List.of());
         }
     }
 
@@ -164,7 +164,7 @@ public class EpanetSimulationService {
         try {
             return solver.runEpanet(inp);
         } catch (SolverPort.SolverUnavailableException | SolverPort.SolverExecutionException e) {
-            throw ApiException.unprocessable(e.getMessage());
+            throw new ApiException.Validation(e.getMessage(), List.of(), List.of());
         }
     }
 
@@ -213,4 +213,29 @@ public class EpanetSimulationService {
         Object v = r.get(key);
         return v == null ? null : ((Number) v).intValue();
     }
+
+    /* Enums da seccao [OPTIONS]/[REPORT] do EPANET, declarados na
+       entrega original da P2.21 e referenciados por
+       EpanetSimulationOptions, InpWriter e os seus testes. A versao
+       deste servico que pousou depois nao os trazia; repoe-se a
+       declaracao verbatim da P2.21 — correcao-ci-cura-lote-1
+       (varredura de compilacao da CI, 2026-11-09). */
+    public record SimulationOptions(
+            int duration,
+            int hydraulicTimestep,
+            Statistic statistic,
+            DemandModel demandModel,
+            BigDecimal accuracy,
+            int maxTrials
+    ) {
+        public SimulationOptions() {
+            this(86400, 3600, Statistic.AVERAGE, DemandModel.DDA,
+                    new BigDecimal("0.001"), 40);
+        }
+    }
+
+    public enum Statistic { NONE, AVERAGE, MINIMUM, MAXIMUM, RANGE };
+    public enum DemandModel { DDA, PDA };
+    public enum LinkReport { NONE, ALL };
+    public enum NodeReport { NONE, ALL };
 }

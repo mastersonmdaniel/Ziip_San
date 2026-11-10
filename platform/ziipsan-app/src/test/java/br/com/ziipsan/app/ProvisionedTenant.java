@@ -141,6 +141,29 @@ final class ProvisionedTenant {
         }
     }
 
+    /**
+     * Ligacao JDBC nova sobre o DataSource do migrador, para os ITs que
+     * manipulam dados directamente (os GIS-07/09/10/18 chamam este
+     * metodo; o padrao irmao de dados nos ITs e o JdbcTemplate sobre
+     * migratorDs). Garante o provisionamento antes de ligar.
+     */
+    static Connection connect() throws java.sql.SQLException {
+        ensure();
+        return migratorDs.getConnection();
+    }
+
+    /** DataSource da aplicacao (ziipsan_app) do tenant provisionado. */
+    static DataSource dataSource() {
+        ensure();
+        return appDs;
+    }
+
+    /** DataSource do migrador, para os ITs que o pedem por acessor. */
+    static DataSource migratorDs() {
+        ensure();
+        return migratorDs;
+    }
+
     private static String quoteIdentifier(String identifier) {
         return "\"" + identifier.replace("\"", "\"\"") + "\"";
     }

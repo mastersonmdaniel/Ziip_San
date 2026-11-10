@@ -87,7 +87,8 @@ class PrintFileGenerationTest {
                 missing, PrintingFixtures.lockedFields(), UNIT_1, "000001-1", "NOME EXEMPLO",
                 "Endereco exemplo", LocalDate.of(2026, 5, 1), LocalDate.of(2026, 5, 20),
                 new BigDecimal("10.00"), PrintingFixtures.contextWithAnnualAndWater(),
-                AccessiblePrintFormat.NONE, new PortalLinkingCode("VINC-EXEMPLO-1"));
+                AccessiblePrintFormat.NONE, new PortalLinkingCode("VINC-EXEMPLO-1"),
+                new VerificationCode("CODIGO-EXEMPLO-1"));
         assertThatThrownBy(() -> service.generate(PrintingFixtures.request(true, incomplete)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(RequiredBillContent.CUT_NOTICE_DISCLOSURE);
@@ -116,7 +117,7 @@ class PrintFileGenerationTest {
                 PrintingFixtures.completeTemplateFields(), PrintingFixtures.lockedFields(), UNIT_1,
                 "000001-1", "NOME EXEMPLO", "Endereco exemplo", LocalDate.of(2026, 5, 1),
                 LocalDate.of(2026, 5, 20), new BigDecimal("10.00"),
-                PrintingFixtures.contextWithAnnualAndWater(), AccessiblePrintFormat.NONE, null))
+                PrintingFixtures.contextWithAnnualAndWater(), AccessiblePrintFormat.NONE, null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("linkingCode");
         assertThatThrownBy(() -> new PortalLinkingCode(" "))
@@ -141,7 +142,7 @@ class PrintFileGenerationTest {
                 "000001-1", "NOME | EXEMPLO", "Endereco exemplo", LocalDate.of(2026, 5, 1),
                 LocalDate.of(2026, 5, 20), new BigDecimal("10.00"),
                 PrintingFixtures.contextWithAnnualAndWater(), AccessiblePrintFormat.NONE,
-                new PortalLinkingCode("VINC-EXEMPLO-1"));
+                new PortalLinkingCode("VINC-EXEMPLO-1"), new VerificationCode("CODIGO-EXEMPLO-1"));
         assertThatThrownBy(() -> service.generate(PrintingFixtures.request(true, badName)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("printedHolderName");
@@ -150,7 +151,7 @@ class PrintFileGenerationTest {
                 "000001-1", "NOME EXEMPLO", "Endereco exemplo", LocalDate.of(2026, 5, 1),
                 LocalDate.of(2026, 5, 20), new BigDecimal("10.001"),
                 PrintingFixtures.contextWithAnnualAndWater(), AccessiblePrintFormat.NONE,
-                new PortalLinkingCode("VINC-EXEMPLO-1"));
+                new PortalLinkingCode("VINC-EXEMPLO-1"), new VerificationCode("CODIGO-EXEMPLO-1"));
         assertThatThrownBy(() -> service.generate(PrintingFixtures.request(true, badTotal)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("centavos");

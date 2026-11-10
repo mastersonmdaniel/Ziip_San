@@ -19,6 +19,16 @@
             <artifactId>ziipsan-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <!-- A GuideValidityRule (colecao ampliada) usa o
+                 LateFeeCalculator/LateFeePolicy do ziipsan-billing;
+                 sem esta dependencia o modulo nao compila —
+                 correcao-ci-cura-lote-1 (varredura de compilacao da
+                 CI, 2026-11-09). -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-billing</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- P3.29: o destino da devolucao bancaria e cifrado com o FieldCipher
              do ziipsan-security (RefundDestinationProtector, contexto
              refunds.destination); sem esta dependencia o modulo nao compila.

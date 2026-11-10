@@ -19,6 +19,26 @@
             <artifactId>ziipsan-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <!-- O ConnectionCycleFactsAdapter le os factos do ciclo de
+                 ligacao do ziipsan-registry (ConnectionCycleFactsService);
+                 sem esta dependencia o modulo nao compila —
+                 correcao-ci-cura-lote-1 (varredura de compilacao da CI,
+                 2026-11-09). -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-registry</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- O pacote field (emissao simultanea em campo, ED-19) usa
+                 as regras puras do ziipsan-billing-rules (BatchSendPolicy,
+                 FieldBillInput, FieldBillResult); sem esta dependencia o
+                 modulo nao compila — correcao-ci-cura-lote-1 (varredura
+                 de compilacao da CI, 2026-11-09). -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-billing-rules</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- P2.5 (F2): o snapshot do titular faturado (DAD-15) e cifrado com o
              FieldCipher do ziipsan-security; sem esta dependencia o billing nao
              compila o BillSnapshotService. -->

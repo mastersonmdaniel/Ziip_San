@@ -23,6 +23,15 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- A exportacao ERP (ErpExportService/ErpPayloads) usa o
+                 JournalEntryGenerator do ziipsan-accounting; sem esta
+                 dependencia o modulo nao compila — correcao-ci-cura-lote-1
+                 (varredura de compilacao da CI, 2026-11-09). -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-accounting</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>br.com.ziipsan</groupId>
             <artifactId>ziipsan-platform</artifactId>
             <version>${project.version}</version>

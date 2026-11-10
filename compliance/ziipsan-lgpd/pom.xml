@@ -19,6 +19,14 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- @PreAuthorize no DpoBackofficeController; mesmo desenho do
+                 ziipsan-fiscal/ziipsan-registry. Sem esta dependencia o
+                 modulo nao compila — correcao-ci-cura-lote-1 (varredura
+                 de compilacao da CI, 2026-11-09). -->
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>

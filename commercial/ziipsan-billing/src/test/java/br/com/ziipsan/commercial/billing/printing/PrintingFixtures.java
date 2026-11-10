@@ -54,7 +54,8 @@ final class PrintingFixtures {
                 completeTemplateFields(), lockedFields(), unitId, registration,
                 "NOME EXEMPLO " + registration, "Endereco exemplo, " + registration,
                 LocalDate.of(2026, 5, 1), LocalDate.of(2026, 5, 20), new BigDecimal("123.45"),
-                contextWithAnnualAndWater(), format, new PortalLinkingCode(linkingCode));
+                contextWithAnnualAndWater(), format, new PortalLinkingCode(linkingCode),
+                new VerificationCode("CODIGO-EXEMPLO-1"));
     }
 
     static PrintFileRequest request(boolean brailleEnabled, PrintBillSource... bills) {

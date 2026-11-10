@@ -7,6 +7,7 @@ import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.ConnectionF
 import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.DetectedIssue;
 import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.MetaFeature;
 import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.NodeFeature;
+import br.com.ziipsan.intelligence.gis.validation.GisValidationModel.ServiceConnectionFeature;
 import tools.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
@@ -126,7 +127,19 @@ public final class GisValidationEngine {
     /** Entrada completa do motor: retrato da área + regras + nós-fonte por contenção. */
     public record Snapshot(List<NodeFeature> nodes, List<ArcFeature> arcs,
                            List<ConnectionFeature> connections, List<MetaFeature> metas,
-                           List<ConnectivityRule> rules, Set<UUID> containedSourceNodeIds) {
+                           List<ConnectivityRule> rules, Set<UUID> containedSourceNodeIds,
+                           List<ServiceConnectionFeature> serviceConnections) {
+
+        public Snapshot {
+            serviceConnections = serviceConnections == null ? List.of() : List.copyOf(serviceConnections);
+        }
+
+        /** Snapshot sem ligacoes de servico (forma anterior a GIS-05/P2.23). */
+        public Snapshot(List<NodeFeature> nodes, List<ArcFeature> arcs,
+                        List<ConnectionFeature> connections, List<MetaFeature> metas,
+                        List<ConnectivityRule> rules, Set<UUID> containedSourceNodeIds) {
+            this(nodes, arcs, connections, metas, rules, containedSourceNodeIds, List.of());
+        }
     }
 
     public static List<DetectedIssue> detect(Snapshot snapshot) {
@@ -153,6 +166,7 @@ public final class GisValidationEngine {
         valves(nodes, issues);
         manholeInvert(nodes, issues);
         connectionsWithoutLink(snapshot.connections(), issues);
+        serviceConnectionsWithoutLine(snapshot.serviceConnections(), issues);
         islands(nodes, arcs, snapshot.containedSourceNodeIds(), issues);
         gravity(nodes, arcs, issues);
         captureAndMaterial(nodes, arcs, snapshot.connections(), snapshot.metas(), issues);
@@ -563,6 +577,24 @@ public final class GisValidationEngine {
             if (isActive(connection.lifecycleStatus()) && connection.serviceConnectionId() == null) {
                 issues.add(new DetectedIssue("CONNECTION_WITHOUT_LINK", WARNING,
                         "gis_connection", connection.id(), null, connection.changeSetId()));
+            }
+        }
+    }
+
+    /**
+     * GIS-05 (P2.23, §5.4): ligacao de servico activa para a regra
+     * (ACTIVE ou CUT), nao encerrada e sem nenhum ramal, gera
+     * ACTIVE_CONNECTION_WITHOUT_SERVICE_LINE (WARNING). A descricao
+     * canonica da regra vive no GisValidationModel.describe.
+     */
+    private static void serviceConnectionsWithoutLine(List<ServiceConnectionFeature> serviceConnections,
+                                                      Set<DetectedIssue> issues) {
+        for (ServiceConnectionFeature connection : serviceConnections) {
+            boolean activeForRule = "ACTIVE".equals(connection.systemRole())
+                    || "CUT".equals(connection.systemRole());
+            if (activeForRule && connection.open() && connection.serviceLineCount() == 0) {
+                issues.add(new DetectedIssue("ACTIVE_CONNECTION_WITHOUT_SERVICE_LINE", WARNING,
+                        "service_connections", connection.id(), null, null));
             }
         }
     }

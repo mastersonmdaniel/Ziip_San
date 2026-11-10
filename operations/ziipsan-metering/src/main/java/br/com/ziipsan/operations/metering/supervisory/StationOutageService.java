@@ -33,7 +33,7 @@ public class StationOutageService {
         Objects.requireNonNull(stationCode, "A estação é obrigatória");
         Objects.requireNonNull(startedAt, "O início da parada é obrigatório");
         if (reason == null || reason.isBlank()) {
-            throw new ApiException.Validation.of(
+            throw ApiException.Validation.of(
                     new ApiException.FieldError("reason", "required", "O motivo da parada é obrigatório."));
         }
         if (outages.findByTenantIdAndStationCodeAndEndedAtIsNull(tenantId, stationCode).isPresent()) {
@@ -58,7 +58,7 @@ public class StationOutageService {
             throw new ApiException.Conflict("station-outage-already-closed", "A parada já foi fechada.");
         }
         if (endedAt == null || !endedAt.isAfter(outage.getStartedAt())) {
-            throw new ApiException.Validation.of(new ApiException.FieldError(
+            throw ApiException.Validation.of(new ApiException.FieldError(
                     "endedAt", "invalid", "O fim da parada precisa ser posterior ao início."));
         }
         outage.setEndedAt(endedAt);
