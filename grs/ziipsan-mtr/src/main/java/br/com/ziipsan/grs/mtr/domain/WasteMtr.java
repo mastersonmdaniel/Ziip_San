@@ -18,7 +18,10 @@ import java.util.UUID;
         @Index(name = "idx_waste_mtr_status", columnList = "status"),
         @Index(name = "idx_waste_mtr_issued", columnList = "issued_at"),
         @Index(name = "idx_waste_mtr_collected", columnList = "collected_at"),
-        @Index(name = "idx_waste_mtr_delivered", columnList = "delivered_at"),
+        // ED-104 (produtor, sessão 6d762d43-e1a9-4984-b50d-571ba0643b52) — E1/D-MTR-7:
+        // a coluna real é received_at (a V2_4 cria idx_waste_mtr_delivered sobre received_at);
+        // "delivered_at" não existe e só causaria problema se o Hibernate gerasse DDL.
+        @Index(name = "idx_waste_mtr_delivered", columnList = "received_at"),
         @Index(name = "idx_waste_mtr_destined", columnList = "destined_at"),
         @Index(name = "idx_waste_mtr_sinir", columnList = "sinir_sync_status")
 })
@@ -27,7 +30,22 @@ import java.util.UUID;
 public class WasteMtr extends TenantAwareEntity {
 
     @Column(name = "mtr_number", nullable = false, length = 50, unique = true)
-    private String mtrNumber; // Padrão SINIR: AAAA.NNNNNNNN.AAAA.NN
+    private String mtrNumber; // Número INTERNO provisório: AAAA.NNNNNNNN.AAAA.NN — NÃO é o oficial
+
+    // ED-104 (produtor, sessão 6d762d43-e1a9-4984-b50d-571ba0643b52) — E1/R8:
+    // o número OFICIAL é atribuído pelo sistema emissor (SINIR ou sistema estadual, Portaria MMA
+    // 280/2020) e só é gravado quando a integração real o devolver. Nunca é fabricado localmente.
+    @Column(name = "official_mtr_number", length = 50)
+    private String officialMtrNumber;
+
+    // ED-104 — E1: armazenador temporário (quarto actor, Portaria 280 arts. 3º/13), opcional.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "temporary_storage_id")
+    private WasteTemporaryStorage temporaryStorage;
+
+    // ED-104 — E6: registo de lodo da ED-105 que originou este MTR (ligação persistida), opcional.
+    @Column(name = "sludge_record_id")
+    private UUID sludgeRecordId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "generator_id", nullable = false)
@@ -150,6 +168,12 @@ public class WasteMtr extends TenantAwareEntity {
     }
 
     public enum SinirSyncStatus {
+        // ED-104 (sessão 6d762d43-e1a9-4984-b50d-571ba0643b52) — E1/E8: estado inicial honesto.
+        // NOT_SUBMITTED = nenhuma submissão foi tentada (o nascimento do MTR). PENDING fica como
+        // legado dos registos anteriores à ED-104 e significa o mesmo na prática: por submeter.
+        // SYNCED só pode ser gravado por um adapter real com protocolo do sistema emissor —
+        // nenhuma porta sem adapter o produz (ver integration/).
+        NOT_SUBMITTED,
         PENDING,
         SYNCING,
         SYNCED,

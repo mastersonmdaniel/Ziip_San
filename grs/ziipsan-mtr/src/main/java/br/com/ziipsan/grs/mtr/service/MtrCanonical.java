@@ -58,16 +58,28 @@ public final class MtrCanonical {
     }
 
     public static String of(WasteCdf c) {
+        // ED-104 (sessão 6d762d43-e1a9-4984-b50d-571ba0643b52) — E2: o CDF deixou de ser 1:1 com
+        // o MTR; o conteúdo canônico passa a ser destinador + período + número oficial (quando
+        // existir). Os MTRs agregados entram pelo overload com a lista ordenada de números.
         return join(List.of(
                 FORMAT_VERSION,
                 "cdf",
-                id(c.getMtr() == null ? null : c.getMtr().getId()),
                 id(c.getDestination() == null ? null : c.getDestination().getId()),
+                s(c.getPeriodStart()),
+                s(c.getPeriodEnd()),
+                s(c.getOfficialCdfNumber()),
                 s(c.getDestinationMethod()),
                 s(c.getTechnicianCrea()),
                 s(c.getTechnicianName()),
                 time(c.getIssuedAt()),
                 s(c.getPdfChecksum())));
+    }
+
+    /** ED-104 — E2: canônico do CDF com os números internos dos MTRs agregados, ordenados. */
+    public static String of(WasteCdf c, List<String> aggregatedMtrNumbers) {
+        List<String> sorted = aggregatedMtrNumbers == null ? List.of()
+                : aggregatedMtrNumbers.stream().sorted().toList();
+        return of(c) + "\u001f" + String.join("\u001f", sorted);
     }
 
     // O separador é um caractere de controle que não aparece em texto digitado, para que

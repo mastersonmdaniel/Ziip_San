@@ -47,6 +47,15 @@
             <artifactId>hibernate-spatial</artifactId>
         </dependency>
         <dependency>
+            <!-- ED-104 (sessão 6d762d43-e1a9-4984-b50d-571ba0643b52) — E11/COD-33: biblioteca de PDF
+                 (Apache PDFBox) no lugar do escritor byte a byte: fonte embebida (acentuação
+                 pt-BR) e saída PDF/A-1b declarada. Versão fixada aqui porque nenhum pom do repo
+                 declara biblioteca de PDF. -->
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>

@@ -10,6 +10,7 @@ import br.com.ziipsan.grs.mtr.repository.WasteDestinationRepository;
 import br.com.ziipsan.grs.mtr.repository.WasteGeneratorRepository;
 import br.com.ziipsan.grs.mtr.repository.WasteMtrRepository;
 import br.com.ziipsan.grs.mtr.repository.WasteTransporterRepository;
+import br.com.ziipsan.grs.mtr.repository.WasteTemporaryStorageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -50,10 +51,13 @@ public class MtrService {
     private final WasteDestinationRepository destinationRepository;
     private final WasteClassRepository wasteClassRepository;
     private final WasteCdfRepository cdfRepository;
+    // ED-104 (produtor, sessão 6d762d43-e1a9-4984-b50d-571ba0643b52) — E1: quarto actor.
+    private final WasteTemporaryStorageRepository temporaryStorageRepository;
     // P0.25: SINIR em modo assistido (ADR-0004) — SinirIntegrationService apagado e sem
     // caminho de chamada ao SINIR em coleta/destinação; o MTR segue como rascunho operacional.
     private final GovBrSignatureService govBrSignature;
-    private final MtrPdfGenerator pdfGenerator;
+    // ED-104 — E2: o MtrPdfGenerator saiu daqui: a sua única chamada era o PDF do CDF, que
+    // passou para o CdfService (o CDF já não nasce na destinação).
     private final MtrDocumentProtection documents;
 
     /** Documento já usado por outro gerador do mesmo tenant (detectado pelo índice cego). */
@@ -116,6 +120,11 @@ public class MtrService {
 
         validateCompatibility(wasteClass, destination);
 
+        // ED-104 — E8: limites do Manual do MTR Nacional como regra do sistema parametrizável.
+        MtrItemRules.validateQuantityKg(request.quantityKg(), MtrItemRules.Limits.nationalDefaults());
+        MtrItemRules.validateUnitForScheme(wasteClass.getClassificationScheme(), "kg");
+        MtrItemRules.validateItemCount(request.temporaryStorageId() != null, 1);
+
         WasteMtr mtr = new WasteMtr();
         mtr.setTenantId(tenantId);
         mtr.setMtrNumber(generateMtrNumber());
@@ -128,7 +137,18 @@ public class MtrService {
         mtr.setPackagingCount(request.packagingCount());
         mtr.setVehiclePlate(request.vehiclePlate());
         documents.assignDriverCpf(mtr, request.driverCpf());
+        if (request.temporaryStorageId() != null) {
+            WasteTemporaryStorage storage = temporaryStorageRepository
+                    .findByIdAndTenantId(request.temporaryStorageId(), tenantId)
+                    .orElseThrow(() -> new IllegalArgumentException("Temporary storage not found"));
+            mtr.setTemporaryStorage(storage);
+        }
+        mtr.setSludgeRecordId(request.sludgeRecordId());
         mtr.setStatus(WasteMtr.MtrStatus.EMITTED);
+        // ED-104 — E1/R8: o número gerado é o INTERNO provisório; o oficial fica nulo até a
+        // integração real o devolver, e a sincronização nasce NOT_SUBMITTED (persistido).
+        mtr.setOfficialMtrNumber(null);
+        mtr.setSinirSyncStatus(WasteMtr.SinirSyncStatus.NOT_SUBMITTED);
         mtr.setIssuedAt(OffsetDateTime.now());
         // Map.toString() gera "{a=b}", que não é JSON e o PostgreSQL recusa numa coluna jsonb.
         mtr.setProperties(Json.orDefault(request.properties(), "{}"));
@@ -166,43 +186,91 @@ public class MtrService {
         return mtrRepository.save(mtr);
     }
 
+    /**
+     * ED-104 (sessão 6d762d43-e1a9-4984-b50d-571ba0643b52) — E2: a destinação fecha o MTR em
+     * DESTINED e NÃO emite CDF. O CDF deixou de nascer aqui: ele agrega os MTRs destinados de um
+     * período e é emitido por {@code CdfService} (o modelo 1:1 anterior contradiz a Portaria MMA
+     * 280/2020, art. 14 §§3º–7º). Método, técnico e detalhes do processo são dados do CDF, não
+     * desta operação.
+     */
     @Transactional
-    public WasteCdf destinateMtr(UUID mtrId, DestinateMtrRequest request) {
+    public WasteMtr destinateMtr(UUID mtrId, DestinateMtrRequest request) {
         WasteMtr mtr = load(mtrId);
         MtrStateMachine.require(mtr.getStatus(), WasteMtr.MtrStatus.DESTINED);
 
-        // A versão anterior buscava o destinador da requisição, ignorava o resultado e emitia o CDF
-        // para o destinador do MTR: um CDF podia sair para quem não recebeu o resíduo.
+        // Mantida a guarda anterior: destinar para quem não recebeu o resíduo é recusado.
         if (!mtr.getDestination().getId().equals(request.destinationId())) {
             throw new IllegalArgumentException("O destinador informado não é o destinador do MTR "
                     + mtr.getMtrNumber());
         }
-
-        WasteCdf cdf = new WasteCdf();
-        cdf.setTenantId(TenantContextHolder.getTenantId());
-        cdf.setMtr(mtr);
-        cdf.setDestination(mtr.getDestination());
-        cdf.setDestinationMethod(request.destinationMethod());
-        cdf.setProcessDetails(Json.orDefault(request.processDetails(), "{}"));
-        cdf.setTechnicianId(request.technicianId());
-        cdf.setTechnicianName(request.technicianName());
-        cdf.setTechnicianCrea(request.technicianCrea());
-        cdf.setIssuedAt(OffsetDateTime.now());
-
-        byte[] pdfBytes = pdfGenerator.generateCdfPdf(cdf, mtr,
-                documents.revealGeneratorDocument(mtr.getGenerator()));
-        cdf.setPdfDocument(pdfBytes);
-        cdf.setPdfChecksum(HashChain.sha256Hex(pdfBytes));
-        cdf.setHashChain(HashChain.next(null, MtrCanonical.of(cdf)));
-        cdfRepository.save(cdf);
 
         mtr.setStatus(WasteMtr.MtrStatus.DESTINED);
         mtr.setDestinedAt(OffsetDateTime.now());
         mtr.setDestinationSignature(request.destinationSignature());
         advanceChain(mtr);
 
-        mtrRepository.save(mtr);
-        return cdf;
+        return mtrRepository.save(mtr);
+    }
+
+    // ED-104 (produtor, sessão 6d762d43-e1a9-4984-b50d-571ba0643b52) — E1/D-MTR-1:
+    // IN_TRANSIT passa a ser alcançável (despacho após a coleta) e cancelar/rejeitar/expirar
+    // passam a ser operações explícitas e auditadas pela cadeia de hash. A expiração recebe o
+    // instante de referência e o prazo em dias como parâmetros declarados do chamador — nenhum
+    // prazo é presumido aqui (a validade varia por jurisdição: 90 dias no MTR Nacional, 60 no RS,
+    // segundo o levantamento; o agendamento é a pendência P-ED104-05).
+
+    @Transactional
+    public WasteMtr dispatchMtr(UUID mtrId) {
+        WasteMtr mtr = load(mtrId);
+        MtrStateMachine.require(mtr.getStatus(), WasteMtr.MtrStatus.IN_TRANSIT);
+        mtr.setStatus(WasteMtr.MtrStatus.IN_TRANSIT);
+        advanceChain(mtr);
+        return mtrRepository.save(mtr);
+    }
+
+    @Transactional
+    public WasteMtr cancelMtr(UUID mtrId, String reason) {
+        if (reason == null || reason.isBlank()) {
+            throw new IllegalArgumentException("o cancelamento exige motivo declarado");
+        }
+        WasteMtr mtr = load(mtrId);
+        MtrStateMachine.require(mtr.getStatus(), WasteMtr.MtrStatus.CANCELLED);
+        mtr.setStatus(WasteMtr.MtrStatus.CANCELLED);
+        mtr.setCancelledAt(OffsetDateTime.now());
+        mtr.setCancellationReason(reason.trim());
+        advanceChain(mtr);
+        return mtrRepository.save(mtr);
+    }
+
+    @Transactional
+    public WasteMtr rejectMtr(UUID mtrId, String reason) {
+        if (reason == null || reason.isBlank()) {
+            throw new IllegalArgumentException("a rejeição pelo destinador exige motivo declarado");
+        }
+        WasteMtr mtr = load(mtrId);
+        MtrStateMachine.require(mtr.getStatus(), WasteMtr.MtrStatus.REJECTED);
+        mtr.setStatus(WasteMtr.MtrStatus.REJECTED);
+        mtr.setCancellationReason(reason.trim());
+        advanceChain(mtr);
+        return mtrRepository.save(mtr);
+    }
+
+    @Transactional
+    public WasteMtr expireMtr(UUID mtrId, OffsetDateTime reference, long validityDays) {
+        if (reference == null || validityDays <= 0) {
+            throw new IllegalArgumentException("expiração exige instante de referência e prazo positivo em dias");
+        }
+        WasteMtr mtr = load(mtrId);
+        MtrStateMachine.require(mtr.getStatus(), WasteMtr.MtrStatus.EXPIRED);
+        if (reference.isBefore(mtr.getIssuedAt().plusDays(validityDays))) {
+            throw new IllegalStateException("MTR " + mtr.getMtrNumber() + " ainda dentro da validade de "
+                    + validityDays + " dias");
+        }
+        mtr.setStatus(WasteMtr.MtrStatus.EXPIRED);
+        mtr.setCancelledAt(reference);
+        mtr.setCancellationReason("expirado sem coleta após " + validityDays + " dias");
+        advanceChain(mtr);
+        return mtrRepository.save(mtr);
     }
 
     @Transactional(readOnly = true)
@@ -324,8 +392,18 @@ public class MtrService {
     public record CreateMtrRequest(
             UUID generatorId, UUID transporterId, UUID destinationId, UUID wasteClassId,
             BigDecimal quantityKg, String packagingType, Integer packagingCount,
-            String vehiclePlate, String driverCpf, Map<String, Object> properties
+            String vehiclePlate, String driverCpf, Map<String, Object> properties,
+            // ED-104 — E1/E6: armazenador temporário (opcional) e registo de lodo de origem (opcional)
+            UUID temporaryStorageId, UUID sludgeRecordId
     ) {
+        /** Forma anterior à ED-104 (sem armazenador temporário nem lodo): delega com ambos nulos. */
+        public CreateMtrRequest(UUID generatorId, UUID transporterId, UUID destinationId, UUID wasteClassId,
+                                BigDecimal quantityKg, String packagingType, Integer packagingCount,
+                                String vehiclePlate, String driverCpf, Map<String, Object> properties) {
+            this(generatorId, transporterId, destinationId, wasteClassId, quantityKg, packagingType,
+                    packagingCount, vehiclePlate, driverCpf, properties, null, null);
+        }
+
         @Override
         public String toString() {
             return "CreateMtrRequest[generatorId=" + generatorId + ", transporterId=" + transporterId
@@ -345,9 +423,7 @@ public class MtrService {
 
     public record ReceiveMtrRequest(String destinationSignature) {}
 
-    public record DestinateMtrRequest(
-            UUID destinationId, WasteCdf.DestinationMethod destinationMethod,
-            Map<String, Object> processDetails, UUID technicianId, String technicianName,
-            String technicianCrea, String destinationSignature
-    ) {}
+    // ED-104 — E2: método/técnico/detalhes do processo saíram desta requisição: são do CDF
+    // (CdfService.IssueCdfRequest), porque o CDF já não nasce na destinação de um MTR.
+    public record DestinateMtrRequest(UUID destinationId, String destinationSignature) {}
 }
