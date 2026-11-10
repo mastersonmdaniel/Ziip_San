@@ -1,0 +1,15 @@
+PORTÃO DE DEPLOY — ZiipSan (esteira, regras 1-6)
+Pacote: /home/hatch/workspace/ziipsan-producao/correcao-ci-security-catalogo
+------------------------------------------------------------------------
+[OK] REGRA 1 — REVISAO com veredito APROVADO
+[OK] REGRA 2 — CONFIRMACAO confirmada/aprovada
+[OK] REGRA 3 — Identidades distintas (cabeçalhos)
+[OK] REGRA 4 — Evidência de testes no RELATORIO
+[OK] REGRA 5 — LANDING.md presente
+[OK] REGRA 6 — Migrations na sequência/cobertura
+[NÃO VERIFICADO POR ESTE PORTÃO] Item (3) do protocolo — rebase contra a main corrente (exige leitura da main no ato do push)
+------------------------------------------------------------------------
+Observações (não bloqueiam):
+  - nenhuma migration .sql em entrega/ — regra 6 vacuamente satisfeita
+------------------------------------------------------------------------
+PORTÃO: APROVADO — todas as regras verificáveis satisfeitas.
