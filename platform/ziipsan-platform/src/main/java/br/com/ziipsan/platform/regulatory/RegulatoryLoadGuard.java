@@ -169,9 +169,20 @@ public final class RegulatoryLoadGuard {
                 throw new IllegalArgumentException("Carga recusada no perfil " + profileKey
                         + ": a chave " + value.definitionKey() + " traz a regra " + marker
                         + ", que contraria lei federal; ela pertence às divergências do "
-                        + "perfil, com o piso federal como valor efetivo");
+                        + "perfil, com o piso federal como valor efetivo" + federalLawOf(marker));
             }
         }
+    }
+
+    /** A lei federal que cada marcador proibido contraria (a citada no fim da recusa). */
+    private static String federalLawOf(String marker) {
+        return switch (marker) {
+            case "FRIDAY_UNTIL_12H", "FRIDAY_UNTIL_NOON", "ALLOW_FRIDAY_MORNING_CUT" ->
+                    " (Lei 14.015/2020)";
+            case "SOCIAL_LOSS_AFTER_TWO_CUTS", "BENEFIT_LOSS_BY_CUTS" ->
+                    " (Lei 14.898/2024)";
+            default -> "";
+        };
     }
 
     private static void validateConfirmedValue(String profileKey, ProfileValue value) {

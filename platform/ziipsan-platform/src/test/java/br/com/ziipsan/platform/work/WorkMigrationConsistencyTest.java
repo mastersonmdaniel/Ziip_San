@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Guardas das migrations da P2.28 sem banco, no padrão dos MigrationConsistencyTest do
- * projeto: os CHECKs da V1_11 listam exatamente os enums do código, as tabelas da
+ * projeto: os CHECKs da V105 listam exatamente os enums do código, as tabelas da
  * reserva §3 existem e são registradas para RLS, a segregação está em CHECK no banco,
  * e a V9_13 define os wf.* com as classes do aceite.
  *
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class WorkMigrationConsistencyTest {
 
-    private static final String TENANT_SQL = readResource("/db/migration/tenant/V1_11__work_items_and_delegations.sql");
+    private static final String TENANT_SQL = readResource("/db/migration/tenant/V105__work_items_and_delegations.sql");
     private static final String CORE_SQL = readResource("/db/migration/core/V9_13__p2_28_workflow_parameters.sql");
 
     private static String readResource(String path) {
@@ -72,7 +72,7 @@ class WorkMigrationConsistencyTest {
     }
 
     @Test
-    @DisplayName("CHECKs da V1_11 são IGUAIS aos enums WorkItemType, WorkItemStatus, ApprovalStatus e Channel (igualdade nos dois sentidos — correção m3)")
+    @DisplayName("CHECKs da V105 são IGUAIS aos enums WorkItemType, WorkItemStatus, ApprovalStatus e Channel (igualdade nos dois sentidos — correção m3)")
     void checksMatchEnums() {
         assertThat(checkLiterals(TENANT_SQL, "item_type IN"))
                 .as("CHECK de item_type == WorkItemType")
@@ -102,7 +102,7 @@ class WorkMigrationConsistencyTest {
     }
 
     @Test
-    @DisplayName("as tabelas da reserva V1_11 existem (work_items, approval_tasks, work_item_delegations, work_item_events) e são registradas para RLS")
+    @DisplayName("as tabelas da reserva V105 existem (work_items, approval_tasks, work_item_delegations, work_item_events) e são registradas para RLS")
     void tablesAndRlsRegistration() {
         assertThat(TENANT_SQL).contains("CREATE TABLE IF NOT EXISTS work_items");
         assertThat(TENANT_SQL).contains("CREATE TABLE IF NOT EXISTS approval_tasks");
@@ -125,7 +125,7 @@ class WorkMigrationConsistencyTest {
     }
 
     @Test
-    @DisplayName("a V1_11 não semeia dado nenhum (tipos, eventos e permissões são catálogos dos donos)")
+    @DisplayName("a V105 não semeia dado nenhum (tipos, eventos e permissões são catálogos dos donos)")
     void noSeedData() {
         assertThat(TENANT_SQL).doesNotContain("INSERT INTO work_items");
         assertThat(TENANT_SQL).doesNotContain("INSERT INTO approval_tasks");

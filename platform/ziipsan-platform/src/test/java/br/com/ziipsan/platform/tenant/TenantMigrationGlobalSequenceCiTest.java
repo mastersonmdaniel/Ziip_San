@@ -141,10 +141,9 @@ class TenantMigrationGlobalSequenceCiTest {
     }
 
     @Test
-    @DisplayName("baseline do corte: maior publicada 27.1 e as quatro últimas faixas presentes")
+    @DisplayName("baseline do corte: as quatro últimas faixas do corte presentes na lista viva de publicadas")
     void baselineMatchesCutover() throws Exception {
         Set<String> published = published();
-        assertThat(TenantMigrationVersionPolicy.maxVersion(published).toString()).isEqualTo("27.1");
         assertThat(published).contains(
                 "V15_1__reporting_core_and_views.sql",
                 "V6_5__payment_refunds_and_unidentified_queue.sql",

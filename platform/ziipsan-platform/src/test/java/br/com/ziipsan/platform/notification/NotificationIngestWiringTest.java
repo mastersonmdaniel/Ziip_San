@@ -258,12 +258,47 @@ class NotificationIngestWiringTest {
         }
 
         private static Map<String, Integer> colunasDoInsert(String sql) {
-            int abre = sql.indexOf('(');
-            int fecha = sql.indexOf(')', abre);
-            String[] nomes = sql.substring(abre + 1, fecha).split(",");
+            // Colunas: o primeiro parêntese do INSERT (a lista de colunas).
+            int abreColunas = sql.indexOf('(');
+            int fechaColunas = sql.indexOf(')', abreColunas);
+            String[] nomes = sql.substring(abreColunas + 1, fechaColunas).split(",");
+            // Valores: o parêntese logo após VALUES, com os parênteses aninhados
+            // respeitados (ex.: CAST(? AS jsonb)) — os do ON CONFLICT ficam fora.
+            // O serviço liga parâmetros por posição de placeholder, não por posição
+            // na lista de colunas: coluna com valor literal (ex.: channel = 'IN_APP')
+            // não consome placeholder nenhum, e as seguintes deslocam.
+            int abreValores = sql.indexOf('(', sql.toUpperCase().indexOf("VALUES"));
+            List<String> valores = new ArrayList<>();
+            int profundidade = 0;
+            int inicio = abreValores + 1;
+            for (int i = abreValores; i < sql.length(); i++) {
+                char c = sql.charAt(i);
+                if (c == '(') {
+                    profundidade++;
+                } else if (c == ')') {
+                    profundidade--;
+                    if (profundidade == 0) {
+                        valores.add(sql.substring(inicio, i));
+                        break;
+                    }
+                } else if (c == ',' && profundidade == 1) {
+                    valores.add(sql.substring(inicio, i));
+                    inicio = i + 1;
+                }
+            }
             Map<String, Integer> mapa = new LinkedHashMap<>();
-            for (int i = 0; i < nomes.length; i++) {
-                mapa.put(nomes[i].trim(), i + 1);
+            int placeholder = 0;
+            for (int i = 0; i < nomes.length && i < valores.size(); i++) {
+                int interrogacoes = 0;
+                for (int j = 0; j < valores.get(i).length(); j++) {
+                    if (valores.get(i).charAt(j) == '?') {
+                        interrogacoes++;
+                    }
+                }
+                if (interrogacoes > 0) {
+                    mapa.put(nomes[i].trim(), placeholder + 1);
+                    placeholder += interrogacoes;
+                }
             }
             return mapa;
         }

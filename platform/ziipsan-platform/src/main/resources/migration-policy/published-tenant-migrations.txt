@@ -29,7 +29,6 @@ V15_1__reporting_core_and_views.sql
 V15_2__indicator_registry.sql
 V1_10__users_audit_redaction.sql
 V1_11__personal_data_access_log_export.sql
-V1_11__work_items_and_delegations.sql
 V1_12__p2_30_document_templates.sql
 V1_13__regulatory_profile_origin.sql
 V1_14__document_signatures.sql
@@ -112,6 +111,8 @@ V9_1__service_order_engine.sql
 V9_2__cutoff_reconnection.sql
 V9_3__registry_service_order_links.sql
 V1_8__org_units_and_scopes.sql
+V100__global_sequence_start.sql
 V101__gis_import_saneago_seed_st_geometrytype_fix.sql
 V102__legacy_debit_febraban150.sql
 V103__legacy_debit_remittance_key.sql
+V105__work_items_and_delegations.sql
