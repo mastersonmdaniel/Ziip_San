@@ -20,6 +20,19 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- NfageThirdPartyExclusion (Camada 3) le a composicao da conta
+                 (BillComposition/BillChargeLine) do ziipsan-billing-rules: os
+                 tipos puros da composicao vivem nas regras partilhadas, sem
+                 dependencias internas — sem esta dependencia o fiscal nao
+                 compila; declarar ziipsan-billing aqui e impossivel por ciclo
+                 do reactor (billing -> registry -> platform -> fiscal ->
+                 billing, arestas de teste incluidas) — correcao-ci-cura-
+                 lote-3-r19a (R19-A, P-P46-02-CICLO saida 3). -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-billing-rules</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <!-- @PreAuthorize/@AuthenticationPrincipal no controller da fila
                  fiscal (P2.33); mesmo desenho do ziipsan-registry e do
                  ziipsan-gis. A entrega da P2.33 trouxe o controller sem esta

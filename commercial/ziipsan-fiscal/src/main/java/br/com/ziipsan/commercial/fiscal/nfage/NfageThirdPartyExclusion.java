@@ -1,7 +1,7 @@
 package br.com.ziipsan.commercial.fiscal.nfage;
 
-import br.com.ziipsan.commercial.billing.composition.BillChargeLine;
-import br.com.ziipsan.commercial.billing.composition.BillComposition;
+import br.com.ziipsan.commercial.billingrules.composition.BillChargeLine;
+import br.com.ziipsan.commercial.billingrules.composition.BillComposition;
 
 import java.math.BigDecimal;
 import java.util.List;
