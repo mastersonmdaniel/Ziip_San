@@ -39,6 +39,16 @@
             <artifactId>ziipsan-billing-rules</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <!-- CobillChargeAccountingMapping (tarifário C3, co-billing) le a
+                 chave de evento contabil AccountingEventKey do
+                 ziipsan-accounting; a entrega da C3 trouxe a classe sem esta
+                 dependencia — correcao-ci-cura-lote-3 (2026-11-10). Sem
+                 ciclo: o accounting so depende do ziipsan-core. -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-accounting</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- P2.5 (F2): o snapshot do titular faturado (DAD-15) e cifrado com o
              FieldCipher do ziipsan-security; sem esta dependencia o billing nao
              compila o BillSnapshotService. -->

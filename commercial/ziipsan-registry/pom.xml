@@ -36,6 +36,19 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- RouteScopeNonInterferenceTest (multimunicípio) usa as regras
+                 puras do ziipsan-billing-rules (FieldBillInput,
+                 FieldTariffSnapshot); a entrega trouxe o teste sem esta
+                 dependência — correcção correcao-ci-cura-lote-3 (2026-11-10).
+                 Escopo test: nenhum código de produção do registry usa
+                 billing-rules. Sem ciclo: o billing-rules não declara
+                 dependências internas. -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-billing-rules</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
