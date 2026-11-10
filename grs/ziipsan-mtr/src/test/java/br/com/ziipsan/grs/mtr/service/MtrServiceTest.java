@@ -14,6 +14,7 @@ import br.com.ziipsan.grs.mtr.repository.WasteClassRepository;
 import br.com.ziipsan.grs.mtr.repository.WasteDestinationRepository;
 import br.com.ziipsan.grs.mtr.repository.WasteGeneratorRepository;
 import br.com.ziipsan.grs.mtr.repository.WasteMtrRepository;
+import br.com.ziipsan.grs.mtr.repository.WasteTemporaryStorageRepository;
 import br.com.ziipsan.grs.mtr.repository.WasteTransporterRepository;
 import br.com.ziipsan.grs.mtr.service.MtrDocumentProtection.Driver;
 import br.com.ziipsan.grs.mtr.service.MtrService.CollectMtrRequest;
@@ -68,7 +69,6 @@ class MtrServiceTest {
     private WasteDestinationRepository destinationRepo;
     private WasteClassRepository classRepo;
     private WasteCdfRepository cdfRepo;
-    private MtrPdfGenerator pdf;
     private MtrDocumentProtection documents;
     private MtrService service;
     /** Geradores "gravados", por índice cego: simula o índice único (tenant_id, document_hash). */
@@ -90,7 +90,6 @@ class MtrServiceTest {
         destinationRepo = mock(WasteDestinationRepository.class);
         classRepo = mock(WasteClassRepository.class);
         cdfRepo = mock(WasteCdfRepository.class);
-        pdf = mock(MtrPdfGenerator.class);
 
         // P0.25: SINIR em modo assistido — sem serviço de integração e sem chamada ao SINIR.
         // Cifra real com chave de teste (EnvDerivedTenantKeyProvider é só para desenvolvimento e teste).
@@ -100,8 +99,11 @@ class MtrServiceTest {
         }
         var keys = new EnvDerivedTenantKeyProvider(master);
         documents = new MtrDocumentProtection(new FieldProtector(new FieldCipher(keys), new BlindIndex(keys)));
+        // ED-104 (sessão 6d762d43-e1a9-4984-b50d-571ba0643b52): o construtor perdeu o
+        // MtrPdfGenerator (o PDF do CDF passou para o CdfService, E2) e ganhou o repositório
+        // do armazenador temporário (E1).
         service = new MtrService(mtrRepo, generatorRepo, transporterRepo, destinationRepo, classRepo, cdfRepo,
-                mock(GovBrSignatureService.class), pdf, documents);
+                mock(WasteTemporaryStorageRepository.class), mock(GovBrSignatureService.class), documents);
 
         generator = entity(new WasteGenerator(), "00000000-0000-0000-0000-000000000001");
         documents.assignGeneratorDocument(generator, GENERATOR_CNPJ);
@@ -121,7 +123,6 @@ class MtrServiceTest {
         when(mtrRepo.countByTenantId(TENANT)).thenReturn(0L);
         when(mtrRepo.save(any(WasteMtr.class))).thenAnswer(inv -> inv.getArgument(0));
         when(cdfRepo.save(any(WasteCdf.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(pdf.generateCdfPdf(any(), any(), any())).thenReturn("pdf-de-teste".getBytes());
 
         generatorsByHash = new HashMap<>();
         when(generatorRepo.findByTenantIdAndDocumentHash(eq(TENANT), anyString()))
@@ -250,28 +251,25 @@ class MtrServiceTest {
         stored(mtr);
 
         assertThatThrownBy(() -> service.destinateMtr(mtr.getId(), new DestinateMtrRequest(
-                destination.getId(), WasteCdf.DestinationMethod.RECYCLING, Map.of(), null, "Fulana", "CREA-123", null)))
+                destination.getId(), null)))
                 .isInstanceOf(IllegalStateException.class).hasMessageContaining("EMITTED -> DESTINED");
     }
 
     @Test
-    @DisplayName("destinar: gera o CDF com checksum do PDF e fecha o MTR em DESTINED")
-    void destinationIssuesTheCdf() {
+    @DisplayName("ED-104/E2: destinar fecha o MTR em DESTINED e NÃO emite CDF (o CDF agrega o período, no CdfService)")
+    void destinateClosesMtrWithoutIssuingCdf() {
         WasteMtr mtr = create();
         mtr.setId(UUID.randomUUID());
         stored(mtr);
         service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", DRIVER_CPF, null, null));
         service.receiveMtr(mtr.getId(), new ReceiveMtrRequest("destinador"));
 
-        WasteCdf cdf = service.destinateMtr(mtr.getId(), new DestinateMtrRequest(destination.getId(),
-                WasteCdf.DestinationMethod.RECYCLING, Map.of("processo", "triagem"), UUID.randomUUID(),
-                "Fulana", "CREA-123", "assinatura"));
+        WasteMtr destined = service.destinateMtr(mtr.getId(), new DestinateMtrRequest(destination.getId(),
+                "assinatura"));
 
-        assertThat(mtr.getStatus()).isEqualTo(MtrStatus.DESTINED);
-        assertThat(mtr.getDestinedAt()).isNotNull();
-        assertThat(cdf.getPdfChecksum()).isEqualTo(HashChain.sha256Hex("pdf-de-teste".getBytes()));
-        assertThat(cdf.getHashChain()).isEqualTo(HashChain.next(null, MtrCanonical.of(cdf)));
-        assertThat(cdf.getDestination().getId()).isEqualTo(destination.getId());
+        assertThat(destined.getStatus()).isEqualTo(MtrStatus.DESTINED);
+        assertThat(destined.getDestinedAt()).isNotNull();
+        Mockito.verify(cdfRepo, Mockito.never()).save(any());
     }
 
     @Test
@@ -284,7 +282,7 @@ class MtrServiceTest {
         service.receiveMtr(mtr.getId(), new ReceiveMtrRequest("destinador"));
 
         assertThatThrownBy(() -> service.destinateMtr(mtr.getId(), new DestinateMtrRequest(UUID.randomUUID(),
-                WasteCdf.DestinationMethod.RECYCLING, Map.of(), null, "Fulana", "CREA-123", null)))
+                null)))
                 .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("não é o destinador do MTR");
         assertThat(mtr.getStatus()).as("o MTR continua RECEIVED").isEqualTo(MtrStatus.RECEIVED);
         Mockito.verify(cdfRepo, Mockito.never()).save(any());
@@ -429,25 +427,24 @@ class MtrServiceTest {
     }
 
     @Test
-    @DisplayName("P0.25: coleta e destinação não chamam o SINIR; o PDF do CDF recebe o documento do gerador")
-    void noSinirCallAndPdfReceivesGeneratorDocument() {
+    @DisplayName("P0.25+ED-104/E1: sem chamada ao SINIR; a sincronização nasce NOT_SUBMITTED e nada a altera")
+    void noSinirCallAndSyncStatusStaysNotSubmitted() {
         WasteMtr mtr = create();
         mtr.setId(UUID.randomUUID());
         stored(mtr);
-        // O status nasce PENDING por padrao da entidade (pendente de envio assistido);
-        // o que a P0.25 garante e que coleta/destinacao NAO o alteram nem preenchem
-        // protocolo, resposta ou data de tentativa: nenhuma sincronizacao foi tentada.
+        // ED-104/E1: o nascimento grava NOT_SUBMITTED (antes nascia PENDING por omissão da
+        // entidade); coleta/destinação continuam a não tentar sincronização nenhuma (P0.25).
+        assertThat(mtr.getSinirSyncStatus()).isEqualTo(WasteMtr.SinirSyncStatus.NOT_SUBMITTED);
         service.collectMtr(mtr.getId(), new CollectMtrRequest("ABC1D23", DRIVER_CPF, null, null));
-        assertThat(mtr.getSinirSyncStatus()).isEqualTo(WasteMtr.SinirSyncStatus.PENDING);
+        assertThat(mtr.getSinirSyncStatus()).isEqualTo(WasteMtr.SinirSyncStatus.NOT_SUBMITTED);
         assertThat(mtr.getSinirSyncAt()).isNull();
         assertThat(mtr.getSinirResponse()).isNull();
         assertThat(mtr.getSinirProtocol()).isNull();
+        assertThat(mtr.getOfficialMtrNumber()).isNull();
 
         service.receiveMtr(mtr.getId(), new ReceiveMtrRequest("destinador"));
-        service.destinateMtr(mtr.getId(), new DestinateMtrRequest(destination.getId(),
-                WasteCdf.DestinationMethod.RECYCLING, Map.of(), null, "Fulana", "CREA-123", null));
-        Mockito.verify(pdf).generateCdfPdf(any(), eq(mtr), eq(GENERATOR_CNPJ));
-        assertThat(mtr.getSinirSyncStatus()).isEqualTo(WasteMtr.SinirSyncStatus.PENDING);
+        service.destinateMtr(mtr.getId(), new DestinateMtrRequest(destination.getId(), null));
+        assertThat(mtr.getSinirSyncStatus()).isEqualTo(WasteMtr.SinirSyncStatus.NOT_SUBMITTED);
         assertThat(mtr.getSinirSyncAt()).isNull();
         assertThat(mtr.getSinirResponse()).isNull();
         assertThat(mtr.getSinirProtocol()).isNull();
