@@ -1,18 +1,51 @@
-# Pacote LC.2 — Produtor, sessao 764b25ad-2ccf-40e5-afbf-986d42be0213
-# EXEMPLO — copiar para terraform.tfvars e preencher. Todo valor com
-# [A DEFINIR] depende de fonte que ainda nao existe (conta AWS, dominio
-# real, dimensionamento aprovado): NAO inventar valor para "fazer rodar".
+# Pacote LC.15 — Produtor, sessao b3a03bf9-b502-478f-a071-9590cb482d99
+# EXEMPLO — copiar para terraform.tfvars e preencher NA ATIVACAO.
+# Todo valor com [A DEFINIR] depende de fonte que ainda nao existe (conta
+# AWS dedicada, cliente concreto, dominio real, dimensionamento aprovado):
+# NAO inventar valor para "fazer rodar". Cliente concreto: [A DEFINIR]
+# (decisao 52: a LC.15 executa-se integralmente ja, sem contrato).
 environment_name = "dedicado"
 environment_kind = "dedicated"
 tenant_slug      = "[A DEFINIR: slug do tenant dedicado]"
-vpc_cidr         = "[A DEFINIR]"
-root_domain      = "[A DEFINIR]"
-waf_rate_limit   = 0 # [A DEFINIR] substituir pelo limite aprovado
-container_image  = "[A DEFINIR: ECR da conta + digest da release]"
-api_cpu          = 0 # [A DEFINIR]
-api_memory       = 0 # [A DEFINIR]
+tenant_db_mode   = "schema-per-tenant" # MODO PADRAO (aceite LC.15); nao trocar por modos da P4.6
+
+# Conta AWS SEPARADA do cliente (criada na ativacao, passo 1 do roteiro)
+dedicated_account_id       = "[A DEFINIR: 12 digitos da conta dedicada]"
+dedicated_account_role_arn = "[A DEFINIR: ARN do papel IaC dentro da conta dedicada]"
+
+vpc_cidr          = "[A DEFINIR]"
+root_domain       = "[A DEFINIR]"
+waf_rate_limit    = 0 # [A DEFINIR] substituir pelo limite aprovado
+container_image   = "[A DEFINIR: ECR + digest da MESMA release da producao]"
+api_cpu           = 0 # [A DEFINIR]
+api_memory        = 0 # [A DEFINIR]
 api_desired_count = 0 # [A DEFINIR]
+worker_cpu            = 0 # [A DEFINIR]
+worker_memory         = 0 # [A DEFINIR]
+worker_desired_count  = 0 # [A DEFINIR]
+# keycloak_image: sem tfvars — o padrao de variables.tf e a imagem da LC.6
+# (quay.io/keycloak/keycloak:26.8.0); trocar so com a producao, nunca so aqui.
+keycloak_cpu          = 0 # [A DEFINIR]
+keycloak_memory       = 0 # [A DEFINIR]
+keycloak_hostname     = "[A DEFINIR: hostname publico do IdP dedicado]"
+keycloak_db_secret_arn = "[A DEFINIR: ARN do segredo LC.4 da credencial do banco keycloak]"
+
+# Banco exclusivo (padroes LC.3/LC.4, tudo em sa-east-1)
+db_instance_class              = "[A DEFINIR]"
+db_replica_instance_class      = "[A DEFINIR]"
+db_allocated_storage_gib       = 0 # [A DEFINIR]
+db_master_username             = "[A DEFINIR]"
+db_backup_retention_days       = 0 # [A DEFINIR]
+db_vault_destination_account_id = "[A DEFINIR: conta do cofre isolado, mesma regiao sa-east-1]"
+db_vault_lock_min_retention_days = 0 # [A DEFINIR]
+db_vault_lock_max_retention_days = 0 # [A DEFINIR]
+db_backup_copy_delete_after_days = 0 # [A DEFINIR]
+
 config_delivery_bucket = "[A DEFINIR]"
 tenant_domains   = []
 ses_tenants      = []
 messaging_tenants = []
+
+# TR-104 — TI do orgao (preencher so na ativacao, com o orgao nomeado)
+orgao_ti_principal_arns = [] # [A DEFINIR: principais do orgao autorizados, com MFA]
+orgao_ti_external_id    = "[A DEFINIR]"
