@@ -1,6 +1,7 @@
 package br.com.ziipsan.commercial.billing.servicecatalog;
 
-import br.com.ziipsan.commercial.billing.math.Money;
+import br.com.ziipsan.commercial.billingrules.math.Money;
+import br.com.ziipsan.commercial.billingrules.servicecatalog.RevenueNature;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

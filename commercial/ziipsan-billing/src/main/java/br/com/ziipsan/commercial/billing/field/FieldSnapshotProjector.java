@@ -1,9 +1,9 @@
 package br.com.ziipsan.commercial.billing.field;
 
-import br.com.ziipsan.commercial.billing.catalog.CalculationModel;
-import br.com.ziipsan.commercial.billing.catalog.ChargeResolution;
 import br.com.ziipsan.commercial.billingrules.FieldTariffSnapshot;
 import br.com.ziipsan.commercial.billingrules.TariffBracket;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeResolution;
 
 import java.math.BigDecimal;
 import java.util.List;

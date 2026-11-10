@@ -15,6 +15,6 @@ public interface ChargeVersionRepository extends JpaRepository<ChargeVersionEnti
     List<ChargeVersionEntity> findByTenantIdAndChargeDefinitionId(UUID tenantId, UUID chargeDefinitionId);
 
     /** Uma versao pela chave de negocio: (tenant, definicao, numero da versao). */
-    Optional<ChargeVersionEntity> findByTenantIdAndChargeDefinitionIdAndVersion(
-            UUID tenantId, UUID chargeDefinitionId, int version);
+    Optional<ChargeVersionEntity> findByTenantIdAndChargeDefinitionIdAndVersionNumber(
+            UUID tenantId, UUID chargeDefinitionId, int versionNumber);
 }

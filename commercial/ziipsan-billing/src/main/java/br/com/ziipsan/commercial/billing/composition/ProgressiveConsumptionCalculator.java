@@ -1,9 +1,10 @@
 package br.com.ziipsan.commercial.billing.composition;
 
-import br.com.ziipsan.commercial.billing.catalog.CalculationModel;
-import br.com.ziipsan.commercial.billing.catalog.ChargeResolution;
-import br.com.ziipsan.commercial.billing.tariff.TariffCharge;
 import br.com.ziipsan.commercial.billing.tariff.TariffEngine;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeResolution;
+import br.com.ziipsan.commercial.billingrules.composition.BillChargeLine;
+import br.com.ziipsan.commercial.billingrules.tariff.TariffCharge;
 
 import java.util.Objects;
 

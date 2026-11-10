@@ -1,6 +1,11 @@
 package br.com.ziipsan.commercial.billing.tariff;
 
-import br.com.ziipsan.commercial.billing.math.Money;
+import br.com.ziipsan.commercial.billingrules.math.Money;
+import br.com.ziipsan.commercial.billingrules.tariff.CategoryCharge;
+import br.com.ziipsan.commercial.billingrules.tariff.ChargeLine;
+import br.com.ziipsan.commercial.billingrules.tariff.SewerCharge;
+import br.com.ziipsan.commercial.billingrules.tariff.SliceCharge;
+import br.com.ziipsan.commercial.billingrules.tariff.TariffCharge;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

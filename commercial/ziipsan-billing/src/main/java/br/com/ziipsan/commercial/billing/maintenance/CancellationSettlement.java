@@ -1,6 +1,6 @@
 package br.com.ziipsan.commercial.billing.maintenance;
 
-import br.com.ziipsan.commercial.billing.math.Money;
+import br.com.ziipsan.commercial.billingrules.math.Money;
 
 import java.math.BigDecimal;
 import java.util.List;

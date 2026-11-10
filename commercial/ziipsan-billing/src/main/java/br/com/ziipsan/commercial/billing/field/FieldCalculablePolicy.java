@@ -1,9 +1,9 @@
 package br.com.ziipsan.commercial.billing.field;
 
-import br.com.ziipsan.commercial.billing.catalog.CalculationModel;
-import br.com.ziipsan.commercial.billing.catalog.ChargeDefinition;
-import br.com.ziipsan.commercial.billing.catalog.ChargeOwner;
-import br.com.ziipsan.commercial.billing.catalog.ChargeResolution;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeDefinition;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeOwner;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeResolution;
 
 import java.util.Objects;
 import java.util.Set;

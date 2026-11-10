@@ -1,7 +1,7 @@
 package br.com.ziipsan.commercial.billing.field;
 
-import br.com.ziipsan.commercial.billing.catalog.ChargeResolution;
 import br.com.ziipsan.commercial.billing.catalog.ChargeResolver;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeResolution;
 
 import java.time.LocalDate;
 import java.util.List;

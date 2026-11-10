@@ -1,10 +1,10 @@
 package br.com.ziipsan.commercial.billing.parameters;
 
 import br.com.ziipsan.commercial.billing.bill.LateFeePolicy;
-import br.com.ziipsan.commercial.billing.math.Money;
 import br.com.ziipsan.commercial.billing.tariff.FixedPartModel;
 import br.com.ziipsan.commercial.billing.tariff.OptionalCategoryRule;
 import br.com.ziipsan.commercial.billing.tariff.TariffConfigurationException;
+import br.com.ziipsan.commercial.billingrules.math.Money;
 import br.com.ziipsan.core.json.Json;
 import br.com.ziipsan.core.parameters.MissingParameterException;
 import br.com.ziipsan.core.parameters.ParameterLimits;

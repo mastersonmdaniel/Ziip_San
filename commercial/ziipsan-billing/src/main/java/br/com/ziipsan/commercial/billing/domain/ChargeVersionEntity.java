@@ -43,7 +43,7 @@ public class ChargeVersionEntity extends TenantAwareEntity {
     private UUID chargeDefinitionId;
 
     @Column(name = "version", nullable = false)
-    private int version;
+    private int versionNumber;
 
     @Column(name = "valid_from", nullable = false)
     private LocalDate validFrom;
