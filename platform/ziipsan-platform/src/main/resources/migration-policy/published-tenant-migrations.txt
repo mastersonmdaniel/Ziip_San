@@ -89,7 +89,7 @@ V4_4__bill_account_models_and_versioning.sql
 V4_5__create_fiscal_schema.sql
 V4_6__bill_total_tax_check_and_batch_audit.sql
 V4_7__fiscal_issuers_redaction.sql
-V4_7__nfse_avulsa_parte.sql
+V4_8__nfse_avulsa_parte.sql
 V4_9__tariff_readjust_review_and_simulation.sql
 V5_1__create_metering_schema.sql
 V5_2__metering_audit_redaction.sql

@@ -10,21 +10,21 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Consistência da V4_7 COMPLETA (P3.6 + P2.6): a parte da NFS-e avulsa permanece
+ * Consistência da V4_8 COMPLETA (P3.6 + P2.6): a parte da NFS-e avulsa permanece
  * intacta (SQL verbatim da entrega da P3.6) e os acréscimos da NFAg-e estão presentes
  * — sem recriar o dicionário fiscal da V4_5 nem o CHECK de total da V4_6.
  *
  * <p>Nota de integração: o {@code NfseMigrationConsistencyTest} da P3.6 afirmava que
- * a V4_7 NÃO continha tabela de NFAg-e ("a parte da P2.6 fica para a P2.6"). Com a
+ * a V4_8 NÃO continha tabela de NFAg-e ("a parte da P2.6 fica para a P2.6"). Com a
  * P2.6 entregue, essa premissa expirou e aquele teste precisa ser aposentado/
- * substituído por este na integração — ele reprovaria a V4_7 completa por desenho.
+ * substituído por este na integração — ele reprovaria a V4_8 completa por desenho.
  */
 class NfageMigrationConsistencyTest {
 
     private static String v47() throws IOException {
         try (InputStream in = NfageMigrationConsistencyTest.class.getResourceAsStream(
-                "/db/migration/tenant/V4_7__nfse_avulsa_parte.sql")) {
-            assertThat(in).as("migration V4_7 no classpath").isNotNull();
+                "/db/migration/tenant/V4_8__nfse_avulsa_parte.sql")) {
+            assertThat(in).as("migration V4_8 no classpath").isNotNull();
             return new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
@@ -81,7 +81,7 @@ class NfageMigrationConsistencyTest {
     }
 
     @Test
-    @DisplayName("a V4_7 NÃO recria o dicionário da V4_5 nem o CHECK de total da V4_6 (DAD-17/DAD-18)")
+    @DisplayName("a V4_8 NÃO recria o dicionário da V4_5 nem o CHECK de total da V4_6 (DAD-17/DAD-18)")
     void dictionaryAndTotalCheckNotDuplicated() throws IOException {
         String sql = v47();
         assertThat(sql).doesNotContain("CREATE TABLE IF NOT EXISTS fiscal_documents")
