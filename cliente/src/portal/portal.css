@@ -1,0 +1,18 @@
+/* Telas do portal do consumidor: cores SOMENTE das variaveis de marca da
+   ED-39 (--brand-primary, --brand-on-primary, --brand-text, de
+   cssVariables() em src/branding/tenantTheme.ts). Nenhuma cor de tenant
+   inventada; reservas neutras apenas onde a variavel nao se aplica. */
+.portal-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+.portal-field input, .portal-field select { min-height: 48px; font: inherit; color: var(--brand-text, #1a1a1a); }
+.portal-action {
+  min-height: 48px; min-width: 48px; margin: 4px 8px 4px 0;
+  background: var(--brand-primary, #333); color: var(--brand-on-primary, #fff);
+  border: 0; border-radius: 6px; font: inherit; cursor: pointer;
+}
+/* Link com .portal-action (ex.: "Abrir PDF da segunda via"): o alvo de
+   >= 48px so vale se o link for caixa — inline-flex garante a altura. */
+a.portal-action { display: inline-flex; align-items: center; }
+/* Botao de navegacao ativo (aria-current aplicado por boot.show()). */
+.portal-action[aria-current='page'] { text-decoration: underline; }
+.portal-status { min-height: 1.5em; }
+section h2 { color: var(--brand-text, #1a1a1a); }
