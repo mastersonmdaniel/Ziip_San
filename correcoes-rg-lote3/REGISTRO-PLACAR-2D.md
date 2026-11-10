@@ -1832,3 +1832,56 @@ Verificação própria nesta sessão: `wc -l ci-vm/ci-completa-pos-cura.log` = *
 Verificação própria do produtor: a linha 1439 do blob e a linha 1439 do ficheiro local diferem **só** nesse excerto (diff por SequenceMatcher: inserção de "5 (a V103 foi ocupada pela chave de remessa, `451c151`; a V104 está reservada ao contract)" sobre "V103"); o resto da linha é byte-idêntico nos dois lados. A renumeração correcta é **V105** — a V103 foi ocupada pela chave de remessa (`451c151`) e a V104 está reservada ao contract da V103; a frase pousada ("para V103") está desactualizada/errada e é corrigida por este adendo, sem reescrever o original pousado.
 
 **Aviso de instantâneo:** esta cópia congelada é um instantâneo. A manutenção posterior da rotina de 2h pode acrescentar-lhe linhas (o ficheiro vivo cresce por appends) e supersedê-la antes do pouso; nesse caso o pouso **re-congela** a versão corrente no acto, e este adendo viaja com a versão então corrente, não com esta cópia. O SHA-256 e a contagem de linhas desta cópia estão registados no `LANDING.md` do lote R20-B.
+
+---
+
+## V. Adendo de 10/11/2026 — Estado real da CI completa pós-R19-A + fila real de correcções (lote R22-B da Rodada 22)
+
+**Produtor:** sessão `21cb412a-dd07-4a18-bf3f-47fe35c0168e` (lote R22-B, local-only; **NÃO POUSA** nesta execução — viaja num futuro lote transportador, padrão R20-B).
+**Censo de letras verificado antes de escrever:** última letra de adendo em uso é **U** (linha 1742); `grep -c "^## V\."` = 0 — **V livre**. Os adendos nomeados sem letra (R18-C3-01, R20-I1) não consomem letras.
+**Base:** cópia em disco sincronizada com o blob pousado `f99ba1d4…` (1.834 linhas, commit `32904d11`) pelo mesmo lote (R22-4A-1); este adendo é append puro sobre essa base.
+
+## V1. Estado real da CI completa pós-R19-A — correcção dos adendos T e U (R22-U-01)
+
+Os adendos T (§T4) e U (§U4) afirmam que o `ci-vm/ci-completa-pos-r19a.log` é um stub/aborto (72 bytes, `ERRO: psql nao encontrado`) e que "o rerun continua por fazer". **Isso já não é verdade — e era verdade no instante em que foram escritos.** O adendo U foi escrito às ~06:10 −03, quando o log ainda era o stub da tentativa abortada; a corrida completa sobrepôs-se depois (ficheiro com mtime 2026-11-10 09:26 UTC). Corrige-se aqui, sem reescrever T ou U:
+
+- **O ficheiro actual é a corrida completa:** 423.707 bytes, HEAD testado `d8075343bb6ce9c49b95a8d567fe1ead71b217b2` (linha 1 do log), fim 2026-11-10T09:26:24Z (log linha 3568), duração total 05:14 min.
+- **0 ocorrências** de "psql nao encontrado" no ficheiro actual (conferido por `grep -c`).
+- **Placares verificados por leitura própria do log integral** (linhas de total por módulo; Reactor Summary, log linhas 3542–3568):
+
+| Módulo | Placar | Estado |
+|---|---:|---|
+| core | 1.573/1.573 (log:824) | SUCCESS |
+| security | 48/48 (log:894) | SUCCESS |
+| billing-rules | 31/31 (log:959) | SUCCESS |
+| fiscal | 228/228 (log:1097) | SUCCESS |
+| platform | 1.374 corridos, 15 falhas (log:3539) | FAILURE |
+| restantes 14 (Quality, Losses, Metering, Accounting, Integration, Reporting, GIS, MTR, LGPD, Registry, Billing, Asset, Collection, App) | — | SKIPPED |
+
+- O reactor pára no platform (BUILD FAILURE, log:3565). O fiscal compila agora — a saída 3 do R19-A resolveu a aresta fiscal→billing. Ressalva: billing/registry/accounting ficaram SKIPPED — a compilação deles não foi provada por esta CI, só pela varredura test-compile do R19-A.
+- **Persistem:** P-CURA-02 / P-CURA2-07 (prova do provisionamento — `TenantProvisioningServiceTest` 16 corridos, 13 em falha, log:3166, causa: migração duplicada V4_7, R22-2A-1, lote R22-A); P-CURA-03 (ITs GIS — o failsafe nunca executou; o reactor parou no platform); P-CURA2-06 (`VerticalBoundaryTest` 2/2 em falha, log:3344 — decisão de arquitectura do dono pendente).
+- **Fresquura desta foto:** a posição na main deste adendo é o HEAD `cb244605` (2 commits de documentação depois de `d8075343`); o placar 286/286, front 52/52, Onda II 131/131 e R19-A mantêm-se (ver adendo U).
+
+## V2. Fila real de correcções — correcção do §U4 (R22-4A-2)
+
+O §U4 resume a fila para "a fila que segue é a de correcções (R21-A/B/C)". **A fila real é mais comprida, e nenhum dos itens mais antigos pousou.** Conferência própria (lote R22-B): `git log 1d755053..cb244605 --format='%h %s'` (71 commits) filtrado por `r14|r15|r16|r18|r19-b|r20-a|r20-c|v104|mm-05` devolve **vazio**; o único "r20-b" no intervalo é o próprio `32904d11` (o registo). Entre o adendo T e o adendo U não houve nenhum pouso desses itens (só os 2 commits de documentação R20-B). A fila completa, herdada do §T4, é:
+
+| Item | Estado nesta data |
+|---|---|
+| R14-A | Local-only; sem pouso |
+| R15-A / R15-B | Local-only; sem pouso |
+| R16-A | Local-only; sem pouso |
+| R18-A / R18-B | Local-only; sem pouso |
+| R19-B | Local-only; sem pouso |
+| R20-A | Local-only por desenho; instalação local executada (9/9); sem pouso |
+| R20-B | **Pousado em parte** — só I1+I2 (`32904d11` + `cb244605`); I3/I4/R1 locais por desenho |
+| R20-C | Local-only por desenho; sem pouso |
+| R21-A | Local-only por desenho; corrigido documentalmente por este lote R22-B (errata R22-3A-1 + `portao-saida.txt` R22-3A-2); sem pouso |
+| R21-B | **Sem pacote local** — executado directamente em 15 commits `fix(ci)` + verbete `d8075343` (O-R22-03); sem re-pouso |
+| R21-C | Local-only por desenho; sem pouso |
+| V104 | Reservada ao contract da V103; sem commit — não pousa |
+| MM-05 | Bloqueado (P-MM05-R8C-01); sem pouso |
+| Prova INV-C2-11 sobre a base 12k (decisão 49) | **EXECUTADA** 10/11/2026 ~00:37 −03 (11.300/11.300 perfis, 0 divergências; revisão APROVADO COM RESSALVAS, confirmação CONFIRMADO COM RESSALVAS) — não pousada por desenho |
+| Rerun da CI completa pós-R19-A (P-CURA-02/03) | **EXECUTADO** — ver §V1 acima (log completo, 09:26:24Z) |
+
+A omissão da prova INV-C2-11 no §U4 fica suprida por esta tabela. A fila de pouso das 286 tarefas continua vazia (0 aguardando) — a fila acima é de **correcções e provas**, não de tarefas do plano.
