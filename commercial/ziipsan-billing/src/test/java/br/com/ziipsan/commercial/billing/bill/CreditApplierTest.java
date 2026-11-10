@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import br.com.ziipsan.commercial.billingrules.bill.CreditLine;
 import static br.com.ziipsan.commercial.billing.fixture.FictitiousTariffs.d;
 import static br.com.ziipsan.commercial.billing.fixture.FictitiousTariffs.id;
 import static org.assertj.core.api.Assertions.assertThat;

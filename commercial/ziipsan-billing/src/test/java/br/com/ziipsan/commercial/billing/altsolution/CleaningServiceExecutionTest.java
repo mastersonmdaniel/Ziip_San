@@ -2,8 +2,8 @@ package br.com.ziipsan.commercial.billing.altsolution;
 
 import br.com.ziipsan.commercial.billing.central.CasualUserUnit;
 import br.com.ziipsan.commercial.billing.servicecatalog.PriceTable;
-import br.com.ziipsan.commercial.billing.servicecatalog.RevenueNature;
 import br.com.ziipsan.commercial.billing.servicecatalog.ServicePriceItem;
+import br.com.ziipsan.commercial.billingrules.servicecatalog.RevenueNature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

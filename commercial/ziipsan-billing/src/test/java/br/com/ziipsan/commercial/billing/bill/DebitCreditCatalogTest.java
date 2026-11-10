@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.ziipsan.commercial.billingrules.bill.CreditLine;
+import br.com.ziipsan.commercial.billingrules.bill.DebitLine;
 import static br.com.ziipsan.commercial.billing.fixture.FictitiousTariffs.d;
 import static br.com.ziipsan.commercial.billing.fixture.FictitiousTariffs.id;
 import static br.com.ziipsan.commercial.billing.fixture.FictitiousTariffs.res;

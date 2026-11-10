@@ -1,10 +1,10 @@
 package br.com.ziipsan.commercial.billing.cobill;
 
 import br.com.ziipsan.commercial.accounting.event.AccountingEventKey;
-import br.com.ziipsan.commercial.billing.catalog.CalculationModel;
-import br.com.ziipsan.commercial.billing.catalog.ChargeOwner;
-import br.com.ziipsan.commercial.billing.composition.BillChargeLine;
-import br.com.ziipsan.commercial.billing.servicecatalog.RevenueNature;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeOwner;
+import br.com.ziipsan.commercial.billingrules.composition.BillChargeLine;
+import br.com.ziipsan.commercial.billingrules.servicecatalog.RevenueNature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

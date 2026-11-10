@@ -1,7 +1,12 @@
 package br.com.ziipsan.commercial.billing.catalog;
 
-import br.com.ziipsan.commercial.billing.catalog.ChargeVersion.ChargeParameters;
-import br.com.ziipsan.commercial.billing.servicecatalog.RevenueNature;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion.ChargeParameters;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeDefinition;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeOwner;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeResolution;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion;
+import br.com.ziipsan.commercial.billingrules.servicecatalog.RevenueNature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

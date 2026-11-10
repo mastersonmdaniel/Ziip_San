@@ -1,11 +1,11 @@
 package br.com.ziipsan.commercial.billing.bill;
 
-import br.com.ziipsan.commercial.billing.tariff.CategoryCharge;
-import br.com.ziipsan.commercial.billing.tariff.ChargeLine;
-import br.com.ziipsan.commercial.billing.tariff.TariffGroup;
 import br.com.ziipsan.commercial.billing.tariff.SewerFactorPolicy;
 import br.com.ziipsan.commercial.billing.tariff.SewerParameters;
-import br.com.ziipsan.commercial.billing.tariff.SliceCharge;
+import br.com.ziipsan.commercial.billing.tariff.TariffGroup;
+import br.com.ziipsan.commercial.billingrules.tariff.CategoryCharge;
+import br.com.ziipsan.commercial.billingrules.tariff.ChargeLine;
+import br.com.ziipsan.commercial.billingrules.tariff.SliceCharge;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

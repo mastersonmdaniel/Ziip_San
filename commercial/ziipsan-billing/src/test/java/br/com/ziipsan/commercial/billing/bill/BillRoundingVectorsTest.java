@@ -1,6 +1,7 @@
 package br.com.ziipsan.commercial.billing.bill;
 
-import br.com.ziipsan.commercial.billing.math.Money;
+import br.com.ziipsan.commercial.billingrules.bill.TaxLine;
+import br.com.ziipsan.commercial.billingrules.math.Money;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.List;
 
+import br.com.ziipsan.commercial.billingrules.bill.TaxLine;
 import static br.com.ziipsan.commercial.billing.fixture.FictitiousTariffs.d;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
