@@ -73,6 +73,15 @@ command -v node >/dev/null || die "node nao encontrado"
 command -v npm >/dev/null || die "npm nao encontrado"
 [ -f "$SRC/infra/postgres/init/sql/security.sql" ] || die "security.sql nao encontrado"
 
+# R17-CI-04 (Rodada 17, 09/11/2026): registar o HEAD testado no inicio de cada
+# log. Os logs 1-4 da CI na VM nao registavam o commit testado e a atribuicao
+# a a7f8e79b teve de ser reconstruida pelo reflog do clone. Imprime-se antes
+# de qualquer passo com efeito (Postgres, Maven), por isso o registo existe
+# mesmo que a corrida falhe cedo. So leitura: nao altera o comportamento.
+echo "== HEAD testado: $(git -C "$SRC" rev-parse HEAD 2>/dev/null || echo '[nao e um repositorio git]')"
+echo "== estado da arvore (git status --porcelain; vazio = limpa):"
+git -C "$SRC" status --porcelain 2>/dev/null | head -20 || true
+
 SUPER_PW="$(openssl rand -hex 16)"
 APP_PW="$(openssl rand -hex 16)"
 MIG_PW="$(openssl rand -hex 16)"
