@@ -321,8 +321,8 @@ class HomologationSecurityPortalTest {
             };
             var links = new ConsumerLinkService.LinkStorePort() {
                 @Override public boolean isAlreadyLinked(UUID t, String s, UUID u) { return savedLinks.contains(s + "|" + u); }
-                @Override public void saveLink(UUID t, String s, UUID u, Instant at) { savedLinks.add(s + "|" + u); }
-                @Override public int countActiveLinks(UUID t, String s) {
+                @Override public void saveLink(UUID t, String s, UUID u, String docIdx, String codeIdx, Instant at) { savedLinks.add(s + "|" + u); }
+                public int countActiveLinks(UUID t, String s) {
                     return (int) savedLinks.stream().filter(x -> x.startsWith(s + "|")).count();
                 }
             };

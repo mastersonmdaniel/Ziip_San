@@ -78,7 +78,7 @@ class GuestPaymentServiceTest {
         String json = Json.write(view);
         JsonNode tree = Json.readTree(json);
         Set<String> fields = new HashSet<>();
-        tree.fieldNames().forEachRemaining(fields::add);
+        fields.addAll(tree.propertyNames()); // Jackson 3: fieldNames() removido (correcao-ci-platform-testes)
         assertThat(fields).containsExactlyInAnyOrder(
                 "amount", "dueDate", "referenceMonth", "digitableLine", "pixCopyPaste");
         String lower = json.toLowerCase(java.util.Locale.ROOT);

@@ -64,7 +64,7 @@ class DocumentNamePolicyTest {
                 .isEqualTo(DocumentNamePolicy.Mode.FACTORY_DEFAULT);
         assertThat(DocumentNamePolicy.modeFromParameterValue("  "))
                 .isEqualTo(DocumentNamePolicy.Mode.FACTORY_DEFAULT);
-        assertThat(DocumentNamePolicy.FACTORY_DEFAULT)
+        assertThat(DocumentNamePolicy.Mode.FACTORY_DEFAULT)
                 .isEqualTo(DocumentNamePolicy.Mode.SOCIAL_EVERYWHERE_EXCEPT_FISCAL);
         assertThat(DocumentNamePolicy.modeFromParameterValue("\"CIVIL_NAME_ONLY\""))
                 .isEqualTo(DocumentNamePolicy.Mode.CIVIL_NAME_ONLY);
