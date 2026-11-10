@@ -42,9 +42,13 @@ public class TenantCatalog {
     private record Cached(Optional<Entry> entry, Instant expiresAt) {
     }
 
+    private record CachedResolution(Optional<TenantResolution> resolution, Instant expiresAt) {
+    }
+
     private final JdbcTemplate jdbc;
     private final Clock clock;
     private final ConcurrentHashMap<UUID, Cached> cache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, CachedResolution> resolutionCache = new ConcurrentHashMap<>();
 
     @Autowired
     public TenantCatalog(DataSource dataSource) {
@@ -54,6 +58,31 @@ public class TenantCatalog {
     TenantCatalog(JdbcTemplate jdbc, Clock clock) {
         this.jdbc = jdbc;
         this.clock = clock;
+    }
+
+    /**
+     * P4.6, item 4 do aceite: resolucao completa do tenant — schema, CLUSTER e
+     * MODO de isolamento — para o roteamento de pools por cluster e por papel
+     * ({@link ClusterPoolRouter}). Le as colunas da core V7 (cluster_id,
+     * isolation_mode) que o {@link #find(UUID)} nao le. Cache proprio, com o
+     * mesmo TTL de 60 s: suspender um tenant ou muda-lo de cluster/modo leva
+     * no maximo esse tempo para valer no roteamento.
+     */
+    public Optional<TenantResolution> findResolution(UUID tenantId) {
+        Instant now = clock.instant();
+        CachedResolution cached = resolutionCache.get(tenantId);
+        if (cached != null && cached.expiresAt().isAfter(now)) {
+            return cached.resolution();
+        }
+        Optional<TenantResolution> resolution = jdbc.query(
+                "SELECT id, schema_name, cluster_id, isolation_mode, status"
+                        + " FROM public.tenant_catalog WHERE id = ?",
+                (rs, i) -> new TenantResolution(
+                        rs.getObject(1, UUID.class), rs.getString(2), rs.getString(3),
+                        IsolationMode.parse(rs.getString(4)), rs.getString(5)),
+                tenantId).stream().findFirst();
+        resolutionCache.put(tenantId, new CachedResolution(resolution, now.plus(TTL)));
+        return resolution;
     }
 
     public Optional<Entry> find(UUID tenantId) {

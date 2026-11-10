@@ -97,8 +97,29 @@ public class TenantProvisioningService {
         // se fosse um erro recuperavel.
         boolean schemaCreatedNow = false;
 
+        // P4.6 (correcção R-P46-05): tenant DEDICATED no cluster 'default' é
+        // recusado AQUI, no caminho de produção — antes, a recusa vivia só no
+        // construtor do record DedicatedTenantProfile, que nenhum caminho de
+        // provisionamento invocava, e um DEDICATED nascia no cluster
+        // compartilhado sem ninguém o barrar. É erro de validação do chamador
+        // (como o nome de schema inválido): a excepção escapa, não vira
+        // "failure" de infra.
+        requireDedicatedOwnCluster(clusterIdOf(request),
+                IsolationMode.parse(isolationModeOf(request)));
+
         try {
-            schemaCreatedNow = ensureSchema(schemaName, tenantId);
+            // P4.6 (correcção R-P46-06): a guarda do teto é count-then-insert;
+            // sem serialização, dois provisionamentos concorrentes no limiar
+            // podiam ambos passar na contagem e furar o teto. O lock de
+            // sessão por cluster é tomado ANTES da contagem e só é largado
+            // no finally, depois do registo em catálogo — a janela entre
+            // contar e registar fica serializada por cluster em todo o
+            // banco (o lock é do PostgreSQL, não da JVM).
+            acquireClusterProvisioningLock(clusterIdOf(request));
+            enforceClusterCeiling(clusterIdOf(request), schemaName,
+                    IsolationMode.parse(isolationModeOf(request)));
+            schemaCreatedNow = ensureSchema(schemaName, tenantId,
+                    clusterIdOf(request), IsolationMode.parse(isolationModeOf(request)));
 
             runTenantMigrations(schemaName, tenantId);
             grantTenantTablePrivileges(schemaName);
@@ -124,6 +145,79 @@ public class TenantProvisioningService {
                         + "dados do tenant existente", schemaName);
             }
             return TenantProvisioningResult.failure(e.getMessage());
+        } finally {
+            releaseClusterProvisioningLock();
+        }
+    }
+
+    /**
+     * P4.6 (correcção R-P46-05): a regra "DEDICATED exige cluster próprio"
+     * deixa de viver só no record {@link DedicatedTenantProfile}: o
+     * provisionamento aplica-a a todo o pedido DEDICATED, delegando a
+     * validação do cluster ao próprio perfil (fonte única da regra).
+     * Pedidos dos demais modos não são afectados.
+     */
+    static void requireDedicatedOwnCluster(String clusterId, IsolationMode isolationMode) {
+        if (isolationMode == IsolationMode.DEDICATED) {
+            DedicatedTenantProfile.requireOwnCluster(clusterId);
+        }
+    }
+
+    /**
+     * P4.6 (correcção R-P46-05): a isenção do teto só é legítima para
+     * DEDICATED COM cluster próprio — um DEDICATED no 'default' disputaria
+     * o teto do cluster compartilhado como qualquer outro tenant (e, desde
+     * esta correcção, é recusado antes de cá chegar; a condição mantém-se
+     * explícita para a guarda ser correcta mesmo isolada).
+     */
+    static boolean ceilingExempt(String clusterId, IsolationMode isolationMode) {
+        return isolationMode == IsolationMode.DEDICATED && !"default".equals(clusterId);
+    }
+
+    // --- Lock de sessão por cluster (correcção R-P46-06) -------------------
+    // A conexão que segura o lock fica guardada até ao fim do
+    // provisionamento: pg_advisory_lock é por SESSÃO, logo largar a
+    // conexão (ou devolvê-la ao pool com o lock tomado) quebraria a
+    // serialização ou a vazaria para outro chamador do pool.
+
+    private final ThreadLocal<Connection> ceilingLockConnection = new ThreadLocal<>();
+    private final ThreadLocal<String> ceilingLockCluster = new ThreadLocal<>();
+
+    private void acquireClusterProvisioningLock(String clusterId) {
+        try {
+            Connection conn = migratorDataSource.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "SELECT pg_advisory_lock(hashtextextended(?, 0))")) {
+                ps.setString(1, "ziipsan:provisioning:" + clusterId);
+                ps.execute();
+            }
+            ceilingLockConnection.set(conn);
+            ceilingLockCluster.set(clusterId);
+        } catch (SQLException e) {
+            throw new IllegalStateException(
+                    "Falha ao serializar o provisionamento do cluster " + clusterId, e);
+        }
+    }
+
+    private void releaseClusterProvisioningLock() {
+        Connection conn = ceilingLockConnection.get();
+        String clusterId = ceilingLockCluster.get();
+        ceilingLockConnection.remove();
+        ceilingLockCluster.remove();
+        if (conn == null) {
+            return;
+        }
+        try (Connection c = conn;
+             PreparedStatement ps = c.prepareStatement(
+                     "SELECT pg_advisory_unlock(hashtextextended(?, 0))")) {
+            ps.setString(1, "ziipsan:provisioning:" + clusterId);
+            ps.execute();
+        } catch (SQLException e) {
+            // A conexão fecha a seguir de qualquer forma (try-with-resources
+            // sobre ela), e o fecho da sessão larga o lock no servidor: a
+            // falha do unlock explícito não deixa lock órfão.
+            log.warn("Unlock de provisionamento do cluster {} falhou; "
+                    + "o fecho da sessão larga o lock", clusterId, e);
         }
     }
 
@@ -141,17 +235,76 @@ public class TenantProvisioningService {
      * A verificacao ANTES do CREATE e o que permite ao rollback saber se o schema e seguro de
      * remover.
      */
-    private boolean ensureSchema(String schemaName, UUID tenantId) {
+    /**
+     * P4.6, item 1 do aceite: aplicacao do TETO de schemas por cluster da
+     * P0.21 ({@link TenantCatalog#MAX_SCHEMAS_PER_CLUSTER}, 300 — o numero
+     * provado pelo ShardCatalogScaleTest). Ate a P4.6 o teto era so o numero
+     * registado; ninguem o aplicava.
+     *
+     * <p>Regras: conta SCHEMAS distintos do cluster (nao tenants — tenants
+     * SHARED dividem schema e nao consomem teto novo); schema que ja existe
+     * nesse cluster nao e cobranca nova (reprovisionamento e segundo tenant
+     * SHARED passam); tenant DEDICATED COM CLUSTER PROPRIO nao e barrado
+     * pelo teto (correcção R-P46-05: a isenção era incondicional para
+     * qualquer DEDICATED, incluindo um DEDICATED indevidamente no
+     * 'default'; ver {@link #ceilingExempt}). A contagem corre sob o lock
+     * de sessão por cluster tomado em {@code provisionTenant} (correcção
+     * R-P46-06), que serializa contar-e-registar entre provisionamentos
+     * concorrentes do mesmo cluster.
+     */
+    private void enforceClusterCeiling(String clusterId, String schemaName, IsolationMode isolationMode) {
+        if (ceilingExempt(clusterId, isolationMode)) {
+            return;
+        }
+        Integer present = migratorJdbc().queryForObject(
+                "SELECT count(*) FROM public.tenant_catalog WHERE cluster_id = ? AND schema_name = ?",
+                Integer.class, clusterId, schemaName);
+        if (present != null && present > 0) {
+            return;
+        }
+        Integer schemas = migratorJdbc().queryForObject(
+                "SELECT count(DISTINCT schema_name) FROM public.tenant_catalog WHERE cluster_id = ?",
+                Integer.class, clusterId);
+        if (schemas != null && schemas >= TenantCatalog.MAX_SCHEMAS_PER_CLUSTER) {
+            throw new IllegalStateException(
+                    "Cluster " + clusterId + " atingiu o teto de " + TenantCatalog.MAX_SCHEMAS_PER_CLUSTER
+                            + " schemas (P0.21/P4.6): o tenant deve ir para outro cluster"
+                            + " ou para banco dedicado.");
+        }
+    }
+
+    private boolean ensureSchema(String schemaName, UUID tenantId,
+                                 String clusterId, IsolationMode isolationMode) {
         Integer existed = migratorJdbc().queryForObject(
                 "SELECT count(*) FROM information_schema.schemata WHERE schema_name = ?",
                 Integer.class, schemaName);
         boolean alreadyExisted = existed != null && existed > 0;
 
         if (alreadyExisted) {
-            String owner = migratorJdbc().queryForObject(
-                    "SELECT id::text FROM public.tenant_catalog WHERE schema_name = ?",
+            // P4.6: a consulta de dono passa a ser por LISTA. No modo SHARED o
+            // mesmo (cluster, schema) tem varias linhas no catalogo — a forma
+            // antiga (queryForObject de uma linha por schema_name) rebentaria
+            // com IncorrectResultSizeDataAccessException no segundo tenant
+            // compartilhado, alem de nao distinguir clusters.
+            java.util.List<String> occupants = migratorJdbc().queryForList(
+                    "SELECT id::text || '|' || cluster_id || '|' || isolation_mode"
+                            + " FROM public.tenant_catalog WHERE schema_name = ?",
                     String.class, schemaName);
-            if (!tenantId.toString().equals(owner)) {
+            boolean own = occupants.stream()
+                    .anyMatch(row -> row.startsWith(tenantId.toString() + "|"));
+            if (own) {
+                // Reprovisionar o proprio tenant: legitimo e idempotente, como antes.
+            } else if (isolationMode == IsolationMode.SHARED
+                    && canReuseSchemaAsShared(occupants, clusterId)) {
+                // ADR-0005 ("o que muda no codigo"): o provisionamento recusa
+                // schema existente SALVO no modo compartilhado explicito. O
+                // schema ja e a casa de tenants SHARED deste cluster: este
+                // tenant entra nele, isolado por tenant_id e RLS. O rollback
+                // continua seguro: schemaCreatedNow fica false, logo o catch
+                // nunca executa DROP SCHEMA sobre o schema compartilhado.
+                log.info("Schema compartilhado {} (cluster {}) reutilizado para o tenant {} (modo SHARED)",
+                        schemaName, clusterId, tenantId);
+            } else {
                 throw new IllegalStateException(
                         "Schema " + schemaName + " ja existe e nao pertence a este tenant; "
                                 + "recusado para nao misturar dados de tenants distintos.");
@@ -183,6 +336,30 @@ public class TenantProvisioningService {
         }
 
         return !alreadyExisted;
+    }
+
+    /**
+     * P4.6 (correcção R-P46-07): o reuso SHARED de um schema existente só é
+     * legítimo quando TODOS os ocupantes registados desse schema são
+     * tenants SHARED DESTE cluster. A forma anterior bastava UM ocupante
+     * SHARED do cluster para reutilizar — um schema que também albergasse
+     * um tenant SCHEMA (dono de schema próprio por desenho) seria
+     * reutilizado por um SHARED, misturando modos no mesmo schema físico.
+     * Schema sem nenhum ocupante registado (órfão) também não é
+     * reutilizável: não há dono provado. Linhas no formato
+     * {@code id|cluster_id|isolation_mode} (a projecção de ensureSchema);
+     * linha malformada conta como ocupante não-SHARED (falha fechado).
+     */
+    static boolean canReuseSchemaAsShared(java.util.List<String> occupantRows, String clusterId) {
+        if (occupantRows == null || occupantRows.isEmpty()) {
+            return false;
+        }
+        return occupantRows.stream().allMatch(row -> {
+            String[] parts = row.split("\\|");
+            return parts.length == 3
+                    && clusterId.equals(parts[1])
+                    && IsolationMode.SHARED.columnValue().equals(parts[2]);
+        });
     }
 
     /**
@@ -225,14 +402,27 @@ public class TenantProvisioningService {
         log.info("Tenant schema {} provisionado com {} tabelas", schemaName, tableCount);
     }
 
+    /** P0.21/P4.6: cluster do pedido; em branco = 'default'. Fonte unica do default. */
+    private static String clusterIdOf(TenantProvisioningRequest request) {
+        return request.getClusterId() == null || request.getClusterId().isBlank()
+                ? "default" : request.getClusterId();
+    }
+
+    /** P0.21/P4.6: modo do pedido, validado pelo enum (lista fechada da core V7); em branco = 'SCHEMA'. */
+    private static String isolationModeOf(TenantProvisioningRequest request) {
+        return IsolationMode.parse(request.getIsolationMode()).columnValue();
+    }
+
     private void registerTenantInCatalog(UUID tenantId, String schemaName, TenantProvisioningRequest request) {
         // P0.17 + P0.21 (fusão na integração): conflito resolvido pela chave id, não por
         // schema_name. Reprovisionar o mesmo tenant atualiza a linha dele (inclusive se o
-        // schema mudou); um segundo tenant com o mesmo schema_name NO MESMO cluster esbarra
-        // no UNIQUE (cluster_id, schema_name) e falha, em vez de sobrescrever a linha
-        // alheia; em cluster diferente o mesmo schema_name é aceito (UNIQUE revisto da
-        // core V7). O ON CONFLICT (id) já resolve a quebra que a forma antiga
-        // ON CONFLICT (schema_name) teria com o UNIQUE novo (o PK id continua existindo).
+        // schema mudou); um segundo tenant NÃO-SHARED com o mesmo schema_name NO MESMO
+        // cluster esbarra no índice único parcial (cluster_id, schema_name) e falha, em
+        // vez de sobrescrever a linha alheia; em cluster diferente o mesmo schema_name é
+        // aceito. Desde a core V15 (P4.6, correcção R-P46-01) o índice exclui as linhas
+        // SHARED: o segundo tenant SHARED no mesmo (cluster, schema) regista-se sem
+        // colisão — é o desenho do ADR-0005. O ON CONFLICT (id) já resolve a quebra que
+        // a forma antiga ON CONFLICT (schema_name) teria (o PK id continua existindo).
         // cluster_id e isolation_mode entram no catálogo (P0.21).
         String sql = """
             INSERT INTO public.tenant_catalog (id, schema_name, name, cnpj, email, phone, address, status, plan, settings, cluster_id, isolation_mode, created_at, updated_at)
@@ -256,10 +446,8 @@ public class TenantProvisioningService {
         // reafirma o SELECT-only. O catálogo não tem RLS (cadastro global da plataforma,
         // ver V1); a GUC antiga era inócua aqui e some com a troca de conexão.
         // migratorDataSource é o mesmo DataSource que migratorJdbc() embrulha.
-        String clusterId = request.getClusterId() == null || request.getClusterId().isBlank()
-                ? "default" : request.getClusterId();
-        String isolationMode = request.getIsolationMode() == null || request.getIsolationMode().isBlank()
-                ? "SCHEMA" : request.getIsolationMode();
+        String clusterId = clusterIdOf(request);
+        String isolationMode = isolationModeOf(request);
         try (Connection conn = migratorDataSource.getConnection()) {
             conn.setAutoCommit(false);
             try {
