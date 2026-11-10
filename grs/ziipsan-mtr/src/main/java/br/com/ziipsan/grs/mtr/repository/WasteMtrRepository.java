@@ -37,4 +37,26 @@ public interface WasteMtrRepository extends JpaRepository<WasteMtr, UUID> {
                                   Pageable pageable);
 
     long countByTenantId(UUID tenantId);
+
+    // ED-104 (produtor, sessão 6d762d43-e1a9-4984-b50d-571ba0643b52) — E2/E3:
+    // MTRs destinados por um destinador com destined_at dentro do período (agregação do CDF e da DMR).
+    @Query("SELECT m FROM WasteMtr m WHERE m.tenantId = :tenantId AND m.destination.id = :destinationId"
+            + " AND m.status = br.com.ziipsan.grs.mtr.domain.WasteMtr.MtrStatus.DESTINED"
+            + " AND m.destinedAt >= :from AND m.destinedAt < :to ORDER BY m.destinedAt")
+    java.util.List<WasteMtr> findDestinedInPeriod(@Param("tenantId") UUID tenantId,
+                                                  @Param("destinationId") UUID destinationId,
+                                                  @Param("from") java.time.OffsetDateTime from,
+                                                  @Param("to") java.time.OffsetDateTime to);
+
+    // ED-104 — E3: todos os MTRs do tenant emitidos no período (agregação da DMR do gerador).
+    @Query("SELECT m FROM WasteMtr m WHERE m.tenantId = :tenantId"
+            + " AND m.issuedAt >= :from AND m.issuedAt < :to ORDER BY m.issuedAt")
+    java.util.List<WasteMtr> findIssuedInPeriod(@Param("tenantId") UUID tenantId,
+                                                @Param("from") java.time.OffsetDateTime from,
+                                                @Param("to") java.time.OffsetDateTime to);
+
+    // ED-104 — E6: MTR já emitido a partir de um registo de lodo da ED-105 (idempotência da emissão).
+    @Query("SELECT m FROM WasteMtr m WHERE m.tenantId = :tenantId AND m.sludgeRecordId = :sludgeRecordId")
+    Optional<WasteMtr> findBySludgeRecordIdAndTenantId(@Param("tenantId") UUID tenantId,
+                                                       @Param("sludgeRecordId") UUID sludgeRecordId);
 }
