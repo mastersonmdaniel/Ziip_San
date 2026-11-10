@@ -20,6 +20,15 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- RoutePackageAssembler monta o RoutePackage real da ED-19
+                 (P-03 / RG2-C-P2): as regras puras de campo sao o artefacto
+                 partilhado servidor/aparelho, sem ciclo (o billing-rules
+                 nao depende do metering). -->
+            <groupId>br.com.ziipsan</groupId>
+            <artifactId>ziipsan-billing-rules</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <!-- @Valid/@NotNull no FieldSyncController; mesmo desenho do
                  ziipsan-registry/ziipsan-platform. Sem esta dependencia
                  o modulo nao compila — correcao-ci-cura-lote-1

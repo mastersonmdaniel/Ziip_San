@@ -24,6 +24,15 @@ import javax.crypto.SecretKey
  * wipeAll apaga: arquivo do banco, fotos pendentes e o diretorio de dados do
  * app — e chamado nas diretivas BLOCK e RETIRE (depois do envio, no RETIRE)
  * e no logout. E a resposta ao aparelho perdido/furtado do cenario do plano.
+ *
+ * AJUSTE RG2-C-P4 (lote mobile-integracao-p03-p04, frente A — declarado):
+ * o wipeAll passa a (1) FECHAR a ligacao SQLCipher aberta pelo singleton
+ * de FieldDatabaseSupport, para nao apagar o ficheiro por baixo de uma
+ * ligacao aberta, e (2) apagar EXPLICITAMENTE o ficheiro da passphrase
+ * embrulhada do banco (FieldDatabaseSupport.WRAPPED_PASSPHRASE_FILE).
+ * Sem (2), o blob sobreviveria a um wipe que nao varresse o filesDir e a
+ * proxima abertura reutilizaria a passphrase antiga sobre um banco novo.
+ * Nada mais muda neste plugin.
  */
 @CapacitorPlugin(name = "FieldSecurity")
 class FieldSecurityPlugin : Plugin() {
@@ -58,6 +67,10 @@ class FieldSecurityPlugin : Plugin() {
     @PluginMethod
     fun wipeAll(call: PluginCall) {
         var wiped = true
+        // AJUSTE RG2-C-P4 (declarado no cabecalho): fecha a ligacao aberta
+        // antes de apagar o ficheiro, e apaga a passphrase embrulhada.
+        FieldDatabaseSupport.closeOpenDatabase()
+        if (!FieldDatabaseSupport.deleteWrappedPassphrase(context)) wiped = false
         // O contrato da ponte promete apagar TAMBEM os tokens: sem isto, o
         // refresh token sobrevivia ao wipe de BLOCK/RETIRE nas preferencias.
         if (!context.deleteSharedPreferences(TOKEN_PREFS_NAME)) wiped = false
