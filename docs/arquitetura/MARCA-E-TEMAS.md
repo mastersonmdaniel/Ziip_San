@@ -146,6 +146,28 @@ ajustado é registrado nesta tabela. Comuns aos dois padrões (no escuro, os `-f
 | `chart-2` | `176 84% 24%` | `172 66% 50%` | `201 96% 32%` | `199 89% 58%` |
 | `theme-color` | `#0369a0` | `#0b111e` | `#0a716a` | `#0b111e` |
 
+**Padrões acrescentados pelas decisões 63+65 do dono (10/11/2026) — pacote temas-9-codigo (Frente 4 do Momento Final do Front).**
+Derivados dos tokens-fonte das provas aprovadas (`ziipsan-producao/provas-temas/index.html`); conversão hex→HSL e ajustes de piso
+WCAG registados no RELATORIO-TEMAS-9 do pacote. `chart-1` = `primary` em todos; `theme-color` escuro = `#0b111e` em todos.
+
+| Token | Violeta claro | Violeta escuro | Âmbar claro | Âmbar escuro |
+|---|---|---|---|---|
+| `primary` = `chart-1` | `262 83% 58%` | `262 71% 64%` | `32 95% 36%` | `32 81% 55%` |
+| `chart-2` | `255 92% 74%` | `255 78% 58%` | `38 92% 42%` | `38 78% 55%` |
+| `accent` | `255 70% 89%` | `255 42% 22%` | `38 70% 89%` | `38 42% 22%` |
+| `secondary` | `262 46% 93%` | `262 38% 19%` | `32 52% 93%` | `32 38% 19%` |
+| `theme-color` | `#7c3aed` | `#0b111e` | `#d97706` | `#0b111e` |
+
+| Token | Marinho Executivo claro | Marinho Executivo escuro | Grafite Institucional claro | Grafite Institucional escuro | Verde Saneamento claro | Verde Saneamento escuro |
+|---|---|---|---|---|---|---|
+| `primary` = `chart-1` | `210 69% 23%` | `210 59% 55%` | `211 17% 26%` | `211 14% 55%` | `146 58% 22%` | `146 49% 55%` |
+| `chart-2` | `42 48% 47%` | `42 41% 55%` | `210 25% 48%` | `210 21% 55%` | `75 26% 48%` | `75 22% 55%` |
+| `accent` | `42 48% 89%` | `42 42% 22%` | `210 25% 89%` | `210 42% 22%` | `75 26% 89%` | `75 42% 22%` |
+| `secondary` | `210 38% 93%` | `210 38% 19%` | `211 30% 93%` | `211 38% 19%` | `146 32% 93%` | `146 38% 19%` |
+| `theme-color` | `#123a63` | `#0b111e` | `#37424e` | `#0b111e` | `#175733` | `#0b111e` |
+
+Os "temas" Modo Escuro e Modo Claro das provas não são padrões: são o MODO (`light`/`dark`, §4.4), aplicável a qualquer padrão.
+
 O `theme-color #0361a0` de `frontend/index.html:7` não coincide com a primária atual (`#0369a0`); passa a ser gerado.
 
 ### 4.3 Registro de padrões

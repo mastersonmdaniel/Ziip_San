@@ -57,8 +57,8 @@ const TEXT_PAIRS: Array<[string, string]> = [
 const GRAPHIC_TOKENS = ['input', 'focus', 'chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5', 'chart-6', 'map-water', 'map-sewer', 'map-boundary', 'map-selection', 'map-alert']
 
 describe('contraste WCAG 2.2 AA (MARCA-E-TEMAS §4.6)', () => {
-  it('valores do §4.2 estao no registro (Azul Agua e Verde Agua)', () => {
-    expect(PALETTE_IDS).toEqual(['aqua-blue', 'aqua-green'])
+  it('valores do §4.2 estao no registro (7 padroes: 2 originais + 5 da decisao 65)', () => {
+    expect(PALETTE_IDS).toEqual(['amber', 'aqua-blue', 'aqua-green', 'executive-navy', 'graphite', 'sanitation-green', 'violet'])
     expect(PALETTES['aqua-blue'].light.primary).toBe('201 96% 32%')
     expect(PALETTES['aqua-blue'].dark.primary).toBe('199 89% 58%')
     expect(PALETTES['aqua-green'].light.primary).toBe('176 84% 24%')

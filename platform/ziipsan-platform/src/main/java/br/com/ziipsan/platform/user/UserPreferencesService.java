@@ -61,7 +61,8 @@ import java.util.UUID;
 public class UserPreferencesService {
 
     /** Padrões do registro do frontend (MARCA-E-TEMAS §4.2/§4.3). */
-    public static final Set<String> KNOWN_PALETTES = Set.of("aqua-blue", "aqua-green");
+    public static final Set<String> KNOWN_PALETTES = Set.of("aqua-blue", "aqua-green",
+            "violet", "amber", "executive-navy", "graphite", "sanitation-green");
 
     /** Únicos idiomas publicados (PLT-25). */
     public static final Set<String> PUBLISHED_LOCALES = Set.of("pt-BR");

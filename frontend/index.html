@@ -27,8 +27,13 @@
           root.setAttribute('data-palette', palette)
           root.style.colorScheme = resolved
           var themeColors = {
+            'amber': { light: '#d97706', dark: '#0b111e' },
             'aqua-blue': { light: '#0369a0', dark: '#0b111e' },
             'aqua-green': { light: '#0a716a', dark: '#0b111e' },
+            'executive-navy': { light: '#123a63', dark: '#0b111e' },
+            'graphite': { light: '#37424e', dark: '#0b111e' },
+            'sanitation-green': { light: '#175733', dark: '#0b111e' },
+            'violet': { light: '#7c3aed', dark: '#0b111e' },
           }
           var meta = document.querySelector('meta[name="theme-color"]')
           if (meta && themeColors[palette]) meta.setAttribute('content', themeColors[palette][resolved])
