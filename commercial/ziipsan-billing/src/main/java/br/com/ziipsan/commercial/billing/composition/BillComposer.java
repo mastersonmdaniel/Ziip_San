@@ -1,16 +1,18 @@
 package br.com.ziipsan.commercial.billing.composition;
 
 import br.com.ziipsan.commercial.billing.bill.CreditApplier;
-import br.com.ziipsan.commercial.billing.bill.DebitLine;
 import br.com.ziipsan.commercial.billing.bill.DebitReceivable;
 import br.com.ziipsan.commercial.billing.bill.Installments;
-import br.com.ziipsan.commercial.billing.bill.TaxLine;
 import br.com.ziipsan.commercial.billing.bill.TaxWithholding;
-import br.com.ziipsan.commercial.billing.catalog.CalculationModel;
-import br.com.ziipsan.commercial.billing.catalog.ChargeResolution;
-import br.com.ziipsan.commercial.billing.math.Money;
-import br.com.ziipsan.commercial.billing.tariff.SewerCharge;
-import br.com.ziipsan.commercial.billing.tariff.TariffCharge;
+import br.com.ziipsan.commercial.billingrules.bill.DebitLine;
+import br.com.ziipsan.commercial.billingrules.bill.TaxLine;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeResolution;
+import br.com.ziipsan.commercial.billingrules.composition.BillChargeLine;
+import br.com.ziipsan.commercial.billingrules.composition.BillComposition;
+import br.com.ziipsan.commercial.billingrules.math.Money;
+import br.com.ziipsan.commercial.billingrules.tariff.SewerCharge;
+import br.com.ziipsan.commercial.billingrules.tariff.TariffCharge;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

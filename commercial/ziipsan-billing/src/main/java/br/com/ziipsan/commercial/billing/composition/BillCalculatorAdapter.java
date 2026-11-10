@@ -2,8 +2,10 @@ package br.com.ziipsan.commercial.billing.composition;
 
 import br.com.ziipsan.commercial.billing.bill.BillInput;
 import br.com.ziipsan.commercial.billing.bill.BillResult;
-import br.com.ziipsan.commercial.billing.catalog.CalculationModel;
-import br.com.ziipsan.commercial.billing.math.Money;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.composition.BillChargeLine;
+import br.com.ziipsan.commercial.billingrules.composition.BillComposition;
+import br.com.ziipsan.commercial.billingrules.math.Money;
 
 import java.util.List;
 import java.util.Objects;

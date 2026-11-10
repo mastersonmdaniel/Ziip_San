@@ -1,9 +1,9 @@
 package br.com.ziipsan.commercial.billing.bill;
 
-import br.com.ziipsan.commercial.billing.math.Money;
-import br.com.ziipsan.commercial.billing.tariff.TariffGroup;
 import br.com.ziipsan.commercial.billing.tariff.SewerParameters;
+import br.com.ziipsan.commercial.billing.tariff.TariffGroup;
 import br.com.ziipsan.commercial.billing.tariff.TariffSchedule;
+import br.com.ziipsan.commercial.billingrules.math.Money;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

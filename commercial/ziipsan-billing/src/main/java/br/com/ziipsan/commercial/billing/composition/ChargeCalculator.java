@@ -1,6 +1,7 @@
 package br.com.ziipsan.commercial.billing.composition;
 
-import br.com.ziipsan.commercial.billing.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.composition.BillChargeLine;
 
 /**
  * Calculadora de UMA cobranca do catalogo, por modelo de calculo

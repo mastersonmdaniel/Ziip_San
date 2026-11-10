@@ -1,8 +1,8 @@
 package br.com.ziipsan.commercial.billing.cobill;
 
 import br.com.ziipsan.commercial.accounting.event.AccountingEventKey;
-import br.com.ziipsan.commercial.billing.catalog.ChargeOwner;
-import br.com.ziipsan.commercial.billing.composition.BillChargeLine;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeOwner;
+import br.com.ziipsan.commercial.billingrules.composition.BillChargeLine;
 
 import java.util.Objects;
 

@@ -1,4 +1,6 @@
 package br.com.ziipsan.commercial.billing.catalog;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeDefinition;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeVersion;
 
 import java.time.LocalDate;
 import java.util.Objects;

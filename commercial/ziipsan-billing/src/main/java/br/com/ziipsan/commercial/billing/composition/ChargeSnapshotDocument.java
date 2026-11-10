@@ -1,8 +1,10 @@
 package br.com.ziipsan.commercial.billing.composition;
 
-import br.com.ziipsan.commercial.billing.catalog.CalculationModel;
-import br.com.ziipsan.commercial.billing.catalog.ChargeOwner;
-import br.com.ziipsan.commercial.billing.servicecatalog.RevenueNature;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeOwner;
+import br.com.ziipsan.commercial.billingrules.composition.BillChargeLine;
+import br.com.ziipsan.commercial.billingrules.composition.BillComposition;
+import br.com.ziipsan.commercial.billingrules.servicecatalog.RevenueNature;
 
 import java.math.BigDecimal;
 import java.util.List;

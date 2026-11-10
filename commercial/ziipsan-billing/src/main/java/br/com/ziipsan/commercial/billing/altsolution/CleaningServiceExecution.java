@@ -1,9 +1,9 @@
 package br.com.ziipsan.commercial.billing.altsolution;
 
 import br.com.ziipsan.commercial.billing.central.CasualUserUnit;
-import br.com.ziipsan.commercial.billing.math.Money;
 import br.com.ziipsan.commercial.billing.servicecatalog.PriceTable;
 import br.com.ziipsan.commercial.billing.servicecatalog.ServicePriceItem;
+import br.com.ziipsan.commercial.billingrules.math.Money;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

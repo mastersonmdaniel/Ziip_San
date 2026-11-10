@@ -4,12 +4,12 @@ import br.com.ziipsan.commercial.billing.bill.BillInput;
 import br.com.ziipsan.commercial.billing.bill.CreditReceivable;
 import br.com.ziipsan.commercial.billing.bill.DebitReceivable;
 import br.com.ziipsan.commercial.billing.bill.TaxWithholdingPolicy;
-import br.com.ziipsan.commercial.billing.catalog.CalculationModel;
-import br.com.ziipsan.commercial.billing.catalog.ChargeResolution;
-import br.com.ziipsan.commercial.billing.math.Money;
 import br.com.ziipsan.commercial.billing.servicecatalog.ServicePriceItem;
 import br.com.ziipsan.commercial.billing.tariff.TariffGroup;
 import br.com.ziipsan.commercial.billing.tariff.TariffSchedule;
+import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
+import br.com.ziipsan.commercial.billingrules.catalog.ChargeResolution;
+import br.com.ziipsan.commercial.billingrules.math.Money;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
