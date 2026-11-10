@@ -141,6 +141,22 @@ class MigrationConsistencyTest {
                         alter44.group(5).contains("NOT NULL")));
             }
         }
+        // P-R22-A-01 (V107, lote R22-A-CURA-P01, 10/11/2026): bills ganha
+        // fiscal_document_id (UUID) por ALTER TABLE na V107, depois da V4_14 --
+        // a coluna vivia na V4_8 fiscal, que corria ALTER TABLE bills sem bills no
+        // classpath de teste do platform e era derrubada pela recriacao da V4_14.
+        // So o ALTER em bills e ligado aqui: as colunas de bill_items da V107 a
+        // BillItemEntity NAO mapeia (liga-las faria o sqlOnly falhar com 8 colunas);
+        // a guarda delas vive em BillNfageColumnsMigrationConsistencyTest.
+        try (InputStream in = MigrationConsistencyTest.class.getResourceAsStream("/db/migration/tenant/V107__nfage_bill_fiscal_columns.sql")) {
+            assertThat(in).as("migration V107 no classpath").isNotNull();
+            String v107 = new String(in.readAllBytes(), StandardCharsets.UTF_8).replace("\r\n", "\n");
+            Matcher alter107 = Pattern.compile("ALTER TABLE bills ADD COLUMN IF NOT EXISTS ([a-z][a-z0-9_]*) +(UUID)([^;]*);").matcher(v107);
+            while (alter107.find()) {
+                tables.get("bills").put(alter107.group(1), new SqlColumn(alter107.group(1), alter107.group(2),
+                        null, null, null, alter107.group(3).contains("NOT NULL")));
+            }
+        }
     }
 
     /** Colunas do CREATE TABLE particionado da V4_14 (dentro do DO, indentacao maior). */

@@ -8,9 +8,12 @@
 -- *** THIS FILE NOW CONTAINS BOTH PARTS. ***
 -- PART 1 (below, first) is the NFS-e avulsa part of P3.6: its SQL is VERBATIM the P3.6
 -- delivery (not one SQL line changed); only this header was updated to declare both parts.
--- PART 2 (appended after part 1) is the NFAg-e part of P2.6 (modelo 75): bills/bill_items
--- fiscal columns, the NFAg-e extension tables over the fiscal dictionary of V4_5 (P1.8)
--- and the payment link (NT 2026.001). P2.6 creates NO new fiscal dictionary: issuers,
+-- PART 2 (appended after part 1) is the NFAg-e part of P2.6 (modelo 75): the NFAg-e
+-- extension tables over the fiscal dictionary of V4_5 (P1.8) and the payment link
+-- (NT 2026.001). The bills/bill_items fiscal columns of the original part 2
+-- (sections 1-2) moved to V107__nfage_bill_fiscal_columns.sql in the billing module
+-- (lote R22-A-CURA-P01, 10/11/2026, P-R22-A-01) and are NOT in this file anymore.
+-- P2.6 creates NO new fiscal dictionary: issuers,
 -- series, documents, states, access key, protocol and events live in fiscal_issuers /
 -- fiscal_series / fiscal_documents of V4_5 (DAD-18, dictionary of 23b section 3.13);
 -- part 2 only EXTENDS that dictionary for the modelo 75 and links it to the bill.
@@ -88,9 +91,11 @@ SELECT register_tenant_table('fiscal_nfse_avulsas');
 -- This part adds only what is specific to the modelo 75 and to the bill link:
 --
 -- 1. bills.fiscal_document_id: the bill points at its ONE live NFAg-e (the document row
---    in fiscal_documents). Numbering without gaps and voiding (inutilização) are the
+--    in fiscal_documents) -- now in V107 (billing module, lote R22-A-CURA-P01), not
+--    in this file. Numbering without gaps and voiding (inutilização) are the
 --    dictionary's job (fiscal_series / fiscal_documents), never duplicated here.
--- 2. bill_items: fiscal_item_code and the per-item IBS/CBS group (NT 2026.002).
+-- 2. bill_items: fiscal_item_code and the per-item IBS/CBS group (NT 2026.002) --
+--    also in V107 now, not in this file.
 -- 3. fiscal_nfage_details: the modelo-75 extension of fiscal_documents (recipient
 --    municipality IBGE from the P1.3 address, DAD-04; contingency with reason; layout
 --    version; MOC-conditional recipient fields).
@@ -105,76 +110,16 @@ SELECT register_tenant_table('fiscal_nfse_avulsas');
 -- implemented in code (NfageTotalRule); it does not rewrite the bill total.
 --
 -- PARTITIONING NOTE (integration, honest): bills and bill_items are recreated by
--- V4_14 with an explicit column list. V4_8 runs before V4_14 in Flyway order, so the
--- columns/constraints added here on bills/bill_items must be carried into the V4_14
--- recreation (or applied after it) by the integration layer; this file does not edit
--- V4_14. The unique index below includes the partition key (reference_month), as
+-- V4_14 with an explicit column list. The bills/bill_items fiscal columns of the
+-- original part 2 (sections 1-2: bills.fiscal_document_id with FK and unique index,
+-- the 8 bill_items columns with CHECKs) now live in V107__nfage_bill_fiscal_columns.sql
+-- (billing module, lote R22-A-CURA-P01, 10/11/2026, P-R22-A-01), which runs AFTER
+-- V4_14 in Flyway order -- so the columns survive the V4_14 recreation, which the
+-- V4_8 version did not (production loss cured by the move). This file does not edit
+-- V4_14. The unique index in V107 includes the partition key (reference_month), as
 -- PostgreSQL requires for unique indexes on partitioned tables.
 --
 -- NO SEEDED DATA in this part either: issuers, series and rates are tenant cadastre.
-
--- ------------------------------------------------------------------------
--- 1. Bill -> NFAg-e (one live NFAg-e per bill, one bill per document)
--- ------------------------------------------------------------------------
-
-ALTER TABLE bills ADD COLUMN IF NOT EXISTS fiscal_document_id UUID;
-ALTER TABLE bills ADD CONSTRAINT fk_bill_fiscal_document
-    FOREIGN KEY (tenant_id, fiscal_document_id) REFERENCES fiscal_documents(tenant_id, id);
-CREATE INDEX idx_bills_fiscal_document ON bills(tenant_id, fiscal_document_id)
-    WHERE fiscal_document_id IS NOT NULL;
--- A fiscal document is linked to at most one bill within the bill's reference month
--- (reference_month is the partition key and must be part of the unique index). The
--- cross-month guarantee is the dictionary's live-origin uniqueness
--- (source_type, source_id) in fiscal_documents plus emission idempotency in code.
-CREATE UNIQUE INDEX uq_bills_fiscal_document ON bills(tenant_id, reference_month, fiscal_document_id)
-    WHERE fiscal_document_id IS NOT NULL;
-COMMENT ON COLUMN bills.fiscal_document_id IS
-    'NFAg-e viva da conta (fiscal_documents, modelo 75, P2.6/V4_8). NULL enquanto a conta nao tem NFAg-e.';
-
--- ------------------------------------------------------------------------
--- 2. Bill items: fiscal item code and the per-item IBS/CBS group (NT 2026.002)
--- ------------------------------------------------------------------------
--- CONDITIONAL ON THE DEFINITIVE MOC: fiscal_item_code (codigo de classificacao do
--- item), the CST and cClassTrib codes and the very presence/shape of the per-item
--- IBS/CBS group depend on the definitive MOC layout version. The columns are
--- therefore all nullable: an item without the group is an item whose layout version
--- does not carry it yet, never an item with invented values. IBS/CBS rates and
--- values come from the bill item (tax cadastre), never from this migration.
-
-ALTER TABLE bill_items ADD COLUMN IF NOT EXISTS fiscal_item_code VARCHAR(60);
-ALTER TABLE bill_items ADD COLUMN IF NOT EXISTS ibs_cbs_cst VARCHAR(10);
-ALTER TABLE bill_items ADD COLUMN IF NOT EXISTS ibs_cbs_cclass_trib VARCHAR(20);
-ALTER TABLE bill_items ADD COLUMN IF NOT EXISTS ibs_cbs_base NUMERIC(14,2);
-ALTER TABLE bill_items ADD COLUMN IF NOT EXISTS ibs_rate NUMERIC(7,4);
-ALTER TABLE bill_items ADD COLUMN IF NOT EXISTS ibs_value NUMERIC(14,2);
-ALTER TABLE bill_items ADD COLUMN IF NOT EXISTS cbs_rate NUMERIC(7,4);
-ALTER TABLE bill_items ADD COLUMN IF NOT EXISTS cbs_value NUMERIC(14,2);
-ALTER TABLE bill_items ADD CONSTRAINT chk_bill_items_ibs_cbs_nonnegative
-    CHECK ((ibs_cbs_base IS NULL OR ibs_cbs_base >= 0)
-       AND (ibs_rate IS NULL OR ibs_rate >= 0)
-       AND (ibs_value IS NULL OR ibs_value >= 0)
-       AND (cbs_rate IS NULL OR cbs_rate >= 0)
-       AND (cbs_value IS NULL OR cbs_value >= 0));
--- A tax value without its calculation base is a broken item, never a partial group.
-ALTER TABLE bill_items ADD CONSTRAINT chk_bill_items_ibs_cbs_base
-    CHECK ((ibs_value IS NULL OR ibs_cbs_base IS NOT NULL)
-       AND (cbs_value IS NULL OR ibs_cbs_base IS NOT NULL));
-COMMENT ON COLUMN bill_items.fiscal_item_code IS
-    'Codigo de classificacao fiscal do item da NFAg-e (NT 2026.002). CONDICIONAL ao MOC definitivo: obrigatoriedade e dominio seguem a versao do leiaute.';
-COMMENT ON COLUMN bill_items.ibs_cbs_cst IS
-    'CST do grupo IBS/CBS por item (NT 2026.002). CONDICIONAL ao MOC definitivo.';
-COMMENT ON COLUMN bill_items.ibs_cbs_cclass_trib IS
-    'cClassTrib do grupo IBS/CBS por item (NT 2026.002). CONDICIONAL ao MOC definitivo.';
-COMMENT ON COLUMN bill_items.ibs_cbs_base IS
-    'Base de calculo do grupo IBS/CBS por item (NT 2026.002). CONDICIONAL ao MOC definitivo.';
-COMMENT ON COLUMN bill_items.ibs_rate IS
-    'Aliquota do IBS do item (NT 2026.002): vem do cadastro tributario, nunca de constante. CONDICIONAL ao MOC definitivo.';
-COMMENT ON COLUMN bill_items.ibs_value IS
-    'Valor do IBS do item (NT 2026.002). CONDICIONAL ao MOC definitivo.';
-COMMENT ON COLUMN bill_items.cbs_rate IS
-    'Aliquota da CBS do item (NT 2026.002): vem do cadastro tributario, nunca de constante. CONDICIONAL ao MOC definitivo.';
-COMMENT ON COLUMN bill_items.cbs_value IS
-    'Valor da CBS do item (NT 2026.002). CONDICIONAL ao MOC definitivo.';
 
 -- ------------------------------------------------------------------------
 -- 3. NFAg-e extension of fiscal_documents (modelo 75)

@@ -18,6 +18,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * a V4_8 NÃO continha tabela de NFAg-e ("a parte da P2.6 fica para a P2.6"). Com a
  * P2.6 entregue, essa premissa expirou e aquele teste precisa ser aposentado/
  * substituído por este na integração — ele reprovaria a V4_8 completa por desenho.
+ *
+ * <p>Lote R22-A-CURA-P01 (10/11/2026, P-R22-A-01): as secções 1-2 da parte 2
+ * (bills/bill_items) mudaram para a V107 do billing; a guarda delas vive em
+ * {@code BillNfageColumnsMigrationConsistencyTest} e aqui fica a guarda negativa.
  */
 class NfageMigrationConsistencyTest {
 
@@ -43,17 +47,20 @@ class NfageMigrationConsistencyTest {
     }
 
     @Test
-    @DisplayName("conta ganha fiscal_document_id com FK ao dicionário e índice único parcial; item ganha código fiscal e grupo IBS/CBS")
+    @DisplayName("conta e item NÃO ganham colunas fiscais aqui: secções 1-2 da parte 2 mudaram para a V107 do billing (P-R22-A-01)")
     void billAndItemAdditions() throws IOException {
         String sql = v47();
-        assertThat(sql).contains("ALTER TABLE bills ADD COLUMN IF NOT EXISTS fiscal_document_id UUID")
-                .contains("fk_bill_fiscal_document")
-                .contains("uq_bills_fiscal_document")
-                .contains("fiscal_item_code")
-                .contains("ibs_cbs_cst").contains("ibs_cbs_cclass_trib").contains("ibs_cbs_base")
-                .contains("ibs_rate").contains("ibs_value")
-                .contains("cbs_rate").contains("cbs_value")
-                .contains("NT 2026.002");
+        // Lote R22-A-CURA-P01 (10/11/2026, P-R22-A-01): as secções 1 e 2 da parte 2
+        // (bills.fiscal_document_id; colunas fiscais de bill_items) mudaram para a
+        // V107__nfage_bill_fiscal_columns.sql do billing -- a V4_8 corria ALTER TABLE
+        // bills sem bills no classpath de teste do platform ('relation "bills" does
+        // not exist') e a V4_14 recriava bills/bill_items sem as colunas. A guarda
+        // com a mesma força vive em BillNfageColumnsMigrationConsistencyTest (billing).
+        assertThat(sql).doesNotContain("ALTER TABLE bills ADD COLUMN IF NOT EXISTS fiscal_document_id UUID")
+                .doesNotContain("ALTER TABLE bill_items ADD COLUMN IF NOT EXISTS fiscal_item_code")
+                .doesNotContain("fk_bill_fiscal_document")
+                .doesNotContain("uq_bills_fiscal_document")
+                .doesNotContain("chk_bill_items_ibs_cbs_nonnegative");
     }
 
     @Test
