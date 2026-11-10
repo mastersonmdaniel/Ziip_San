@@ -270,8 +270,14 @@ class TenantProvisioningServiceTest {
 
         // flyway_schema_history é a única exceção: guarda o histórico de migration, que por
         // definição é visível ao deploy. Não tem dado de tenant, então não precisa de RLS.
+        // table_type = 'BASE TABLE' exclui as views: information_schema.tables inclui
+        // views, mas uma view é relkind 'v' em pg_class e nunca pode ter RLS — sem
+        // este filtro o teste é insatisfazível (o máximo atingível de withRls é o
+        // número de tabelas reais, sempre abaixo do total contado com as views:
+        // 105 < 109 com as 4 rpt_cert_* da V21_3; P-R22-A-CURA-P01-01).
         Integer businessTables = count("SELECT count(*) FROM information_schema.tables "
-                + "WHERE table_schema = ? AND table_name <> 'flyway_schema_history'", SCHEMA);
+                + "WHERE table_schema = ? AND table_name <> 'flyway_schema_history' "
+                + "AND table_type = 'BASE TABLE'", SCHEMA);
         Integer withRls = count("""
                 SELECT count(*) FROM pg_class c
                 JOIN pg_namespace n ON n.oid = c.relnamespace

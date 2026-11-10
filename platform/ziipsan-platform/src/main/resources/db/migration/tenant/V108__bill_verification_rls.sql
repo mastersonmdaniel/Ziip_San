@@ -1,0 +1,62 @@
+-- V108 — Register the five public-verification tables for RLS (P-R22-A-CURA-P01-01)
+-- (lote R22-A-CURA-P01-RLS, 10/11/2026; Rodada 22).
+--
+-- Why (verified): TenantProvisioningServiceTest.enablesRowLevelSecurityOnEveryTable
+-- failed "expected: 109 but was: 100" in the R22-A-CURA-P01 re-proof
+-- (harness-logs/ci-completa-r22a-cura-p01.log, lines 12694-12700). Five business
+-- tables were never registered, so they were born without RLS:
+--   * bill_verification_codes, bill_verification_queries, fraud_reports,
+--     published_official_channels — created by the core V8_3 (P3.35/PLT-11),
+--     which has ZERO register_tenant_table / ENABLE ROW LEVEL SECURITY calls;
+--   * signature_verification_attempts — created by the platform V1_14 (P3.34),
+--     which only registers document_signatures (line 95).
+-- The other 4 of the 109 were views (V21_3: rpt_cert_*), which can never have
+-- RLS (relkind 'v'); the test query is fixed alongside to count BASE TABLEs only.
+--
+-- Arguments: register_tenant_table('<table>', false) — p_entity=false for all
+-- five, because NO JPA entity maps any of them (verified: zero *Entity classes
+-- for these tables in commercial/, shared/, platform/; the only production
+-- reference is the SignatureService.SignatureStore interface, with no JDBC
+-- implementation in-repo). p_audit stays true (default): the project standard
+-- (FreshInstallTest.everyTenantTableIsIsolatedAndAudited, ziipsan-app) requires
+-- RLS + FORCE + policy + audit trigger on every tenant table, and none of the
+-- five is in NOT_AUDITED_BY_DESIGN; the V1_2 exception (high-volume
+-- reproducible time series) does not apply — attempt/query rows are
+-- non-reproducible security evidence and their volume is rate-limited by
+-- design (D7: 10/code, 30/origin per 15 min; P3.35 the same). All five have
+-- the id column the audit trigger needs (NEW.id) and the tenant_id column the
+-- policy needs. Precedent for (false): legacy_import_* (V14_1),
+-- personal_data_access_log (V1_6), api_rate_buckets (V7_1).
+--
+-- Location: platform, not billing — the platform test classpath depends on
+-- core, not on billing (platform/pom.xml), so a billing V108 would NOT run in
+-- TenantProvisioningServiceTest (the V107 precedent: it does not run there).
+-- V108 runs after V1_14 and V8_3 in any Flyway order (108 > 14, 108 > 8.3)
+-- and after V107 in the full classpath (108 > 107); register_tenant_table
+-- (V1_2) already exists when V108 runs.
+--
+-- Known tension (honest, recorded in PLANO/RELATORIO-R22-A-CURA-P01-RLS):
+-- V1_14:91-94 says signature_verification_attempts is deliberately NOT
+-- registered because public verification runs OUTSIDE tenant context and a
+-- NOT_FOUND attempt has no tenant — registering it under tenant RLS would
+-- hide those rows from whoever audits attempts on nonexistent codes. Its
+-- cited precedent is factually wrong (V8_2:69 DOES register the sibling
+-- consumer_portal_link_attempts, same public-attempts shape), no production
+-- writer/reader of the table exists in-repo yet, the table will hold
+-- tenant-linked rows (VALID/RECORD_TAMPERED resolve against a tenant's
+-- signature), and the project standard demands RLS on every tenant table —
+-- so the five are registered together, as directed. Consequence for the
+-- future: the JDBC SignatureStore adapter must be written RLS-aware
+-- (P-R22-A-CURA-P01-RLS-01): WITH CHECK (tenant_id = current_tenant_id())
+-- refuses INSERTs with NULL tenant_id under RLS, and the per-code/per-origin
+-- rate-limit reads are global, not per-tenant. V1_14 is published and
+-- immutable, so its comment cannot be corrected here.
+--
+-- V1_14, V8_3 and V21_3 are NOT edited (published migrations — Flyway
+-- refuses an altered checksum). No seeded data.
+
+SELECT register_tenant_table('bill_verification_codes', false);
+SELECT register_tenant_table('bill_verification_queries', false);
+SELECT register_tenant_table('fraud_reports', false);
+SELECT register_tenant_table('published_official_channels', false);
+SELECT register_tenant_table('signature_verification_attempts', false);
