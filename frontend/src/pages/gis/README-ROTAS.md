@@ -54,3 +54,42 @@ Notas honestas de integração:
 - O centro inicial do mapa é neutro (Brasil): centrar na sede do
   tenant é fiação da integração (extensão das camadas ou parâmetro
   do tenant), não coordenada fixa nesta tela.
+
+# Frente 5 (decisão 65) — rotas do editor e dos temáticos + rato
+
+A integração adiciona, junto das demais rotas GIS (lazy por rota,
+padrão P1.12):
+
+```tsx
+const GisWebEditor = lazy(() =>
+  import('@pages/gis/GisWebEditor').then((m) => ({ default: m.GisWebEditor })))
+const GisThematics = lazy(() => import('@pages/gis/GisThematics'))
+```
+
+e, dentro de `<Routes>` (área autenticada):
+
+```tsx
+<Route path="gis/editor" element={<GisWebEditor />} />
+<Route path="gis/tematicos" element={<GisThematics />} />
+```
+
+Notas honestas desta frente:
+
+- Nenhuma fonte declarava os caminhos destas duas telas: este
+  README só cobria `/gis` e `/gis/styles`, e os serviços
+  (`services/gis/thematic.ts`, `services/gis/webEdit.ts`) declaram
+  bases de API, não rotas de página. `/gis/editor` e
+  `/gis/tematicos` são **decisão de executor** pela convenção das
+  rotas GIS irmãs (`/gis`, `/gis/styles`, `/gis/catalogo`,
+  `/gis/change-sets/:id`), registada no `RELATORIO-GIS-ROTAS.md`
+  do pacote `conclusao-front/gis-rotas`.
+- `GisWebEditor` tem export nomeado (e padrão); `GisThematics`
+  só tem export padrão — daí as duas formas de `lazy` acima.
+- Interacção por rato (nota do dono, 10/11/2026 03:37): no
+  editor, as ferramentas seleccionam o modo e a geometria faz-se
+  com o rato sobre a área de desenho local da página (arrastar
+  move feição/vértice, clicar define vértices, arrastar radial
+  roda/escala, clicar sobre o arco divide/insere nó). O desenho
+  no mapa MapLibre da GIS-06 e a gravação em pacote da GIS-04
+  continuam esqueleto fora desta página (pendências nomeadas no
+  relatório da frente).

@@ -34,6 +34,11 @@ const GisCatalog = lazy(() => import('@pages/gis/GisCatalog').then((m) => ({ def
 const GisMap = lazy(() => import('@pages/gis/GisMap').then((m) => ({ default: m.GisMap })))
 const GisStyles = lazy(() => import('@pages/gis/GisStyles').then((m) => ({ default: m.GisStyles })))
 const ChangeSetReview = lazy(() => import('@pages/gis/ChangeSetReview').then((m) => ({ default: m.ChangeSetReview })))
+// Frente 5 do momento final do front (decisao 65): editor web GIS-09/ED-53
+// (export nomeado) e tematicos GIS-08 (export padrao) — mesmo padrao lazy
+// por rota da P1.12 das demais telas GIS.
+const GisWebEditor = lazy(() => import('@pages/gis/GisWebEditor').then((m) => ({ default: m.GisWebEditor })))
+const GisThematics = lazy(() => import('@pages/gis/GisThematics'))
 const About = lazy(() => import('@pages/About').then((m) => ({ default: m.About })))
 const Integration = lazy(() => import('@pages/Integration').then((m) => ({ default: m.Integration })))
 const Central = lazy(() => import('@pages/platform/Central').then((m) => ({ default: m.Central })))
@@ -120,6 +125,15 @@ export function App() {
         {/* Correção S1: revisão de pacote da GIS-04 — rota declarada no
             GIS-CADASTRO-TECNICO §10.3 (/gis/change-sets), detalhe por id. */}
         <Route path="gis/change-sets/:id" element={<ChangeSetReviewRoute />} />
+        {/* Frente 5 (decisao 65): editor GIS-09/ED-53 e tematicos GIS-08.
+            Nenhuma fonte declarava os caminhos destas duas telas (o
+            README-ROTAS so cobre /gis e /gis/styles; os servicos declaram
+            bases de API, nao rotas): /gis/editor e /gis/tematicos sao
+            decisao de executor pela convencao das rotas GIS irmas
+            (/gis, /gis/styles, /gis/catalogo, /gis/change-sets/:id),
+            registada no RELATORIO-GIS-ROTAS do pacote. */}
+        <Route path="gis/editor" element={<GisWebEditor />} />
+        <Route path="gis/tematicos" element={<GisThematics />} />
         <Route path="cadastro/catalogos/:tipo" element={<Catalogs />} />
 
         {/* P1.12: ponto de entrega das exportações assíncronas (e, no futuro, dos
