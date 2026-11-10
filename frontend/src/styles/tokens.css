@@ -1,0 +1,76 @@
+/*
+ * Tokens do tema compartilhado do front web — pacote tema-front-web.
+ *
+ * REGRA DE FONTE: cada token abaixo cita a sua fonte (arquivo/linha) no
+ * RELATORIO-TEMA-FRONT-WEB.md. Token sem fonte NAO entra como fato: ou fica
+ * de fora, ou entra marcado [A DEFINIR] e listado nas pendencias.
+ *
+ * A identidade de cor NAO vive aqui: a cor efetiva vem do tenant pelas
+ * variaveis --brand-primary / --brand-on-primary / --brand-text, injetadas
+ * pela casca (contrato de ed-39/entrega/cliente/src/branding/tenantTheme.ts,
+ * cssVariables(), linhas 36-43), exatamente como no app de campo
+ * (app-campo-telas/entrega/campo/src/ui/campo.css, linhas 6-8). Os fallbacks
+ * neutros sao os MESMOS do campo.css: #333333 / #ffffff / #1a1a1a.
+ */
+
+:root {
+  /* Tipografia — campo.css L15 (font-family) e L23 (titulo 1.5rem). */
+  --font-family-base: system-ui, sans-serif;
+  --font-size-title: 1.5rem;
+  /* text-sm/text-xs do espelho ED-08 (Field.tsx/Button.tsx: classes
+     text-sm = 0.875rem, text-xs = 0.75rem da escala Tailwind usada la). */
+  --font-size-sm: 0.875rem;
+  --font-size-xs: 0.75rem;
+
+  /* Texto corrido: a variavel de marca do tenant com o fallback do campo
+     (campo.css L16). */
+  --color-text: var(--brand-text, #1a1a1a);
+
+  /* Bordas neutras — campo.css L72 (#9a9a9a, item) e L97 (#c8c8c8, tabela). */
+  --color-border-strong: #9a9a9a;
+  --color-border-table: #c8c8c8;
+
+  /* Espacamentos — escala observada no campo.css: 0.25rem (L71),
+     0.5rem (L37/L44/L96), 0.75rem (L24/L66/L74/L90), 1rem (L17/L38). */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+
+  /* Raio — campo.css L46 e L73: 0.5rem. */
+  --radius-md: 0.5rem;
+
+  /* Foco visivel — campo.css L27-32: outline 3px solid na cor de marca,
+     outline-offset 2px. */
+  --focus-outline-width: 3px;
+  --focus-outline-offset: 2px;
+  --focus-color: var(--brand-primary, #333333);
+
+  /* Alvo minimo de interacao — campo.css L42-43 (48px) e
+     ed-39 a11y.ts L10 (MIN_TOUCH_TARGET_DP = 48). */
+  --target-min: 48px;
+
+  /* Largura maxima de conteudo — campo.css L18 (42rem). */
+  --content-max: 42rem;
+
+  /* Marca (NAO definir aqui: vem do tenant; ver cabecalho). Os alias
+     abaixo so expoem os fallbacks neutros do campo.css L30/L45/L48
+     para consumo uniforme dos componentes. */
+  --brand-primary-fallback: #333333;
+  --brand-on-primary-fallback: #ffffff;
+
+  /*
+   * [A DEFINIR] Cores semanticas de estado (sucesso/aviso/erro/info) e a
+   * cor destrutiva: NENHUMA fonte entregue as define (o campo.css nao as
+   * tem; o espelho ED-08 usa nomes Tailwind -- destructive/muted etc. sem
+   * valores entregues). Valores PROVISORIOS, so para a biblioteca ser
+   * utilizavel; substituir pela decisao de desenho. Pendencia P-TEMA-03.
+   */
+  --color-success: #15803d; /* [A DEFINIR] provisorio — P-TEMA-03 */
+  --color-warning: #b45309; /* [A DEFINIR] provisorio — P-TEMA-03 */
+  --color-danger: #b91c1c; /* [A DEFINIR] provisorio — P-TEMA-03 */
+  --color-destructive: #b91c1c; /* [A DEFINIR] provisorio — P-TEMA-03 */
+  --color-info: #1d4ed8; /* [A DEFINIR] provisorio — P-TEMA-03 */
+  --color-muted-text: #5f6368; /* [A DEFINIR] provisorio — P-TEMA-03 */
+  --color-surface: #ffffff; /* [A DEFINIR] provisorio — P-TEMA-03 */
+}

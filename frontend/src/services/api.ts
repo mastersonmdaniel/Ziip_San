@@ -1,131 +1,97 @@
-import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
-import { ensureCsrf, getCsrfToken, goToLogin } from '@services/auth/oidc'
-import { resolveApiBaseUrl } from '@services/runtimeConfig'
-import {
-  VERSION_OUTDATED_EVENT,
-  getClientVersion,
-  isClientOutdated,
-  type VersionOutdatedDetail,
-} from '@services/versionInfo'
-
 /**
- * Cliente HTTP único. Base padrão: /api/v1 (P0.10: rotas de negócio sob /api/v1; o proxy do
- * Vite repassa para o backend; o prefixo NÃO é removido, porque o contrato do cadastro é
- * /api/v1/registry/...).
+ * Cliente HTTP compartilhado — superficie derivada do uso entregue:
+ * - home (P3.39): api.get<T>(url, { params }).then((r) => r.data)
+ * - workItems (P2.28) / fiscalDocuments (P2.33): idem get/post, com e
+ *   sem corpo; post sem corpo tambem (ex.: `${base}/${id}/start`).
+ * - registry/client (espelho ED-08): api.request<T>(config) com
+ *   { method, url, params, data, signal } (AxiosRequestConfig).
+ * - search (espelho ED-08): api.post(url, corpo, { signal }),
+ *   api.get(url, { signal }), api.put(url, corpo, { signal }),
+ *   api.delete(url, { signal }).
+ * - gis (P2.22/P3.25/P3.27): api.get/post/put/delete devolvendo
+ *   Promise<{ data }>, sempre embrulhados em toApiError pelos servicos.
+ * Todas as frentes declaram: "O baseURL do cliente HTTP ja e /api/v1".
  *
- * Autenticação (P0.14, BFF): NENHUM token no navegador. O navegador envia o cookie de
- * sessão (withCredentials) e o anti-CSRF (XSRF-TOKEN -> X-XSRF-TOKEN, gerenciado pelo
- * axios a partir do cookie). Nunca é enviado Authorization: Bearer, e qualquer
- * Authorization que chegue a este cliente é removido antes de sair. Não há cabeçalho
- * de tenant (X-Tenant-ID/X-Tenant-UUID): o tenant vem do claim tenant_id do token
- * guardado no servidor, e o backend responde 403 se receber um cabeçalho que diverge
- * dele. Dados pessoais (CPF/CNPJ etc.) nunca vão para localStorage/sessionStorage/URL.
+ * [A DEFINIR] O transporte original nunca foi entregue: o package.json
+ * do espelho ED-08 declara axios ^1.6.5, mas nenhum ficheiro de cliente
+ * veio em pacote algum. Esta implementacao usa fetch (sem dependencia)
+ * mantendo a forma axios ({ data, status } e erro com .response), para
+ * os servicos entregues funcionarem sem alteracao. Autenticacao,
+ * interceptores e renovacao de sessao: nenhuma fonte entregue os
+ * define — pendencia P-TEMA-09. Trocar o transporte por axios, se for
+ * essa a decisao, nao muda esta superficie.
  */
-/**
- * Fallback de build (VITE_API_BASE_URL ou /api/v1). O valor EFETIVO por requisição vem
- * de resolveApiBaseUrl() (P0.5: config de runtime carregada antes do app) e é aplicado
- * no interceptor abaixo — a instância nasce com o fallback porque o módulo é avaliado
- * antes de main.tsx aguardar loadRuntimeConfig().
- */
-export const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || '/api/v1'
-
-export const api = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 30000,
-  withCredentials: true,
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
-  headers: { 'Content-Type': 'application/json' },
-})
-
-api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
-  // P0.5: a base de runtime (se houver) vence o fallback de build em cada requisição,
-  // sem recriar a instância. Sem config de runtime, resolveApiBaseUrl() devolve o fallback.
-  config.baseURL = resolveApiBaseUrl()
-  // Defesa: este cliente nunca envia Bearer, mesmo que algum código o tenha posto.
-  delete config.headers.Authorization
-  // POST/PUT/DELETE exigem o anti-CSRF do BFF; o GET do /bff/csrf grava o cookie.
-  // O cabeçalho é posto aqui (não só pelo adaptador xhr do axios), para valer com
-  // qualquer adaptador — inclusive o falso dos testes.
-  if (config.method && !['get', 'head', 'options'].includes(config.method.toLowerCase())) {
-    await ensureCsrf()
-    const csrf = getCsrfToken()
-    if (csrf) config.headers['X-XSRF-TOKEN'] = csrf
-  }
-  return config
-})
-
-/**
- * 401: a sessão acabou. Em chamada de negócio, volta para o login do backend (que
- * depois devolve para a tela atual). Em GET /me, NÃO redireciona: quem decide é o
- * guarda de rota (PrivateRoute -> /login), e o redirecionamento aqui tiraria o
- * usuário da tela de entrada antes de ele clicar em Entrar.
- */
-/**
- * P0.39: toda resposta traz Ziip-Version e Ziip-Min-Client-Version (VersionHeaderFilter).
- * Se o mínimo do servidor está acima da versão deste build, dispara o evento que o
- * VersionBanner escuta — uma única vez por versão mínima, para não reanunciar a cada
- * requisição. Build dev nunca dispara (sem versão real para comparar).
- */
-let lastNotifiedMinVersion: string | null = null
-
-function checkServerVersion(response: { headers?: unknown }): void {
-  const headers = response.headers as
-    | { get?: (name: string) => string | undefined; [key: string]: unknown }
-    | undefined
-  const minClient =
-    headers?.get?.('Ziip-Min-Client-Version') ??
-    (typeof headers?.['ziip-min-client-version'] === 'string'
-      ? (headers['ziip-min-client-version'] as string)
-      : undefined)
-  const serverVersion =
-    headers?.get?.('Ziip-Version') ??
-    (typeof headers?.['ziip-version'] === 'string' ? (headers['ziip-version'] as string) : 'desconhecida')
-  if (!minClient || minClient === lastNotifiedMinVersion) return
-  if (!isClientOutdated(getClientVersion(), minClient)) return
-  lastNotifiedMinVersion = minClient
-  if (typeof window !== 'undefined') {
-    const detail: VersionOutdatedDetail = { serverVersion, minClientVersion: minClient }
-    window.dispatchEvent(new CustomEvent(VERSION_OUTDATED_EVENT, { detail }))
-  }
+export interface ApiRequestConfig {
+  params?: Record<string, unknown>
+  data?: unknown
+  signal?: AbortSignal
+  headers?: Record<string, string>
+  method?: string
+  url?: string
 }
 
-api.interceptors.response.use(
-  (response) => {
-    checkServerVersion(response)
-    return response
-  },
-  async (error: AxiosError) => {
-    // Respostas de erro também trazem os cabeçalhos de versão (o filtro roda antes da segurança).
-    if (error.response) checkServerVersion(error.response)
-    const original = error.config as InternalAxiosRequestConfig | undefined
-    if (error.response?.status === 401 && original && !original.url?.endsWith('/me')) {
-      await goToLogin()
+export interface ApiResponse<T> {
+  data: T
+  status: number
+}
+
+export const API_BASE_URL = '/api/v1'
+
+function buildUrl(url: string, params?: Record<string, unknown>): string {
+  const full = url.startsWith('http') || url.startsWith(API_BASE_URL) ? url : `${API_BASE_URL}${url}`
+  if (!params) return full
+  const qs = new URLSearchParams()
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null) continue
+    qs.append(key, String(value))
+  }
+  const s = qs.toString()
+  return s ? `${full}?${s}` : full
+}
+
+async function doRequest<T>(method: string, url: string, config: ApiRequestConfig = {}): Promise<ApiResponse<T>> {
+  const body = config.data !== undefined ? JSON.stringify(config.data) : undefined
+  let res: Response
+  try {
+    res = await fetch(buildUrl(url, config.params), {
+      method,
+      headers: { 'Content-Type': 'application/json', ...(config.headers ?? {}) },
+      body,
+      signal: config.signal,
+    })
+  } catch (error) {
+    // Falha de rede/abort: propaga com a forma que toApiError entende
+    // (sem .response; a mensagem original fica).
+    throw error
+  }
+  const text = await res.text()
+  let data: unknown = null
+  if (text) {
+    try {
+      data = JSON.parse(text)
+    } catch {
+      data = text
     }
-    return Promise.reject(error)
-  },
-)
-
-/**
- * Usuário atual, como o backend devolve em GET /api/v1/me (montado a partir do token
- * guardado no servidor: sub, preferred_username, email, name, realm_access.roles e tenant_id).
- */
-export interface AuthUser {
-  id: string
-  username: string
-  email: string
-  fullName: string
-  roles: string[]
-  /**
-   * P1.12: permissões `recurso:ação` expandidas pelo servidor em GET /api/v1/me.
-   * Ausente no backend anterior à P1.12 (que devolvia só `roles`): o gating de
-   * exibição trata a ausência como "informação desconhecida", sem esconder nada;
-   * o servidor continua sendo quem nega.
-   */
-  permissions?: string[]
-  tenantId: string
+  }
+  if (!res.ok) {
+    const error = new Error(`HTTP ${res.status} em ${url}`) as Error & {
+      response: { status: number; data: unknown }
+    }
+    error.response = { status: res.status, data }
+    throw error
+  }
+  return { data: data as T, status: res.status }
 }
 
-export const authApi = {
-  getMe: () => api.get<AuthUser>('/me').then((r) => r.data),
+export const api = {
+  get: <T>(url: string, config?: ApiRequestConfig) => doRequest<T>('GET', url, config),
+  post: <T>(url: string, data?: unknown, config?: ApiRequestConfig) =>
+    doRequest<T>('POST', url, { ...config, data }),
+  put: <T>(url: string, data?: unknown, config?: ApiRequestConfig) =>
+    doRequest<T>('PUT', url, { ...(config ?? {}), data }),
+  delete: <T>(url: string, config?: ApiRequestConfig) => doRequest<T>('DELETE', url, config),
+  request: <T>(config: ApiRequestConfig & { url: string }) =>
+    doRequest<T>((config.method ?? 'GET').toUpperCase(), config.url, config),
 }
+
+export default api

@@ -1,0 +1,256 @@
+/*
+ * Stylesheet compartilhada do tema do front web — pacote tema-front-web.
+ *
+ * Consome styles/tokens.css e as variaveis de marca do tenant
+ * (--brand-primary / --brand-on-primary / --brand-text). NENHUMA cor de
+ * marca esta hardcoded aqui como identidade: onde o campo.css usa a
+ * variavel de marca, esta folha usa a mesma variavel, com o mesmo
+ * fallback neutro.
+ *
+ * Classes com prefixo ui-: sao a implementacao visual dos componentes de
+ * components/ui/. As paginas entregues passam tambem classes utilitarias
+ * (ex.: "pt-6", "text-right") que dependem da casca da aplicacao; essas
+ * classes NAO sao definidas aqui — ver pendencia P-TEMA-04 (o
+ * tailwind.config / casca nunca foi entregue).
+ *
+ * Importar depois de tokens.css:
+ *   import '@styles/tokens.css'  (ou tokens.css via <link>)
+ *   import '@styles/theme.css'
+ */
+
+.ui-root {
+  font-family: var(--font-family-base);
+  color: var(--color-text);
+}
+
+/* ---------- Foco visivel (campo.css L27-32) ---------- */
+.ui-btn:focus-visible,
+.ui-input:focus-visible,
+.ui-select:focus-visible,
+.ui-textarea:focus-visible,
+.ui-checkbox-input:focus-visible,
+.ui-pageheader a:focus-visible,
+.ui-dialog-close:focus-visible {
+  outline: var(--focus-outline-width) solid var(--focus-color);
+  outline-offset: var(--focus-outline-offset);
+}
+
+/* ---------- Button (API do espelho ED-08, Button.tsx) ---------- */
+.ui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--target-min);
+  min-width: var(--target-min);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--brand-primary, #333333);
+  color: var(--brand-on-primary, #ffffff);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.ui-btn[disabled] {
+  opacity: 0.55; /* campo.css L53-56 (campo-btn[disabled]: 0.55) */
+  cursor: default;
+}
+.ui-btn--secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+.ui-btn--outline {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+.ui-btn--ghost {
+  background: transparent;
+  color: var(--color-text);
+}
+.ui-btn--destructive {
+  background: var(--color-destructive); /* [A DEFINIR] P-TEMA-03 */
+  color: var(--brand-on-primary, #ffffff);
+}
+.ui-btn--sm {
+  min-height: 36px; /* abaixo do alvo do campo: variante compacta do espelho (h-9) */
+  padding: var(--space-1) var(--space-3);
+}
+.ui-btn--lg {
+  padding: var(--space-3) var(--space-4);
+}
+.ui-btn--icon {
+  padding: var(--space-2);
+}
+
+/* ---------- Card ---------- */
+.ui-card {
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  margin: var(--space-3) 0;
+  background: var(--color-surface); /* [A DEFINIR] P-TEMA-03 */
+}
+.ui-card-content {
+  display: block;
+}
+
+/* ---------- PageHeader ---------- */
+.ui-pageheader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.ui-pageheader-title {
+  font-size: var(--font-size-title);
+  margin: 0 0 var(--space-3);
+}
+.ui-pageheader-description {
+  margin: 0;
+  color: var(--color-muted-text); /* [A DEFINIR] P-TEMA-03 */
+}
+
+/* ---------- Alert / Spinner ---------- */
+.ui-alert {
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  margin: var(--space-2) 0;
+}
+.ui-alert--error { border-color: var(--color-danger); } /* [A DEFINIR] P-TEMA-03 */
+.ui-alert--success { border-color: var(--color-success); } /* [A DEFINIR] P-TEMA-03 */
+.ui-alert--warning { border-color: var(--color-warning); } /* [A DEFINIR] P-TEMA-03 */
+.ui-alert--info { border-color: var(--color-info); } /* [A DEFINIR] P-TEMA-03 */
+.ui-alert-title { display: block; margin-bottom: var(--space-1); }
+.ui-spinner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 1.5em; /* campo.css L100-103 (campo-status) */
+}
+
+/* ---------- Badge ---------- */
+.ui-badge {
+  display: inline-block;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+.ui-badge--success { border-color: var(--color-success); color: var(--color-success); } /* [A DEFINIR] P-TEMA-03 */
+.ui-badge--warning { border-color: var(--color-warning); color: var(--color-warning); } /* [A DEFINIR] P-TEMA-03 */
+.ui-badge--danger,
+.ui-badge--destructive { border-color: var(--color-danger); color: var(--color-danger); } /* [A DEFINIR] P-TEMA-03 */
+.ui-badge--info { border-color: var(--color-info); color: var(--color-info); } /* [A DEFINIR] P-TEMA-03 */
+.ui-badge--secondary { color: var(--color-muted-text); } /* [A DEFINIR] P-TEMA-03 */
+
+/* ---------- Field / controles (API do espelho ED-08, Field.tsx) ---------- */
+.ui-field { display: grid; gap: var(--space-1); margin: var(--space-2) 0; }
+.ui-field-label { font-size: var(--font-size-sm); font-weight: 500; }
+.ui-field-required { color: var(--color-destructive); margin-left: var(--space-1); } /* [A DEFINIR] P-TEMA-03 */
+.ui-field-hint { font-size: var(--font-size-xs); color: var(--color-muted-text); margin: 0; } /* [A DEFINIR] P-TEMA-03 */
+.ui-field-error {
+  display: flex; align-items: flex-start; gap: var(--space-1);
+  font-size: var(--font-size-sm); color: var(--color-destructive); margin: 0; /* [A DEFINIR] P-TEMA-03 */
+}
+.ui-input,
+.ui-select,
+.ui-textarea {
+  display: block;
+  width: 100%;
+  min-height: var(--target-min);
+  font: inherit;
+  padding: var(--space-2);
+  box-sizing: border-box;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface); /* [A DEFINIR] P-TEMA-03 */
+  color: var(--color-text);
+}
+.ui-textarea { min-height: 88px; } /* espelho ED-08 Field.tsx: min-h-[88px] */
+.ui-input[aria-invalid='true'],
+.ui-select[aria-invalid='true'],
+.ui-textarea[aria-invalid='true'] {
+  border: 2px solid var(--color-destructive); /* espelho: aria-[invalid=true]:border-2; cor [A DEFINIR] P-TEMA-03 */
+}
+.ui-input[disabled], .ui-select[disabled], .ui-textarea[disabled] { opacity: 0.6; cursor: not-allowed; }
+.ui-checkbox { display: flex; align-items: flex-start; gap: var(--space-2); }
+.ui-checkbox-input { min-width: 20px; min-height: 20px; margin-top: 2px; }
+/* Grupo de controles sob um rotulo comum (Field multiplo, R2-F6):
+   contentor role="group" rotulado pela legenda do Field. */
+.ui-field-group { display: grid; gap: var(--space-1); }
+
+/* ---------- Table (contrato de Table.test.tsx do espelho ED-08) ---------- */
+.ui-table {
+  border-collapse: collapse; /* campo.css L87-91 */
+  width: 100%;
+  margin: var(--space-3) 0;
+}
+.ui-table caption { text-align: left; font-weight: 500; padding: var(--space-2) 0; }
+.ui-table th,
+.ui-table td {
+  text-align: left;
+  padding: 0.375rem 0.5rem; /* campo.css L93-98 */
+  border-bottom: 1px solid var(--color-border-table);
+}
+/* Densidade (Table.test.tsx): compact -> th contem h-8, td contem p-2;
+   padrao (comfortable) -> td contem p-4. As classes literais h-8/p-2/p-4
+   sao aplicadas pelos componentes Table; aqui so o ajuste visual. */
+.ui-table--compact th, .ui-table--compact td { padding-top: var(--space-1); padding-bottom: var(--space-1); }
+
+/* ---------- Pagination ---------- */
+.ui-pagination {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--space-3); padding-top: var(--space-4);
+}
+.ui-pagination-summary { font-size: var(--font-size-sm); color: var(--color-muted-text); margin: 0; } /* [A DEFINIR] P-TEMA-03 */
+.ui-pagination-error { font-size: var(--font-size-xs); color: var(--color-destructive); } /* [A DEFINIR] P-TEMA-03 */
+
+/* ---------- Dialog ---------- */
+.ui-dialog-overlay {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.4); /* [A DEFINIR] P-TEMA-03: fundo do overlay sem fonte entregue */
+}
+.ui-dialog-panel {
+  background: var(--color-surface); /* [A DEFINIR] P-TEMA-03 */
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  min-width: min(420px, 90vw);
+  max-width: 90vw; max-height: 90vh; overflow: auto;
+}
+.ui-dialog-title { margin-top: 0; font-size: var(--font-size-title); }
+.ui-dialog-footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-2); padding-top: var(--space-3); }
+/* Cabecalho e botao de fechar do Dialog (R2-F8): o botao usa a classe
+   .ui-dialog-close, ja prevista na regra de foco visivel no topo desta
+   folha — o selector deixou de estar morto. Alvo minimo = token do
+   projeto (--target-min, 48px). */
+.ui-dialog-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
+.ui-dialog-header .ui-dialog-title { margin-bottom: 0; }
+.ui-dialog-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: var(--target-min); min-width: var(--target-min);
+  padding: var(--space-1); margin: calc(-1 * var(--space-1)) calc(-1 * var(--space-1)) 0 0;
+  border: 1px solid transparent; border-radius: var(--radius-md);
+  background: transparent; color: var(--color-text);
+  font: inherit; font-size: 1.25rem; line-height: 1; cursor: pointer;
+}
+
+/* ---------- Icon ---------- */
+.ui-icon { display: inline-block; vertical-align: middle; flex: none; }
+.ui-icon--spin { animation: ui-spin 1s linear infinite; }
+@keyframes ui-spin { to { transform: rotate(360deg); } }
+/* Reducao de movimento (ed-39 a11y.ts L21-24: animationsEnabled =
+   !prefersReducedMotion): sem animacao essencial com a preferencia ligada. */
+@media (prefers-reduced-motion: reduce) {
+  .ui-icon--spin { animation: none; }
+}

@@ -1,20 +1,29 @@
-import { useEffect, type ReactNode } from 'react'
-import { useBrand } from '../../brand/BrandProvider'
+import type { ReactNode } from 'react'
+import { cn } from '@utils/cn'
 
-/** Cabeçalho de página: o ÚNICO h1 da tela, com descrição e ações opcionais. Atualiza o título da aba. */
-export function PageHeader({ title, description, actions }: { title: string; description?: ReactNode; actions?: ReactNode }) {
-  const brand = useBrand()
-  useEffect(() => {
-    document.title = `${title} · ${brand.shortName}`
-  }, [title, brand.shortName])
+/**
+ * PageHeader — API derivada do uso entregue (todas as frentes):
+ *   <PageHeader title="..." />
+ *   <PageHeader title="..." description="..." />
+ *   <PageHeader title="..." description="..." actions={<...>} /> (ED-08 CustomerList)
+ * A prop `subtitle` so existe no stub do harness de provas — [SEM FONTE]
+ * nas paginas entregues; fica fora (ver P-TEMA-06).
+ */
+export interface PageHeaderProps {
+  title: string
+  description?: string
+  actions?: ReactNode
+  className?: string
+}
 
+export function PageHeader({ title, description, actions, className }: PageHeaderProps) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-4">
+    <header className={cn('ui-pageheader', className)}>
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-        {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
+        <h1 className="ui-pageheader-title">{title}</h1>
+        {description ? <p className="ui-pageheader-description">{description}</p> : null}
       </div>
-      {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
-    </div>
+      {actions ? <div className="ui-pageheader-actions">{actions}</div> : null}
+    </header>
   )
 }

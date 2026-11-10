@@ -1,96 +1,114 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react'
-import { createPortal } from 'react-dom'
-import { Icon } from '@components/ui/Icon'
-import { Button } from './Button'
-
-const FOCUSABLE =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-
-interface DialogProps {
-  open: boolean
-  onClose: () => void
-  title: string
-  description?: ReactNode
-  children: ReactNode
-  footer?: ReactNode
-}
+import { cn } from '@utils/cn'
 
 /**
- * Diálogo modal acessível: role="dialog" + aria-modal, título associado, foco preso dentro,
- * Esc fecha e o foco volta ao elemento que abriu.
+ * Dialog — API derivada do uso entregue (ED-08 CatalogCrud):
+ *   <Dialog open onClose={...} title="..." description="...">...</Dialog>
+ *   <Dialog open onClose={...} title="..." description="..."
+ *           footer={<>...botoes...</>}>...</Dialog>
+ * `open` e booleano (uso: <Dialog open ...>); sem `open`, nao renderiza.
+ *
+ * Comportamento (padrao de acessibilidade do projeto, ED-39/a11y.ts:
+ * rotulos completos; e pratica corrente de dialogo modal):
+ * - role="dialog" aria-modal="true", titulo/descricao ligados por
+ *   aria-labelledby/aria-describedby;
+ * - Escape chama onClose;
+ * - BOTAO PROPRIO DE FECHAR (correccao R2-F8, Rodada 8 da auditoria):
+ *   quando `onClose` e dado, o painel renderiza no cabecalho um botao
+ *   <button type="button" class="ui-dialog-close" aria-label="Fechar">
+ *   que chama onClose — e esse botao que a regra de foco
+ *   `.ui-dialog-close:focus-visible` de styles/theme.css sempre previu
+ *   (antes o selector estava morto: nenhum elemento usava a classe).
+ *   Escolha pelo desenho existente: a biblioteca ja tinha o selector e
+ *   um dialogo modal sem fecho visivel ficava dependente de Escape ou
+ *   de botoes do conteudo/footer — um Dialog sem footer nao tinha
+ *   nenhum fecho visivel. Sem `onClose`, nao ha botao (nada para
+ *   chamar) e o fecho fica a cargo de quem controla `open`.
+ *   O glifo e o caracter "×" em texto — nenhum nome de icone "x" esta
+ *   evidenciado nos usos entregues, e a API do Icon nao e alargada
+ *   aqui (ver P-TEMA-05). O rotulo acessivel e "Fechar".
+ * - ao abrir, o foco vai para o elemento com [data-autofocus] (uso
+ *   entregue: Textarea data-autofocus no DeleteDialog da ED-08), senao
+ *   para o primeiro elemento focavel, senao para o painel;
+ * - ao fechar, o foco volta ao elemento que estava focado antes.
+ * Clique no fundo NAO fecha: nenhuma pagina entregue o usa e fechar por
+ * clique fora perderia o motivo obrigatorio da exclusao (ED-08).
+ * Armadilha de foco completa (focus trap): [A DEFINIR] — P-TEMA-08.
  */
-export function Dialog({ open, onClose, title, description, children, footer }: DialogProps) {
-  const titleId = useId()
-  const descId = useId()
+export interface DialogProps {
+  open?: boolean
+  onClose?: () => void
+  title?: ReactNode
+  description?: ReactNode
+  footer?: ReactNode
+  children?: ReactNode
+  className?: string
+}
+
+export function Dialog({ open = false, onClose, title, description, footer, children, className }: DialogProps) {
+  const uid = useId().replace(/:/g, '')
+  const titleId = `dlg-title-${uid}`
+  const descId = `dlg-desc-${uid}`
   const panelRef = useRef<HTMLDivElement>(null)
-  const returnFocusRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
-    if (!open) return undefined
-    returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    if (!open) return
+    const previouslyFocused = document.activeElement as HTMLElement | null
     const panel = panelRef.current
-    if (panel && !panel.contains(document.activeElement)) {
-      const first = panel.querySelector<HTMLElement>('[data-autofocus]') ?? panel.querySelector<HTMLElement>(FOCUSABLE)
-      ;(first ?? panel).focus()
+    if (panel) {
+      const target =
+        panel.querySelector<HTMLElement>('[data-autofocus]') ??
+        panel.querySelector<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') ??
+        panel
+      target.focus()
     }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === 'Escape' && onClose) onClose()
+    }
+    document.addEventListener('keydown', onKey)
     return () => {
-      returnFocusRef.current?.focus()
+      document.removeEventListener('keydown', onKey)
+      previouslyFocused?.focus?.()
     }
-  }, [open])
+  }, [open, onClose])
 
   if (!open) return null
 
-  const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Escape') {
-      event.stopPropagation()
-      onClose()
-      return
-    }
-    if (event.key !== 'Tab') return
-    const nodes = panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE)
-    if (!nodes || nodes.length === 0) return
-    const firstNode = nodes[0]
-    const lastNode = nodes[nodes.length - 1]
-    if (event.shiftKey && document.activeElement === firstNode) {
-      event.preventDefault()
-      lastNode?.focus()
-    } else if (!event.shiftKey && document.activeElement === lastNode) {
-      event.preventDefault()
-      firstNode?.focus()
-    }
-  }
-
-  return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/60" aria-hidden="true" onClick={onClose} />
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- padrão WAI-ARIA de diálogo modal: o teclado no painel prende o foco (Tab) e fecha com Esc */}
+  return (
+    <div className="ui-dialog-overlay">
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={titleId}
+        aria-labelledby={title ? titleId : undefined}
         aria-describedby={description ? descId : undefined}
         tabIndex={-1}
-        onKeyDown={onKeyDown}
-        className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border bg-card p-6 text-card-foreground shadow-lg focus:outline-none"
+        className={cn('ui-dialog-panel', className)}
       >
-        <div className="mb-4 flex items-start justify-between gap-4">
-          <h2 id={titleId} className="text-lg font-semibold">
-            {title}
-          </h2>
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Fechar">
-            <Icon name="x" className="h-5 w-5" />
-          </Button>
-        </div>
+        {title || onClose ? (
+          <div className="ui-dialog-header">
+            {title ? (
+              <h2 id={titleId} className="ui-dialog-title">
+                {title}
+              </h2>
+            ) : (
+              <span />
+            )}
+            {onClose ? (
+              <button type="button" className="ui-dialog-close" aria-label="Fechar" onClick={onClose}>
+                <span aria-hidden="true">×</span>
+              </button>
+            ) : null}
+          </div>
+        ) : null}
         {description ? (
-          <p id={descId} className="mb-4 text-sm text-muted-foreground">
+          <p id={descId} className="ui-dialog-description">
             {description}
           </p>
         ) : null}
-        <div className="space-y-4">{children}</div>
-        {footer ? <div className="mt-6 flex flex-wrap justify-end gap-2">{footer}</div> : null}
+        {children}
+        {footer ? <div className="ui-dialog-footer">{footer}</div> : null}
       </div>
-    </div>,
-    document.body,
+    </div>
   )
 }

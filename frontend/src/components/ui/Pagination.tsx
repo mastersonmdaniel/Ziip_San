@@ -4,6 +4,13 @@ import { Button } from './Button'
 import { Input, Select } from './Field'
 
 /**
+ * Pagination — copia da implementacao ENTREGUE na ED-08
+ * (ed-08/entrega/frontend/src/components/ui/Pagination.tsx), incluindo
+ * comentarios e textos. Unica diferenca: nenhuma na logica; as classes
+ * visuais internas passam pelas classes do tema (ui-*) via Button/
+ * Input/Select desta biblioteca, como no ficheiro entregue passavam
+ * pelos mesmos componentes.
+ *
  * Tamanhos de página oferecidos no seletor (ED-08). O teto é o do servidor:
  * a P0.16 fixou `size` máximo de 100 nas listas, e o padrão do cadastro é 25
  * (`DEFAULT_PAGE_SIZE` em services/registry/client.ts).
@@ -53,16 +60,16 @@ export function Pagination({ page, totalPages, totalElements, onPageChange, page
   }
 
   return (
-    <nav aria-label="Paginação" className="flex flex-wrap items-center justify-between gap-3 pt-4">
-      <p className="text-sm text-muted-foreground" aria-live="polite">
+    <nav aria-label="Paginação" className="ui-pagination">
+      <p className="ui-pagination-summary" aria-live="polite">
         {totalElements === 0
           ? 'Nenhum registro'
           : `Página ${page + 1} de ${Math.max(totalPages, 1)} · ${totalElements} ${totalElements === 1 ? 'registro' : 'registros'}`}
       </p>
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="ui-pagination-controls">
         {onPageSizeChange ? (
-          <span className="flex items-center gap-2">
-            <label htmlFor={sizeId} className="text-sm text-muted-foreground">
+          <span className="ui-pagination-size">
+            <label htmlFor={sizeId} className="ui-field-label">
               Itens por página
             </label>
             <Select
@@ -80,9 +87,9 @@ export function Pagination({ page, totalPages, totalElements, onPageChange, page
           </span>
         ) : null}
         {totalPages > 1 ? (
-          <form onSubmit={goTo} className="flex flex-col items-start gap-1" noValidate>
-            <span className="flex items-center gap-2">
-              <label htmlFor={goToId} className="text-sm text-muted-foreground">
+          <form onSubmit={goTo} className="ui-pagination-goto" noValidate>
+            <span className="ui-pagination-goto-row">
+              <label htmlFor={goToId} className="ui-field-label">
                 Ir para página
               </label>
               <Input
@@ -102,13 +109,13 @@ export function Pagination({ page, totalPages, totalElements, onPageChange, page
               </Button>
             </span>
             {goToError ? (
-              <span id={`${goToId}-error`} role="alert" className="text-xs text-destructive">
+              <span id={`${goToId}-error`} role="alert" className="ui-pagination-error">
                 {goToError}
               </span>
             ) : null}
           </form>
         ) : null}
-        <div className="flex gap-2">
+        <div className="ui-pagination-nav">
           <Button variant="outline" size="sm" disabled={page <= 0} onClick={() => onPageChange(page - 1)}>
             <Icon name="chevron-left" className="h-4 w-4" />
             Anterior

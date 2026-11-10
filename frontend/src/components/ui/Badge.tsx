@@ -1,28 +1,23 @@
-import type { HTMLAttributes } from 'react'
+import type { ReactNode } from 'react'
 import { cn } from '@utils/cn'
 
-export type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'warning' | 'info'
+/**
+ * Badge — API derivada do uso entregue:
+ * - sem variant: <Badge>{status}</Badge> (P2.22, P2.28, P3.25)
+ * - variant="danger" (P3.39 Inicio: vencidas; SEMAPHORE RED)
+ * - variant por mapa SEMAPHORE_VARIANT: 'success' | 'warning' | 'danger' | 'default' (P3.39)
+ * - variant="destructive" (ED-08 CustomerList: "Excluido")
+ * - variant="info" | "secondary" (ED-08 CatalogCrud: coluna booleana)
+ * - className livre (ED-08: className="ml-2")
+ */
+export type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'destructive' | 'info' | 'secondary'
 
-const variants: Record<BadgeVariant, string> = {
-  default: 'border-transparent bg-primary text-primary-foreground',
-  secondary: 'border-transparent bg-secondary text-secondary-foreground',
-  destructive: 'border-transparent bg-destructive text-destructive-foreground',
-  outline: 'text-foreground',
-  success: 'border-transparent bg-success text-success-foreground',
-  warning: 'border-transparent bg-warning text-warning-foreground',
-  info: 'border-transparent bg-info text-info-foreground',
+export interface BadgeProps {
+  children?: ReactNode
+  variant?: BadgeVariant
+  className?: string
 }
 
-/** O significado deve estar no TEXTO do selo, nunca só na cor. */
-export function Badge({
-  className,
-  variant = 'default',
-  ...props
-}: HTMLAttributes<HTMLSpanElement> & { variant?: BadgeVariant }) {
-  return (
-    <span
-      className={cn('inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold', variants[variant], className)}
-      {...props}
-    />
-  )
+export function Badge({ children, variant = 'default', className }: BadgeProps) {
+  return <span className={cn('ui-badge', `ui-badge--${variant}`, className)}>{children}</span>
 }

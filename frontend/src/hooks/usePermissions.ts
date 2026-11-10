@@ -1,25 +1,49 @@
-import { useAuthOptional } from '@hooks/useAuth'
-import type { AuthUser } from '@services/api'
+import { createContext, createElement, useContext, type ReactNode } from 'react'
 
 /**
- * P1.12: ações exibidas por permissão (`recurso:ação`, catálogo da P0.13).
+ * useCan / usePermissions — API derivada do uso entregue:
+ *   const canWrite = useCan('registry:write')            (ED-08 CustomerList)
+ *   const canReview = useCan('gis:change-set-review')    (P2.22 ChangeSetReview)
+ *   const canManage = useCan('gis:style-manage')         (P3.25 GisStyles)
+ * O chamador trata o resultado como booleano sincrono.
  *
- * A exibição é progressiva, não é a segurança: o servidor continua negando
- * (403) qualquer ação sem a permissão, e o log de acesso registra a negação.
- * Por isso a regra de exibição é fail-open quando a informação falta:
- * - fora do shell do app (testes de tela) ou sem usuário, não se esconde nada;
- * - com usuário mas sem o campo `permissions` (backend anterior à P1.12, que
- *   devolvia só `roles` em GET /api/v1/me), não se esconde nada;
- * - com `permissions` presente (backend da P1.12 em diante), a ação só aparece
- *   para quem tem a permissão exata.
+ * [A DEFINIR] A FONTE das permissoes (sessao/perfil do servidor) nunca
+ * foi entregue em pacote algum: nenhuma pagina entregue monta provider
+ * nem mostra de onde a lista vem. Esta implementacao expoe o ponto de
+ * injecao — PermissionsProvider com a lista de permissoes efectivas —
+ * e, SEM provider, nega tudo (fail-closed): mostrar uma accao sem
+ * permissao confirmada seria fingir a regra que as proprias paginas
+ * recusam fingir ("a tela nao finge a regra", P2.28/P2.33).
+ * Quem alimenta o provider na casca da aplicacao: pendencia P-TEMA-01.
  */
-export function hasPermission(user: AuthUser | null | undefined, permission: string): boolean {
-  if (!user) return true
-  if (!user.permissions) return true
-  return user.permissions.includes(permission)
+export interface PermissionsContextValue {
+  permissions: readonly string[]
+  can: (permission: string) => boolean
+}
+
+const PermissionsContext = createContext<PermissionsContextValue>({
+  permissions: [],
+  can: () => false,
+})
+
+export function PermissionsProvider({
+  permissions,
+  children,
+}: {
+  permissions: readonly string[]
+  children: ReactNode
+}) {
+  const value: PermissionsContextValue = {
+    permissions,
+    can: (permission: string) => permissions.includes(permission),
+  }
+  return createElement(PermissionsContext.Provider, { value }, children)
+}
+
+export function usePermissions(): PermissionsContextValue {
+  return useContext(PermissionsContext)
 }
 
 export function useCan(permission: string): boolean {
-  const auth = useAuthOptional()
-  return hasPermission(auth?.user ?? null, permission)
+  return useContext(PermissionsContext).can(permission)
 }
