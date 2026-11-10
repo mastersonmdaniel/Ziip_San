@@ -1436,10 +1436,399 @@ Por fase, na main (só ED e LC mudam face ao adendo K):
 
 - A manutenção desta rodada **não mudou o placar M2**: 0 classificações novas, 0 reclassificações; A, B, C e sem classificação inalterados.
 - **Lotes R17-A e R17-B FECHADOS nesta janela** (ambos com veredito formal, após o fecho da foto 22:05): **R17-A** — produção 5/5, revisão APROVADO COM RESSALVAS, confirmação CONFIRMADO COM RESSALVAS, correcção documentada, re-revisão APROVADO COM RESSALVAS, portão APROVADO em substância (exit 1 só pelo falso positivo da Regra 3, instância (x)); os 3 testes pousaram em `a232fdca` antes da autorização do portão — conteúdo verificado byte-idêntico à entrega (desvio de processo registado, R17A-01); o 4.º ficheiro (`scripts/ci-linux.sh`) pousou como lote próprio em `cd7fcb0`. **R17-B** — produção 12/12, revisão APROVADO COM RESSALVAS, confirmação CONFIRMADO COM RESSALVAS, portão APROVADO em substância (exit 1 só pelos 2 falsos positivos da Regra 3); **P-CISEC-02 fechada como sem objecto** (FECHO com proveniência exacta, 21/21 MATCH na main viva); pacote `correcao-ci-platform-accesscontrol` **retirado da fila — não pousar**; portão re-corrido retrospectivamente sobre os 4 pacotes em falta (exit 0, APROVADO, 6/6 OK nos 4). Os efeitos do R17-B são documentais (fecho + adendos nos pacotes-alvo) e viajam com os próximos pousos desses pacotes.
-- **CI COMPLETA na VM sobre `7dc98ea2` (P-CURA-02) — log `ci-vm/ci-completa-pos-cura.log`, 3.908 linhas, terminado 23:32:36 −03, lido na íntegra por esta manutenção (placares por soma própria por classe, não por grep filtrado):** core **1528/1528** SUCCESS; security **48/48** SUCCESS; fiscal **220/220** SUCCESS — os três em execução, sobre a árvore com a cura-lote-1; platform **FAILURE** — **1.328 testes, 20 falhas, 6 erros, 6 classes**: `NotificationIngestWiringTest` (6 testes, 5 erros — `ClassCastException`: `Timestamp` não é `UUID` no `FakeDb`, linha 221), `RegulatoryLoadGuardTest` (11 testes, 2 falhas — a mensagem de recusa não cita "14.015"), `TenantMigrationGlobalSequenceCiTest` (4 testes, 2 falhas + 1 erro — `V100__global_sequence_start.sql` com versão 100 ≤ maior publicada 102; baseline esperado "27.1", actual "102"), `TenantProvisioningServiceTest` (16 testes, 13 falhas — **migration V1_11 DUPLICADA** no platform: `V1_11__work_items_and_delegations.sql` (P2.28) × `V1_11__personal_data_access_log_export.sql` (P1.12) — o Flyway recusa provisionar qualquer tenant), `FactoryProfilesManifestTest` (3 testes, 1 falha — ADMIN sem as 3 permissões `access:*` que o catálogo já tem) e `VerticalBoundaryTest` (2 testes, 2 falhas — termos de saneamento no núcleo, ~90 ficheiros). **15 módulos SKIPPED** (quality, losses, metering, accounting, integration, reporting, GIS, MTR, LGPD, registry, billing-rules, billing, asset, collection, app); **0 testes de integração (failsafe)** — o reactor parou no platform. A P-CURA-02 cumpre-se quanto a core/security/fiscal; a P-CURA-03 (ITs, incl. GIS) não foi alcançada. **Lote 2 da cura em produção** (pacote `correcao-ci-cura-lote-2`, criado durante esta rodada): renumerar a V1_11 da P2.28 para V103 (precedente R2-G1), inserir a V100 na lista de publicadas, ajustar a asserção de baseline com justificação, remapear o fake do `NotificationIngestWiringTest`, citar a lei na mensagem do `RegulatoryLoadGuard`, e dar ao ADMIN as 3 `access:*` no manifesto. **Fora do lote (P-CURA2-06): o `VerticalBoundaryTest` é decisão de arquitectura do dono** — a regra "núcleo sem termos de saneamento" colide com ~90 ficheiros das frentes posteriores. O achado nº 8 está fechado (os 3 testes alinhados passam na compilação); o resultado desta CI é matéria nova para a auditoria (Rodada 18) — esta manutenção não lhe atribui número de achado.
+- **CI COMPLETA na VM sobre `7dc98ea2` (P-CURA-02) — log `ci-vm/ci-completa-pos-cura.log`, 3.908 linhas, terminado 23:32:36 −03, lido na íntegra por esta manutenção (placares por soma própria por classe, não por grep filtrado):** core **1528/1528** SUCCESS; security **48/48** SUCCESS; fiscal **220/220** SUCCESS — os três em execução, sobre a árvore com a cura-lote-1; platform **FAILURE** — **1.328 testes, 20 falhas, 6 erros, 6 classes**: `NotificationIngestWiringTest` (6 testes, 5 erros — `ClassCastException`: `Timestamp` não é `UUID` no `FakeDb`, linha 221), `RegulatoryLoadGuardTest` (11 testes, 2 falhas — a mensagem de recusa não cita "14.015"), `TenantMigrationGlobalSequenceCiTest` (4 testes, 2 falhas + 1 erro — `V100__global_sequence_start.sql` com versão 100 ≤ maior publicada 102; baseline esperado "27.1", actual "102"), `TenantProvisioningServiceTest` (16 testes, 13 falhas — **migration V1_11 DUPLICADA** no platform: `V1_11__work_items_and_delegations.sql` (P2.28) × `V1_11__personal_data_access_log_export.sql` (P1.12) — o Flyway recusa provisionar qualquer tenant), `FactoryProfilesManifestTest` (3 testes, 1 falha — ADMIN sem as 3 permissões `access:*` que o catálogo já tem) e `VerticalBoundaryTest` (2 testes, 2 falhas — termos de saneamento no núcleo, ~90 ficheiros). **15 módulos SKIPPED** (quality, losses, metering, accounting, integration, reporting, GIS, MTR, LGPD, registry, billing-rules, billing, asset, collection, app); **0 testes de integração (failsafe)** — o reactor parou no platform. A P-CURA-02 cumpre-se quanto a core/security/fiscal; a P-CURA-03 (ITs, incl. GIS) não foi alcançada. **Lote 2 da cura em produção** (pacote `correcao-ci-cura-lote-2`, criado durante esta rodada): renumerar a V1_11 da P2.28 para V105 (a V103 foi ocupada pela chave de remessa, `451c151`; a V104 está reservada ao contract) (precedente R2-G1), inserir a V100 na lista de publicadas, ajustar a asserção de baseline com justificação, remapear o fake do `NotificationIngestWiringTest`, citar a lei na mensagem do `RegulatoryLoadGuard`, e dar ao ADMIN as 3 `access:*` no manifesto. **Fora do lote (P-CURA2-06): o `VerticalBoundaryTest` é decisão de arquitectura do dono** — a regra "núcleo sem termos de saneamento" colide com ~90 ficheiros das frentes posteriores. O achado nº 8 está fechado (os 3 testes alinhados passam na compilação); o resultado desta CI é matéria nova para a auditoria (Rodada 18) — esta manutenção não lhe atribui número de achado.
 - **V103 POUSOU nesta janela** (`451c151`, 23:37:47 −03, 8 ficheiros, 531 inserções, 1 deleção; lista de publicadas 116→117; V104 pendente NÃO pousou) — cadeia autorizada pelo dono às 23:34 −03 (coordenador-portão, sessão `3be9fc42…`), com verificação pós-pouso por hash (`VERIFICACAO-POS-POUSO-V103.md`). A fila de correcções perde a V103; seguem R8–R16-A, tarifário C0–C4 e multimunicípio MM-01..09 (MM-05 bloqueado).
 - **Nova ordem do dono (23:34 −03, registada na MEMORY.md):** decisões em cartões com **3 opções cada**, sendo a preferencial sempre a saída **mais completa/detalhada**; publicar tudo o que estiver disponível para publicação; documentos-modelo trabalham-se com **DOCUMENTO FICTÍCIO** para a primeira rodada de testes. Pasta `documentos-modelo-ficticios/` criada durante esta rodada (`entrega/` em preenchimento). A **C4-01 segue ABERTA** e passa a apresentar-se no formato novo (cartão de 3 opções) — não é condição de pouso da C4.
 - O `DECISOES-DO-DONO.md` **não mudou nesta rodada** (257 linhas, decisão nº 48 continua a última).
 - A ressalva **M4 da ED-08 (seção 7) segue valendo**, inalterada.
 - As 6 não executadas (P4.6, LC.15, ED-68, ED-102, ED-103, ED-104) são classe D por desenho/decisão do dono (disparo nomeado) e não entram neste registro até serem produzidas.
 - Nota de frescura da foto: o HEAD vivo é `451c151` (V103, 2026-11-10T02:37:47Z = 23:37:47 −03); a foto é o instante 23:37:47 −03 — a main moveu-se 4 commits desde as 22:05 (platform-testes, cura-lote-1, ci-linux.sh, V103). **A fila de pouso das 286 tarefas continua vazia (0 aguardando)**; a CI total sobre o HEAD corrente segue por provar — a CI completa desta janela correu sobre `7dc98ea2`, anterior à V103 e ao `cd7fcb0`.
+
+## Adendo R18-C3-01 — errata de contagem de linhas do log da CI completa (10/11/2026)
+
+**Sessão (produtor do lote R18-B):** `41d7d8ed-b37c-4033-b659-42a8f0c26854` · **Achado:** R18-C3-01 (funde R18-C2-05, mesmo facto; Rodada 18).
+
+Onde a secção "P4. Notas do adendo" acima diz "log `ci-vm/ci-completa-pos-cura.log`, 3.908 linhas", **leia-se "3.908 linhas não vazias (3.956 linhas totais)"**.
+
+Verificação própria nesta sessão: `wc -l ci-vm/ci-completa-pos-cura.log` = **3.956**; `grep -c . ci-vm/ci-completa-pos-cura.log` = **3.908** (48 linhas vazias). A linha da secção P4 **não foi reescrita** — esta errata qualifica-a por adendo datado. Nenhum placar é afectado: todos foram somados por classe no ficheiro lido. Cópia deste adendo no pacote do lote R18-B (`correcoes-r18-b/ERRATA-REGISTRO-PLACAR-2D-R18-C3-01.md`).
+
+## Q. Adendo de 10/11/2026 — Manutenção da rodada 00:05 (job ziipsan-push-2h) — 3 tarefas novas executadas (ED-68, ED-102, LC.15); cadeia de pousos 23:34 concluída; C4-01 FECHADA; CI completa pós-cura-lote-2 com o fiscal a falhar a compilação
+
+- **Manutenção (job):** `ziipsan-push-2h`, rodada 00:05 de 10/11/2026. Leitura viva própria do GitHub na mesma rodada (conector GitHub, `list_commits`, sem 429).
+- **Âmbito:** nenhuma linha das secções anteriores (§§1–9, adendos A–P) foi alterada. O adendo P continua a ser o registo fiel da foto das 23:35 de 09/11; a posição corrente é a declarada neste adendo.
+
+## Q1. Reconciliação
+
+| Parcela | Nº | Fonte |
+|---|---:|---|
+| Universo consolidado no adendo anterior | 280 | este registro, §P1 |
+| Executadas (universo deste registro) | **283** | +3 nesta rodada: ED-68, ED-102 e LC.15 — todas com `entrega/` + revisão aprovada + confirmação independente (ver abaixo); lista de produzidas aprovadas `contagem_aprovadas2_0005.json` (183 tarefas) |
+| **Classificadas neste adendo** | **3** | ED-68, ED-102 e LC.15 — **todas na categoria B** (evidência lida abaixo); 0 reclassificações |
+| **Universo consolidado** | **283** | 280 + 3 ✓ |
+
+### Novas classificações — evidência lida dos artefactos de cada tarefa
+
+| Tarefa | Categoria | Evidência lida |
+|---|---|---|
+| ED-68 | **B** | `RELATORIO-ED-68.md`, pendências: **P-ED68-2 (transmissão real):** "envio efectivo da remessa a uma empresa real (ficheiro transmitido/chamada de API) e recepção real dos retornos — o pacote entrega geração determinística e processamento, com prova de ida-e-volta em teste" — acto externo (empresa real) pendente; P-ED68-1 (fiação), P-ED68-3 (renumerar V106 no pouso) e P-ED68-4 (SQL não aplicado em PG nesta VM; CI total) são as pendências universais do fluxo. Cadeia: REVISAO APROVADO COM RESSALVAS → CORRECAO dos 3 achados → REAPRECIACAO APROVADO COM RESSALVAS → CONFIRMACAO **CONFIRMADO** (53/53 testes no log final, 10 containers). |
+| ED-102 | **B** | `RELATORIO-ED-102.md`, pendências: **P-ED102-01 — Leiaute oficial do Transferegov `[SEM FONTE]`:** "obter o leiaute oficial vigente de importação/prestação de contas"; **P-ED102-02 — Submissão real ao Transferegov:** "envio efetivo exige convénio real, credenciais/acesso do ente e ambiente oficial — ato externo futuro; nada foi simulado como submetido"; **P-ED102-03 — ERP de obras concreto por tenant:** "fornecedor real, endpoint e leiaute de cada cliente" — todos factores externos; P-ED102-04 (fiação) é pendência universal. Cadeia: REVISAO APROVADO COM RESSALVAS → CONFIRMACAO **CONFIRMADO COM RESSALVAS** (rerun próprio do confirmador 21/21). |
+| LC.15 | **B** | `REVISAO-LC.15.md`, veredito APROVADO COM RESSALVAS: "A aprovação é do pacote para a fila do Portão; **não** é o aceite final da tarefa LC.15, que só fecha com os actos vivos da contratação (**P-LC15-01/02/03, decisão 41**)"; P-LC15-01 (conta AWS dedicada real e artefactos da conta), P-LC15-02 (cliente/contrato concreto p/ ativação), P-LC15-03 (teste TR-104 vivo) — actos externos. Cadeia: REVISAO APROVADO COM RESSALVAS (0 graves, 0 moderados, 2 menores) → CONFIRMACAO **CONFIRMADO COM RESSALVAS** (harness re-executado pelo confirmador 52/52, 17/17 hashes). |
+
+### Não classificadas nesta rodada — declarado, com a razão
+
+- **ED-103 — NÃO executada, logo não classificada.** O pacote aprovado nesta janela é o **dossiê de consulta** ordenado pela decisão 55 (`RELATORIO-PRODUCAO-ED-103.md`: "Este lote não contém parecer, opinião jurídica, resposta a qualquer quesito nem recomendação de conclusão legal — só perguntas, contexto factual e matrizes condicionais"; REVISAO APROVADO COM RESSALVAS → REAPRECIACAO APROVADO → CONFIRMACAO **CONFIRMADO**). A decisão 55 distingue o dossiê de "a produção da ED-103", que "arranca" só "com o parecer recebido e registado". O dossiê não é o produto de trabalho da tarefa (a implementação da antecipação/conta vinculada não existe); contá-lo como executado confundiria a preparação do gatilho com a tarefa. A ED-103 entra neste registro quando for produzida.
+- **P4.6 — em produção, sem revisão aprovada** (só `entrega/` + logs de harness; sem RELATORIO, sem REVISAO, sem CONFIRMACAO) — não executada, não classificada.
+- **ED-104 — não iniciada** (sem pasta).
+
+### Posição na main — 3 aguardando push (não 0)
+
+| Parcela | Nº | Fonte |
+|---|---:|---|
+| Produzidas na retomada na main | **180 de 183** | inalterada em número; as 3 novas (ED-68, ED-102, LC.15) ainda não pousaram |
+| Pré-retomada na main | 100 | inalterada |
+| **Total na main** | **280 de 286** | 100 + 180 = 280 |
+| **Aguardando push** | **3** | ED-68, ED-102, LC.15 — a fila das 286 tarefas volta a ter 3 (estava vazia desde 23:37 de 09/11) |
+| **Total na main (%)** | **97,9%** | 280/286 = 97,902097…% → 97,9% a uma casa decimal, por arredondamento |
+
+## Q2. Verificação por leitura viva própria do GitHub
+
+1. Leitura viva desta manutenção (conector GitHub, `list_commits`, sem 429): **1.010 commits, HEAD `1d7550536a721eecaccd1862629bba969c0c6f27`** (`feat(c4+mm-09+r9-b): Camada 4 campo e MM-09 com as correccoes do R9-B aplicadas no pouso + errata R10-B + verbetes de diario`, 2026-11-10T03:01:49Z = 00:01:49 −03). Continuidade SHA a SHA contra a foto 23:35 (`commits_2335-raw.json`, 988 commits): **0 ausentes, 22 novos**.
+2. Os 22 commits novos, em ordem cronológica (UTC): `a0a6599` (02:40:26Z) fix(r8-b) — R8-B → `2cf832d` (02:43:52Z) docs(r8-a) — adendo R8-A → `1f580d9` (02:44:47Z) docs(r9-c) — R9-C → `ad809a8` (02:45:16Z) docs(r10-a) — R10-A → `aeefe1e` (02:46:01Z) docs(r11-a) — R11-A → `b251d3d` (02:49:10Z) docs(r12-b) — R12-B → `2a0cc7e` (02:50:43Z) docs(base-12k) — R13-C (LANDING integral + diário) → `aaebd9e` (02:51:24Z) docs(r13-a) — R13-A (transporte) → `ccfdb53` (02:52:48Z) docs(tarifario-c0) — C0 (ADR-0048) → `f6f8822` (02:53:51Z) feat(tarifario-c1) — C1 → `1e3592f` (02:54:29Z) feat(tarifario-c2) — C2 (billing.composition) → `edbc00c` (02:55:12Z) feat(tarifario-c3) — C3 → `1df6167` (02:55:23Z) fix(ci) — cura-lote-2 (parte 1) → `e6f6b74` (02:55:35Z) fix(ci) — cura-lote-2 (parte 2, delete da V1_11 duplicada) → `66c1b56` (02:55:52Z) feat(mm-01) → `08c4792` (02:56:46Z) feat(mm-02) → `53bee84` (02:57:07Z) feat(mm-04) → `6c912ef` (02:57:45Z) feat(mm-03) → `0bfee56` (02:58:25Z) feat(mm-06) → `452d119` (02:58:45Z) feat(mm-07) → `4002684` (03:00:04Z) feat(mm-08) → `1d75505` (03:01:49Z) feat(c4+mm-09+r9-b) — C4 + MM-09 + R9-B (HEAD). Cadeia linear, sem ramos nem reescrita. **MM-05 NÃO pousou** (bloqueado, P-MM05-R8C-01); **R14-A, R15-A/B e R16-A NÃO pousaram**.
+3. Recálculo próprio (script `contar-foto.py` sobre a lista viva, `foto-resultado-0005.json`, confirmado por segunda contagem independente com `contar.py` sobre a lista achatada, `contagem_0005.json` — os dois scripts concordam em 280/280 na main, HEAD `1d75505`, 1.010 commits): retomada na main **180** = ED 94 + P3 41 + P2 22 + P4 5 + GL 4 + LC 14; total na main **280 de 286**; aguardando push **3** (ED-68, ED-102, LC.15). Nota de método: o mecânico (`contar-foto.py`) conta 185 pastas com `entrega/`; o aprovado é 183 — P4.6 e ED-103 ficam de fora pelo filtro de revisão (ver Q1); a ED-103, apesar da revisão aprovada do dossiê, fica de fora por não ser a execução da tarefa.
+4. Nenhum commit novo carrega ID de tarefa do plano; os dois commits-sonda (`7b19662`, `044b4a5`) continuam fora do padrão, sem efeito na contagem.
+5. Pacotes novos/modificados na janela fora do universo de 286 e sem efeito neste registro, excepto o registo: `correcao-ci-cura-lote-2` (pousado como `1df6167` + `e6f6b74`; cadeia completa), `correcoes-r8-a/b`, `correcoes-r9-b/c`, `correcoes-r10-a`, `correcoes-r11-a`, `correcoes-r12-b`, `correcoes-r13-a/c` (pousados na cadeia), `proposta-tarifaria/` (camadas C0–C4 pousadas) e `multimunicipio/` (MM-01/02/03/04/06/07/08/09 pousados; MM-05 bloqueado).
+
+## Q3. Totais consolidados (universo 283)
+
+| Dimensão | Nº | % de 283 |
+|---|---:|---:|
+| Aceite completo (com relatório local) | **65** | 23,0% |
+| Núcleo entregue + ensaio externo pendente | **102** | 36,0% |
+| Núcleo + pendência declarada não externa (categoria C) | **16** | 5,7% |
+| Sem classificação por relatório local (pré-retomada) | **100** | 35,3% |
+| **Total executadas** | **283** | 100% |
+
+## Q4. Notas do adendo
+
+- A manutenção desta rodada **mudou o placar M2: +3 classificações, todas na categoria B** (ED-68, ED-102, LC.15); A, C e sem classificação inalterados. Universo 280 → **283**.
+- **Cadeia de pousos das 23:34 concluída ~00:03 de 10/11 (HEAD `1d75505`)**: pousaram R8-B, adendo R8-A, R9-C, R10-A, R11-A, R12-B, R13-C (com a correcção do cabeçalho do diário, P-R17-B-02; diário com 26 verbetes de 09/11), R13-A (transporte), tarifário C0–C4 (C4 junto ao R9-B e ao MM-09), multimunicípio MM-01/02/03/04/06/07/08/09 e cura-lote-2. **MM-05 segue BLOQUEADO** (P-MM05-R8C-01); **R14-A, R15-A/B e R16-A seguem na fila** (não pousaram nesta cadeia).
+- **Decisões 49–57 (09/11/2026 23:52–23:57 −03; `DECISOES-DO-DONO.md` 257 → 311 linhas):** **49 — C4-01 FECHA-SE** (prova da INV-C2-11 sobre a base fictícia de 12.000 UCs E a prova proporcional mantida); **50 — P-JUR-FINAL-01 mantém o gatilho no fim** (sem antecipar); **51 — base fictícia mantida indefinidamente** (P-BF-01..05 resolvidas); **52 — LC.15 integral já**; **53 — ED-68 onda completa já**; **54 — ED-102 âmbito completo já**; **55 — ED-103 parecer encomendado, execução após o parecer**; **56 — P4.6 procura registada, executar já**; **57 — front só após a CI total verde** (gatilho cumulativo: CI verde + lista de ajustes do dono).
+- **CI COMPLETA na VM sobre `e6f6b74` (cura-lote-2) — log `ci-vm/ci-completa-pos-cura-lote-2.log`, 945 linhas, terminado 23:58:06 −03, lido na íntegra por esta manutenção (placares por soma própria por classe, nunca por grep filtrado):** core **1533/1533** SUCCESS (+5 testes vs 1528/1528 da corrida sobre `7dc98ea2`); security **48/48** SUCCESS; fiscal **FAILURE a compilar o código principal** — 5 erros em `NfageThirdPartyExclusion.java` (ficheiro da C4): importa `br.com.ziipsan.commercial.billing.composition` (`BillChargeLine`, `BillComposition`) — o pacote existe no repo (criado pela C2, `1e3592f`), mas o pom do fiscal **não declara dependência do ziipsan-billing** (verificado no clone, HEAD `1d75505`: `grep ziipsan-billing commercial/ziipsan-fiscal/pom.xml` sem ocorrências) — defeito real de integração introduzido pela C4 (falta a dependência ou a rewiring do ficheiro); platform **+ 15 módulos SKIPPED**; **0 testes de integração (failsafe)** — o reactor parou no fiscal. A cura-lote-2 **não chegou a ser testada em execução** nesta corrida. O resultado é matéria nova para a auditoria (Rodada 18) — esta manutenção não lhe atribui número de achado. **A CI total sobre o HEAD corrente (`1d75505`, com C4/MM-09/R9-B) segue por provar.**
+- **Rodada 18 da auditoria ainda sem pasta aberta** (última pasta: `2026-11-09-2343`, Rodada 17, fechada ~22:15 −03).
+- A ressalva **M4 da ED-08 (seção 7) segue valendo**, inalterada.
+- As 100 da pré-retomada **nunca são presumidas de aceite pleno**.
+- Nota de frescura da foto: o HEAD vivo é `1d75505` (2026-11-10T03:01:49Z = 00:01:49 −03); as pastas locais moveram-se durante a rodada — REVISAO/CONFIRMACAO de LC.15, ED-68 e ED-103 aterraram 00:10–00:14 −03, depois da foto do GitHub. As contagens de executado usam o estado local às ~00:21 −03 (ED-68, ED-102 e LC.15 aprovadas; P4.6 sem revisão; ED-103 só com o dossiê); a posição na main é a da foto 00:01:49 −03. **A fila de pouso das 286 tarefas volta a ter 3 (ED-68, ED-102, LC.15)**; a CI total sobre o HEAD corrente segue por provar.
+
+## R. Adendo de 10/11/2026 — Manutenção da rodada 02:05 (job ziipsan-push-2h) — 2 tarefas novas executadas (P4.6, ED-104); P4.6, ED-68, ED-102 e LC.15 pousadas; decisões 58, 59 e 60
+
+- **Manutenção (job):** `ziipsan-push-2h`, rodada 02:05 de 10/11/2026. Leitura viva própria do GitHub na mesma rodada (conector GitHub, `list_commits`, sem 429 — uma falha transitória de transporte na página 2 da primeira tentativa, repetida com sucesso a seguir).
+- **Âmbito:** nenhuma linha das secções anteriores (§§1–9, adendos A–Q) foi alterada. O adendo Q continua a ser o registo fiel da foto das 00:05 de 10/11; a posição corrente é a declarada neste adendo.
+
+## R1. Reconciliação
+
+| Parcela | Nº | Fonte |
+|---|---:|---|
+| Universo consolidado no adendo anterior | 283 | este registro, §Q1 |
+| Executadas (universo deste registro) | **285** | +2 nesta rodada: P4.6 e ED-104 — ambas com `entrega/` + revisão aprovada + confirmação independente (ver abaixo); lista de produzidas aprovadas `contagem_aprovadas_0205.json` (185 tarefas) |
+| **Classificadas neste adendo** | **2** | P4.6 e ED-104 — **ambas na categoria B** (evidência lida abaixo); 0 reclassificações |
+| **Universo consolidado** | **285** | 283 + 2 ✓ |
+
+### Novas classificações — evidência lida dos artefactos de cada tarefa
+
+| Tarefa | Categoria | Evidência lida |
+|---|---|---|
+| P4.6 | **B** | `RELATORIO-P4.6.md` + `RELATORIO-CORRECCAO-P4.6.md` + `REVISAO-P4.6-REAPRECIACAO.md`: o núcleo está entregue e provado em banco — IT `RlsIsolationThreeModesIT` **executado 7/7** na correcção (P-P46-01 CUMPRIDA), unitários 29/29; ficam pendentes **P-P46-03 (ensaios E1–E4 sobre tenants reais e primeira mudança de modo real):** "acto operacional futuro: o procedimento está escrito e o plano executável existe; executar a mudança de modo de um tenant real (e registar os ensaios) só faz sentido quando existir o primeiro tenant a mudar de modo [A DEFINIR pelo dono/operação]" — ensaio em ambiente real sobre tenant real, fora do pacote; **P-P46-04 (segundo cluster físico de IT)** — ambiente real por existir; P-P46-02 (reactor fiscal vermelho por causa alheia) e P-C46-01/02 são as pendências de integração/fiação do fluxo. Cadeia: REVISAO REPROVADO (9 achados) → CORRECAO dos 9 → REAPRECIACAO **APROVADO COM RESSALVAS** → CONFIRMACAO **CONFIRMADO COM RESSALVAS** (19/19 hashes) → portão APROVADO → **pouso `a3022adb`** (20/20, verificação pós-pouso). |
+| ED-104 | **B** | `RELATORIO-ED-104.md`, pendências: **P-ED104-01 — leiautes oficiais do SINIR e do IMA `[SEM FONTE]`** ("manual federal não público"; "leiaute oficial [SEM FONTE]"); **P-ED104-05 — fiação real:** "adapter real IMA/SINIR, migração das ligações dos CDFs 1:1 legados, aplicação do SQL em PG, validação externa do PDF/A (veraPDF)" — submissões reais ao SINIR/IMA são actos externos e "NÃO se simulam" (decisão 60); **P-ED104-07 — E10 PARCIAL:** "fórmulas oficiais dos indicadores das NR ANA 7/2024 e 14/2025 `[SEM FONTE]` — ler as Resoluções ANA 187/2024 e 276/2025 antes de nomear qualquer indicador ANA" — insumo oficial externo por ler; P-ED104-02/03/04 (catálogo IBAMA vazio por desenho, NBR 2024 não confirmada, enquadramento jurídico não presumido) são insumos documentais externos. Cadeia: REVISAO **APROVADO COM RESSALVAS** (0 graves, 0 moderados, 5 menores) → CONFIRMACAO **CONFIRMADO COM RESSALVAS** (reexecução própria 114/114, hashes 41/41) → portão APROVADO exit 0. **Aguarda push** (sem commit de entrega nesta foto). |
+
+### Não classificadas nesta rodada — declarado, com a razão
+
+- **ED-103 — NÃO executada, logo não classificada.** O pacote aprovado continua a ser só o **dossiê de consulta** ordenado pela decisão 55 (adendo Q); a execução arranca com o parecer recebido e registado. A ED-103 entra neste registro quando for produzida.
+- **Não há outras executadas sem classificação:** as 100 da pré-retomada seguem sem classificação por relatório local (nunca presumidas de aceite pleno).
+
+### Posição na main — 1 aguardando push
+
+| Parcela | Nº | Fonte |
+|---|---:|---|
+| Produzidas na retomada na main | **184 de 185** | +4 nesta rodada: ED-68 (`38f5497`), ED-102 (`ab131d7`), LC.15 (`b332192` 16/17 + workflow `6e01ef5` pelo PC do dono — LC.15 completa 17/17) e P4.6 (`a3022ad`) |
+| Pré-retomada na main | 100 | inalterada |
+| **Total na main** | **284 de 286** | 100 + 184 = 284 |
+| **Aguardando push** | **1** | ED-104 — aprovada e confirmada, portão APROVADO, sem commit de entrega |
+| **Total na main (%)** | **99,3%** | 284/286 = 99,300699…% → 99,3% a uma casa decimal, por arredondamento |
+
+## R2. Verificação por leitura viva própria do GitHub
+
+1. Leitura viva desta manutenção (conector GitHub, `list_commits`, sem 429): **1.019 commits, HEAD `cc2e3766eead14589832b9ec28859d1fe732e50b`** (`docs(diario): verbete do pouso do controle GPS em tempo real (P-MOB-GPS-01, decisão 59) — ecce890a`, 2026-11-10T04:49:13Z = 01:49:13 −03). Continuidade SHA a SHA contra a foto 00:05 (`commits_0005.json`, 1.010 commits): **0 ausentes, 9 novos**.
+2. Os 9 commits novos, em ordem cronológica (UTC): `ab131d7` (03:28:18Z) feat(ed-102) — ED-102 → `38f5497` (03:30:53Z) feat(ed-68) — ED-68 → `b332192` (03:34:38Z) feat(lc.15) — LC.15 16/17 → `6e01ef5` (03:48:02Z) feat(lc.15) — workflow deploy-infra pelo PC do dono (LC.15 completa 17/17) → `a3022ad` (04:15:41Z) feat(p4.6) — P4.6 → `b38ec85` (04:18:37Z) feat(mobile) — persistência SQLCipher + dados de emissão (decisão 58) → `d3a3d43` (04:21:59Z) docs(diario) — verbete do lote mobile → `ecce890` (04:48:28Z) feat(mobile) — GPS em tempo real (decisão 59, P-MOB-GPS-01) → `cc2e376` (04:49:13Z) docs(diario) — verbete do GPS (HEAD). Cadeia linear, sem ramos nem reescrita. **R14-A, R15-A/B, R16-A, R18-A/B e MM-05 NÃO pousaram** — seguem na fila.
+3. Recálculo próprio (script `contar-foto.py` sobre a lista viva, `foto-resultado-0205.json`, confirmado por segunda contagem independente com `contar.py` sobre a lista achatada, `/tmp/contar0205.out` — **divergência explicada, não erro:** o `contar.py` conta 182 na retomada porque o seu padrão de parênteses exige hífen e os assuntos de pouso da P4.6 (`feat(p4.6):`) e da LC.15 (`feat(lc.15):`) usam ponto; os dois commits estão verificados na lista viva acima e o `contar-foto.py`, que normaliza o ponto, conta-os — 184/184 na retomada, 284/284 na main): retomada na main **184** = ED 96 + P3 41 + P2 22 + P4 6 + GL 4 + LC 15; total na main **284 de 286**; aguardando push entre as executadas **1** (ED-104). Nota de método: o mecânico (`contar-foto.py`) conta 186 pastas com `entrega/`; o aprovado é 185 — a ED-103 fica de fora pelo filtro de revisão (o dossiê não é a execução da tarefa).
+4. Nenhum commit novo carrega ID de tarefa do plano além dos 4 acima; os dois commits-sonda (`7b19662`, `044b4a5`) continuam fora do padrão, sem efeito na contagem.
+5. Pacotes novos/modificados na janela fora do universo de 286 e sem efeito neste registro, excepto o registo: `mobile-integracao-p03-p04` e `mobile-gps-tempo-real` (pousados como `b38ec85` + `d3a3d43` e `ecce890` + `cc2e376`), `correcao-ci-cura-lote-3` (produzido; o ciclo P-P46-02-CICLO segue por decidir), `correcoes-r18-a/b` (produzidos, sem pouso), `provas-temas` (galeria de 6 temas + 3 modelos corporativos, base da escolha do dono — decisão 57).
+
+## R3. Totais consolidados (universo 285)
+
+| Dimensão | Nº | % de 285 |
+|---|---:|---:|
+| Aceite completo (com relatório local) | **65** | 22,8% |
+| Núcleo entregue + ensaio externo pendente | **104** | 36,5% |
+| Núcleo + pendência declarada não externa (categoria C) | **16** | 5,6% |
+| Sem classificação por relatório local (pré-retomada) | **100** | 35,1% |
+| **Total executadas** | **285** | 100% |
+
+## R4. Notas do adendo
+
+- A manutenção desta rodada **mudou o placar M2: +2 classificações, ambas na categoria B** (P4.6, ED-104); A, C e sem classificação inalterados. Universo 283 → **285**.
+- **Executado 285/286 = 99,7%; na main 284/286 = 99,3%.** Falta só a execução da ED-103 (após o parecer, decisão 55) — todas as 286 tarefas têm decisão do dono (decisão 60, ED-104, 01:22 −03) e nenhuma está sem pasta: a ED-104 é a única aguardando push.
+- **Decisões 58, 59 e 60 (`DECISOES-DO-DONO.md` 311 → 333 linhas):** **58 — Mobile começa pela persistência e integração (P-04+P-03)** — lote FECHADO E POUSADO (`b38ec85`, 15 ficheiros, TS 179/179, Java 12/12); **59 — controle em tempo real via GPS no campo** — frente P-MOB-GPS-01 FECHADA E POUSADA (`ecce890`, 23 ficheiros, TS 200/200, Java 29/29); **60 — ED-104: procura registada, executar a trilha GRS completa já** — produzida, aprovada e confirmada nesta janela (decisão 01:22 −03; estimativa antes de produzir, precedente ED-68).
+- **CI total sobre o HEAD corrente (`cc2e376`) segue por provar.** Nenhum log novo de CI completa na VM nesta janela (último: `ci-vm/ci-completa-pos-cura-lote-2.log` sobre `e6f6b74`: core 1533/1533, security 48/48, fiscal FAILURE a compilar — defeito C4/P-P46-02, matéria da Rodada 18). O lote `correcao-ci-cura-lote-3` foi produzido (2 poms curados L3/L4; L1/L2/L5 e P-CURA3-01/02/03 por decidir) — a cura prescrita para a P-P46-02 é inexequível por ciclo Maven (ver o pacote); o fiscal continua a parar o reactor antes do platform.
+- **Rodada 18 da auditoria concluída ~00:05 −03** (relatórios em `auditoria-continua/rodadas/2026-11-09-2343/`); Rodada 19 ainda sem pasta aberta. Marca d'água: HEAD `1d755053`.
+- A ressalva **M4 da ED-08 (seção 7) segue valendo**, inalterada.
+- As 100 da pré-retomada **nunca são presumidas de aceite pleno**.
+- Nota de frescura da foto: o HEAD vivo é `cc2e376` (2026-11-10T04:49:13Z = 01:49:13 −03); as pastas locais moveram-se durante a rodada — REVISAO/CONFIRMACAO/portão da ED-104 e os lotes mobile/GPS aterraram antes da foto do GitHub. As contagens de executado usam o estado local às ~02:17 −03 (P4.6 e ED-104 aprovadas; ED-103 só com o dossiê); a posição na main é a da foto 01:49:13 −03. **A fila de pouso das 286 tarefas tem 1 (ED-104)**; a CI total sobre o HEAD corrente segue por provar.
+
+## S. Adendo de 10/11/2026 — Manutenção da rodada 04:05 (job ziipsan-push-2h) — 1 tarefa nova executada (ED-103, execução da mecânica, decisão 62); 286/286 executado e na main
+
+- **Manutenção (job):** `ziipsan-push-2h`, rodada 04:05 de 10/11/2026. Leitura viva própria do GitHub na mesma rodada (conector GitHub, `list_commits`, sem 429).
+- **Âmbito:** nenhuma linha das secções anteriores (§§1–9, adendos A–R) foi alterada. O adendo R continua a ser o registo fiel da foto das 02:05 de 10/11; a posição corrente é a declarada neste adendo.
+
+## S1. Reconciliação
+
+| Parcela | Nº | Fonte |
+|---|---:|---|
+| Universo consolidado no adendo anterior | 285 | este registro, §R1 |
+| Executadas (universo deste registro) | **286** | +1 nesta rodada: ED-103 (execução da mecânica, decisão 62) — com `entrega/` + revisão aprovada + confirmação independente (ver abaixo); lista de produzidas aprovadas `contagem_aprovadas_0405.json` (186 tarefas) |
+| **Classificadas neste adendo** | **1** | ED-103 — **categoria B** (evidência lida abaixo); 0 reclassificações |
+| **Universo consolidado** | **286** | 285 + 1 ✓ |
+
+### Nova classificação — evidência lida dos artefactos da tarefa
+
+| Tarefa | Categoria | Evidência lida |
+|---|---|---|
+| ED-103 | **B** | `RELATORIO-EXECUCAO-ED-103.md`, pendências — todas de factor externo: **P-ED103-INT-01** (fiação/adapter real da porta `ReceivablesPortfolioSource` sobre os recebíveis vivos de billing/collection); **P-ED103-INT-02** (leiautes oficiais de banco/fundo/registradora `[SEM FONTE]` — formatos genéricos declarados até fonte oficial do cliente); **P-ED103-INT-03** (aplicação do SQL pendente em PostgreSQL descartável + numeração Flyway global no pouso/integração); **P-ED103-INT-04** (persistência real do `CessionStore` JDBC/JPA sobre o SQL de E6 + fiação Spring/REST/agendamento); **P-ED103-TELAS-01** (telas da mecânica — decisão 57, só após CI total verde). Núcleo entregue e provado: suíte nova **20/20**; regressão do módulo `ziipsan-collection` 785 testes (765 + 20) com o conjunto de falhas **idêntico** ao da base (4F/7E pré-existentes) — zero falhas novas. Cadeia: estimativa prévia do coordenador → produção → REVISAO-EXECUCAO **APROVADO** (0 graves, 0 moderados, 3 menores não-bloqueantes) → CONFIRMACAO-EXECUCAO **CONFIRMADO** (18/18 + dossiê 4/4) → portão **APROVADO EM SUBSTÂNCIA** → **pouso `b4601a8`** (18 ficheiros) + diário `376bf6f`. O dossiê de consulta **não pousou por desenho** (decisão 62): fica como instrumento do cliente, fora do lote. |
+
+### Não classificadas nesta rodada — declarado, com a razão
+
+- **Nenhuma executada sem classificação.** As 100 da pré-retomada seguem sem classificação por relatório local (nunca presumidas de aceite pleno). A ressalva M4 da ED-08 (seção 7) segue valendo.
+- **Fora do universo — não classificadas, por desenho:** os 8 itens da Onda II do PDCA-01 (II-1..II-8, decisões 61/64) estão **FECHADOS** na esteira (8/8, relatório `onda-2/RELATORIO-ONDA-2.md`) mas **não são tarefas do plano v3.0** (backlog pós-CI, fora das 286) — não entram neste registro nem no placar de 286. Os lotes do momento final do front (decisões 63/65) e as correções da cura/R19 também são fora do universo.
+
+### Posição na main — 0 aguardando push; 286/286
+
+| Parcela | Nº | Fonte |
+|---|---:|---|
+| Produzidas na retomada na main | **186 de 186** | +2 nesta rodada: ED-104 (`1c7ac4f` + `f21fb4b` + `9224daa` + diário `1583284` + fontes DejaVu `aff827d` pela rota do PC do dono) e ED-103 (`b4601a8` + diário `376bf6f`) |
+| Pré-retomada na main | 100 | inalterada |
+| **Total na main** | **286 de 286** | 100 + 186 = 286 |
+| **Aguardando push** | **0** | era 1 (ED-104) — **fila das 286 tarefas VAZIA; executado = na main = 286/286 pela primeira vez** |
+| **Total na main (%)** | **100,0%** | 286/286 = 100,0% |
+
+## S2. Verificação por leitura viva própria do GitHub
+
+1. Leitura viva desta manutenção (conector GitHub, `list_commits`, sem 429): **1.031 commits, HEAD `80eef16`** (`front(temas): 9 temas no código real — 5 paletas novas (violet, amber, executive-navy, graphite, sanitation-green) + gerados + script inline/CSP + companheiros KNOWN_PALETTES (UserPreferencesService) e MARCA-E-TEMAS §4.2, lote único de 13 (decisões 63/65)`, 2026-11-10T07:05:06Z = 04:05:06 −03). Continuidade SHA a SHA contra a foto 02:05 (`commits_0205-raw.json`, 1.019 commits): **0 ausentes, 12 novos**.
+2. Os 12 commits novos, em ordem cronológica (UTC): `1c7ac4f` (05:12:26Z) ED-104 parte 1/4 → `f21fb4b` (05:12:32Z) ED-104 parte 2/4 → `8ce3b98` (05:12:36Z) fix(ci) cura lote 3 parcial pousável (L4: billing declara ziipsan-accounting) → `9224daa` (05:14:47Z) ED-104 parte 3/4 (testes, 114/114) → `1583284` (05:15:21Z) diário da ED-104 → `aff827d` (05:30:12Z) ED-104 fontes DejaVu (rota PC do dono) → `8adee2d` (05:43:22Z) fix(ci) cura lote 4 (P-CURA3-03) → `b4601a8` (06:24:04Z) ED-103 execução (decisão 62) → `376bf6f` (06:25:29Z) diário da ED-103 → `c0d1c6a` (07:02:56Z) front(tema) biblioteca do molde (decisão 65) → `20eb153` (07:04:26Z) diário do tema → `80eef16` (07:05:06Z) front(temas) 9 temas no código real (decisões 63/65, HEAD). Cadeia linear, sem ramos nem reescrita.
+3. Recálculo próprio (script `contar-foto.py` sobre a lista viva, `foto-resultado-0405.json`, confirmado por segunda contagem independente com `contar.py` sobre a lista achatada — **divergência explicada, não erro:** o `contar.py` conta 284 na main porque o seu padrão de parênteses exige hífen e os assuntos de pouso da P4.6 (`feat(p4.6):`) e da LC.15 (`feat(lc.15):`) usam ponto; os dois commits estão verificados na lista viva acima e o `contar-foto.py`, que normaliza o ponto, conta-os — 186/186 na retomada, 286/286 na main): retomada na main **186** = ED 98 + P3 41 + P2 22 + P4 6 + GL 4 + LC 15; total na main **286 de 286**; aguardando push entre as executadas **0**; não iniciadas **0**. Nota de método: o mecânico (`contar-foto.py`) conta 186 pastas com `entrega/` filtradas ao universo; o aprovado é 186 — a ED-103 conta agora pela execução aprovada (o dossiê, só por si, continuaria de fora).
+4. Nenhum commit novo carrega ID de tarefa do plano além dos 2 acima (ED-103, ED-104); os dois commits-sonda (`7b19662`, `044b4a5`) continuam fora do padrão, sem efeito na contagem.
+5. Pacotes novos/modificados na janela fora do universo de 286 e sem efeito neste registro, excepto o registo: `onda-2/` (II-1..II-8 FECHADOS, 8/8, zero escritas no GitHub — pousos aguardam ordem da sessão principal), `correcao-ci-cura-lote-3-r19a` (R19-A PRODUZIDO — L1/L2/L5 curadas em desenho; PORTAO-REGISTRO em branco: sem revisão formal, sem confirmação, sem portão — aguarda a esteira), `correcao-ci-cura-lote-4` (P-CURA3-03 curada; pousado como `8adee2d`; registry 415/415), `correcoes-r19-b` (R19-B, adendos documentais), `correcao-ci-cura-lote-3` (L4 pousável pousada como `8ce3b98`; o resto do lote 3 é substituído pelo R19-A), `tema-front-web`/`ed-40-telas`/`portal-consumidor-telas`/`provas-temas` (momento final do front, decisões 63/65; biblioteca do molde + 9 temas pousados como `c0d1c6a` + `80eef16`).
+
+## S3. Totais consolidados (universo 286)
+
+| Dimensão | Nº | % de 286 |
+|---|---:|---:|
+| Aceite completo (com relatório local) | **65** | 22,7% |
+| Núcleo entregue + ensaio externo pendente | **105** | 36,7% |
+| Núcleo + pendência declarada não externa (categoria C) | **16** | 5,6% |
+| Sem classificação por relatório local (pré-retomada) | **100** | 35,0% |
+| **Total executadas** | **286** | 100% |
+
+### Por fase
+
+| Fase | Executadas no universo | A completo | B ensaio externo | C não externo | Sem classificação |
+|---|---:|---:|---:|---:|---:|
+| P0 | 47 | 0 | 0 | 0 | 47 |
+| P1 | 41 | 0 | 0 | 0 | 41 |
+| P2 | 34 | 11 | 7 | 4 | 12 |
+| P3 | 41 | 23 | 12 | 6 | 0 |
+| P4 | 6 | 4 | 2 | 0 | 0 |
+| GL | 4 | 1 | 3 | 0 | 0 |
+| LC | 15 | 0 | 15 | 0 | 0 |
+| ED | 98 | 26 | 66 | 6 | 0 |
+| **Total** | **286** | **65** | **105** | **16** | **100** |
+
+## S4. Notas do adendo
+
+- A manutenção desta rodada **mudou o placar M2: +1 classificação, na categoria B** (ED-103); A, C e sem classificação inalterados. Universo 285 → **286**.
+- **Executado 286/286 = 100,0%; na main 286/286 = 100,0%.** Todas as 286 tarefas do plano v3.0 estão executadas e na main; nenhuma aguarda push; nenhuma está por iniciar. O que resta do plano é prova externa (CI total verde, ensaios reais, pareceres, actos com cliente/piloto) — não execução de tarefas.
+- **Decisões 61–65 (`DECISOES-DO-DONO.md` 333 → 365 linhas):** **61 — Onda II APROVADA COMPLETA** como backlog pós-CI verde; **62 — ED-103 executa-se JÁ, só a mecânica** (redefine o gatilho da decisão 55; a logística é do cliente); **63 — todos os modelos como temas; padrão Azul Água** (torneira 3D só guardada como asset, sem ir para as telas); **64 — Onda II LIBERADA PARA EXECUÇÃO JÁ** (cai a condição pós-CI da decisão 61); **65 — momento final do front LIBERADO JÁ, COMPLETO** (cai a condição pós-CI da decisão 57; telas da Onda II entram neste momento).
+- **Rodada 19 da auditoria FECHADA ~01:43 −03** (consolidado `00-CONSOLIDADO-RODADA19.md`, marca d'água HEAD `cc2e376`): delta APROVADO em substância, **1 grave (R19-C2 — quatro lesões irmãs da mesma fornada, cada uma capaz de travar o reactor sozinha depois do fiscal), 2 moderados (R19-C1, R19-C3), 7 menores**; repasse em 2 lotes (**R19-A** — redesenho do lote 3 da cura; **R19-B** — adendos documentais, produzido). **C4-01 FECHADA** (decisão 49) — fora do repasse. P-R18-01 (verificação pós-pouso por hash dos 17 pousos da onda da Rodada 18) segue aberta, prioritária para a Rodada 20.
+- **CI total sobre o HEAD corrente (`80eef16`) segue por provar.** Nenhum log novo de CI completa na VM nesta janela (último: `ci-vm/ci-completa-pos-cura-lote-2.log` sobre `e6f6b74`: core 1533/1533, security 48/48, fiscal FAILURE a compilar — defeito C4/P-P46-02). A varredura `ci-vm/varredura-testcompile-pos-cura.log` (cópia arquivada pelo R18-B, md5 `f88786c7…` conferido) mostra BUILD SUCCESS na superfície, mas **4 módulos com "Nothing to compile"** (core, security, fiscal, platform — classes obsoletas) e **nenhum HEAD registado** — não é citada como prova; a Rodada 19 (R19-C3) já decidiu que uma varredura assim não prova a cura. O R19-A (L1/L2/L5) fecha a varredura limpa em 19/20 (só o MTR falha, pré-existente, ED-104 — o lote 4 confirma MTR BUILD SUCCESS no HEAD `1583284`), mas o lote **não tem revisão nem confirmação nem portão** e **não pousou**.
+- A ressalva **M4 da ED-08 (seção 7) segue valendo**, inalterada.
+- As 100 da pré-retomada **nunca são presumidas de aceite pleno**.
+- Nota de frescura da foto: o HEAD vivo é `80eef16` (2026-11-10T07:05:06Z = 04:05:06 −03); as pastas locais moveram-se durante a rodada — a execução da ED-103 e os lotes R19-A/B, o lote 4 e a Onda II aterraram antes da foto do GitHub. As contagens de executado usam o estado local às ~04:10 −03; a posição na main é a da foto 04:05:06 −03. **A fila de pouso das 286 tarefas está vazia (0 aguardando)**; a fila que segue é a de correcções (R14-A, R15-A/B, R16-A, R18-A/B, R19-A/B, V104, MM-05), a Onda II (8/8, aguarda ordem de pouso) e o momento final do front.
+
+## T. Adendo de 10/11/2026 — Manutenção da rodada 06:05 (job ziipsan-push-2h) — nenhuma tarefa nova executada; 286/286 sustentado; R19-A pousado
+
+- **Manutenção (job):** `ziipsan-push-2h`, rodada 06:05 de 10/11/2026. Leitura viva própria do GitHub na mesma rodada (conector GitHub, `list_commits`, sem 429).
+- **Âmbito:** nenhuma linha das secções anteriores (§§1–9, adendos A–S) foi alterada. O adendo S continua a ser o registo fiel da foto das 04:05 de 10/11; a posição corrente é a declarada neste adendo.
+
+## T1. Reconciliação
+
+| Parcela | Nº | Fonte |
+|---|---:|---|
+| Universo consolidado no adendo anterior | 286 | este registro, §S1 |
+| Executadas (universo deste registro) | **286** | conjunto **idêntico** ao do adendo S — verificado: `foto-resultado-0605.json` vs `foto-resultado-0405.json`, mesma lista de 186 tarefas da retomada; 0 pastas novas de tarefa com `entrega/` |
+| **Classificadas neste adendo** | **0** | nenhuma executada sem classificação; 0 reclassificações |
+| **Universo consolidado** | **286** | 286 + 0 ✓ |
+
+### Não classificadas nesta rodada — declarado, com a razão
+
+- **Nenhuma executada sem classificação.** As 100 da pré-retomada seguem sem classificação por relatório local (nunca presumidas de aceite pleno). A ressalva M4 da ED-08 (seção 7) segue valendo.
+- **Fora do universo — não classificadas, por desenho:** os 8 itens da Onda II do PDCA-01 (II-1..II-8, decisões 61/64) **POUSARAM** nesta janela (16 commits, 131/131 por hash, Rodada 21) mas **não são tarefas do plano v3.0** — não entram neste registro nem no placar de 286. Os 5 pacotes do momento final do front (decisões 63/65) pousaram integralmente (52/52, Rodada 21), e o R19-A pousou (96/96 + 18 remoções) — também fora do universo.
+
+### Posição na main — 0 aguardando push; 286/286
+
+| Parcela | Nº | Fonte |
+|---|---:|---|
+| Produzidas na retomada na main | **186 de 186** | inalterada |
+| Pré-retomada na main | 100 | inalterada |
+| **Total na main** | **286 de 286** | 100 + 186 = 286 |
+| **Aguardando push** | **0** | **fila das 286 tarefas VAZIA** |
+| **Total na main (%)** | **100,0%** | 286/286 = 100,0% |
+
+## T2. Verificação por leitura viva própria do GitHub
+
+1. Leitura viva desta manutenção (conector GitHub, `list_commits`, sem 429): **1.079 commits, HEAD `d807534`** (`docs(diario): verbete do pouso do R19-A cura do ciclo fiscal/billing (saida 3) — entrega c2e87589..b54f548a + 18 remocoes; guarda 6 actualizada quanto ao MTR (R-C01); proxima prova: CI completa P-CURA-02`, 2026-11-10T09:03:51Z = 06:03:51 −03). Continuidade SHA a SHA contra a foto 04:05 (`commits_0405-raw.json`, 1.031 commits): **0 ausentes, 48 novos**.
+2. Os 48 commits novos, em ordem cronológica (UTC): `9e7deca` (07:17:58Z) diário dos 9 temas → `7932223` (07:18:14Z) front portal → `5c4a1f9` (07:18:40Z) diário do portal → `d5f5a2f` (07:18:55Z) front quiosque/painel ED-40 → `c5991be` (07:19:12Z) diário do quiosque → `ec0f5b4` (07:19:43Z) front rotas GIS → `f75b009` (07:20:03Z) diário das rotas GIS (momento final do front COMPLETO, decisão 65) → `b4eee25` (07:22:31Z) II-1 → `55e9efe` (07:23:00Z) diário II-1 → `c136458` (07:23:35Z) II-2 → `534e26e` (07:23:52Z) diário II-2 → `4d411e2` (07:26:34Z) II-3 → `a548aee` (07:26:54Z) diário II-3 → `3dd6f61` (07:32:55Z) II-4 → `a5682b9` (07:33:12Z) diário II-4 → `193d9a4` (07:34:44Z) II-5 → `5910eed` (07:36:05Z) diário II-5 → `ed66fa9` (07:36:31Z) II-6 → `629e556` (07:47:36Z) diário II-6 → `a8b98aa` (08:00:06Z) II-7 → `41c6f89` (08:11:59Z) diário II-7 → `613bcc9` (08:17:35Z) II-8 → `0b341a4` (08:43:24Z) diário II-8 (Onda II COMPLETA, decisão 64) → `c2e8758` (08:47:37Z) R19-A parte 1/6 → `9f80292` (08:52:42Z) parte 2/6 → `ef36612` (08:53:19Z) parte 3/6 → `50f52df` (08:54:23Z) parte 4/6 → `63ae45d` (08:55:11Z) parte 5/6 → `b54f548` (08:55:24Z) parte 6/6 → `692615c` … `b1e9f82` (08:56:10Z–09:02:02Z) 18 remoções dos caminhos antigos → `d807534` (09:03:51Z) diário do R19-A (HEAD). Cadeia linear, sem ramos nem reescrita.
+3. Recálculo próprio (script `contar-foto.py` sobre a lista viva, `foto-resultado-0605.json`, confirmado por segunda contagem independente com `contar.py` sobre a lista achatada — **divergência explicada, não erro:** o `contar.py` conta 284 na main porque o seu padrão de parênteses exige hífen e os assuntos de pouso da P4.6 (`feat(p4.6):`) e da LC.15 (`feat(lc.15):`) usam ponto; os dois commits estão verificados na lista viva acima e o `contar-foto.py`, que normaliza o ponto, conta-os — 186/186 na retomada, 286/286 na main): retomada na main **186** = ED 98 + P3 41 + P2 22 + P4 6 + GL 4 + LC 15; total na main **286 de 286**; aguardando push entre as executadas **0**; não iniciadas **0**.
+4. Nenhum commit novo carrega ID de tarefa do plano; os dois commits-sonda (`7b19662`, `044b4a5`) continuam fora do padrão, sem efeito na contagem.
+5. Pacotes novos/modificados na janela fora do universo de 286 e sem efeito neste registro, excepto o registo: `correcao-ci-cura-lote-3-r19a` (**R19-A FECHADO E POUSADO** — REVISAO **APROVADO COM RESSALVAS** → CONFIRMACAO **CONFIRMADO COM RESSALVAS** → portão **APROVADO EM SUBSTÂNCIA**; verificação pós-pouso `VERIFICACAO-POS-POUSO-R19-A.md`: **96/96** blobs da entrega, **0/18** caminhos antigos, diário em append puro; a nota da Rodada 21 sobre 15 remoções pendentes está **ultrapassada** — as 15 foram executadas a seguir ao fecho da rodada, cada uma com commit confirmado), `onda-2/` (II-1..II-8 pousados; `VERIFICACAO-POS-POUSO-II-4..II-8.md`), `conclusao-front/` (momento final; `RELATORIO-MOMENTO-FINAL-FRONT.md`), `correcoes-r20-a` (entrega + harness-logs, sem revisão), `correcoes-r20-b` (RELATORIO + entrega, sem revisão), `correcoes-r20-c` (REVISAO **APROVADO** e CONFIRMACAO **CONFIRMADO** no texto, mas portão **BLOQUEADO** — o extrator não extraiu o veredito da revisão e sinalizou não-independência na confirmação; lote **LOCAL-ONLY**, fora do universo), `correcoes-r21-a` (PLANO + RELATORIO + portão temas-9, em produção), `correcoes-r21-c` (vazia).
+
+## T3. Totais consolidados (universo 286) — inalterados
+
+| Dimensão | Nº | % de 286 |
+|---|---:|---:|
+| Aceite completo (com relatório local) | **65** | 22,7% |
+| Núcleo entregue + ensaio externo pendente | **105** | 36,7% |
+| Núcleo + pendência declarada não externa (categoria C) | **16** | 5,6% |
+| Sem classificação por relatório local (pré-retomada) | **100** | 35,0% |
+| **Total executadas** | **286** | 100% |
+
+### Por fase — inalterada
+
+| Fase | Executadas no universo | A completo | B ensaio externo | C não externo | Sem classificação |
+|---|---:|---:|---:|---:|---:|
+| P0 | 47 | 0 | 0 | 0 | 47 |
+| P1 | 41 | 0 | 0 | 0 | 41 |
+| P2 | 34 | 11 | 7 | 4 | 12 |
+| P3 | 41 | 23 | 12 | 6 | 0 |
+| P4 | 6 | 4 | 2 | 0 | 0 |
+| GL | 4 | 1 | 3 | 0 | 0 |
+| LC | 15 | 0 | 15 | 0 | 0 |
+| ED | 98 | 26 | 66 | 6 | 0 |
+| **Total** | **286** | **65** | **105** | **16** | **100** |
+
+## T4. Notas do adendo
+
+- A manutenção desta rodada **NÃO mudou o placar M2: 0 classificações novas**; A, B, C e sem classificação inalterados. Universo 286 → **286**.
+- **Executado 286/286 = 100,0%; na main 286/286 = 100,0%.** Todas as 286 tarefas do plano v3.0 estão executadas e na main; nenhuma aguarda push; nenhuma está por iniciar. O que resta do plano é prova externa (CI total verde, ensaios reais, pareceres, actos com cliente/piloto) — não execução de tarefas.
+- **Nenhuma decisão nova além da 65** (`DECISOES-DO-DONO.md` 365 linhas, inalterado nesta janela).
+- **Rodada 20 da auditoria FECHADA ~05:00 −03** (consolidado `00-CONSOLIDADO-RODADA20.md`, marca d'água HEAD `376bf6f4`; HEAD vivo no fecho: `0b341a40`): delta APROVADO em substância, **0 graves, 0 moderados, 11 menores** (R20-B2..B5, R20-I1..I4, R20-F1/F2, R20-R1), repassados em 3 lotes (**R20-A/B/C**). **FECHADOS em conteúdo:** P-R18-01 (17 pousos verificados por hash), P-R17-B-02, R19-B1, R19-I1, R19-I2, R2-F1..F9. 286/286 SUSTENTADO (limite: sem recontagem integral tarefa a tarefa — esta manutenção faz a recontagem integral e confirma 286/286).
+- **Rodada 21 da auditoria FECHADA ~06:10 −03** (consolidado `00-CONSOLIDADO-RODADA21.md`, marca d'água HEAD `f7b8b74c`): delta desde `376bf6f4` — momento final do front pousado integralmente (**52/52** por hash) e Onda II pousada integralmente (**131/131** por hash); R19-A a pousar no fecho (6/6 partes + 3/18 remoções — **completado depois do fecho**, ver §T2 item 5). **0 graves, 2 moderados (R21-F1, R21-C1), 3 menores novos** (R21-O1, R21-C2, R21-C3), repassados em 3 lotes (**R21-A/B/C**). **FECHADOS em conteúdo:** R20-B1, R20-B5, R20-R2. Persistem: R20-B2, R20-B3 (parcial), R20-B4, R20-F1/F2 (pousaram como estavam — errata pós-pouso), R20-R1.
+- **CI total sobre o HEAD corrente (`d807534`) segue por provar.** O ficheiro `ci-vm/ci-completa-pos-r19a.log` é um stub de 2 linhas (`ERRO: psql nao encontrado`) — tentativa falhada por ambiente, **não é prova de CI**. O último CI completo válido segue o de `e6f6b74` (core 1533/1533, security 48/48, fiscal FAILURE a compilar — defeito C4/P-P46-02, agora curado em desenho pelo R19-A pousado). O rerun da CI completa pós-R19-A (**P-CURA-02/03**) está agora exequível (Rodada 21) e pendente.
+- A ressalva **M4 da ED-08 (seção 7) segue valendo**, inalterada.
+- As 100 da pré-retomada **nunca são presumidas de aceite pleno**.
+- Nota de frescura da foto: o HEAD vivo é `d807534` (2026-11-10T09:03:51Z = 06:03:51 −03); as pastas locais moveram-se durante a rodada — os lotes R20-A/B/C e R21-A/C aterraram antes da foto do GitHub. As contagens de executado usam o estado local às ~06:10 −03; a posição na main é a da foto 06:03:51 −03. **A fila de pouso das 286 tarefas está vazia (0 aguardando)**; a fila que segue é a de correcções (R20-A/B/C, R21-A/B/C, R14-A, R15-A/B, R16-A, R18-A/B, R19-B, V104, MM-05), a prova INV-C2-11 sobre a base 12k (decisão 49) e o rerun da CI completa pós-R19-A (P-CURA-02/03).
+
+## T5. Correcção ao §T2 item 5 — R20-C: portão APROVADO EM SUBSTÂNCIA (10/11/2026, durante a rodada 06:05)
+
+- O §T2 item 5 deste adendo descreveu o R20-C como "portão BLOQUEADO" com base só no `portao-saida.txt` (exit 1, 09:01:42Z). O `PORTAO-REGISTRO-R20-C.md` (09:11:51Z, durante esta rodada) regista o veredito em substância: **APROVADO EM SUBSTÂNCIA** — as 4 falhas mecânicas são falsos positivos demonstrados do extractor (FP-1 instância **(xxi)** — veredito repartido em duas linhas; FP-2 instância **(i)** — "mesma sessão" casa uma negação que afirma a independência; FP-3 instância **(ix)** — forma `Papel (sessão):`). O lote R20-C está **FECHADO na esteira**, LOCAL-ONLY, zero escritas no GitHub. A descrição do §T2 item 5 fica corrigida por esta nota; nenhuma outra linha deste adendo muda.
+
+## U. Adendo de 10/11/2026 — Foto da posição na main com front completo + Onda II + R19-A (lote R21-C da Rodada 21) — correcção do S4
+
+- **Manutenção (lote):** `R21-C` da Rodada 21 da auditoria contínua (achados R21-O1, R21-C2, R21-C3; consolidado `00-CONSOLIDADO-RODADA21.md`). Produtor: sessão `78dc185d-f698-47cf-bf79-68abfd0baad6`. Leitura viva própria no clone `~/workspace/ziipsan-clone` (`git fetch origin`, `git log`/`ls-tree`), HEAD vivo `d8075343` (1.079 commits).
+- **Âmbito:** nenhuma linha das secções anteriores (§§1–9, adendos A–S) foi alterada. O adendo S continua a ser o registo fiel da foto das 04:05 de 10/11/2026; a posição corrente é a declarada neste adendo.
+
+## U1. Reconciliação
+
+| Parcela | Nº | Fonte |
+|---|---:|---|
+| Universo consolidado no adendo anterior | 286 | este registro, §S3 |
+| Executadas (universo deste registro) | **286** | nenhuma tarefa nova executada nesta janela |
+| **Classificadas neste adendo** | **0** | nenhuma reclassificação |
+| **Universo consolidado** | **286** | 286 + 0 ✓ |
+
+### Fora do universo — incluídos na foto da posição na main, sem entrar no placar de 286
+
+- **Momento final do front (decisões 63/65) — POUSADO COMPLETO, 52/52:** 5 pacotes + 5 verbetes, cadeia linear `376bf6f4→f75b009d` (10 commits, 0 merges): tema do front web 18 (`c0d1c6a` + verbete `20eb153`), 9 temas no código real 13 (`80eef16` + verbete `9e7deca6`), portal do consumidor 6 (`79322234` + verbete `5c4a1f97`), quiosque/painel ED-40 12 (`d5f5a2f0` + verbete `c5991bec`), rotas GIS 3 (`ec0f5b45` + verbete `f75b009d`). Contagens por commit conferidas por `diff-tree` no clone vivo (18+13+6+12+3 = 52).
+- **Onda II do PDCA-01 (decisões 61/64) — POUSADA COMPLETA, 131/131:** 8 pacotes + 8 verbetes, cadeia linear `f75b009d→0b341a40` (16 commits, 0 merges): II-1 9 (`b4eee251`), II-2 22 (`c1364589`), II-3 19 (`4d411e27`), II-4 11 (`3dd6f612`), II-5 16 (`193d9a4f`), II-6 10 (`ed66fa9a`), II-7 27 (`a8b98aa9`), II-8 17 (`613bcc97`), cada um com o seu verbete (`55e9efe7`, `534e26e9`, `a548aeed`, `a5682b9c`, `5910eed2`, `629e556e`, `41c6f895`, `0b341a40`). Contagens por commit conferidas por `diff-tree` no clone vivo (9+22+19+11+16+10+27+17 = 131).
+- **R19-A (cura do ciclo fiscal/billing, saída 3) — POUSADO COMPLETO:** 6/6 partes + 18/18 remoções + verbete de diário, cadeia linear `0b341a40→d8075343` (25 commits, 0 merges): partes `c2e87589` (21) + `9f802921` (22) + `ef366121` (25, incl. L5) + `50f52df3` (13) + `63ae45df` (13) + `b54f548a` (2) = 96 ficheiros; 18 remoções (`692615c4`…`b1e9f821`, uma por caminho antigo); verbete `d8075343` (06:03:51 −03, append puro +4/−0; diário vivo 2.244 linhas = 2.240 após a Onda II + 4).
+
+### Posição na main — 0 aguardando push; 286/286; front + Onda II + R19-A pousados
+
+| Parcela | Nº | Fonte |
+|---|---:|---:|
+| Produzidas na retomada na main | **186 de 186** | inalterada desde o adendo S |
+| Pré-retomada na main | 100 | inalterada |
+| **Total na main** | **286 de 286** | 100 + 186 = 286 |
+| **Aguardando push** | **0** | fila das 286 tarefas continua VAZIA |
+| **Total na main (%)** | **100,0%** | 286/286 = 100,0% |
+| Front completo na main | **52/52** | 5 pacotes + 5 verbetes, `376bf6f4→f75b009d` |
+| Onda II na main | **131/131** | 8 pacotes + 8 verbetes, `f75b009d→0b341a40` |
+| R19-A na main | **6/6 + 18/18 + verbete** | `0b341a40→d8075343` (25 commits) |
+
+## U2. Verificação por leitura viva própria (clone, após `fetch`)
+
+1. HEAD vivo `d8075343bb6ce9c49b95a8d567fe1ead71b217b2` (`docs(diario): verbete do pouso do R19-A…`, 2026-11-10 06:03:51 −03). Total **1.079 commits**. Continuidade contra a foto do adendo S (HEAD `80eef16`): **48 commits novos, 0 merges** — 7 restantes do front (`9e7deca6`…`f75b009d`) + 16 da Onda II + 25 do R19-A = 48 ✓, cadeia linear sem ramos nem reescrita.
+2. **R19-A — remoções verificadas por `ls-tree` no HEAD vivo:** os 18 caminhos antigos dos movimentos (17 tipos do billing + `PortalMunicipalContextTest` no platform) têm **0 ocorrências**; os caminhos novos existem (`billing-rules/.../composition/BillComposition.java` presente; `PortalMunicipalContextTest` presente uma única vez, em `commercial/ziipsan-registry/.../portal/selfcare/`). **0/18 caminhos antigos presentes.**
+3. **R19-A — verbete de diário existe:** commit `d8075343`, só `docs/DIARIO-DE-BORDO.md`, +4/−0, com o texto do verbete (96 ficheiros +301/−205; L1/L2/L5; guarda 6 actualizada quanto ao MTR, R-C01; próxima prova: CI completa, P-CURA-02). A observação O-R21-02 da Rodada 21 ("R19-A sem verbete até `f7b8b74c`") fica **ultrapassada**: o verbete pousou depois do fecho da rodada.
+4. **R19-A — cadeia completa (esteira):** produção `66e70ea5…` → revisão **APROVADO COM RESSALVAS** (`25f9086e…`, `REVISAO-R19-A.md:22`, 07:13:39Z) → confirmação **CONFIRMADO COM RESSALVAS** (`7e101af6…`, `CONFIRMACAO-R19-A.md:23`, 07:32:25Z) → portão **APROVADO EM SUBSTÂNCIA** (operador `ba736828…`, corrida 2026-11-10T07:34:01Z, exit 1 só pela Regra 3 — falso positivo demonstrado, instância (xxiii), `PORTAO-REGISTRO-R19-A.md` §1; `portao-saida.txt`). O desvio do "lote único" está registado no acto do pouso (`ADENDO-POUSO-R19-A.md` §2: 6 commits de conteúdo + 18 de remoção + verbete; o conector não transporta remoções em `push_files`).
+5. **Alcance desta verificação (honestidade de método):** o que este produtor verificou vivo foi a cadeia (commits, pais, linearidade), as contagens de ficheiros por commit (`diff-tree`), a ausência dos 18 caminhos antigos (`ls-tree`) e a existência do verbete. Os placares por hash ficheiro a ficheiro — 52/52 do front, 131/131 da Onda II e 96/96 do R19-A — são as recomputações independentes dos revisores 1 e 2 da Rodada 21 e do coordenador de pouso do R19-A (`VERIFICACAO-POS-POUSO-R19-A.md`, sessão `e31482be…`, 09:04), citadas aqui, não reexecutadas por este produtor. A verificação pós-pouso por hash do R19-A pela mesa de auditoria continua a ser prioridade da Rodada 22 (consolidado da Rodada 21, §7).
+
+## U3. Totais consolidados (universo 286) — inalterados
+
+| Dimensão | Nº | % de 286 |
+|---|---:|---:|
+| Aceite completo (com relatório local) | **65** | 22,7% |
+| Núcleo entregue + ensaio externo pendente | **105** | 36,7% |
+| Núcleo + pendência declarada não externa (categoria C) | **16** | 5,6% |
+| Sem classificação por relatório local (pré-retomada) | **100** | 35,0% |
+| **Total executadas** | **286** | 100% |
+
+### Por fase — inalterada (adendo S)
+
+| Fase | Executadas no universo | A completo | B ensaio externo | C não externo | Sem classificação |
+|---|---:|---:|---:|---:|---:|
+| P0 | 47 | 0 | 0 | 0 | 47 |
+| P1 | 41 | 0 | 0 | 0 | 41 |
+| P2 | 34 | 11 | 7 | 4 | 12 |
+| P3 | 41 | 23 | 12 | 6 | 0 |
+| P4 | 6 | 4 | 2 | 0 | 0 |
+| GL | 4 | 1 | 3 | 0 | 0 |
+| LC | 15 | 0 | 15 | 0 | 0 |
+| ED | 98 | 26 | 66 | 6 | 0 |
+| **Total** | **286** | **65** | **105** | **16** | **100** |
+
+## U4. Notas do adendo
+
+- **Correcção expressa do S4:** a afirmação do adendo S de que o R19-A "não tem revisão nem confirmação nem portão e não pousou" **é agora falsa e fica corrigida por este adendo**: o R19-A tem revisão formal (APROVADO COM RESSALVAS, `25f9086e…`), confirmação independente (CONFIRMADO COM RESSALVAS, `7e101af6…`), portão APROVADO EM SUBSTÂNCIA (exit 1 só pela Regra 3, falso positivo (xxiii) demonstrado) e **pousou por completo** (6/6 partes + 18/18 remoções + verbete, HEAD `d8075343`).
+- **A manutenção desta rodada não mudou o placar M2.** Universo 286; A/B/C/sem classificação inalterados. O front (52), a Onda II (131) e o R19-A (96 + 18 remoções) são fora do universo das 286, como o adendo S já declarava — entram nesta foto só como posição na main.
+- **Executado 286/286 = 100,0%; na main 286/286 = 100,0%.** Todas as 286 tarefas do plano v3.0 estão executadas e na main; nenhuma aguarda push; nenhuma está por iniciar. O que resta do plano é prova externa (CI total verde, ensaios reais, pareceres, actos com cliente/piloto) — não execução de tarefas.
+- **CI total sobre o HEAD corrente (`d8075343`) segue por provar.** O último log de CI completa continua a ser `ci-vm/ci-completa-pos-cura-lote-2.log` (02:58Z, sobre `e6f6b74`). Uma tentativa de rerun pós-R19-A foi registada em `ci-vm/ci-completa-pos-r19a.log` (09:05 UTC, 72 bytes) e **abortou antes de começar** — `ERRO: psql nao encontrado` — falha ambiental, não do código; P-CURA-02 e P-CURA-03 seguem abertas e o rerun continua por fazer.
+- **Decisões:** nenhuma decisão nova além da 65 (`DECISOES-DO-DONO.md` termina na decisão 65, conferido pela Rodada 21).
+- **Rodada 21 da auditoria FECHADA ~06:10 −03** (consolidado `00-CONSOLIDADO-RODADA21.md`, marca d'água HEAD `f7b8b74c`): 0 graves, 2 moderados (R21-F1, R21-C1), 3 menores novos (R21-O1, R21-C2, R21-C3), repassados em 3 lotes (R21-A/B/C). Este adendo é a correcção R21-C2. O R21-C1 (15 remoções restantes no fecho da rodada) fica **ultrapassado pelo pouso**: as 18 remoções estão na main (ver U2.2) e o desvio do lote único está registado no `ADENDO-POUSO-R19-A.md` §2.
+- A ressalva **M4 da ED-08 (seção 7) segue valendo**, inalterada.
+- As 100 da pré-retomada **nunca são presumidas de aceite pleno**.
+- Nota de frescura da foto: o HEAD vivo é `d8075343` (2026-11-10T06:03:51 −03 = 09:03:51 UTC); a leitura viva foi feita por este produtor às ~06:10 −03. As contagens de executado usam o estado local às ~06:10 −03; a posição na main é a da foto 06:03:51 −03. **A fila de pouso das 286 tarefas está vazia (0 aguardando)**; a fila que segue é a de correcções (R21-A/B/C) e a prova da CI total pós-R19-A.
+
+---
+
+## Adendo R20-I1 — 10/11/2026 (lote R20-B, Rodada 20 da auditoria contínua)
+
+**Produtor:** sessão `7ee2654d-dce4-4a01-bea7-cfabd20200b7` (lote R20-B, local-only; **NÃO POUSA** nesta execução).
+
+**O que é este ficheiro:** cópia integral congelada, em 10/11/2026, da versão corrente de `correcoes-rg-lote3/REGISTRO-PLACAR-2D.md` (1.663 linhas no acto do congelamento). Esta cópia **substitui**, no caminho `correcoes-rg-lote3/REGISTRO-PLACAR-2D.md`, o blob pousado `deb09d3596a1a8831dd4d0770fe3cc18efec0e4cb90358b526fe810514ba0a67` (1.445 linhas, pousado no commit `b251d3d9`, lote R12-B) quando pousar num próximo lote que toque o registo. O blob pousado é o estado correcto ao pouso; o que mudou depois dele é manutenção posterior do registo vivo (adendos da rotina de 2h e a correcção in place da linha 1439, registada abaixo).
+
+**A correcção da linha 1439 (§P4, Lote 2 da cura) — as duas frases, verbatim:**
+
+- Frase pousada (blob `deb09d35…`, linha 1439): "renumerar a V1_11 da P2.28 para V103 (precedente R2-G1)".
+- Frase local corrente (linha 1439 desta cópia): "renumerar a V1_11 da P2.28 para V105 (a V103 foi ocupada pela chave de remessa, `451c151`; a V104 está reservada ao contract) (precedente R2-G1)".
+
+Verificação própria do produtor: a linha 1439 do blob e a linha 1439 do ficheiro local diferem **só** nesse excerto (diff por SequenceMatcher: inserção de "5 (a V103 foi ocupada pela chave de remessa, `451c151`; a V104 está reservada ao contract)" sobre "V103"); o resto da linha é byte-idêntico nos dois lados. A renumeração correcta é **V105** — a V103 foi ocupada pela chave de remessa (`451c151`) e a V104 está reservada ao contract da V103; a frase pousada ("para V103") está desactualizada/errada e é corrigida por este adendo, sem reescrever o original pousado.
+
+**Aviso de instantâneo:** esta cópia congelada é um instantâneo. A manutenção posterior da rotina de 2h pode acrescentar-lhe linhas (o ficheiro vivo cresce por appends) e supersedê-la antes do pouso; nesse caso o pouso **re-congela** a versão corrente no acto, e este adendo viaja com a versão então corrente, não com esta cópia. O SHA-256 e a contagem de linhas desta cópia estão registados no `LANDING.md` do lote R20-B.
