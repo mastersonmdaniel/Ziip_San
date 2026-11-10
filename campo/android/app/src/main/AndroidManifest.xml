@@ -5,6 +5,12 @@
          ocorrencia e do visor (OCR local). NFC entra na ED-20 (QR/barcode/NFC). -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Trilha GPS do trabalhador (ED-20, P-MOB-GPS-01): localizacao SO em
+         primeiro plano (app aberto). Sem ACCESS_BACKGROUND_LOCATION e sem
+         servico em primeiro plano declarado de proposito: a coleta com o
+         app fechado (foreground service) e a pendencia P-MOB-GPS-03. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="false"

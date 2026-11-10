@@ -2,6 +2,7 @@ package br.com.ziipsan.campo
 
 import android.os.Bundle
 import br.com.ziipsan.campo.plugins.FieldDatabasePlugin
+import br.com.ziipsan.campo.plugins.FieldLocationPlugin
 import br.com.ziipsan.campo.plugins.FieldSecurityPlugin
 import br.com.ziipsan.campo.plugins.SecureTokenPlugin
 import com.getcapacitor.BridgeActivity
@@ -15,12 +16,18 @@ import com.getcapacitor.BridgeActivity
  * regista tambem o FieldDatabasePlugin (banco local SQLCipher do
  * LocalStore). Ele nao expoe a passphrase nem a chave — so as quatro
  * operacoes do LocalStore sobre JSON dos DTOs reais.
+ *
+ * AJUSTE P-MOB-GPS-01 (frente mobile-gps-tempo-real, frente B —
+ * declarado): regista tambem o FieldLocationPlugin (localizacao em
+ * primeiro plano para a trilha GPS, ED-20). Ele so entrega o fix —
+ * nenhuma decisao de trilha vive no nativo.
  */
 class MainActivity : BridgeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         registerPlugin(SecureTokenPlugin::class.java)
         registerPlugin(FieldSecurityPlugin::class.java)
         registerPlugin(FieldDatabasePlugin::class.java)
+        registerPlugin(FieldLocationPlugin::class.java)
         super.onCreate(savedInstanceState)
     }
 }
