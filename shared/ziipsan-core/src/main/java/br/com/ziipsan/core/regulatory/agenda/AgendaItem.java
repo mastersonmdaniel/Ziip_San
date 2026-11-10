@@ -1,5 +1,6 @@
 package br.com.ziipsan.core.regulatory.agenda;
 
+import br.com.ziipsan.core.regulatory.export.ExportPackage;
 import br.com.ziipsan.core.regulatory.export.SubmissionRecord;
 
 import java.time.LocalDate;
@@ -32,6 +33,12 @@ import java.util.UUID;
  * construcao, um {@code evidenceRef} presente tem de ser uma
  * referencia bem-formada da ED-97 cujo periodo embutido e o periodo
  * DESTE item.</p>
+ *
+ * <p>Correcao R8-ED98-1 (Rodada 8): o vinculo exige ainda o KIND do
+ * pacote — so {@code AGGREGATE_PUBLIC} quita a obrigacao; um registro
+ * {@code NOMINAL_RESTRICTED} e recusado em {@link #linkSubmission},
+ * mesmo com tenant, periodo, estado e perfil correspondentes (a
+ * evidencia nominal e restrita e nao cumpre a obrigacao agregada).</p>
  */
 public record AgendaItem(UUID id, UUID tenantId, ObligationKind kind, String title,
                          String normCatalogKey, String periodRef,
@@ -101,6 +108,10 @@ public record AgendaItem(UUID id, UUID tenantId, ObligationKind kind, String tit
             throw new IllegalArgumentException("registro sem envio real nao e evidencia de cumprimento: "
                     + "estado " + submission.status() + " (o envio fisico e do tenant, ED-97/ADR-0004) — "
                     + submission.evidenceRef());
+        if (submission.kind() != ExportPackage.Kind.AGGREGATE_PUBLIC)
+            throw new IllegalArgumentException("evidencia de pacote nominal restrito recusada: kind "
+                    + submission.kind() + " nao quita a obrigacao " + kind + " — so pacote agregado publico "
+                    + "e evidencia de cumprimento (R8-ED98-1) (" + submission.evidenceRef() + ")");
         if (!kind.matchesSubmissionProfile(submission.agencyCode(), submission.profileKey()))
             throw new IllegalArgumentException("evidencia sem correspondencia de tipo recusada: perfil "
                     + submission.profileKey() + " (agencia " + submission.agencyCode()

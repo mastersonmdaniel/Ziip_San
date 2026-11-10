@@ -27,6 +27,15 @@ public record SubmissionRecord(UUID id, UUID tenantId, String agencyCode, String
         Objects.requireNonNull(status); Objects.requireNonNull(validatedAt);
         if (!packageSha256Hex.matches("[0-9a-f]{64}"))
             throw new IllegalArgumentException("hash do pacote invalido");
+        // R8-R7A-1 (Rodada 8): agencyCode e periodRef compoem o
+        // evidenceRef() e tem de casar o alfabeto do CHECK
+        // ck_reg_export_evidence_ref_format do SQL pendente
+        // ([A-Za-z0-9_-]+); valor fora do alfabeto quebraria a
+        // gravacao — falha rapida aqui, na fronteira Java.
+        if (!agencyCode.matches("[A-Za-z0-9_-]+"))
+            throw new IllegalArgumentException("codigo da agencia fora do alfabeto do evidenceRef: " + agencyCode);
+        if (!periodRef.matches("[A-Za-z0-9_-]+"))
+            throw new IllegalArgumentException("referencia do periodo fora do alfabeto do evidenceRef: " + periodRef);
         if (status == Status.SUBMITTED_BY_TENANT && (agencyProtocol == null || agencyProtocol.isBlank()))
             throw new IllegalArgumentException("envio pelo tenant exige protocolo da agencia");
     }
