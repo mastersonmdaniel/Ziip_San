@@ -3,12 +3,10 @@ package br.com.ziipsan.commercial.billing.persistence;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Guardas textuais do SQL pendente da ED-23: sem numero Flyway, anexo a
@@ -18,18 +16,17 @@ import static org.junit.jupiter.api.Assertions.fail;
 class LeakProtocolMigrationConsistencyTest {
 
     private static String sql() throws IOException {
-        String relative = "commercial/ziipsan-billing/src/main/resources/db/pendente/ED-23__leak_review_protocol.sql";
-        List<Path> candidates = List.of(
-                Path.of(relative),
-                Path.of(System.getProperty("user.dir"), "workspace/ziipsan-producao/ed-23/entrega", relative),
-                Path.of(System.getProperty("user.home"), "workspace/ziipsan-producao/ed-23/entrega", relative));
-        for (Path candidate : candidates) {
-            if (Files.exists(candidate)) {
-                return Files.readString(candidate);
-            }
+        // Cura (lote correcao-cura-billing-metering, P-R19A-BILL-01): o SQL e lido
+        // como RECURSO do proprio modulo (/db/pendente/... no classpath), o mesmo
+        // padrao do Ed22MigrationConsistencyTest. Os caminhos candidatos antigos
+        // resolviam a partir da raiz do repo ou de uma pasta de entrega externa e
+        // nunca resolviam com o cwd do surefire (directorio do modulo): os 4
+        // testes falhavam sem ler o SQL. Recurso ausente continua a falhar.
+        try (InputStream in = LeakProtocolMigrationConsistencyTest.class
+                .getResourceAsStream("/db/pendente/ED-23__leak_review_protocol.sql")) {
+            assertTrue(in != null, "SQL pendente da ED-23 no classpath do modulo");
+            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
-        fail("SQL pendente da ED-23 nao localizado nos caminhos candidatos");
-        return "";
     }
 
     @Test

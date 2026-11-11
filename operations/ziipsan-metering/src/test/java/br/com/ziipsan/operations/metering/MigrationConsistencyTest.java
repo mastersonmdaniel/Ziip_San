@@ -41,6 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Desde a P2.5 guarda também a {@code V5_6} (versionamento de
  * {@code consumption_records}, DAD-14) e a {@code V5_7} (tipo de OS de
  * {@code reading_anomalies}, JOR-10), lidas do classpath deste módulo.
+ * Desde o lote correcao-cura-billing-metering guarda também os ALTERs do
+ * SQL pendente da ED-14 (hidrometria), lido do classpath deste módulo.
  *
  * <p>O teste de instalação do zero ({@code platform/ziipsan-app}) é quem prova o mapeamento contra
  * um PostgreSQL, mas só enxerga este módulo depois que o app depender dele. Este teste pega o erro
@@ -192,6 +194,35 @@ class MigrationConsistencyTest {
         assertThat(laterColumns.getOrDefault("reading_anomalies", Set.of()))
                 .as("coluna do tipo de OS (JOR-10) lida da V5_7")
                 .containsExactlyInAnyOrder("service_order_type_code");
+        // ED-14 (hidrometria, SQL PENDENTE de numeracao -- o numero sai na
+        // integracao, como o cabecalho do proprio arquivo declara): meters
+        // ganha as 8 colunas do parque/catalogo e meter_installations ganha as
+        // 6 colunas da instalacao B2 pelos ALTERs de
+        // /db/pendente/ED-14__metering_hydrometry.sql, lido do classpath deste
+        // modulo (mesmo padrao do Ed22MigrationConsistencyTest do billing).
+        // Sem esta leitura a guarda acusava a entidade Meter de ter colunas
+        // que o esquema (V5_1 + pendente ED-14) de facto tem. Os conjuntos
+        // extraidos sao afirmados EXACTOS, como os da V5_6/V5_7 acima: se o
+        // SQL pendente mudar, a guarda muda junto -- e continua a falhar se
+        // uma coluna sair do SQL ou da entidade.
+        String ed14 = readSql("/db/pendente/ED-14__metering_hydrometry.sql");
+        Map<String, Set<String>> pendenteColumns = new LinkedHashMap<>();
+        for (String statement : ed14.split(";")) {
+            String normalizedStatement = statement.replaceAll("\\s+", " ").trim();
+            Matcher pendenteAlter = Pattern.compile("ALTER\\s+TABLE\\s+(\\w+)\\s+ADD\\s+COLUMN\\s+IF\\s+NOT\\s+EXISTS\\s+([a-z_][a-z0-9_]*)").matcher(normalizedStatement);
+            while (pendenteAlter.find()) {
+                pendenteColumns.computeIfAbsent(pendenteAlter.group(1), k -> new LinkedHashSet<>()).add(pendenteAlter.group(2));
+            }
+        }
+        assertThat(pendenteColumns.getOrDefault("meters", Set.of()))
+                .as("colunas de meters lidas do SQL pendente da ED-14")
+                .containsExactlyInAnyOrder("model_id", "lot_id", "asset_id", "storage_location_id",
+                        "legacy_metrological_class", "migrated_park", "write_off_reason", "totalized_volume_m3");
+        assertThat(pendenteColumns.getOrDefault("meter_installations", Set.of()))
+                .as("colunas de meter_installations lidas do SQL pendente da ED-14")
+                .containsExactlyInAnyOrder("service_connection_id", "install_service_order_id",
+                        "remove_service_order_id", "protection_catalog_id", "install_location_catalog_id",
+                        "removal_destination");
         for (Class<?> entity : List.of(Meter.class, MeterInstallation.class, ReadingAnomaly.class,
                 ConsumptionAnomaly.class, MeterReading.class, ConsumptionRecord.class)) {
             String table = entity.getAnnotation(Table.class).name();
@@ -199,6 +230,7 @@ class MigrationConsistencyTest {
             sqlColumns.addAll(Set.of("version", "tenant_schema"));
             sqlColumns.addAll(v54Columns.getOrDefault(table, Set.of()));
             sqlColumns.addAll(laterColumns.getOrDefault(table, Set.of()));
+            sqlColumns.addAll(pendenteColumns.getOrDefault(table, Set.of()));
 
             Set<String> mapped = new LinkedHashSet<>();
             for (Class<?> c = entity; c != null && c != Object.class; c = c.getSuperclass()) {

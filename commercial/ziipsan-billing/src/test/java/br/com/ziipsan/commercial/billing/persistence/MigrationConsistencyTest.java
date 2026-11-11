@@ -46,7 +46,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Guardas da migration {@code V4_1__create_billing_schema.sql} que NÃO precisam de banco.
  * A V4_6 entra aqui so pelos ALTERs em bills (a entidade evoluiu com ela); as tabelas
- * novas da V4_6 tem guarda propria em SocialMigrationConsistencyTest.
+ * novas da V4_6 tem guarda propria em SocialMigrationConsistencyTest. Desde o lote
+ * correcao-cura-billing-metering, os ALTERs de coluna da V4_4 (tabelas de
+ * recebiveis e linhas da conta), da V4_9 (tariff_versions) e da V4_16 (bills)
+ * entram pelo aplicador generico {@code applyAlterations}.
  *
  * <p>O projeto não permite rodar o banco de integração nesta fatia, e "build verde não prova nada"
  * (diário de bordo, seção 15): um nome de coluna errado numa entidade só quebraria no primeiro
@@ -155,6 +158,94 @@ class MigrationConsistencyTest {
             while (alter107.find()) {
                 tables.get("bills").put(alter107.group(1), new SqlColumn(alter107.group(1), alter107.group(2),
                         null, null, null, alter107.group(3).contains("NOT NULL")));
+            }
+        }
+        // Cura (lote correcao-cura-billing-metering, P-R19A-BILL-01): o corpus
+        // parava na V4_4 so para bills e nao recolhia os ALTERs das demais
+        // tabelas nem os das migrations seguintes -- as entidades evoluiram e a
+        // guarda passou a acusar colunas que EXISTEM no esquema real:
+        //  - V4_4 (seccoes F3/B6): debit_receivables/credit_receivables ganham a
+        //    proveniencia DAD-20 completa (debit_type_id/credit_origin_id,
+        //    source_*, legacy_reference, service_order_id, meses, financing_term)
+        //    com SET NOT NULL posterior em debit_type_id/credit_origin_id,
+        //    source_type e accounting_month, e PERDEM type_code/generates_bill/
+        //    origin (DROP COLUMN); bill_debits/bill_credits ganham
+        //    debit_type_id/debit_type_code e credit_origin_id/origin_code (SET
+        //    NOT NULL) e perdem type_code/origin.
+        //  - V4_9 (P2.29): tariff_versions ganha os 11 campos de gestao
+        //    tarifaria (change_type e os demais).
+        //  - V4_16 (P2.20): bills ganha review_reason_id, cancel_reason_id,
+        //    protocol_id, service_order_id e version_no, e PERDE os textos
+        //    livres review_reason/cancel_reason que a V4_14 recriou.
+        // As tres sao aplicadas pelo mesmo aplicador generico de ALTERs
+        // (ADD COLUMN / ALTER COLUMN SET NOT NULL / DROP COLUMN), por statement
+        // com espacos normalizados (precedente correcoes-rg-v57 no metering).
+        try (InputStream in = MigrationConsistencyTest.class.getResourceAsStream("/db/migration/tenant/V4_4__bill_account_models_and_versioning.sql")) {
+            assertThat(in).as("migration V4_4 no classpath").isNotNull();
+            applyAlterations(new String(in.readAllBytes(), StandardCharsets.UTF_8),
+                    Set.of("debit_receivables", "credit_receivables", "bill_debits", "bill_credits"));
+        }
+        try (InputStream in = MigrationConsistencyTest.class.getResourceAsStream("/db/migration/tenant/V4_9__tariff_readjust_review_and_simulation.sql")) {
+            assertThat(in).as("migration V4_9 no classpath").isNotNull();
+            applyAlterations(new String(in.readAllBytes(), StandardCharsets.UTF_8),
+                    Set.of("tariff_versions"));
+        }
+        try (InputStream in = MigrationConsistencyTest.class.getResourceAsStream("/db/migration/tenant/V4_16__bill_rectification_and_maintenance.sql")) {
+            assertThat(in).as("migration V4_16 no classpath").isNotNull();
+            applyAlterations(new String(in.readAllBytes(), StandardCharsets.UTF_8),
+                    Set.of("bills"));
+        }
+    }
+
+    /**
+     * Aplica os ALTERs de coluna de uma migration as tabelas alvo do corpus:
+     * ADD COLUMN IF NOT EXISTS (com tipo/tamanho/precisao/escala e NOT NULL do
+     * proprio statement), ALTER COLUMN ... SET NOT NULL e DROP COLUMN IF
+     * EXISTS. Os statements sao lidos inteiros (';' como terminador) com os
+     * espacos normalizados numa copia local, porque migrations publicadas
+     * quebram statements em varias linhas; comentarios de linha sao removidos
+     * antes, para texto de comentario nunca casar com um padrao.
+     */
+    private static void applyAlterations(String text, Set<String> targetTables) {
+        String noComments = text.replaceAll("(?m)--.*$", "");
+        // Sem \b depois do tipo: VARCHAR(n)/NUMERIC(p,s) terminam em ')', que nao
+        // e caracter de palavra -- um statement que termina no tipo (o ';' foi o
+        // separador) nao tem fronteira de palavra ai e a coluna sumia do corpus.
+        Pattern add = Pattern.compile("ALTER TABLE (\\w+) ADD COLUMN IF NOT EXISTS ([a-z][a-z0-9_]*) "
+                + "(UUID|TEXT|JSONB|DATE|INT|SMALLINT|BOOLEAN|TIMESTAMPTZ|VARCHAR\\((\\d+)\\)|NUMERIC\\((\\d+),(\\d+)\\))(.*)");
+        Pattern setNotNull = Pattern.compile("ALTER TABLE (\\w+) ALTER COLUMN ([a-z][a-z0-9_]*) SET NOT NULL");
+        Pattern drop = Pattern.compile("ALTER TABLE (\\w+) DROP COLUMN IF EXISTS ([a-z][a-z0-9_]*)");
+        for (String raw : noComments.split(";")) {
+            String statement = raw.replaceAll("\\s+", " ").trim();
+            Matcher mAdd = add.matcher(statement);
+            if (mAdd.find() && targetTables.contains(mAdd.group(1))) {
+                Map<String, SqlColumn> table = tables.get(mAdd.group(1));
+                if (table != null) {
+                    String type = mAdd.group(3).replaceAll("\\(.*\\)", "");
+                    table.put(mAdd.group(2), new SqlColumn(mAdd.group(2), type,
+                            mAdd.group(4) == null ? null : Integer.valueOf(mAdd.group(4)),
+                            mAdd.group(5) == null ? null : Integer.valueOf(mAdd.group(5)),
+                            mAdd.group(6) == null ? null : Integer.valueOf(mAdd.group(6)),
+                            mAdd.group(7).contains("NOT NULL")));
+                }
+                continue;
+            }
+            Matcher mNn = setNotNull.matcher(statement);
+            if (mNn.find() && targetTables.contains(mNn.group(1))) {
+                Map<String, SqlColumn> table = tables.get(mNn.group(1));
+                SqlColumn old = table == null ? null : table.get(mNn.group(2));
+                if (old != null) {
+                    table.put(old.name(), new SqlColumn(old.name(), old.type(), old.length(),
+                            old.precision(), old.scale(), true));
+                }
+                continue;
+            }
+            Matcher mDrop = drop.matcher(statement);
+            if (mDrop.find() && targetTables.contains(mDrop.group(1))) {
+                Map<String, SqlColumn> table = tables.get(mDrop.group(1));
+                if (table != null) {
+                    table.remove(mDrop.group(2));
+                }
             }
         }
     }

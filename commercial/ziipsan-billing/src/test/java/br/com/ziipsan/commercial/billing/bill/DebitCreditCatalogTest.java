@@ -60,7 +60,16 @@ class DebitCreditCatalogTest {
     @Test
     @DisplayName("DAD-20: débito de serviço sem OS é recusado (service_order_id obrigatório)")
     void serviceDebitWithoutServiceOrderIsRefused() {
-        assertThatThrownBy(() -> serviceDebit("100.00", 1, 0, null))
+        // Cura (lote correcao-cura-billing-metering, P-R19A-BILL-01): pelo helper
+        // serviceDebit(...) o source_id e o service_order_id iam a null JUNTOS, e a
+        // recusa que disparava era a de source_id -- que vem primeiro em
+        // ReceivableChecks, na mesma ordem dos CHECKs do banco (chk_drec_source_id
+        // antes de chk_drec_service_order, V4_4). O teste nunca exercia a recusa
+        // que o nome declara. Aqui o source_id vai PRESENTE (id(777), o objeto de
+        // origem) e so o service_order_id vai ausente: quem recusa e o check de
+        // service_order_id, de facto. A assercao nao muda.
+        assertThatThrownBy(() -> new DebitReceivable(id(1), id(900), "TESTE", true, d("100.00"), 1, 0,
+                ReceivableSourceType.SERVICE_ORDER, id(777), null, null, JAN, JAN, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("service_order_id");
     }
