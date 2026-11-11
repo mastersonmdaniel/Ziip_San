@@ -23,6 +23,27 @@
 --
 -- NENHUM DADO E SEMEADO. Dinheiro: NUMERIC(14,2). Depende de register_tenant_table
 -- (V1_2) e de fiscal_documents (V4_5).
+--
+-- CURA IN PLACE — 10/11/2026, lote D72-V62, ao abrigo da Decisao 72 do dono
+-- (Opcao A: programa completo da cadeia do provisionamento limpo; pendencia-mae
+-- P-R27-A-03). Este ficheiro PUBLICADO (versao 6.2) foi editado no proprio lugar
+-- porque a cadeia limpa aborta NELE: nenhuma migration posterior correria antes
+-- da correccao. Tres defeitos curados, sem mudar a intencao declarada acima:
+--   (a) a constraint uq_payments_tenant_id, que a V6_1 ja cria, passa a ser
+--       acrescentada sob guarda de existencia (antes: 42P07 na cadeia limpa;
+--       DROP+ADD esta proibido — a FK fk_status_event_payment da V6_1 depende
+--       do indice unico e o DROP falha com 2BP01);
+--   (b) a coluna bill_id passa a ser acrescentada (IF NOT EXISTS) ANTES do
+--       indice idx_payments_bill que a usa (antes: 42703, porque na cadeia
+--       limpa a tabela payments vem da V6_1, sem bill_id);
+--   (c) o ADD COLUMN de collection_month foi ANTECIPADO para antes do indice
+--       idx_payments_collection_month que o usa (antes: 42703, porque a coluna
+--       so era acrescentada depois do indice).
+-- OBRIGACAO OPERACIONAL: nas bases vivas onde a versao 6.2 ja esteja aplicada,
+-- o Flyway exige repair gerido por base para realinhar o checksum deste
+-- ficheiro (programa da Decisao 72; verificacao do historico vivo:
+-- P-R27-A-02, do lote irmao da V4_6). Nas bases onde a 6.2 nunca se aplicou,
+-- o ficheiro corrigido aplica-se directamente, sem repair.
 
 -- ========================================================================
 -- PAYMENTS (estado final; sem colunas FEBRABAN 150)
@@ -54,7 +75,22 @@ CREATE TABLE IF NOT EXISTS payments (
     updated_by UUID,
     tenant_schema VARCHAR(100)
 );
-ALTER TABLE payments ADD CONSTRAINT uq_payments_tenant_id UNIQUE (tenant_id, id);
+-- [CURA D72-V62 (a)] Guarda de existencia sobre a constraint que a V6_1 ja
+-- cria: sem guarda, esta linha aborta com 42P07 na cadeia limpa. Forma da casa:
+-- a mesma da V6_5 (DO $$ ... pg_constraint ...), schema-aware via conrelid.
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint
+                   WHERE conname = 'uq_payments_tenant_id'
+                     AND conrelid = 'payments'::regclass) THEN
+        ALTER TABLE payments ADD CONSTRAINT uq_payments_tenant_id UNIQUE (tenant_id, id);
+    END IF;
+END $$;
+-- [CURA D72-V62 (b)+(c)] bill_id e collection_month tem de existir ANTES dos
+-- indices que os usam: na cadeia limpa, payments vem da V6_1 (sem bill_id e
+-- sem collection_month) e o CREATE TABLE acima e no-op.
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS bill_id UUID;
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS collection_month DATE;
 CREATE INDEX idx_payments_bill ON payments(tenant_id, bill_id);
 CREATE INDEX idx_payments_collection_month ON payments(tenant_id, collection_month);
 
@@ -67,7 +103,8 @@ ALTER TABLE payments DROP COLUMN IF EXISTS line_number;
 ALTER TABLE payments DROP COLUMN IF EXISTS barcode;
 
 -- Referencia de arrecadacao e documento fiscal em tabela preexistente (se houver).
-ALTER TABLE payments ADD COLUMN IF NOT EXISTS collection_month DATE;
+-- [CURA D72-V62 (c)] O ADD COLUMN de collection_month foi ANTECIPADO para antes
+-- de idx_payments_collection_month (ver acima); semantica identica (IF NOT EXISTS).
 ALTER TABLE payments ADD COLUMN IF NOT EXISTS fiscal_document_id UUID;
 ALTER TABLE payments DROP CONSTRAINT IF EXISTS fk_payments_fiscal_document;
 ALTER TABLE payments ADD CONSTRAINT fk_payments_fiscal_document
