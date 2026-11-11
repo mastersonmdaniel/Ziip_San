@@ -49,6 +49,19 @@ ALTER TABLE bills ADD CONSTRAINT chk_bills_tax_treatment
     CHECK (tax_treatment IN ('WITHHOLDING_ONLY'));
 -- Named restatement of the V4_1 total formula, with the tax term pinned to withholding.
 -- Kept alongside (not instead of) the V4_1 check, which is immutable.
+-- D72-V46 guard (decision 72 of the owner, Option A, via (a); diagnostic R27-A,
+-- defect R27-4B-1): in clean Flyway order V4_4 (4.4) runs BEFORE this migration
+-- and already creates a check with this name (V4_4 section 5, canonical formula
+-- with fixed_part_value). The original unguarded ADD therefore aborted every
+-- clean provisioning here with SQL State 42710 (duplicate_object). The DROP IF
+-- EXISTS below makes the ADD safe in clean order; in the historical upgrade
+-- order (this migration first, V4_4 later) the DROP is a no-op because the name
+-- does not exist yet, and V4_4 later drops and recreates the check with the
+-- canonical formula, exactly as before. The formula restated here stays the
+-- V4_1/V4_6 one on purpose: the canonical formula (with fixed_part_value) is
+-- asserted by V4_4 in upgrade order and re-asserted by V109 after V4_15 in
+-- clean order (P-R27-A-01).
+ALTER TABLE bills DROP CONSTRAINT IF EXISTS chk_bills_total_with_withholding_tax;
 ALTER TABLE bills ADD CONSTRAINT chk_bills_total_with_withholding_tax
     CHECK (total_value = water_value + sewer_value + debits_value - credits_value - taxes_value);
 

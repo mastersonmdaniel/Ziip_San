@@ -118,3 +118,4 @@ V103__legacy_debit_remittance_key.sql
 V105__work_items_and_delegations.sql
 V107__nfage_bill_fiscal_columns.sql
 V108__bill_verification_rls.sql
+V109__bill_columns_and_checks_reassert.sql

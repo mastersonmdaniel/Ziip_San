@@ -195,6 +195,32 @@ class MigrationConsistencyTest {
             applyAlterations(new String(in.readAllBytes(), StandardCharsets.UTF_8),
                     Set.of("bills"));
         }
+        // D72-V46 (V109, lote da decisao 72; P-R27-A-01/P-R27-A-09): depois da
+        // V4_15, a V109 re-asserta sobre bills as colunas da V4_4 que a
+        // recriacao particionada da V4_14 apaga em provisionamento limpo
+        // (fixed_part_value, parameter_version_ids, billed_customer_id,
+        // billed_customer_snapshot). Ligar os ALTERs da V109 aqui mantem o
+        // modelo coerente com as duas ordens (viva e limpa): sao as mesmas
+        // colunas, tipos e nulabilidades que o bloco da V4_4 ja poe, logo o
+        // put e idempotente. A coluna tax_event_date (DATE, da V4_12, tambem
+        // re-assertada pela V109) NAO entra: a BillEntity nao a mapeia (quem a
+        // mapeia e CashbackReturnEntity, noutra tabela) e liga-la faria o
+        // sqlOnly falhar -- mesmo tratamento dado as colunas de bill_items da
+        // V107 acima. A guarda viva da V109 e a prova de provisionamento do
+        // lote D72-V46 (estado pos-V4_15 conferido em pg_constraint).
+        try (InputStream in = MigrationConsistencyTest.class.getResourceAsStream("/db/migration/tenant/V109__bill_columns_and_checks_reassert.sql")) {
+            assertThat(in).as("migration V109 no classpath").isNotNull();
+            String v109 = new String(in.readAllBytes(), StandardCharsets.UTF_8).replace("\r\n", "\n");
+            Matcher alter109 = Pattern.compile("ALTER TABLE bills ADD COLUMN IF NOT EXISTS ([a-z][a-z0-9_]*) +(UUID|TEXT|JSONB|NUMERIC\\((\\d+),(\\d+)\\))([^;]*);").matcher(v109);
+            while (alter109.find()) {
+                String type = alter109.group(2).replaceAll("\\(.*\\)", "");
+                tables.get("bills").put(alter109.group(1), new SqlColumn(alter109.group(1), type,
+                        null,
+                        alter109.group(3) == null ? null : Integer.valueOf(alter109.group(3)),
+                        alter109.group(4) == null ? null : Integer.valueOf(alter109.group(4)),
+                        alter109.group(5).contains("NOT NULL")));
+            }
+        }
     }
 
     /**
