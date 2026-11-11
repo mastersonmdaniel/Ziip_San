@@ -92,19 +92,15 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <!-- P0.47: teste de fronteira (ArchUnit da P0.3) — o nucleo nao pode depender
-                 do pacote fiscal; escopo de teste, sem aresta de producao para o fiscal. -->
-            <groupId>br.com.ziipsan</groupId>
-            <artifactId>ziipsan-fiscal</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.tngtech.archunit</groupId>
-            <artifactId>archunit-junit5</artifactId>
-            <version>1.5.1</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- P0.47 / decisoes 66 + 71 (10/11/2026): o teste de fronteira
+             (VerticalBoundaryTest, ArchUnit da P0.3) mudou de casa para o modulo
+             ziipsan-app, que ja declara archunit-junit5 e as dependencias de
+             fiscal e billing em compile. Com ele sairam daqui as duas
+             dependencias de teste que so ele consumia neste modulo (verificado
+             por varredura exaustiva em src/main e src/test: nenhum outro
+             ficheiro do platform importa com.tngtech.archunit nem
+             br.com.ziipsan.commercial.fiscal): a aresta ziipsan-fiscal (test),
+             cujo fim desbloqueia o ciclo fiscal -> billing no reactor, e a
+             archunit-junit5 (test), orfa apos a mudanca de casa. -->
     </dependencies>
 </project>
