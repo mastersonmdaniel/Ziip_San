@@ -18,8 +18,14 @@ CREATE TABLE bills (id UUID PRIMARY KEY, tenant_id UUID NOT NULL, unit_id UUID, 
     status VARCHAR(30), water_consumption INT, water_value NUMERIC(14,2), sewer_value NUMERIC(14,2),
     debits_value NUMERIC(14,2), credits_value NUMERIC(14,2), taxes_value NUMERIC(14,2),
     total_value NUMERIC(14,2), due_date DATE, issued_on DATE, rectification_count INT DEFAULT 0,
-    cancel_reason VARCHAR(200), origin_bill_id UUID, completed BOOLEAN DEFAULT FALSE,
+    cancel_reason_id UUID, origin_bill_id UUID, completed BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());
+-- bill_cancel_reasons: catalogo real da V4_16 (DAD-16), que substituiu o texto
+-- livre bills.cancel_reason (removido pela V4_16) — correcao D72-V15_1: a
+-- fixture espelhava a V4_1; as colunas sao as que a RPT-010 le (id/tenant_id)
+-- mais code/description do catalogo real.
+CREATE TABLE bill_cancel_reasons (id UUID PRIMARY KEY, tenant_id UUID NOT NULL,
+    code VARCHAR(40) NOT NULL, description VARCHAR(200) NOT NULL);
 CREATE TABLE categories (id UUID PRIMARY KEY, tenant_id UUID NOT NULL, code VARCHAR(30), name VARCHAR(100));
 CREATE TABLE bill_items (id UUID PRIMARY KEY, tenant_id UUID NOT NULL, bill_id UUID,
     service_kind VARCHAR(5), category_id UUID, subcategory_id UUID, tariff_version_id UUID,

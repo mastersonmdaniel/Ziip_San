@@ -117,6 +117,48 @@ SELECT register_tenant_table('report_schedules', true, false);
 -- =======================================================================
 -- ARRECADACAO (fonte: payments e retorno da V6_2, P3.1/P3.2)
 -- =======================================================================
+--
+-- CURA IN PLACE — 10/11/2026, lote D72-V15_1, ao abrigo da Decisao 72 do dono
+-- (Opcao A: programa completo da cadeia do provisionamento limpo; pendencia-mae
+-- P-R27-A-04). Este ficheiro PUBLICADO (versao 15.1) foi editado no proprio
+-- lugar porque a cadeia limpa aborta NELE (42703 em rpt_arrecadacao_diaria):
+-- nenhuma migration posterior correria antes da correccao, e uma migration
+-- nova (serie >= V100) nao impede a falha da propria 15.1.
+--
+-- Defeito: na ordem limpa, a tabela payments chega aqui NO FORMATO DA V6_1
+-- (FEBRABAN 150). O CREATE TABLE IF NOT EXISTS da V6_2, que declara o estado
+-- final da P3.1, e no-op sobre a tabela ja criada; os ALTERs efectivos da
+-- V6_2 (mesmo com a cura do lote irmao D72-V62) so acrescentam bill_id,
+-- collection_month e fiscal_document_id. Ficam a faltar as colunas do modelo
+-- P3.1 (o de PaymentEntity) que as views RPT-001..RPT-004 leem: channel,
+-- gross_amount, segregated_tax_amount, withheld_amount, net_amount e
+-- payer_document. Este bloco acrescenta-as (e bill_id, por auto-contencao,
+-- com semantica IF NOT EXISTS identica a do lote D72-V62) ANTES das views.
+--
+-- Desenho das colunas acrescentadas: tipos EXACTOS do CREATE da V6_2, mas
+-- SEM NOT NULL e SEM CHECK nesta passagem — em bases vivas, payments pode
+-- ter linhas do formato FEBRABAN (V6_1), e impor NOT NULL/CHECK aqui
+-- falharia sobre dados reais; na ordem limpa a tabela esta vazia e as
+-- views nao escrevem. O aperto posterior as restricoes da P3.1 faz parte
+-- da convergencia dos DOIS modelos de payments (Payment.java, formato
+-- V6_1, vs PaymentEntity.java, formato P3.1), que e materia do modulo
+-- collection — pendencia nomeada P-D72-V151-01 no relatorio do lote.
+--
+-- OBRIGACAO OPERACIONAL: nas bases vivas onde a versao 15.1 ja esteja
+-- aplicada, o Flyway exige repair gerido por base para realinhar o
+-- checksum deste ficheiro (programa da Decisao 72; verificacao do
+-- historico vivo: P-R27-A-02, do lote irmao da V4_6). Nas bases onde a
+-- 15.1 nunca se aplicou (todas as de provisionamento limpo, onde ela
+-- sempre falhou), o ficheiro corrigido aplica-se directamente.
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS bill_id UUID;
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS channel VARCHAR(20);
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS gross_amount NUMERIC(14,2);
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS segregated_tax_amount NUMERIC(14,2);
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS withheld_amount NUMERIC(14,2);
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS net_amount NUMERIC(14,2);
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS payer_document VARCHAR(14);
+CREATE INDEX IF NOT EXISTS idx_payments_bill ON payments(tenant_id, bill_id);
+
 -- RPT-001 Arrecadacao diaria (POC-58): baixado = status BAIXADO.
 CREATE OR REPLACE VIEW rpt_arrecadacao_diaria WITH (security_invoker = true) AS
 SELECT p.tenant_id, p.paid_on AS data, p.channel AS canal,
@@ -241,11 +283,18 @@ WHERE b.completed AND b.issued_on IS NOT NULL
 GROUP BY b.tenant_id, b.reference_month, b.issued_on;
 
 -- RPT-010 Contas canceladas.
+-- CORRECAO D72-V15_1 (RPT-010): o texto livre bills.cancel_reason (V4_1) foi
+-- removido pela V4_16 (DAD-16), que o substituiu pelo catalogo
+-- bill_cancel_reasons via bills.cancel_reason_id. A view le o motivo real
+-- (description do catalogo); LEFT JOIN para a conta cancelada sem motivo
+-- registado continuar visivel, com motivo NULL.
 CREATE OR REPLACE VIEW rpt_contas_canceladas WITH (security_invoker = true) AS
 SELECT b.tenant_id, b.id AS conta_id, b.unit_id AS unidade_id,
        b.reference_month AS referencia, b.status AS situacao,
-       b.cancel_reason AS motivo, b.total_value AS valor, b.updated_at AS cancelada_em
+       cr.description AS motivo, b.total_value AS valor, b.updated_at AS cancelada_em
 FROM bills b
+LEFT JOIN bill_cancel_reasons cr
+       ON cr.tenant_id = b.tenant_id AND cr.id = b.cancel_reason_id
 WHERE b.status IN ('CANCELLED', 'CANCELLED_BY_RECTIFICATION');
 
 -- RPT-011 Contas retificadas.
