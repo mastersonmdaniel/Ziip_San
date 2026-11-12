@@ -1,5 +1,20 @@
 import React from "react";
+import * as maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { webEdit, type EditTool } from "../../services/gis/webEdit";
+import { gisMap } from "../../services/gis/map";
+import { readMapTokens, resolveTokenColors } from "../../services/gis/mapStyle";
+import {
+  polylinesFromGeoJsonGeometry,
+  snapPoint,
+  type GeoJsonGeometryLike,
+  type SnapTarget,
+} from "../../services/gis/editorSnap";
+import {
+  changeSets,
+  geometryItemInput,
+  CHANGE_SET_FEATURE_TABLES,
+} from "../../services/gis/changeSets";
 import { SchemaForm } from "./SchemaForm";
 import type { FormField } from "../../services/gis/webEdit";
 import {
@@ -51,15 +66,24 @@ import {
  *   operacao o servico devolve 403, D1); o formulario de exemplo
  *   e gerado pelo endpoint /forms/from-schema; as permissoes vem
  *   de /layer-permissions/mine.
- * - ESQUELETO (NAO ligado): a renderizacao/desenho no mapa da
- *   GIS-06 (P3.25, MapLibre) — a area de desenho abaixo e a
- *   superficie LOCAL da feicao de trabalho, nao e o mapa da
- *   GIS-06; a gravacao da feicao editada em pacote da GIS-04 e a
- *   tela de pacotes (ChangeSetReview da P2.22) tambem ficam fora
- *   desta pagina. Os endpoints de camada do usuario, juncao,
- *   projeto, unidades e sync estao expostos no servico TS
- *   (services/gis/webEdit.ts) mas sem formulario proprio nesta
- *   pagina.
+ * - LIGADO (Ciclo 3 do PDCA GIS, P-GISROTAS + E2-SNAP): o
+ *   desenho tambem acontece sobre o mapa MapLibre real da
+ *   GIS-06 (estilo gerado, mesma fiacao do GisMap) — os cliques
+ *   e arrastos no mapa alimentam a MESMA feicao de trabalho e
+ *   as MESMAS ferramentas, e a feicao e desenhada no mapa por
+ *   uma fonte GeoJSON; o snap a vertices/bordas
+ *   (services/gis/editorSnap.ts) vale ao desenhar e ao arrastar
+ *   vertices nas duas superficies (no mapa, os alvos incluem as
+ *   feicoes renderizadas e o snap calcula-se em pixeis); a
+ *   gravacao da feicao editada em pacote da GIS-04 esta ligada
+ *   nesta pagina (criar pacote -> item com a geometria ->
+ *   submeter; a revisao e por outra pessoa, guarda do backend).
+ *   Se o mapa nao carregar, a superficie local continua a
+ *   funcionar e o estado declara o mapa indisponivel.
+ * - ESQUELETO (NAO ligado): os endpoints de camada do usuario,
+ *   juncao, projeto, unidades e sync estao expostos no servico
+ *   TS (services/gis/webEdit.ts) mas sem formulario proprio
+ *   nesta pagina.
  */
 const TOOLS: { id: EditTool; label: string }[] = [
   { id: "select", label: "Selecionar" },
@@ -102,6 +126,60 @@ export const EDITOR_VIEW = { minX: -5, minY: -5, width: 30, height: 30 };
 // de utils/geometry.ts continuam a receber a tolerancia por
 // argumento, sem alteracao.
 export const PICK_TOLERANCE = 0.75;
+
+// Tolerancia do snap na superficie do mapa, em PIXEIS de ecra
+// (Ciclo 3, E2-SNAP): e um parametro da camada de interaccao
+// (rato/toque), como o PICK_TOLERANCE acima — nao e limiar de
+// negocio. Em pixeis, o snap vale o mesmo em qualquer zoom e o
+// toque (dedo) beneficia mais que o rato.
+export const SNAP_TOLERANCE_PX = 12;
+
+// Fonte/camadas GeoJSON da feicao de trabalho sobre o mapa real.
+const EDITOR_SOURCE = "gis-editor-work";
+const EDITOR_LINE_LAYER = "gis-editor-work-line";
+const EDITOR_POINT_LAYER = "gis-editor-work-point";
+
+// Tipos de pacote validos da GIS-04 (espelho de
+// GisChangeSetLifecycle.CHANGE_SET_TYPES, backend — a
+// autoridade e o servidor; a lista so monta o select).
+const CHANGE_SET_TYPES = [
+  "PROJECT", "AS_BUILT", "CORRECTION", "IMPORT", "FIELD", "QGIS",
+  "SERVICE_ORDER", "AUTO_SERVICE_LINE",
+];
+
+/** FeatureCollection da feicao de trabalho + rascunho (unir
+ * arcos) + vertices, para a fonte GeoJSON do mapa real. */
+export function editorFeatureCollection(shape: Pt[], draft: Pt[]) {
+  const features: Record<string, unknown>[] = [];
+  const pushLine = (pts: Pt[], kind: string) => {
+    if (pts.length === 1) {
+      features.push({
+        type: "Feature",
+        properties: { kind },
+        geometry: { type: "Point", coordinates: [pts[0].x, pts[0].y] },
+      });
+    } else if (pts.length >= 2) {
+      features.push({
+        type: "Feature",
+        properties: { kind },
+        geometry: {
+          type: "LineString",
+          coordinates: pts.map((p) => [p.x, p.y]),
+        },
+      });
+    }
+  };
+  pushLine(shape, "shape");
+  pushLine(draft, "draft");
+  for (const p of shape) {
+    features.push({
+      type: "Feature",
+      properties: { kind: "vertex" },
+      geometry: { type: "Point", coordinates: [p.x, p.y] },
+    });
+  }
+  return { type: "FeatureCollection", features };
+}
 
 /** Converte um evento de rato (coordenadas do cliente) para
  * coordenadas da geometria, dada a caixa da area de desenho. */
@@ -174,12 +252,40 @@ export function GisWebEditor() {
   ]);
   const [preview, setPreview] = React.useState<string>("");
   const [layerId, setLayerId] = React.useState<string>("");
+  // Snap a vertices/bordas (E2-SNAP): ligado por omissao; e
+  // parametro de interaccao, nao executa geometria sozinho.
+  const [snapEnabled, setSnapEnabled] = React.useState<boolean>(true);
+  const [snapNote, setSnapNote] = React.useState<string>("");
+  // Superficie do mapa real (GIS-06) e o seu estado declarado.
+  const mapContainerRef = React.useRef<HTMLDivElement>(null);
+  const mapRef = React.useRef<maplibregl.Map | null>(null);
+  const [mapStatus, setMapStatus] = React.useState<string>("Mapa GIS-06 a carregar…");
+  // Gravacao em pacote GIS-04: identidade da feicao editada,
+  // dada pelo utilizador (o servico exige feicao existente para
+  // UPDATE/RETIRE; sem identidade nao se grava — ver o handler).
+  const [csTable, setCsTable] = React.useState<string>("gis_arc");
+  const [csFeatureId, setCsFeatureId] = React.useState<string>("");
+  const [csOperation, setCsOperation] = React.useState<"INSERT" | "UPDATE" | "RETIRE">("UPDATE");
+  const [csType, setCsType] = React.useState<string>("CORRECTION");
+  const [csStatus, setCsStatus] = React.useState<string>("");
+  const [csSaving, setCsSaving] = React.useState<boolean>(false);
   // Arco de continuacao em desenho no modo "unir arcos".
   const [draft, setDraft] = React.useState<Pt[]>([]);
   // Deslocamento acumulado do ultimo arrasto de mover — e ele
   // (feito com o rato) que o "Conferir na API" manda ao servico.
   const [lastDragDelta, setLastDragDelta] = React.useState<Pt | null>(null);
   const dragRef = React.useRef<DragState>(null);
+  // Espelhos para os handlers do MapLibre (registados uma vez,
+  // na criacao do mapa): apontam sempre para a renderizacao
+  // mais recente e para a feicao corrente.
+  const shapeRef = React.useRef<Pt[]>([]);
+  const mapHandlersRef = React.useRef<{
+    click: (e: maplibregl.MapMouseEvent) => void;
+    down: (e: maplibregl.MapMouseEvent) => void;
+    move: (e: maplibregl.MapMouseEvent) => void;
+    up: () => void;
+    dbl: (e: maplibregl.MapMouseEvent) => void;
+  }>({ click: () => {}, down: () => {}, move: () => {}, up: () => {}, dbl: () => {} });
   // Nos modos de desenho (ponto/linha/poligono), o primeiro
   // clique apos seleccionar a ferramenta comeca uma feicao nova;
   // os seguintes acrescentam vertices a essa feicao.
@@ -221,8 +327,31 @@ export function GisWebEditor() {
     );
   }
 
-  function handleCanvasPointerDown(e: React.PointerEvent<SVGSVGElement>) {
-    const at = pointerGeometry(e);
+  // Ferramentas cujo clique DEFINE geometria: sao as que o snap
+  // serve (desenhar e clicar sobre o arco). Mover/rodar/escalar
+  // comecam arrastos — o snap aplica-se ao arrasto de vertice.
+  const SNAP_CLICK_TOOLS: EditTool[] = ["point", "line", "polygon", "split", "insert-node", "merge"];
+
+  // Snap na superficie LOCAL (unidades da geometria): alvos sao
+  // a feicao de trabalho e o rascunho de uniao.
+  function snapLocal(at: Pt, excludeVertex?: number): Pt {
+    if (!snapEnabled) return at;
+    const targets: SnapTarget[] = [];
+    const own = excludeVertex === undefined
+      ? shape
+      : shape.filter((_, i) => i !== excludeVertex);
+    if (own.length > 0) targets.push({ points: own });
+    if (draft.length > 0) targets.push({ points: draft });
+    const r = snapPoint(at, targets, PICK_TOLERANCE);
+    setSnapNote(r.kind ? `snap: ${r.kind === "vertex" ? "vértice" : "borda"}` : "");
+    return r.point;
+  }
+
+  // Nucleo de interaccao por rato/toque, agnostico da
+  // superficie: a area local e o mapa real chamam-no com o
+  // ponto ja convertido (e ja com snap, quando aplicavel).
+  function pointerDownAt(rawAt: Pt) {
+    const at = rawAt;
     try {
       switch (tool) {
         case "point":
@@ -294,10 +423,19 @@ export function GisWebEditor() {
     }
   }
 
-  function handleCanvasPointerMove(e: React.PointerEvent<SVGSVGElement>) {
+  function handleCanvasPointerDown(e: React.PointerEvent<SVGSVGElement>) {
+    const raw = pointerGeometry(e);
+    const at = SNAP_CLICK_TOOLS.includes(tool) ? snapLocal(raw) : raw;
+    pointerDownAt(at);
+  }
+
+  // Nucleo do arrasto, agnostico da superficie. O snap do
+  // arrasto de vertice e aplicado por quem chama (cada
+  // superficie snap no seu espaco), por isso aqui o ponto ja
+  // vem final.
+  function pointerMoveAt(at: Pt) {
     const drag = dragRef.current;
     if (!drag) return;
-    const at = pointerGeometry(e);
     try {
       if (drag.kind === "feature") {
         const dx = at.x - drag.last.x;
@@ -332,6 +470,14 @@ export function GisWebEditor() {
     } catch (err) {
       setPreview(`Operacao recusada: ${err instanceof Error ? err.message : err}`);
     }
+  }
+
+  function handleCanvasPointerMove(e: React.PointerEvent<SVGSVGElement>) {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const raw = pointerGeometry(e);
+    const at = drag.kind === "vertex" ? snapLocal(raw, drag.index) : raw;
+    pointerMoveAt(at);
   }
 
   function endDrag() {
@@ -394,6 +540,238 @@ export function GisWebEditor() {
     }
   }
 
+  // ----------------------------------------------------------------
+  // Superficie do mapa real (GIS-06, Ciclo 3 — P-GISROTAS)
+  // ----------------------------------------------------------------
+
+  shapeRef.current = shape;
+
+  // Snap na superficie do mapa, em PIXEIS: os alvos sao a
+  // feicao de trabalho, o rascunho e as feicoes RENDERIZADAS no
+  // mapa (queryRenderedFeatures na vizinhanca do clique) — e o
+  // snap a vertices/bordas da rede desenhada, nao so da feicao
+  // local. Quem chama recebe o ponto ja em lng/lat (Pt).
+  function snapOnMap(at: Pt, e: maplibregl.MapMouseEvent, excludeVertex?: number): Pt {
+    const map = mapRef.current;
+    if (!snapEnabled || !map) return at;
+    const lines: Pt[][] = [];
+    const own = excludeVertex === undefined
+      ? shape
+      : shape.filter((_, i) => i !== excludeVertex);
+    if (own.length > 0) lines.push(own);
+    if (draft.length > 0) lines.push(draft);
+    const box: [maplibregl.PointLike, maplibregl.PointLike] = [
+      [e.point.x - SNAP_TOLERANCE_PX, e.point.y - SNAP_TOLERANCE_PX],
+      [e.point.x + SNAP_TOLERANCE_PX, e.point.y + SNAP_TOLERANCE_PX],
+    ];
+    for (const f of map.queryRenderedFeatures(box)) {
+      if (f.source === EDITOR_SOURCE) continue;
+      lines.push(
+        ...polylinesFromGeoJsonGeometry(f.geometry as unknown as GeoJsonGeometryLike),
+      );
+    }
+    const targets: SnapTarget[] = lines.map((line) => ({
+      points: line.map((p) => {
+        const pr = map.project([p.x, p.y]);
+        return { x: pr.x, y: pr.y };
+      }),
+    }));
+    const r = snapPoint({ x: e.point.x, y: e.point.y }, targets, SNAP_TOLERANCE_PX);
+    setSnapNote(r.kind ? `snap: ${r.kind === "vertex" ? "vértice" : "borda"} (mapa)` : "");
+    if (!r.kind) return at;
+    const ll = map.unproject([r.point.x, r.point.y]);
+    const round7 = (v: number) => Math.round(v * 1e7) / 1e7 + 0;
+    return { x: round7(ll.lng), y: round7(ll.lat) };
+  }
+
+  function handleMapClick(e: maplibregl.MapMouseEvent) {
+    if (!SNAP_CLICK_TOOLS.includes(tool)) return;
+    const at = snapOnMap({ x: e.lngLat.lng, y: e.lngLat.lat }, e);
+    pointerDownAt(at);
+  }
+
+  function handleMapMouseDown(e: maplibregl.MapMouseEvent) {
+    const map = mapRef.current;
+    if (!map) return;
+    if (tool === "select" || tool === "move") {
+      // Pegar um vertice no mapa: o vertice mais proximo dentro
+      // da tolerancia de snap em pixeis comeca o arrasto dele.
+      let best = -1;
+      let bestDist = Number.POSITIVE_INFINITY;
+      shape.forEach((p, i) => {
+        const pr = map.project([p.x, p.y]);
+        const d = Math.hypot(pr.x - e.point.x, pr.y - e.point.y);
+        if (d < bestDist) { bestDist = d; best = i; }
+      });
+      if (best >= 0 && bestDist <= SNAP_TOLERANCE_PX) {
+        dragRef.current = { kind: "vertex", index: best };
+        map.dragPan.disable();
+        return;
+      }
+    }
+    if (tool === "move" || tool === "rotate" || tool === "scale") {
+      pointerDownAt({ x: e.lngLat.lng, y: e.lngLat.lat });
+      if (dragRef.current) map.dragPan.disable();
+    }
+  }
+
+  function handleMapMouseMove(e: maplibregl.MapMouseEvent) {
+    const drag = dragRef.current;
+    if (!drag) return;
+    let at: Pt = { x: e.lngLat.lng, y: e.lngLat.lat };
+    if (drag.kind === "vertex") at = snapOnMap(at, e, drag.index);
+    pointerMoveAt(at);
+  }
+
+  function handleMapMouseUp() {
+    endDrag();
+    mapRef.current?.dragPan.enable();
+  }
+
+  function handleMapDoubleClick(e: maplibregl.MapMouseEvent) {
+    if (tool !== "merge") return;
+    e.preventDefault();
+    handleCanvasDoubleClick();
+  }
+
+  mapHandlersRef.current = {
+    click: handleMapClick,
+    down: handleMapMouseDown,
+    move: handleMapMouseMove,
+    up: handleMapMouseUp,
+    dbl: handleMapDoubleClick,
+  };
+
+  // Criacao do mapa real: mesmo padrao do GisMap (estilo gerado
+  // da GIS-06 com os tokens do tema resolvidos). Centro neutro
+  // do Brasil — a sede do tenant centra pelas pesquisas, nao
+  // por coordenada chutada nesta tela (idem GisMap).
+  React.useEffect(() => {
+    let cancelled = false;
+    let created: maplibregl.Map | null = null;
+    gisMap
+      .style("light")
+      .then((style) => {
+        if (cancelled || !mapContainerRef.current) return;
+        const resolved = resolveTokenColors(
+          structuredClone(style),
+          readMapTokens(),
+        ) as maplibregl.StyleSpecification;
+        const map = new maplibregl.Map({
+          container: mapContainerRef.current,
+          style: resolved,
+          center: [-52.0, -14.5],
+          zoom: 4,
+          attributionControl: { compact: true },
+        });
+        created = map;
+        mapRef.current = map;
+        map.addControl(new maplibregl.NavigationControl(), "top-right");
+        map.doubleClickZoom.disable();
+        map.on("load", () => {
+          map.addSource(EDITOR_SOURCE, {
+            type: "geojson",
+            data: editorFeatureCollection(shapeRef.current, []) as never,
+          });
+          map.addLayer({
+            id: EDITOR_LINE_LAYER,
+            type: "line",
+            source: EDITOR_SOURCE,
+            filter: ["==", ["geometry-type"], "LineString"],
+            paint: {
+              "line-color": ["match", ["get", "kind"], "draft", "#0090d0", "#00548f"],
+              "line-width": 3,
+            },
+          });
+          map.addLayer({
+            id: EDITOR_POINT_LAYER,
+            type: "circle",
+            source: EDITOR_SOURCE,
+            filter: ["==", ["geometry-type"], "Point"],
+            paint: {
+              "circle-radius": 5,
+              "circle-color": ["match", ["get", "kind"], "vertex", "#ffffff", "#00548f"],
+              "circle-stroke-color": "#00548f",
+              "circle-stroke-width": 2,
+            },
+          });
+          setMapStatus("Mapa GIS-06 ligado — desenhe com o rato/toque sobre o mapa.");
+        });
+        map.on("click", (e: maplibregl.MapMouseEvent) => mapHandlersRef.current.click(e));
+        map.on("mousedown", (e: maplibregl.MapMouseEvent) => mapHandlersRef.current.down(e));
+        map.on("mousemove", (e: maplibregl.MapMouseEvent) => mapHandlersRef.current.move(e));
+        map.on("mouseup", () => mapHandlersRef.current.up());
+        map.on("dblclick", (e: maplibregl.MapMouseEvent) => mapHandlersRef.current.dbl(e));
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setMapStatus(
+            "Mapa GIS-06 indisponível nesta sessão (o estilo não carregou) — a superfície local continua a funcionar.",
+          );
+        }
+      });
+    return () => {
+      cancelled = true;
+      created?.remove();
+      if (mapRef.current === created) mapRef.current = null;
+    };
+    // Uma so vez: a feicao entra pela fonte GeoJSON (efeito
+    // abaixo) e os handlers leem o estado pelos refs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // A feicao de trabalho (e o rascunho) desenhados no mapa real.
+  React.useEffect(() => {
+    const src = mapRef.current?.getSource(EDITOR_SOURCE);
+    if (src) {
+      (src as unknown as { setData: (d: unknown) => void }).setData(
+        editorFeatureCollection(shape, draft),
+      );
+    }
+  }, [shape, draft]);
+
+  // ----------------------------------------------------------------
+  // Gravacao em pacote GIS-04 (Ciclo 3): criar -> item -> submeter
+  // ----------------------------------------------------------------
+
+  async function saveToChangeSet() {
+    if (csSaving) return;
+    if (!csFeatureId.trim()) {
+      setCsStatus(
+        "Informe o id da feição (UUID): gravar em pacote exige a feição que esta geometria edita (UPDATE/RETIRE exigem feição existente no servidor).",
+      );
+      return;
+    }
+    let wkt: string;
+    try {
+      wkt = shapeWkt(shape);
+      if (wkt === "(sem geometria)") throw new Error("sem geometria");
+    } catch {
+      setCsStatus("Desenhe uma geometria (ponto, linha ou polígono) antes de gravar em pacote.");
+      return;
+    }
+    setCsSaving(true);
+    try {
+      const itemInput = geometryItemInput({
+        featureTable: csTable,
+        featureId: csFeatureId.trim(),
+        operation: csOperation,
+        geomWkt: wkt,
+        proposedState: values,
+      });
+      const created = await changeSets.create({ type: csType, channel: "WEB" });
+      const item = await changeSets.addItem(created.id, itemInput);
+      const submitted = await changeSets.submit(created.id);
+      setCsStatus(
+        `Pacote ${submitted.id} submetido (estado ${submitted.status}); item ${item.id} com a geometria editada. Revisão por outra pessoa: o autor não aprova o próprio pacote — o pacote entra na fila de revisão (GIS-04).`,
+      );
+    } catch (err) {
+      setCsStatus(`Gravação recusada: ${err instanceof Error ? err.message : err}`);
+    } finally {
+      setCsSaving(false);
+    }
+  }
+
   const shapeSvgPoints = shape.map((p) => geometryToSvg(p));
   const draftSvgPoints = draft.map((p) => geometryToSvg(p));
   const pointsAttr = (pts: Pt[]) => pts.map((p) => `${p.x},${p.y}`).join(" ");
@@ -404,12 +782,20 @@ export function GisWebEditor() {
         <h1>Editor GIS</h1>
         <p role="status">{status}</p>
         <p className="gis-skeleton-note">
-          Parcial: geometria local operada com o rato e endpoints
-          ligados; desenho no mapa (GIS-06) e gravacao em pacote
-          (GIS-04) sao esqueleto fora desta pagina — ver o cabecalho
-          do arquivo.
+          Ligado: geometria operada com o rato/toque na superfície
+          local e no mapa real (GIS-06), snap a vértices/bordas e
+          gravação em pacote (GIS-04) com revisão por outra
+          pessoa — ver o cabeçalho do arquivo.
         </p>
+        <p role="status">{mapStatus}</p>
       </header>
+      <div
+        ref={mapContainerRef}
+        data-testid="gis-editor-map"
+        role="application"
+        aria-label="Mapa do editor GIS (GIS-06, interacção por rato/toque)"
+        style={{ height: "420px", width: "100%", background: "#e8edf1" }}
+      />
       <div className="gis-tools" role="toolbar" aria-label="Ferramentas de edicao">
         {TOOLS.map((t) => (
           <button
@@ -423,6 +809,15 @@ export function GisWebEditor() {
         ))}
       </div>
       <p className="gis-mode-hint">{MODE_HINTS[tool]}</p>
+      <label className="gis-snap-toggle">
+        <input
+          type="checkbox"
+          checked={snapEnabled}
+          onChange={(e) => setSnapEnabled(e.target.checked)}
+        />{" "}
+        Snap a vértices/bordas ao desenhar e arrastar (E2-SNAP)
+        {snapNote ? ` — último: ${snapNote}` : ""}
+      </label>
       <svg
         className="gis-editor-canvas"
         data-testid="gis-editor-canvas"
@@ -486,6 +881,53 @@ export function GisWebEditor() {
           Conferir na API o deslocamento feito com o rato
         </button>
         {preview ? <p>{preview}</p> : null}
+      </div>
+      <div className="gis-changeset-save">
+        <h2>Gravar em pacote GIS-04</h2>
+        <p>
+          Cria um pacote (canal WEB), junta a feição editada com a
+          geometria actual e submete — a revisão é por outra
+          pessoa (o autor não aprova o próprio pacote).
+        </p>
+        <label>
+          Tabela da feição{" "}
+          <select value={csTable} onChange={(e) => setCsTable(e.target.value)}>
+            {CHANGE_SET_FEATURE_TABLES.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </label>{" "}
+        <label>
+          Operação{" "}
+          <select
+            value={csOperation}
+            onChange={(e) => setCsOperation(e.target.value as "INSERT" | "UPDATE" | "RETIRE")}
+          >
+            <option value="UPDATE">UPDATE</option>
+            <option value="INSERT">INSERT</option>
+            <option value="RETIRE">RETIRE</option>
+          </select>
+        </label>{" "}
+        <label>
+          Tipo de pacote{" "}
+          <select value={csType} onChange={(e) => setCsType(e.target.value)}>
+            {CHANGE_SET_TYPES.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </label>{" "}
+        <label>
+          Id da feição{" "}
+          <input
+            value={csFeatureId}
+            onChange={(e) => setCsFeatureId(e.target.value)}
+            placeholder="uuid da feição editada"
+          />
+        </label>{" "}
+        <button type="button" onClick={() => void saveToChangeSet()} disabled={csSaving}>
+          {csSaving ? "A gravar…" : "Gravar em pacote e submeter a revisão"}
+        </button>
+        {csStatus ? <p role="status">{csStatus}</p> : null}
       </div>
       <button type="button" onClick={() => void loadForm(SAMPLE_SCHEMA)}>
         Gerar formulario do esquema de exemplo
