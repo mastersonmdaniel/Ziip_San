@@ -3,6 +3,7 @@
 -- editar a fonte; RequiredContentCatalogConsistencyTest confere os dois lados.
 -- profile_key NULL = base federal (vale para todo perfil).
 -- Guarda de contagem no fim: 16 linhas (5 federais + 11 de perfil).
+SELECT set_config('app.current_tenant', '${tenant_id}', true);
 INSERT INTO invoice_required_fields
     (tenant_id, catalog_version, profile_key, field_key, source_norm, source_reference, locked_block, origin)
 VALUES

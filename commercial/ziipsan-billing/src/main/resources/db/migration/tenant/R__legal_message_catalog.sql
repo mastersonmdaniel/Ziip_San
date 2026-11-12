@@ -1,6 +1,7 @@
 -- Carga repetivel do catalogo de mensagens legais da fatura (P2.32), versao 1.
 -- Fonte unica: LegalMessageCatalog.java — conferida por teste de consistencia.
 -- Slots entram INATIVOS (slot_only): ED-88, ED-25 e P3.5 e quem os ativa.
+SELECT set_config('app.current_tenant', '${tenant_id}', true);
 INSERT INTO legal_message_catalog
     (tenant_id, catalog_version, message_key, norm_key, parameter_class, trigger_condition, print_order, legal, slot_only, activating_task)
 VALUES

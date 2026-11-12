@@ -41,6 +41,8 @@
 --     V13_11 corrigida confirmada.
 -- ======================================================================
 
+SELECT set_config('app.current_tenant', '${tenant_id}', true);
+
 INSERT INTO gis_import_profile (tenant_id, key, label, origin)
 VALUES ('${tenant_id}', 'CORSAN_ANEXO_A', 'Corsan Anexo A (rev. 03/2024)', 'BUILTIN'),
        ('${tenant_id}', 'GENERICO', 'Generico (mapeamento do cliente)', 'BUILTIN'),
