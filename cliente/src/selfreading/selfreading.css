@@ -1,0 +1,12 @@
+/* Tela de autoleitura: mobile-first; cores SOMENTE das variaveis de
+   marca da ED-39 (--brand-* de cssVariables()/tenantTheme.ts), como
+   portal.css. Alvos de toque >= 48px. */
+.selfreading-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+.selfreading-field input { min-height: 48px; font: inherit; color: var(--brand-text, #1a1a1a); }
+.selfreading-action {
+  min-height: 48px; min-width: 48px; margin: 4px 8px 4px 0;
+  background: var(--brand-primary, #333); color: var(--brand-on-primary, #fff);
+  border: 0; border-radius: 6px; font: inherit; cursor: pointer;
+}
+.selfreading-status { min-height: 1.5em; }
+section h2 { color: var(--brand-text, #1a1a1a); }

@@ -63,6 +63,7 @@ const Agenda = lazy(() => import('@pages/agenda/Agenda').then((m) => ({ default:
 // porque nenhuma permissão destes núcleos está provada no servidor.
 const ExceptionQueuePage = lazy(() => import('@pages/metering/ExceptionQueuePage').then((m) => ({ default: m.ExceptionQueuePage })))
 const RenewalPlanPage = lazy(() => import('@pages/metering/RenewalPlanPage').then((m) => ({ default: m.RenewalPlanPage })))
+const SelfReadingReview = lazy(() => import('@pages/metering/SelfReadingReview').then((m) => ({ default: m.SelfReadingReview })))
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -195,6 +196,9 @@ export function App() {
             servidor (sem prova, sem menu — pendência no relatório). */}
         <Route path="comercial/tarifa-social" element={<SocialTariffCycle />} />
         <Route path="os/sla" element={<SlaOrders />} />
+        {/* P-II7-TELA: fila de revisao humana da autoleitura (rota de executor pela convencao das rotas irmaes; sem menu — permissao nao provada). */}
+        <Route path="operacao/autoleitura/revisao" element={<SelfReadingReview />} />
+
 
         <Route path="*" element={<NotFound />} />
       </Route>
