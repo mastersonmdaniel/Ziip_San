@@ -25,6 +25,16 @@ export const navigation: Array<{ name: string; href: string; icon: IconName; per
   { name: t('nav.territory'), href: '/cadastro/territorio', icon: 'map', permission: 'registry:read' },
   { name: t('nav.catalogs'), href: '/cadastro/catalogos', icon: 'list-checks', permission: 'registry:read' },
   { name: t('nav.gisCatalog'), href: '/gis/catalogo', icon: 'map', permission: 'gis:catalog-read' },
+  // P-GISROTAS-04: as demais telas GIS com rota em App.tsx entram com a
+  // permissão de leitura provada nos controladores — gis:view é a guarda de
+  // leitura do mapa e dos estilos (GisMapController), do editor web
+  // (GisWebEditController, métodos READ) e dos temáticos
+  // (GisThematicController). /gis/change-sets/:id NÃO entra: é detalhe por
+  // id e App.tsx não tem rota de lista — sem destino navegável, sem item.
+  { name: t('nav.gisMap'), href: '/gis', icon: 'map-pin', permission: 'gis:view' },
+  { name: t('nav.gisStyles'), href: '/gis/styles', icon: 'palette', permission: 'gis:view' },
+  { name: t('nav.gisEditor'), href: '/gis/editor', icon: 'pencil', permission: 'gis:view' },
+  { name: t('nav.gisThematics'), href: '/gis/tematicos', icon: 'layers', permission: 'gis:view' },
   { name: t('nav.generatedFiles'), href: '/arquivos-gerados', icon: 'download', permission: 'registry:read' },
   { name: t('nav.about'), href: '/about', icon: 'info', permission: 'registry:read' },
   { name: t('nav.imports'), href: '/importacoes', icon: 'upload', permission: 'registry:read' },
