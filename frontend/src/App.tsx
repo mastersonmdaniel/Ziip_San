@@ -47,6 +47,15 @@ const SlaOrders = lazy(() => import('@pages/os/SlaOrders').then((m) => ({ defaul
 const About = lazy(() => import('@pages/About').then((m) => ({ default: m.About })))
 const Integration = lazy(() => import('@pages/Integration').then((m) => ({ default: m.Integration })))
 const Central = lazy(() => import('@pages/platform/Central').then((m) => ({ default: m.Central })))
+// Telas da Onda II (pacote telas-ii-paineis): paineis de perdas do DMA
+// (P-II6-TELA, so paineis — sem mapa) e dashboards de observabilidade
+// (P-II8-TELA). Rotas por convencao das irmas (/platform/central,
+// /gis/...): /perdas/dma e /platform/observabilidade — decisao de
+// executor registada no RELATORIO-TELAS-II-PAINEIS (nenhuma fonte
+// declarava os caminhos destas telas). Sem item de menu: nenhuma
+// permissao para estas telas esta provada na main (ver relatorio).
+const DmaPanels = lazy(() => import('@pages/losses/DmaPanels').then((m) => ({ default: m.DmaPanels })))
+const Observability = lazy(() => import('@pages/platform/Observability').then((m) => ({ default: m.Observability })))
 const DocumentosFiscais = lazy(() => import('@pages/fiscal/DocumentosFiscais').then((m) => ({ default: m.DocumentosFiscais })))
 const MinhasTarefas = lazy(() => import('@pages/tarefas/MinhasTarefas').then((m) => ({ default: m.MinhasTarefas })))
 const Agenda = lazy(() => import('@pages/agenda/Agenda').then((m) => ({ default: m.Agenda })))
@@ -155,6 +164,9 @@ export function App() {
         <Route path="importacoes" element={<Importacoes />} />
         {/* P1.17: Central Ziip v0 — Visão geral, Plataforma, Segurança e Alertas. */}
         <Route path="platform/central" element={<Central />} />
+        {/* Onda II (telas-ii-paineis): P-II6-TELA (painéis de perdas, sem mapa) e P-II8-TELA. */}
+        <Route path="perdas/dma" element={<DmaPanels />} />
+        <Route path="platform/observabilidade" element={<Observability />} />
         {/* P2.26: credenciais da API pública e webhooks de saída do tenant. */}
         <Route path="integracao" element={<Integration />} />
         <Route path="support" element={<Support />} />
