@@ -315,3 +315,160 @@ test('transporte NAO contem rota do centralizador (nao provada)', async () => {
   assert.ok(!/portal\/centralizador/.test(src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')),
     'transport.ts nao pode conter chamada a /portal/centralizador');
 });
+
+// ---------- Centralizador (P-PORTAL-01: ecra + porta tipada) ----------
+// Fixtures: valores da suite Java CentralizerViewServiceTest (matriculas
+// 1001/1002, valores 100.00/200.00, agrupadora AGR-2026-06-X-1 de
+// 2026-06, total 300.00, 2 membros) e o CSV exacto que
+// CentralizerViewService.exportUnitsCsv monta (cabecalho + ';').
+// Identificadores sao ficticios de demonstracao, como nas demais fixtures.
+import type {
+  CentralizerPort,
+  CentralizerSession,
+  GroupedBillView,
+  UnitSummary,
+} from './transport.ts';
+
+const CENT_UNITS: UnitSummary[] = [
+  { unitId: 'u-demo-1', registration: '1001', openAmount: 100 },
+  { unitId: 'u-demo-2', registration: '1002', openAmount: 200 },
+];
+const CENT_CSV = 'unidade;matricula;valor_em_aberto\n'
+  + 'u-demo-1;1001;100.00\nu-demo-2;1002;200.00\n';
+const CENT_BILL: GroupedBillView = {
+  code: 'AGR-2026-06-X-1', reference: '2026-06', total: 300, memberCount: 2,
+};
+const CENT_SESSION: CentralizerSession = {
+  tenantId: 'tenant-demo', consumerSubject: 'sujeito',
+  centralizerCustomerId: 'centralizador-demo', channel: 'GOV_BR',
+};
+
+interface CentCall { op: string; args: unknown[] }
+function fakeCentralizerPort(over: Partial<CentralizerPort> = {}) {
+  const calls: CentCall[] = [];
+  const port: CentralizerPort = {
+    async units(...a) { calls.push({ op: 'units', args: a }); return over.units ? over.units(...a) : CENT_UNITS; },
+    async exportUnitsCsv(...a) { calls.push({ op: 'exportUnitsCsv', args: a }); return over.exportUnitsCsv ? over.exportUnitsCsv(...a) : CENT_CSV; },
+    async groupedBill(...a) { calls.push({ op: 'groupedBill', args: a }); return over.groupedBill ? over.groupedBill(...a) : CENT_BILL; },
+  };
+  return { port, calls };
+}
+
+test('centralizador: unidades — args exactos (sessao + canal) e lista renderizada', async () => {
+  const { port, calls } = fakeCentralizerPort();
+  const r = root();
+  screens.renderCentralizer(r as unknown as HTMLElement, { port, session: CENT_SESSION });
+  r.buttonByText('Listar unidades vinculadas').click(); await tick();
+  assert.equal(calls.length, 1);
+  assert.deepEqual(calls[0], {
+    op: 'units',
+    args: ['tenant-demo', 'sujeito', 'centralizador-demo', 'GOV_BR'],
+  });
+  assert.match(r.textContent, /Matrícula 1001 — unidade u-demo-1 — em aberto R\$ 100,00/);
+  assert.match(r.textContent, /Matrícula 1002 — unidade u-demo-2 — em aberto R\$ 200,00/);
+});
+
+test('centralizador: lista vazia declarada (sem unidades inventadas)', async () => {
+  const { port } = fakeCentralizerPort({ units: async () => [] });
+  const r = root();
+  screens.renderCentralizer(r as unknown as HTMLElement, { port, session: CENT_SESSION });
+  r.buttonByText('Listar unidades vinculadas').click(); await tick();
+  assert.match(r.textContent, /Nenhuma unidade vinculada\./);
+});
+
+test('centralizador: CSV exibido e EXACTAMENTE o da porta, com link de descarga', async () => {
+  const { port, calls } = fakeCentralizerPort();
+  const r = root();
+  screens.renderCentralizer(r as unknown as HTMLElement, { port, session: CENT_SESSION });
+  r.buttonByText('Exportar unidades (CSV)').click(); await tick();
+  assert.deepEqual(calls[0], {
+    op: 'exportUnitsCsv',
+    args: ['tenant-demo', 'sujeito', 'centralizador-demo', 'GOV_BR'],
+  });
+  assert.ok(r.textContent.includes(CENT_CSV), 'CSV renderizado sem remontagem');
+  const links = r.findAll('a');
+  assert.equal(links.length, 1);
+  assert.equal(links[0].textContent, 'Baixar CSV das unidades');
+  assert.equal(links[0].getAttribute('download'), 'unidades-centralizador.csv');
+});
+
+test('centralizador: fatura agrupada — competencia como 5o argumento e 4 campos renderizados', async () => {
+  const { port, calls } = fakeCentralizerPort();
+  const r = root();
+  screens.renderCentralizer(r as unknown as HTMLElement, { port, session: CENT_SESSION });
+  (r.byId('cent-reference') as FakeEl).value = '2026-06';
+  r.buttonByText('Ver fatura agrupada').click(); await tick();
+  assert.deepEqual(calls[0], {
+    op: 'groupedBill',
+    args: ['tenant-demo', 'sujeito', 'centralizador-demo', '2026-06', 'GOV_BR'],
+  });
+  assert.match(r.textContent, /Código: AGR-2026-06-X-1/);
+  assert.match(r.textContent, /Competência: 2026-06/);
+  assert.match(r.textContent, /Total: R\$ 300,00/);
+  assert.match(r.textContent, /Unidades na fatura agrupada: 2/);
+});
+
+test('centralizador: competencia fora do YearMonth bloqueia sem chamar a porta', async () => {
+  const { port, calls } = fakeCentralizerPort();
+  const r = root();
+  screens.renderCentralizer(r as unknown as HTMLElement, { port, session: CENT_SESSION });
+  for (const bad of ['2026-13', '2026-00', '06/2026', '']) {
+    (r.byId('cent-reference') as FakeEl).value = bad;
+    r.buttonByText('Ver fatura agrupada').click(); await tick();
+    assert.match(r.textContent, /Informe a competência \(AAAA-MM\)\./);
+  }
+  assert.equal(calls.length, 0);
+});
+
+test('centralizador: sessao incompleta bloqueia as tres operacoes sem chamar a porta', async () => {
+  const { port, calls } = fakeCentralizerPort();
+  const r = root();
+  const incomplete: CentralizerSession = { tenantId: '', consumerSubject: 'sujeito', centralizerCustomerId: 'centralizador-demo' };
+  screens.renderCentralizer(r as unknown as HTMLElement, { port, session: incomplete });
+  r.buttonByText('Listar unidades vinculadas').click(); await tick();
+  r.buttonByText('Exportar unidades (CSV)').click(); await tick();
+  (r.byId('cent-reference') as FakeEl).value = '2026-06';
+  r.buttonByText('Ver fatura agrupada').click(); await tick();
+  assert.equal(calls.length, 0);
+  assert.match(r.textContent, /Tenant, consumidor e centralizador são obrigatórios\./);
+});
+
+test('centralizador: recusa da porta (guard) aparece no estado, sem mensagem inventada', async () => {
+  // Mensagem literal do ApiException.Forbidden de CentralizerViewService.requireAccess.
+  const forbidden = new Error('Conta do portal nao e a do orgao centralizador/grande cliente.');
+  const { port } = fakeCentralizerPort({ units: async () => { throw forbidden; } });
+  const r = root();
+  screens.renderCentralizer(r as unknown as HTMLElement, { port, session: CENT_SESSION });
+  r.buttonByText('Listar unidades vinculadas').click(); await tick();
+  assert.match(r.textContent, /Erro: Conta do portal nao e a do orgao centralizador\/grande cliente\./);
+});
+
+test('centralizador sem porta da fiacao: estado honesto [A DEFINIR] e nenhuma operacao', () => {
+  const r = root();
+  screens.renderCentralizer(r as unknown as HTMLElement);
+  assert.match(r.textContent, /rota HTTP \[A DEFINIR\]/);
+  assert.match(r.textContent, /P-PORTAL-01/);
+  assert.equal(r.querySelectorAll('button').length, 0);
+});
+
+test('models centralizador: validadores espelham requireAccess e groupedBill do service', () => {
+  assert.equal(models.validateCentralizerSession(CENT_SESSION), null);
+  assert.ok(models.validateCentralizerSession({ tenantId: ' ', consumerSubject: 's', centralizerCustomerId: 'c' }));
+  assert.ok(models.validateCentralizerSession({ tenantId: 't', consumerSubject: '', centralizerCustomerId: 'c' }));
+  assert.ok(models.validateCentralizerSession({ tenantId: 't', consumerSubject: 's', centralizerCustomerId: ' ' }));
+  assert.equal(models.validateCentralizerReference('2026-06'), null);
+  assert.equal(models.validateCentralizerReference(' 2026-12 '), null);
+  assert.ok(models.validateCentralizerReference('2026-13'));
+  assert.ok(models.validateCentralizerReference('2026-00'));
+  assert.ok(models.validateCentralizerReference('2026-6'));
+  assert.ok(models.validateCentralizerReference(''));
+});
+
+test('boot: tela centralizador ligada na navegacao (P-PORTAL-01)', async () => {
+  const fs = await import('node:fs');
+  const boot = fs.readFileSync(new URL('./boot.ts', import.meta.url), 'utf8');
+  assert.match(boot, /renderCentralizer/);
+  assert.match(boot, /'centralizador'/);
+  // A ligacao e pela porta tipada (deps opcionais), nunca pelo PortalClient HTTP.
+  assert.match(boot, /centralizer\?: CentralizerScreenDeps/);
+});

@@ -6,12 +6,16 @@
  * ED-39 — cssVariables() de src/branding/tenantTheme.ts, reutilizado,
  * nao reescrito. Autenticacao: reutiliza src/auth/pkce.ts e
  * src/auth/session.ts da ED-39 (PortalSession) — o access token sai da
- * sessao entregue; esta fiacao nao guarda token.
+ * sessao entregue; esta fiacao nao guarda token. A tela do
+ * centralizador (P-PORTAL-01) recebe as dependencias (porta tipada +
+ * sessao) por parametro opcional de mountPortalScreens — a sessao vem
+ * do vinculo da conta, nunca de campos digitados nesta fiacao.
  */
 import { cssVariables, type TenantTheme } from '../branding/tenantTheme.ts';
-import { PortalClient, type HttpPort } from './transport.ts';
+import { PortalClient, type CentralizerScreenDeps, type HttpPort } from './transport.ts';
 import {
   renderBills,
+  renderCentralizer,
   renderCertificate,
   renderExplanation,
   renderGuest,
@@ -25,28 +29,37 @@ import {
 
 export type PortalScreenId =
   | 'visitante' | 'faturas' | 'segunda-via' | 'explicacao' | 'simulacao'
-  | 'certidao' | 'validar' | 'relato' | 'abastecimento' | 'agendamento';
-// Sem tela 'centralizador': rota nao provada em codigo entregue (P-PORTAL-01).
-
-const SCREENS: Record<PortalScreenId, (root: HTMLElement, c: PortalClient) => void> = {
-  visitante: renderGuest,
-  faturas: renderBills,
-  'segunda-via': renderSecondCopy,
-  explicacao: renderExplanation,
-  simulacao: renderSimulation,
-  certidao: renderCertificate,
-  validar: renderValidate,
-  relato: renderReport,
-  abastecimento: renderOutage,
-  agendamento: renderScheduling,
-};
+  | 'certidao' | 'validar' | 'relato' | 'abastecimento' | 'agendamento'
+  | 'centralizador';
+// Tela 'centralizador' (P-PORTAL-01): consome a PORTA TIPADA
+// CentralizerPort (espelho do CentralizerViewService da ED-22), nao o
+// PortalClient HTTP — nenhuma rota HTTP do centralizador esta provada
+// (rota [A DEFINIR] na fiacao). Sem dependencias entregues a
+// mountPortalScreens, a tela mostra o estado honesto da pendencia.
 
 export function mountPortalScreens(
   root: HTMLElement,
   http: HttpPort,
   theme: TenantTheme,
   initial: PortalScreenId = 'visitante',
+  centralizer?: CentralizerScreenDeps,
 ): { show(id: PortalScreenId): void } {
+  // Mapa montado dentro da funcao: a entrada 'centralizador' fecha sobre
+  // as dependencias (porta tipada + sessao) desta montagem e ignora o
+  // PortalClient HTTP — o centralizador nao tem rota HTTP provada.
+  const SCREENS: Record<PortalScreenId, (root: HTMLElement, c: PortalClient) => void> = {
+    visitante: renderGuest,
+    faturas: renderBills,
+    'segunda-via': renderSecondCopy,
+    explicacao: renderExplanation,
+    simulacao: renderSimulation,
+    certidao: renderCertificate,
+    validar: renderValidate,
+    relato: renderReport,
+    abastecimento: renderOutage,
+    agendamento: renderScheduling,
+    centralizador: (r) => renderCentralizer(r, centralizer),
+  };
   for (const [name, value] of Object.entries(cssVariables(theme))) {
     document.documentElement.style.setProperty(name, value);
   }

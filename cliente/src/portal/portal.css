@@ -15,4 +15,7 @@ a.portal-action { display: inline-flex; align-items: center; }
 /* Botao de navegacao ativo (aria-current aplicado por boot.show()). */
 .portal-action[aria-current='page'] { text-decoration: underline; }
 .portal-status { min-height: 1.5em; }
+/* CSV do centralizador (P-PORTAL-01): texto tal como a porta o devolve,
+   com rolagem horizontal em ecras estreitos (paridade movel). */
+.portal-csv { overflow-x: auto; white-space: pre; font-family: monospace; color: var(--brand-text, #1a1a1a); }
 section h2 { color: var(--brand-text, #1a1a1a); }

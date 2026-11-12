@@ -7,11 +7,13 @@
  * erro exibido e o da resposta (message do servidor), nunca mensagem de
  * negocio inventada nesta camada.
  */
-import { PortalClient } from './transport.ts';
+import { PortalClient, type CentralizerScreenDeps } from './transport.ts';
 import {
   REPORT_CATEGORIES,
   formatMoney,
   validateBillSimulation,
+  validateCentralizerReference,
+  validateCentralizerSession,
   validateGuest,
   validateInstallments,
   validateReport,
@@ -364,5 +366,77 @@ export function renderScheduling(root: El, client: PortalClient): void {
     void run(status, null, () => client.book(req), (ref) => {
       out.appendChild(h('p', `Agendamento: ${ref}`));
     });
+  }));
+}
+
+// ---- Tela 11: centralizador (ED-22, CentralizerViewService) ----------------
+
+export function renderCentralizer(root: El, deps?: CentralizerScreenDeps): void {
+  const s = section(root, 'Centralizador e grande cliente');
+  const status = statusRegion();
+  const list = h('ul');
+  const ref = field('Competência (AAAA-MM)', 'cent-reference');
+  const out = h('div');
+  s.appendChild(status); s.appendChild(list); s.appendChild(ref.wrap); s.appendChild(out);
+  if (!deps) {
+    // Sem porta entregue pela fiacao: estado honesto da pendencia
+    // P-PORTAL-01 — nenhuma unidade/fatura é exibida sem a porta.
+    s.appendChild(h('p',
+      'A fiação ainda não entregou a porta do centralizador: rota HTTP [A DEFINIR] '
+      + '(pendência P-PORTAL-01 — ecrã e porta tipada entregues).'));
+    return;
+  }
+  const { port, session } = deps;
+  const args = (): [string, string, string] => [
+    session.tenantId, session.consumerSubject, session.centralizerCustomerId,
+  ];
+  const blocked = (): boolean => {
+    const invalid = validateCentralizerSession(session);
+    if (invalid) { status.textContent = invalid; return true; }
+    return false;
+  };
+  s.appendChild(button('Listar unidades vinculadas', () => {
+    if (blocked()) return;
+    list.textContent = '';
+    void run(status, 'Nenhuma unidade vinculada.', () => port.units(...args(), session.channel), (units) => {
+      for (const u of units) {
+        list.appendChild(h('li',
+          `Matrícula ${u.registration} — unidade ${u.unitId} — em aberto R$ ${formatMoney(u.openAmount)}`));
+      }
+    });
+  }));
+  s.appendChild(button('Exportar unidades (CSV)', () => {
+    if (blocked()) return;
+    out.textContent = '';
+    void run(status, null, () => port.exportUnitsCsv(...args(), session.channel), (csv) => {
+      // O CSV exibido/baixado e EXACTAMENTE o que a porta devolve
+      // (CentralizerViewService.exportUnitsCsv) — a tela nao o remonta.
+      const pre = h('pre', csv);
+      pre.setAttribute('class', 'portal-csv');
+      out.appendChild(pre);
+      if (typeof URL.createObjectURL === 'function') {
+        const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+        const a = h('a', 'Baixar CSV das unidades');
+        a.setAttribute('class', 'portal-action');
+        a.setAttribute('href', url);
+        a.setAttribute('download', 'unidades-centralizador.csv');
+        out.appendChild(a);
+      }
+    });
+  }));
+  s.appendChild(button('Ver fatura agrupada', () => {
+    if (blocked()) return;
+    const reference = ref.input.value.trim();
+    const invalid = validateCentralizerReference(reference);
+    if (invalid) { status.textContent = invalid; return; }
+    out.textContent = '';
+    void run(status, null,
+      () => port.groupedBill(...args(), reference, session.channel),
+      (v) => {
+        out.appendChild(h('p', `Código: ${v.code}`));
+        out.appendChild(h('p', `Competência: ${v.reference}`));
+        out.appendChild(h('p', `Total: R$ ${formatMoney(v.total)}`));
+        out.appendChild(h('p', `Unidades na fatura agrupada: ${v.memberCount}`));
+      });
   }));
 }

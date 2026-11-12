@@ -27,10 +27,16 @@
  *  - GET  /portal/agendamento/janelas         -> SelfCareScheduling.WindowOffer[]
  *  - POST /portal/agendamento                 -> referencia do agendamento (String)
  *
- * NAO inclui /portal/centralizador/...: a rota esta truncada no documento
- * da ED-38 e NAO ha controller/rota HTTP entregue que a prove (so o
- * service CentralizerViewService da ED-22, sem rota) — pendencia
- * P-PORTAL-01. Endpoint nao provado NAO entra nesta camada.
+ * Centralizador (ED-22, CentralizerViewService): NAO e endpoint desta
+ * camada. A rota esta truncada no documento da ED-38 (literal
+ * "GET /portal/centralizador/..." em docs/portal/PORTAL-AMPLIADO-ED38.md)
+ * e NAO ha controller/rota HTTP entregue que a prove — nenhuma URL,
+ * metodo ou envelope e afirmado para o centralizador. A tela consome a
+ * PORTA TIPADA CentralizerPort (abaixo), espelho campo a campo do
+ * service, exactamente como as telas da ED-40 consomem DeskPort/
+ * KioskIssuePort. P-PORTAL-01 fica reformulada como: "ecra e porta
+ * tipada entregues; rota HTTP [A DEFINIR] na fiacao" — residual com o
+ * mesmo estatuto das P-ED40T-01/02.
  */
 
 /** Porta HTTP minima (fetch do navegador na integracao; dublê nos testes). */
@@ -192,6 +198,88 @@ export interface BookingRequest {
   serviceOrderId: string;
   windowId: string;
   start: string;
+}
+
+// ---- ED-22 via ED-38: centralizador (CentralizerViewService) --------------
+
+/**
+ * ConsumerAccessGuard.Channel (P3.20): o canal entra como parametro de
+ * cada operacao do service (correcao D6 da ED-22); sem canal declarado,
+ * o service assume OWN_ACCOUNT. GUEST e recusado pelo guard no service —
+ * a recusa chega a tela como erro da porta, sem regra nova nesta camada.
+ */
+export type ConsumerChannel = 'OWN_ACCOUNT' | 'GOV_BR' | 'GUEST';
+
+/**
+ * CentralizerViewService.UnitSummary — espelho campo a campo do record
+ * Java (unitId UUID, registration, openAmount BigDecimal; valores
+ * monetarios como number, convencao das demais views deste portal).
+ */
+export interface UnitSummary {
+  unitId: string;
+  registration: string;
+  openAmount: number;
+}
+
+/**
+ * CentralizerViewService.GroupedBillView — espelho campo a campo do
+ * record Java (code, reference YearMonth "AAAA-MM", total BigDecimal,
+ * memberCount).
+ */
+export interface GroupedBillView {
+  code: string;
+  reference: string;
+  total: number;
+  memberCount: number;
+}
+
+/**
+ * Porta tipada do centralizador: espelha a API publica do
+ * CentralizerViewService (units / exportUnitsCsv / groupedBill, com as
+ * sobrecargas de canal). NAO e um cliente HTTP: nenhuma rota esta
+ * provada (ver cabecalho) — a fiacao entrega a implementacao quando a
+ * rota HTTP for definida. Pendencia P-PORTAL-01 (residual): "ecra e
+ * porta tipada entregues; rota HTTP [A DEFINIR] na fiacao".
+ */
+export interface CentralizerPort {
+  units(
+    tenantId: string,
+    consumerSubject: string,
+    centralizerCustomerId: string,
+    channel?: ConsumerChannel,
+  ): Promise<UnitSummary[]>;
+  exportUnitsCsv(
+    tenantId: string,
+    consumerSubject: string,
+    centralizerCustomerId: string,
+    channel?: ConsumerChannel,
+  ): Promise<string>;
+  groupedBill(
+    tenantId: string,
+    consumerSubject: string,
+    centralizerCustomerId: string,
+    reference: string,
+    channel?: ConsumerChannel,
+  ): Promise<GroupedBillView>;
+}
+
+/**
+ * Sessao que a fiacao entrega a tela do centralizador: os identificadores
+ * que o service exige (tenant, sujeito do consumidor e centralizador) e
+ * o canal declarado pelo chamador. Nao sao campos digitados pelo
+ * utilizador — vem da sessao/vinculo, como o deskId das telas da ED-40.
+ */
+export interface CentralizerSession {
+  tenantId: string;
+  consumerSubject: string;
+  centralizerCustomerId: string;
+  channel?: ConsumerChannel;
+}
+
+/** Dependencias da tela do centralizador (porta + sessao da fiacao). */
+export interface CentralizerScreenDeps {
+  port: CentralizerPort;
+  session: CentralizerSession;
 }
 
 const enc = encodeURIComponent;

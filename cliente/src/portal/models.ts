@@ -6,6 +6,7 @@
 import type {
   AnonymousReportRequest,
   BillSimulationRequest,
+  CentralizerSession,
   GuestInvoiceRequest,
   InstallmentSimulationRequest,
   ReportCategory,
@@ -72,4 +73,30 @@ export function validateYear(ano: number): string | null {
 
 export function formatMoney(v: number): string {
   return v.toFixed(2).replace('.', ',');
+}
+
+/**
+ * CentralizerViewService.requireAccess(...): tenant, consumidor e
+ * centralizador sao obrigatorios (nao-nulos e nao-vazios) antes de
+ * qualquer leitura. A sessao vem da fiacao; sessao incompleta e
+ * recusada localmente, sem chamar a porta.
+ */
+export function validateCentralizerSession(session: CentralizerSession): string | null {
+  if (!session.tenantId.trim() || !session.consumerSubject.trim()
+      || !session.centralizerCustomerId.trim()) {
+    return 'Tenant, consumidor e centralizador são obrigatórios.';
+  }
+  return null;
+}
+
+/**
+ * CentralizerViewService.groupedBill(...): a competencia (YearMonth) e
+ * obrigatoria. Na tela ela chega como texto "AAAA-MM"; formato fora do
+ * YearMonth (mes 01-12) e recusado localmente, sem chamar a porta.
+ */
+export function validateCentralizerReference(reference: string): string | null {
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(reference.trim())) {
+    return 'Informe a competência (AAAA-MM).';
+  }
+  return null;
 }
