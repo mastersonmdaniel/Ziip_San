@@ -1,1 +1,1 @@
-{"description":"Telas da ED-40: quiosque, painel de chamada (SG-626), guiche (SG-625) e relatorio de espera (RAS-26).","name":"ziipsan-atendimento","private":true,"scripts":{"test":"node --test \"src/**/*.test.ts\""},"type":"module","version":"0.1.0"}
+{"description":"Telas da ED-40: quiosque, painel de chamada (SG-626), guiche (SG-625) e relatorio de espera (RAS-26).","name":"ziipsan-atendimento","devDependencies":{"@types/node":"^24.19.2","typescript":"^5.3.3"},"private":true,"scripts":{"test":"node --test \"src/**/*.test.ts\""},"type":"module","version":"0.1.0"}
