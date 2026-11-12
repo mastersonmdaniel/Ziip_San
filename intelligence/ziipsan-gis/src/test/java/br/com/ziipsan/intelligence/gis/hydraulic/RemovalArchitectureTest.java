@@ -11,13 +11,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * M5/M6: o serviço novo não referencia a view/entidade antigas e o SQL
  * pendente remove as duas. Lê as fontes da entrega (caminho por
- * propriedade ziipsan.entrega.dir, com padrão relativo ao repo de produção).
+ * propriedade ziipsan.entrega.dir; sem a propriedade, localiza a raiz
+ * do repo subindo a partir do directório de trabalho).
  */
 class RemovalArchitectureTest {
 
     private Path entrega() {
         String d = System.getProperty("ziipsan.entrega.dir");
-        return d == null ? Path.of("entrega") : Path.of(d);
+        if (d != null) return Path.of(d);
+        // Padrao: a raiz do repo — sobe a partir do directorio de trabalho
+        // (sob Maven, o do modulo) ate encontrar intelligence/ziipsan-gis.
+        Path dir = Path.of("").toAbsolutePath();
+        while (dir != null) {
+            if (Files.isDirectory(dir.resolve("intelligence/ziipsan-gis"))) return dir;
+            dir = dir.getParent();
+        }
+        return Path.of("entrega");
     }
 
     @Test

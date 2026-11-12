@@ -72,6 +72,9 @@ public class MeterInstallationService {
         inst.setInstalledReading(cmd.installedReading()); inst.setReplacement(cmd.replacement());
         inst.setInstalledOn(cmd.installedOn());
         inst.setKind(br.com.ziipsan.operations.metering.rules.MeasurementKind.WATER);
+        // Quem precisa do id antes de salvar atribui-o (provisao do BaseEntity):
+        // o passo seguinte (lifecycle.move, guarda B2) exige o installationId.
+        if (inst.getId() == null) inst.setId(UUID.randomUUID());
         installations.save(inst);
         lifecycle.move(tenantId, cmd.meterId(), cmd.replacement() ? MovementType.REINSTALL : MovementType.INSTALL,
                 null, cmd.installServiceOrderId(), inst.getId(), null, null, cmd.installedOn());
