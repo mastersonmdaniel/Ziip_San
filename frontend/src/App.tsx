@@ -39,6 +39,11 @@ const ChangeSetReview = lazy(() => import('@pages/gis/ChangeSetReview').then((m)
 // por rota da P1.12 das demais telas GIS.
 const GisWebEditor = lazy(() => import('@pages/gis/GisWebEditor').then((m) => ({ default: m.GisWebEditor })))
 const GisThematics = lazy(() => import('@pages/gis/GisThematics'))
+// Telas da Onda II (decisões 57/65): P-II3-TELA (ciclo da tarifa social)
+// e P-II4-TELA (SLA/exigências das OS) — portas tipadas, sem fiação HTTP
+// (P-II3-INTEGRACAO / P-II4-FIACAO pendentes).
+const SocialTariffCycle = lazy(() => import('@pages/comercial/SocialTariffCycle').then((m) => ({ default: m.SocialTariffCycle })))
+const SlaOrders = lazy(() => import('@pages/os/SlaOrders').then((m) => ({ default: m.SlaOrders })))
 const About = lazy(() => import('@pages/About').then((m) => ({ default: m.About })))
 const Integration = lazy(() => import('@pages/Integration').then((m) => ({ default: m.Integration })))
 const Central = lazy(() => import('@pages/platform/Central').then((m) => ({ default: m.Central })))
@@ -173,6 +178,11 @@ export function App() {
         <Route path="agenda" element={<Agenda />} />
         <Route path="operacoes/excecoes-leitura" element={<ExceptionQueuePage />} />
         <Route path="operacoes/plano-troca-hidrometros" element={<RenewalPlanPage planYear={new Date().getFullYear()} />} />
+        {/* Onda II: P-II3-TELA e P-II4-TELA — rotas aditivas; sem entrada
+            de menu porque nenhuma permissão destas telas está provada no
+            servidor (sem prova, sem menu — pendência no relatório). */}
+        <Route path="comercial/tarifa-social" element={<SocialTariffCycle />} />
+        <Route path="os/sla" element={<SlaOrders />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>
