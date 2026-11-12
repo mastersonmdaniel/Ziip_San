@@ -32,6 +32,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * cadeia de segurança própria dela vive em {@code SecurityConfig}
  * (ordem 0, só {@code /api/v1/public-api/**}); este scan só sobe os
  * serviços e controllers.
+ *
+ * <p>II-1 (PDCA GIS Ciclo 2): a OS por clique entra aqui (subpacote
+ * {@code clickos}: controller, serviço de aplicação e adaptador da
+ * porta de OS sobre o motor da P1.31). A propagação depende da
+ * {@code SnapshotPort} da GIS-11, que ainda não tem implementação de
+ * produção — sem ela o serviço recusa com a pendência nomeada, sem
+ * impedir o arranque (ver o serviço de aplicação do pacote).
  */
 @SpringBootApplication(scanBasePackages = {
         "br.com.ziipsan.app",
@@ -39,6 +46,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "br.com.ziipsan.platform",
         "br.com.ziipsan.commercial.registry",
         "br.com.ziipsan.intelligence.gis.catalog",
+        // II-1 (PDCA GIS Ciclo 2): OS por clique — controller, serviço de
+        // aplicação e o adaptador da porta de OS sobre o motor da P1.31.
+        "br.com.ziipsan.intelligence.gis.clickos",
         "br.com.ziipsan.operations.asset",
         "br.com.ziipsan.integration",
 })

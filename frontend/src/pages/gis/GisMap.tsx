@@ -10,10 +10,21 @@ import { PageHeader } from '@components/ui/PageHeader'
 import { errorMessage } from '@services/registry/errors'
 import {
   gisMap,
-  LAYER_TABLE,
   type FeatureDetail,
   type SearchHit,
 } from '@services/gis/map'
+import {
+  collectIdentifiedFeatures,
+  hasUnidentifiedLayer,
+  type IdentifiedCandidate,
+} from '@services/gis/identify'
+import {
+  clickOs,
+  clickTargetForFeature,
+  type ClickPayloadView,
+  type CreatedOrderView,
+  type PropagationMode,
+} from '@services/gis/clickOs'
 import {
   computeLayerVisibility,
   readMapTokens,
@@ -45,6 +56,13 @@ import {
  * integração — ver README-ROTAS.md): trocar o tema regera a
  * resolução dos tokens sobre o documento original, sem novo
  * download do estilo.
+ *
+ * Ciclo 2 do PDCA GIS: o clique identifica TODAS as feições com
+ * ficha sob o ponto (identify.ts) — uma só identifica directo,
+ * várias abrem a lista "Elementos neste ponto" para o utilizador
+ * escolher — e a ficha de nó/arco traz a secção de OS por clique
+ * (II-1) sobre o cliente clickOs.ts. A geometria nasce só do
+ * clique/rato no mapa: nenhum botão de parâmetros fixos.
  */
 export function GisMap({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -59,6 +77,13 @@ export function GisMap({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
   const [measurePoints, setMeasurePoints] = useState<{ lng: number; lat: number }[]>([])
   const [detail, setDetail] = useState<FeatureDetail | null>(null)
   const [detailError, setDetailError] = useState<string | null>(null)
+  const [candidates, setCandidates] = useState<IdentifiedCandidate[]>([])
+  const [clickServiceType, setClickServiceType] = useState('')
+  const [clickMode, setClickMode] = useState<PropagationMode>('DOWNSTREAM')
+  const [clickPayload, setClickPayload] = useState<ClickPayloadView | null>(null)
+  const [clickCreated, setClickCreated] = useState<CreatedOrderView | null>(null)
+  const [clickError, setClickError] = useState<string | null>(null)
+  const [clickBusy, setClickBusy] = useState<'preview' | 'create' | null>(null)
   const [hits, setHits] = useState<SearchHit[]>([])
   const [searchError, setSearchError] = useState<string | null>(null)
   const [locating, setLocating] = useState(false)
@@ -132,29 +157,36 @@ export function GisMap({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
           return
         }
         const features = map.queryRenderedFeatures(event.point)
-        const feature = features.find(
-          (f) => f.sourceLayer && LAYER_TABLE[f.sourceLayer],
-        )
-        const table = feature?.sourceLayer
-          ? LAYER_TABLE[feature.sourceLayer]
-          : undefined
-        const id = feature?.properties?.id as string | undefined
-        if (table && id) {
+        // Identificação multi-camadas (Ciclo 2): TODAS as feições
+        // com ficha sob o ponto, na ordem de renderização — antes
+        // ficava só a primeira (features.find) e as restantes
+        // camadas activas sob o ponto ficavam invisíveis.
+        const identified = collectIdentifiedFeatures(features)
+        if (identified.length === 1) {
+          const only = identified[0]
+          setCandidates([])
           setDetailError(null)
           gisMap
-            .identify(table, id)
+            .identify(only.table, only.id)
             .then(setDetail)
             .catch((e) => setDetailError(errorMessage(e)))
-        } else if (features.some((f) => f.sourceLayer)) {
+        } else if (identified.length > 1) {
+          setDetail(null)
+          setDetailError(null)
+          setCandidates(identified)
+        } else if (hasUnidentifiedLayer(features)) {
           // Correção pós-revisão B3: camada sem ficha GIS própria
           // (contexto importado e imóveis) não é silêncio — avisa.
           // Imóvel se consulta no cadastro comercial; o contexto é
           // referência de fundo (ver README-ROTAS.md).
+          setCandidates([])
           setDetail(null)
           setDetailError(
             'Esta camada não tem ficha GIS: imóveis são consultados no cadastro '
               + 'comercial e o contexto importado é referência de fundo.',
           )
+        } else {
+          setCandidates([])
         }
       })
       mapRef.current = map
@@ -199,6 +231,69 @@ export function GisMap({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
       containerRef.current.dataset.measureMode = measureMode
     }
   }, [measureMode])
+
+  // A pré-visualização/criação da OS por clique pertence à ficha
+  // aberta: trocar de elemento invalida o payload anterior.
+  useEffect(() => {
+    setClickPayload(null)
+    setClickCreated(null)
+    setClickError(null)
+  }, [detail?.featureTable, detail?.id])
+
+  function identifyCandidate(candidate: IdentifiedCandidate) {
+    setCandidates([])
+    setDetailError(null)
+    gisMap
+      .identify(candidate.table, candidate.id)
+      .then(setDetail)
+      .catch((e) => setDetailError(errorMessage(e)))
+  }
+
+  function clickOsInput() {
+    if (!detail) return null
+    const target = clickTargetForFeature(detail.featureTable, detail.id)
+    if (!target) return null
+    const code = clickServiceType.trim()
+    return {
+      arcId: target.arcId,
+      nodeId: target.nodeId,
+      mode: clickMode,
+      // Vazio não é erro: o servidor nomeia a falta no payload.
+      serviceTypeCode: code.length > 0 ? code : null,
+    }
+  }
+
+  async function previewClickOs() {
+    const input = clickOsInput()
+    if (!input) return
+    setClickBusy('preview')
+    setClickError(null)
+    setClickCreated(null)
+    try {
+      setClickPayload(await clickOs.payload(input))
+    } catch (error) {
+      setClickPayload(null)
+      setClickError(errorMessage(error))
+    } finally {
+      setClickBusy(null)
+    }
+  }
+
+  async function createClickOs() {
+    const input = clickOsInput()
+    if (!input) return
+    setClickBusy('create')
+    setClickError(null)
+    try {
+      const created = await clickOs.create(input)
+      setClickCreated(created)
+      setClickPayload(created.payload)
+    } catch (error) {
+      setClickError(errorMessage(error))
+    } finally {
+      setClickBusy(null)
+    }
+  }
 
   function toggleLayer(key: string, checked: boolean) {
     setVisibleKeys((prev) => {
@@ -302,6 +397,12 @@ export function GisMap({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
     groups.set(layer.groupLabel, list)
   }
 
+  // Alvo da OS por clique da ficha aberta: só nó/arco da rede têm
+  // alvo no núcleo II-1; as restantes fichas não mostram a secção.
+  const clickTarget = detail
+    ? clickTargetForFeature(detail.featureTable, detail.id)
+    : null
+
   const measureText =
     measureMode === 'distance'
       ? `Distância em tela: ${formatDistance(pathDistanceM(measurePoints))}`
@@ -335,6 +436,27 @@ export function GisMap({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
             </Alert>
           )}
           {detailError && <Alert>{detailError}</Alert>}
+          {candidates.length > 1 && (
+            <Card>
+              <CardContent>
+                <strong>Elementos neste ponto</strong>
+                <p>
+                  Mais do que um elemento com ficha está sob este ponto do mapa.
+                  Escolha qual quer identificar:
+                </p>
+                <ul aria-label="Elementos neste ponto">
+                  {candidates.map((candidate) => (
+                    <li key={`${candidate.table}-${candidate.id}`}>
+                      <Button onClick={() => identifyCandidate(candidate)}>
+                        {candidate.code ?? candidate.id} — {candidate.table}
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+                <Button onClick={() => setCandidates([])}>Fechar lista</Button>
+              </CardContent>
+            </Card>
+          )}
           {detail && (
             <Card>
               <CardContent>
@@ -359,6 +481,98 @@ export function GisMap({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
                     </div>
                   ))}
                 </dl>
+                {clickTarget && (
+                  <fieldset>
+                    <legend>Ordem de serviço por clique</legend>
+                    <Field
+                      label="Tipo de serviço (código do catálogo do tenant)"
+                      id="click-os-service-type"
+                      hint="Vazio não é erro: o servidor nomeia a falta na pré-visualização."
+                    >
+                      {(aria) => (
+                        <Input
+                          {...aria}
+                          value={clickServiceType}
+                          onChange={(e) => {
+                            setClickServiceType(e.target.value)
+                            setClickPayload(null)
+                            setClickCreated(null)
+                          }}
+                        />
+                      )}
+                    </Field>
+                    <Field label="Modo de propagação" id="click-os-mode">
+                      {(aria) => (
+                        <Select
+                          {...aria}
+                          value={clickMode}
+                          onChange={(e) => {
+                            setClickMode(e.target.value as PropagationMode)
+                            setClickPayload(null)
+                            setClickCreated(null)
+                          }}
+                        >
+                          <option value="DOWNSTREAM">A jusante</option>
+                          <option value="UPSTREAM">A montante</option>
+                          <option value="BOTH">A jusante e a montante</option>
+                          <option value="ISOLATION">Isolamento por válvulas</option>
+                        </Select>
+                      )}
+                    </Field>
+                    <Button
+                      onClick={() => void previewClickOs()}
+                      disabled={clickBusy !== null}
+                    >
+                      {clickBusy === 'preview'
+                        ? 'A pré-visualizar…'
+                        : 'Pré-visualizar OS por clique'}
+                    </Button>
+                    {clickError && <Alert>{clickError}</Alert>}
+                    {clickPayload && (
+                      <div>
+                        <p>
+                          {clickPayload.readyToSubmit
+                            ? 'Payload pronto para criar a OS.'
+                            : 'Payload ainda não está pronto para criar a OS.'}
+                        </p>
+                        <p>
+                          UCs afectadas: {clickPayload.affectedUnitIds.length}
+                          {' · '}Economias: {clickPayload.totalEconomies}
+                          {' · '}Nós: {clickPayload.affectedNodeIds.length}
+                          {' · '}Arcos: {clickPayload.affectedArcIds.length}
+                          {' · '}Ligações: {clickPayload.affectedConnectionIds.length}
+                        </p>
+                        <p>
+                          Desfecho: {clickPayload.outcome} · Modo: {clickPayload.mode}
+                          {clickPayload.truncated
+                            ? ' · Propagação truncada por limite'
+                            : ''}
+                        </p>
+                        {clickPayload.missingForSubmit.length > 0 && (
+                          <>
+                            <p>Faltas para submeter:</p>
+                            <ul>
+                              {clickPayload.missingForSubmit.map((missing) => (
+                                <li key={missing}>{missing}</li>
+                              ))}
+                            </ul>
+                          </>
+                        )}
+                      </div>
+                    )}
+                    {clickPayload?.readyToSubmit && !clickCreated && (
+                      <Button
+                        onClick={() => void createClickOs()}
+                        disabled={clickBusy !== null}
+                      >
+                        {clickBusy === 'create'
+                          ? 'A criar…'
+                          : 'Criar OS a partir deste elemento'}
+                      </Button>
+                    )}
+                    {clickCreated && <p>OS criada: {clickCreated.orderId}</p>}
+                  </fieldset>
+                )}
                 <Button onClick={() => setDetail(null)}>Fechar ficha</Button>
               </CardContent>
             </Card>
