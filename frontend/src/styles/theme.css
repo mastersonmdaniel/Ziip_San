@@ -98,6 +98,16 @@
 .ui-card-content {
   display: block;
 }
+/* Cabecalho/titulo do Card (P-TEMA-06): o header separa o titulo do
+   conteudo com o espacamento da escala de tokens; o titulo nao traz
+   margens proprias (a pagina controla a hierarquia com `as`). */
+.ui-card-header {
+  display: block;
+  margin-bottom: var(--space-2);
+}
+.ui-card-title {
+  margin: 0;
+}
 
 /* ---------- PageHeader ---------- */
 .ui-pageheader {

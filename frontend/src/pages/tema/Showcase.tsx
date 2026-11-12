@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Alert, Spinner } from '@components/ui/Alert'
 import { Badge } from '@components/ui/Badge'
 import { Button } from '@components/ui/Button'
-import { Card, CardContent } from '@components/ui/Card'
+import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/Card'
 import { Dialog } from '@components/ui/Dialog'
 import { Checkbox, Field, Input, Select, Textarea } from '@components/ui/Field'
 import { Icon } from '@components/ui/Icon'
@@ -17,6 +17,12 @@ import { PermissionsProvider, useCan } from '@hooks/usePermissions'
  * interacao do pacote. Nao e uma tela de produto nem substitui nenhuma
  * das 21 telas entregues — essas aguardam os ajustes do dono
  * (decisao de 09/11/2026 02:22) e nao sao tocadas por este pacote.
+ *
+ * Extensao P-TEMA-CORR-02 (frente telas-onda2, pacote temas-componentes):
+ * a vitrine passa a exercer os casos que faltavam — Field com filho em
+ * fragmento, Field com multiplos controlos (associacao por grupo) e
+ * Icon com nome desconhecido (fallback marcado da biblioteca) — e a
+ * composicao CardHeader/CardTitle da P-TEMA-06.
  */
 function PermissaoDemo() {
   const canWrite = useCan('registry:write')
@@ -97,6 +103,38 @@ export function Showcase() {
               <Textarea placeholder="Texto livre" />
             </Field>
             <Checkbox label="Aceito a demonstração" hint="Checkbox da biblioteca." checked={aceite} onChange={(e) => setAceite(e.target.checked)} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Cabeçalho do cartão (P-TEMA-06)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Composição Card + CardHeader + CardTitle, como as telas de Modelos e de cadastro a usam. Com nível explícito:</p>
+            <CardTitle as="h2">Título em h2 (as="h2")</CardTitle>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <h2>Casos-limite do Field e do Icon (P-TEMA-CORR-02)</h2>
+            <Field label="Campo em fragmento" hint="Um único controle dentro de um fragmento: o rótulo continua associado a ele.">
+              <>
+                <Input placeholder="Controle dentro do fragmento" />
+              </>
+            </Field>
+            <Field
+              label="Grupo de controles"
+              hint="Vários controles sob um mesmo rótulo: a associação faz-se por grupo (role=group), sem label órfão."
+            >
+              <Input placeholder="Primeiro controle do grupo" />
+              <Input placeholder="Segundo controle do grupo" />
+            </Field>
+            <p>
+              Ícone com nome desconhecido (fallback da biblioteca: glifo de recurso marcado, sem partir a página):{' '}
+              <Icon name="icone-que-nao-existe" /> <span>nome "icone-que-nao-existe"</span>
+            </p>
           </CardContent>
         </Card>
 

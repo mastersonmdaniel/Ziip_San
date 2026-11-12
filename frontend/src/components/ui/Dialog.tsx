@@ -33,7 +33,32 @@ import { cn } from '@utils/cn'
  * - ao fechar, o foco volta ao elemento que estava focado antes.
  * Clique no fundo NAO fecha: nenhuma pagina entregue o usa e fechar por
  * clique fora perderia o motivo obrigatorio da exclusao (ED-08).
- * Armadilha de foco completa (focus trap): [A DEFINIR] — P-TEMA-08.
+ *
+ * ARMADILHA DE FOCO COMPLETA — P-TEMA-08 (frente telas-onda2, pacote
+ * temas-componentes): enquanto aberto, Tab/Shift+Tab circulam DENTRO do
+ * painel e o foco nao escapa:
+ * - a lista de focaveis e consultada no momento de cada Tab (nunca
+ *   cacheada), por isso conteudo dinamico (elementos que entram/saem
+ *   com o dialogo aberto) entra/sai da circulacao sem reabrir;
+ * - Tab no ultimo focavel (ou com o foco fora da lista, p.ex. no
+ *   proprio painel) salta para o primeiro; Shift+Tab no primeiro salta
+ *   para o ultimo — sempre com preventDefault, para o browser nao
+ *   mover o foco para fora no mesmo gesto;
+ * - com ZERO elementos focaveis, Tab/Shift+Tab ficam no painel
+ *   (tabIndex=-1): o foco nao escapa nem fica perdido;
+ * - um foco que entre de fora por via programatica/clique (focusin
+ *   fora do painel) e puxado de volta para o primeiro focavel, ou
+ *   para o painel se nao houver focaveis.
+ * Focavel = button/[href]/input/select/textarea/[tabindex] nao
+ * desactivado, sem [hidden] e com tabIndex >= 0 (o painel, com
+ * tabIndex=-1, e o refugio — nunca entra na lista). Elementos
+ * desactivados ficam fora: nao recebem foco no browser.
+ * O efeito corre uma vez por abertura ([open]): o `onClose` corrente
+ * e lido por ref, para uma nova identidade de `onClose` a cada render
+ * do pai nao re-disparar o foco inicial a meio da interaccao (a
+ * versao anterior dependia de [open, onClose] e re-focava o
+ * [data-autofocus] sempre que o pai re-renderizava com um onClose
+ * novo — com a armadilha, isso partiria a circulacao).
  */
 export interface DialogProps {
   open?: boolean
@@ -45,11 +70,27 @@ export interface DialogProps {
   className?: string
 }
 
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+
+function focusableIn(panel: HTMLElement): HTMLElement[] {
+  const nodes = panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+  return Array.from(nodes).filter((el) => {
+    if (el.hasAttribute('disabled')) return false
+    if (el.hasAttribute('hidden')) return false
+    if (el.getAttribute('aria-hidden') === 'true') return false
+    if (el.tabIndex < 0) return false
+    return true
+  })
+}
+
 export function Dialog({ open = false, onClose, title, description, footer, children, className }: DialogProps) {
   const uid = useId().replace(/:/g, '')
   const titleId = `dlg-title-${uid}`
   const descId = `dlg-desc-${uid}`
   const panelRef = useRef<HTMLDivElement>(null)
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
 
   useEffect(() => {
     if (!open) return
@@ -58,19 +99,58 @@ export function Dialog({ open = false, onClose, title, description, footer, chil
     if (panel) {
       const target =
         panel.querySelector<HTMLElement>('[data-autofocus]') ??
-        panel.querySelector<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') ??
+        focusableIn(panel)[0] ??
         panel
       target.focus()
     }
     function onKey(event: KeyboardEvent) {
-      if (event.key === 'Escape' && onClose) onClose()
+      if (event.key === 'Escape') {
+        if (onCloseRef.current) onCloseRef.current()
+        return
+      }
+      if (event.key !== 'Tab') return
+      const current = panelRef.current
+      if (!current) return
+      const items = focusableIn(current)
+      if (items.length === 0) {
+        // Zero focaveis: o foco fica no contentor e nao escapa.
+        event.preventDefault()
+        current.focus()
+        return
+      }
+      const first = items[0]
+      const last = items[items.length - 1]
+      const active = document.activeElement as HTMLElement | null
+      const insideList = active ? items.includes(active) : false
+      if (event.shiftKey) {
+        if (!insideList || active === first) {
+          event.preventDefault()
+          last.focus()
+        }
+      } else {
+        if (!insideList || active === last) {
+          event.preventDefault()
+          first.focus()
+        }
+      }
+    }
+    function onFocusIn(event: FocusEvent) {
+      const current = panelRef.current
+      if (!current) return
+      const target = event.target as Node | null
+      if (target && current.contains(target)) return
+      // Foco entrou de fora (programatico ou clique fora): puxa de volta.
+      const items = focusableIn(current)
+      ;(items[0] ?? current).focus()
     }
     document.addEventListener('keydown', onKey)
+    document.addEventListener('focusin', onFocusIn)
     return () => {
       document.removeEventListener('keydown', onKey)
+      document.removeEventListener('focusin', onFocusIn)
       previouslyFocused?.focus?.()
     }
-  }, [open, onClose])
+  }, [open])
 
   if (!open) return null
 
