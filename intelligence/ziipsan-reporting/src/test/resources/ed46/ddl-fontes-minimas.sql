@@ -1,7 +1,7 @@
 -- DDL minima das fontes REAIS da ED-46 (colunas copiadas das migrations
 -- verdadeiras; so as colunas que as views leem):
 --   service_protocols          <- V8_1  (P1.36)
---   cutoff_compensations       <- V9_2  (P3.4)
+--   cutoff_compensations       <- V9_2  (P3.4) + V110 (P-VP5-ED46-01: formula VARCHAR(80))
 --   unit_subcategories/subcategories/categories <- V3_1 (registry)
 --   meter_readings             <- V5_1  (P2.7) - com reader_id/captured_at reais
 --   personal_data_access_log   <- V1_6  (P0.11)
@@ -13,7 +13,7 @@ CREATE TABLE service_protocols (id UUID PRIMARY KEY, tenant_id UUID NOT NULL, pr
     created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());
 CREATE TABLE cutoff_compensations (id UUID PRIMARY KEY, tenant_id UUID NOT NULL,
     consumer_unit_id UUID NOT NULL, cutoff_order_id UUID NOT NULL, trigger_reason VARCHAR(20) NOT NULL,
-    formula VARCHAR(60) NOT NULL, credit_amount NUMERIC(14,2), status VARCHAR(20) NOT NULL,
+    formula VARCHAR(80) NOT NULL, credit_amount NUMERIC(14,2), status VARCHAR(20) NOT NULL,
     reconnection_due_at TIMESTAMPTZ, created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());
 CREATE TABLE categories (id UUID PRIMARY KEY, tenant_id UUID NOT NULL, code VARCHAR(30), name VARCHAR(100));
 CREATE TABLE subcategories (id UUID PRIMARY KEY, tenant_id UUID NOT NULL, category_id UUID NOT NULL,

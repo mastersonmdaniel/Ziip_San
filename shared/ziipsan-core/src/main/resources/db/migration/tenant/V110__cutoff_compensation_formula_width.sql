@@ -1,0 +1,45 @@
+-- ============================================================================
+-- P-VP5-ED46-01 (lote R39-A item 04; auditoria continua, Rodada 39) --
+-- Alargamento de cutoff_compensations.formula de VARCHAR(60) para VARCHAR(80).
+-- Version: 110 (proxima livre apos a maior publicada, V109; V104 segue
+-- reservada a frente do adaptador JPA, decisao 46, nao pousada).
+--
+-- WHY THIS MIGRATION EXISTS. A V9_2 (P3.4) define formula VARCHAR(60) NOT NULL
+-- com um CHECK que lista, entre os valores permitidos, o valor
+-- 'GREATER_OF_2X_URGENT_FEE_AND_20PCT_FIRST_INVOICE_AFTER_RECONNECTION', com
+-- 67 caracteres (ARESC Res. 046/2016, art. 79, §§6 e 7; enum
+-- CutoffEnums.UndueCompensationFormula; ScRegulatoryProfiles.java:140;
+-- R__regulatory_profile_catalog.sql:111). No esquema da V9_2 esse valor
+-- legitimo nunca pode ser inserido: qualquer INSERT com a formula ARESC de
+-- 67 caracteres morre com "value too long for type character varying(60)"
+-- (prova: RELATORIO-VP-5 §3.1, harness-logs/20-ed46-diagnostico-sql.log).
+-- O Ed46ViewsDatabaseTest reproduz o defeito no setUp (massa ...0004).
+--
+-- WHY WIDEN, NOT RENAME. O valor e vocabulario regulatorio real (ARESC);
+-- renomea-lo tocaria o enum CutoffEnums, o catalogo regulatorio (Java +
+-- SQL), os testes do core (CutoffParametersTest, UndueCutCompensationRuleTest,
+-- ScRegulatoryProfilesTest) e os dados ja persistidos com o valor antigo, e
+-- quebraria a rastreabilidade ao texto da Res. 046/2016 -- sem corrigir nada
+-- no esquema. Alargar a coluna preserva o vocabulario verbatim e resolve o
+-- defeito na origem, com uma unica instrucao.
+--
+-- WHY VARCHAR(80). Maximo dos 4 valores do CHECK da V9_2, medido nas fontes:
+--   GREATER_OF_2X_URGENT_FEE_AND_20PCT_LAST_INVOICE                       47
+--   GREATER_OF_2X_URGENT_FEE_AND_20PCT_FIRST_INVOICE_AFTER_RECONNECTION  67
+--   RECONNECTION_4H_NO_CHARGE                                            25
+--   MANUAL_CREDIT_WITH_APPROVAL                                          27
+-- 80 e o proximo degrau da escada de larguras ja usada nas migrations de
+-- tenant do projeto (60/80/100/120/200; VARCHAR(80) em V4_10 e V6_3):
+-- cobre o valor mais longo com 13 caracteres de folga (~19%), sem saltar
+-- para 100 sem fundamento. O CHECK da V9_2 nao muda: continua a listar os
+-- mesmos 4 valores e segue a ser o guarda do vocabulario.
+--
+-- EXPAND-CONTRACT. Esta migration e so EXPAND: alargar VARCHAR e compativel
+-- para tras (valores <=60 continuam validos; o Postgres nao reescreve a
+-- tabela ao alargar varchar) e nao ha fase CONTRACT: nenhuma coluna,
+-- constraint ou dado e removido, e o CHECK da V9_2 permanece intacto.
+--
+-- NO SEEDED DATA. Nao altera dados existentes.
+-- ============================================================================
+
+ALTER TABLE cutoff_compensations ALTER COLUMN formula TYPE VARCHAR(80);
