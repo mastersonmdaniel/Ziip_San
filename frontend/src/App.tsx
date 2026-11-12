@@ -45,6 +45,10 @@ const Central = lazy(() => import('@pages/platform/Central').then((m) => ({ defa
 const DocumentosFiscais = lazy(() => import('@pages/fiscal/DocumentosFiscais').then((m) => ({ default: m.DocumentosFiscais })))
 const MinhasTarefas = lazy(() => import('@pages/tarefas/MinhasTarefas').then((m) => ({ default: m.MinhasTarefas })))
 const Agenda = lazy(() => import('@pages/agenda/Agenda').then((m) => ({ default: m.Agenda })))
+// Telas II operacionais (P-II2-TELA/P-II5-TELA): rotas aditivas; sem menu
+// porque nenhuma permissão destes núcleos está provada no servidor.
+const ExceptionQueuePage = lazy(() => import('@pages/metering/ExceptionQueuePage').then((m) => ({ default: m.ExceptionQueuePage })))
+const RenewalPlanPage = lazy(() => import('@pages/metering/RenewalPlanPage').then((m) => ({ default: m.RenewalPlanPage })))
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -167,6 +171,8 @@ export function App() {
             dados; fica para a integração resolver a fonte (pendência 3 da
             P3.39). */}
         <Route path="agenda" element={<Agenda />} />
+        <Route path="operacoes/excecoes-leitura" element={<ExceptionQueuePage />} />
+        <Route path="operacoes/plano-troca-hidrometros" element={<RenewalPlanPage planYear={new Date().getFullYear()} />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>
