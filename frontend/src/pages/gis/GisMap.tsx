@@ -20,7 +20,17 @@ import {
   resolveTokenColors,
   type StyleLayerLike,
 } from '@services/gis/mapStyle'
-import { formatArea, formatDistance, pathDistanceM, polygonAreaM2 } from '@utils/measure'
+import {
+  MY_LOCATION_ZOOM,
+  requestMyLocation,
+} from '@services/gis/myLocation'
+import {
+  formatArea,
+  formatDistance,
+  lngLatBounds,
+  pathDistanceM,
+  polygonAreaM2,
+} from '@utils/measure'
 
 /**
  * GIS-06 (§10.3): mapa web de consulta — MapLibre sobre os tiles
@@ -51,6 +61,9 @@ export function GisMap({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
   const [detailError, setDetailError] = useState<string | null>(null)
   const [hits, setHits] = useState<SearchHit[]>([])
   const [searchError, setSearchError] = useState<string | null>(null)
+  const [locating, setLocating] = useState(false)
+  const [myLocationError, setMyLocationError] = useState<string | null>(null)
+  const [myLocationInfo, setMyLocationInfo] = useState<string | null>(null)
 
   const [attributeQuery, setAttributeQuery] = useState('')
   const [addressQuery, setAddressQuery] = useState('')
@@ -236,6 +249,52 @@ export function GisMap({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
     mapRef.current?.flyTo({ center: [hit.lon, hit.lat], zoom: 17 })
   }
 
+  // Minha localização (lacuna E2 do anexo à Rodada 04, Ciclo 1 do
+  // PDCA GIS): centra o mapa na posição do browser. A forma mobile
+  // é esta mesma página no navegador do celular; o app de campo usa
+  // o GNSS próprio (campo/src/gis/gnss.ts), não esta via.
+  async function locateMe() {
+    setLocating(true)
+    setMyLocationError(null)
+    setMyLocationInfo(null)
+    try {
+      const fix = await requestMyLocation(navigator.geolocation)
+      mapRef.current?.flyTo({
+        center: [fix.lng, fix.lat],
+        zoom: MY_LOCATION_ZOOM,
+      })
+      setMyLocationInfo(
+        fix.accuracyM !== null
+          ? `Posição obtida — precisão declarada pelo aparelho: ${formatDistance(fix.accuracyM)}.`
+          : 'Posição obtida — o aparelho não declarou precisão.',
+      )
+    } catch (error) {
+      setMyLocationError(errorMessage(error))
+    } finally {
+      setLocating(false)
+    }
+  }
+
+  // Enquadrar resultados: bounds dos pontos que a pesquisa já
+  // devolveu (as camadas não expõem extensão — ver lngLatBounds).
+  function frameHits() {
+    const map = mapRef.current
+    if (!map || hits.length === 0) return
+    const bounds = lngLatBounds(hits.map((h) => ({ lng: h.lon, lat: h.lat })))
+    if (!bounds) return
+    if (bounds.west === bounds.east && bounds.south === bounds.north) {
+      map.flyTo({ center: [bounds.west, bounds.south], zoom: MY_LOCATION_ZOOM })
+    } else {
+      map.fitBounds(
+        [
+          [bounds.west, bounds.south],
+          [bounds.east, bounds.north],
+        ],
+        { padding: 40, maxZoom: MY_LOCATION_ZOOM },
+      )
+    }
+  }
+
   const groups = new Map<string, NonNullable<typeof layersQuery.data>>()
   for (const layer of layersQuery.data ?? []) {
     const list = groups.get(layer.groupLabel) ?? []
@@ -364,6 +423,15 @@ export function GisMap({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
               </fieldset>
 
               <fieldset>
+                <legend>Localização</legend>
+                <Button onClick={() => void locateMe()} disabled={locating}>
+                  {locating ? 'A localizar…' : 'Minha localização'}
+                </Button>
+                {myLocationInfo && <p>{myLocationInfo}</p>}
+                {myLocationError && <Alert>{myLocationError}</Alert>}
+              </fieldset>
+
+              <fieldset>
                 <legend>Medição</legend>
                 <Button
                   onClick={() => {
@@ -470,6 +538,9 @@ export function GisMap({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
                 <Button type="submit">Pesquisar por UTM</Button>
               </form>
               {searchError && <Alert>{searchError}</Alert>}
+              {hits.length > 0 && (
+                <Button onClick={frameHits}>Enquadrar resultados</Button>
+              )}
               {hits.length > 0 && (
                 <ul aria-label="Resultados da pesquisa">
                   {hits.map((hit) => (

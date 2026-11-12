@@ -46,6 +46,39 @@ export function polygonAreaM2(ring: LngLatPoint[]): number {
   return Math.abs((total * EARTH_RADIUS_M * EARTH_RADIUS_M) / 2)
 }
 
+export interface LngLatBounds {
+  west: number
+  south: number
+  east: number
+  north: number
+}
+
+/**
+ * Extensão (bounding box) de um conjunto de pontos lon/lat — base
+ * do "enquadrar resultados" do mapa web (Ciclo 1 do PDCA GIS).
+ * Pontos não-finitos são ignorados; sem nenhum ponto válido,
+ * devolve null (nada para enquadrar). Nota: as camadas da GIS-06
+ * NÃO expõem extensão própria (GisLayer não tem campo de bounds),
+ * por isso o enquadramento nasce dos pontos que a tela já tem —
+ * "enquadrar na cidade" continua [A DEFINIR] até existir uma fonte
+ * de extensão do tenant.
+ */
+export function lngLatBounds(points: LngLatPoint[]): LngLatBounds | null {
+  let bounds: LngLatBounds | null = null
+  for (const p of points) {
+    if (!Number.isFinite(p.lng) || !Number.isFinite(p.lat)) continue
+    if (!bounds) {
+      bounds = { west: p.lng, south: p.lat, east: p.lng, north: p.lat }
+    } else {
+      bounds.west = Math.min(bounds.west, p.lng)
+      bounds.east = Math.max(bounds.east, p.lng)
+      bounds.south = Math.min(bounds.south, p.lat)
+      bounds.north = Math.max(bounds.north, p.lat)
+    }
+  }
+  return bounds
+}
+
 export function formatDistance(m: number): string {
   if (m < 1000) return `${m.toFixed(1).replace('.', ',')} m`
   return `${(m / 1000).toFixed(3).replace('.', ',')} km`
