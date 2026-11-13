@@ -42,7 +42,14 @@ public class ChargeVersionEntity extends TenantAwareEntity {
     @Column(name = "charge_definition_id", nullable = false)
     private UUID chargeDefinitionId;
 
-    @Column(name = "version", nullable = false)
+    /**
+     * Numero da versao tarifaria (chave de negocio com a definicao).
+     * A coluna chama-se {@code version_number} e nao {@code version}:
+     * {@code version} ja e a coluna do lock optimista herdada de
+     * {@code BaseEntity} — mapear as duas para a mesma coluna impede o
+     * Hibernate de construir a SessionFactory (P-CHARGEVERSION-01).
+     */
+    @Column(name = "version_number", nullable = false)
     private int versionNumber;
 
     @Column(name = "valid_from", nullable = false)

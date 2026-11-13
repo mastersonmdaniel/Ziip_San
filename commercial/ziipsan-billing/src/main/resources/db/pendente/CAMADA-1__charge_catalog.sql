@@ -117,11 +117,17 @@ CREATE INDEX idx_charge_definitions_model ON charge_definitions(tenant_id, calcu
 -- ----------------------------------------------------------------------------
 -- 2. VERSAO DA COBRANCA (valores/parametros + vigencia da versao)
 -- ----------------------------------------------------------------------------
+-- A coluna do numero da versao e version_number (ex-version, renomeada
+-- pela cura P-CHARGEVERSION-01): "version" colide com o lock optimista
+-- herdado de BaseEntity e impede o Hibernate de construir a SessionFactory.
+-- A promocao desta camada para migration versionada TEM de manter
+-- version_number; nenhuma base publicada tem a coluna antiga (a tabela
+-- nunca foi criada por migration publicada).
 CREATE TABLE IF NOT EXISTS charge_versions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID NOT NULL,
     charge_definition_id UUID NOT NULL,
-    version INT NOT NULL CHECK (version >= 1),
+    version_number INT NOT NULL CHECK (version_number >= 1),
     valid_from DATE NOT NULL,
     valid_to DATE,
     calculation_model VARCHAR(40) NOT NULL CHECK (calculation_model IN ('PROGRESSIVE_BY_CONSUMPTION', 'DERIVED_FROM_VOLUME', 'FIXED_PER_UNIT', 'CATALOG_PRICE', 'PERCENT_OF_BASE', 'EXTERNAL_VALUE')),
@@ -175,7 +181,7 @@ CREATE TABLE IF NOT EXISTS charge_versions (
 ALTER TABLE charge_versions DROP CONSTRAINT IF EXISTS uq_charge_versions_tenant_id;
 ALTER TABLE charge_versions ADD CONSTRAINT uq_charge_versions_tenant_id UNIQUE (tenant_id, id);
 ALTER TABLE charge_versions DROP CONSTRAINT IF EXISTS uq_charge_versions_tenant_definition_version;
-ALTER TABLE charge_versions ADD CONSTRAINT uq_charge_versions_tenant_definition_version UNIQUE (tenant_id, charge_definition_id, version);
+ALTER TABLE charge_versions ADD CONSTRAINT uq_charge_versions_tenant_definition_version UNIQUE (tenant_id, charge_definition_id, version_number);
 ALTER TABLE charge_versions DROP CONSTRAINT IF EXISTS fk_charge_versions_definition;
 ALTER TABLE charge_versions ADD CONSTRAINT fk_charge_versions_definition
     FOREIGN KEY (tenant_id, charge_definition_id) REFERENCES charge_definitions(tenant_id, id);
