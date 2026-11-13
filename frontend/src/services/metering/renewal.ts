@@ -69,8 +69,31 @@ export interface RenewalPlanPort {
   buildPayloads(tenantId: string, plan: AnnualPlan): Promise<RenewalOrderPayload[]>
 }
 
+/**
+ * Formata um custo (string decimal do núcleo) em reais (R$, BRL), em pt-BR —
+ * moeda decidida pelo dono (decisão 76, 13/11/2026; P-R41-4-09-MOEDA, Opção A:
+ * R$ em tudo, incluindo o ramo ByBudget de restrictionLabel). null = sem
+ * custo registado ("—"). Valor não numérico é devolvido verbatim, sem
+ * prefixo de moeda — nunca descartado nem apresentado como valor em reais.
+ * Precisão preservada (R41B-R-02): só a parte inteira é agrupada por milhar
+ * e a parte fraccionária é mantida verbatim da string do núcleo — sem passar
+ * por Number, logo sem arredondar nem perder precisão acima de 2^53.
+ * String vazia (ou só-espaços) é valor não numérico, nunca zero.
+ */
+export function formatCost(value: string | null): string {
+  if (value === null) return '—'
+  const match = /^([+-]?)(?:(\d+)(?:\.(\d*))?|\.(\d+))$/.exec(value)
+  if (!match) return value
+  const sign = match[1]
+  const intPart = match[2] ?? '0'
+  const fracPart = match[3] ?? match[4]
+  const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  const formatted = fracPart ? `${sign}${grouped},${fracPart}` : `${sign}${grouped}`
+  return `R$ ${formatted}`
+}
+
 export function restrictionLabel(r: RenewalRestriction): string {
   return r.type === 'ByCount'
     ? `Máximo de ${r.maxReplacements} trocas no ano`
-    : `Orçamento máximo de ${r.maxBudget}`
+    : `Orçamento máximo de ${formatCost(r.maxBudget)}`
 }

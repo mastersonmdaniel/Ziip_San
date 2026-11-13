@@ -5,7 +5,7 @@ import { Button } from '@components/ui/Button'
 import { Card, CardContent } from '@components/ui/Card'
 import { PageHeader } from '@components/ui/PageHeader'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@components/ui/Table'
-import { restrictionLabel, type AnnualPlan, type RenewalOrderPayload, type RenewalPlanPort } from '@services/metering/renewal'
+import { formatCost, restrictionLabel, type AnnualPlan, type RenewalOrderPayload, type RenewalPlanPort } from '@services/metering/renewal'
 
 const CLOCK_LABEL = {
   OVERDUE: 'Verificação vencida', DUE_WITHIN_HORIZON: 'Vence no horizonte',
@@ -25,27 +25,12 @@ const CRITERION_LABEL = {
  * Paridade web↔mobile: mesma página responsiva (tabela com cartões).
  */
 /**
- * Formata um custo (string decimal do núcleo) em pt-BR, sem símbolo de moeda:
- * a moeda NÃO está declarada em nenhuma fonte, por isso a unidade é marcada
- * [A DEFINIR] (pendência nova P-R41-4-09-MOEDA, por definir pelo dono) e nenhum
- * "R$" é assumido. null = sem custo registado ("—"). Valor não numérico é
- * devolvido tal como veio, com a mesma marca — nunca descartado.
- * Precisão preservada (R41B-R-02): só a parte inteira é agrupada por milhar
- * e a parte fraccionária é mantida verbatim da string do núcleo — sem passar
- * por Number, logo sem arredondar nem perder precisão acima de 2^53.
- * String vazia (ou só-espaços) é valor não numérico, nunca zero.
+ * formatCost vive em @services/metering/renewal — fonte única partilhada com
+ * restrictionLabel (ramo ByBudget), para os dois renderem a mesma moeda
+ * (R$, BRL — decisão 76) sem divergir — e é re-exportado aqui para manter
+ * estável o import dos testes desta página.
  */
-export function formatCost(value: string | null): string {
-  if (value === null) return '—'
-  const match = /^([+-]?)(?:(\d+)(?:\.(\d*))?|\.(\d+))$/.exec(value)
-  if (!match) return `${value} [A DEFINIR]`
-  const sign = match[1]
-  const intPart = match[2] ?? '0'
-  const fracPart = match[3] ?? match[4]
-  const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-  const formatted = fracPart ? `${sign}${grouped},${fracPart}` : `${sign}${grouped}`
-  return `${formatted} [A DEFINIR]`
-}
+export { formatCost }
 
 export function RenewalPlanPage({ port, planYear, tenantId }: { port?: RenewalPlanPort; planYear: number; tenantId?: string }) {
   const [plan, setPlan] = useState<AnnualPlan | null>(null)

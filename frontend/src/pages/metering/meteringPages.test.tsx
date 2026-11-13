@@ -98,11 +98,11 @@ describe('P-II5-TELA', () => {
     expect(await screen.findByText('H-001')).toBeTruthy()
     expect(screen.getByText('0.90')).toBeTruthy()
     expect(screen.getByText('Verificação vencida')).toBeTruthy()
-    // R41-4-09: custo formatado em pt-BR, unidade marcada [A DEFINIR]
-    // (P-R41-4-09-MOEDA) e nenhum "R$" assumido.
-    expect(screen.getByText(/Custo total estimado: 600 \[A DEFINIR\]/)).toBeTruthy()
-    expect(screen.getByText('600 [A DEFINIR]')).toBeTruthy()
-    expect(document.body.textContent).not.toContain('R$')
+    // R41-4-09: custo formatado em pt-BR, em reais (R$, BRL) — moeda
+    // decidida pelo dono (decisão 76, 13/11/2026; P-R41-4-09-MOEDA, Opção A).
+    expect(screen.getByText(/Custo total estimado: R\$ 600/)).toBeTruthy()
+    expect(screen.getByText('R$ 600')).toBeTruthy()
+    expect(document.body.textContent).toContain('R$')
     // R41-4-06: a página não rende <main> próprio.
     expect(document.querySelectorAll('main')).toHaveLength(0)
   })
@@ -125,17 +125,17 @@ describe('P-II5-TELA', () => {
     expect(screen.getByText(/desconhecido/)).toBeTruthy()
   })
 })
-describe('R41-4-09 formatCost (custo do plano, sem moeda assumida)', () => {
-  it('formata em pt-BR e marca a unidade [A DEFINIR]; null vira "—"', () => {
-    expect(formatCost('600')).toBe('600 [A DEFINIR]')
-    expect(formatCost('1234.56')).toBe('1.234,56 [A DEFINIR]')
+describe('R41-4-09 formatCost (custo do plano, em reais — decisão 76)', () => {
+  it('formata em pt-BR com R$ (BRL); null vira "—"', () => {
+    expect(formatCost('600')).toBe('R$ 600')
+    expect(formatCost('1234.56')).toBe('R$ 1.234,56')
     expect(formatCost(null)).toBe('—')
-    expect(formatCost('abc')).toBe('abc [A DEFINIR]')
+    expect(formatCost('abc')).toBe('abc')
   })
   it('preserva a precisão da fracção e não inventa zero para string vazia (R41B-R-02)', () => {
-    expect(formatCost('1234.5678')).toBe('1.234,5678 [A DEFINIR]')
-    expect(formatCost('')).toBe(' [A DEFINIR]')
-    expect(formatCost('   ')).toBe('    [A DEFINIR]')
-    expect(formatCost('9007199254740993')).toBe('9.007.199.254.740.993 [A DEFINIR]')
+    expect(formatCost('1234.5678')).toBe('R$ 1.234,5678')
+    expect(formatCost('')).toBe('')
+    expect(formatCost('   ')).toBe('   ')
+    expect(formatCost('9007199254740993')).toBe('R$ 9.007.199.254.740.993')
   })
 })
