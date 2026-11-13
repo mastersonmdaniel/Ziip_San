@@ -114,10 +114,12 @@ export const GENERIC_CORE_ICONS: IconName[] = [
   'chevron-right',
   'eye',
   'eye-off',
+  'layers',
   'list-checks',
   'log-in',
   'map-pin',
   'menu',
+  'palette',
   'users',
 ]
 

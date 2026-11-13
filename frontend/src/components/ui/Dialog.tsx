@@ -50,9 +50,11 @@ import { cn } from '@utils/cn'
  *   fora do painel) e puxado de volta para o primeiro focavel, ou
  *   para o painel se nao houver focaveis.
  * Focavel = button/[href]/input/select/textarea/[tabindex] nao
- * desactivado, sem [hidden] e com tabIndex >= 0 (o painel, com
- * tabIndex=-1, e o refugio — nunca entra na lista). Elementos
- * desactivados ficam fora: nao recebem foco no browser.
+ * desactivado, sem [hidden], com tabIndex >= 0 e visivel por CSS
+ * (R41-4-31: `display`/`visibility` no elemento ou nos ascendentes
+ * ate ao painel; `offsetParent`/rects nao servem — ver `isVisible`).
+ * O painel, com tabIndex=-1, e o refugio — nunca entra na lista.
+ * Elementos desactivados ficam fora: nao recebem foco no browser.
  * O efeito corre uma vez por abertura ([open]): o `onClose` corrente
  * e lido por ref, para uma nova identidade de `onClose` a cada render
  * do pai nao re-disparar o foco inicial a meio da interaccao (a
@@ -73,6 +75,26 @@ export interface DialogProps {
 const FOCUSABLE_SELECTOR =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
+// Visivel por CSS: `display: none` / `visibility: hidden|collapse` no
+// elemento ou em qualquer ascendente ate ao painel (inclusive) esconde o
+// elemento — a visibilidade e herdada e `display: none` no ascendente
+// esconde os descendentes (R41-4-31).
+// Criterio pelo menor impacto: estilo computado, SEM rects nem
+// `offsetParent` — o jsdom (suite vitest) nao faz layout (rects vazios,
+// `offsetParent` sempre null), por isso um criterio por rects excluiria
+// TODOS os focaveis nos testes; e um botao visivel de rect vazio (p.ex.
+// so com icone) nao pode ser excluido no browser real.
+function isVisible(el: HTMLElement, panel: HTMLElement): boolean {
+  let node: HTMLElement | null = el
+  while (node) {
+    const style = getComputedStyle(node)
+    if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse') return false
+    if (node === panel) return true
+    node = node.parentElement
+  }
+  return true
+}
+
 function focusableIn(panel: HTMLElement): HTMLElement[] {
   const nodes = panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
   return Array.from(nodes).filter((el) => {
@@ -80,6 +102,7 @@ function focusableIn(panel: HTMLElement): HTMLElement[] {
     if (el.hasAttribute('hidden')) return false
     if (el.getAttribute('aria-hidden') === 'true') return false
     if (el.tabIndex < 0) return false
+    if (!isVisible(el, panel)) return false
     return true
   })
 }

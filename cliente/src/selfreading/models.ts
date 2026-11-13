@@ -143,17 +143,23 @@ export const REASON_LABELS: Record<SelfReadingReason, string> = {
 /**
  * HumanReviewQueue.pending(): ordem deterministica (competencia,
  * unidade, submissao) — a mesma comparacao da fila Java, sobre strings.
+ *
+ * NOTA DE SINCRONIZACAO (R41-4-26): os rotulos (STATUS_LABELS,
+ * REASON_LABELS), esta ordenacao e os formatadores abaixo sao ESPELHOS
+ * dos records Java donos do contrato — e existem em duplicado no
+ * frontend (`frontend/src/services/metering/selfReading.ts`, mesma
+ * fonte canónica). Sem pacote partilhado entre `cliente/` (template
+ * Capacitor) e `frontend/` (app React), a extracção de um módulo único
+ * exigiria fiação de build nova nos dois lados; por isso o espelho é
+ * deliberado e documentado: qualquer mudança de rótulo/ordem/formato
+ * aplica-se nos DOIS ficheiros (e o formatador de score da página de
+ * revisão vive no serviço do frontend, não na página).
  */
 export function sortReviewQueue(items: SelfReadingOutcome[]): SelfReadingOutcome[] {
   return [...items].sort((a, b) =>
     a.reference.localeCompare(b.reference)
     || a.unitId.localeCompare(b.unitId)
     || a.submissionId.localeCompare(b.submissionId));
-}
-
-/** HumanReviewQueue.enqueue(): so PENDING_HUMAN_REVIEW entra na fila. */
-export function isReviewable(o: SelfReadingOutcome): boolean {
-  return o.status === 'PENDING_HUMAN_REVIEW';
 }
 
 export function formatScore(v: number): string {

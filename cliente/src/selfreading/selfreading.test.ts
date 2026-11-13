@@ -153,6 +153,90 @@ test('PENDING_OCR (IntakeServiceTest sem adaptador): pendencia honesta, sem leit
   assert.match(r.textContent, /Score: sem score/);
 });
 
+test('R41-4-21: precisao GPS vazia com lat/lon NAO vira "perfeita" (0 m) — erro visivel, porta nao chamada; 0 continua valido', async () => {
+  const port = fakePort(ACCEPTED_96);
+  const r = root();
+  screens.renderSelfReading(r as unknown as HTMLElement,
+    { port, config: PROOF_CONFIG, newSubmissionId: () => 'sub-r21' });
+  fillValidForm(r);
+  (r.byId('sr-geo-acc') as FakeEl).value = '';
+  r.buttonByText('Enviar autoleitura').click();
+  await tick();
+  assert.equal(port.calls.length, 0);
+  assert.match(r.textContent, /precisão do GPS/);
+  // Controlo positivo: precisao 0 e valida (GeoProof: >= 0) e segue.
+  (r.byId('sr-geo-acc') as FakeEl).value = '0';
+  r.buttonByText('Enviar autoleitura').click();
+  await tick();
+  assert.equal(port.calls.length, 1);
+  assert.equal(port.calls[0].submission.geoProof?.accuracyMetres, 0);
+});
+
+test('R41-4-22: leitura declarada nao numerica NAO some em silencio — erro visivel, porta nao chamada', async () => {
+  const port = fakePort(ACCEPTED_96);
+  const r = root();
+  screens.renderSelfReading(r as unknown as HTMLElement,
+    { port, config: PROOF_CONFIG, newSubmissionId: () => 'sub-r22' });
+  fillValidForm(r);
+  (r.byId('sr-declared') as FakeEl).value = 'abc';
+  r.buttonByText('Enviar autoleitura').click();
+  await tick();
+  assert.equal(port.calls.length, 0);
+  assert.match(r.textContent, /leitura declarada precisa ser um número válido/i);
+});
+
+test('R41-4-22: leitura anterior nao numerica NAO some em silencio — erro visivel, porta nao chamada', async () => {
+  const port = fakePort(ACCEPTED_96);
+  const r = root();
+  screens.renderSelfReading(r as unknown as HTMLElement,
+    { port, config: PROOF_CONFIG, newSubmissionId: () => 'sub-r22b' });
+  fillValidForm(r);
+  (r.byId('sr-previous') as FakeEl).value = 'doze';
+  r.buttonByText('Enviar autoleitura').click();
+  await tick();
+  assert.equal(port.calls.length, 0);
+  assert.match(r.textContent, /leitura anterior precisa ser um número válido/i);
+});
+
+test('R41-4-23: foto com hash/dimensoes mas sem referencia NAO e descartada em silencio — erro visivel, porta nao chamada', async () => {
+  const port = fakePort(ACCEPTED_96);
+  const r = root();
+  screens.renderSelfReading(r as unknown as HTMLElement,
+    { port, config: PROOF_CONFIG, newSubmissionId: () => 'sub-r23' });
+  fillValidForm(r);
+  (r.byId('sr-photo-ref') as FakeEl).value = '';
+  r.buttonByText('Enviar autoleitura').click();
+  await tick();
+  assert.equal(port.calls.length, 0);
+  assert.match(r.textContent, /foto está incompleta/i);
+});
+
+test('R41-4-24: regiao de resultado do desfecho tem role=status e aria-live=polite', async () => {
+  const port = fakePort(ACCEPTED_96);
+  const r = root();
+  screens.renderSelfReading(r as unknown as HTMLElement,
+    { port, config: PROOF_CONFIG, newSubmissionId: () => 'sub-r24' });
+  fillValidForm(r);
+  r.buttonByText('Enviar autoleitura').click();
+  await tick();
+  const liveDivs = r.querySelectorAll('div')
+    .filter((d) => d.getAttribute('role') === 'status');
+  assert.equal(liveDivs.length, 1);
+  assert.equal(liveDivs[0].getAttribute('aria-live'), 'polite');
+  assert.match(liveDivs[0].textContent, /Score total: 96,00/);
+});
+
+test('R41-4-27: selector do titulo com escopo .selfreading, sem `section h2` global', async () => {
+  const fs = await import('node:fs');
+  const read = (name: string) => fs.readFileSync(new URL(`./${name}`, import.meta.url), 'utf8');
+  const css = read('selfreading.css');
+  const screensSrc = read('screens.ts');
+  assert.ok(!/(^|\n)section h2 \{/.test(css), 'selfreading.css nao pode ter selector global `section h2`');
+  assert.match(css, /\.selfreading h2 \{/);
+  // A section renderizada carrega a classe que o selector exige.
+  assert.match(screensSrc, /s\.setAttribute\('class', 'selfreading'\)/);
+});
+
 test('validacao local: hash invalido bloqueia sem chamar a porta (PhotoArtifact Java)', async () => {
   const port = fakePort(ACCEPTED_96);
   const r = root();
@@ -180,7 +264,7 @@ test('models: validacoes espelham os compactos Java (foto/geo/config/OCR)', () =
   assert.equal(models.validateOcrExtraction({ status: 'NO_READING', reading: null, confidence: null, engineId: 'e' }), null);
 });
 
-test('models: fila de revisao ordena como HumanReviewQueueTest (s1,s2,s3) e so aceita PENDING_HUMAN_REVIEW', () => {
+test('models: fila de revisao ordena como HumanReviewQueueTest (s1,s2,s3)', () => {
   const u1 = '11111111-1111-4111-8111-111111111111';
   const u2 = '22222222-2222-4222-8222-222222222222';
   const s1 = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
@@ -192,8 +276,8 @@ test('models: fila de revisao ordena como HumanReviewQueueTest (s1,s2,s3) e so a
   });
   const sorted = models.sortReviewQueue([mk(s2, u2, '2026-11'), mk(s3, u1, '2026-12'), mk(s1, u1, '2026-11')]);
   assert.deepEqual(sorted.map((o) => o.submissionId), [s1, s2, s3]);
-  assert.equal(models.isReviewable(mk(s1, u1, '2026-11')), true);
-  assert.equal(models.isReviewable({ ...mk(s1, u1, '2026-11'), status: 'PENDING_OCR' }), false);
+  // R41-4-28: isReviewable removida — so existia no teste, sem guarda
+  // consumidora no cliente (ver RELATORIO-grupo-a.md).
 });
 
 test('transporte NAO afirma rota HTTP nem motor OCR (P-II7-FIACAO / P-II7-OCR)', async () => {

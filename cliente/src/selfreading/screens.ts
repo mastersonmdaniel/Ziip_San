@@ -65,10 +65,16 @@ function button(text: string, onClick: () => void): El {
   return b;
 }
 
-function numOrNull(v: string): number | null {
-  if (v.trim() === '') return null;
+/**
+ * Numero opcional com erro visivel (R41-4-22): texto nao numerico NAO
+ * pode virar "ausente" em silencio — o erro volta para a regiao de
+ * estado, como as validacoes de models.ts.
+ */
+function parseOptionalNumber(v: string, label: string): { value: number | null; error: string | null } {
+  if (v.trim() === '') return { value: null, error: null };
   const n = Number(v);
-  return Number.isFinite(n) ? n : null;
+  if (!Number.isFinite(n)) return { value: null, error: `${label} precisa ser um número válido.` };
+  return { value: n, error: null };
 }
 
 function intList(v: string): number[] {
@@ -125,6 +131,9 @@ export interface SelfReadingScreenDeps {
 
 export function renderSelfReading(root: El, deps: SelfReadingScreenDeps): void {
   const s = h('section');
+  // Gancho do escopo do CSS (R41-4-27): `.selfreading h2` em
+  // selfreading.css — sem esta classe o selector nao casaria nada.
+  s.setAttribute('class', 'selfreading');
   const title = h('h2', 'Autoleitura');
   title.setAttribute('tabindex', '-1');
   s.appendChild(title);
@@ -149,6 +158,10 @@ export function renderSelfReading(root: El, deps: SelfReadingScreenDeps): void {
   const connLon = field('Longitude da ligação (opcional)', 'sr-conn-lon', 'number');
   const status = statusRegion();
   const out = h('div');
+  // Regiao de resultado anunciada (R41-4-24): o desfecho renderizado
+  // aqui tem de chegar ao leitor de ecra como o estado (`status`).
+  out.setAttribute('role', 'status');
+  out.setAttribute('aria-live', 'polite');
   for (const f of [unit, reference, declared, previous, history, photoRef, photoHash,
     photoW, photoH, geoLat, geoLon, geoAcc, geoAt, connLat, connLon]) {
     s.appendChild(f.wrap);
@@ -156,14 +169,34 @@ export function renderSelfReading(root: El, deps: SelfReadingScreenDeps): void {
   s.appendChild(status);
   s.appendChild(out);
   s.appendChild(button('Enviar autoleitura', () => {
+    // R41-4-22: texto nao numerico nas leituras opcionais e erro visivel,
+    // nao "ausente" silencioso.
+    const declaredParsed = parseOptionalNumber(declared.input.value, 'A leitura declarada');
+    if (declaredParsed.error) { status.textContent = declaredParsed.error; return; }
+    const previousParsed = parseOptionalNumber(previous.input.value, 'A leitura anterior');
+    if (previousParsed.error) { status.textContent = previousParsed.error; return; }
     const hasPhoto = photoRef.input.value.trim() !== '';
+    // R41-4-23: campos da foto preenchidos sem a referencia descartariam
+    // a foto sem aviso — e erro visivel, nao descarte silencioso.
+    const photoFieldsFilled = [photoRef, photoHash, photoW, photoH]
+      .some((f) => f.input.value.trim() !== '');
+    if (photoFieldsFilled && !hasPhoto) {
+      status.textContent = 'A foto está incompleta: informe a referência da foto ou deixe todos os campos da foto vazios.';
+      return;
+    }
     const hasGeo = geoLat.input.value.trim() !== '' && geoLon.input.value.trim() !== '';
+    // R41-4-21: precisao vazia com lat/lon virava Number('') = 0, isto e,
+    // "perfeita" — e erro visivel (precisao 0 continua valida: GeoProof >= 0).
+    if (hasGeo && geoAcc.input.value.trim() === '') {
+      status.textContent = 'Informe a precisão do GPS em metros.';
+      return;
+    }
     const hasConn = connLat.input.value.trim() !== '' && connLon.input.value.trim() !== '';
     const submission: SelfReadingSubmission = {
       id: deps.newSubmissionId(),
       unitId: unit.input.value.trim(),
       reference: reference.input.value.trim(),
-      declaredReading: numOrNull(declared.input.value),
+      declaredReading: declaredParsed.value,
       photo: hasPhoto
         ? {
           artifactRef: photoRef.input.value.trim(),
@@ -182,7 +215,7 @@ export function renderSelfReading(root: El, deps: SelfReadingScreenDeps): void {
       connectionPosition: hasConn
         ? { latitude: Number(connLat.input.value), longitude: Number(connLon.input.value) }
         : null,
-      previousReading: numOrNull(previous.input.value),
+      previousReading: previousParsed.value,
       history: intList(history.input.value),
     };
     const invalid = validateSubmission(submission) ?? validateScoreConfig(deps.config);

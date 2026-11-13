@@ -224,3 +224,66 @@ describe('Dialog — armadilha de foco (P-TEMA-08)', () => {
     expect(screen.getByRole('button', { name: 'Fechar' })).toHaveFocus()
   })
 })
+
+describe('Dialog — escondidos por CSS fora da circulação (R41-4-31)', () => {
+  // Controlo negativo: se o escondido entrasse na lista, "Activo" seria
+  // o meio (Fechar, Activo, Escondido) e o Tab NAO seria interceptado
+  // (tab() === true). Com a cura, "Activo" e o ultimo visivel e o Tab
+  // circula para "Fechar" (tab() === false).
+  it('botão com display:none não entra na circulação', () => {
+    render(
+      <Dialog open onClose={vi.fn()} title="Display none fora">
+        <button type="button">Activo</button>
+        <button type="button" style={{ display: 'none' }}>
+          Escondido
+        </button>
+      </Dialog>,
+    )
+    const active = screen.getByRole('button', { name: 'Activo' })
+    active.focus()
+    expect(tab()).toBe(false)
+    expect(screen.getByRole('button', { name: 'Fechar' })).toHaveFocus()
+  })
+
+  it('botão com visibility:hidden não entra na circulação', () => {
+    render(
+      <Dialog open onClose={vi.fn()} title="Visibility hidden fora">
+        <button type="button">Activo</button>
+        <button type="button" style={{ visibility: 'hidden' }}>
+          Escondido
+        </button>
+      </Dialog>,
+    )
+    const active = screen.getByRole('button', { name: 'Activo' })
+    active.focus()
+    expect(tab()).toBe(false)
+    expect(screen.getByRole('button', { name: 'Fechar' })).toHaveFocus()
+  })
+
+  it('botão dentro de ascendente com display:none não entra na circulação', () => {
+    render(
+      <Dialog open onClose={vi.fn()} title="Ascendente escondido fora">
+        <button type="button">Activo</button>
+        <div style={{ display: 'none' }}>
+          <button type="button">Escondido</button>
+        </div>
+      </Dialog>,
+    )
+    const active = screen.getByRole('button', { name: 'Activo' })
+    active.focus()
+    expect(tab()).toBe(false)
+    expect(screen.getByRole('button', { name: 'Fechar' })).toHaveFocus()
+  })
+
+  it('com o único focável escondido por CSS, o foco inicial vai para o painel', () => {
+    render(
+      <Dialog open title="Só escondido">
+        <button type="button" style={{ display: 'none' }}>
+          Escondido
+        </button>
+      </Dialog>,
+    )
+    // Zero focaveis efectivos: o foco inicial cai no painel (refugio).
+    expect(screen.getByRole('dialog')).toHaveFocus()
+  })
+})

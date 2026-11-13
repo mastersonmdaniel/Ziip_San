@@ -197,7 +197,7 @@ export function App() {
         <Route path="comercial/tarifa-social" element={<SocialTariffCycle />} />
         <Route path="os/sla" element={<SlaOrders />} />
         {/* P-II7-TELA: fila de revisao humana da autoleitura (rota de executor pela convencao das rotas irmaes; sem menu — permissao nao provada). */}
-        <Route path="operacao/autoleitura/revisao" element={<SelfReadingReview />} />
+        <Route path="operacoes/autoleitura/revisao" element={<SelfReadingReview />} />
 
 
         <Route path="*" element={<NotFound />} />

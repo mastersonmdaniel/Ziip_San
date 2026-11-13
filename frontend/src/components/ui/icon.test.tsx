@@ -17,9 +17,9 @@ import appSource from '../../App.tsx?raw'
  * teste): rota nova sem entrada em ROUTE_ICONS quebra o teste.
  */
 describe('IconRegistry (P0.46)', () => {
-  it('80 icones no registro, cada um com rotulo acessivel em pt-BR', () => {
+  it('82 icones no registro, cada um com rotulo acessivel em pt-BR', () => {
     const names = Object.keys(ICONS) as IconName[]
-    expect(names).toHaveLength(80)
+    expect(names).toHaveLength(82)
     for (const name of names) {
       expect(ICON_LABELS[name], `rotulo de ${name}`).toBeTruthy()
     }

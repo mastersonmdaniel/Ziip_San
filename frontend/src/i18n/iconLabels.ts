@@ -50,6 +50,9 @@ export const ICON_LABELS: Record<IconName, string> = {
   'help-circle': 'Ajuda',
   settings: 'Configuracoes',
   'layout-dashboard': 'Central Ziip',
+  // R41-4-29/30: icones do menu GIS (Layout.tsx:34-37).
+  palette: 'Paleta',
+  layers: 'Camadas',
   // §4.1 acoes
   save: 'Salvar',
   filter: 'Filtrar',

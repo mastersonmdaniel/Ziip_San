@@ -17,6 +17,7 @@ import {
 } from "../../services/gis/changeSets";
 import { SchemaForm } from "./SchemaForm";
 import type { FormField } from "../../services/gis/webEdit";
+import { useCan } from "@hooks/usePermissions";
 import {
   centroid,
   dist,
@@ -241,6 +242,16 @@ function shapeWkt(shape: Pt[]): string {
 }
 
 export function GisWebEditor() {
+  // R41-4-35: guarda client-side de escrita. A escrita GIS vigente e
+  // `gis:import-edit` (GisWebEditRoles.EDIT, backend); gravar em pacote
+  // exige `gis:change-set-edit` (GisChangeSetController.create). Sem
+  // elas o editor e so de consulta: o servidor nega a gravacao com 403,
+  // mas a tela nao deve convidar a editar trabalho que nunca pode ser
+  // gravado. Sem provider, useCan nega tudo (fail-closed) — o editor
+  // nasce so de leitura. A entrada do menu fica visivel: o editor e
+  // tambem a superficie de leitura de `gis:view`.
+  const canEdit = useCan("gis:import-edit");
+  const canSave = useCan("gis:change-set-edit");
   const [tool, setTool] = React.useState<EditTool>("select");
   const [fields, setFields] = React.useState<FormField[]>([]);
   const [values, setValues] = React.useState<Record<string, unknown>>({});
@@ -351,6 +362,8 @@ export function GisWebEditor() {
   // superficie: a area local e o mapa real chamam-no com o
   // ponto ja convertido (e ja com snap, quando aplicavel).
   function pointerDownAt(rawAt: Pt) {
+    // R41-4-35: sem escrita, o rato nao define geometria.
+    if (!canEdit) return;
     const at = rawAt;
     try {
       switch (tool) {
@@ -434,6 +447,8 @@ export function GisWebEditor() {
   // superficie snap no seu espaco), por isso aqui o ponto ja
   // vem final.
   function pointerMoveAt(at: Pt) {
+    // R41-4-35: sem escrita, o arrasto nao move nada.
+    if (!canEdit) return;
     const drag = dragRef.current;
     if (!drag) return;
     try {
@@ -485,6 +500,8 @@ export function GisWebEditor() {
   }
 
   function handleCanvasDoubleClick() {
+    // R41-4-35: sem escrita, o duplo clique nao une arcos.
+    if (!canEdit) return;
     if (tool !== "merge") return;
     if (draft.length < 2) {
       setPreview("Unir arcos: defina ao menos 2 pontos do arco de continuacao com o rato.");
@@ -501,6 +518,8 @@ export function GisWebEditor() {
 
   function handleVertexPointerDown(index: number) {
     return (e: React.PointerEvent<SVGCircleElement>) => {
+      // R41-4-35: sem escrita, a pega do vertice nao arrasta nada.
+      if (!canEdit) return;
       // A pega do vertice tem prioridade sobre o fundo da area de
       // desenho: arrastar a pega move o vertice com o rato.
       e.stopPropagation();
@@ -514,6 +533,11 @@ export function GisWebEditor() {
   // confere o deslocamento que o RATO fez no ultimo arrasto de
   // mover — nao ha deslocamento fixo por botao.
   async function checkOnApi() {
+    // R41-4-35: sem escrita, nao ha deslocamento para conferir.
+    if (!canEdit) {
+      setStatus("Sem a permissão gis:import-edit, a conferência na API está desactivada.");
+      return;
+    }
     if (!layerId) {
       setStatus("Informe o layerId para conferir na API (a guarda D1 exige a camada).");
       return;
@@ -591,6 +615,8 @@ export function GisWebEditor() {
   }
 
   function handleMapMouseDown(e: maplibregl.MapMouseEvent) {
+    // R41-4-35: sem escrita, o mapa nao inicia arrastos.
+    if (!canEdit) return;
     const map = mapRef.current;
     if (!map) return;
     if (tool === "select" || tool === "move") {
@@ -736,6 +762,12 @@ export function GisWebEditor() {
 
   async function saveToChangeSet() {
     if (csSaving) return;
+    // R41-4-35: sem gis:change-set-edit, a gravacao nem e tentada
+    // (o servidor nega-a com 403; o botao ja esta desactivado).
+    if (!canSave) {
+      setCsStatus("Sem a permissão gis:change-set-edit, a gravação em pacote está desactivada.");
+      return;
+    }
     if (!csFeatureId.trim()) {
       setCsStatus(
         "Informe o id da feição (UUID): gravar em pacote exige a feição que esta geometria edita (UPDATE/RETIRE exigem feição existente no servidor).",
@@ -781,6 +813,19 @@ export function GisWebEditor() {
       <header>
         <h1>Editor GIS</h1>
         <p role="status">{status}</p>
+        {!canEdit ? (
+          <p role="status" data-testid="gis-editor-readonly-notice">
+            Só de consulta: sem a permissão gis:import-edit, as ferramentas
+            de edição, a conferência na API e a gravação em pacote estão
+            desactivadas — o servidor nega a gravação sem ela (403).
+          </p>
+        ) : !canSave ? (
+          <p role="status" data-testid="gis-editor-readonly-notice">
+            Sem a permissão gis:change-set-edit, a gravação em pacote está
+            desactivada — o servidor nega-a sem ela (403). A edição local
+            continua disponível.
+          </p>
+        ) : null}
         <p className="gis-skeleton-note">
           Ligado: geometria operada com o rato/toque na superfície
           local e no mapa real (GIS-06), snap a vértices/bordas e
@@ -802,6 +847,7 @@ export function GisWebEditor() {
             key={t.id}
             type="button"
             aria-pressed={tool === t.id}
+            disabled={!canEdit}
             onClick={() => selectTool(t.id)}
           >
             {t.label}
@@ -877,7 +923,7 @@ export function GisWebEditor() {
             placeholder="uuid da camada"
           />
         </label>
-        <button type="button" onClick={checkOnApi}>
+        <button type="button" onClick={checkOnApi} disabled={!canEdit}>
           Conferir na API o deslocamento feito com o rato
         </button>
         {preview ? <p>{preview}</p> : null}
@@ -891,7 +937,7 @@ export function GisWebEditor() {
         </p>
         <label>
           Tabela da feição{" "}
-          <select value={csTable} onChange={(e) => setCsTable(e.target.value)}>
+          <select value={csTable} disabled={!canSave} onChange={(e) => setCsTable(e.target.value)}>
             {CHANGE_SET_FEATURE_TABLES.map((t) => (
               <option key={t} value={t}>{t}</option>
             ))}
@@ -901,6 +947,7 @@ export function GisWebEditor() {
           Operação{" "}
           <select
             value={csOperation}
+            disabled={!canSave}
             onChange={(e) => setCsOperation(e.target.value as "INSERT" | "UPDATE" | "RETIRE")}
           >
             <option value="UPDATE">UPDATE</option>
@@ -910,7 +957,7 @@ export function GisWebEditor() {
         </label>{" "}
         <label>
           Tipo de pacote{" "}
-          <select value={csType} onChange={(e) => setCsType(e.target.value)}>
+          <select value={csType} disabled={!canSave} onChange={(e) => setCsType(e.target.value)}>
             {CHANGE_SET_TYPES.map((t) => (
               <option key={t} value={t}>{t}</option>
             ))}
@@ -920,11 +967,12 @@ export function GisWebEditor() {
           Id da feição{" "}
           <input
             value={csFeatureId}
+            disabled={!canSave}
             onChange={(e) => setCsFeatureId(e.target.value)}
             placeholder="uuid da feição editada"
           />
         </label>{" "}
-        <button type="button" onClick={() => void saveToChangeSet()} disabled={csSaving}>
+        <button type="button" onClick={() => void saveToChangeSet()} disabled={csSaving || !canSave}>
           {csSaving ? "A gravar…" : "Gravar em pacote e submeter a revisão"}
         </button>
         {csStatus ? <p role="status">{csStatus}</p> : null}

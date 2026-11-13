@@ -95,6 +95,25 @@ export const REASON_LABELS: Record<SelfReadingReason, string> = {
 
 export const ALL_REASONS = Object.keys(REASON_LABELS) as SelfReadingReason[]
 
+/**
+ * Formatador de score (2 casas, virgula decimal) — a mesma forma de
+ * `formatScore` de `cliente/src/selfreading/models.ts`.
+ *
+ * NOTA DE SINCRONIZACAO (R41-4-26): os rotulos (STATUS_LABELS,
+ * REASON_LABELS), a ordenacao (sortReviewQueue) e este formatador sao
+ * ESPELHOS dos records Java donos do contrato — e existem em duplicado
+ * no cliente (`cliente/src/selfreading/models.ts`, mesma fonte
+ * canónica). Sem pacote partilhado entre `frontend/` (app React) e
+ * `cliente/` (template Capacitor), a extracção de um módulo único
+ * exigiria fiação de build nova nos dois lados; por isso o espelho é
+ * deliberado e documentado: qualquer mudança de rótulo/ordem/formato
+ * aplica-se nos DOIS ficheiros. Dentro do frontend há UMA só fonte de
+ * cada peça: a página de revisão usa este formatador, sem cópia local.
+ */
+export function formatScore(v: number): string {
+  return v.toFixed(2).replace('.', ',')
+}
+
 /** HumanReviewQueue.pending(): ordem deterministica (competencia, unidade, submissao). */
 export function sortReviewQueue(items: SelfReadingOutcome[]): SelfReadingOutcome[] {
   return [...items].sort(

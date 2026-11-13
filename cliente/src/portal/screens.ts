@@ -371,13 +371,19 @@ export function renderScheduling(root: El, client: PortalClient): void {
 
 // ---- Tela 11: centralizador (ED-22, CentralizerViewService) ----------------
 
+// URL do Blob da ultima exportacao CSV do centralizador (R41-4-32):
+// revogada na exportacao seguinte, para nao vazar um object URL por
+// exportacao. O padrao identico da segunda via em PDF (:154) e
+// pre-existente e fica fora deste ambito (observado, nao curado aqui).
+let lastCentralizerCsvUrl: string | null = null;
+
 export function renderCentralizer(root: El, deps?: CentralizerScreenDeps): void {
   const s = section(root, 'Centralizador e grande cliente');
   const status = statusRegion();
   const list = h('ul');
   const ref = field('Competência (AAAA-MM)', 'cent-reference');
   const out = h('div');
-  s.appendChild(status); s.appendChild(list); s.appendChild(ref.wrap); s.appendChild(out);
+  s.appendChild(status); s.appendChild(list);
   if (!deps) {
     // Sem porta entregue pela fiacao: estado honesto da pendencia
     // P-PORTAL-01 — nenhuma unidade/fatura é exibida sem a porta.
@@ -386,6 +392,11 @@ export function renderCentralizer(root: El, deps?: CentralizerScreenDeps): void 
       + '(pendência P-PORTAL-01 — ecrã e porta tipada entregues).'));
     return;
   }
+  // R41-4-33: o campo de competencia so existe com porta — sem ela era
+  // renderizado inerte (nenhum botao o consumia). O `out` move-se junto
+  // para preservar a ordem DOM exacta (lista, competencia, saida); o
+  // `out` tambem so e usado no ramo com porta (os tres botoes).
+  s.appendChild(ref.wrap); s.appendChild(out);
   const { port, session } = deps;
   const args = (): [string, string, string] => [
     session.tenantId, session.consumerSubject, session.centralizerCustomerId,
@@ -415,7 +426,12 @@ export function renderCentralizer(root: El, deps?: CentralizerScreenDeps): void 
       pre.setAttribute('class', 'portal-csv');
       out.appendChild(pre);
       if (typeof URL.createObjectURL === 'function') {
+        // R41-4-32: revogar a URL da exportacao anterior antes de criar
+        // a nova — a ancora antiga ja saiu do DOM (`out.textContent = ''`
+        // no inicio do handler), por isso nada visivel se quebra.
+        if (lastCentralizerCsvUrl !== null) URL.revokeObjectURL(lastCentralizerCsvUrl);
         const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+        lastCentralizerCsvUrl = url;
         const a = h('a', 'Baixar CSV das unidades');
         a.setAttribute('class', 'portal-action');
         a.setAttribute('href', url);

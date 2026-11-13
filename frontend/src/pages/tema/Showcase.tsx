@@ -5,7 +5,7 @@ import { Button } from '@components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/Card'
 import { Dialog } from '@components/ui/Dialog'
 import { Checkbox, Field, Input, Select, Textarea } from '@components/ui/Field'
-import { Icon } from '@components/ui/Icon'
+import { Icon, type IconName } from '@components/ui/Icon'
 import { PageHeader } from '@components/ui/PageHeader'
 import { Pagination } from '@components/ui/Pagination'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@components/ui/Table'
@@ -133,7 +133,10 @@ export function Showcase() {
             </Field>
             <p>
               Ícone com nome desconhecido (fallback da biblioteca: glifo de recurso marcado, sem partir a página):{' '}
-              <Icon name="icone-que-nao-existe" /> <span>nome "icone-que-nao-existe"</span>
+              {/* R41-4-29/30: o nome e intencionalmente desconhecido (o cast
+                  atravessa o IconName fechado do registo restaurado); o
+                  fallback de runtime (R2-F9) e o que esta linha demonstra. */}
+              <Icon name={'icone-que-nao-existe' as IconName} /> <span>nome "icone-que-nao-existe"</span>
             </p>
           </CardContent>
         </Card>

@@ -23,6 +23,14 @@ export const ROUTE_ICONS: Record<string, IconName> = {
   '/cadastro/catalogos': 'list-checks',
   '/cadastro/catalogos/:tipo': 'list-checks',
   '/gis/catalogo': 'map',
+  // R41-4-30: as 4 rotas GIS do menu (Layout.tsx) com o icone do proprio
+  // item de menu; /gis/change-sets/:id (detalhe por id, sem item de menu)
+  // usa 'clipboard-list' — a pagina lista os itens do pacote em revisao.
+  '/gis': 'map-pin',
+  '/gis/styles': 'palette',
+  '/gis/editor': 'pencil',
+  '/gis/tematicos': 'layers',
+  '/gis/change-sets/:id': 'clipboard-list',
   // P1.12: item de entrega das exportações assíncronas (e, futuramente, dos relatórios da P3.22).
   '/arquivos-gerados': 'download',
   // P1.33: visões salvas da busca global.

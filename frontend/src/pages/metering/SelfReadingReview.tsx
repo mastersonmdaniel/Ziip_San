@@ -11,6 +11,7 @@ import {
   REASON_LABELS,
   STATUS_LABELS,
   filterByReason,
+  formatScore,
   sortReviewQueue,
   type SelfReadingOutcome,
   type SelfReadingReason,
@@ -28,14 +29,10 @@ import {
  * nomeado abaixo; esta tela nao inventa accoes de decisao.
  * Sem porta ligada (fiacao P-II7-FIACAO por fazer), a tela declara a
  * pendencia em vez de fingir dados. Rota: decisao de executor pela
- * convencao das rotas irmaes — /operacao/autoleitura/revisao.
+ * convencao das rotas irmaes — /operacoes/autoleitura/revisao (R41-4-34).
  * Sem entrada de menu: nenhuma permissao deste nucleo esta provada
  * em controlador/pagina da main (pendencia registada no relatorio).
  */
-
-function fmtScore(v: number): string {
-  return v.toFixed(2).replace('.', ',')
-}
 
 function OutcomeDetail({ item }: { item: SelfReadingOutcome }) {
   return (
@@ -52,11 +49,11 @@ function OutcomeDetail({ item }: { item: SelfReadingOutcome }) {
         <p>Score: sem score (não houve leitura extraída).</p>
       ) : (
         <>
-          <p>Score total: {fmtScore(item.score.total)}</p>
-          <p>Componente OCR: {fmtScore(item.score.ocrComponent)}</p>
-          <p>Componente de coerência: {fmtScore(item.score.coherenceComponent)}</p>
-          <p>Componente da foto: {fmtScore(item.score.photoComponent)}</p>
-          <p>Componente geográfica: {fmtScore(item.score.geoComponent)}</p>
+          <p>Score total: {formatScore(item.score.total)}</p>
+          <p>Componente OCR: {formatScore(item.score.ocrComponent)}</p>
+          <p>Componente de coerência: {formatScore(item.score.coherenceComponent)}</p>
+          <p>Componente da foto: {formatScore(item.score.photoComponent)}</p>
+          <p>Componente geográfica: {formatScore(item.score.geoComponent)}</p>
         </>
       )}
       {item.geo.present ? (
@@ -160,7 +157,7 @@ export function SelfReadingReview({ port }: { port?: SelfReadingReviewPort }) {
                         ))}
                       </TableCell>
                       <TableCell label="Score">
-                        {item.score === null ? 'sem score' : fmtScore(item.score.total)}
+                        {item.score === null ? 'sem score' : formatScore(item.score.total)}
                       </TableCell>
                       <TableCell label="Detalhe">
                         <Button onClick={() => setSelectedId(item.submissionId)}>
@@ -172,7 +169,13 @@ export function SelfReadingReview({ port }: { port?: SelfReadingReviewPort }) {
                 </TableBody>
               </Table>
               {visible.length === 0 ? <p>Nenhuma submissão neste filtro.</p> : null}
-              {selected && <OutcomeDetail item={selected} />}
+              {selected && (
+                <>
+                  <OutcomeDetail item={selected} />
+                  {/* R41-4-25: o detalhe tem de fechar sem obrigar a escolher outra linha. */}
+                  <Button onClick={() => setSelectedId(null)}>Fechar detalhe</Button>
+                </>
+              )}
             </>
           )}
         </CardContent>

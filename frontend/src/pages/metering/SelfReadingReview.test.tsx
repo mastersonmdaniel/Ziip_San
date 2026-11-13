@@ -1,9 +1,12 @@
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { renderWithProviders } from '../../test/render'
 import { SelfReadingReview } from './SelfReadingReview'
-import type { SelfReadingOutcome, SelfReadingReviewPort } from '@services/metering/selfReading'
+import { formatScore, type SelfReadingOutcome, type SelfReadingReviewPort } from '@services/metering/selfReading'
 
 /**
  * Fixtures das suites Java do nucleo (fonte nomeada):
@@ -71,6 +74,28 @@ describe('Autoleitura — revisão humana (P-II7-TELA)', () => {
     expect(screen.getByText(/P-II7-FIACAO/)).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Aceitar' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Corrigir' })).not.toBeInTheDocument()
+  })
+
+  it('R41-4-25: detalhe tem botão "Fechar detalhe" que fecha o detalhe', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<SelfReadingReview port={portWith([LOW_SCORE])} />)
+    await screen.findByText(S1)
+    await user.click(screen.getByRole('button', { name: 'Ver detalhe' }))
+    expect(await screen.findByText(/Score total: 57,50/)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Fechar detalhe' }))
+    expect(screen.queryByText(/Score total: 57,50/)).not.toBeInTheDocument()
+  })
+
+  it('R41-4-26: formatador de score vive no serviço (sem cópia local na página)', () => {
+    expect(formatScore(57.5)).toBe('57,50')
+    expect(formatScore(96)).toBe('96,00')
+  })
+
+  it('R41-4-34: rota da revisão usa o prefixo operacoes/ (convenção das rotas irmãs)', () => {
+    const here = path.dirname(fileURLToPath(import.meta.url))
+    const appSrc = fs.readFileSync(path.join(here, '..', '..', 'App.tsx'), 'utf8')
+    expect(appSrc).toContain('path="operacoes/autoleitura/revisao"')
+    expect(appSrc).not.toContain('operacao/autoleitura/revisao')
   })
 
   it('filtro por motivo PHOTO_MISSING reduz a fila e vazio e declarado', async () => {

@@ -392,6 +392,36 @@ test('centralizador: CSV exibido e EXACTAMENTE o da porta, com link de descarga'
   assert.equal(links[0].getAttribute('download'), 'unidades-centralizador.csv');
 });
 
+test('centralizador: segunda exportacao CSV revoga a URL da anterior (R41-4-32)', async () => {
+  // Controlo negativo: sem a cura, nenhuma URL seria revogada e cada
+  // exportacao vazaria um object URL. A assercao usa inclusao (nao
+  // igualdade estrita da lista): o modulo guarda UMA url anterior, e um
+  // teste anterior deste ficheiro ja exportou uma vez.
+  const created: string[] = [];
+  const revoked: string[] = [];
+  const origCreate = URL.createObjectURL;
+  const origRevoke = URL.revokeObjectURL;
+  URL.createObjectURL = (blob: Blob | MediaSource) => {
+    const u = origCreate(blob);
+    created.push(u);
+    return u;
+  };
+  URL.revokeObjectURL = (u: string) => { revoked.push(u); origRevoke(u); };
+  try {
+    const { port } = fakeCentralizerPort();
+    const r = root();
+    screens.renderCentralizer(r as unknown as HTMLElement, { port, session: CENT_SESSION });
+    r.buttonByText('Exportar unidades (CSV)').click(); await tick();
+    r.buttonByText('Exportar unidades (CSV)').click(); await tick();
+    assert.equal(created.length, 2, 'duas exportacoes criam duas URLs');
+    assert.ok(revoked.includes(created[0]), 'a URL da 1a exportacao foi revogada na 2a');
+    assert.ok(!revoked.includes(created[1]), 'a URL da 2a exportacao continua valida');
+  } finally {
+    URL.createObjectURL = origCreate;
+    URL.revokeObjectURL = origRevoke;
+  }
+});
+
 test('centralizador: fatura agrupada — competencia como 5o argumento e 4 campos renderizados', async () => {
   const { port, calls } = fakeCentralizerPort();
   const r = root();
@@ -449,6 +479,21 @@ test('centralizador sem porta da fiacao: estado honesto [A DEFINIR] e nenhuma op
   assert.match(r.textContent, /rota HTTP \[A DEFINIR\]/);
   assert.match(r.textContent, /P-PORTAL-01/);
   assert.equal(r.querySelectorAll('button').length, 0);
+});
+
+test('centralizador sem porta: campo de competencia NAO e renderizado (R41-4-33)', () => {
+  // Controlo negativo: antes da cura o campo existia sem porta, inerte
+  // (nenhum botao o consumia).
+  const r = root();
+  screens.renderCentralizer(r as unknown as HTMLElement);
+  assert.equal(r.byId('cent-reference'), null);
+});
+
+test('centralizador com porta: campo de competencia renderizado (R41-4-33)', () => {
+  const { port } = fakeCentralizerPort();
+  const r = root();
+  screens.renderCentralizer(r as unknown as HTMLElement, { port, session: CENT_SESSION });
+  assert.ok(r.byId('cent-reference'), 'campo presente no ramo com porta');
 });
 
 test('models centralizador: validadores espelham requireAccess e groupedBill do service', () => {

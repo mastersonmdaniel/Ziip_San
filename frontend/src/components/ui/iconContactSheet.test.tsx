@@ -52,7 +52,7 @@ describe('IconContactSheet (P1.29)', () => {
 
   it('nenhum nome do registro fica fora da folha, exceto os genericos da P0.46', () => {
     const inSheet = new Set<string>(ICON_SECTIONS.flatMap((section) => Object.values(section.icons)))
-    const generic = ['building-2', 'chevron-left', 'chevron-right', 'eye', 'eye-off', 'list-checks', 'log-in', 'map-pin', 'menu', 'users']
+    const generic = ['building-2', 'chevron-left', 'chevron-right', 'eye', 'eye-off', 'layers', 'list-checks', 'log-in', 'map-pin', 'menu', 'palette', 'users']
     expect(Object.keys(ICONS).filter((name) => !inSheet.has(name)).sort()).toEqual(generic.sort())
   })
 })
