@@ -1,5 +1,5 @@
 /**
- * P-II2-TELA — porta tipada da fila de excepções e crítica de leituras.
+ * P-II2-TELA — porta tipada da fila de exceções e crítica de leituras.
  * Espelha campo a campo os records do núcleo Java
  * operations/ziipsan-metering/.../metering/critique/ (lidos na main):
  *   CritiqueException.java (unitId, reference, findings, status, correctedReading)
@@ -77,16 +77,4 @@ export function allowedTransitions(s: ExceptionStatus): ExceptionStatus[] {
   if (s === 'PENDING') return ['ACCEPTED', 'CORRECTED', 'REREADING_REQUESTED']
   if (s === 'REREADING_REQUESTED') return ['CORRECTED', 'ACCEPTED']
   return []
-}
-/**
- * Estimativa VEE local (pré-visualização pura, mesma regra de VeeEstimator):
- * histórico vazio recusa — estimar sem base seria inventar consumo.
- */
-export function estimateVee(history: number[], method: EstimationMethod): number {
-  if (history.length === 0) throw new Error('estimacao VEE sem historico: nenhum consumo para estimar')
-  if (method === 'LAST_VALID') return history[history.length - 1]
-  if (method === 'HISTORICAL_MEAN') return Math.round(history.reduce((a, b) => a + b, 0) / history.length)
-  const sorted = [...history].sort((a, b) => a - b)
-  const mid = Math.floor(sorted.length / 2)
-  return sorted.length % 2 === 1 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2)
 }

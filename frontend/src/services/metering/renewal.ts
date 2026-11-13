@@ -1,5 +1,5 @@
 /**
- * P-II5-TELA — porta tipada do plano anual de troca de hidrómetros.
+ * P-II5-TELA — porta tipada do plano anual de troca de hidrômetros.
  * Espelha os records de operations/ziipsan-metering/.../hydrometry/renewal/:
  *   AnnualRenewalPlan.java (AnnualPlan, PlanLine, RenewalRestriction,
  *     RenewalCandidate), MeterRenewalSnapshot.java (+ MeterParkStatus),
@@ -25,7 +25,7 @@ export interface MeterRenewalSnapshot {
   installedOn: string | null; manufactureYear: number | null
   totalizedVolumeM3: number; accuracyClass: number; technologyKey: string
   lastVerificationOn: string | null
-  /** null enquanto a base não expuser qualidade da água por hidrómetro. */
+  /** null enquanto a base não expuser qualidade da água por hidrômetro. */
   waterQualityAggressiveness: string | null
   replacementCost: string | null
 }
@@ -74,5 +74,3 @@ export function restrictionLabel(r: RenewalRestriction): string {
     ? `Máximo de ${r.maxReplacements} trocas no ano`
     : `Orçamento máximo de ${r.maxBudget}`
 }
-/** Só INSTALLED é elegível (AnnualRenewalPlan.build). */
-export function isEligibleStatus(s: MeterParkStatus): boolean { return s === 'INSTALLED' }

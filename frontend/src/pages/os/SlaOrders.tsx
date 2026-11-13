@@ -4,15 +4,71 @@ import { Badge } from '@components/ui/Badge'
 import { Button } from '@components/ui/Button'
 import { Card, CardContent } from '@components/ui/Card'
 import { PageHeader } from '@components/ui/PageHeader'
+import { formatDate } from '@utils/labels'
 import {
   isPcrComplete,
   type CloseRefusal,
+  type CloseRefusalKind,
+  type DeadlineKind,
+  type DeadlineState,
   type PcrCatalogState,
   type ProblemCauseRemedy,
+  type ServiceOrderStatus,
+  type SlaEventKind,
   type SlaOrderView,
   type SlaOsPort,
   type TypeSlaConfig,
 } from '@services/os/slaOs'
+
+/** Rótulos pt-BR dos códigos de enumeração da tela (padrão STATUS_LABEL). */
+const ORDER_STATUS_LABEL: Record<ServiceOrderStatus, string> = {
+  DRAFT: 'Rascunho',
+  OPEN: 'Aberta',
+  SCHEDULED: 'Agendada',
+  IN_EXECUTION: 'Em execução',
+  EXECUTED: 'Executada',
+  WAITING_DEPENDENCY: 'Aguardando dependência',
+  PENDING_APPROVAL: 'Aguardando aprovação',
+  CLOSED_EXECUTED: 'Encerrada — executada',
+  CLOSED_NOT_EXECUTED: 'Encerrada — não executada',
+}
+
+const DEADLINE_STATE_LABEL: Record<DeadlineState, string> = {
+  WITHIN: 'Dentro do prazo',
+  AT_RISK: 'Em risco',
+  BREACHED: 'Prazo vencido',
+  NOT_CONFIGURED: 'Não configurado',
+}
+
+const DEADLINE_KIND_LABEL: Record<DeadlineKind, string> = {
+  INTERNAL: 'interno',
+  REGULATOR: 'regulador',
+}
+
+const EVENT_KIND_LABEL: Record<SlaEventKind, string> = {
+  RISK_ALERT: 'Alerta de risco',
+  BREACH: 'Prazo vencido',
+  ESCALATED: 'Escalonada',
+}
+
+const REFUSAL_LABEL: Record<CloseRefusalKind, string> = {
+  ORDER_NOT_EXECUTED: 'Ordem não executada',
+  MISSING_PHOTOS: 'Fotos em falta',
+  MISSING_CHECKLIST_ITEM: 'Item de checklist em falta',
+  MISSING_DOCUMENT: 'Documento em falta',
+  MISSING_PROBLEM_CAUSE_REMEDY: 'Problema, causa e remédio em falta',
+  INVALID_PROBLEM_CAUSE_REMEDY: 'Problema, causa e remédio inválidos',
+}
+
+/** Segundos decorridos → "Xd Xh", "Xh Ymin" ou "Xmin". */
+function formatElapsed(seconds: number): string {
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}min`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ${minutes % 60}min`
+  const days = Math.floor(hours / 24)
+  return `${days}d ${hours % 24}h`
+}
 
 /**
  * P-II4-TELA — SLA e exigências de encerramento das ordens de serviço.
@@ -172,16 +228,23 @@ export function SlaOrders({ port }: { port?: SlaOsPort }) {
             <ul>
               {orders.map((o) => (
                 <li key={o.orderId}>
-                  {o.orderId} — {o.typeCode} — {o.status} — interno:{' '}
-                  <Badge>{o.assessment.internal.state}</Badge> · regulador:{' '}
-                  <Badge>{o.assessment.regulator.state}</Badge> · nível de escalonamento{' '}
-                  {o.escalationLevel}
+                  {o.orderId} — {o.typeCode} — {ORDER_STATUS_LABEL[o.status] ?? o.status} —
+                  aberta em {formatDate(o.openedAt)} — interno:{' '}
+                  <Badge>{DEADLINE_STATE_LABEL[o.assessment.internal.state] ?? o.assessment.internal.state}</Badge>{' '}
+                  (vencimento {formatDate(o.assessment.internal.dueAtOrNull)} · decorrido{' '}
+                  {formatElapsed(o.assessment.internal.elapsedSeconds)}) · regulador:{' '}
+                  <Badge>{DEADLINE_STATE_LABEL[o.assessment.regulator.state] ?? o.assessment.regulator.state}</Badge>{' '}
+                  (vencimento {formatDate(o.assessment.regulator.dueAtOrNull)} · decorrido{' '}
+                  {formatElapsed(o.assessment.regulator.elapsedSeconds)}) · nível de
+                  escalonamento {o.escalationLevel}
                   <ul>
                     {o.events.map((ev, i) => (
                       <li key={`${o.orderId}-${i}`}>
-                        {ev.kind}
-                        {ev.deadlineOrNull ? ` — ${ev.deadlineOrNull}` : ''} — nível{' '}
-                        {ev.escalationLevel} — {ev.at}
+                        {EVENT_KIND_LABEL[ev.kind] ?? ev.kind}
+                        {ev.deadlineOrNull
+                          ? ` — prazo ${DEADLINE_KIND_LABEL[ev.deadlineOrNull]}`
+                          : ''}{' '}
+                        — nível {ev.escalationLevel} — {ev.at}
                       </li>
                     ))}
                   </ul>
@@ -201,7 +264,7 @@ export function SlaOrders({ port }: { port?: SlaOsPort }) {
                 <ul>
                   {refusals.map((r, i) => (
                     <li key={`${r.kind}-${i}`}>
-                      {r.kind}: {r.detail}
+                      {REFUSAL_LABEL[r.kind] ?? r.kind}: {r.detail}
                     </li>
                   ))}
                 </ul>

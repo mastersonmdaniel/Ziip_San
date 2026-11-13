@@ -7,8 +7,11 @@ import {
   calculateBurnRate,
   daysToExhaustion,
   hasForbiddenLabel,
+  isProcessMetric,
   tierFor,
+  unavailableObservabilityPort,
   validateLabels,
+  validateLiveSeries,
   type SloDefinition,
 } from './observabilityPanels'
 
@@ -66,7 +69,7 @@ describe('calculateBurnRate — BurnRateCalculatorTest do núcleo Java', () => {
     expect(r.remainingFraction).toBeCloseTo(-1.5, 12)
   })
 
-  it('no ritmo exacto do SLO: 10 ruins em 10.000 → burn 1,0 e orçamento 100% consumido', () => {
+  it('no ritmo exato do SLO: 10 ruins em 10.000 → burn 1,0 e orçamento 100% consumido', () => {
     const r = calculateBurnRate(SLO_999, 10_000, 10)
     expect(r.burnRate).toBeCloseTo(1.0, 12)
     expect(r.consumedFraction).toBeCloseTo(1.0, 12)
@@ -105,5 +108,62 @@ describe('catálogos II-8 (documentos)', () => {
     ])
     expect(EXECUTABLE_ALERT_RULES[0]).toMatchObject({ metricKey: 'platform.collector.last_run_age_s', threshold: 900, severity: 'CRITICAL' })
     expect(EXECUTABLE_ALERT_RULES[1]).toMatchObject({ metricKey: 'platform.outbox.oldest_pending_age_s', threshold: 1800, consecutiveReadings: 3 })
+  })
+})
+
+describe('validateLiveSeries — R41-4-15', () => {
+  it('as constantes RED_USE_METRIC_NAMES / METRIC_OUTCOMES são usadas: série de processo conforme passa', () => {
+    expect(isProcessMetric('ziipsan_billing_batch_items_total')).toBe(true)
+    expect(isProcessMetric('ziipsan_billing_batch_duration_seconds')).toBe(true)
+    expect(isProcessMetric('ziipsan_field_sync_items_total')).toBe(true)
+    expect(isProcessMetric('http.server.requests')).toBe(false)
+    expect(
+      validateLiveSeries({
+        metricName: 'ziipsan_billing_batch_items_total',
+        labels: { outcome: 'SUCCESS' },
+        currentValue: 42,
+      }),
+    ).toEqual([])
+  })
+
+  it('timer de duração não leva rótulos: sem outcome, conforme (definição do Java)', () => {
+    expect(
+      validateLiveSeries({ metricName: 'ziipsan_billing_batch_duration_seconds', labels: {}, currentValue: 1.5 }),
+    ).toEqual([])
+  })
+
+  it('contador de itens sem o rótulo outcome é problema', () => {
+    expect(
+      validateLiveSeries({ metricName: 'ziipsan_field_sync_items_total', labels: {}, currentValue: 7 }),
+    ).toEqual(['métrica de processo ziipsan_field_sync_items_total sem o rótulo outcome'])
+  })
+
+  it('outcome fora do vocabulário fechado SUCCESS|FAILURE é problema', () => {
+    expect(
+      validateLiveSeries({
+        metricName: 'ziipsan_billing_batch_items_total',
+        labels: { outcome: 'PARTIAL' },
+        currentValue: 3,
+      }),
+    ).toEqual(['outcome fora do vocabulário fechado (SUCCESS|FAILURE): PARTIAL'])
+  })
+
+  it('rótulo proibido na série é problema (via validateLabels)', () => {
+    expect(
+      validateLiveSeries({ metricName: 'http.server.requests', labels: { uc_id: 'x' }, currentValue: 1 }),
+    ).toEqual(['rótulo uc_id: FORBIDDEN'])
+  })
+
+  it('série mal formada (nome vazio) é problema listado, nunca exceção lançada', () => {
+    const problems = validateLiveSeries({ metricName: '', labels: {}, currentValue: null })
+    expect(problems.length).toBeGreaterThan(0)
+    expect(problems[0]).toMatch(/obrigatório/)
+  })
+})
+
+describe('porta por omissão — R41-4-16', () => {
+  it('sem fiação, séries E burn rate devolvem null (estado vazio honesto)', async () => {
+    expect(await unavailableObservabilityPort.liveSeries()).toBeNull()
+    expect(await unavailableObservabilityPort.burnRateInputs?.()).toBeNull()
   })
 })

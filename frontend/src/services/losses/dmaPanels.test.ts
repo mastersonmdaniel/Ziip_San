@@ -5,6 +5,7 @@ import {
   analyzeNightFlow,
   calculateBalance,
   rankDmcs,
+  resolveNightWindow,
   NIGHT_WINDOW_DEFAULT,
   type DmcPeriodInputs,
   type FlowSample,
@@ -43,7 +44,7 @@ function inputs(
   }
 }
 
-describe('decimal exacto (BigDecimal)', () => {
+describe('decimal exato (BigDecimal)', () => {
   it('soma, subtrai e multiplica sem erro de float e com a escala do BigDecimal', () => {
     expect(decToString(decAdd(dec('0.1'), dec('0.2')))).toBe('0.3')
     expect(decToString(decSub(dec('10000.50'), dec('500.25')))).toBe('9500.25')
@@ -53,7 +54,7 @@ describe('decimal exacto (BigDecimal)', () => {
 })
 
 describe('calculateBalance — ExactWaterBalanceTest do núcleo Java', () => {
-  it('balanço calculado à mão é exacto (DMC-A da suite Java)', () => {
+  it('balanço calculado à mão é exato (DMC-A da suite Java)', () => {
     const b = calculateBalance(inputs('DMC-A', '10000.50', '500.25', '6000.10', '300', '200.05', '500.05'))
     expect(b.netInputM3).toBe('9500.25')
     expect(b.billedTotalM3).toBe('6300.10')
@@ -80,7 +81,7 @@ describe('calculateBalance — ExactWaterBalanceTest do núcleo Java', () => {
 })
 
 describe('aggregateBalance — ExactWaterBalanceTest do núcleo Java', () => {
-  it('agrega somando exactamente e exige exactamente os DMCs da definição', () => {
+  it('agrega somando exatamente e exige exatamente os DMCs da definição', () => {
     const a = calculateBalance(inputs('DMC-A', '10000.50', '500.25', '6000.10', '300', '200.05', '500.05'))
     const b = calculateBalance(inputs('DMC-B', '2000', '0', '1000', '0', '100', '50'))
     const definition = { dmaCode: 'DMA-1', sectorCode: 'SETOR-1', memberDmcCodes: ['DMC-A', 'DMC-B'] }
@@ -89,7 +90,7 @@ describe('aggregateBalance — ExactWaterBalanceTest do núcleo Java', () => {
     expect(agg.netInputM3).toBe('11500.25')
     expect(agg.totalLossesM3).toBe('3900.10')
     expect(agg.realLossesM3).toBe('3350.05')
-    expect(() => aggregateBalance(definition, [a])).toThrow(/exactamente/)
+    expect(() => aggregateBalance(definition, [a])).toThrow(/exatamente/)
   })
 
   it('perda real do agregado ausente quando algum membro não conhece as aparentes', () => {
@@ -115,7 +116,7 @@ function fullNight(): FlowSample[] {
 }
 
 describe('analyzeNightFlow — MinimumNightFlowTest do núcleo Java', () => {
-  it('mínimo nocturno conhecido é exacto e a líquida subtrai o legítimo (4200 − 1,70×1000 = 2500)', () => {
+  it('mínimo noturno conhecido é exato e a líquida subtrai o legítimo (4200 − 1,70×1000 = 2500)', () => {
     const r = analyzeNightFlow(fullNight(), NIGHT_WINDOW_DEFAULT, 30, '1.70', 1000)
     expect(r.status).toBe('COMPLETE')
     expect(r.minimumNightFlowLPerH).toBe('4200.00')
@@ -159,6 +160,31 @@ describe('analyzeNightFlow — MinimumNightFlowTest do núcleo Java', () => {
   })
 })
 
+describe('resolveNightWindow — R41-4-17', () => {
+  it('sem janela na fonte, vale o padrão NOMEADO do aceite da ED-85 (02:00–04:00)', () => {
+    expect(resolveNightWindow(undefined)).toEqual({ start: '02:00', end: '04:00' })
+    expect(resolveNightWindow(null)).toEqual(NIGHT_WINDOW_DEFAULT)
+  })
+
+  it('janela declarada pela fonte passa intacta', () => {
+    expect(resolveNightWindow({ start: '01:00', end: '05:00' })).toEqual({ start: '01:00', end: '05:00' })
+  })
+})
+
+describe('analyzeNightFlow — R41-4-18', () => {
+  it('janela invertida (04:00–02:00) RECUSA com erro visível — nunca INCOMPLETE_COVERAGE silencioso', () => {
+    expect(() => analyzeNightFlow(fullNight(), { start: '04:00', end: '02:00' }, 30, null, 1000)).toThrow(
+      /janela noturna invertida/,
+    )
+  })
+
+  it('janela vazia (02:00–02:00) RECUSA com erro visível', () => {
+    expect(() => analyzeNightFlow(fullNight(), { start: '02:00', end: '02:00' }, 30, null, 1000)).toThrow(
+      /janela noturna invertida/,
+    )
+  })
+})
+
 /** DmcReturnRankingTest.fixture do núcleo Java. */
 function rankingFixture(): RankingEntry[] {
   return [
@@ -179,7 +205,7 @@ describe('rankDmcs — DmcReturnRankingTest do núcleo Java', () => {
     expect(r.ranked[0]?.position).toBe(1)
   })
 
-  it('com tarifa declarada, o índice é o produto exacto (2000 × 7,50 = 15000,00)', () => {
+  it('com tarifa declarada, o índice é o produto exato (2000 × 7,50 = 15000,00)', () => {
     const r = rankDmcs(rankingFixture(), '7.50')
     expect(r.mode).toBe('TARIFF_WEIGHTED')
     expect(r.ranked.map((x) => x.dmcCode)).toEqual(['DMC-C', 'DMC-A', 'DMC-B', 'DMC-D'])

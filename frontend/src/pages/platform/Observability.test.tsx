@@ -63,5 +63,57 @@ describe('Observability (P-II8-TELA)', () => {
     expect(await screen.findByText('ziipsan_billing_batch_items_total')).toBeInTheDocument()
     expect(screen.getByText('42')).toBeInTheDocument()
     expect(screen.getByText(/outcome=SUCCESS/)).toBeInTheDocument()
+    expect(screen.getByText('conforme')).toBeInTheDocument()
+  })
+
+  it('séries vivas: outcome fora do vocabulário fechado é marcado na coluna de validação (R41-4-15)', async () => {
+    const user = userEvent.setup()
+    const port: ObservabilityPort = {
+      liveSeries: () =>
+        Promise.resolve([
+          { metricName: 'ziipsan_billing_batch_items_total', labels: { outcome: 'PARTIAL' }, currentValue: 3 },
+        ]),
+    }
+    render(<Observability port={port} />)
+    await screen.findByText(/Disponibilidade da API/)
+    await user.click(screen.getByRole('tab', { name: 'Séries vivas' }))
+    expect(await screen.findByText(/outcome fora do vocabulário fechado \(SUCCESS\|FAILURE\): PARTIAL/)).toBeInTheDocument()
+  })
+
+  it('burn rate sem dados: porta por omissão mostra o residual explicitamente (R41-4-16)', async () => {
+    const user = userEvent.setup()
+    render(<Observability />)
+    await screen.findByText(/Disponibilidade da API/)
+    await user.click(screen.getByRole('tab', { name: 'Alertas e burn rate' }))
+    expect(await screen.findByText(/Sem dados de burn rate/)).toBeInTheDocument()
+    expect(screen.getByText(/nenhum alvo numérico está ratificado/)).toBeInTheDocument()
+    expect(screen.getByText(/P-II8-FIACAO/)).toBeInTheDocument()
+  })
+
+  it('burn rate com a porta fiada: calcula e mostra tier (R41-4-16)', async () => {
+    const user = userEvent.setup()
+    const port: ObservabilityPort = {
+      liveSeries: () => Promise.resolve(null),
+      burnRateInputs: () =>
+        Promise.resolve([
+          {
+            sloId: 'SLO-1',
+            slo: { name: 'api.availability', targetPercent: 99.9, windowDays: 30 },
+            shortWindow: { totalEvents: 100_000, badEvents: 250 },
+            longWindow: { totalEvents: 10_000, badEvents: 5 },
+            elapsedDays: 10,
+          },
+        ]),
+    }
+    render(<Observability port={port} />)
+    await screen.findByText(/Disponibilidade da API/)
+    await user.click(screen.getByRole('tab', { name: 'Alertas e burn rate' }))
+    // Curta: 250/100000 com SLO 99,9% → burn 2,50; longa: 5/10000 → burn 0,50; tier NONE;
+    // orçamento consumido 50,0%; dias até esgotar 10,0.
+    expect(await screen.findByText('2.50')).toBeInTheDocument()
+    expect(screen.getByText('0.50')).toBeInTheDocument()
+    expect(screen.getByText('NONE')).toBeInTheDocument()
+    expect(screen.getByText('50.0%')).toBeInTheDocument()
+    expect(screen.getByText('10.0')).toBeInTheDocument()
   })
 })

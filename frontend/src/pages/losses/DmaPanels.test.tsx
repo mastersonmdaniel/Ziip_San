@@ -59,7 +59,7 @@ describe('DmaPanels (P-II6-TELA)', () => {
     expect(screen.getByText(/nenhuma rota HTTP/i)).toBeInTheDocument()
   })
 
-  it('com a porta fiada às fixtures Java, mostra o balanço exacto e o agregado do DMA', async () => {
+  it('com a porta fiada às fixtures Java, mostra o balanço exato e o agregado do DMA', async () => {
     render(<DmaPanels port={fixturePort} />)
     expect(await screen.findByText(/DMA-1/)).toBeInTheDocument()
     // Agregado: entrada líquida 11500.25; perdas totais 3900.10; reais 3350.05 (suite Java).
@@ -70,13 +70,38 @@ describe('DmaPanels (P-II6-TELA)', () => {
     expect(screen.getAllByText('9500.25').length).toBeGreaterThan(0)
   })
 
-  it('VMN: desfecho COMPLETE com a líquida exacta das fixtures Java (2500.00 L/h)', async () => {
+  it('VMN: desfecho COMPLETE com a líquida exata das fixtures Java (2500.00 L/h)', async () => {
     const user = userEvent.setup()
     render(<DmaPanels port={fixturePort} />)
     await screen.findByText(/DMA-1/)
-    await user.click(screen.getByRole('tab', { name: 'Vazão mínima nocturna' }))
+    await user.click(screen.getByRole('tab', { name: 'Vazão mínima noturna' }))
     expect(await screen.findByText('COMPLETE')).toBeInTheDocument()
     expect(screen.getByText(/2500\.00 L\/h/)).toBeInTheDocument()
+  })
+
+  it('VMN sem janela na fonte (R41-4-17): usa o padrão ED-85 e declara-o no painel', async () => {
+    const user = userEvent.setup()
+    const portWithoutWindow: DmaPanelsPort = {
+      ...fixturePort,
+      nightFlowPanel: () =>
+        Promise.resolve({
+          series: [
+            { instant: '2026-10-15T02:00:00', flowLitresPerHour: '5000.50' },
+            { instant: '2026-10-15T02:30:00', flowLitresPerHour: '4600' },
+            { instant: '2026-10-15T03:00:00', flowLitresPerHour: '4200.00' },
+            { instant: '2026-10-15T03:30:00', flowLitresPerHour: '4800' },
+          ],
+          sampleIntervalMinutes: 30,
+          legitNightUseLPerConnH: '1.70',
+          connections: 1000,
+        }),
+    }
+    render(<DmaPanels port={portWithoutWindow} />)
+    await screen.findByText(/DMA-1/)
+    await user.click(screen.getByRole('tab', { name: 'Vazão mínima noturna' }))
+    expect(await screen.findByText('COMPLETE')).toBeInTheDocument()
+    expect(screen.getByText(/2500\.00 L\/h/)).toBeInTheDocument()
+    expect(screen.getByText(/Janela padrão do aceite da ED-85 \(02:00–04:00\)/)).toBeInTheDocument()
   })
 
   it('ranking: modo LOSS_VOLUME_ONLY declarado (tarifa [A DEFINIR]) e DMC-C primeiro', async () => {

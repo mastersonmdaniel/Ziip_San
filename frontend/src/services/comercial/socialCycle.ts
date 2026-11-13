@@ -1,5 +1,5 @@
 /**
- * P-II3-TELA — porta tipada do ciclo da tarifa social e da busca activa.
+ * P-II3-TELA — porta tipada do ciclo da tarifa social e da busca ativa.
  *
  * Espelho campo a campo dos records do núcleo Java na main
  * (`commercial/ziipsan-billing/.../billing/social/cycle/` e
@@ -279,7 +279,7 @@ export interface SocialCyclePort {
   familySummaries(): Promise<FamilyCrossingSummary[]>
 }
 
-/** Agrupa a busca activa por (município, rota) — GroupKey do núcleo. */
+/** Agrupa a busca ativa por (município, rota) — GroupKey do núcleo. */
 export function groupActiveSearch(
   entries: ActiveSearchEntry[],
 ): { key: ActiveSearchGroupKey; entries: ActiveSearchEntry[] }[] {

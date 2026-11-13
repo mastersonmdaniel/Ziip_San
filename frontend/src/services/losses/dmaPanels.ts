@@ -7,14 +7,14 @@
  * main (intelligence/ziipsan-losses):
  *  - `dma/DmaModel.java` — DmaDefinition, DmcPeriodInputs,
  *    DmcPeriodBalance, DmaPeriodBalance, FlowSample;
- *  - `dma/ExactWaterBalance.java` — balanço hídrico exacto + agregado;
- *  - `dma/MinimumNightFlow.java` — vazão mínima nocturna (VMN);
+ *  - `dma/ExactWaterBalance.java` — balanço hídrico exato + agregado;
+ *  - `dma/MinimumNightFlow.java` — vazão mínima noturna (VMN);
  *  - `dma/DmcReturnRanking.java` — ranking de DMC por retorno;
  *  - `dmc/LossParameters.java` — NightWindow (padrão do aceite da
  *    ED-85: 02:00–04:00) e chaves de parâmetros do tenant;
  *  - `domain/DmaDistrict.java` — distrito DMA persistido (GIS-03).
  *
- * Volumes são strings decimais (exactidão BigDecimal — ver decimal.ts).
+ * Volumes são strings decimais (exatidão BigDecimal — ver decimal.ts).
  * Componente que a base não expõe entra como `null` (= Optional vazio
  * do Java) e sai DECLARADA ausente no resultado — nunca estimada.
  *
@@ -56,7 +56,7 @@ export interface DmcPeriodInputs {
   apparentLossesM3: string | null
 }
 
-/** DmaModel.DmcPeriodBalance — identidades exactas do ExactWaterBalance. */
+/** DmaModel.DmcPeriodBalance — identidades exatas do ExactWaterBalance. */
 export interface DmcPeriodBalance {
   dmcId: string
   dmcCode: string
@@ -72,7 +72,7 @@ export interface DmcPeriodBalance {
   absentComponents: string[]
 }
 
-/** DmaModel.DmaPeriodBalance — soma exacta dos balanços dos membros. */
+/** DmaModel.DmaPeriodBalance — soma exata dos balanços dos membros. */
 export interface DmaPeriodBalance {
   dmaCode: string
   sectorCode: string
@@ -96,7 +96,7 @@ export interface FlowSample {
   flowLitresPerHour: string
 }
 
-/** LossParameters.NightWindow — janela nocturna [start, end) no mesmo dia. */
+/** LossParameters.NightWindow — janela noturna [start, end) no mesmo dia. */
 export interface NightWindow {
   /** "HH:mm". */
   start: string
@@ -187,7 +187,7 @@ function sumDecimals(values: string[]): Decimal {
 }
 
 /**
- * Espelho de `ExactWaterBalance.aggregate`: exige exactamente os DMCs
+ * Espelho de `ExactWaterBalance.aggregate`: exige exatamente os DMCs
  * da definição, no MESMO período — membro sem balanço ou balanço fora
  * da definição RECUSA (agregar um subconjunto em silêncio seria
  * inventar o DMA). A perda real do agregado só existe se TODOS os
@@ -198,7 +198,7 @@ export function aggregateBalance(definition: DmaDefinition, memberBalances: DmcP
   const expected = [...definition.memberDmcCodes].sort()
   if (codes.length !== expected.length || codes.some((c, i) => c !== expected[i])) {
     throw new Error(
-      `agregacao exige exactamente os DMCs da definicao ${JSON.stringify(expected)}; recebidos ${JSON.stringify(codes)}`,
+      `agregacao exige exatamente os DMCs da definicao ${JSON.stringify(expected)}; recebidos ${JSON.stringify(codes)}`,
     )
   }
   const first = memberBalances[0]
@@ -255,9 +255,19 @@ export const ABSENT_NET_NIGHT_FLOW = 'netNightFlowLPerH'
 /** LossParameters.NIGHT_WINDOW_DEFAULT — padrão NOMEADO no aceite da ED-85. */
 export const NIGHT_WINDOW_DEFAULT: NightWindow = { start: '02:00', end: '04:00' }
 
+/**
+ * R41-4-17: resolve a janela noturna do painel de VMN — a janela
+ * declarada pela fonte quando existe; quando a porta não a traz
+ * (`undefined`/`null`), o padrão NOMEADO do aceite da ED-85
+ * (02:00–04:00). A omissão é sempre a do aceite, nunca outra.
+ */
+export function resolveNightWindow(window?: NightWindow | null): NightWindow {
+  return window ?? NIGHT_WINDOW_DEFAULT
+}
+
 function timeToMinutes(hhmm: string): number {
   const m = /^(\d{2}):(\d{2})$/.exec(hhmm)
-  if (!m) throw new Error(`janela nocturna exige o formato HH:mm-HH:mm: ${hhmm}`)
+  if (!m) throw new Error(`janela noturna exige o formato HH:mm-HH:mm: ${hhmm}`)
   return Number(m[1]) * 60 + Number(m[2])
 }
 
@@ -268,13 +278,20 @@ function windowContains(window: NightWindow, instant: string): boolean {
 
 /**
  * Espelho de `MinimumNightFlow.analyze`: cobertura esperada por noite
- * = minutosDaJanela / sampleIntervalMinutes (divisão exacta exigida).
- * COMPLETE ⇒ VMN = mínimo exacto das amostras na janela; janela
+ * = minutosDaJanela / sampleIntervalMinutes (divisão exata exigida).
+ * COMPLETE ⇒ VMN = mínimo exato das amostras na janela; janela
  * parcial ⇒ INCOMPLETE_COVERAGE e a VMN NÃO é devolvida; nenhuma
- * amostra ⇒ NO_SAMPLE_IN_WINDOW. Sem consumo nocturno legítimo
+ * amostra ⇒ NO_SAMPLE_IN_WINDOW. Sem consumo noturno legítimo
  * declarado (`legitNightUseLPerConnH === null`), a VMN líquida sai
  * ausente e declarada. VMN líquida negativa NÃO é truncada (a flag
  * `legitExceedsMinimum` expõe a inconsistência).
+ *
+ * R41-4-18: janela invertida ou vazia (`end <= start`) RECUSA com
+ * erro visível — antes desta cura, `04:00–02:00` dava windowMinutes
+ * negativo e noites sempre INCOMPLETE_COVERAGE em silêncio. Nota:
+ * o espelho Java (MinimumNightFlow.java:87-90) NÃO valida isto —
+ * o endurecimento é só do lado TS; alinhar o Java fica para um
+ * lote próprio do núcleo, fora deste pacote de telas.
  */
 export function analyzeNightFlow(
   series: FlowSample[],
@@ -285,10 +302,15 @@ export function analyzeNightFlow(
 ): NightFlowResult {
   if (sampleIntervalMinutes <= 0) throw new Error(`cadencia da serie invalida: ${sampleIntervalMinutes}`)
   if (connections <= 0) throw new Error(`VMN liquida exige ligacoes > 0: ${connections}`)
-  const legit = legitNightUseLPerConnH === null ? null : requireNonNegative(legitNightUseLPerConnH, 'consumo nocturno legitimo')
-  const windowMinutes = timeToMinutes(window.end) - timeToMinutes(window.start)
+  const legit = legitNightUseLPerConnH === null ? null : requireNonNegative(legitNightUseLPerConnH, 'consumo noturno legitimo')
+  const startMinutes = timeToMinutes(window.start)
+  const endMinutes = timeToMinutes(window.end)
+  if (endMinutes <= startMinutes) {
+    throw new Error(`janela noturna invertida ou vazia: ${window.start}–${window.end} (o fim deve ser depois do início)`)
+  }
+  const windowMinutes = endMinutes - startMinutes
   if (windowMinutes % sampleIntervalMinutes !== 0) {
-    throw new Error(`cadencia ${sampleIntervalMinutes} min nao divide exactamente a janela de ${windowMinutes} min`)
+    throw new Error(`cadencia ${sampleIntervalMinutes} min nao divide exatamente a janela de ${windowMinutes} min`)
   }
   const expectedPerNight = windowMinutes / sampleIntervalMinutes
   const absent = legit === null ? [ABSENT_NET_NIGHT_FLOW] : []
@@ -438,9 +460,14 @@ export interface DmaBalancePanelData {
 /** Dados que o painel de VMN consome (série viva = P-II6-SERIES). */
 export interface NightFlowPanelData {
   series: FlowSample[]
-  window: NightWindow
+  /**
+   * Janela noturna declarada pela fonte. Ausente quando a porta não a
+   * traz — nesse caso vale o padrão NOMEADO do aceite da ED-85
+   * (resolveNightWindow, R41-4-17); nunca se presume outra janela.
+   */
+  window?: NightWindow
   sampleIntervalMinutes: number
-  /** Consumo nocturno legítimo (L/ligação/h) do tenant; null = não declarado. */
+  /** Consumo noturno legítimo (L/ligação/h) do tenant; null = não declarado. */
   legitNightUseLPerConnH: string | null
   connections: number
 }

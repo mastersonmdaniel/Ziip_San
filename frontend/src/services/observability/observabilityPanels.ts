@@ -288,7 +288,7 @@ export function allowedErrorRate(slo: SloDefinition): number {
 /**
  * Espelho de `BurnRateCalculator.calculate`. Janela sem eventos é erro
  * explícito — burn "zero" inventado a partir de janela vazia esconderia
- * exactamente a indisponibilidade que o alerta existe para mostrar.
+ * exatamente a indisponibilidade que o alerta existe para mostrar.
  */
 export function calculateBurnRate(slo: SloDefinition, totalEvents: number, badEvents: number): BurnRateResult {
   const allowed = allowedErrorRate(slo)
@@ -392,23 +392,96 @@ export const EXECUTABLE_ALERT_RULES: AlertRule[] = [
 export interface LiveMetricSeries {
   metricName: string
   labels: Record<string, string>
-  /** Valor actual da série; a tela nunca inventa este número. */
+  /** Valor atual da série; a tela nunca inventa este número. */
   currentValue: number | null
+}
+
+/** Contagens de eventos de UMA janela para o cálculo do burn rate. */
+export interface BurnRateWindowInput {
+  totalEvents: number
+  badEvents: number
+}
+
+/**
+ * Entradas do burn rate de UM SLO, entregues pela porta quando a
+ * fiação existir (R41-4-16). O SLO — com a meta numérica — entra
+ * como PARÂMETRO de quem chama, nunca presumido: sem alvo ratificado
+ * (P-II8-ALVOS) não há entrada a entregar e a aba mostra "sem dados".
+ */
+export interface BurnRateInputs {
+  sloId: string
+  slo: SloDefinition
+  shortWindow: BurnRateWindowInput
+  longWindow: BurnRateWindowInput
+  /** Dias decorridos da janela longa (para daysToExhaustion). */
+  elapsedDays: number
 }
 
 /**
  * Porta dos dashboards II-8. `liveSeries()` devolve `null` enquanto a
  * fiação [A DEFINIR] não existir — a tela mostra os catálogos e
  * definições (que são documentos) e o estado vazio honesto das séries.
+ * `burnRateInputs()` é opcional e devolve `null` enquanto a fiação
+ * não entregar contagens de eventos — a aba de alertas mostra então
+ * o residual "sem dados" em vez de um burn rate inventado.
  */
 export interface ObservabilityPort {
   liveSeries(): Promise<LiveMetricSeries[] | null>
+  burnRateInputs?(): Promise<BurnRateInputs[] | null>
 }
 
 /** Pendência de fiação das séries vivas (nenhuma rota HTTP afirmada). */
 export const OBSERVABILITY_WIRING_PENDENCY = 'P-II8-FIACAO'
 
-/** Porta por omissão: sem fiação, séries ausentes (estado vazio honesto). */
+/** Porta por omissão: sem fiação, séries e burn rate ausentes (estado vazio honesto). */
 export const unavailableObservabilityPort: ObservabilityPort = {
   liveSeries: () => Promise.resolve(null),
+  burnRateInputs: () => Promise.resolve(null),
+}
+
+// ---------------------------------------------------------------------------
+// Validação das séries vivas (R41-4-15 / R41-4-16)
+// ---------------------------------------------------------------------------
+
+/** Uma série de processo de negócio (lote de faturação / sync de campo). */
+export function isProcessMetric(metricName: string): boolean {
+  return (Object.values(RED_USE_METRIC_NAMES) as string[]).includes(metricName)
+}
+
+/**
+ * Valida UMA série viva entregue pela porta, contra o vocabulário
+ * fechado da convenção II-8 (R41-4-15: é este o uso em produção das
+ * constantes RED_USE_METRIC_NAMES / METRIC_OUTCOMES — espelhos
+ * documentados de RedUseMetrics.java: BATCH_ITEMS, BATCH_DURATION,
+ * FIELD_SYNC_ITEMS e Outcome SUCCESS|FAILURE):
+ *
+ *  - rótulos pela MetricLabelPolicy (validateLabels);
+ *  - contador de itens de processo (BATCH_ITEMS / FIELD_SYNC_ITEMS)
+ *    exige o rótulo `outcome`, com valor no vocabulário fechado
+ *    SUCCESS|FAILURE (RedUseMetrics.Outcome);
+ *  - o timer de duração (BATCH_DURATION) não leva rótulos, por
+ *    definição do Java — nada lhe é exigido.
+ *
+ * Devolve os problemas como texto; lista vazia = série conforme.
+ * Nunca lança: série mal formada é um problema a mostrar na tela,
+ * não uma exceção a esconder.
+ */
+export function validateLiveSeries(series: LiveMetricSeries): string[] {
+  const problems: string[] = []
+  try {
+    for (const violation of validateLabels(series.metricName, Object.keys(series.labels))) {
+      problems.push(`rótulo ${violation.label}: ${violation.kind}`)
+    }
+  } catch (e: unknown) {
+    problems.push(e instanceof Error ? e.message : 'série inválida')
+  }
+  if (isProcessMetric(series.metricName) && series.metricName !== RED_USE_METRIC_NAMES.batchDuration) {
+    const outcome = series.labels['outcome']
+    if (outcome === undefined) {
+      problems.push(`métrica de processo ${series.metricName} sem o rótulo outcome`)
+    } else if (!(METRIC_OUTCOMES as readonly string[]).includes(outcome)) {
+      problems.push(`outcome fora do vocabulário fechado (SUCCESS|FAILURE): ${outcome}`)
+    }
+  }
+  return problems
 }

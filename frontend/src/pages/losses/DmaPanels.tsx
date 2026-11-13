@@ -10,10 +10,12 @@ import {
   analyzeNightFlow,
   calculateBalance,
   rankDmcs,
+  resolveNightWindow,
   unavailableDmaPanelsPort,
   DMA_PANELS_WIRING_PENDENCY,
   DMA_SERIES_PENDENCY,
   DMA_TARIFF_PENDENCY,
+  NIGHT_WINDOW_DEFAULT,
   type DmaBalancePanelData,
   type DmaDistrictSummary,
   type DmaPanelsPort,
@@ -25,7 +27,7 @@ type TabId = 'balanco' | 'vmn' | 'ranking' | 'distritos'
 
 const TABS = [
   { id: 'balanco', label: 'Balanço hídrico' },
-  { id: 'vmn', label: 'Vazão mínima nocturna' },
+  { id: 'vmn', label: 'Vazão mínima noturna' },
   { id: 'ranking', label: 'Ranking DMC' },
   { id: 'distritos', label: 'Distritos DMA' },
 ]
@@ -92,12 +94,15 @@ export function DmaPanels({ port = unavailableDmaPanelsPort }: { port?: DmaPanel
     if (!nightFlowData) return null
     return analyzeNightFlow(
       nightFlowData.series,
-      nightFlowData.window,
+      resolveNightWindow(nightFlowData.window),
       nightFlowData.sampleIntervalMinutes,
       nightFlowData.legitNightUseLPerConnH,
       nightFlowData.connections,
     )
   }, [nightFlowData])
+
+  /** R41-4-17: a fonte não declarou janela — vale o padrão ED-85 (declarado no painel). */
+  const nightWindowDefaulted = nightFlowData !== null && !nightFlowData.window
 
   const rankingView = useMemo(() => {
     if (!rankingData) return null
@@ -108,7 +113,7 @@ export function DmaPanels({ port = unavailableDmaPanelsPort }: { port?: DmaPanel
     <div className="space-y-6">
       <PageHeader
         title="Painéis de perdas do DMA"
-        description="Balanço hídrico exacto, vazão mínima nocturna e ranking de DMC por retorno (II-6). Painéis apenas — o mapa temático de perdas é do programa PDCA-GIS (E3)."
+        description="Balanço hídrico exato, vazão mínima noturna e ranking de DMC por retorno (II-6). Painéis apenas — o mapa temático de perdas é do programa PDCA-GIS (E3)."
       />
       {error ? (
         <Alert tone="error" title="Não foi possível carregar os painéis de perdas">
@@ -129,7 +134,7 @@ export function DmaPanels({ port = unavailableDmaPanelsPort }: { port?: DmaPanel
                     </h2>
                     <p className="mt-2 text-sm">
                       Período {balanceView.aggregate.periodStart} a {balanceView.aggregate.periodEnd} —{' '}
-                      {balanceView.aggregate.memberCount} DMC(s) membros. Agregado = soma exacta dos balanços dos membros.
+                      {balanceView.aggregate.memberCount} DMC(s) membros. Agregado = soma exata dos balanços dos membros.
                     </p>
                     <Table caption="Agregado do DMA (m³)" mobileCards>
                       <TableHeader>
@@ -169,7 +174,7 @@ export function DmaPanels({ port = unavailableDmaPanelsPort }: { port?: DmaPanel
                 <Card>
                   <CardContent className="pt-6">
                     <h2 className="text-lg font-semibold">Balanço por DMC</h2>
-                    <Table caption="Balanço exacto por DMC no período (m³)" mobileCards>
+                    <Table caption="Balanço exato por DMC no período (m³)" mobileCards>
                       <TableHeader>
                         <TableRow>
                           <TableHead>DMC</TableHead>
@@ -201,7 +206,7 @@ export function DmaPanels({ port = unavailableDmaPanelsPort }: { port?: DmaPanel
             ) : (
               <Alert tone="info" title="Sem dados de balanço">
                 A fonte do balanço ainda não está fiada ({DMA_PANELS_WIRING_PENDENCY} [A DEFINIR] — nenhuma rota HTTP
-                afirmada). Quando a fiação entregar os balanços dos DMCs, este painel mostra o balanço exacto e o
+                afirmada). Quando a fiação entregar os balanços dos DMCs, este painel mostra o balanço exato e o
                 agregado do DMA.
               </Alert>
             )
@@ -211,12 +216,18 @@ export function DmaPanels({ port = unavailableDmaPanelsPort }: { port?: DmaPanel
             nightFlowView ? (
               <Card>
                 <CardContent className="pt-6">
-                  <h2 className="text-lg font-semibold">Vazão mínima nocturna</h2>
+                  <h2 className="text-lg font-semibold">Vazão mínima noturna</h2>
                   <p className="mt-2 text-sm">
                     Janela {nightFlowView.window.start}–{nightFlowView.window.end} — cadência de{' '}
                     {nightFlowView.sampleIntervalMinutes} min — {nightFlowView.samplesInWindow} amostra(s) na janela em{' '}
                     {nightFlowView.nightsEvaluated} noite(s) avaliada(s).
                   </p>
+                  {nightWindowDefaulted ? (
+                    <p className="mt-2 text-sm">
+                      Janela padrão do aceite da ED-85 ({NIGHT_WINDOW_DEFAULT.start}–{NIGHT_WINDOW_DEFAULT.end}): a
+                      fonte não declarou janela.
+                    </p>
+                  ) : null}
                   <p className="mt-2">
                     Desfecho: <Badge>{nightFlowView.status}</Badge>
                   </p>
@@ -226,7 +237,7 @@ export function DmaPanels({ port = unavailableDmaPanelsPort }: { port?: DmaPanel
                       <li>
                         VMN líquida:{' '}
                         {nightFlowView.netNightFlowLPerH === null
-                          ? `ausente (${nightFlowView.absentComponents.join(', ')}) — consumo nocturno legítimo não declarado`
+                          ? `ausente (${nightFlowView.absentComponents.join(', ')}) — consumo noturno legítimo não declarado`
                           : `${nightFlowView.netNightFlowLPerH} L/h`}
                       </li>
                       {nightFlowView.legitExceedsMinimum ? (
@@ -239,14 +250,14 @@ export function DmaPanels({ port = unavailableDmaPanelsPort }: { port?: DmaPanel
                       devolvida sobre janela parcial.
                     </p>
                   ) : (
-                    <p className="mt-2 text-sm">Nenhuma amostra dentro da janela nocturna.</p>
+                    <p className="mt-2 text-sm">Nenhuma amostra dentro da janela noturna.</p>
                   )}
                 </CardContent>
               </Card>
             ) : (
               <Alert tone="info" title="Sem série de vazões">
                 As séries vivas do DMA são integração ({DMA_SERIES_PENDENCY}); a fiação é {DMA_PANELS_WIRING_PENDENCY}{' '}
-                [A DEFINIR]. Sem série, não há vazão mínima nocturna para mostrar — nenhum valor é estimado.
+                [A DEFINIR]. Sem série, não há vazão mínima noturna para mostrar — nenhum valor é estimado.
               </Alert>
             )
           ) : null}

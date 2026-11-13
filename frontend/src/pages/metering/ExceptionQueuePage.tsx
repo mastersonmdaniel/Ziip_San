@@ -15,9 +15,9 @@ const STATUS_LABEL: Record<ExceptionStatus, string> = {
 }
 
 /**
- * P-II2-TELA — fila de excepções e crítica de leituras (II-2).
+ * P-II2-TELA — fila de exceções e crítica de leituras (II-2).
  * Sem porta ligada (fiação P-II2-FIACAO pendente), a tela mostra o estado
- * vazio honesto: nenhuma excepção é fingida. Limiares das regras são do
+ * vazio honesto: nenhuma exceção é fingida. Limiares das regras são do
  * tenant [A DEFINIR] (P-II2-LIMIARES) e chegam nos próprios findings.
  * Paridade web↔mobile: mesma página responsiva (tabela com cartões no celular).
  */
@@ -32,7 +32,7 @@ export function ExceptionQueuePage({ port }: { port?: CritiquePort }) {
     let alive = true
     port.listExceptions()
       .then((list) => { if (alive) setItems(sortExceptions(list)) })
-      .catch(() => { if (alive) setError('Não foi possível carregar a fila de excepções.') })
+      .catch(() => { if (alive) setError('Não foi possível carregar a fila de exceções.') })
     return () => { alive = false }
   }, [port])
 
@@ -44,10 +44,10 @@ export function ExceptionQueuePage({ port }: { port?: CritiquePort }) {
       const updated = action === 'accept' ? await port.accept(e) : await port.requestRereading(e)
       setError(null)
       setItems((prev) => sortExceptions(prev.map((x) => (x.unitId === e.unitId && x.reference === e.reference ? updated : x))))
-    } catch { setError('A transição foi recusada pelo núcleo (transição inválida para o estado actual).') }
+    } catch { setError('A transição foi recusada pelo núcleo (transição inválida para o estado atual).') }
   }
 
-  // Correcção (CritiqueException.correct): leitura corrigida inteira >= 0;
+  // Correção (CritiqueException.correct): leitura corrigida inteira >= 0;
   // negativa ou não inteira é recusada aqui e pelo núcleo — nunca ajustada.
   async function correct(e: CritiqueExceptionView) {
     if (!port) return
@@ -61,16 +61,16 @@ export function ExceptionQueuePage({ port }: { port?: CritiquePort }) {
       const updated = await port.correct(e, value)
       setError(null)
       setItems((prev) => sortExceptions(prev.map((x) => (x.unitId === e.unitId && x.reference === e.reference ? updated : x))))
-    } catch { setError('A correcção foi recusada pelo núcleo (transição inválida para o estado actual).') }
+    } catch { setError('A correção foi recusada pelo núcleo (transição inválida para o estado atual).') }
   }
 
   return (
-    <main>
-      <PageHeader title="Fila de excepções de leitura"
-        description="Crítica de leituras (II-2): excepções por regra disparada, com decisão de aceitar, corrigir ou pedir releitura." />
+    <div>
+      <PageHeader title="Fila de exceções de leitura"
+        description="Crítica de leituras (II-2): exceções por regra disparada, com decisão de aceitar, corrigir ou pedir releitura." />
       {!port ? (
         <Alert tone="warning" title="Fiação pendente">
-          A fila ainda não está ligada ao servidor (pendência P-II2-FIACAO). Nenhuma excepção é mostrada sem fonte.
+          A fila ainda não está ligada ao servidor (pendência P-II2-FIACAO). Nenhuma exceção é mostrada sem fonte.
           Os limiares das regras são definidos pelo tenant/regulador [A DEFINIR] (P-II2-LIMIARES).
         </Alert>
       ) : null}
@@ -81,9 +81,9 @@ export function ExceptionQueuePage({ port }: { port?: CritiquePort }) {
           {' '}Só abertas (pendentes ou a aguardar releitura)
         </label>
         {visible.length === 0 ? (
-          <p>Nenhuma excepção {onlyOpen ? 'aberta ' : ''}na fila.</p>
+          <p>Nenhuma exceção {onlyOpen ? 'aberta ' : ''}na fila.</p>
         ) : (
-          <Table caption="Fila de excepções de leitura" mobileCards>
+          <Table caption="Fila de exceções de leitura" mobileCards>
             <TableHeader><TableRow>
               <TableHead>Referência</TableHead><TableHead>Unidade</TableHead>
               <TableHead>Regras disparadas</TableHead><TableHead>Estado</TableHead>
@@ -124,6 +124,6 @@ export function ExceptionQueuePage({ port }: { port?: CritiquePort }) {
           </Table>
         )}
       </CardContent></Card>
-    </main>
+    </div>
   )
 }

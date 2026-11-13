@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Alert, Spinner } from '@components/ui/Alert'
 import { Badge } from '@components/ui/Badge'
 import { Card, CardContent } from '@components/ui/Card'
@@ -18,7 +18,12 @@ import {
   SLO_TARGETS_PENDENCY,
   TENANT_LABEL_ALLOWLIST,
   USE_ROWS,
+  calculateBurnRate,
+  daysToExhaustion,
+  tierFor,
   unavailableObservabilityPort,
+  validateLiveSeries,
+  type BurnRateInputs,
   type LiveMetricSeries,
   type ObservabilityPort,
 } from '@services/observability/observabilityPanels'
@@ -48,20 +53,67 @@ const TABS = [
  *
  * Paridade web↔mobile: padrão responsivo — tabelas com `mobileCards`
  * e abas com rolagem horizontal; nenhuma função exclusiva do desktop.
+ *
+ * R41-4-16: a aba "Alertas e burn rate" liga o calculador de burn
+ * rate (BurnRateCalculator) às entradas que a porta entregar; sem
+ * entradas, mostra o residual "sem dados" — nunca um burn inventado.
+ * A aba "Séries vivas" valida cada série contra o vocabulário fechado
+ * (validateLiveSeries, R41-4-15).
  */
+
+/** Uma linha do cartão de burn rate: calcula ou mostra o erro visível (ex.: janela sem eventos). */
+function BurnRateRow({ input }: { input: BurnRateInputs }) {
+  try {
+    const short = calculateBurnRate(input.slo, input.shortWindow.totalEvents, input.shortWindow.badEvents)
+    const long = calculateBurnRate(input.slo, input.longWindow.totalEvents, input.longWindow.badEvents)
+    const tier = tierFor(short.burnRate, long.burnRate)
+    const days = daysToExhaustion(input.slo, input.longWindow.totalEvents, input.longWindow.badEvents, input.elapsedDays)
+    return (
+      <TableRow>
+        <TableCell label="SLO">
+          {input.sloId} — {input.slo.name}
+        </TableCell>
+        <TableCell label="Burn (janela curta)">{short.burnRate.toFixed(2)}</TableCell>
+        <TableCell label="Burn (janela longa)">{long.burnRate.toFixed(2)}</TableCell>
+        <TableCell label="Tier">{tier}</TableCell>
+        <TableCell label="Orçamento consumido">{(long.consumedFraction * 100).toFixed(1)}%</TableCell>
+        <TableCell label="Dias até esgotar">
+          {Number.isFinite(days) ? days.toFixed(1) : 'sem esgotamento previsto (nenhum evento ruim na janela)'}
+        </TableCell>
+      </TableRow>
+    )
+  } catch (e: unknown) {
+    return (
+      <TableRow>
+        <TableCell label="SLO">
+          {input.sloId} — {input.slo.name}
+        </TableCell>
+        <TableCell label="Burn rate">{e instanceof Error ? e.message : 'entradas de burn rate inválidas'}</TableCell>
+        <TableCell label="Burn (janela longa)">—</TableCell>
+        <TableCell label="Tier">—</TableCell>
+        <TableCell label="Orçamento consumido">—</TableCell>
+        <TableCell label="Dias até esgotar">—</TableCell>
+      </TableRow>
+    )
+  }
+}
+
 export function Observability({ port = unavailableObservabilityPort }: { port?: ObservabilityPort }) {
   const [tab, setTab] = useState<TabId>('slos')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [series, setSeries] = useState<LiveMetricSeries[] | null>(null)
+  const [burnInputs, setBurnInputs] = useState<BurnRateInputs[] | null>(null)
 
   useEffect(() => {
     let cancelled = false
     setLoading(true)
-    port
-      .liveSeries()
-      .then((result) => {
-        if (!cancelled) setSeries(result)
+    Promise.all([port.liveSeries(), port.burnRateInputs?.() ?? Promise.resolve(null)])
+      .then(([result, burn]) => {
+        if (!cancelled) {
+          setSeries(result)
+          setBurnInputs(burn)
+        }
       })
       .catch((e: unknown) => {
         if (!cancelled) setError(e instanceof Error ? e.message : 'erro ao carregar a observabilidade')
@@ -73,6 +125,11 @@ export function Observability({ port = unavailableObservabilityPort }: { port?: 
       cancelled = true
     }
   }, [port])
+
+  const seriesValidation = useMemo(
+    () => (series === null ? null : series.map((s) => validateLiveSeries(s))),
+    [series],
+  )
 
   return (
     <div className="space-y-6">
@@ -117,7 +174,7 @@ export function Observability({ port = unavailableObservabilityPort }: { port?: 
                           <TableCell label="SLI (definição)">{slo.sliDefinition}</TableCell>
                           <TableCell label="Fonte do sinal">{slo.signalSource}</TableCell>
                           <TableCell label="Alvo">
-                            <Badge variant="warning">alvo [A DEFINIR]</Badge>
+                            <Badge variant="warning">alvo {slo.target}</Badge>
                           </TableCell>
                           <TableCell label="Janela">{slo.window}</TableCell>
                         </TableRow>
@@ -290,6 +347,37 @@ export function Observability({ port = unavailableObservabilityPort }: { port?: 
                   </p>
                 </CardContent>
               </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <h2 className="text-lg font-semibold">Burn rate por SLO</h2>
+                  {burnInputs === null || burnInputs.length === 0 ? (
+                    <p className="mt-2 text-sm">
+                      Sem dados de burn rate: a porta ainda não entrega contagens de eventos (
+                      {OBSERVABILITY_WIRING_PENDENCY} [A DEFINIR]) e nenhum alvo numérico está ratificado (
+                      {SLO_TARGETS_PENDENCY}) — sem contagens e sem alvo não há burn rate calculável. Nenhum valor é
+                      inventado.
+                    </p>
+                  ) : (
+                    <Table caption="Burn rate por SLO" mobileCards>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>SLO</TableHead>
+                          <TableHead>Burn (janela curta)</TableHead>
+                          <TableHead>Burn (janela longa)</TableHead>
+                          <TableHead>Tier</TableHead>
+                          <TableHead>Orçamento consumido</TableHead>
+                          <TableHead>Dias até esgotar</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {burnInputs.map((input) => (
+                          <BurnRateRow key={input.sloId} input={input} />
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )}
+                </CardContent>
+              </Card>
             </div>
           ) : null}
 
@@ -336,17 +424,21 @@ export function Observability({ port = unavailableObservabilityPort }: { port?: 
                       <TableRow>
                         <TableHead>Métrica</TableHead>
                         <TableHead>Rótulos</TableHead>
-                        <TableHead>Valor actual</TableHead>
+                        <TableHead>Valor atual</TableHead>
+                        <TableHead>Validação</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {series.map((s) => (
+                      {series.map((s, i) => (
                         <TableRow key={`${s.metricName}-${JSON.stringify(s.labels)}`}>
                           <TableCell label="Métrica">{s.metricName}</TableCell>
                           <TableCell label="Rótulos">
                             {Object.entries(s.labels).map(([k, v]) => `${k}=${v}`).join(', ') || '—'}
                           </TableCell>
-                          <TableCell label="Valor actual">{s.currentValue ?? '—'}</TableCell>
+                          <TableCell label="Valor atual">{s.currentValue ?? '—'}</TableCell>
+                          <TableCell label="Validação">
+                            {seriesValidation?.[i]?.length ? seriesValidation[i]?.join('; ') : 'conforme'}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

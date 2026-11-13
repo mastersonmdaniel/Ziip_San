@@ -16,14 +16,37 @@ const CRITERION_LABEL = {
 } as const
 
 /**
- * P-II5-TELA — plano anual de troca de hidrómetros (II-5).
- * Mostra o plano exactamente como o núcleo o fecha: linhas ordenadas por
+ * P-II5-TELA — plano anual de troca de hidrômetros (II-5).
+ * Mostra o plano exatamente como o núcleo o fecha: linhas ordenadas por
  * score, contagens de exclusão por motivo e custo total (null no núcleo =
  * "desconhecido" aqui, nunca estimado). Restrição/pesos/limiares são
  * parâmetros do tenant [A DEFINIR] (P-II5-PARAM). Sem porta (fiação
  * P-II5-INT-* pendente), estado vazio honesto.
  * Paridade web↔mobile: mesma página responsiva (tabela com cartões).
  */
+/**
+ * Formata um custo (string decimal do núcleo) em pt-BR, sem símbolo de moeda:
+ * a moeda NÃO está declarada em nenhuma fonte, por isso a unidade é marcada
+ * [A DEFINIR] (pendência nova P-R41-4-09-MOEDA, por definir pelo dono) e nenhum
+ * "R$" é assumido. null = sem custo registado ("—"). Valor não numérico é
+ * devolvido tal como veio, com a mesma marca — nunca descartado.
+ * Precisão preservada (R41B-R-02): só a parte inteira é agrupada por milhar
+ * e a parte fraccionária é mantida verbatim da string do núcleo — sem passar
+ * por Number, logo sem arredondar nem perder precisão acima de 2^53.
+ * String vazia (ou só-espaços) é valor não numérico, nunca zero.
+ */
+export function formatCost(value: string | null): string {
+  if (value === null) return '—'
+  const match = /^([+-]?)(?:(\d+)(?:\.(\d*))?|\.(\d+))$/.exec(value)
+  if (!match) return `${value} [A DEFINIR]`
+  const sign = match[1]
+  const intPart = match[2] ?? '0'
+  const fracPart = match[3] ?? match[4]
+  const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  const formatted = fracPart ? `${sign}${grouped},${fracPart}` : `${sign}${grouped}`
+  return `${formatted} [A DEFINIR]`
+}
+
 export function RenewalPlanPage({ port, planYear, tenantId }: { port?: RenewalPlanPort; planYear: number; tenantId?: string }) {
   const [plan, setPlan] = useState<AnnualPlan | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -48,9 +71,9 @@ export function RenewalPlanPage({ port, planYear, tenantId }: { port?: RenewalPl
   }, [port, planYear])
 
   return (
-    <main>
-      <PageHeader title={`Plano de troca de hidrómetros — ${planYear}`}
-        description="Plano anual selectivo (II-5): hidrómetros pontuados por idade, volume, classe/tecnologia e qualidade da água, seleccionados sob a restrição do tenant." />
+    <div>
+      <PageHeader title={`Plano de troca de hidrômetros — ${planYear}`}
+        description="Plano anual seletivo (II-5): hidrômetros pontuados por idade, volume, classe/tecnologia e qualidade da água, selecionados sob a restrição do tenant." />
       {!port ? (
         <Alert tone="warning" title="Fiação pendente">
           O plano ainda não está ligado ao servidor (pendências P-II5-INT-*). Nenhuma linha é mostrada sem fonte.
@@ -66,11 +89,11 @@ export function RenewalPlanPage({ port, planYear, tenantId }: { port?: RenewalPl
           <p>Elegíveis: {plan.eligibleCount} · Excluídos por estado: {plan.excludedByStatusCount}
             {' '}· Abaixo do piso: {plan.excludedBelowMinScoreCount}
             {' '}· Pela restrição: {plan.excludedByRestrictionCount}</p>
-          <p>Custo total estimado: {plan.totalEstimatedCost ?? 'desconhecido (há linha sem custo registado)'}</p>
-          {plan.lines.length === 0 ? <p>O plano não seleccionou nenhum hidrómetro.</p> : (
+          <p>Custo total estimado: {plan.totalEstimatedCost !== null ? formatCost(plan.totalEstimatedCost) : 'desconhecido (há linha sem custo registado)'}</p>
+          {plan.lines.length === 0 ? <p>O plano não selecionou nenhum hidrômetro.</p> : (
             <Table caption={`Plano de troca ${planYear}`} mobileCards>
               <TableHeader><TableRow>
-                <TableHead>#</TableHead><TableHead>Hidrómetro</TableHead><TableHead>Unidade</TableHead>
+                <TableHead>#</TableHead><TableHead>Hidrômetro</TableHead><TableHead>Unidade</TableHead>
                 <TableHead>Score</TableHead><TableHead>Critério dominante</TableHead>
                 <TableHead>Relógio metrológico</TableHead><TableHead>Próx. verificação</TableHead>
                 <TableHead>Custo de troca</TableHead>
@@ -79,7 +102,7 @@ export function RenewalPlanPage({ port, planYear, tenantId }: { port?: RenewalPl
                 {plan.lines.map((l) => (
                   <TableRow key={l.meterId}>
                     <TableCell label="#">{l.position}</TableCell>
-                    <TableCell label="Hidrómetro">{l.meterNumber}</TableCell>
+                    <TableCell label="Hidrômetro">{l.meterNumber}</TableCell>
                     <TableCell label="Unidade">{l.unitId}</TableCell>
                     <TableCell label="Score">{l.totalScore}</TableCell>
                     <TableCell label="Critério dominante">{CRITERION_LABEL[l.dominantCriterion]}</TableCell>
@@ -87,7 +110,7 @@ export function RenewalPlanPage({ port, planYear, tenantId }: { port?: RenewalPl
                       <Badge variant={l.clockStatus === 'OVERDUE' ? 'danger' : 'default'}>{CLOCK_LABEL[l.clockStatus]}</Badge>
                     </TableCell>
                     <TableCell label="Próx. verificação">{l.nextVerificationOn ?? '—'}</TableCell>
-                    <TableCell label="Custo de troca">{l.replacementCost ?? '—'}</TableCell>
+                    <TableCell label="Custo de troca">{formatCost(l.replacementCost)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -104,14 +127,14 @@ export function RenewalPlanPage({ port, planYear, tenantId }: { port?: RenewalPl
             payloads.length === 0 ? <p>O plano não gera nenhuma ordem de serviço.</p> : (
               <Table caption={`Ordens de serviço do plano ${planYear}`} mobileCards>
                 <TableHeader><TableRow>
-                  <TableHead>#</TableHead><TableHead>Hidrómetro</TableHead>
+                  <TableHead>#</TableHead><TableHead>Hidrômetro</TableHead>
                   <TableHead>Tipo de serviço</TableHead><TableHead>Alvo</TableHead><TableHead>Score</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>
                   {payloads.map((p) => (
                     <TableRow key={p.meterId}>
                       <TableCell label="#">{p.position}</TableCell>
-                      <TableCell label="Hidrómetro">{p.meterNumber}</TableCell>
+                      <TableCell label="Hidrômetro">{p.meterNumber}</TableCell>
                       <TableCell label="Tipo de serviço">{p.serviceTypeCode}</TableCell>
                       <TableCell label="Alvo">{p.targetClass}</TableCell>
                       <TableCell label="Score">{p.totalScore}</TableCell>
@@ -122,6 +145,6 @@ export function RenewalPlanPage({ port, planYear, tenantId }: { port?: RenewalPl
           ) : null}
         </CardContent></Card>
       ) : null}
-    </main>
+    </div>
   )
 }

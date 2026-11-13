@@ -26,9 +26,10 @@ function fakePort(): SlaOsPort {
         orderId: 'os-1',
         typeCode: 'TST-TIPO',
         status: 'OPEN' as const,
-        openedAt: '2026-12-01T00:00:00Z',
+        // Meio-dia UTC: o mesmo dia civil em UTC e em America/Sao_Paulo.
+        openedAt: '2026-12-01T12:00:00Z',
         assessment: {
-          internal: { kind: 'INTERNAL' as const, state: 'AT_RISK' as const, dueAtOrNull: null, elapsedSeconds: 3600 },
+          internal: { kind: 'INTERNAL' as const, state: 'AT_RISK' as const, dueAtOrNull: '2026-12-05T12:00:00Z', elapsedSeconds: 3600 },
           regulator: { kind: 'REGULATOR' as const, state: 'WITHIN' as const, dueAtOrNull: null, elapsedSeconds: 3600 },
         },
         escalationLevel: 0,
@@ -56,12 +57,24 @@ describe('P-II4-TELA — SlaOrders', () => {
     render(<SlaOrders port={fakePort()} />)
     // TST-TIPO aparece duas vezes (configuração e ordem): getAllByText.
     await waitFor(() => expect(screen.getAllByText(/TST-TIPO/).length).toBeGreaterThan(0))
-    expect(screen.getByText('AT_RISK')).toBeTruthy()
-    expect(screen.getByText('WITHIN')).toBeTruthy()
+    // R41-4-12: os códigos de enumeração aparecem com rótulo pt-BR, nunca crus.
+    expect(screen.getByText('Em risco')).toBeTruthy()
+    expect(screen.getByText('Dentro do prazo')).toBeTruthy()
+    expect(screen.getByText(/Aberta/)).toBeTruthy()
+    expect(screen.getByText(/Alerta de risco/)).toBeTruthy()
+    expect(screen.queryByText('AT_RISK')).toBeNull()
+    expect(screen.queryByText('WITHIN')).toBeNull()
+    expect(screen.queryByText('RISK_ALERT')).toBeNull()
+    // R41-4-13: a abertura e os vencimentos são exibidos junto a cada OS.
+    expect(screen.getByText(/aberta em 01\/12\/2026/)).toBeTruthy()
+    expect(screen.getByText(/vencimento 05\/12\/2026/)).toBeTruthy()
+    expect(screen.getAllByText(/decorrido 1h 0min/).length).toBeGreaterThan(0)
     await user.click(screen.getByRole('button', { name: 'Avaliar encerramento' }))
-    // MISSING_PROBLEM_CAUSE_REMEDY também é nomeado no texto do catálogo:
-    // a recusa da porta distingue-se pelo detalhe devolvido.
+    // MISSING_PROBLEM_CAUSE_REMEDY continua citado no texto do catálogo
+    // (nome do tipo de recusa do mecanismo); a recusa da porta distingue-se
+    // pelo rótulo pt-BR e pelo detalhe devolvido.
     await waitFor(() => expect(screen.getByText(/codificação obrigatória/)).toBeTruthy())
+    expect(screen.getByText(/Problema, causa e remédio em falta/)).toBeTruthy()
     expect(screen.getAllByText(/MISSING_PROBLEM_CAUSE_REMEDY/).length).toBeGreaterThan(0)
   })
 

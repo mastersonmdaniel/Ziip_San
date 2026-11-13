@@ -4,19 +4,22 @@ import { describe, expect, it } from 'vitest'
 import type { CritiquePort } from '@services/metering/critique'
 import type { RenewalPlanPort } from '@services/metering/renewal'
 import { ExceptionQueuePage } from './ExceptionQueuePage'
-import { RenewalPlanPage } from './RenewalPlanPage'
+import { formatCost, RenewalPlanPage } from './RenewalPlanPage'
 
 // Fixtures das suites Java: ExceptionQueueTest (finding ZERO_CONSUMPTION) e
 // AnnualRenewalPlanTest/RenewalFixtures (M1 = H-001/...0021; H-009/...0029 sem custo).
 describe('P-II2-TELA sem fiação', () => {
-  it('mostra a pendência P-II2-FIACAO e nenhuma excepção fingida', () => {
+  it('mostra a pendência P-II2-FIACAO e nenhuma exceção fingida', () => {
     render(<ExceptionQueuePage />)
     expect(screen.getByText(/P-II2-FIACAO/)).toBeTruthy()
-    expect(screen.getByText(/Nenhuma excepção aberta na fila/)).toBeTruthy()
+    expect(screen.getByText(/Nenhuma exceção aberta na fila/)).toBeTruthy()
+    // R41-4-06: a página não rende <main> próprio — vive dentro do
+    // <main id="conteudo"> do Layout; <main> aninhado é HTML inválido.
+    expect(document.querySelectorAll('main')).toHaveLength(0)
   })
 })
 describe('P-II2-TELA com porta', () => {
-  it('lista a excepção da fixture Java', async () => {
+  it('lista a exceção da fixture Java', async () => {
     const port: CritiquePort = {
       listExceptions: async () => [{
         unitId: '00000000-0000-0000-0000-000000000001', reference: '2026-10', status: 'PENDING',
@@ -32,7 +35,7 @@ describe('P-II2-TELA com porta', () => {
   })
 })
 describe('P-II2-TELA interacções', () => {
-  it('aceitar chama a porta e a excepção sai das abertas (ACCEPTED é terminal)', async () => {
+  it('aceitar chama a porta e a exceção sai das abertas (ACCEPTED é terminal)', async () => {
     const user = userEvent.setup()
     const port: CritiquePort = {
       listExceptions: async () => [{
@@ -47,9 +50,9 @@ describe('P-II2-TELA interacções', () => {
     expect(await screen.findByText('RZ')).toBeTruthy()
     await user.click(screen.getByRole('button', { name: 'Aceitar' }))
     await waitFor(() => expect(screen.queryByText('RZ')).toBeNull())
-    expect(screen.getByText(/Nenhuma excepção aberta na fila/)).toBeTruthy()
+    expect(screen.getByText(/Nenhuma exceção aberta na fila/)).toBeTruthy()
   })
-  it('correcção com leitura negativa é recusada na tela, sem chamar a porta', async () => {
+  it('correção com leitura negativa é recusada na tela, sem chamar a porta', async () => {
     const user = userEvent.setup()
     let correctCalls = 0
     const port: CritiquePort = {
@@ -95,7 +98,13 @@ describe('P-II5-TELA', () => {
     expect(await screen.findByText('H-001')).toBeTruthy()
     expect(screen.getByText('0.90')).toBeTruthy()
     expect(screen.getByText('Verificação vencida')).toBeTruthy()
-    expect(screen.getByText(/Custo total estimado:/)).toBeTruthy()
+    // R41-4-09: custo formatado em pt-BR, unidade marcada [A DEFINIR]
+    // (P-R41-4-09-MOEDA) e nenhum "R$" assumido.
+    expect(screen.getByText(/Custo total estimado: 600 \[A DEFINIR\]/)).toBeTruthy()
+    expect(screen.getByText('600 [A DEFINIR]')).toBeTruthy()
+    expect(document.body.textContent).not.toContain('R$')
+    // R41-4-06: a página não rende <main> próprio.
+    expect(document.querySelectorAll('main')).toHaveLength(0)
   })
   it('linha sem custo (H-009 da suite Java) mostra o total como desconhecido', async () => {
     const port: RenewalPlanPort = {
@@ -114,5 +123,19 @@ describe('P-II5-TELA', () => {
     render(<RenewalPlanPage port={port} planYear={2026} />)
     expect(await screen.findByText('H-009')).toBeTruthy()
     expect(screen.getByText(/desconhecido/)).toBeTruthy()
+  })
+})
+describe('R41-4-09 formatCost (custo do plano, sem moeda assumida)', () => {
+  it('formata em pt-BR e marca a unidade [A DEFINIR]; null vira "—"', () => {
+    expect(formatCost('600')).toBe('600 [A DEFINIR]')
+    expect(formatCost('1234.56')).toBe('1.234,56 [A DEFINIR]')
+    expect(formatCost(null)).toBe('—')
+    expect(formatCost('abc')).toBe('abc [A DEFINIR]')
+  })
+  it('preserva a precisão da fracção e não inventa zero para string vazia (R41B-R-02)', () => {
+    expect(formatCost('1234.5678')).toBe('1.234,5678 [A DEFINIR]')
+    expect(formatCost('')).toBe(' [A DEFINIR]')
+    expect(formatCost('   ')).toBe('    [A DEFINIR]')
+    expect(formatCost('9007199254740993')).toBe('9.007.199.254.740.993 [A DEFINIR]')
   })
 })
