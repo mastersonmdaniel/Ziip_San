@@ -120,3 +120,4 @@ V107__nfage_bill_fiscal_columns.sql
 V108__bill_verification_rls.sql
 V109__bill_columns_and_checks_reassert.sql
 V110__cutoff_compensation_formula_width.sql
+V112__payments_canonical_convergence.sql

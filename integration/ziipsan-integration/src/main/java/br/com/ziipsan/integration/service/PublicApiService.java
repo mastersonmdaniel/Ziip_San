@@ -245,8 +245,20 @@ public class PublicApiService {
                 params.add(unitId);
             }
             if (status != null) {
-                where.append(" AND status = ?");
-                params.add(status);
+                // Convergência V112 (decisão 75, PD-2/PD-3): o filtro chega no vocabulário
+                // FEBRABAN do contrato e casa os literais canónicos correspondentes — os
+                // dois membros do par quando há normalização (ex.: CLASSIFIED casa
+                // CLASSIFIED e CLASSIFICADO). O contrato não muda.
+                List<String> canonicalStatuses = PaymentStatusTranslation.canonicalStatusesForApiFilter(status);
+                where.append(" AND status IN (");
+                for (int i = 0; i < canonicalStatuses.size(); i++) {
+                    if (i > 0) {
+                        where.append(", ");
+                    }
+                    where.append("?");
+                    params.add(canonicalStatuses.get(i));
+                }
+                where.append(")");
             }
             long total;
             try (PreparedStatement ps = c.prepareStatement("SELECT count(*) FROM payments " + where)) {
@@ -307,7 +319,10 @@ public class PublicApiService {
         item.put("documentId", documentId == null ? null : documentId.toString());
         item.put("amount", rs.getObject(5, BigDecimal.class));
         item.put("paidOn", dateString(rs.getDate(6)));
-        item.put("status", rs.getString(7));
+        // Convergência V112 (decisão 75, PD-2/PD-3): o status gravado é canónico;
+        // expõe-se o literal FEBRABAN do contrato (os pares normalizam-se de volta;
+        // BAIXADO/RECEBIDO/TRANSFERIDO passam tal como estão — sem tradução inventada).
+        item.put("status", PaymentStatusTranslation.apiStatusForCanonical(rs.getString(7)));
         return item;
     }
 
