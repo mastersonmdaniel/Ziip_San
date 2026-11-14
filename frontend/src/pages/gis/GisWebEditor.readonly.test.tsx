@@ -8,17 +8,17 @@ import { GisWebEditor } from './GisWebEditor'
  * R41-4-35 — "Editor GIS" exibido a quem só tem `gis:view`.
  *
  * Prova com permissões mockadas (PermissionsProvider real, lista de
- * permissões injectada; serviços GIS mockados; mapa real fora — o
+ * permissões injetada; serviços GIS mockados; mapa real fora — o
  * gisMap.style rejeita e a tela cai na superfície local, como declara o
  * cabeçalho do editor):
  * - com só `gis:view`, o editor ABRE (a rota é de leitura — legítimo),
  *   mas tem de abrir SÓ DE CONSULTA: aviso visível, ferramentas de
- *   desenho desactivadas, desenho sem efeito e gravação desactivada.
- * - com `gis:import-edit` + `gis:change-set-edit`, tudo fica activo e
- *   a gravação chama o servidor (controlo negativo: a guarda é da
+ *   desenho desativadas, desenho sem efeito e gravação desativada.
+ * - com `gis:import-edit` + `gis:change-set-edit`, tudo fica ativo e
+ *   a gravação chama o servidor (controle negativo: a guarda é da
  *   permissão, não um bloqueio geral).
  * - mesmo com escrita, se o servidor negar (403), a tela mostra a
- *   recusa (controlo do segundo degrau: o servidor continua a ser a
+ *   recusa (controle do segundo degrau: o servidor continua a ser a
  *   autoridade — GisChangeSetController exige `gis:change-set-edit`).
  *
  * As authorities usadas existem no backend: `gis:import-edit` é a
@@ -102,11 +102,11 @@ describe('GisWebEditor — só de leitura (R41-4-35)', () => {
     expect(screen.getByTestId('gis-editor-canvas')).toBeInTheDocument()
     // ... mas como só de consulta: aviso visível.
     expect(screen.getByTestId('gis-editor-readonly-notice')).toBeInTheDocument()
-    // Ferramentas de desenho desactivadas.
+    // Ferramentas de desenho desativadas.
     for (const label of TOOL_LABELS) {
       expect(screen.getByRole('button', { name: label })).toBeDisabled()
     }
-    // "Conferir na API" e gravar em pacote desactivados.
+    // "Conferir na API" e gravar em pacote desativados.
     expect(screen.getByRole('button', { name: /Conferir na API/ })).toBeDisabled()
     expect(screen.getByRole('button', { name: /Gravar em pacote/ })).toBeDisabled()
     // Nada foi chamado ao servidor para gravar.
@@ -131,7 +131,7 @@ describe('GisWebEditor — só de leitura (R41-4-35)', () => {
     expect(screen.getByText(/Feicao de trabalho/).textContent).toBe(before)
   })
 
-  it('com gis:import-edit + gis:change-set-edit, ferramentas e gravação ficam activas (controlo negativo)', async () => {
+  it('com gis:import-edit + gis:change-set-edit, ferramentas e gravação ficam ativas (controle negativo)', async () => {
     const user = userEvent.setup()
     changeSetsMocks.create.mockResolvedValue({ id: 'cs-1', status: 'DRAFT' })
     changeSetsMocks.addItem.mockResolvedValue({ id: 'item-1' })

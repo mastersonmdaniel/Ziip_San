@@ -535,7 +535,7 @@ export function GisWebEditor() {
   async function checkOnApi() {
     // R41-4-35: sem escrita, nao ha deslocamento para conferir.
     if (!canEdit) {
-      setStatus("Sem a permissão gis:import-edit, a conferência na API está desactivada.");
+      setStatus("Sem a permissão gis:import-edit, a conferência na API está desativada.");
       return;
     }
     if (!layerId) {
@@ -763,9 +763,9 @@ export function GisWebEditor() {
   async function saveToChangeSet() {
     if (csSaving) return;
     // R41-4-35: sem gis:change-set-edit, a gravacao nem e tentada
-    // (o servidor nega-a com 403; o botao ja esta desactivado).
+    // (o servidor nega-a com 403; o botao ja esta desativado).
     if (!canSave) {
-      setCsStatus("Sem a permissão gis:change-set-edit, a gravação em pacote está desactivada.");
+      setCsStatus("Sem a permissão gis:change-set-edit, a gravação em pacote está desativada.");
       return;
     }
     if (!csFeatureId.trim()) {
@@ -817,12 +817,12 @@ export function GisWebEditor() {
           <p role="status" data-testid="gis-editor-readonly-notice">
             Só de consulta: sem a permissão gis:import-edit, as ferramentas
             de edição, a conferência na API e a gravação em pacote estão
-            desactivadas — o servidor nega a gravação sem ela (403).
+            desativadas — o servidor nega a gravação sem ela (403).
           </p>
         ) : !canSave ? (
           <p role="status" data-testid="gis-editor-readonly-notice">
             Sem a permissão gis:change-set-edit, a gravação em pacote está
-            desactivada — o servidor nega-a sem ela (403). A edição local
+            desativada — o servidor nega-a sem ela (403). A edição local
             continua disponível.
           </p>
         ) : null}
