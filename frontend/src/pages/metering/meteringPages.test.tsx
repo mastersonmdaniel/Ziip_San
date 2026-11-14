@@ -123,6 +123,30 @@ describe('P-II5-TELA', () => {
     render(<RenewalPlanPage port={port} planYear={2026} />)
     expect(await screen.findByText('H-009')).toBeTruthy()
     expect(screen.getByText(/desconhecido/)).toBeTruthy()
+    // R53-2-01: o caminho null → "—" ao nível da página — custo de troca
+    // (formatCost(null)) e próxima verificação (null ?? '—'): exactamente
+    // as duas células "—" da linha H-009; o total "desconhecido" não é "—".
+    expect(screen.getAllByText('—')).toHaveLength(2)
+  })
+  it('restrição ByBudget rende o orçamento máximo em reais (R53-2-02)', async () => {
+    const port: RenewalPlanPort = {
+      getPlan: async () => ({
+        planYear: 2026, restriction: { type: 'ByBudget', maxBudget: '900' }, minScore: null,
+        eligibleCount: 1, excludedByStatusCount: 0, excludedBelowMinScoreCount: 0,
+        excludedByRestrictionCount: 0, totalEstimatedCost: '900',
+        lines: [{
+          position: 1, meterId: '00000000-0000-0000-0000-000000000021', meterNumber: 'H-001',
+          unitId: '99999999-9999-9999-9999-999999999999', totalScore: '0.90',
+          dominantCriterion: 'AGE', clockStatus: 'OVERDUE', nextVerificationOn: '2025-06-01', replacementCost: '600',
+        }],
+      }),
+      buildPayloads: async () => [],
+    }
+    render(<RenewalPlanPage port={port} planYear={2026} />)
+    expect(await screen.findByText('H-001')).toBeTruthy()
+    // R53-2-02: o ramo ByBudget ao nível da página, em reais (R$, BRL —
+    // decisão 76); antes só era provado ao nível unitário (renewal.test.ts).
+    expect(screen.getByText(/Orçamento máximo de R\$ 900/)).toBeTruthy()
   })
 })
 describe('R41-4-09 formatCost (custo do plano, em reais — decisão 76)', () => {
