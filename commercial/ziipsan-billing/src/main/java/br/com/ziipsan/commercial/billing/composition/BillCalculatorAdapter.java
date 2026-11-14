@@ -2,6 +2,7 @@ package br.com.ziipsan.commercial.billing.composition;
 
 import br.com.ziipsan.commercial.billing.bill.BillInput;
 import br.com.ziipsan.commercial.billing.bill.BillResult;
+import br.com.ziipsan.commercial.billing.relief.ReliefBillingAssembly;
 import br.com.ziipsan.commercial.billingrules.catalog.CalculationModel;
 import br.com.ziipsan.commercial.billingrules.composition.BillChargeLine;
 import br.com.ziipsan.commercial.billingrules.composition.BillComposition;
@@ -53,6 +54,49 @@ public final class BillCalculatorAdapter {
                 .credits(input.credits())
                 .taxPolicy(input.taxPolicy())
                 .fixedPartValue(input.fixedPartValue());
+    }
+
+    /** Contexto montado com desoneracao + o resultado da montagem (decisao da guarda incluida). */
+    public record ReliefAssembledContext(ChargeCalculationContext.Builder builder,
+                                         ReliefBillingAssembly.Assembled assembled) {
+    }
+
+    /**
+     * Montagem com desoneracao (PA-02; correccao R-03 da REVISAO-PA-02): a
+     * camada de montagem invoca a {@link ReliefBillingAssembly} (seleccao de
+     * programa -> resolucao por data de emissao fatia a fatia -> guarda)
+     * sobre o schedule do {@code BillInput} e monta o contexto com o
+     * schedule EFFECTIVO. Sem programa aplicavel, o schedule do contexto e
+     * a mesma instancia do input — comportamento identico ao de
+     * {@link #toContext(BillInput, String, java.time.LocalDate)}.
+     *
+     * @param issuedOn data de emissao da fatura (o corte e por ela, F-08)
+     */
+    public static ReliefAssembledContext toContext(BillInput input, String unitRef,
+                                                   java.time.LocalDate competence,
+                                                   java.time.LocalDate issuedOn,
+                                                   String municipalityIbge,
+                                                   ReliefBillingAssembly assembly,
+                                                   ReliefBillingAssembly.ReliefContext reliefContext) {
+        Objects.requireNonNull(input, "BillInput e obrigatorio");
+        Objects.requireNonNull(assembly, "montagem de desoneracao e obrigatoria");
+        ReliefBillingAssembly.Assembled assembled = assembly.assemble(input.schedule(),
+                input.periodFrom(), input.periodTo(), issuedOn, municipalityIbge, reliefContext);
+        ChargeCalculationContext.Builder builder = ChargeCalculationContext.builder()
+                .unitRef(unitRef)
+                .competence(competence)
+                .municipalityIbge(municipalityIbge)
+                .schedule(assembled.schedule())
+                .periodFrom(input.periodFrom())
+                .periodTo(input.periodTo())
+                .groups(input.groups())
+                .waterConsumption(input.waterConsumption())
+                .sewer(input.sewer())
+                .debits(input.debits())
+                .credits(input.credits())
+                .taxPolicy(input.taxPolicy())
+                .fixedPartValue(input.fixedPartValue());
+        return new ReliefAssembledContext(builder, assembled);
     }
 
     /**

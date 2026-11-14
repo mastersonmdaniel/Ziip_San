@@ -12,6 +12,7 @@ import br.com.ziipsan.commercial.fiscal.port.FiscalDocumentRepository.EventRecor
 import br.com.ziipsan.commercial.fiscal.port.FiscalDocumentRepository.ReservedSlot;
 import br.com.ziipsan.commercial.fiscal.port.FiscalDocumentRepository.TaxLine;
 import br.com.ziipsan.commercial.fiscal.port.RestrictedProductionUnavailableException;
+import br.com.ziipsan.commercial.fiscal.relief.ReliefTaxHighlight;
 import br.com.ziipsan.commercial.fiscal.rules.DpsId;
 import br.com.ziipsan.commercial.fiscal.rules.TaxEngine;
 import br.com.ziipsan.commercial.fiscal.rules.TaxRateValidity;
@@ -53,9 +54,11 @@ import java.util.zip.GZIPOutputStream;
  * as tabelas e a numeração já a suportam, o builder ainda não; (3) a assinatura XMLDSig e o
  * mTLS chegam com o cliente real (P2) — o XML aqui é o não assinado do corpus.
  *
- * <p>IBS/CBS entram como informativos só na competência do ano de teste de 2026
- * ({@link TaxRateValidity#cbsIbsInformative}); a partir de 01/01/2027 a CBS plena deixa
- * de ser informativa e o IBS segue a sua transição por vigência (P2.4).
+ * <p>IBS/CBS entram como informativos só na competência do ano de teste de 2026;
+ * a partir de 01/01/2027 são DESTAQUE por fora (P2.4 + PA-02/F-05). Montante e
+ * flag têm FONTE ÚNICA: {@link ReliefTaxHighlight#cbsIbsForCompetence}, que
+ * deriva o flag da primitiva de vigência {@link TaxRateValidity#cbsIbsInformative}
+ * — esta classe não calcula CBS/IBS por nenhuma outra via (correcção R-04).
  */
 public final class FiscalIssuanceService {
 
@@ -118,7 +121,20 @@ public final class FiscalIssuanceService {
                 TaxRateValidity.rateFor(rates, "CSRF", request.competenceDate()),
                 TaxRateValidity.rateFor(rates, "CBS", request.competenceDate()),
                 TaxRateValidity.rateFor(rates, "IBS", request.competenceDate()));
-        TaxEngine.TaxResult result = TaxEngine.calculate(request.gross(), taxRates);
+        TaxEngine.TaxResult engineResult = TaxEngine.calculate(request.gross(), taxRates);
+        // DESTAQUE CBS/IBS — FONTE UNICA (PA-02, correccao R-04 da
+        // REVISAO-PA-02): montante e flag (informativo x destaque por fora)
+        // vem de ReliefTaxHighlight.cbsIbsForCompetence, que deriva o flag
+        // da primitiva de vigencia da P2.4 (TaxRateValidity). O resultado
+        // do motor e RECONSTRUIDO com esses montantes: as linhas do
+        // documento e o XML consomem uma so via — sem segunda contagem.
+        // O liquido do motor nunca inclui CBS/IBS, por isso o total da
+        // conta fica inalterado (destaque e por fora).
+        var cbsIbsHighlights = ReliefTaxHighlight.cbsIbsForCompetence(request.gross(),
+                taxRates.cbsRate(), taxRates.ibsRate(), request.competenceDate());
+        TaxEngine.TaxResult result = new TaxEngine.TaxResult(engineResult.gross(), engineResult.iss(),
+                engineResult.irrf(), engineResult.csrf(), cbsIbsHighlights.get(0).amount(),
+                cbsIbsHighlights.get(1).amount(), engineResult.net());
 
         ReservedSlot slot = repository.reserveSlot(request.tenantId(), request.issuerId(),
                 request.documentType().name(), request.series(), request.sourceType(), request.sourceId(),
@@ -134,10 +150,10 @@ public final class FiscalIssuanceService {
                 new TaxLine("ISS", taxRates.issRate(), result.iss(), false),
                 new TaxLine("IRRF", taxRates.irrfRate(), result.irrf(), false),
                 new TaxLine("CSRF", taxRates.csrfRate(), result.csrf(), false),
-                new TaxLine("CBS", taxRates.cbsRate(), result.cbsInformative(),
-                        TaxRateValidity.cbsIbsInformative(request.competenceDate())),
-                new TaxLine("IBS", taxRates.ibsRate(), result.ibsInformative(),
-                        TaxRateValidity.cbsIbsInformative(request.competenceDate())));
+                new TaxLine("CBS", taxRates.cbsRate(), cbsIbsHighlights.get(0).amount(),
+                        cbsIbsHighlights.get(0).informative()),
+                new TaxLine("IBS", taxRates.ibsRate(), cbsIbsHighlights.get(1).amount(),
+                        cbsIbsHighlights.get(1).informative()));
         repository.signDocument(request.tenantId(), slot.documentId(), dpsId, unsignedXml, taxes);
         try {
             AuthorizationResult authorization = issuer.authorize(

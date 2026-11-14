@@ -123,3 +123,6 @@ V110__cutoff_compensation_formula_width.sql
 V112__payments_canonical_convergence.sql
 V113__losses_dmc_balance.sql
 V114__dma_aggregation.sql
+V115__tariff_relief_program.sql
+V116__fiscal_relief_registries.sql
+V117__fiscal_certificate_alert_log.sql
