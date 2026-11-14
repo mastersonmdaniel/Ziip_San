@@ -5,7 +5,7 @@ para cada FK composta criada nesta entrega; nenhuma linha semeada."""
 import pathlib, re, sys
 root = pathlib.Path(__file__).resolve().parents[2]
 java = "\n".join(p.read_text(encoding="utf-8") for p in root.rglob("*.java") if "/src/main/" in str(p))
-sql_path = root/"intelligence/ziipsan-losses/src/main/resources/db/pendente/ED-85__losses_dmc_balance.sql"
+sql_path = root/"intelligence/ziipsan-losses/src/main/resources/db/migration/tenant/V113__losses_dmc_balance.sql"
 sql = sql_path.read_text(encoding="utf-8")
 bad = []
 for key in ["loss.dmc_target_l_per_conn_day", "loss.night_window",
