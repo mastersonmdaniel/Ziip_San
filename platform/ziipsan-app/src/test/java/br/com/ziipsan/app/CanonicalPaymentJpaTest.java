@@ -41,9 +41,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  *
  * <p>É o "teste de contexto focado no modelo canónico" do lote: NÃO arranca o
  * contexto da aplicação ({@code ZiipsanApplication}), que está bloqueado pela
- * P-APPDEVICE-01 (a pendência R40-A: {@code AppDeviceRepository} sem bean — o
- * {@code EnableJpaRepositories} da app não inclui {@code platform.field} nesta
- * base; ver o RELATÓRIO). Nada aqui depende desse contexto.
+ * P-ACCESSCONTROL-01 ({@code AccessControlService} sem bean — ver o RELATÓRIO).
+ * Nada aqui depende desse contexto.
  */
 class CanonicalPaymentJpaTest {
 
