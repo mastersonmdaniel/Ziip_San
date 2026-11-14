@@ -2415,3 +2415,22 @@ Pacote `correcao-moeda-r41-4-09`. **Conteúdo: 4 ficheiros, +49/−37 vs a base 
 - Cadeia: produtor e06fdd87… → revisor 6f66d77b… (APROVADO) → confirmador f0c605ae… (CONFIRMADO, 0 divergências) · portão 7638010b… (APROVADO EM SUBSTÂNCIA — exit 1 mecânico: 3 falsos positivos da Regra 3 adjudicados, instância (xliv) do rol; próxima livre (xlv)) · pouso fe5fae1c…. Evidência (logs integrais no pacote): vitest dirigido 11/11 pós (base 10/10); delta +1 teste (R53-2-02) e +1 asserção (R53-2-01).
 - Histórico do pouso, com verdade: a primeira tentativa de push do conteúdo falhou no fornecedor ("failed to update reference") após a aprovação do cartão — no mesmo intervalo pousou o verbete do lote R53-C (`851799a0`); verificado por `git fetch` que nada tinha pousado (main em `851799a0`, ficheiro ainda na base `712850be…`) e feita UMA repetição limpa, permitida, que pousou o conteúdo em `c1700ebd` (pai `851799a0`). O pouso não remove linhas alheias (C7 refeito no acto contra a main viva corrente).
 - R53-2-01 e R53-2-02 FECHAM com este lote. R53-1-01 e R53-1-02 são documentais e locais e NÃO pousam. Este verbete não afirma CI total verde.
+
+## 14/11/2026 — Lotes R50-A + R51-A + R52-A POUSADOS (Rodadas 50–52; itens R50-1-01 e R50-3-02, com as correcções R51-A/R52-A) — (conteúdo em 1 commit `678f1a9e61c7d03177f3a7acb4f2eff944e10cd3`; este verbete pousa em commit próprio imediatamente a seguir, sobre o blob vivo, em append puro)
+- Conteúdo: 678f1a9e61c7d03177f3a7acb4f2eff944e10cd3 — 3 ficheiros, +110/−13: `frontend/src/pages/gis/GisWebEditor.tsx` (+5/−5; blob `86617bbe0e6b04f80b29b3a5cf056302fa4daf5d`), `frontend/src/pages/gis/GisWebEditor.readonly.test.tsx` (+8/−8; blob `a307d546dbe4ea6edf9a20c9168e4a9e8c1922f6`) e `platform/ziipsan-app/src/test/java/br/com/ziipsan/app/ChargeVersionEntityMappingTest.java` (ficheiro novo, 97 linhas; blob `47b9390c9e6500136bc3ec3939653ef07a7ea787`). R50-3-02: "desactivada(s)"→"desativada(s)" (8 linhas). R50-1-01: teste de contexto mínimo `ChargeVersionEntityMappingTest`. Correcções R51-A (resíduo pt-PT em comentários de teste; javadoc re-atribuído a P-ACCESSCONTROL-01) e R52-A ("controlo"→"controle", 3 ocorrências) aplicadas sobre estes mesmos ficheiros staged.
+- Cadeia: REVISAO e CONFIRMACAO das cadeias R50-A/R51-A/R52-A, todas CONFIRMADO com 0 divergências · portão APROVADO EM SUBSTÂNCIA (script invocado 14/11/2026 00:30:46 −03; exit 1 mecânico só por 7 falsos positivos da Regra 3 adjudicados, instância (xlv) do rol; registo `PORTAO-REGISTRO-R50-A-POUSO.md` no pacote; script íntegro, não editado) · pouso `a7059396-5224-451c-976e-c9e7a7def575`, por ordem expressa do dono de 14/11/2026 00:28 −03. Evidência (logs integrais no pacote): vitest do `GisWebEditor.readonly.test.tsx` 4/4 (R52-A); `ChargeVersionEntityMappingTest` 2/2 com controlo negativo provado (R50-A). Verificação pós-pouso por hash 3/3 registada no relatório de pouso do pacote.
+- Errata ao verbete do lote R41-B (item R50-3-01) — transcrição verbatim de `ERRATA-VERBETE-B-R50-3-01.md`:
+> **Errata ao verbete do lote R41-B (commit `07eb5241`, 13/11/2026):** onde se
+> lê "botão inalcançável corrigido", leia-se **"botão verificado: continua
+> inalcançável por construção até à fiação P-II5-INT-*"**. O item R41-4-10
+> **não** fechou com o pouso do lote R41-B e fica **reaberto como pendência
+> viva**, dependente da fiação P-II5-INT-*. Consequentemente, os fechos do
+> lote R41-B são **R41-4-06..R41-4-20 excepto R41-4-10 (14 itens)**, e não
+> 15. Fundamento (verificado na main viva `da922977`): `frontend/src/App.tsx:193`
+> continua sem `port` nem `tenantId`; `frontend/src/pages/metering/RenewalPlanPage.tsx:119-126`
+> só rende o botão com `tenantId`; `App.tsx` tem 0 ocorrências no diff de
+> `e7e31613`; o ramo do botão é byte-idêntico ao anterior ao lote
+> (`387762c3:RenewalPlanPage.tsx:94-100`); o relatório do grupo regista
+> "R41-4-10 — VERIFICADO, sem alteração de código"
+> (`correcao-r41-b/RELATORIO-GRUPO-OPERACIONAIS.md:64`).
+- R50-1-01 e R50-3-02 FECHAM com este pouso (com as correcções R51-A/R52-A). Este verbete não afirma CI total verde.
